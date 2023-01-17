@@ -8,3 +8,6 @@
 .yarn/*
 !.yarn/releases
 !.yarn/plugins
+
+# Tsc Build
+/build
