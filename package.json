@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "build": "substrate-exec-rimraf ./build && substrate-exec-tsc",
-    "start": "node ./build/index.js"
+    "start": "node ./build/index.js",
+    "lint": "substrate-dev-run-lint",
+    "lint:fix": "substrate-dev-run-lint --fix"
   },
   "repository": {
     "type": "git",
