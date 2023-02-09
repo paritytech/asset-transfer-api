@@ -11,3 +11,13 @@
 
 # Tsc Build
 /build
+
+# Zombienet
+zombienet-macos
+zombienet-linux-arm64
+zombienet-linux-x64
+zombienet.log
+
+# Binaries
+/bin/*
+!bin/README.md
