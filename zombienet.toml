@@ -1,0 +1,56 @@
+[relaychain]
+default_command = "./bin/polkadot"
+default_args = [ "-lparachain=debug" ]
+chain = "rococo-local"
+
+  [[relaychain.nodes]]
+  name = "alice"
+  validator = true
+  extra_args = [ "-lparachain=debug" ]
+
+  [[relaychain.nodes]]
+  name = "bob"
+  validator = true
+  extra_args = [ "-lparachain=debug" ]
+
+  [[relaychain.nodes]]
+  name = "charlie"
+  validator = true
+  extra_args = [ "-lparachain=debug" ]
+
+  [[relaychain.nodes]]
+  name = "dave"
+  validator = true
+  extra_args = [ "-lparachain=debug" ]
+
+[[parachains]]
+id = 100
+addToGenesis = true
+chain = "statemint-local"
+cumulus_based = true
+
+  [[parachains.collators]]
+  name = "statemint-collator1"
+  command = "./bin/polkadot-parachain"
+  args = ["--log=xcm=trace,pallet-assets=trace"]
+
+[[parachains]]
+id = 200
+addToGenesis = true
+
+  [parachains.collator]
+  name = "adder-collator01"
+  command = "./bin/adder-collator"
+  args = ["--log=xcm=trace,pallet-assets=trace"]
+
+[[hrmp_channels]]
+sender = 100
+recipient = 200
+max_capacity = 8
+max_message_size = 512
+
+[[hrmp_channels]]
+sender = 200
+recipient = 100
+max_capacity = 8
+max_message_size = 512
