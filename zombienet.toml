@@ -42,3 +42,15 @@ addToGenesis = true
   name = "adder-collator01"
   command = "./bin/adder-collator"
   args = ["--log=xcm=trace,pallet-assets=trace"]
+
+[[hrmp_channels]]
+sender = 100
+recipient = 200
+max_capacity = 8
+max_message_size = 512
+
+[[hrmp_channels]]
+sender = 200
+recipient = 100
+max_capacity = 8
+max_message_size = 512
