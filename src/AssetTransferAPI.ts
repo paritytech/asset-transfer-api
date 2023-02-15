@@ -1,5 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 import { Bytes } from '@polkadot/types';
+import { constructApiPromise } from './constructApiPromise';
 
 interface ITransferArgsOpts {
 	/**
@@ -23,11 +24,18 @@ interface ITransferArgsOpts {
 	isLimited?: boolean;
 }
 
+interface IChainInfo {
+	specName: string;
+	specVersion: string;
+}
+
 export class AssetsTransferAPI {
 	readonly _api: ApiPromise;
+	readonly _info: {};
 
 	constructor(api: ApiPromise) {
 		this._api = api;
+		this._info = this.fetchChainInfo(this._api);
 	}
 
 	/**
@@ -39,7 +47,7 @@ export class AssetsTransferAPI {
 	 * @param amount Amount of the token to transfer
 	 * @param opts Options
 	 */
-	public createTransferTransaction(
+	public async createTransferTransaction (
 		chainId: string | number,
 		destAddr: string,
 		assetId: string,
@@ -47,6 +55,22 @@ export class AssetsTransferAPI {
 		opts?: ITransferArgsOpts
 	) {
 		console.log(chainId, destAddr, assetId, amount, opts);
+		const { _api } = this;
+
+		/**
+		 * `api.tx.xcmPallets` methods inlcude:
+		 *   'send',
+		 *	 'teleportAssets',
+		 *	 'reserveTransferAssets',
+		 *	 'execute',
+		 *   'forceXcmVersion',
+		 *	 'forceDefaultXcmVersion',
+		 *	 'forceSubscribeVersionNotify',
+		 *	 'forceUnsubscribeVersionNotify',
+		 *	 'limitedReserveTransferAssets',
+		 *	 'limitedTeleportAssets'
+		 */
+		console.log(Object.keys(_api.tx.xcmPallet))
 	}
 
 	/**
@@ -56,5 +80,18 @@ export class AssetsTransferAPI {
 	 */
 	public estimateFee(tx: Bytes | string) {
 		console.log(tx);
+	}
+
+	/**
+	 * Fetch runtime information based on the connected chain.
+	 * 
+	 * @param api ApiPromise
+	 */
+	private async fetchChainInfo(api: ApiPromise): Promise<IChainInfo> {
+		const { specName, specVersion } = await api.rpc.state.getRuntimeVersion();
+		return {
+			specName: specName.toString(),
+			specVersion: specVersion.toString()
+		}
 	}
 }
