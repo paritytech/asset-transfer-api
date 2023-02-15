@@ -10,7 +10,7 @@ import { WsProvider } from '@polkadot/rpc-provider';
  */
 export const constructApiPromise = async (
 	wsUrl: string,
-	opts: ApiOptions
+	opts: ApiOptions = {}
 ): Promise<ApiPromise> => {
 	return await ApiPromise.create({
 		provider: new WsProvider(wsUrl),

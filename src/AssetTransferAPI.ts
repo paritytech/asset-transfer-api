@@ -5,7 +5,7 @@ interface ITransferArgsOpts {
 	/**
 	 * Signing Payload vs Call
 	 */
-	format?: 'payload' | 'call';
+	format?: 'payload' | 'call'; // Give a polkadot-js option.
 	/**
 	 * AssetId to pay fee's on the current common good parachain.
 	 * Statemint: default DOT
@@ -23,11 +23,18 @@ interface ITransferArgsOpts {
 	isLimited?: boolean;
 }
 
+interface IChainInfo {
+	specName: string;
+	specVersion: string;
+}
+
 export class AssetsTransferAPI {
 	readonly _api: ApiPromise;
+	readonly _info: Promise<IChainInfo>;
 
 	constructor(api: ApiPromise) {
 		this._api = api;
+		this._info = this.fetchChainInfo(api);
 	}
 
 	/**
@@ -39,14 +46,32 @@ export class AssetsTransferAPI {
 	 * @param amount Amount of the token to transfer
 	 * @param opts Options
 	 */
-	public createTransferTransaction(
+	public async createTransferTransaction(
 		chainId: string | number,
 		destAddr: string,
 		assetId: string,
 		amount: string | number,
 		opts?: ITransferArgsOpts
 	) {
-		console.log(chainId, destAddr, assetId, amount, opts);
+		const { _api, _info } = this;
+		const { specName, specVersion } = await _info;
+		console.log(
+			chainId,
+			destAddr,
+			assetId,
+			amount,
+			opts,
+			specName,
+			specVersion
+		);
+		/**
+		 * `api.tx.xcmPallets` methods to support inlcude:
+		 *	 'teleportAssets',
+		 *	 'reserveTransferAssets',
+		 *	 'limitedReserveTransferAssets',
+		 *	 'limitedTeleportAssets'
+		 */
+		console.log(Object.keys(_api.tx.xcmPallet));
 	}
 
 	/**
@@ -56,5 +81,18 @@ export class AssetsTransferAPI {
 	 */
 	public estimateFee(tx: Bytes | string) {
 		console.log(tx);
+	}
+
+	/**
+	 * Fetch runtime information based on the connected chain.
+	 *
+	 * @param api ApiPromise
+	 */
+	private async fetchChainInfo(api: ApiPromise): Promise<IChainInfo> {
+		const { specName, specVersion } = await api.rpc.state.getRuntimeVersion();
+		return {
+			specName: specName.toString(),
+			specVersion: specVersion.toString(),
+		};
 	}
 }
