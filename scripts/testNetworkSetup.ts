@@ -29,7 +29,7 @@ const main = async () => {
 
 	const txs = [
 		api.tx.assets.create(1, ferdie.address, 1000),
-		api.tx.assets.mint(1, ferdie.address, 1000 * 12),
+		api.tx.assets.mint(1, ferdie.address, 1000 * 120000),
 	];
 	const batch = api.tx.utility.batchAll(txs);
 	console.log('BATCH: ', batch.toHex());
