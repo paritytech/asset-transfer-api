@@ -7,32 +7,42 @@ chain = "rococo-local"
   name = "alice"
   validator = true
   extra_args = [ "-lparachain=debug" ]
+  ws_port = 9000
+  rpc_port = 9001
 
   [[relaychain.nodes]]
   name = "bob"
   validator = true
   extra_args = [ "-lparachain=debug" ]
+  ws_port = 9010
+  rpc_port = 9011
 
   [[relaychain.nodes]]
   name = "charlie"
   validator = true
   extra_args = [ "-lparachain=debug" ]
+  ws_port = 9020
+  rpc_port = 9021
 
   [[relaychain.nodes]]
   name = "dave"
   validator = true
   extra_args = [ "-lparachain=debug" ]
+  ws_port = 9030
+  rpc_port = 9031
 
 [[parachains]]
 id = 100
 addToGenesis = true
-chain = "statemint-local"
+chain = "westmint-local"
 cumulus_based = true
 
   [[parachains.collators]]
   name = "statemint-collator1"
   command = "./bin/polkadot-parachain"
   args = ["--log=xcm=trace,pallet-assets=trace"]
+  ws_port = 9040
+  rpc_port = 9041
 
 [[parachains]]
 id = 200
@@ -42,6 +52,8 @@ addToGenesis = true
   name = "adder-collator01"
   command = "./bin/adder-collator"
   args = ["--log=xcm=trace,pallet-assets=trace"]
+  ws_port = 9050
+  rpc_port = 9051
 
 [[hrmp_channels]]
 sender = 100

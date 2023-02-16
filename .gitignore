@@ -10,7 +10,7 @@
 !.yarn/plugins
 
 # Tsc Build
-/build
+**/build
 
 # Zombienet
 zombienet-macos

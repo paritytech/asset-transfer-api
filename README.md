@@ -38,4 +38,11 @@ Copy each binary that is necessary into the root `<root>/bin` folder.
 
 ### Running Zombienet
 
-From the root directory run `./<zombienet_binary_name> -p native spawn xcm-playground.toml | tee zombienet.log`
+From the root directory run `./<zombienet_binary_name> -p native spawn zombienet.toml | tee zombienet.log`
+
+### Create an asset
+
+From the root directory run `yarn start:zombienet-post-script`.
+You can see the status of each transaction by checking:
+- https://polkadot.js.org/apps/?rpc=ws://127.0.0.1:9000#/explorer 
+- https://polkadot.js.org/apps/?rpc=ws://127.0.0.1:9040#/explorer

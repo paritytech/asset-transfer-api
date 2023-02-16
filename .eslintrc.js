@@ -1,1 +1,9 @@
-module.exports = require('@substrate/dev/config/eslint');
+const config = require('@substrate/dev/config/eslint');
+
+module.exports = {
+    ...config,
+    parserOptions: {
+        project: '**/tsconfig.json'
+    }
+}
+
