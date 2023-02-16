@@ -38,4 +38,4 @@ Copy each binary that is necessary into the root `<root>/bin` folder.
 
 ### Running Zombienet
 
-From the root directory run `./<zombienet_binary_name> -p native spawn xcm-playground.toml | tee zombienet.log`
+From the root directory run `./<zombienet_binary_name> -p native spawn zombienet.toml | tee zombienet.log`
