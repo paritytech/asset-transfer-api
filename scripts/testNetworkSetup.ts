@@ -41,7 +41,7 @@ const main = async () => {
 			assetInfo.assetSymbol,
 			assetInfo.assetDecimals
 		),
-		api.tx.assets.mint(1, alice.address, 1000 * 120000000),
+		api.tx.assets.mint(assetInfo.assetId, alice.address, 1000 * 120000000),
 	];
 	const batch = api.tx.utility.batchAll(txs);
 	await batch.signAndSend(alice, { nonce }, ({ status, events }) => {
