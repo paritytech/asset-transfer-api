@@ -16,7 +16,7 @@ const main = async () => {
 	await cryptoWaitReady();
 
 	const keyring = new Keyring();
-	const ferdie = keyring.addFromUri('//Ferdie', { name: 'Ferdie' }, 'sr25519');
+	const alice = keyring.addFromUri('//Alice', { name: 'Alice' }, 'sr25519');
 
 	const api = await ApiPromise.create({
 		provider: new WsProvider(WS_URL),
@@ -25,16 +25,26 @@ const main = async () => {
 
 	await api.isReady;
 
-	const { nonce } = await api.query.system.account(ferdie.address);
+	const { nonce } = await api.query.system.account(alice.address);
 
+	const assetInfo = {
+		assetId: 1,
+		assetName: 'Test',
+		assetSymbol: 'TST',
+		assetDecimals: 10,
+	};
 	const txs = [
-		api.tx.assets.create(1, ferdie.address, 1000),
-		api.tx.assets.mint(1, ferdie.address, 1000 * 120000),
+		api.tx.assets.create(assetInfo.assetId, alice.address, 1000),
+		api.tx.assets.setMetadata(
+			assetInfo.assetId,
+			assetInfo.assetName,
+			assetInfo.assetSymbol,
+			assetInfo.assetDecimals
+		),
+		api.tx.assets.mint(1, alice.address, 1000 * 120000000),
 	];
 	const batch = api.tx.utility.batchAll(txs);
-	console.log('BATCH: ', batch.toHex());
-	console.log('sending transaction');
-	await batch.signAndSend(ferdie, { nonce }, ({ status, events }) => {
+	await batch.signAndSend(alice, { nonce }, ({ status, events }) => {
 		if (status.isInBlock || status.isFinalized) {
 			events
 				// find/filter for failed events
