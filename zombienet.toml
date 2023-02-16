@@ -34,7 +34,7 @@ chain = "rococo-local"
 [[parachains]]
 id = 100
 addToGenesis = true
-chain = "statemint-local"
+chain = "westmint-local"
 cumulus_based = true
 
   [[parachains.collators]]
