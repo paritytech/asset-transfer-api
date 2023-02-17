@@ -38,7 +38,7 @@ chain = "westmint-local"
 cumulus_based = true
 
   [[parachains.collators]]
-  name = "statemint-collator1"
+  name = "westmint-collator1"
   command = "./bin/polkadot-parachain"
   args = ["--log=xcm=trace,pallet-assets=trace"]
   ws_port = 9040

@@ -42,7 +42,7 @@ From the root directory run `./<zombienet_binary_name> -p native spawn zombienet
 
 ### Create an asset
 
-From the root directory run `yarn start:zombienet-post-script`.
+From the root directory run `yarn start:zombienet-post-script`. You can run this right after running your zombienet network.
 You can see the status of each transaction by checking:
 - https://polkadot.js.org/apps/?rpc=ws://127.0.0.1:9000#/explorer 
 - https://polkadot.js.org/apps/?rpc=ws://127.0.0.1:9040#/explorer
