@@ -23,7 +23,8 @@
   "homepage": "https://github.com/paritytech/asset-transfer-api#readme",
   "packageManager": "yarn@3.3.1",
   "devDependencies": {
-    "@substrate/dev": "^0.6.5"
+    "@substrate/dev": "^0.6.5",
+    "chalk": "4.1.2"
   },
   "resolutions": {
     "typescript": "4.7.4"
