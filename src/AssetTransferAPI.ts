@@ -29,10 +29,6 @@ interface IChainInfo {
 	specVersion: string;
 }
 
-interface IXcmInfo {
-	version: number | u32;
-}
-
 export class AssetsTransferAPI {
 	readonly _api: ApiPromise;
 	readonly _info: Promise<IChainInfo>;
@@ -113,7 +109,7 @@ export class AssetsTransferAPI {
 		xcmVersion: number,
 		multiLocation: MultiLocation,
 		fallbackVersion: number
-	): Promise<IXcmInfo> {
+	): Promise<number | u32> {
 		const { _api } = this;
 
 		const supportedVersion = await _api.query.polkadotXcm.supportedVersion<
@@ -127,13 +123,9 @@ export class AssetsTransferAPI {
 			const version = safeVersion.isSome
 				? safeVersion.unwrap()
 				: fallbackVersion;
-			return {
-				version,
-			};
+			return version;
 		}
 
-		return {
-			version: supportedVersion.unwrap(),
-		};
+		return supportedVersion.unwrap();
 	}
 }
