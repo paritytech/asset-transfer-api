@@ -41,14 +41,14 @@ export class AssetsTransferAPI {
 	/**
 	 * TBD
 	 *
-	 * @param chainId ID of the destination (para) chain (‘0’ for Relaychain)
+	 * @param destChainId ID of the destination (para) chain (‘0’ for Relaychain)
 	 * @param destAddr Address of destination account
 	 * @param assetId ID of the asset to be transferred (‘0’ for DOT)
 	 * @param amount Amount of the token to transfer
 	 * @param opts Options
 	 */
 	public async createTransferTransaction(
-		chainId: string | number,
+		destChainId: string | number,
 		destAddr: string,
 		assetId: string,
 		amount: string | number,
@@ -57,7 +57,7 @@ export class AssetsTransferAPI {
 		const { _api, _info } = this;
 		const { specName, specVersion } = await _info;
 		console.log(
-			chainId,
+			destChainId,
 			destAddr,
 			assetId,
 			amount,
