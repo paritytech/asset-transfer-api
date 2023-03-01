@@ -8,7 +8,6 @@ chain = "rococo-local"
   validator = true
   extra_args = [ "-lparachain=debug" ]
   ws_port = 9900
-  rpc_port = 9001
 
   [[relaychain.nodes]]
   name = "bob"
@@ -35,8 +34,7 @@ cumulus_based = true
   name = "statemine-collator01"
   command = "./bin/polkadot-parachain"
   args = ["--log=xcm=trace,pallet-assets=trace"]
-  ws_port = 9040
-  rpc_port = 9041
+  ws_port = 9910
 
   [[parachains.collators]]
   name = "statemine-collator02"

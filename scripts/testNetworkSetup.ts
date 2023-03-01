@@ -12,8 +12,8 @@ import chalk from 'chalk';
  * It uses the hard coded values given in `zombienet.toml`.
  */
 
-const STATEMINE_WS_URL = 'ws://127.0.0.1:9040';
-const ROCOCO_ALICE_WS_URL = 'ws://127.0.0.1:9000';
+const STATEMINE_WS_URL = 'ws://127.0.0.1:9911';
+const ROCOCO_ALICE_WS_URL = 'ws://127.0.0.1:9900';
 
 /**
  * Set a delay (sleep)
@@ -43,18 +43,18 @@ const awaitBlockProduction = async () => {
 			`Initializing polkadot-js: Polling until ${STATEMINE_WS_URL} is available`
 		)
 	);
-	const parachainApi = await ApiPromise.create({
+	const statemineApi = await ApiPromise.create({
 		provider: new WsProvider(STATEMINE_WS_URL),
 		noInitWarn: true,
 	});
 	logWithDate(chalk.yellow('Polkadot-js is connected'));
 
-	await parachainApi.isReady;
+	await statemineApi.isReady;
 
 	let counter = 3;
 	let blocksProducing = false;
 	while (!blocksProducing) {
-		const { number } = await parachainApi.rpc.chain.getHeader();
+		const { number } = await statemineApi.rpc.chain.getHeader();
 
 		if (number.toNumber() > 0) {
 			blocksProducing = true;
@@ -72,7 +72,7 @@ const awaitBlockProduction = async () => {
 
 	process.stdout.clearLine(0);
 	logWithDate(chalk.magenta('Blocks are producing'), true);
-	await parachainApi.disconnect().then(() => {
+	await statemineApi.disconnect().then(() => {
 		logWithDate(chalk.blue('Polkadot-js successfully disconnected'));
 	});
 };
@@ -91,12 +91,12 @@ const main = async () => {
 		assetDecimals: 10,
 	};
 
-	const parachainApi = await ApiPromise.create({
+	const statemineApi = await ApiPromise.create({
 		provider: new WsProvider(STATEMINE_WS_URL),
 		noInitWarn: true,
 	});
 
-	await parachainApi.isReady;
+	await statemineApi.isReady;
 	logWithDate(chalk.green('Created a connection to statemine'));
 
 	const rococoApi = await ApiPromise.create({
@@ -110,13 +110,13 @@ const main = async () => {
 	/**
 	 * Create this call via the parachain api, since this is the chain in which it will be called.
 	 */
-	const forceCreate = parachainApi.tx.assets.forceCreate(
+	const forceCreate = statemineApi.tx.assets.forceCreate(
 		assetInfo.assetId,
 		alice.address,
 		true,
 		1000
 	);
-	const forceCreateCall = parachainApi.createType('Call', {
+	const forceCreateCall = statemineApi.createType('Call', {
 		callIndex: forceCreate.callIndex,
 		args: forceCreate.args,
 	});
@@ -133,7 +133,7 @@ const main = async () => {
 			parents: 0,
 			interior: {
 				X1: {
-					parachain: 100,
+					parachain: 1000,
 				},
 			},
 		},
@@ -174,21 +174,21 @@ const main = async () => {
 	/**
 	 * Mint the asset after its forceCreated by Alice.
 	 */
-	const { nonce } = await parachainApi.query.system.account(alice.address);
+	const { nonce } = await statemineApi.query.system.account(alice.address);
 	const txs = [
-		parachainApi.tx.assets.setMetadata(
+		statemineApi.tx.assets.setMetadata(
 			assetInfo.assetId,
 			assetInfo.assetName,
 			assetInfo.assetSymbol,
 			assetInfo.assetDecimals
 		),
-		parachainApi.tx.assets.mint(
+		statemineApi.tx.assets.mint(
 			assetInfo.assetId,
 			alice.address,
 			1000 * 120000000
 		),
 	];
-	const batch = parachainApi.tx.utility.batchAll(txs);
+	const batch = statemineApi.tx.utility.batchAll(txs);
 
 	logWithDate('Sending batch call in order to mint a test asset on statemine');
 	await batch.signAndSend(alice, { nonce }, ({ status, events }) => {
@@ -196,7 +196,7 @@ const main = async () => {
 			events
 				// find/filter for failed events
 				.filter(({ event }) =>
-					parachainApi.events.system.ExtrinsicFailed.is(event)
+					statemineApi.events.system.ExtrinsicFailed.is(event)
 				)
 				// we know that data for system.ExtrinsicFailed is
 				// (DispatchError, DispatchInfo)
@@ -208,7 +208,7 @@ const main = async () => {
 					}) => {
 						if ((error as DispatchError).isModule) {
 							// for module errors, we have the section indexed, lookup
-							const decoded = parachainApi.registry.findMetaError(
+							const decoded = statemineApi.registry.findMetaError(
 								(error as DispatchError).asModule
 							);
 							const { docs, method, section } = decoded;
