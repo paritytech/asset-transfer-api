@@ -86,9 +86,9 @@ const main = async () => {
 
 	const assetInfo = {
 		assetId: 1,
-		assetName: 'Test',
-		assetSymbol: 'TST',
-		assetDecimals: 10,
+		assetName: 'xUSD',
+		assetSymbol: 'XUSD',
+		assetDecimals: 12,
 	};
 
 	const statemineApi = await ApiPromise.create({
