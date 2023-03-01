@@ -8,7 +8,8 @@
     "start": "node ./build/index.js",
     "start:zombienet-post-script": "yarn build:scripts && node ./scripts/build/testNetworkSetup.js",
     "lint": "substrate-dev-run-lint",
-    "lint:fix": "substrate-dev-run-lint --fix"
+    "lint:fix": "substrate-dev-run-lint --fix",
+    "test": "NODE_ENV=test substrate-exec-jest --detectOpenHandles"
   },
   "repository": {
     "type": "git",
