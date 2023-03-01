@@ -29,7 +29,7 @@ Zombienet is used to launch a complete network including a relay chain, and two 
 **Test Network Binaries**: You will need the following binaries:
 
 - polkadot: You can find the the releases [here](https://github.com/paritytech/polkadot/releases).
-- adder-collator: This binary is compiled along with polkadot above. You can find it in the same `target/releases/*` directory.
+- trappist-collator: This binary is compiled along with polkadot above. You can find it [here](https://github.com/paritytech/trappist).
 - polkadot-parachain (ie: cumulus): You can find the releases [here](https://github.com/paritytech/cumulus/releases).
 
 NOTE: When it comes to picking a version for both `cumulus` and and `polkadot` ensure they are the same. Cumulus will have an extra 0 at the end though. Ex: v0.9.37 (polkadot) -> v0.9.370 (cumulus)
@@ -43,6 +43,3 @@ From the root directory run `./<zombienet_binary_name> -p native spawn zombienet
 ### Create an asset
 
 From the root directory run `yarn start:zombienet-post-script`. You can run this right after running your zombienet network.
-You can see the status of each transaction by checking:
-- https://polkadot.js.org/apps/?rpc=ws://127.0.0.1:9000#/explorer 
-- https://polkadot.js.org/apps/?rpc=ws://127.0.0.1:9040#/explorer
