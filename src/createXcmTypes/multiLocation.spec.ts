@@ -1,5 +1,5 @@
 import { mockApi } from '../testHelpers/mockApi';
-import { createBeneficiary } from './multiLocation';
+import { createBeneficiary, createDest } from './multiLocation';
 
 describe('XcmVersionedMultiLocation Generation', () => {
 	describe('Beneficiary', () => {
@@ -50,6 +50,39 @@ describe('XcmVersionedMultiLocation Generation', () => {
 			};
 
 			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+		});
+	});
+
+	describe('Destination', () => {
+		it('Should work for V0', () => {
+			const destination = createDest(mockApi, 100, 0);
+
+			const expectedRes = {
+				v0: {
+					x1: {
+						parachain: 100,
+					},
+				},
+			};
+
+			expect(destination.toJSON()).toStrictEqual(expectedRes);
+		});
+
+		it('Should work for V1', () => {
+			const destination = createDest(mockApi, 100, 1);
+
+			const expectedRes = {
+				v1: {
+					parents: 0,
+					interior: {
+						x1: {
+							parachain: 100,
+						},
+					},
+				},
+			};
+
+			expect(destination.toJSON()).toStrictEqual(expectedRes);
 		});
 	});
 });
