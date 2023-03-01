@@ -12,7 +12,7 @@ import chalk from 'chalk';
  * It uses the hard coded values given in `zombienet.toml`.
  */
 
-const WESTMINT_WS_URL = 'ws://127.0.0.1:9040';
+const STATEMINE_WS_URL = 'ws://127.0.0.1:9040';
 const ROCOCO_ALICE_WS_URL = 'ws://127.0.0.1:9000';
 
 /**
@@ -40,11 +40,11 @@ const logWithDate = (log: string, remove?: boolean) => {
 const awaitBlockProduction = async () => {
 	logWithDate(
 		chalk.yellow(
-			`Initializing polkadot-js: Polling until ${WESTMINT_WS_URL} is available`
+			`Initializing polkadot-js: Polling until ${STATEMINE_WS_URL} is available`
 		)
 	);
 	const parachainApi = await ApiPromise.create({
-		provider: new WsProvider(WESTMINT_WS_URL),
+		provider: new WsProvider(STATEMINE_WS_URL),
 		noInitWarn: true,
 	});
 	logWithDate(chalk.yellow('Polkadot-js is connected'));
@@ -64,7 +64,7 @@ const awaitBlockProduction = async () => {
 		counter += 1;
 		process.stdout.clearLine(0);
 		process.stdout.write(
-			`\rWaiting for Block production on westmint${'.'.repeat(
+			`\rWaiting for Block production on statemine${'.'.repeat(
 				(counter % 3) + 1
 			)}`
 		);
@@ -92,12 +92,12 @@ const main = async () => {
 	};
 
 	const parachainApi = await ApiPromise.create({
-		provider: new WsProvider(WESTMINT_WS_URL),
+		provider: new WsProvider(STATEMINE_WS_URL),
 		noInitWarn: true,
 	});
 
 	await parachainApi.isReady;
-	logWithDate(chalk.green('Created a connection to Westmint'));
+	logWithDate(chalk.green('Created a connection to statemine'));
 
 	const rococoApi = await ApiPromise.create({
 		provider: new WsProvider(ROCOCO_ALICE_WS_URL),
@@ -161,7 +161,7 @@ const main = async () => {
 	});
 
 	logWithDate(
-		'Sending Sudo XCM message from relay chain to execute forceCreate call on westmint'
+		'Sending Sudo XCM message from relay chain to execute forceCreate call on statemine'
 	);
 	await rococoApi.tx.sudo.sudo(xcmCall).signAndSend(alice);
 
@@ -190,7 +190,7 @@ const main = async () => {
 	];
 	const batch = parachainApi.tx.utility.batchAll(txs);
 
-	logWithDate('Sending batch call in order to mint a test asset on westmint');
+	logWithDate('Sending batch call in order to mint a test asset on statemine');
 	await batch.signAndSend(alice, { nonce }, ({ status, events }) => {
 		if (status.isInBlock || status.isFinalized) {
 			events
