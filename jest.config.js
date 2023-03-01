@@ -15,6 +15,6 @@ module.exports = {
 	maxConcurrency: 3,
 	maxWorkers: '50%',
 	testPathIgnorePatterns: ['/build/', '/node_modules/'],
-	// The below resolves `jest-haste-map: Haste module naming collision: @substrate/api-sidecar`
+	// The below resolves `jest-haste-map:...`
 	modulePathIgnorePatterns: ['/build']
 };
