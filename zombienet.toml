@@ -7,63 +7,112 @@ chain = "rococo-local"
   name = "alice"
   validator = true
   extra_args = [ "-lparachain=debug" ]
-  ws_port = 9000
-  rpc_port = 9001
+  ws_port = 9900
 
   [[relaychain.nodes]]
   name = "bob"
   validator = true
   extra_args = [ "-lparachain=debug" ]
-  ws_port = 9010
-  rpc_port = 9011
 
   [[relaychain.nodes]]
   name = "charlie"
   validator = true
   extra_args = [ "-lparachain=debug" ]
-  ws_port = 9020
-  rpc_port = 9021
 
   [[relaychain.nodes]]
   name = "dave"
   validator = true
   extra_args = [ "-lparachain=debug" ]
-  ws_port = 9030
-  rpc_port = 9031
 
 [[parachains]]
-id = 100
+id = 1000
 addToGenesis = true
-chain = "westmint-local"
+chain = "statemine-local"
 cumulus_based = true
 
   [[parachains.collators]]
-  name = "westmint-collator1"
+  name = "statemine-collator01"
   command = "./bin/polkadot-parachain"
   args = ["--log=xcm=trace,pallet-assets=trace"]
-  ws_port = 9040
-  rpc_port = 9041
+  ws_port = 9910
+
+  [[parachains.collators]]
+  name = "statemine-collator02"
+  command = "./bin/polkadot-parachain"
+  ws_port = 9911
+  args = ["--log=xcm=trace,pallet-assets=trace"]
 
 [[parachains]]
-id = 200
-addToGenesis = true
+id = 2000
+add_to_genesis = true
 cumulus_based = true
 
   [[parachains.collators]]
-  name = "parachain-collator01"
-  command = "./bin/polkadot-parachain"
+  name = "trappist-collator01"
+  command = "./bin/trappist-collator"
+  ws_port = 9920
   args = ["--log=xcm=trace,pallet-assets=trace"]
-  ws_port = 9050
-  rpc_port = 9051
+
+  [[parachains.collators]]
+  name = "trappist-collator02"
+  command = "./bin/trappist-collator"
+  ws_port = 9921
+  args = ["--log=xcm=trace,pallet-assets=trace"]
+
+[[parachains]]
+id = 3000
+add_to_genesis = true
+cumulus_based = true
+
+  [[parachains.collators]]
+  name = "stout-collator01"
+  command = "./bin/trappist-collator"
+  ws_port = 9930
+  args = ["--log=xcm=trace,pallet-assets=trace"]
+
+  [[parachains.collators]]
+  name = "stout-collator02"
+  command = "./bin/trappist-collator"
+  ws_port = 9931
+  args = ["--log=xcm=trace,pallet-assets=trace"]
+
+[types.Header]
+number = "u64"
+parent_hash = "Hash"
+post_state = "Hash"
 
 [[hrmp_channels]]
-sender = 100
-recipient = 200
+sender = 1000
+recipient = 2000
 max_capacity = 8
 max_message_size = 512
 
 [[hrmp_channels]]
-sender = 200
-recipient = 100
+sender = 2000
+recipient = 1000
+max_capacity = 8
+max_message_size = 512
+
+[[hrmp_channels]]
+sender = 1000
+recipient = 3000
+max_capacity = 8
+max_message_size = 512
+
+[[hrmp_channels]]
+sender = 3000
+recipient = 1000
+max_capacity = 8
+max_message_size = 512
+
+[[hrmp_channels]]
+sender = 2000
+recipient = 3000
+max_capacity = 8
+max_message_size = 512
+
+[[hrmp_channels]]
+sender = 3000
+recipient = 2000
 max_capacity = 8
 max_message_size = 512

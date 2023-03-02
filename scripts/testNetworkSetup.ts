@@ -12,8 +12,8 @@ import chalk from 'chalk';
  * It uses the hard coded values given in `zombienet.toml`.
  */
 
-const WESTMINT_WS_URL = 'ws://127.0.0.1:9040';
-const ROCOCO_ALICE_WS_URL = 'ws://127.0.0.1:9000';
+const STATEMINE_WS_URL = 'ws://127.0.0.1:9911';
+const ROCOCO_ALICE_WS_URL = 'ws://127.0.0.1:9900';
 
 /**
  * Set a delay (sleep)
@@ -40,21 +40,21 @@ const logWithDate = (log: string, remove?: boolean) => {
 const awaitBlockProduction = async () => {
 	logWithDate(
 		chalk.yellow(
-			`Initializing polkadot-js: Polling until ${WESTMINT_WS_URL} is available`
+			`Initializing polkadot-js: Polling until ${STATEMINE_WS_URL} is available`
 		)
 	);
-	const parachainApi = await ApiPromise.create({
-		provider: new WsProvider(WESTMINT_WS_URL),
+	const statemineApi = await ApiPromise.create({
+		provider: new WsProvider(STATEMINE_WS_URL),
 		noInitWarn: true,
 	});
 	logWithDate(chalk.yellow('Polkadot-js is connected'));
 
-	await parachainApi.isReady;
+	await statemineApi.isReady;
 
 	let counter = 3;
 	let blocksProducing = false;
 	while (!blocksProducing) {
-		const { number } = await parachainApi.rpc.chain.getHeader();
+		const { number } = await statemineApi.rpc.chain.getHeader();
 
 		if (number.toNumber() > 0) {
 			blocksProducing = true;
@@ -64,7 +64,7 @@ const awaitBlockProduction = async () => {
 		counter += 1;
 		process.stdout.clearLine(0);
 		process.stdout.write(
-			`\rWaiting for Block production on westmint${'.'.repeat(
+			`\rWaiting for Block production on statemine${'.'.repeat(
 				(counter % 3) + 1
 			)}`
 		);
@@ -72,7 +72,7 @@ const awaitBlockProduction = async () => {
 
 	process.stdout.clearLine(0);
 	logWithDate(chalk.magenta('Blocks are producing'), true);
-	await parachainApi.disconnect().then(() => {
+	await statemineApi.disconnect().then(() => {
 		logWithDate(chalk.blue('Polkadot-js successfully disconnected'));
 	});
 };
@@ -86,18 +86,18 @@ const main = async () => {
 
 	const assetInfo = {
 		assetId: 1,
-		assetName: 'Test',
-		assetSymbol: 'TST',
-		assetDecimals: 10,
+		assetName: 'xUSD',
+		assetSymbol: 'XUSD',
+		assetDecimals: 12,
 	};
 
-	const parachainApi = await ApiPromise.create({
-		provider: new WsProvider(WESTMINT_WS_URL),
+	const statemineApi = await ApiPromise.create({
+		provider: new WsProvider(STATEMINE_WS_URL),
 		noInitWarn: true,
 	});
 
-	await parachainApi.isReady;
-	logWithDate(chalk.green('Created a connection to Westmint'));
+	await statemineApi.isReady;
+	logWithDate(chalk.green('Created a connection to statemine'));
 
 	const rococoApi = await ApiPromise.create({
 		provider: new WsProvider(ROCOCO_ALICE_WS_URL),
@@ -110,13 +110,13 @@ const main = async () => {
 	/**
 	 * Create this call via the parachain api, since this is the chain in which it will be called.
 	 */
-	const forceCreate = parachainApi.tx.assets.forceCreate(
+	const forceCreate = statemineApi.tx.assets.forceCreate(
 		assetInfo.assetId,
 		alice.address,
 		true,
 		1000
 	);
-	const forceCreateCall = parachainApi.createType('Call', {
+	const forceCreateCall = statemineApi.createType('Call', {
 		callIndex: forceCreate.callIndex,
 		args: forceCreate.args,
 	});
@@ -133,7 +133,7 @@ const main = async () => {
 			parents: 0,
 			interior: {
 				X1: {
-					parachain: 100,
+					parachain: 1000,
 				},
 			},
 		},
@@ -161,7 +161,7 @@ const main = async () => {
 	});
 
 	logWithDate(
-		'Sending Sudo XCM message from relay chain to execute forceCreate call on westmint'
+		'Sending Sudo XCM message from relay chain to execute forceCreate call on statemine'
 	);
 	await rococoApi.tx.sudo.sudo(xcmCall).signAndSend(alice);
 
@@ -174,29 +174,29 @@ const main = async () => {
 	/**
 	 * Mint the asset after its forceCreated by Alice.
 	 */
-	const { nonce } = await parachainApi.query.system.account(alice.address);
+	const { nonce } = await statemineApi.query.system.account(alice.address);
 	const txs = [
-		parachainApi.tx.assets.setMetadata(
+		statemineApi.tx.assets.setMetadata(
 			assetInfo.assetId,
 			assetInfo.assetName,
 			assetInfo.assetSymbol,
 			assetInfo.assetDecimals
 		),
-		parachainApi.tx.assets.mint(
+		statemineApi.tx.assets.mint(
 			assetInfo.assetId,
 			alice.address,
 			1000 * 120000000
 		),
 	];
-	const batch = parachainApi.tx.utility.batchAll(txs);
+	const batch = statemineApi.tx.utility.batchAll(txs);
 
-	logWithDate('Sending batch call in order to mint a test asset on westmint');
+	logWithDate('Sending batch call in order to mint a test asset on statemine');
 	await batch.signAndSend(alice, { nonce }, ({ status, events }) => {
 		if (status.isInBlock || status.isFinalized) {
 			events
 				// find/filter for failed events
 				.filter(({ event }) =>
-					parachainApi.events.system.ExtrinsicFailed.is(event)
+					statemineApi.events.system.ExtrinsicFailed.is(event)
 				)
 				// we know that data for system.ExtrinsicFailed is
 				// (DispatchError, DispatchInfo)
@@ -208,7 +208,7 @@ const main = async () => {
 					}) => {
 						if ((error as DispatchError).isModule) {
 							// for module errors, we have the section indexed, lookup
-							const decoded = parachainApi.registry.findMetaError(
+							const decoded = statemineApi.registry.findMetaError(
 								(error as DispatchError).asModule
 							);
 							const { docs, method, section } = decoded;
