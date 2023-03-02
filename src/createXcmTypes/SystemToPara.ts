@@ -3,10 +3,7 @@ import { MultiLocation } from '@polkadot/types/interfaces';
 
 import { SupportedXcmVersions } from './types';
 
-/**
- * XCM type generation for transactions from the relay chain to a parachain.
- */
-export class RelayToPara {
+export class SystemToPara {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
@@ -19,9 +16,6 @@ export class RelayToPara {
 		accountId: string,
 		xcmVersion?: SupportedXcmVersions
 	): MultiLocation {
-		/**
-		 * The main difference between V0 vs V1 is that there is no parent associated.
-		 */
 		if (xcmVersion === 0) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V0: {
@@ -35,9 +29,6 @@ export class RelayToPara {
 			});
 		}
 
-		/**
-		 * This accounts for an xcmVersion of 1, or if no xcmVersion is passed in
-		 */
 		return api.registry.createType('XcmVersionedMultiLocation', {
 			V1: {
 				parents: 0,
@@ -64,7 +55,7 @@ export class RelayToPara {
 		api: ApiPromise,
 		paraId: number,
 		xcmVersion?: SupportedXcmVersions
-	): MultiLocation {
+	) {
 		if (xcmVersion === 0) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V0: {
@@ -76,11 +67,12 @@ export class RelayToPara {
 		}
 
 		/**
-		 * This accounts for an xcmVersion of 1, or if no xcmVersion is passed in
+		 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
+		 * from a system parachain to a sovereign parachain.
 		 */
 		return api.registry.createType('XcmVersionedMultiLocation', {
 			V1: {
-				parents: 0,
+				parents: 1,
 				interior: {
 					X1: {
 						parachain: paraId,
