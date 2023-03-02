@@ -1,10 +1,10 @@
 import { mockApi } from '../testHelpers/mockApi';
-import { createBeneficiary, createDest } from './multiLocation';
+import { SystemToPara } from './SystemToPara';
 
 describe('XcmVersionedMultiLocation Generation', () => {
 	describe('Beneficiary', () => {
 		it('Should work for V0', () => {
-			const beneficiary = createBeneficiary(
+			const beneficiary = SystemToPara.createBeneficiary(
 				mockApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				0
@@ -27,7 +27,7 @@ describe('XcmVersionedMultiLocation Generation', () => {
 		});
 
 		it('Should work for V1', () => {
-			const beneficiary = createBeneficiary(
+			const beneficiary = SystemToPara.createBeneficiary(
 				mockApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				1
@@ -55,7 +55,7 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 	describe('Destination', () => {
 		it('Should work for V0', () => {
-			const destination = createDest(mockApi, 100, 0);
+			const destination = SystemToPara.createDest(mockApi, 100, 0);
 
 			const expectedRes = {
 				v0: {
@@ -69,11 +69,11 @@ describe('XcmVersionedMultiLocation Generation', () => {
 		});
 
 		it('Should work for V1', () => {
-			const destination = createDest(mockApi, 100, 1);
+			const destination = SystemToPara.createDest(mockApi, 100, 1);
 
 			const expectedRes = {
 				v1: {
-					parents: 0,
+					parents: 1,
 					interior: {
 						x1: {
 							parachain: 100,
