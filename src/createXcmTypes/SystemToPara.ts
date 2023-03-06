@@ -1,5 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
-import { MultiLocation } from '@polkadot/types/interfaces';
+import { MultiLocation, VersionedMultiAssets } from '@polkadot/types/interfaces';
 
 import { SupportedXcmVersions } from './types';
 
@@ -94,13 +94,33 @@ export class SystemToPara {
 		assets: string[],
 		amounts: (string | number)[],
 		xcmVersion: number
-	) {
+	): VersionedMultiAssets {
 		/**
 		 * Defaults to V1 if not V0
 		 */
 		if (xcmVersion === 0) {
-			//  XcmV0MultiAsset
-			return api.registry.createType('XcmVersionedMultiLocation', {});
+			const multiAssets = [];
+
+			for (let i = 0; i < assets.length; i++) {
+				const assetId = assets[i];
+				const amount = amounts[i];
+				const multiAsset = {
+					ConcreteFungible: {
+						id: {
+							X2: [{ PalletInstance: 50 }, { GeneralIndex: assetId }],
+						},
+						amount,
+					},
+				};
+
+				multiAssets.push(
+					api.registry.createType('XcmV0MultiAsset', multiAsset)
+				);
+			}
+
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V0: multiAssets,
+			});
 		} else {
 			// TODO: Find palletInstance.
 			const multiAssets = [];

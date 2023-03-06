@@ -87,6 +87,37 @@ describe('XcmVersionedMultiLocation Generation', () => {
 	});
 
 	describe('Assets', () => {
+		it('Should work for V0', () => {
+			const assets = SystemToPara.createAssets(
+				mockApi,
+				['1', '2'],
+				['100', '100'],
+				0
+			);
+
+			const expectedRes = {
+				v0: [
+					{
+						concreteFungible: {
+							amount: 100,
+							id: {
+								x2: [{ palletInstance: 50 }, { generalIndex: 1 }],
+							},
+						},
+					},
+					{
+						concreteFungible: {
+							amount: 100,
+							id: {
+								x2: [{ palletInstance: 50 }, { generalIndex: 2 }],
+							},
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toEqual(expectedRes);
+		});
 		it('Should work for V1', () => {
 			const assets = SystemToPara.createAssets(
 				mockApi,
