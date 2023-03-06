@@ -81,4 +81,58 @@ export class SystemToPara {
 			},
 		});
 	}
+
+	/**
+	 * TODO: Find out how to find PalletInstance (number) of Assets
+	 * 
+	 * @param assets 
+	 * @param amounts 
+	 * @param xcmVersion 
+	 */
+	static createAssets(
+		api: ApiPromise,
+		assets: string[],
+		amounts: (string | number)[],
+		xcmVersion: number
+	) {
+		/**
+		 * Defaults to V1 if not V0
+		 */
+		if (xcmVersion === 0) {
+			//  XcmV0MultiAsset
+			return api.registry.createType('XcmVersionedMultiLocation', {});
+		} else {
+			// TODO: Find palletInstance.
+			const multiAssets = [];
+
+			for (let i = 0; i < assets.length; i++) {
+				const assetId = assets[i];
+				const amount = amounts[i];
+				const multiAsset = {
+					fun: {
+						"Fungible": amount
+					},
+					id: {
+						"Concrete": {
+							parents: 0,
+							interior: {
+								X2: [
+									{ "PalletInstance": 50 },
+									{ "GeneralIndex": assetId }
+								]
+							},
+						}
+					}
+				};
+
+				multiAssets.push(multiAsset);
+			}
+
+			const multiAssetsType = api.registry.createType('XcmV1MultiassetMultiAssets', multiAssets);
+
+			return api.registry.createType('XcmVersionedMultiLocation', {
+				V1: multiAssetsType
+			});
+		}
+	}
 }

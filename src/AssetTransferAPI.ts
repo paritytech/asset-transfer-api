@@ -57,6 +57,14 @@ export class AssetsTransferAPI {
 	) {
 		const { _api, _info } = this;
 		const { specName, specVersion } = await _info;
+
+		/**
+		 * Lengths should match, and indicies between both the amounts and assetIds should match.
+		 */
+		if (assetId.length !== amount.length) {
+			throw Error('`assetId` length should match `amount` length');
+		}
+
 		console.log(
 			destChainId,
 			destAddr,

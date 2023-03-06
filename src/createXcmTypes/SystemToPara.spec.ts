@@ -85,4 +85,14 @@ describe('XcmVersionedMultiLocation Generation', () => {
 			expect(destination.toJSON()).toStrictEqual(expectedRes);
 		});
 	});
+
+	describe('Assets', () => {
+		it('Should work for V1', () => {
+			const assets = SystemToPara.createAssets(mockApi, ['1', '2'], ['100', '100'], 1);
+
+			const expectedRes = {};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
+	});
 });
