@@ -40,7 +40,7 @@ export class AssetsTransferAPI {
 
 	/**
 	 * TBD
-	 * TODO: Should assetId also take in numbers as well. 
+	 * TODO: Should assetId also take in numbers as well.
 	 *
 	 * @param destChainId ID of the destination (para) chain (‘0’ for Relaychain)
 	 * @param destAddr Address of destination account
