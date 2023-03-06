@@ -40,22 +40,31 @@ export class AssetsTransferAPI {
 
 	/**
 	 * TBD
+	 * TODO: Should assetId also take in numbers as well.
 	 *
 	 * @param destChainId ID of the destination (para) chain (‘0’ for Relaychain)
 	 * @param destAddr Address of destination account
-	 * @param assetId ID of the asset to be transferred (‘0’ for DOT)
-	 * @param amount Amount of the token to transfer
+	 * @param assetId Array of assetId's to be transferred (‘0’ for Native Relay Token)
+	 * @param amount Array of the amounts of each token to transfer
 	 * @param opts Options
 	 */
 	public async createTransferTransaction(
 		destChainId: string | number,
 		destAddr: string,
-		assetId: string,
-		amount: string | number,
+		assetId: string[],
+		amount: string[] | number[],
 		opts?: ITransferArgsOpts
 	) {
 		const { _api, _info } = this;
 		const { specName, specVersion } = await _info;
+
+		/**
+		 * Lengths should match, and indicies between both the amounts and assetIds should match.
+		 */
+		if (assetId.length !== amount.length) {
+			throw Error('`assetId` length should match `amount` length');
+		}
+
 		console.log(
 			destChainId,
 			destAddr,

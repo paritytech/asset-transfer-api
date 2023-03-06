@@ -1,5 +1,8 @@
 import { ApiPromise } from '@polkadot/api';
-import { MultiLocation } from '@polkadot/types/interfaces';
+import {
+	MultiLocation,
+	VersionedMultiAssets,
+} from '@polkadot/types/interfaces';
 
 import { SupportedXcmVersions } from './types';
 
@@ -80,5 +83,79 @@ export class SystemToPara {
 				},
 			},
 		});
+	}
+
+	/**
+	 * TODO: Find out how to find PalletInstance (number) of Assets
+	 *
+	 * @param assets
+	 * @param amounts
+	 * @param xcmVersion
+	 */
+	static createAssets(
+		api: ApiPromise,
+		assets: string[],
+		amounts: (string | number)[],
+		xcmVersion: number
+	): VersionedMultiAssets {
+		/**
+		 * Defaults to V1 if not V0
+		 */
+		if (xcmVersion === 0) {
+			const multiAssets = [];
+
+			for (let i = 0; i < assets.length; i++) {
+				const assetId = assets[i];
+				const amount = amounts[i];
+				const multiAsset = {
+					ConcreteFungible: {
+						id: {
+							X2: [{ PalletInstance: 50 }, { GeneralIndex: assetId }],
+						},
+						amount,
+					},
+				};
+
+				multiAssets.push(
+					api.registry.createType('XcmV0MultiAsset', multiAsset)
+				);
+			}
+
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V0: multiAssets,
+			});
+		} else {
+			// TODO: Find palletInstance.
+			const multiAssets = [];
+
+			for (let i = 0; i < assets.length; i++) {
+				const assetId = assets[i];
+				const amount = amounts[i];
+				const multiAsset = {
+					id: {
+						Concrete: {
+							parents: 0,
+							interior: {
+								X2: [{ PalletInstance: 50 }, { GeneralIndex: assetId }],
+							},
+						},
+					},
+					fun: {
+						Fungible: amount,
+					},
+				};
+
+				multiAssets.push(multiAsset);
+			}
+
+			const multiAssetsType = api.registry.createType(
+				'XcmV1MultiassetMultiAssets',
+				multiAssets
+			);
+
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V1: multiAssetsType,
+			});
+		}
 	}
 }
