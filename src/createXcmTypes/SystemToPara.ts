@@ -1,5 +1,8 @@
 import { ApiPromise } from '@polkadot/api';
-import { MultiLocation, VersionedMultiAssets } from '@polkadot/types/interfaces';
+import {
+	MultiLocation,
+	VersionedMultiAssets,
+} from '@polkadot/types/interfaces';
 
 import { SupportedXcmVersions } from './types';
 
