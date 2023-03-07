@@ -1,14 +1,18 @@
+import { IDirection } from '../types';
+import { RelayToPara } from './RelayToPara';
+import { SystemToPara } from './SystemToPara';
 import { ICreateXcmType } from './types';
 
-import { SystemToPara } from './SystemToPara';
-import { RelayToPara } from './RelayToPara';
-
-interface ICreateXcmTypeLookup {
-    SystemToPara: ICreateXcmType;
-    RelayToPara: ICreateXcmType;
-}
+type ICreateXcmTypeLookup = {
+	[key in IDirection]: ICreateXcmType;
+};
 
 export const createXcmTypes: ICreateXcmTypeLookup = {
-    SystemToPara,
-    RelayToPara,
-}
+	SystemToPara,
+	RelayToPara,
+	// TODO: Implement the following!
+	SystemToRelay: {} as ICreateXcmType,
+	ParaToPara: {} as ICreateXcmType,
+	ParaToRelay: {} as ICreateXcmType,
+	RelayToSystem: {} as ICreateXcmType,
+};

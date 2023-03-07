@@ -4,7 +4,7 @@ import {
 	VersionedMultiAssets,
 } from '@polkadot/types/interfaces';
 
-import { SupportedXcmVersions, ICreateXcmType } from './types';
+import { ICreateXcmType } from './types';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
@@ -17,7 +17,7 @@ export const SystemToPara: ICreateXcmType = {
 	createBeneficiary: (
 		api: ApiPromise,
 		accountId: string,
-		xcmVersion?: SupportedXcmVersions
+		xcmVersion?: number
 	): MultiLocation => {
 		if (xcmVersion === 0) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
@@ -55,8 +55,8 @@ export const SystemToPara: ICreateXcmType = {
 	 */
 	createDest: (
 		api: ApiPromise,
-		paraId: number,
-		xcmVersion?: SupportedXcmVersions
+		paraId: string,
+		xcmVersion?: number
 	): MultiLocation => {
 		if (xcmVersion === 0) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
@@ -155,5 +155,5 @@ export const SystemToPara: ICreateXcmType = {
 				V1: multiAssetsType,
 			});
 		}
-	}
-}
+	},
+};
