@@ -1,12 +1,12 @@
 import { ApiPromise } from '@polkadot/api';
-import { MultiLocation } from '@polkadot/types/interfaces';
+import { MultiLocation, VersionedMultiAssets } from '@polkadot/types/interfaces';
 
-import { SupportedXcmVersions } from './types';
+import { SupportedXcmVersions, ICreateXcmType } from './types';
 
 /**
  * XCM type generation for transactions from the relay chain to a parachain.
  */
-export class RelayToPara {
+export const RelayToPara: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
@@ -14,11 +14,11 @@ export class RelayToPara {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	static createBeneficiary(
+	createBeneficiary: (
 		api: ApiPromise,
 		accountId: string,
 		xcmVersion?: SupportedXcmVersions
-	): MultiLocation {
+	): MultiLocation => {
 		/**
 		 * The main difference between V0 vs V1 is that there is no parent associated.
 		 */
@@ -51,8 +51,7 @@ export class RelayToPara {
 				},
 			},
 		});
-	}
-
+	},
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
@@ -60,11 +59,11 @@ export class RelayToPara {
 	 * @param paraId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	static createDest(
+	createDest: (
 		api: ApiPromise,
 		paraId: number,
 		xcmVersion?: SupportedXcmVersions
-	): MultiLocation {
+	): MultiLocation => {
 		if (xcmVersion === 0) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V0: {
@@ -88,5 +87,28 @@ export class RelayToPara {
 				},
 			},
 		});
+	},
+	/**
+	 * TODO: Implement this.
+	 * 
+	 * @param api 
+	 * @param assets 
+	 * @param amounts 
+	 * @param xcmVersion 
+	 */
+	createAssets: (
+		api: ApiPromise,
+		assets: string[],
+		amounts: (string | number)[],
+		xcmVersion: number
+	): VersionedMultiAssets => {
+		console.log(
+			api,
+			assets,
+			amounts,
+			xcmVersion
+		);
+
+		return api.registry.createType('VersionedMultiAssets')
 	}
-}
+};
