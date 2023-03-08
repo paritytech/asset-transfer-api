@@ -1,1 +1,1 @@
-export { limitedReserveTransferAssets } from './limitedReserveAssetTransfer';
+export { limitedReserveTransferAssets } from './limitedReserveTransferAssets';
