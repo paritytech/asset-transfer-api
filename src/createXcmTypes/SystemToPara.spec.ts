@@ -1,11 +1,11 @@
-import { mockApi } from '../testHelpers/mockApi';
+import { mockRelayApi } from '../testHelpers/mockRelayApi';
 import { SystemToPara } from './SystemToPara';
 
 describe('XcmVersionedMultiLocation Generation', () => {
 	describe('Beneficiary', () => {
 		it('Should work for V0', () => {
 			const beneficiary = SystemToPara.createBeneficiary(
-				mockApi,
+				mockRelayApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				0
 			);
@@ -28,7 +28,7 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 		it('Should work for V1', () => {
 			const beneficiary = SystemToPara.createBeneficiary(
-				mockApi,
+				mockRelayApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				1
 			);
@@ -55,7 +55,7 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 	describe('Destination', () => {
 		it('Should work for V0', () => {
-			const destination = SystemToPara.createDest(mockApi, '100', 0);
+			const destination = SystemToPara.createDest(mockRelayApi, '100', 0);
 
 			const expectedRes = {
 				v0: {
@@ -69,7 +69,7 @@ describe('XcmVersionedMultiLocation Generation', () => {
 		});
 
 		it('Should work for V1', () => {
-			const destination = SystemToPara.createDest(mockApi, '100', 1);
+			const destination = SystemToPara.createDest(mockRelayApi, '100', 1);
 
 			const expectedRes = {
 				v1: {
@@ -89,7 +89,7 @@ describe('XcmVersionedMultiLocation Generation', () => {
 	describe('Assets', () => {
 		it('Should work for V0', () => {
 			const assets = SystemToPara.createAssets(
-				mockApi,
+				mockRelayApi,
 				['1', '2'],
 				['100', '100'],
 				0
@@ -120,7 +120,7 @@ describe('XcmVersionedMultiLocation Generation', () => {
 		});
 		it('Should work for V1', () => {
 			const assets = SystemToPara.createAssets(
-				mockApi,
+				mockRelayApi,
 				['1', '2'],
 				['100', '100'],
 				1
