@@ -2,6 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 import {
 	MultiLocation,
 	VersionedMultiAssets,
+	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 
 import { ICreateXcmType } from './types';
@@ -108,5 +109,8 @@ export const RelayToPara: ICreateXcmType = {
 		console.log(api, assets, amounts, xcmVersion);
 
 		return api.registry.createType('VersionedMultiAssets');
+	},
+	createWeightLimit: (api: ApiPromise): WeightLimitV2 => {
+		return api.createType('XcmV2WeightLimit', { Unlimited: null });
 	},
 };

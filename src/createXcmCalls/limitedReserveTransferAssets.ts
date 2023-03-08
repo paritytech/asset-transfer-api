@@ -46,9 +46,7 @@ export const limitedReserveTransferAssets = (
 	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	const dest = typeCreator.createDest(api, destChainId, xcmVersion);
 	const assets = typeCreator.createAssets(api, assetIds, amounts, xcmVersion);
-
-	// TODO: ensure this is correct type creation. Should we add this too the ICreateXcmTypes?
-	const weightLimit = api.createType('XcmV2WeightLimit', { Unlimited: null });
+	const weightLimit = typeCreator.createWeightLimit(api);
 
 	return ext(beneficiary, dest, assets, 0, weightLimit);
 };
