@@ -4,9 +4,9 @@ import {
 	VersionedMultiAssets,
 } from '@polkadot/types/interfaces';
 
-import { SupportedXcmVersions } from './types';
+import { ICreateXcmType } from './types';
 
-export class SystemToPara {
+export const SystemToPara: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
@@ -14,11 +14,11 @@ export class SystemToPara {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	static createBeneficiary(
+	createBeneficiary: (
 		api: ApiPromise,
 		accountId: string,
-		xcmVersion?: SupportedXcmVersions
-	): MultiLocation {
+		xcmVersion?: number
+	): MultiLocation => {
 		if (xcmVersion === 0) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V0: {
@@ -45,8 +45,7 @@ export class SystemToPara {
 				},
 			},
 		});
-	}
-
+	},
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
@@ -54,11 +53,11 @@ export class SystemToPara {
 	 * @param paraId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	static createDest(
+	createDest: (
 		api: ApiPromise,
-		paraId: number,
-		xcmVersion?: SupportedXcmVersions
-	) {
+		paraId: string,
+		xcmVersion?: number
+	): MultiLocation => {
 		if (xcmVersion === 0) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V0: {
@@ -83,8 +82,7 @@ export class SystemToPara {
 				},
 			},
 		});
-	}
-
+	},
 	/**
 	 * TODO: Find out how to find PalletInstance (number) of Assets
 	 *
@@ -92,12 +90,12 @@ export class SystemToPara {
 	 * @param amounts
 	 * @param xcmVersion
 	 */
-	static createAssets(
+	createAssets: (
 		api: ApiPromise,
 		assets: string[],
 		amounts: (string | number)[],
 		xcmVersion: number
-	): VersionedMultiAssets {
+	): VersionedMultiAssets => {
 		/**
 		 * Defaults to V1 if not V0
 		 */
@@ -157,5 +155,5 @@ export class SystemToPara {
 				V1: multiAssetsType,
 			});
 		}
-	}
-}
+	},
+};

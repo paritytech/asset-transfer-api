@@ -1,33 +1,14 @@
+import '@polkadot/api-augment';
+
 import { ApiPromise } from '@polkadot/api';
 import { Bytes, Option, u32 } from '@polkadot/types';
 import { MultiLocation } from '@polkadot/types/interfaces';
 
-interface ITransferArgsOpts {
-	/**
-	 * Signing Payload vs Call
-	 */
-	format?: 'payload' | 'call'; // Give a polkadot-js option.
-	/**
-	 * AssetId to pay fee's on the current common good parachain.
-	 * Statemint: default DOT
-	 * Statemine: default KSM
-	 */
-	payFeeWith?: string;
-	/**
-	 * AssetId to pay fee's on the destination parachain.
-	 */
-	payFeeWithTo?: string;
-	/**
-	 * Boolean to declare if this will be with limited XCM transfers.
-	 * Deafult is unlimited.
-	 */
-	isLimited?: boolean;
-}
+import { SYSTEM_PARACHAINS_IDS, SYSTEM_PARACHAINS_NAMES } from './consts';
+import { limitedReserveTransferAssets } from './createXcmCalls';
+import { IChainInfo, IDirection, ITransferArgsOpts } from './types';
 
-interface IChainInfo {
-	specName: string;
-	specVersion: string;
-}
+const DEFAULT_XCM_VERSION = 1;
 
 export class AssetsTransferAPI {
 	readonly _api: ApiPromise;
@@ -44,44 +25,48 @@ export class AssetsTransferAPI {
 	 *
 	 * @param destChainId ID of the destination (para) chain (‘0’ for Relaychain)
 	 * @param destAddr Address of destination account
-	 * @param assetId Array of assetId's to be transferred (‘0’ for Native Relay Token)
-	 * @param amount Array of the amounts of each token to transfer
+	 * @param assetIds Array of assetId's to be transferred (‘0’ for Native Relay Token)
+	 * @param amounts Array of the amounts of each token to transfer
 	 * @param opts Options
 	 */
 	public async createTransferTransaction(
-		destChainId: string | number,
+		destChainId: string,
 		destAddr: string,
-		assetId: string[],
-		amount: string[] | number[],
+		assetIds: string[],
+		amounts: string[] | number[],
 		opts?: ITransferArgsOpts
 	) {
 		const { _api, _info } = this;
-		const { specName, specVersion } = await _info;
+		const { specName } = await _info;
 
 		/**
 		 * Lengths should match, and indicies between both the amounts and assetIds should match.
 		 */
-		if (assetId.length !== amount.length) {
+		if (assetIds.length !== amounts.length) {
 			throw Error('`assetId` length should match `amount` length');
 		}
 
-		console.log(
-			destChainId,
-			destAddr,
-			assetId,
-			amount,
-			opts,
-			specName,
-			specVersion
-		);
 		/**
-		 * `api.tx.xcmPallets` methods to support inlcude:
-		 *	 'teleportAssets',
-		 *	 'reserveTransferAssets',
-		 *	 'limitedReserveTransferAssets',
-		 *	 'limitedTeleportAssets'
+		 * Establish the Transaction Direction
 		 */
-		console.log(Object.keys(_api.tx.xcmPallet));
+		const xcmDirection = this.establishDirection(destChainId, specName);
+
+		let transaction;
+		if (opts?.isLimited) {
+			transaction = limitedReserveTransferAssets(
+				_api,
+				xcmDirection,
+				destAddr,
+				assetIds,
+				amounts,
+				destChainId,
+				DEFAULT_XCM_VERSION
+			);
+		} else {
+			throw Error('ReserveTransferAssets is not yet implemented');
+		}
+
+		console.log(transaction);
 	}
 
 	/**
@@ -108,6 +93,9 @@ export class AssetsTransferAPI {
 
 	/**
 	 * TODO: When we are actively using this change it over to `private`.
+	 * TODO: Should this be moved because we wont have the MultiLocation until we pass this
+	 * into the typecreation.
+	 *
 	 * Fetch the xcmVersion to use for a given chain. If the supported version doesn't for
 	 * a given destination we use the on storage safe version.
 	 *
@@ -136,5 +124,55 @@ export class AssetsTransferAPI {
 		}
 
 		return supportedVersion.unwrap();
+	}
+
+	/**
+	 * Declare the direction of the xcm message.
+	 *
+	 * @param destChainId
+	 * @param specName
+	 */
+	private establishDirection(
+		destChainId: string,
+		specName: string
+	): IDirection {
+		const { _api } = this;
+		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(specName);
+		const isDestIdSystemPara = SYSTEM_PARACHAINS_IDS.includes(destChainId);
+
+		/**
+		 * Check if the origin is a System Parachain
+		 */
+		if (isSystemParachain && destChainId === '0') {
+			return IDirection.SystemToRelay;
+		}
+
+		if (isSystemParachain && destChainId !== '0') {
+			return IDirection.SystemToPara;
+		}
+
+		/**
+		 * Check if the origin is a Relay Chain
+		 */
+		if (_api.query.paras && isDestIdSystemPara) {
+			return IDirection.RelayToSystem;
+		}
+
+		if (_api.query.paras && !isDestIdSystemPara) {
+			return IDirection.RelayToPara;
+		}
+
+		/**
+		 * Check if the origin is a Parachain or Parathread
+		 */
+		if (_api.query.polkadotXcm && !isDestIdSystemPara) {
+			return IDirection.RelayToPara;
+		}
+
+		if (_api.query.polkadotXcm) {
+			return IDirection.ParaToPara;
+		}
+
+		throw Error('Could not establish a xcm transaction direction');
 	}
 }

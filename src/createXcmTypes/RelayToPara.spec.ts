@@ -55,7 +55,7 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 	describe('Destination', () => {
 		it('Should work for V0', () => {
-			const destination = RelayToPara.createDest(mockApi, 100, 0);
+			const destination = RelayToPara.createDest(mockApi, '100', 0);
 
 			const expectedRes = {
 				v0: {
@@ -69,7 +69,7 @@ describe('XcmVersionedMultiLocation Generation', () => {
 		});
 
 		it('Should work for V1', () => {
-			const destination = RelayToPara.createDest(mockApi, 100, 1);
+			const destination = RelayToPara.createDest(mockApi, '100', 1);
 
 			const expectedRes = {
 				v1: {
