@@ -103,7 +103,7 @@ export const RelayToPara: ICreateXcmType = {
 	createAssets: (
 		api: ApiPromise,
 		assets: string[],
-		amounts: (string | number)[],
+		amounts: string[],
 		xcmVersion: number
 	): VersionedMultiAssets => {
 		console.log(api, assets, amounts, xcmVersion);
