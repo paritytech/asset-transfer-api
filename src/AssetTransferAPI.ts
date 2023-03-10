@@ -61,7 +61,8 @@ export class AssetsTransferAPI {
 				assetIds,
 				amounts,
 				destChainId,
-				DEFAULT_XCM_VERSION
+				DEFAULT_XCM_VERSION,
+				opts?.weightLimit
 			);
 		} else {
 			throw Error('ReserveTransferAssets is not yet implemented');

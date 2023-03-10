@@ -7,7 +7,7 @@ import {
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 
-import { ICreateXcmType } from './types';
+import { ICreateXcmType, IWeightLimit } from './types';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
@@ -165,7 +165,13 @@ export const SystemToPara: ICreateXcmType = {
 			});
 		}
 	},
-	createWeightLimit: (api: ApiPromise): WeightLimitV2 => {
-		return api.createType('XcmV2WeightLimit', { Unlimited: null });
+	createWeightLimit: (api: ApiPromise, weightLimit?: string): WeightLimitV2 => {
+		let limit: IWeightLimit;
+		if (weightLimit) {
+			limit = { Limited: weightLimit };
+		} else {
+			limit = { Unlimited: null };
+		}
+		return api.createType('XcmV2WeightLimit', limit);
 	},
 };

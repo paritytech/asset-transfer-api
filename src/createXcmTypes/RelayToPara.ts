@@ -7,7 +7,7 @@ import {
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 
-import { ICreateXcmType } from './types';
+import { ICreateXcmType, IWeightLimit } from './types';
 
 /**
  * XCM type generation for transactions from the relay chain to a parachain.
@@ -159,7 +159,13 @@ export const RelayToPara: ICreateXcmType = {
 
 		return api.registry.createType('VersionedMultiAssets');
 	},
-	createWeightLimit: (api: ApiPromise): WeightLimitV2 => {
-		return api.createType('XcmV2WeightLimit', { Unlimited: null });
+	createWeightLimit: (api: ApiPromise, weightLimit?: string): WeightLimitV2 => {
+		let limit: IWeightLimit;
+		if (weightLimit) {
+			limit = { Limited: weightLimit };
+		} else {
+			limit = { Unlimited: null };
+		}
+		return api.createType('XcmV2WeightLimit', limit);
 	},
 };
