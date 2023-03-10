@@ -10,18 +10,41 @@ const metadata = new Metadata(registry, statemintV9370);
 
 const getMetadata = () => Promise.resolve().then(() => metadata);
 
-const mockApi = {
-	rpc: {
-		state: {
-			getMetadata,
+let mockApi: ApiPromise;
+
+beforeEach(() => {
+	mockApi = {
+		rpc: {
+			state: {
+				getMetadata,
+			},
 		},
-	},
-} as unknown as ApiPromise;
+	} as unknown as ApiPromise;
+});
 
 describe('fetchPalletInstandId', () => {
-	it('should work', async () => {
+	it('Should return the correct string when the api has the assets pallet', async () => {
 		const res = await fetchPalletInstanceId(mockApi);
 
 		expect(res).toEqual('50');
+	});
+	it('Should error when there is no Asset pallet available', async () => {
+		mockApi = {
+			rpc: {
+				state: {
+					getMetadata: () => {
+						return {
+							asV14: {
+								pallets: [{ name: 'NotAssets' }],
+							},
+						};
+					},
+				},
+			},
+		} as unknown as ApiPromise;
+
+		await expect(fetchPalletInstanceId(mockApi)).rejects.toThrowError(
+			"No assets pallet available, can't find a valid PalletInstance."
+		);
 	});
 });

@@ -14,5 +14,11 @@ export const fetchPalletInstanceId = async (
 		(pallet) => pallet.name.toString() === 'Assets'
 	);
 
+	if (assetsPallet.length === 0) {
+		throw Error(
+			"No assets pallet available, can't find a valid PalletInstance."
+		);
+	}
+
 	return assetsPallet[0].index.toString();
 };
