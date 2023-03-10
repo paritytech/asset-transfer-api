@@ -5,14 +5,16 @@ import { ApiPromise } from '@polkadot/api';
  *
  * @param api ApiPromise
  */
-export const fetchPalletInstanceId = async (
-	api: ApiPromise
-): Promise<string> => {
-	const metadata = await api.rpc.state.getMetadata();
-	const pallets = metadata.asV14.pallets;
-	const assetsPallet = pallets.filter(
+export const fetchPalletInstanceId = (api: ApiPromise): string => {
+	const assetsPallet = api.registry.metadata.pallets.filter(
 		(pallet) => pallet.name.toString() === 'Assets'
 	);
+
+	if (assetsPallet.length === 0) {
+		throw Error(
+			"No assets pallet available, can't find a valid PalletInstance."
+		);
+	}
 
 	return assetsPallet[0].index.toString();
 };

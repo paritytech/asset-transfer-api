@@ -1,27 +1,26 @@
 import { ApiPromise } from '@polkadot/api';
-import { Metadata, TypeRegistry } from '@polkadot/types';
-import { Registry } from '@polkadot/types-codec/types/registry';
 
-import { statemintV9370 } from '../../testHelpers/metadata/statemintV9370';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId';
 
-const registry = new TypeRegistry() as unknown as Registry;
-const metadata = new Metadata(registry, statemintV9370);
-
-const getMetadata = () => Promise.resolve().then(() => metadata);
-
-const mockApi = {
-	rpc: {
-		state: {
-			getMetadata,
-		},
-	},
-} as unknown as ApiPromise;
-
 describe('fetchPalletInstandId', () => {
-	it('should work', async () => {
-		const res = await fetchPalletInstanceId(mockApi);
+	it('Should return the correct string when the api has the assets pallet', () => {
+		const res = fetchPalletInstanceId(mockSystemApi);
 
 		expect(res).toEqual('50');
+	});
+	it('Should error when there is no Asset pallet available', () => {
+		const mockApi = {
+			registry: {
+				metadata: {
+					pallets: [{ name: 'NotAssets' }],
+				},
+			},
+		} as unknown as ApiPromise;
+		const res = () => fetchPalletInstanceId(mockApi);
+
+		expect(res).toThrowError(
+			"No assets pallet available, can't find a valid PalletInstance."
+		);
 	});
 });
