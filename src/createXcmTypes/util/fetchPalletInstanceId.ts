@@ -5,12 +5,8 @@ import { ApiPromise } from '@polkadot/api';
  *
  * @param api ApiPromise
  */
-export const fetchPalletInstanceId = async (
-	api: ApiPromise
-): Promise<string> => {
-	const metadata = await api.rpc.state.getMetadata();
-	const pallets = metadata.asV14.pallets;
-	const assetsPallet = pallets.filter(
+export const fetchPalletInstanceId = (api: ApiPromise): string => {
+	const assetsPallet = api.registry.metadata.pallets.filter(
 		(pallet) => pallet.name.toString() === 'Assets'
 	);
 
