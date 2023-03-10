@@ -162,22 +162,22 @@ describe('XcmVersionedMultiLocation Generation', () => {
 	});
 	describe('WeightLimit', () => {
 		// NOTE: for V0, V1, and V2 Weightlimit just uses V2 so we only need to test once.
-		// No matter the version if its equal to or less than 2, it will alwyas default to V2. 
+		// No matter the version if its equal to or less than 2, it will alwyas default to V2.
 		it('Should work when given a weightLimit', () => {
 			const weightLimit = SystemToPara.createWeightLimit(
 				mockSystemApi,
 				'100000000'
 			);
 			expect(weightLimit.toJSON()).toStrictEqual({
-				limited: 100000000
+				limited: 100000000,
 			});
 		});
 		it('Should work when no weightLimit is present', () => {
 			const weightLimit = SystemToPara.createWeightLimit(mockSystemApi);
 
 			expect(weightLimit.toJSON()).toStrictEqual({
-				unlimited: null
-			})
+				unlimited: null,
+			});
 		});
-	})
+	});
 });
