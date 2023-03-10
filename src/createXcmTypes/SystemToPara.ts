@@ -166,12 +166,10 @@ export const SystemToPara: ICreateXcmType = {
 		}
 	},
 	createWeightLimit: (api: ApiPromise, weightLimit?: string): WeightLimitV2 => {
-		let limit: IWeightLimit;
-		if (weightLimit) {
-			limit = { Limited: weightLimit };
-		} else {
-			limit = { Unlimited: null };
-		}
+		const limit: IWeightLimit = weightLimit
+			? { Limited: weightLimit }
+			: { Unlimited: null };
+
 		return api.createType('XcmV2WeightLimit', limit);
 	},
 };
