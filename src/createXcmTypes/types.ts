@@ -9,18 +9,18 @@ export interface ICreateXcmType {
 	createBeneficiary: (
 		api: ApiPromise,
 		accountId: string,
-		xcmVersion?: number
+		xcmVersion: number
 	) => MultiLocation;
 	createDest: (
 		api: ApiPromise,
 		paraId: string,
-		xcmVersion?: number
+		xcmVersion: number
 	) => MultiLocation;
 	createAssets: (
 		api: ApiPromise,
-		assets: string[],
 		amounts: string[],
-		xcmVersion: number
+		xcmVersion: number,
+		assets?: string[]
 	) => VersionedMultiAssets;
 	createWeightLimit: (api: ApiPromise) => WeightLimitV2;
 }

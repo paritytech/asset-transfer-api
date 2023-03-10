@@ -1,5 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import {
+	MultiAssetsV1,
+	MultiAssetV0,
 	MultiLocation,
 	VersionedMultiAssets,
 	WeightLimitV2,
@@ -85,7 +87,8 @@ export const SystemToPara: ICreateXcmType = {
 		});
 	},
 	/**
-	 * TODO: Find out how to find PalletInstance (number) of Assets
+	 * TODO: Find out how to find PalletInstance (number) of Assets.
+	 * Create a VersionedMultiAsset type.
 	 *
 	 * @param assets
 	 * @param amounts
@@ -93,15 +96,20 @@ export const SystemToPara: ICreateXcmType = {
 	 */
 	createAssets: (
 		api: ApiPromise,
-		assets: string[],
 		amounts: string[],
-		xcmVersion: number
+		xcmVersion: number,
+		assets?: string[]
 	): VersionedMultiAssets => {
+		if (!assets) {
+			throw Error(
+				'Assets are required for constructing a MultiAsset from SystemToPara'
+			);
+		}
 		/**
 		 * Defaults to V1 if not V0
 		 */
 		if (xcmVersion === 0) {
-			const multiAssets = [];
+			const multiAssets: MultiAssetV0[] = [];
 
 			for (let i = 0; i < assets.length; i++) {
 				const assetId = assets[i];
@@ -147,7 +155,7 @@ export const SystemToPara: ICreateXcmType = {
 				multiAssets.push(multiAsset);
 			}
 
-			const multiAssetsType = api.registry.createType(
+			const multiAssetsType: MultiAssetsV1 = api.registry.createType(
 				'XcmV1MultiassetMultiAssets',
 				multiAssets
 			);

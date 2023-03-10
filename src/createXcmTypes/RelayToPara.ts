@@ -1,5 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import {
+	MultiAssetV0,
+	MultiAssetV1,
 	MultiLocation,
 	VersionedMultiAssets,
 	WeightLimitV2,
@@ -93,20 +95,67 @@ export const RelayToPara: ICreateXcmType = {
 		});
 	},
 	/**
-	 * TODO: Implement this.
+	 * Create a VersionedMultiAsset type.
 	 *
-	 * @param api
-	 * @param assets
+	 * @param api ApiPromise
+	 * @param assets Assets to be sent
 	 * @param amounts
 	 * @param xcmVersion
 	 */
 	createAssets: (
 		api: ApiPromise,
-		assets: string[],
 		amounts: string[],
 		xcmVersion: number
 	): VersionedMultiAssets => {
-		console.log(api, assets, amounts, xcmVersion);
+		/**
+		 * Defaults to V1 if not V0
+		 */
+		if (xcmVersion === 0) {
+			const multiAssets: MultiAssetV0[] = [];
+
+			for (let i = 0; i < amounts.length; i++) {
+				const amount = amounts[i];
+				const multiAsset = {
+					ConcreteFungible: {
+						id: {
+							Null: '',
+						},
+						amount,
+					},
+				};
+
+				multiAssets.push(
+					api.registry.createType('XcmV0MultiAsset', multiAsset)
+				);
+			}
+
+			return api.registry.createType('VersionedMultiAssets', {
+				V0: multiAssets,
+			});
+		} else {
+			const multiAssets: MultiAssetV1[] = [];
+
+			for (let i = 0; i < amounts.length; i++) {
+				const amount = amounts[i];
+				const multiAsset = {
+					fun: {
+						Fungible: amount,
+					},
+					id: {
+						Concrete: {
+							interior: {
+								Here: '',
+							},
+							parents: 0,
+						},
+					},
+				};
+
+				multiAssets.push(
+					api.registry.createType('XcmV0MultiAsset', multiAsset)
+				);
+			}
+		}
 
 		return api.registry.createType('VersionedMultiAssets');
 	},

@@ -42,7 +42,9 @@ export class AssetsTransferAPI {
 		 * Lengths should match, and indicies between both the amounts and assetIds should match.
 		 */
 		if (assetIds.length !== amounts.length) {
-			throw Error('`assetId` length should match `amount` length');
+			console.warn(
+				'`assetId` length should match `amount` length, unless sending assets from a relay chain to parachain'
+			);
 		}
 
 		/**
