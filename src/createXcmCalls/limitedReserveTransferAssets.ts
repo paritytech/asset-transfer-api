@@ -26,7 +26,8 @@ export const limitedReserveTransferAssets = (
 	assetIds: string[],
 	amounts: string[] | number[],
 	destChainId: string,
-	xcmVersion: number
+	xcmVersion: number,
+	weightLimit?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	let ext: SubmittableExtrinsicFunction<'promise', AnyTuple>;
 	/**
@@ -52,7 +53,7 @@ export const limitedReserveTransferAssets = (
 		xcmVersion,
 		assetIds
 	);
-	const weightLimit = typeCreator.createWeightLimit(api);
+	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 
-	return ext(beneficiary, dest, assets, 0, weightLimit);
+	return ext(beneficiary, dest, assets, 0, weightLimitType);
 };

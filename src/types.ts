@@ -27,6 +27,11 @@ export interface ITransferArgsOpts {
 	 * Deafult is unlimited.
 	 */
 	isLimited?: boolean;
+	/**
+	 * When isLimited is true, the option for applying a weightLimit is possible.
+	 * If not inputted it will default to `Unlimited`.
+	 */
+	weightLimit?: string;
 }
 
 export interface IChainInfo {
