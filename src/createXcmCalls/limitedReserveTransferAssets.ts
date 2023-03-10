@@ -5,6 +5,7 @@ import { AnyTuple, ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../createXcmTypes';
 import { IDirection } from '../types';
+import { normalizeArrToStr } from '../util/normalizeArrToStr';
 
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `limitedReserveTransferAssets`
@@ -45,7 +46,12 @@ export const limitedReserveTransferAssets = (
 	const typeCreator = createXcmTypes[direction];
 	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	const dest = typeCreator.createDest(api, destChainId, xcmVersion);
-	const assets = typeCreator.createAssets(api, assetIds, amounts, xcmVersion);
+	const assets = typeCreator.createAssets(
+		api,
+		assetIds,
+		normalizeArrToStr(amounts),
+		xcmVersion
+	);
 	const weightLimit = typeCreator.createWeightLimit(api);
 
 	return ext(beneficiary, dest, assets, 0, weightLimit);

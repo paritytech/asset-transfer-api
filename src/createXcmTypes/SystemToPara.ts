@@ -94,7 +94,7 @@ export const SystemToPara: ICreateXcmType = {
 	createAssets: (
 		api: ApiPromise,
 		assets: string[],
-		amounts: (string | number)[],
+		amounts: string[],
 		xcmVersion: number
 	): VersionedMultiAssets => {
 		/**

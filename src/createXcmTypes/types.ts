@@ -19,7 +19,7 @@ export interface ICreateXcmType {
 	createAssets: (
 		api: ApiPromise,
 		assets: string[],
-		amounts: (string | number)[],
+		amounts: string[],
 		xcmVersion: number
 	) => VersionedMultiAssets;
 	createWeightLimit: (api: ApiPromise) => WeightLimitV2;
