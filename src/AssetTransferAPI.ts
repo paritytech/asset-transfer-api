@@ -79,7 +79,6 @@ export class AssetsTransferAPI {
 				destChainId,
 				DEFAULT_XCM_VERSION
 			);
-			throw Error('ReserveTransferAssets is not yet implemented');
 		}
 
 		console.log(transaction);
