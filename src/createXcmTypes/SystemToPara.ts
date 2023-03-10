@@ -8,6 +8,7 @@ import {
 } from '@polkadot/types/interfaces';
 
 import { ICreateXcmType, IWeightLimit } from './types';
+import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
@@ -100,11 +101,13 @@ export const SystemToPara: ICreateXcmType = {
 		xcmVersion: number,
 		assets?: string[]
 	): VersionedMultiAssets => {
+		// TODO: We should consider a centralized place where these errors are check for.
 		if (!assets) {
 			throw Error(
 				'Assets are required for constructing a MultiAsset from SystemToPara'
 			);
 		}
+		const palletId = fetchPalletInstanceId(api);
 		/**
 		 * Defaults to V1 if not V0
 		 */
@@ -117,7 +120,7 @@ export const SystemToPara: ICreateXcmType = {
 				const multiAsset = {
 					ConcreteFungible: {
 						id: {
-							X2: [{ PalletInstance: 50 }, { GeneralIndex: assetId }],
+							X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 						},
 						amount,
 					},
@@ -143,7 +146,7 @@ export const SystemToPara: ICreateXcmType = {
 						Concrete: {
 							parents: 0,
 							interior: {
-								X2: [{ PalletInstance: 50 }, { GeneralIndex: assetId }],
+								X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 							},
 						},
 					},
