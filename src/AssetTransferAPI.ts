@@ -1,10 +1,15 @@
 import '@polkadot/api-augment';
 
 import { ApiPromise } from '@polkadot/api';
+import { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { Bytes } from '@polkadot/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 
 import { SYSTEM_PARACHAINS_IDS, SYSTEM_PARACHAINS_NAMES } from './consts';
-import { limitedReserveTransferAssets } from './createXcmCalls';
+import {
+	limitedReserveTransferAssets,
+	reserveTransferAssets,
+} from './createXcmCalls';
 import { IChainInfo, IDirection, ITransferArgsOpts } from './types';
 
 const DEFAULT_XCM_VERSION = 1;
@@ -52,7 +57,7 @@ export class AssetsTransferAPI {
 		 */
 		const xcmDirection = this.establishDirection(destChainId, specName);
 
-		let transaction;
+		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 		if (opts?.isLimited) {
 			transaction = limitedReserveTransferAssets(
 				_api,
@@ -65,6 +70,15 @@ export class AssetsTransferAPI {
 				opts?.weightLimit
 			);
 		} else {
+			transaction = reserveTransferAssets(
+				_api,
+				xcmDirection,
+				destAddr,
+				assetIds,
+				amounts,
+				destChainId,
+				DEFAULT_XCM_VERSION
+			);
 			throw Error('ReserveTransferAssets is not yet implemented');
 		}
 

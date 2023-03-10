@@ -8,8 +8,7 @@ import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { establishXcmPallet } from './util/establishXcmPallet';
 
 /**
- * Build a Polkadot-js SubmittableExtrinsic for a `limitedReserveTransferAssets`
- * call.
+ * Build a Polkadot-js SubmittableExtrinsic for a `reserveTransferAssets` call.
  *
  * @param api ApiPromise
  * @param direction Denotes the xcm direction of the call.
@@ -19,18 +18,17 @@ import { establishXcmPallet } from './util/establishXcmPallet';
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
  */
-export const limitedReserveTransferAssets = (
+export const reserveTransferAssets = (
 	api: ApiPromise,
 	direction: IDirection,
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[] | number[],
 	destChainId: string,
-	xcmVersion: number,
-	weightLimit?: string
+	xcmVersion: number
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api);
-	const ext = api.tx[pallet].limitedReserveTransferAssets;
+	const ext = api.tx[pallet].reserveTransferAssets;
 	const typeCreator = createXcmTypes[direction];
 	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	const dest = typeCreator.createDest(api, destChainId, xcmVersion);
@@ -40,7 +38,6 @@ export const limitedReserveTransferAssets = (
 		xcmVersion,
 		assetIds
 	);
-	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 
-	return ext(beneficiary, dest, assets, 0, weightLimitType);
+	return ext(beneficiary, dest, assets, 0);
 };
