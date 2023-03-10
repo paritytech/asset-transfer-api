@@ -24,8 +24,8 @@ export class AssetsTransferAPI {
 	}
 
 	/**
-	 * TBD
-	 * TODO: Should assetId also take in numbers as well.
+	 * Create an XCM transaction to transfer Assets, or native tokens from one
+	 * chain to another.
 	 *
 	 * @param destChainId ID of the destination (para) chain (‘0’ for Relaychain)
 	 * @param destAddr Address of destination account
@@ -37,7 +37,7 @@ export class AssetsTransferAPI {
 		destChainId: string,
 		destAddr: string,
 		assetIds: string[],
-		amounts: string[] | number[],
+		amounts: string[],
 		opts?: ITransferArgsOpts
 	) {
 		const { _api, _info } = this;
