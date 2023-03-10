@@ -2,7 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 
 /**
  * This fetches the metadata for the chain we are connected to and searches for the Assets pallet and returns its index.
- * 
+ *
  * @param api ApiPromise
  */
 export const fetchPalletInstanceId = async (
