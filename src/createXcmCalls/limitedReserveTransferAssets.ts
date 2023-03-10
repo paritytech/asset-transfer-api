@@ -50,7 +50,7 @@ export const limitedReserveTransferAssets = (
 		api,
 		normalizeArrToStr(amounts),
 		xcmVersion,
-		assetIds,
+		assetIds
 	);
 	const weightLimit = typeCreator.createWeightLimit(api);
 

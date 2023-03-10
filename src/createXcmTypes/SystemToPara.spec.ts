@@ -88,10 +88,12 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 	describe('Assets', () => {
 		it('Should work for V0', () => {
-			const assets = SystemToPara.createAssets(mockRelayApi, ['100', '100'], 0, [
-				'1',
-				'2',
-			]);
+			const assets = SystemToPara.createAssets(
+				mockRelayApi,
+				['100', '100'],
+				0,
+				['1', '2']
+			);
 
 			const expectedRes = {
 				v0: [
@@ -117,10 +119,12 @@ describe('XcmVersionedMultiLocation Generation', () => {
 			expect(assets.toJSON()).toEqual(expectedRes);
 		});
 		it('Should work for V1', () => {
-			const assets = SystemToPara.createAssets(mockRelayApi, ['100', '100'], 1, [
-				'1',
-				'2',
-			]);
+			const assets = SystemToPara.createAssets(
+				mockRelayApi,
+				['100', '100'],
+				1,
+				['1', '2']
+			);
 
 			const expectedRes = {
 				v1: [
