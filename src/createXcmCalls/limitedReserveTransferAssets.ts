@@ -24,7 +24,7 @@ export const limitedReserveTransferAssets = (
 	direction: IDirection,
 	destAddr: string,
 	assetIds: string[],
-	amounts: string[] | number[],
+	amounts: string[],
 	destChainId: string,
 	xcmVersion: number,
 	weightLimit?: string

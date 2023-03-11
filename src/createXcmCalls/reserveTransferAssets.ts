@@ -23,7 +23,7 @@ export const reserveTransferAssets = (
 	direction: IDirection,
 	destAddr: string,
 	assetIds: string[],
-	amounts: string[] | number[],
+	amounts: string[],
 	destChainId: string,
 	xcmVersion: number
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
