@@ -1,5 +1,5 @@
-import { ApiPromise } from '@polkadot/api';
-import {
+import type { ApiPromise } from '@polkadot/api';
+import type {
 	MultiAssetsV1,
 	MultiAssetV0,
 	MultiLocation,

@@ -1,9 +1,9 @@
 import '@polkadot/api-augment';
 
-import { ApiPromise } from '@polkadot/api';
-import { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import { Bytes } from '@polkadot/types';
-import { ISubmittableResult } from '@polkadot/types/types';
+import type { ApiPromise } from '@polkadot/api';
+import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { Bytes } from '@polkadot/types';
+import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { SYSTEM_PARACHAINS_IDS, SYSTEM_PARACHAINS_NAMES } from './consts';
 import {
