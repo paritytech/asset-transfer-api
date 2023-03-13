@@ -173,7 +173,7 @@ export class AssetsTransferAPI {
 
 	/**
 	 * Construct the correct format for the transaction.
-	 * If nothing is passedin, the format will default to a signing payload.
+	 * If nothing is passed in, the format will default to a signing payload.
 	 *
 	 * @param tx
 	 * @param format
