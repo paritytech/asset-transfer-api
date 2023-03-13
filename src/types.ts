@@ -1,3 +1,8 @@
+import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { GenericCall, GenericExtrinsicPayload } from '@polkadot/types';
+import type { AnyTuple } from '@polkadot/types/types';
+import type { ISubmittableResult } from '@polkadot/types/types';
+
 export enum IDirection {
 	SystemToPara = 'SystemToPara',
 	SystemToRelay = 'SystemToRelay',
@@ -7,11 +12,18 @@ export enum IDirection {
 	RelayToPara = 'RelayToPara',
 }
 
+export type Format = 'payload' | 'call' | 'submittable';
+
+export type ConstructedFormat =
+	| GenericCall<AnyTuple>
+	| SubmittableExtrinsic<'promise', ISubmittableResult>
+	| GenericExtrinsicPayload;
+
 export interface ITransferArgsOpts {
 	/**
 	 * Signing Payload vs Call
 	 */
-	format?: 'payload' | 'call'; // Give a polkadot-js option.
+	format?: Format;
 	/**
 	 * AssetId to pay fee's on the current common good parachain.
 	 * Statemint: default DOT
