@@ -10,7 +10,13 @@ import {
 	limitedReserveTransferAssets,
 	reserveTransferAssets,
 } from './createXcmCalls';
-import { IChainInfo, IDirection, ITransferArgsOpts } from './types';
+import {
+	ConstructedFormat,
+	Format,
+	IChainInfo,
+	IDirection,
+	ITransferArgsOpts,
+} from './types';
 
 const DEFAULT_XCM_VERSION = 1;
 
@@ -39,11 +45,12 @@ export class AssetsTransferAPI {
 		assetIds: string[],
 		amounts: string[],
 		opts?: ITransferArgsOpts
-	) {
+	): Promise<ConstructedFormat> {
 		const { _api, _info } = this;
 		const { specName } = await _info;
 
 		/**
+		 * TODO: We should do this check after we find the xcm direction.
 		 * Lengths should match, and indicies between both the amounts and assetIds should match.
 		 */
 		if (assetIds.length !== amounts.length) {
@@ -81,7 +88,7 @@ export class AssetsTransferAPI {
 			);
 		}
 
-		console.log(transaction);
+		return this.constructFormat(transaction, opts?.format);
 	}
 
 	/**
@@ -162,5 +169,34 @@ export class AssetsTransferAPI {
 		}
 
 		throw Error('Could not establish a xcm transaction direction');
+	}
+
+	/**
+	 * Construct the correct format for the transaction.
+	 * If nothing is passed in, the format will default to a signing payload.
+	 *
+	 * @param tx
+	 * @param format
+	 */
+	private constructFormat(
+		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
+		format: Format = 'payload'
+	): ConstructedFormat {
+		const { _api } = this;
+		if (format === 'call') {
+			return _api.registry.createType('Call', {
+				callIndex: tx.callIndex,
+				args: tx.args,
+			});
+		}
+
+		if (format === 'payload') {
+			return _api.registry.createType('ExtrinsicPayload', tx, {
+				version: tx.version,
+			});
+		}
+
+		// Returns a SubmittableExtrinsic
+		return tx;
 	}
 }
