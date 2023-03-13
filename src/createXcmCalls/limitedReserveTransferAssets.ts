@@ -1,6 +1,6 @@
-import { ApiPromise } from '@polkadot/api';
-import { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import { ISubmittableResult } from '@polkadot/types/types';
+import type { ApiPromise } from '@polkadot/api';
+import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../createXcmTypes';
 import { IDirection } from '../types';

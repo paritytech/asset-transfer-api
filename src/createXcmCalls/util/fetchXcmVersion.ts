@@ -1,6 +1,6 @@
-import { ApiPromise } from '@polkadot/api';
-import { Option, u32 } from '@polkadot/types';
-import { MultiLocation } from '@polkadot/types/interfaces';
+import type { ApiPromise } from '@polkadot/api';
+import type { Option, u32 } from '@polkadot/types';
+import type { MultiLocation } from '@polkadot/types/interfaces';
 
 /**
  * TODO: When we are actively using this change it over to `private`.

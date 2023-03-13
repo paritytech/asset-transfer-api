@@ -1,5 +1,5 @@
-import { ApiPromise } from '@polkadot/api';
-import {
+import type { ApiPromise } from '@polkadot/api';
+import type {
 	MultiAssetsV1,
 	MultiAssetV0,
 	MultiLocation,
@@ -88,7 +88,6 @@ export const SystemToPara: ICreateXcmType = {
 		});
 	},
 	/**
-	 * TODO: Find out how to find PalletInstance (number) of Assets.
 	 * Create a VersionedMultiAsset type.
 	 *
 	 * @param assets
@@ -135,7 +134,6 @@ export const SystemToPara: ICreateXcmType = {
 				V0: multiAssets,
 			});
 		} else {
-			// TODO: Find palletInstance.
 			const multiAssets = [];
 
 			for (let i = 0; i < assets.length; i++) {
