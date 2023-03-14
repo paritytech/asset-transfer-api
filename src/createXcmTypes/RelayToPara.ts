@@ -1,7 +1,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import type {
+	MultiAssetsV1,
 	MultiAssetV0,
-	MultiAssetV1,
 	MultiLocation,
 	VersionedMultiAssets,
 	WeightLimitV2,
@@ -129,11 +129,11 @@ export const RelayToPara: ICreateXcmType = {
 				);
 			}
 
-			return api.registry.createType('VersionedMultiAssets', {
+			return api.registry.createType('XcmVersionedMultiAssets', {
 				V0: multiAssets,
 			});
 		} else {
-			const multiAssets: MultiAssetV1[] = [];
+			const multiAssets = [];
 
 			for (let i = 0; i < amounts.length; i++) {
 				const amount = amounts[i];
@@ -151,13 +151,18 @@ export const RelayToPara: ICreateXcmType = {
 					},
 				};
 
-				multiAssets.push(
-					api.registry.createType('XcmV1MultiAsset', multiAsset)
-				);
+				multiAssets.push(multiAsset);
 			}
-		}
 
-		return api.registry.createType('VersionedMultiAssets');
+			const multiAssetsType: MultiAssetsV1 = api.registry.createType(
+				'XcmV1MultiassetMultiAssets',
+				multiAssets
+			);
+
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V1: multiAssetsType,
+			});
+		}
 	},
 	/**
 	 * TODO: Generalize the weight type with V3.
