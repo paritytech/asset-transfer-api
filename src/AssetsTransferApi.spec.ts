@@ -23,6 +23,11 @@ const getRelayRuntimeVersion = () =>
 		};
 	});
 
+const mockSubmittableExt = mockSystemApi.registry.createType(
+	'Extrinsic',
+	'0x0d01041f0800010200f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b000101411f00080a020532060491010a020532060891010000000000'
+);
+
 const adjustedMockSystemApi = {
 	registry: mockSystemApi.registry,
 	rpc: {
@@ -272,11 +277,62 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 	});
-    describe('fetchChainInfo', () => {
-        it('Should fetch the correct chain info', async () => {
-            const { specName, specVersion } = await systemAssetsApi['fetchChainInfo']();
-            expect(specName).toEqual('statemint');
-            expect(specVersion).toEqual("9370");
-        });
-    });
+	describe('fetchChainInfo', () => {
+		it('Should fetch the correct chain info', async () => {
+			const { specName, specVersion } = await systemAssetsApi[
+				'fetchChainInfo'
+			]();
+			expect(specName).toEqual('statemint');
+			expect(specVersion).toEqual('9370');
+		});
+	});
+	describe('establishDirection', () => {
+		// TODO: Add tests for the remaining directions when they are implemented
+		it('Should correctly determine direction for SystemToPara', () => {
+			const res = systemAssetsApi['establishDirection']('2000', 'statemint');
+			expect(res).toEqual('SystemToPara');
+		});
+		it('Should correctly determine direction for RelayToPara', () => {
+			const res = relayAssetsApi['establishDirection']('2000', 'polkadot');
+			expect(res).toEqual('RelayToPara');
+		});
+	});
+	describe('constructFormat', () => {
+		it('Should construct the correct call', () => {
+			const res = systemAssetsApi['constructFormat'](
+				mockSubmittableExt as SubmittableExtrinsic<
+					'promise',
+					ISubmittableResult
+				>,
+				'call'
+			);
+			expect(res).toEqual(
+				'0x1f0800010200f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b000101411f00080a020532060491010a020532060891010000000000'
+			);
+		});
+		it('Should construct the correct payload', () => {
+			const res = systemAssetsApi['constructFormat'](
+				mockSubmittableExt as SubmittableExtrinsic<
+					'promise',
+					ISubmittableResult
+				>,
+				'payload'
+			);
+			expect(res).toEqual(
+				'0x4d077b2263616c6c496e646578223a22307831663038222c2261726773223a7b2264657374223a7b227630223a7b227831223a7b226163636f756e7449643332223a7b226e6574776f726b223a7b22616e79223a6e756c6c7d2c226964223a22307866356435373134633038346331313238343361636137346638633439386461303663633561326436333135336238323531383962616135313034336231663062227d7d7d7d2c2262656e6566696369617279223a7b227630223a7b227831223a7b2270617261636861696e223a323030307d7d7d2c22617373657473223a7b227630223a5b7b22636f6e637265746546756e6769626c65223a7b226964223a7b227832223a5b7b2270616c6c6574496e7374616e6365223a35307d2c7b2267656e6572616c496e646578223a317d5d7d2c22616d6f756e74223a3130307d7d2c7b22636f6e637265746546756e6769626c65223a7b226964223a7b227832223a5b7b2270616c6c6574496e7374616e6365223a35307d2c7b2267656e6572616c496e646578223a327d5d7d2c22616d6f756e74223a3130307d7d5d7d2c226665655f61737365745f6974656d223a302c227765696768745f6c696d6974223a7b22756e6c696d69746564223a6e756c6c7d7d7d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+			);
+		});
+		it('Should construct the correct submittable', () => {
+			const res = systemAssetsApi['constructFormat'](
+				mockSubmittableExt as SubmittableExtrinsic<
+					'promise',
+					ISubmittableResult
+				>,
+				'submittable'
+			);
+			expect(
+				(res as SubmittableExtrinsic<'promise', ISubmittableResult>).toRawType()
+			).toEqual('Extrinsic');
+		});
+	});
 });

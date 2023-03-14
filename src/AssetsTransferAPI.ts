@@ -109,7 +109,7 @@ export class AssetsTransferAPI {
 	 * @param api ApiPromise
 	 */
 	private async fetchChainInfo(): Promise<IChainInfo> {
-		const { _api } = this; 
+		const { _api } = this;
 		const { specName, specVersion } = await _api.rpc.state.getRuntimeVersion();
 		return {
 			specName: specName.toString(),
