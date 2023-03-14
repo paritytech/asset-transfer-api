@@ -152,7 +152,7 @@ export const RelayToPara: ICreateXcmType = {
 				};
 
 				multiAssets.push(
-					api.registry.createType('XcmV0MultiAsset', multiAsset)
+					api.registry.createType('XcmV1MultiAsset', multiAsset)
 				);
 			}
 		}
