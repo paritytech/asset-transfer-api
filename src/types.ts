@@ -1,6 +1,4 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { GenericCall, GenericExtrinsicPayload } from '@polkadot/types';
-import type { AnyTuple } from '@polkadot/types/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 export enum IDirection {
@@ -15,9 +13,8 @@ export enum IDirection {
 export type Format = 'payload' | 'call' | 'submittable';
 
 export type ConstructedFormat =
-	| GenericCall<AnyTuple>
 	| SubmittableExtrinsic<'promise', ISubmittableResult>
-	| GenericExtrinsicPayload;
+	| `0x${string}`;
 
 export interface ITransferArgsOpts {
 	/**
