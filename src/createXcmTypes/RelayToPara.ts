@@ -152,7 +152,7 @@ export const RelayToPara: ICreateXcmType = {
 				};
 
 				multiAssets.push(
-					api.registry.createType('XcmV0MultiAsset', multiAsset)
+					api.registry.createType('XcmV1MultiAsset', multiAsset)
 				);
 			}
 		}
@@ -171,6 +171,6 @@ export const RelayToPara: ICreateXcmType = {
 			? { Limited: weightLimit }
 			: { Unlimited: null };
 
-		return api.createType('XcmV2WeightLimit', limit);
+		return api.registry.createType('XcmV2WeightLimit', limit);
 	},
 };

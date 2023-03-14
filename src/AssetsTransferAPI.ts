@@ -28,7 +28,7 @@ export class AssetsTransferAPI {
 
 	constructor(api: ApiPromise) {
 		this._api = api;
-		this._info = this.fetchChainInfo(api);
+		this._info = this.fetchChainInfo();
 	}
 
 	/**
@@ -54,7 +54,8 @@ export class AssetsTransferAPI {
 		 * Establish the Transaction Direction
 		 */
 		const xcmDirection = this.establishDirection(destChainId, specName);
-		const xcmVersion = opts?.xcmVersion || DEFAULT_XCM_VERSION;
+		const xcmVersion =
+			opts?.xcmVersion === undefined ? DEFAULT_XCM_VERSION : opts.xcmVersion;
 		const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
 
 		/**
@@ -107,8 +108,9 @@ export class AssetsTransferAPI {
 	 *
 	 * @param api ApiPromise
 	 */
-	private async fetchChainInfo(api: ApiPromise): Promise<IChainInfo> {
-		const { specName, specVersion } = await api.rpc.state.getRuntimeVersion();
+	private async fetchChainInfo(): Promise<IChainInfo> {
+		const { _api } = this;
+		const { specName, specVersion } = await _api.rpc.state.getRuntimeVersion();
 		return {
 			specName: specName.toString(),
 			specVersion: specVersion.toString(),
@@ -126,7 +128,9 @@ export class AssetsTransferAPI {
 		specName: string
 	): IDirection {
 		const { _api } = this;
-		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(specName);
+		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
+			specName.toLowerCase()
+		);
 		const isDestIdSystemPara = SYSTEM_PARACHAINS_IDS.includes(destChainId);
 
 		/**
@@ -186,16 +190,20 @@ export class AssetsTransferAPI {
 	): ConstructedFormat {
 		const { _api } = this;
 		if (format === 'call') {
-			return _api.registry.createType('Call', {
-				callIndex: tx.callIndex,
-				args: tx.args,
-			});
+			return _api.registry
+				.createType('Call', {
+					callIndex: tx.callIndex,
+					args: tx.args,
+				})
+				.toHex();
 		}
 
 		if (format === 'payload') {
-			return _api.registry.createType('ExtrinsicPayload', tx, {
-				version: tx.version,
-			});
+			return _api.registry
+				.createType('ExtrinsicPayload', tx, {
+					version: tx.version,
+				})
+				.toHex();
 		}
 
 		// Returns a SubmittableExtrinsic
