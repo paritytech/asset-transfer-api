@@ -151,13 +151,7 @@ export const RelayToPara: ICreateXcmType = {
 					},
 				};
 
-<<<<<<< HEAD
 				multiAssets.push(multiAsset);
-=======
-				multiAssets.push(
-					api.registry.createType('XcmV1MultiAsset', multiAsset)
-				);
->>>>>>> 06ec17d2b87f69d7b8c9a77c4bfa917fd50863b8
 			}
 
 			const multiAssetsType: MultiAssetsV1 = api.registry.createType(
