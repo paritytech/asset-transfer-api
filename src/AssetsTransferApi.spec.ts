@@ -33,7 +33,7 @@ const adjustedMockSystemApi = {
 
 const systemAssetsApi = new AssetsTransferAPI(adjustedMockSystemApi);
 
-describe('AssetTransferApi', () => {
+describe('AssetTransferAPI', () => {
 	describe('createTransferTransaction', () => {
 		describe('SystemToPara', () => {
 			const baseCreateTx = async (
