@@ -272,4 +272,11 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 	});
+    describe('fetchChainInfo', () => {
+        it('Should fetch the correct chain info', async () => {
+            const { specName, specVersion } = await systemAssetsApi['fetchChainInfo']();
+            expect(specName).toEqual('statemint');
+            expect(specVersion).toEqual("9370");
+        });
+    });
 });

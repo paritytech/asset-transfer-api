@@ -28,7 +28,7 @@ export class AssetsTransferAPI {
 
 	constructor(api: ApiPromise) {
 		this._api = api;
-		this._info = this.fetchChainInfo(api);
+		this._info = this.fetchChainInfo();
 	}
 
 	/**
@@ -108,8 +108,9 @@ export class AssetsTransferAPI {
 	 *
 	 * @param api ApiPromise
 	 */
-	private async fetchChainInfo(api: ApiPromise): Promise<IChainInfo> {
-		const { specName, specVersion } = await api.rpc.state.getRuntimeVersion();
+	private async fetchChainInfo(): Promise<IChainInfo> {
+		const { _api } = this; 
+		const { specName, specVersion } = await _api.rpc.state.getRuntimeVersion();
 		return {
 			specName: specName.toString(),
 			specVersion: specVersion.toString(),
