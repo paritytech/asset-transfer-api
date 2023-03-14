@@ -61,7 +61,9 @@ export class AssetsTransferAPI {
 		 * Lengths should match, and indicies between both the amounts and assetIds should match.
 		 */
 		if (assetIds.length !== amounts.length && !isRelayDirection) {
-			console.error('');
+			throw Error(
+				'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain.'
+			);
 		}
 
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
