@@ -171,6 +171,6 @@ export const RelayToPara: ICreateXcmType = {
 			? { Limited: weightLimit }
 			: { Unlimited: null };
 
-		return api.createType('XcmV2WeightLimit', limit);
+		return api.registry.createType('XcmV2WeightLimit', limit);
 	},
 };
