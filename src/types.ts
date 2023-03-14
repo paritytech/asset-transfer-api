@@ -44,6 +44,11 @@ export interface ITransferArgsOpts {
 	 * If not inputted it will default to `Unlimited`.
 	 */
 	weightLimit?: string;
+	/**
+	 * Set the xcmVersion for message construction. If this is not present a supported version
+	 * will be queried, and if there is no supported version a safe version will be queried.
+	 */
+	xcmVersion?: number;
 }
 
 export interface IChainInfo {

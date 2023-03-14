@@ -5,7 +5,11 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { Bytes } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { SYSTEM_PARACHAINS_IDS, SYSTEM_PARACHAINS_NAMES } from './consts';
+import {
+	DEFAULT_XCM_VERSION,
+	SYSTEM_PARACHAINS_IDS,
+	SYSTEM_PARACHAINS_NAMES,
+} from './consts';
 import {
 	limitedReserveTransferAssets,
 	reserveTransferAssets,
@@ -17,8 +21,6 @@ import {
 	IDirection,
 	ITransferArgsOpts,
 } from './types';
-
-const DEFAULT_XCM_VERSION = 1;
 
 export class AssetsTransferAPI {
 	readonly _api: ApiPromise;
@@ -48,21 +50,19 @@ export class AssetsTransferAPI {
 	): Promise<ConstructedFormat> {
 		const { _api, _info } = this;
 		const { specName } = await _info;
-
-		/**
-		 * TODO: We should do this check after we find the xcm direction.
-		 * Lengths should match, and indicies between both the amounts and assetIds should match.
-		 */
-		if (assetIds.length !== amounts.length) {
-			console.warn(
-				'`assetId` length should match `amount` length, unless sending assets from a relay chain to parachain'
-			);
-		}
-
 		/**
 		 * Establish the Transaction Direction
 		 */
 		const xcmDirection = this.establishDirection(destChainId, specName);
+		const xcmVersion = opts?.xcmVersion || DEFAULT_XCM_VERSION;
+		const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
+
+		/**
+		 * Lengths should match, and indicies between both the amounts and assetIds should match.
+		 */
+		if (assetIds.length !== amounts.length && !isRelayDirection) {
+			console.error('');
+		}
 
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 		if (opts?.isLimited) {
@@ -73,7 +73,7 @@ export class AssetsTransferAPI {
 				assetIds,
 				amounts,
 				destChainId,
-				DEFAULT_XCM_VERSION,
+				xcmVersion,
 				opts?.weightLimit
 			);
 		} else {
@@ -84,7 +84,7 @@ export class AssetsTransferAPI {
 				assetIds,
 				amounts,
 				destChainId,
-				DEFAULT_XCM_VERSION
+				xcmVersion
 			);
 		}
 
@@ -175,8 +175,8 @@ export class AssetsTransferAPI {
 	 * Construct the correct format for the transaction.
 	 * If nothing is passed in, the format will default to a signing payload.
 	 *
-	 * @param tx
-	 * @param format
+	 * @param tx A polkadot-js submittable extrinsic
+	 * @param format The format to return the tx in. Defaults to a signing payload.
 	 */
 	private constructFormat(
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
