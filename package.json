@@ -9,7 +9,8 @@
     "start:zombienet-post-script": "yarn build:scripts && node ./scripts/build/testNetworkSetup.js",
     "lint": "substrate-dev-run-lint",
     "lint:fix": "substrate-dev-run-lint --fix",
-    "test": "NODE_ENV=test substrate-exec-jest --detectOpenHandles"
+    "test": "NODE_ENV=test substrate-exec-jest --detectOpenHandles",
+    "docs": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,10 @@
   "packageManager": "yarn@3.3.1",
   "devDependencies": {
     "@substrate/dev": "^0.6.6",
-    "chalk": "4.1.2"
+    "chalk": "4.1.2",
+    "typedoc": "^0.23.26",
+    "typedoc-plugin-markdown": "^3.14.0",
+    "typedoc-plugin-missing-exports": "^1.0.0"
   },
   "resolutions": {
     "typescript": "4.9.4"
