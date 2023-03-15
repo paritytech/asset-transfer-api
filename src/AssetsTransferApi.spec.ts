@@ -23,6 +23,16 @@ const getRelayRuntimeVersion = () =>
 		};
 	});
 
+const getSystemSafeXcmVersion = () =>
+	Promise.resolve().then(() => {
+		return mockSystemApi.registry.createType('Option<u32>', 2);
+	});
+
+const getRelaySafeXcmVersion = () =>
+	Promise.resolve().then(() => {
+		return mockSystemApi.registry.createType('Option<u32>', 2);
+	});
+
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',
 	'0x0d01041f0800010200f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b000101411f00080a020532060491010a020532060891010000000000'
@@ -35,7 +45,11 @@ const adjustedMockSystemApi = {
 			getRuntimeVersion: getSystemRuntimeVersion,
 		},
 	},
-	query: {},
+	query: {
+		polkadotXcm: {
+			safeXcmVersion: getSystemSafeXcmVersion,
+		},
+	},
 	tx: {
 		polkadotXcm: {
 			limitedReserveTransferAssets:
@@ -55,6 +69,9 @@ const adjustedMockRelayApi = {
 	},
 	query: {
 		paras: {},
+		xcmPallet: {
+			safeXcmVersion: getRelaySafeXcmVersion,
+		},
 	},
 	tx: {
 		xcmPallet: {
@@ -333,6 +350,12 @@ describe('AssetTransferAPI', () => {
 			expect(
 				(res as SubmittableExtrinsic<'promise', ISubmittableResult>).toRawType()
 			).toEqual('Extrinsic');
+		});
+	});
+	describe('fetchSafeXcmVersion', () => {
+		it('Should return the correct value when the Option is true', async () => {
+			const version = await systemAssetsApi['fetchSafeXcmVersion']();
+			expect(version.toNumber()).toEqual(2);
 		});
 	});
 });
