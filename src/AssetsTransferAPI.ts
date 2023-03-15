@@ -2,7 +2,7 @@ import '@polkadot/api-augment';
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { Bytes } from '@polkadot/types';
+import type { Bytes, Option, u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import {
@@ -14,6 +14,7 @@ import {
 	limitedReserveTransferAssets,
 	reserveTransferAssets,
 } from './createXcmCalls';
+import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
 import {
 	ConstructedFormat,
 	Format,
@@ -25,10 +26,12 @@ import {
 export class AssetsTransferAPI {
 	readonly _api: ApiPromise;
 	readonly _info: Promise<IChainInfo>;
+	readonly _safeXcmVersion: Promise<u32>;
 
 	constructor(api: ApiPromise) {
 		this._api = api;
 		this._info = this.fetchChainInfo();
+		this._safeXcmVersion = this.fetchSafeXcmVersion();
 	}
 
 	/**
@@ -48,14 +51,17 @@ export class AssetsTransferAPI {
 		amounts: string[],
 		opts?: ITransferArgsOpts
 	): Promise<ConstructedFormat> {
-		const { _api, _info } = this;
+		const { _api, _info, _safeXcmVersion } = this;
 		const { specName } = await _info;
+		const safeXcmVersion = await _safeXcmVersion;
 		/**
 		 * Establish the Transaction Direction
 		 */
 		const xcmDirection = this.establishDirection(destChainId, specName);
 		const xcmVersion =
-			opts?.xcmVersion === undefined ? DEFAULT_XCM_VERSION : opts.xcmVersion;
+			opts?.xcmVersion === undefined
+				? safeXcmVersion.toNumber()
+				: opts.xcmVersion;
 		const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
 
 		/**
@@ -208,5 +214,20 @@ export class AssetsTransferAPI {
 
 		// Returns a SubmittableExtrinsic
 		return tx;
+	}
+
+	/**
+	 * Fetch for a safe Xcm Version from the chain, if none exists the
+	 * in app default version will be used.
+	 */
+	private async fetchSafeXcmVersion(): Promise<u32> {
+		const { _api } = this;
+		const pallet = establishXcmPallet(_api);
+		const safeVersion = await _api.query[pallet].safeXcmVersion<Option<u32>>();
+		const version = safeVersion.isSome
+			? safeVersion.unwrap()
+			: _api.registry.createType('u32', DEFAULT_XCM_VERSION);
+
+		return version;
 	}
 }
