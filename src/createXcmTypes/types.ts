@@ -1,7 +1,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import type {
-	MultiLocation,
 	VersionedMultiAssets,
+	VersionedMultiLocation,
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 
@@ -19,12 +19,12 @@ export interface ICreateXcmType {
 		api: ApiPromise,
 		accountId: string,
 		xcmVersion: number
-	) => MultiLocation;
+	) => VersionedMultiLocation;
 	createDest: (
 		api: ApiPromise,
 		paraId: string,
 		xcmVersion: number
-	) => MultiLocation;
+	) => VersionedMultiLocation;
 	createAssets: (
 		api: ApiPromise,
 		amounts: string[],
