@@ -44,13 +44,13 @@ export class AssetsTransferAPI {
 	 * @param amounts Array of the amounts of each token to transfer
 	 * @param opts Options
 	 */
-	public async createTransferTransaction(
+	public async createTransferTransaction<T extends Format>(
 		destChainId: string,
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: ITransferArgsOpts
-	): Promise<ConstructedFormat<Format>> {
+		opts?: ITransferArgsOpts<T>
+	): Promise<ConstructedFormat<T>> {
 		const { _api, _info, _safeXcmVersion } = this;
 		const { specName } = await _info;
 		const safeXcmVersion = await _safeXcmVersion;
@@ -97,7 +97,7 @@ export class AssetsTransferAPI {
 			);
 		}
 
-		return this.constructFormat(transaction, opts?.format);
+		return this.constructFormat<T>(transaction, opts?.format);
 	}
 
 	/**

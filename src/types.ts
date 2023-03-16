@@ -24,11 +24,11 @@ export type ConstructedFormat<T> = T extends 'payload'
 // 	| SubmittableExtrinsic<'promise', ISubmittableResult>
 // 	| `0x${string}`;
 
-export interface ITransferArgsOpts {
+export interface ITransferArgsOpts<T> {
 	/**
 	 * Signing Payload vs Call
 	 */
-	format?: Format;
+	format?: T;
 	/**
 	 * AssetId to pay fee's on the current common good parachain.
 	 * Statemint: default DOT
