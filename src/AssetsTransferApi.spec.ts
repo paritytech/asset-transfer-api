@@ -347,9 +347,7 @@ describe('AssetTransferAPI', () => {
 				>,
 				'submittable'
 			);
-			expect(
-				(res as SubmittableExtrinsic<'promise', ISubmittableResult>).toRawType()
-			).toEqual('Extrinsic');
+			expect(res.toRawType()).toEqual('Extrinsic');
 		});
 	});
 	describe('fetchSafeXcmVersion', () => {

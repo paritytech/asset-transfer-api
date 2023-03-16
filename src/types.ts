@@ -12,9 +12,17 @@ export enum IDirection {
 
 export type Format = 'payload' | 'call' | 'submittable';
 
-export type ConstructedFormat =
-	| SubmittableExtrinsic<'promise', ISubmittableResult>
-	| `0x${string}`;
+export type ConstructedFormat<T> = T extends 'payload'
+	? `0x${string}`
+	: T extends 'call'
+	? `0x${string}`
+	: T extends 'submittable'
+	? SubmittableExtrinsic<'promise', ISubmittableResult>
+	: never;
+
+// export type ConstructedFormat =
+// 	| SubmittableExtrinsic<'promise', ISubmittableResult>
+// 	| `0x${string}`;
 
 export interface ITransferArgsOpts {
 	/**
