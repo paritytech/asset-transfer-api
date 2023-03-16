@@ -22,7 +22,11 @@ export type ConstructedFormat<T> = T extends 'payload'
 
 export interface ITransferArgsOpts<T extends Format> {
 	/**
-	 * Signing Payload vs Call
+	 * Option that specifies the format in which to return a transaction.
+	 * It can either be a `payload`, `call`, or `submittable`.
+	 * 
+	 * Note: A `submittable` will return a `SubmittableExtrinsic` polkadot-js type, whereas
+	 * a `payload` or `call` will return a hex.
 	 */
 	format?: T;
 	/**
