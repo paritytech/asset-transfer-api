@@ -2,8 +2,8 @@ import type { ApiPromise } from '@polkadot/api';
 import type {
 	MultiAssetsV1,
 	MultiAssetV0,
-	MultiLocation,
 	VersionedMultiAssets,
+	VersionedMultiLocation,
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 
@@ -24,7 +24,7 @@ export const RelayToPara: ICreateXcmType = {
 		api: ApiPromise,
 		accountId: string,
 		xcmVersion?: number
-	): MultiLocation => {
+	): VersionedMultiLocation => {
 		/**
 		 * The main difference between V0 vs V1 is that there is no parent associated.
 		 */
@@ -69,7 +69,7 @@ export const RelayToPara: ICreateXcmType = {
 		api: ApiPromise,
 		paraId: string,
 		xcmVersion?: number
-	): MultiLocation => {
+	): VersionedMultiLocation => {
 		if (xcmVersion === 0) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V0: {
