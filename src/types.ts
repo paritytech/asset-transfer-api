@@ -20,11 +20,7 @@ export type ConstructedFormat<T> = T extends 'payload'
 	? SubmittableExtrinsic<'promise', ISubmittableResult>
 	: never;
 
-// export type ConstructedFormat =
-// 	| SubmittableExtrinsic<'promise', ISubmittableResult>
-// 	| `0x${string}`;
-
-export interface ITransferArgsOpts<T> {
+export interface ITransferArgsOpts<T extends Format> {
 	/**
 	 * Signing Payload vs Call
 	 */
