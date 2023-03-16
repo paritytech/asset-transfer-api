@@ -44,13 +44,13 @@ export class AssetsTransferAPI {
 	 * @param amounts Array of the amounts of each token to transfer
 	 * @param opts Options
 	 */
-	public async createTransferTransaction(
+	public async createTransferTransaction<T extends Format>(
 		destChainId: string,
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: ITransferArgsOpts
-	): Promise<ConstructedFormat> {
+		opts?: ITransferArgsOpts<T>
+	): Promise<ConstructedFormat<T>> {
 		const { _api, _info, _safeXcmVersion } = this;
 		const { specName } = await _info;
 		const safeXcmVersion = await _safeXcmVersion;
@@ -97,7 +97,7 @@ export class AssetsTransferAPI {
 			);
 		}
 
-		return this.constructFormat(transaction, opts?.format);
+		return this.constructFormat<T>(transaction, opts?.format);
 	}
 
 	/**
@@ -188,12 +188,12 @@ export class AssetsTransferAPI {
 	 * If nothing is passed in, the format will default to a signing payload.
 	 *
 	 * @param tx A polkadot-js submittable extrinsic
-	 * @param format The format to return the tx in. Defaults to a signing payload.
+	 * @param format The format to return the tx in.
 	 */
-	private constructFormat(
+	private constructFormat<T extends Format>(
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		format: Format = 'payload'
-	): ConstructedFormat {
+		format?: T
+	): ConstructedFormat<T> {
 		const { _api } = this;
 		if (format === 'call') {
 			return _api.registry
@@ -201,19 +201,18 @@ export class AssetsTransferAPI {
 					callIndex: tx.callIndex,
 					args: tx.args,
 				})
-				.toHex();
+				.toHex() as ConstructedFormat<T>;
 		}
 
-		if (format === 'payload') {
-			return _api.registry
-				.createType('ExtrinsicPayload', tx, {
-					version: tx.version,
-				})
-				.toHex();
+		if (format === 'submittable') {
+			return tx as ConstructedFormat<T>;
 		}
 
-		// Returns a SubmittableExtrinsic
-		return tx;
+		return _api.registry
+			.createType('ExtrinsicPayload', tx, {
+				version: tx.version,
+			})
+			.toHex() as ConstructedFormat<T>;
 	}
 
 	/**
