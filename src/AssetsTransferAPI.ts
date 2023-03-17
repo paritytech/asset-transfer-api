@@ -10,6 +10,7 @@ import {
 	SYSTEM_PARACHAINS_IDS,
 	SYSTEM_PARACHAINS_NAMES,
 } from './consts';
+import { transfer, transferKeepAlive } from './createCalls';
 import {
 	limitedReserveTransferAssets,
 	reserveTransferAssets,
@@ -63,14 +64,28 @@ export class AssetsTransferAPI {
 				? safeXcmVersion.toNumber()
 				: opts.xcmVersion;
 		const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
+		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
+			specName.toLowerCase()
+		);
 
 		/**
 		 * Lengths should match, and indicies between both the amounts and assetIds should match.
 		 */
 		if (assetIds.length !== amounts.length && !isRelayDirection) {
 			throw Error(
-				'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain.'
+				'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
 			);
+		}
+
+		/**
+		 * Create a local asset transfer.
+		 */
+		if (SYSTEM_PARACHAINS_IDS.includes(destChainId) && isSystemParachain) {
+			const tx = opts?.keepAlive
+				? transferKeepAlive(_api, destAddr, assetIds[0], amounts[0])
+				: transfer(_api, destAddr, assetIds[0], amounts[0]);
+
+			return this.constructFormat(tx, opts?.format);
 		}
 
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
