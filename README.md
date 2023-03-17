@@ -20,9 +20,9 @@
 
 ## About
 
-**BETA**: This package is in beta and is being rapidly and actively developed on, so some design choices are subject to change.
+**ALPHA**: This package is in alpha and is being rapidly and actively developed on, so some design choices are subject to change. 
 
-**Summary**: Asset-transfer-api is a library focused on simplifying to construction of asset transfers for Substrate based chains that involves system parachains like Statemine and Statemint. It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
+**Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Statemine and Statemint. It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
 
 ### Current Cross-chain Support
 
@@ -100,6 +100,24 @@ AssetsTransferApi.createTransferTransaction(
 )
 ```
 
+#### Local Transactions
+
+Sending an Asset locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Statemine`, `Statemint`, `Westmint` and as a side affect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
+
+An example would look like:
+```typescript
+await api.createTransferTransaction(
+  	destChainId: '1000',
+	destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+	assetIds: ['1984'],
+	amounts: ['10000000000'],
+	opts?: {
+		format: 'call',
+		keepAlive: true
+	}
+)
+```
+
 ```typescript
 // The ITransferArgsOpts are options that give the possibility of adding certain customization to the transaction.
 
@@ -141,6 +159,11 @@ interface ITransferArgsOpts<T extends Format> {
 	 * will be queried, and if there is no supported version a safe version will be queried.
 	 */
 	xcmVersion?: number;
+  /**
+	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
+	 * to a `transfer`.
+	 */
+	keepAlive?: boolean;
 }
 ```
 
