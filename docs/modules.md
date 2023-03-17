@@ -1,6 +1,6 @@
-[asset-transfer-api](README.md) / Exports
+[@substrate/asset-transfer-api](README.md) / Exports
 
-# asset-transfer-api
+# @substrate/asset-transfer-api
 
 ## Table of contents
 
@@ -37,4 +37,4 @@ Construct an Polkadot-js Api-Promise
 
 #### Defined in
 
-[constructApiPromise.ts:11](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/constructApiPromise.ts#L11)
+[constructApiPromise.ts:11](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/constructApiPromise.ts#L11)

@@ -1,4 +1,4 @@
-[asset-transfer-api](../README.md) / [Exports](../modules.md) / AssetsTransferAPI
+[@substrate/asset-transfer-api](../README.md) / [Exports](../modules.md) / AssetsTransferAPI
 
 # Class: AssetsTransferAPI
 
@@ -12,6 +12,7 @@
 
 - [\_api](AssetsTransferAPI.md#_api)
 - [\_info](AssetsTransferAPI.md#_info)
+- [\_safeXcmVersion](AssetsTransferAPI.md#_safexcmversion)
 
 ### Methods
 
@@ -32,7 +33,7 @@
 
 #### Defined in
 
-[AssetsTransferAPI.ts:29](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/AssetsTransferAPI.ts#L29)
+[AssetsTransferAPI.ts:31](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L31)
 
 ## Properties
 
@@ -42,7 +43,7 @@
 
 #### Defined in
 
-[AssetsTransferAPI.ts:26](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/AssetsTransferAPI.ts#L26)
+[AssetsTransferAPI.ts:27](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L27)
 
 ___
 
@@ -52,16 +53,32 @@ ___
 
 #### Defined in
 
-[AssetsTransferAPI.ts:27](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/AssetsTransferAPI.ts#L27)
+[AssetsTransferAPI.ts:28](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L28)
+
+___
+
+### \_safeXcmVersion
+
+• `Readonly` **\_safeXcmVersion**: `Promise`<`u32`\>
+
+#### Defined in
+
+[AssetsTransferAPI.ts:29](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L29)
 
 ## Methods
 
 ### createTransferTransaction
 
-▸ **createTransferTransaction**(`destChainId`, `destAddr`, `assetIds`, `amounts`, `opts?`): `Promise`<[`ConstructedFormat`](../modules/internal_.md#constructedformat)\>
+▸ **createTransferTransaction**<`T`\>(`destChainId`, `destAddr`, `assetIds`, `amounts`, `opts?`): `Promise`<[`ConstructedFormat`](../modules/internal_.md#constructedformat)<`T`\>\>
 
 Create an XCM transaction to transfer Assets, or native tokens from one
 chain to another.
+
+#### Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `T` | extends [`Format`](../modules/internal_.md#format) |
 
 #### Parameters
 
@@ -71,15 +88,15 @@ chain to another.
 | `destAddr` | `string` | Address of destination account |
 | `assetIds` | `string`[] | Array of assetId's to be transferred (‘0’ for Native Relay Token) |
 | `amounts` | `string`[] | Array of the amounts of each token to transfer |
-| `opts?` | [`ITransferArgsOpts`](../interfaces/internal_.ITransferArgsOpts.md) | Options |
+| `opts?` | [`ITransferArgsOpts`](../interfaces/internal_.ITransferArgsOpts.md)<`T`\> | Options |
 
 #### Returns
 
-`Promise`<[`ConstructedFormat`](../modules/internal_.md#constructedformat)\>
+`Promise`<[`ConstructedFormat`](../modules/internal_.md#constructedformat)<`T`\>\>
 
 #### Defined in
 
-[AssetsTransferAPI.ts:44](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/AssetsTransferAPI.ts#L44)
+[AssetsTransferAPI.ts:47](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L47)
 
 ___
 
@@ -101,4 +118,4 @@ Return a partialFee of the
 
 #### Defined in
 
-[AssetsTransferAPI.ts:102](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/AssetsTransferAPI.ts#L102)
+[AssetsTransferAPI.ts:108](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L108)

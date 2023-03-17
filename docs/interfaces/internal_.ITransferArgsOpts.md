@@ -1,8 +1,14 @@
-[asset-transfer-api](../README.md) / [Exports](../modules.md) / [<internal\>](../modules/internal_.md) / ITransferArgsOpts
+[@substrate/asset-transfer-api](../README.md) / [Exports](../modules.md) / [<internal\>](../modules/internal_.md) / ITransferArgsOpts
 
-# Interface: ITransferArgsOpts
+# Interface: ITransferArgsOpts<T\>
 
 [<internal>](../modules/internal_.md).ITransferArgsOpts
+
+## Type parameters
+
+| Name | Type |
+| :------ | :------ |
+| `T` | extends [`Format`](../modules/internal_.md#format) |
 
 ## Table of contents
 
@@ -19,13 +25,17 @@
 
 ### format
 
-• `Optional` **format**: [`Format`](../modules/internal_.md#format)
+• `Optional` **format**: `T`
 
-Signing Payload vs Call
+Option that specifies the format in which to return a transaction.
+It can either be a `payload`, `call`, or `submittable`.
+
+Note: A `submittable` will return a `SubmittableExtrinsic` polkadot-js type, whereas
+a `payload` or `call` will return a hex.
 
 #### Defined in
 
-[types.ts:23](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L23)
+[types.ts:31](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L31)
 
 ___
 
@@ -38,7 +48,7 @@ Deafult is unlimited.
 
 #### Defined in
 
-[types.ts:38](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L38)
+[types.ts:46](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L46)
 
 ___
 
@@ -52,7 +62,7 @@ Statemine: default KSM
 
 #### Defined in
 
-[types.ts:29](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L29)
+[types.ts:37](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L37)
 
 ___
 
@@ -64,7 +74,7 @@ AssetId to pay fee's on the destination parachain.
 
 #### Defined in
 
-[types.ts:33](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L33)
+[types.ts:41](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L41)
 
 ___
 
@@ -77,7 +87,7 @@ If not inputted it will default to `Unlimited`.
 
 #### Defined in
 
-[types.ts:43](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L43)
+[types.ts:51](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L51)
 
 ___
 
@@ -90,4 +100,4 @@ will be queried, and if there is no supported version a safe version will be que
 
 #### Defined in
 
-[types.ts:48](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L48)
+[types.ts:56](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L56)
