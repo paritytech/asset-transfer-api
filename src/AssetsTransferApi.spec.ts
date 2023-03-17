@@ -57,6 +57,10 @@ const adjustedMockSystemApi = {
 			reserveTransferAssets:
 				mockSystemApi.tx['polkadotXcm'].reserveTransferAssets,
 		},
+		assets: {
+			transfer: mockSystemApi.tx.assets.transfer,
+			transferKeepAlive: mockSystemApi.tx.assets.transferKeepAlive,
+		},
 	},
 } as unknown as ApiPromise;
 
@@ -87,6 +91,37 @@ const relayAssetsApi = new AssetsTransferAPI(adjustedMockRelayApi);
 
 describe('AssetTransferAPI', () => {
 	describe('createTransferTransaction', () => {
+		describe('Local Asset Transfer', () => {
+			it('Should construct a `transfer` call', async () => {
+				const res = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['1'],
+					['100'],
+					{
+						format: 'call',
+					}
+				);
+				expect(res).toEqual(
+					'0x32080400f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b9101'
+				);
+			});
+			it('Should construct a `transferKeepAlive` call', async () => {
+				const res = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['1'],
+					['100'],
+					{
+						format: 'call',
+						keepAlive: true,
+					}
+				);
+				expect(res).toEqual(
+					'0x32090400f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b9101'
+				);
+			});
+		});
 		describe('SystemToPara', () => {
 			const baseSystemCreateTx = async <T extends Format>(
 				format: T,
