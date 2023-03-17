@@ -1,4 +1,4 @@
-[asset-transfer-api](../README.md) / [Exports](../modules.md) / [<internal\>](../modules/internal_.md) / IDirection
+[@substrate/asset-transfer-api](../README.md) / [Exports](../modules.md) / [<internal\>](../modules/internal_.md) / IDirection
 
 # Enumeration: IDirection
 
@@ -23,7 +23,7 @@
 
 #### Defined in
 
-[types.ts:7](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L7)
+[types.ts:7](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L7)
 
 ___
 
@@ -33,7 +33,7 @@ ___
 
 #### Defined in
 
-[types.ts:8](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L8)
+[types.ts:8](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L8)
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 #### Defined in
 
-[types.ts:10](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L10)
+[types.ts:10](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L10)
 
 ___
 
@@ -53,7 +53,7 @@ ___
 
 #### Defined in
 
-[types.ts:9](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L9)
+[types.ts:9](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L9)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 #### Defined in
 
-[types.ts:5](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L5)
+[types.ts:5](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L5)
 
 ___
 
@@ -73,4 +73,4 @@ ___
 
 #### Defined in
 
-[types.ts:6](https://github.com/paritytech/asset-transfer-api/blob/69d3acd/src/types.ts#L6)
+[types.ts:6](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L6)
