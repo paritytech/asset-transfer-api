@@ -22,22 +22,22 @@
 
 **ALPHA**: This package is in alpha and is being rapidly and actively developed on, so some design choices are subject to change. 
 
-**Summary**: Asset-transfer-api is a library focused on simplifying constructing asset transfers for substrate based chains that involves system parachains like Statemine, and Statemint. It aims to give support between System Parachains, Relay Chains, and parachains. This means sending assets via XCM, or transfering assets locally on a system parachain. 
+**Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Statemine and Statemint. It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
 
-### What is supported
+### Current Cross-chain Support
 
-The below chart is focusing on what directions are supported for constructing asset transfers. The goal is to have everything in green checkmarks. 
+The below chart is focusing on what directions are supported for constructing asset transfers and in what XCM version. The goal is to have everything in green checkmarks. Note that local transfers (intra-chain) are not visualized here.
 
-| Direction             | V0                 | V1                 | V2                 | V3                 |
-| --------------------- | ------------------ | ------------------ | ------------------ | ------------------ |
-| System to Parachain   | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
-| System to Relay       | :x:                | :x:                | :x:                | :x:                |
-| Relay to Parachain    | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
-| Relay to System       | :x:                | :x:                | :x:                | :x:                |
-| Parachain to Parachin | :x:                | :x:                | :x:                | :x:                |
-| parachain to Relay    | :x:                | :x:                | :x:                | :x:                |
+| Direction              | V0                 | V1                 | V2                 | V3                 |
+| ---------------------  | ------------------ | ------------------ | ------------------ | ------------------ |
+| System to Parachain    | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| System to Relay        | :x:                | :x:                | :x:                | :x:                |
+| Relay to Parachain     | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Relay to System        | :x:                | :x:                | :x:                | :x:                |
+| Parachain to Parachain | :x:                | :x:                | :x:                | :x:                |
+| Parachain to Relay     | :x:                | :x:                | :x:                | :x:                |
 
-Note: System refers to System Parachains like `Statemine` and `Statemint`
+Note: System refers to System Parachains like `Statemine` and `Statemint`.
 
 ## Usage
 
@@ -64,7 +64,7 @@ await apiPromise.isReady
 const assetsApi = new AssetsTransferAPI(apiPromise);
 
 const call = await assetsApi.createTransferTransaction(
-  '1984', // destChainId (If the destination is a relay chain put `0`)
+  '2001', // destChainId (If the destination is a relay chain put `0`)
   '0x00', // destAddress
   ['1', '2'], // Array of AssetIds
   ['1000000000', '2000000000'], // Array of amounts of each token to transfer
@@ -79,7 +79,7 @@ const call = await assetsApi.createTransferTransaction(
 ### AssetTransferApi & ITransferArgsOpts
 
 ```Typescript
-// The AssetsTransferApi exposes one method as of now caled: `createTransferTransaction`
+// The AssetsTransferApi exposes one method as of now called: `createTransferTransaction`
 
 /**
  * Create an XCM transaction to transfer Assets, or native tokens from one
@@ -175,7 +175,7 @@ The source code in this repository is distributed under the GPLv3 license. See t
 
 ## Zombienet Testing
 
-Zombienet is used to launch a complete network including a relay chain, and two parachains. It will create hrmp channels betweens the launched parachains allowing the testing enviornment to send xcm messages and transfer assets. 
+Zombienet is used to launch a complete network including a relay chain, and two parachains. It will create HRMP channels betweens the launched parachains allowing the testing enviornment to send XCM messages and transfer assets. 
 
 ### **Requirements**:
 
