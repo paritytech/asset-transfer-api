@@ -24,6 +24,21 @@
 
 **Summary**: Asset-transfer-api is a library focused on simplifying constructing asset transfers for substrate based chains that involves system parachains like Statemine, and Statemint.
 
+### What is supported
+
+The below chart is focusing on what directions are supported for constructing asset transfers. The goal is to have everything in green checkmarks. 
+
+| Direction             | V0                 | V1                 | V2                 | V3                 |
+| --------------------- | ------------------ | ------------------ | ------------------ | ------------------ |
+| System to Parachain   | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| System to Relay       | :x:                | :x:                | :x:                | :x:                |
+| Relay to Parachain    | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| Relay to System       | :x:                | :x:                | :x:                | :x:                |
+| Parachain to Parachin | :x:                | :x:                | :x:                | :x:                |
+| parachain to Relay    | :x:                | :x:                | :x:                | :x:                |
+
+Note: System refers to System Parachains like `Statemine` and `Statemint`
+
 ## Usage
 
 ### Npm
@@ -34,7 +49,7 @@
 
 `yarn add @substrate/asset-transfer-api`
 
-### Example
+### Example Usage
 
 ```typescript
 import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfer-api';
@@ -59,6 +74,74 @@ const call = await assetsApi.createTransferTransaction(
     xcmVersion: 1
   } // Options
 )
+```
+
+### AssetTransferApi & ITransferArgsOpts
+
+```Typescript
+// The AssetsTransferApi exposes one method as of now caled: `createTransferTransaction`
+
+/**
+ * Create an XCM transaction to transfer Assets, or native tokens from one
+ * chain to another.
+ *
+ * @param destChainId ID of the destination (para) chain (‘0’ for Relaychain)
+ * @param destAddr Address of destination account
+ * @param assetIds Array of assetId's to be transferred (‘0’ for Native Relay Token)
+ * @param amounts Array of the amounts of each token to transfer
+ * @param opts Options
+ */
+AssetsTransferApi.createTransferTransaction(
+  	destChainId: string,
+		destAddr: string,
+		assetIds: string[],
+		amounts: string[],
+		opts?: ITransferArgsOpts<T>
+)
+```
+
+```typescript
+// The ITransferArgsOpts are options that give the possibility of adding certain customization to the transaction.
+
+interface ITransferArgsOpts<T extends Format> {
+	/**
+	 * Option that specifies the format in which to return a transaction.
+	 * It can either be a `payload`, `call`, or `submittable`.
+	 *
+	 * Note: A `submittable` will return a `SubmittableExtrinsic` polkadot-js type, whereas
+	 * a `payload` or `call` will return a hex. By default a `payload` will be returned if nothing is inputted.
+	 */
+	format?: T;
+	/**
+   * NOTE: This is in development, and being worked on and not yet supported.
+   * 
+	 * AssetId to pay fee's on the current common good parachain.
+	 * Statemint: default DOT
+	 * Statemine: default KSM
+	 */
+	payFeeWith?: string;
+	/**
+   * NOTE: This is in development, and being worked on and not yet supported.
+   * 
+	 * AssetId to pay fee's on the destination parachain.
+	 */
+	payFeeWithTo?: string;
+	/**
+	 * Boolean to declare if this will be with limited XCM transfers.
+	 * Deafult is unlimited.
+	 */
+	isLimited?: boolean;
+	/**
+	 * When isLimited is true, the option for applying a weightLimit is possible.
+	 * If not inputted it will default to `Unlimited`.
+	 */
+	weightLimit?: string;
+	/**
+	 * Set the xcmVersion for message construction. If this is not present a supported version
+	 * will be queried, and if there is no supported version a safe version will be queried.
+	 */
+	xcmVersion?: number;
+}
 ```
 
 For more information, refer to the [docs](https://github.com/paritytech/asset-transfer-api/tree/main/docs) in the repository.
