@@ -2,7 +2,7 @@ import '@polkadot/api-augment';
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { Bytes, Option, u32 } from '@polkadot/types';
+import type { Option, u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import {
@@ -98,15 +98,6 @@ export class AssetsTransferAPI {
 		}
 
 		return this.constructFormat<T>(transaction, opts?.format);
-	}
-
-	/**
-	 * Return a partialFee of the
-	 *
-	 * @param tx Transaction to estimate the fee for
-	 */
-	public estimateFee(tx: Bytes | string) {
-		console.log(tx);
 	}
 
 	/**
