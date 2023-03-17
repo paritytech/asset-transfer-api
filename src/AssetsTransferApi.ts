@@ -36,8 +36,8 @@ export class AssetsTransferApi {
 	}
 
 	/**
-	 * Create an XCM transaction to transfer Assets, or native tokens from one
-	 * chain to another.
+	 * Create an asset transfer transaction. This can be either locally on a systems parachain,
+	 * or between chains using xcm.
 	 *
 	 * @param destChainId ID of the destination (para) chain (‘0’ for Relaychain)
 	 * @param destAddr Address of destination account
