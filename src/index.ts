@@ -1,2 +1,2 @@
-export * from './AssetsTransferAPI';
+export * from './AssetsTransferApi';
 export * from './constructApiPromise';

@@ -2,7 +2,7 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { AssetsTransferAPI } from './AssetsTransferAPI';
+import { AssetsTransferApi } from './AssetsTransferApi';
 import { mockRelayApi } from './testHelpers/mockRelayApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { ConstructedFormat, Format } from './types';
@@ -86,8 +86,8 @@ const adjustedMockRelayApi = {
 	},
 } as unknown as ApiPromise;
 
-const systemAssetsApi = new AssetsTransferAPI(adjustedMockSystemApi);
-const relayAssetsApi = new AssetsTransferAPI(adjustedMockRelayApi);
+const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
+const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
 
 describe('AssetTransferAPI', () => {
 	describe('createTransferTransaction', () => {

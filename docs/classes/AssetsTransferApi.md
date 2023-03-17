@@ -1,29 +1,28 @@
-[@substrate/asset-transfer-api](../README.md) / [Exports](../modules.md) / AssetsTransferAPI
+[@substrate/asset-transfer-api](../README.md) / [Exports](../modules.md) / AssetsTransferApi
 
-# Class: AssetsTransferAPI
+# Class: AssetsTransferApi
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](AssetsTransferAPI.md#constructor)
+- [constructor](AssetsTransferApi.md#constructor)
 
 ### Properties
 
-- [\_api](AssetsTransferAPI.md#_api)
-- [\_info](AssetsTransferAPI.md#_info)
-- [\_safeXcmVersion](AssetsTransferAPI.md#_safexcmversion)
+- [\_api](AssetsTransferApi.md#_api)
+- [\_info](AssetsTransferApi.md#_info)
+- [\_safeXcmVersion](AssetsTransferApi.md#_safexcmversion)
 
 ### Methods
 
-- [createTransferTransaction](AssetsTransferAPI.md#createtransfertransaction)
-- [estimateFee](AssetsTransferAPI.md#estimatefee)
+- [createTransferTransaction](AssetsTransferApi.md#createtransfertransaction)
 
 ## Constructors
 
 ### constructor
 
-• **new AssetsTransferAPI**(`api`)
+• **new AssetsTransferApi**(`api`)
 
 #### Parameters
 
@@ -33,7 +32,7 @@
 
 #### Defined in
 
-[AssetsTransferAPI.ts:31](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L31)
+AssetsTransferApi.ts:32
 
 ## Properties
 
@@ -43,7 +42,7 @@
 
 #### Defined in
 
-[AssetsTransferAPI.ts:27](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L27)
+AssetsTransferApi.ts:28
 
 ___
 
@@ -53,7 +52,7 @@ ___
 
 #### Defined in
 
-[AssetsTransferAPI.ts:28](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L28)
+AssetsTransferApi.ts:29
 
 ___
 
@@ -63,7 +62,7 @@ ___
 
 #### Defined in
 
-[AssetsTransferAPI.ts:29](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L29)
+AssetsTransferApi.ts:30
 
 ## Methods
 
@@ -96,26 +95,4 @@ chain to another.
 
 #### Defined in
 
-[AssetsTransferAPI.ts:47](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L47)
-
-___
-
-### estimateFee
-
-▸ **estimateFee**(`tx`): `void`
-
-Return a partialFee of the
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `tx` | `string` \| `Bytes` | Transaction to estimate the fee for |
-
-#### Returns
-
-`void`
-
-#### Defined in
-
-[AssetsTransferAPI.ts:108](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/AssetsTransferAPI.ts#L108)
+AssetsTransferApi.ts:48

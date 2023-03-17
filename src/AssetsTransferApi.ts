@@ -24,7 +24,7 @@ import {
 	ITransferArgsOpts,
 } from './types';
 
-export class AssetsTransferAPI {
+export class AssetsTransferApi {
 	readonly _api: ApiPromise;
 	readonly _info: Promise<IChainInfo>;
 	readonly _safeXcmVersion: Promise<u32>;
