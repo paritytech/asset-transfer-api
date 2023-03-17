@@ -16,6 +16,7 @@
 
 - [format](internal_.ITransferArgsOpts.md#format)
 - [isLimited](internal_.ITransferArgsOpts.md#islimited)
+- [keepAlive](internal_.ITransferArgsOpts.md#keepalive)
 - [payFeeWith](internal_.ITransferArgsOpts.md#payfeewith)
 - [payFeeWithTo](internal_.ITransferArgsOpts.md#payfeewithto)
 - [weightLimit](internal_.ITransferArgsOpts.md#weightlimit)
@@ -35,7 +36,7 @@ a `payload` or `call` will return a hex.
 
 #### Defined in
 
-[types.ts:31](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L31)
+[types.ts:31](https://github.com/paritytech/asset-transfer-api/blob/b541e33/src/types.ts#L31)
 
 ___
 
@@ -48,7 +49,20 @@ Deafult is unlimited.
 
 #### Defined in
 
-[types.ts:46](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L46)
+[types.ts:46](https://github.com/paritytech/asset-transfer-api/blob/b541e33/src/types.ts#L46)
+
+___
+
+### keepAlive
+
+• `Optional` **keepAlive**: `boolean`
+
+For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
+to a `transfer`.
+
+#### Defined in
+
+[types.ts:61](https://github.com/paritytech/asset-transfer-api/blob/b541e33/src/types.ts#L61)
 
 ___
 
@@ -62,7 +76,7 @@ Statemine: default KSM
 
 #### Defined in
 
-[types.ts:37](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L37)
+[types.ts:37](https://github.com/paritytech/asset-transfer-api/blob/b541e33/src/types.ts#L37)
 
 ___
 
@@ -74,7 +88,7 @@ AssetId to pay fee's on the destination parachain.
 
 #### Defined in
 
-[types.ts:41](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L41)
+[types.ts:41](https://github.com/paritytech/asset-transfer-api/blob/b541e33/src/types.ts#L41)
 
 ___
 
@@ -87,7 +101,7 @@ If not inputted it will default to `Unlimited`.
 
 #### Defined in
 
-[types.ts:51](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L51)
+[types.ts:51](https://github.com/paritytech/asset-transfer-api/blob/b541e33/src/types.ts#L51)
 
 ___
 
@@ -100,4 +114,4 @@ will be queried, and if there is no supported version a safe version will be que
 
 #### Defined in
 
-[types.ts:56](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/types.ts#L56)
+[types.ts:56](https://github.com/paritytech/asset-transfer-api/blob/b541e33/src/types.ts#L56)

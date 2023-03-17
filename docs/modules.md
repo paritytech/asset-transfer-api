@@ -10,7 +10,7 @@
 
 ### Classes
 
-- [AssetsTransferAPI](classes/AssetsTransferAPI.md)
+- [AssetsTransferApi](classes/AssetsTransferApi.md)
 
 ### Functions
 
@@ -37,4 +37,4 @@ Construct an Polkadot-js Api-Promise
 
 #### Defined in
 
-[constructApiPromise.ts:11](https://github.com/paritytech/asset-transfer-api/blob/747fa4b/src/constructApiPromise.ts#L11)
+[constructApiPromise.ts:11](https://github.com/paritytech/asset-transfer-api/blob/b541e33/src/constructApiPromise.ts#L11)
