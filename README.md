@@ -20,9 +20,9 @@
 
 ## About
 
-**BETA**: This package is in beta and is being rapidly and actively developed on, so some design choices are subject to change.
+**ALPHA**: This package is in alpha and is being rapidly and actively developed on, so some design choices are subject to change. 
 
-**Summary**: Asset-transfer-api is a library focused on simplifying constructing asset transfers for substrate based chains that involves system parachains like Statemine, and Statemint.
+**Summary**: Asset-transfer-api is a library focused on simplifying constructing asset transfers for substrate based chains that involves system parachains like Statemine, and Statemint. It aims to give support between System Parachains, Relay Chains, and parachains. This means sending assets via XCM, or transfering assets locally on a system parachain. 
 
 ### What is supported
 
