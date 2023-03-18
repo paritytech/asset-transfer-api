@@ -32,7 +32,7 @@
 
 #### Defined in
 
-AssetsTransferApi.ts:32
+[AssetsTransferApi.ts:48](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L48)
 
 ## Properties
 
@@ -42,7 +42,7 @@ AssetsTransferApi.ts:32
 
 #### Defined in
 
-AssetsTransferApi.ts:28
+[AssetsTransferApi.ts:44](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L44)
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 #### Defined in
 
-AssetsTransferApi.ts:29
+[AssetsTransferApi.ts:45](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L45)
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 #### Defined in
 
-AssetsTransferApi.ts:30
+[AssetsTransferApi.ts:46](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L46)
 
 ## Methods
 
@@ -70,8 +70,8 @@ AssetsTransferApi.ts:30
 
 ▸ **createTransferTransaction**<`T`\>(`destChainId`, `destAddr`, `assetIds`, `amounts`, `opts?`): `Promise`<[`ConstructedFormat`](../modules/internal_.md#constructedformat)<`T`\>\>
 
-Create an XCM transaction to transfer Assets, or native tokens from one
-chain to another.
+Create an asset transfer transaction. This can be either locally on a systems parachain,
+or between chains using xcm.
 
 #### Type parameters
 
@@ -95,4 +95,4 @@ chain to another.
 
 #### Defined in
 
-AssetsTransferApi.ts:48
+[AssetsTransferApi.ts:64](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L64)

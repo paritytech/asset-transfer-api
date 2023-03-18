@@ -37,4 +37,4 @@ Construct an Polkadot-js Api-Promise
 
 #### Defined in
 
-[constructApiPromise.ts:11](https://github.com/paritytech/asset-transfer-api/blob/b541e33/src/constructApiPromise.ts#L11)
+[constructApiPromise.ts:27](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/constructApiPromise.ts#L27)
