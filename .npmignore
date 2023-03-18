@@ -8,7 +8,7 @@
 !/build
 
 # Ignore specific paths within the build directory
-/build/src/testHelpers
+/build/testHelpers
 
 # Ignore all test files.
 /build/**/*.spec.*
