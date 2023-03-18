@@ -10,7 +10,8 @@
     "lint": "substrate-dev-run-lint",
     "lint:fix": "substrate-dev-run-lint --fix",
     "test": "NODE_ENV=test substrate-exec-jest --detectOpenHandles",
-    "docs": "typedoc"
+    "docs": "typedoc",
+    "deploy": "yarn build && npm publish"
   },
   "repository": {
     "type": "git",
