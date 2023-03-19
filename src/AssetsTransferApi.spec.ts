@@ -111,7 +111,7 @@ describe('AssetTransferAPI', () => {
 			it('Should construct a `transfer` call', async () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['1'],
 					['100'],
 					{
@@ -119,13 +119,13 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 				expect(res).toEqual(
-					'0x32080400f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b9101'
+					'0x3208040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101'
 				);
 			});
 			it('Should construct a `transferKeepAlive` call', async () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['1'],
 					['100'],
 					{
@@ -134,7 +134,7 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 				expect(res).toEqual(
-					'0x32090400f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b9101'
+					'0x3209040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101'
 				);
 			});
 		});

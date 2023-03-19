@@ -32,6 +32,7 @@ import {
 	reserveTransferAssets,
 } from './createXcmCalls';
 import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
+import { checkLocalTxInput } from './errors/checkLocalTxInputs';
 import {
 	ConstructedFormat,
 	Format,
@@ -71,6 +72,26 @@ export class AssetsTransferApi {
 		const { _api, _info, _safeXcmVersion } = this;
 		const { specName } = await _info;
 		const safeXcmVersion = await _safeXcmVersion;
+		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
+			specName.toLowerCase()
+		);
+		/**
+		 * Create a local asset transfer.
+		 */
+		if (SYSTEM_PARACHAINS_IDS.includes(destChainId) && isSystemParachain) {
+			/**
+			 * This will throw a BaseError if the inputs are incorrect and don't
+			 * fit the constraints for creating a local asset transfer.
+			 */
+			checkLocalTxInput(destAddr, assetIds, amounts);
+
+			const tx = opts?.keepAlive
+				? transferKeepAlive(_api, destAddr, assetIds[0], amounts[0])
+				: transfer(_api, destAddr, assetIds[0], amounts[0]);
+
+			return this.constructFormat(tx, opts?.format);
+		}
+
 		/**
 		 * Establish the Transaction Direction
 		 */
@@ -80,9 +101,8 @@ export class AssetsTransferApi {
 				? safeXcmVersion.toNumber()
 				: opts.xcmVersion;
 		const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
-		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
-			specName.toLowerCase()
-		);
+
+		// TODO: Check for xcm construction errors depending on the input.
 
 		/**
 		 * Lengths should match, and indicies between both the amounts and assetIds should match.
@@ -91,17 +111,6 @@ export class AssetsTransferApi {
 			throw Error(
 				'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
 			);
-		}
-
-		/**
-		 * Create a local asset transfer.
-		 */
-		if (SYSTEM_PARACHAINS_IDS.includes(destChainId) && isSystemParachain) {
-			const tx = opts?.keepAlive
-				? transferKeepAlive(_api, destAddr, assetIds[0], amounts[0])
-				: transfer(_api, destAddr, assetIds[0], amounts[0]);
-
-			return this.constructFormat(tx, opts?.format);
 		}
 
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
