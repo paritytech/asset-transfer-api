@@ -18,21 +18,13 @@ import { checkLocalTxInput } from './checkLocalTxInputs';
 
 describe('checkLocalTxInput', () => {
 	it('Should correctly throw an error for incorrect length on `assetds`', () => {
-		const err = () =>
-			checkLocalTxInput(
-				['1', '2'],
-				['1']
-			);
+		const err = () => checkLocalTxInput(['1', '2'], ['1']);
 		expect(err).toThrowError(
 			'Local transactions must have the `assetIds` input be a length of 1, and the `amounts` input be a length of 1'
 		);
 	});
 	it('Should correctly throw an error for incorrect length on `assetds`', () => {
-		const err = () =>
-			checkLocalTxInput(
-				['1'],
-				['1', '2']
-			);
+		const err = () => checkLocalTxInput(['1'], ['1', '2']);
 		expect(err).toThrowError(
 			'Local transactions must have the `assetIds` input be a length of 1, and the `amounts` input be a length of 1'
 		);

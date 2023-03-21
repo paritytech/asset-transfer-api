@@ -33,6 +33,7 @@ import {
 } from './createXcmCalls';
 import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
 import { checkLocalTxInput } from './errors/checkLocalTxInputs';
+import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	ConstructedFormat,
 	Format,
@@ -40,7 +41,6 @@ import {
 	IDirection,
 	ITransferArgsOpts,
 } from './types';
-import { sanitizeAddress } from './sanitize/sanitizeAddress';
 
 export class AssetsTransferApi {
 	readonly _api: ApiPromise;
@@ -77,8 +77,8 @@ export class AssetsTransferApi {
 			specName.toLowerCase()
 		);
 
-		// Sanitize the address to a hex, and ensure that there 
-		let addr = sanitizeAddress(destAddr);
+		// Sanitize the address to a hex, and ensure that there
+		const addr = sanitizeAddress(destAddr);
 		/**
 		 * Create a local asset transfer.
 		 */

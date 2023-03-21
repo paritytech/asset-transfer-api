@@ -17,9 +17,9 @@ describe('sanitizeAddress', () => {
 			'0x14d97bde56483534b553ec13c1867924b2eb559cbf9767090af5d8ecf8ee2936'
 		);
 	});
-    it('Should error with an invalid address', () => {
-        expect(
-			() => sanitizeAddress('5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDwU')
-		).toThrowError('Invalid decoded address checksum')
-    });
+	it('Should error with an invalid address', () => {
+		expect(() =>
+			sanitizeAddress('5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDwU')
+		).toThrowError('Invalid decoded address checksum');
+	});
 });

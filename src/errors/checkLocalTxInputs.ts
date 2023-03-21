@@ -24,10 +24,7 @@ import { BaseError } from './BaseError';
  * @param assetIds
  * @param amounts
  */
-export const checkLocalTxInput = (
-	assetIds: string[],
-	amounts: string[]
-) => {
+export const checkLocalTxInput = (assetIds: string[], amounts: string[]) => {
 	// Ensure the lengths in assetIds and amounts is correct
 	if (assetIds.length !== 1 || amounts.length !== 1) {
 		throw new BaseError(
