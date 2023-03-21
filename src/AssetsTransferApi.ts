@@ -77,7 +77,10 @@ export class AssetsTransferApi {
 			specName.toLowerCase()
 		);
 
-		// Sanitize the address to a hex, and ensure that there
+		/**
+		 * Sanitize the address to a hex, and ensure that the past in SS58, or publickey
+		 * is validated correctly.
+		 */
 		const addr = sanitizeAddress(destAddr);
 		/**
 		 * Create a local asset transfer.
