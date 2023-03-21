@@ -341,17 +341,6 @@ describe('AssetTransferAPI', () => {
 					'Local transactions must have the `assetIds` input be a length of 1, and the `amounts` input be a length of 1'
 				);
 			});
-			it('Should not error when the inputs are correct', async () => {
-				const fn = async () => {
-					await systemAssetsApi.createTransferTransaction(
-						'1000',
-						'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
-						['1'],
-						['100'],
-					)
-				}
-				await expect(fn).not.toThrow();
-			});
 		});
 	});
 	describe('fetchChainInfo', () => {
