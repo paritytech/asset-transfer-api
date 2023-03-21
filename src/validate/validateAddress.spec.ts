@@ -6,6 +6,13 @@ describe('validateAddress', () => {
 			validateAddress('5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG')
 		).toEqual([true, undefined]);
 	});
+	it('Should error with a hex address', () => {
+		expect(
+			validateAddress(
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b'
+			)
+		).toEqual([false, 'Invalid address, hex is not supported']);
+	});
 	it('Should error with a nonsense address', () => {
 		expect(validateAddress('hello')).toEqual([
 			false,

@@ -32,7 +32,7 @@ export const validateAddress = (
 	let u8Address;
 
 	if (isHex(address)) {
-		u8Address = Uint8Array.from(Buffer.from(address.slice(2), 'hex'));
+		return [false, 'Invalid address, hex is not supported'];
 	} else {
 		try {
 			u8Address = base58Decode(address);
