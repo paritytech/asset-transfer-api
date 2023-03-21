@@ -17,23 +17,9 @@
 import { checkLocalTxInput } from './checkLocalTxInputs';
 
 describe('checkLocalTxInput', () => {
-	it('Should correctly throw an error when the address is hex', () => {
-		const err = () => checkLocalTxInput('0x00', ['1'], ['1']);
-		expect(err).toThrowError('Invalid address, hex is not supported');
-	});
-	it('Should correctly throw the error `Invalid decoded address checksum`', () => {
-		const err = () =>
-			checkLocalTxInput(
-				'5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDwU',
-				['1'],
-				['1']
-			);
-		expect(err).toThrowError('Invalid decoded address checksum');
-	});
 	it('Should correctly throw an error for incorrect length on `assetds`', () => {
 		const err = () =>
 			checkLocalTxInput(
-				'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 				['1', '2'],
 				['1']
 			);
@@ -44,7 +30,6 @@ describe('checkLocalTxInput', () => {
 	it('Should correctly throw an error for incorrect length on `assetds`', () => {
 		const err = () =>
 			checkLocalTxInput(
-				'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 				['1'],
 				['1', '2']
 			);
