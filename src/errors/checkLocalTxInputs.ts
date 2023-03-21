@@ -30,7 +30,6 @@ export const checkLocalTxInput = (
 	assetIds: string[],
 	amounts: string[]
 ) => {
-	// TODO: Add Ethereum support
 	// Ensure the address is a valid Substrate address
 	const [isValid, errorMsg] = validateAddress(addr);
 	if (!isValid) {

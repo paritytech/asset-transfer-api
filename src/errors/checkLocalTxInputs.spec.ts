@@ -17,9 +17,9 @@
 import { checkLocalTxInput } from './checkLocalTxInputs';
 
 describe('checkLocalTxInput', () => {
-	it('Should correctly throw the error `Invalid address format`', () => {
+	it('Should correctly throw an error when the address is hex', () => {
 		const err = () => checkLocalTxInput('0x00', ['1'], ['1']);
-		expect(err).toThrowError('Invalid address format');
+		expect(err).toThrowError('Invalid address, hex is not supported');
 	});
 	it('Should correctly throw the error `Invalid decoded address checksum`', () => {
 		const err = () =>
