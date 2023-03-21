@@ -14,8 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { isHex } from '@polkadot/util';
-import { base58Decode, checkAddressChecksum } from '@polkadot/util-crypto';
+import { hexToU8a, isHex } from '@polkadot/util';
+import {
+	base58Decode,
+	checkAddressChecksum,
+	encodeAddress,
+} from '@polkadot/util-crypto';
 import { defaults } from '@polkadot/util-crypto/address/defaults';
 
 /**
@@ -30,9 +34,8 @@ export const validateAddress = (
 	address: string
 ): [boolean, string | undefined] => {
 	let u8Address;
-
 	if (isHex(address)) {
-		return [false, 'Invalid address, hex is not supported'];
+		u8Address = base58Decode(encodeAddress(hexToU8a(address)));
 	} else {
 		try {
 			u8Address = base58Decode(address);

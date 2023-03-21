@@ -33,6 +33,7 @@ import {
 } from './createXcmCalls';
 import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
 import { checkLocalTxInput } from './errors/checkLocalTxInputs';
+import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	ConstructedFormat,
 	Format,
@@ -75,6 +76,12 @@ export class AssetsTransferApi {
 		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			specName.toLowerCase()
 		);
+
+		/**
+		 * Sanitize the address to a hex, and ensure that the past in SS58, or publickey
+		 * is validated correctly.
+		 */
+		const addr = sanitizeAddress(destAddr);
 		/**
 		 * Create a local asset transfer.
 		 */
@@ -83,11 +90,11 @@ export class AssetsTransferApi {
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			checkLocalTxInput(destAddr, assetIds, amounts);
+			checkLocalTxInput(assetIds, amounts);
 
 			const tx = opts?.keepAlive
-				? transferKeepAlive(_api, destAddr, assetIds[0], amounts[0])
-				: transfer(_api, destAddr, assetIds[0], amounts[0]);
+				? transferKeepAlive(_api, addr, assetIds[0], amounts[0])
+				: transfer(_api, addr, assetIds[0], amounts[0]);
 
 			return this.constructFormat(tx, opts?.format);
 		}
@@ -118,7 +125,7 @@ export class AssetsTransferApi {
 			transaction = limitedReserveTransferAssets(
 				_api,
 				xcmDirection,
-				destAddr,
+				addr,
 				assetIds,
 				amounts,
 				destChainId,
@@ -129,7 +136,7 @@ export class AssetsTransferApi {
 			transaction = reserveTransferAssets(
 				_api,
 				xcmDirection,
-				destAddr,
+				addr,
 				assetIds,
 				amounts,
 				destChainId,

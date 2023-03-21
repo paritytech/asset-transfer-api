@@ -22,12 +22,12 @@ describe('validateAddress', () => {
 			validateAddress('5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG')
 		).toEqual([true, undefined]);
 	});
-	it('Should error with a hex address', () => {
+	it('Should not error with a valid hex address', () => {
 		expect(
 			validateAddress(
-				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b'
+				'0x14d97bde56483534b553ec13c1867924b2eb559cbf9767090af5d8ecf8ee2936'
 			)
-		).toEqual([false, 'Invalid address, hex is not supported']);
+		).toEqual([true, undefined]);
 	});
 	it('Should error with a nonsense address', () => {
 		expect(validateAddress('hello')).toEqual([

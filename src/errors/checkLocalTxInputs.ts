@@ -14,28 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { validateAddress } from '../validate/validateAddress';
 import { BaseError } from './BaseError';
 
 /**
  * Check a local transactions inputs to ensure they are correct.
  * If there is an issue it will throw a descriptive message.
  *
- * @param addr
  * @param assetIds
  * @param amounts
  */
-export const checkLocalTxInput = (
-	addr: string,
-	assetIds: string[],
-	amounts: string[]
-) => {
-	// Ensure the address is a valid Substrate address
-	const [isValid, errorMsg] = validateAddress(addr);
-	if (!isValid) {
-		throw new BaseError(errorMsg as string);
-	}
-
+export const checkLocalTxInput = (assetIds: string[], amounts: string[]) => {
 	// Ensure the lengths in assetIds and amounts is correct
 	if (assetIds.length !== 1 || amounts.length !== 1) {
 		throw new BaseError(
