@@ -20,7 +20,6 @@ import { BaseError } from './BaseError';
  * Check a local transactions inputs to ensure they are correct.
  * If there is an issue it will throw a descriptive message.
  *
- * @param addr
  * @param assetIds
  * @param amounts
  */
