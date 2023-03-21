@@ -106,12 +106,16 @@ const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
 const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
 
 describe('AssetTransferAPI', () => {
+	/**
+	 * A lot of the tests under `createTransferTransaction` can be seen as integration tests since
+	 * they practically use the whole system. These tests exist to ensure things are working from a top down level.
+	 */
 	describe('createTransferTransaction', () => {
 		describe('Local Asset Transfer', () => {
 			it('Should construct a `transfer` call', async () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['1'],
 					['100'],
 					{
@@ -119,13 +123,13 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 				expect(res).toEqual(
-					'0x32080400f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b9101'
+					'0x3208040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101'
 				);
 			});
 			it('Should construct a `transferKeepAlive` call', async () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['1'],
 					['100'],
 					{
@@ -134,7 +138,7 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 				expect(res).toEqual(
-					'0x32090400f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b9101'
+					'0x3209040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101'
 				);
 			});
 		});
@@ -310,6 +314,32 @@ describe('AssetTransferAPI', () => {
 					const res = await baseRelayCreateTx('submittable', false, 1);
 					expect(res.toRawType()).toEqual('Extrinsic');
 				});
+			});
+		});
+		describe('checkLocalTxInput', () => {
+			it('Should correctly throw the error `Invalid address, hex is not supported`', async () => {
+				const err = async () =>
+					await systemAssetsApi.createTransferTransaction(
+						'1000',
+						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+						['1', '2'],
+						['100', '100']
+					);
+				await expect(err()).rejects.toThrow(
+					'Invalid address, hex is not supported'
+				);
+			});
+			it('Should error when the assetIds or amounts is the incorrect length', async () => {
+				const err = async () =>
+					await systemAssetsApi.createTransferTransaction(
+						'1000',
+						'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
+						['1', '2'],
+						['100', '100']
+					);
+				await expect(err()).rejects.toThrow(
+					'Local transactions must have the `assetIds` input be a length of 1, and the `amounts` input be a length of 1'
+				);
 			});
 		});
 	});
