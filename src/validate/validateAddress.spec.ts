@@ -22,7 +22,7 @@ describe('validateAddress', () => {
 			validateAddress('5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG')
 		).toEqual([true, undefined]);
 	});
-	it('Should note error with a valid hex address', () => {
+	it('Should not error with a valid hex address', () => {
 		expect(
 			validateAddress(
 				'0x14d97bde56483534b553ec13c1867924b2eb559cbf9767090af5d8ecf8ee2936'
