@@ -2,10 +2,11 @@
   "name": "@substrate/asset-transfer-api",
   "version": "0.1.0-alpha.0",
   "description": "",
+  "main": "lib/index.js",
   "scripts": {
-    "build": "substrate-exec-rimraf ./build && substrate-exec-tsc",
+    "build": "substrate-exec-rimraf ./lib && substrate-exec-tsc",
     "build:scripts": "substrate-exec-rimraf scripts/build/ && substrate-exec-tsc --project scripts/tsconfig.json",
-    "start": "node ./build/index.js",
+    "start": "node ./lib/index.js",
     "start:zombienet-post-script": "yarn build:scripts && node ./scripts/build/testNetworkSetup.js",
     "lint": "substrate-dev-run-lint",
     "lint:fix": "substrate-dev-run-lint --fix",

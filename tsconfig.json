@@ -2,7 +2,7 @@
     "extends": "@substrate/dev/config/tsconfig.json",
     "compilerOptions": {
       "baseUrl": ".",
-      "outDir": "build",
+      "outDir": "lib",
       "rootDirs": ["./src", "./scripts"],
       "suppressImplicitAnyIndexErrors": true,
       "resolveJsonModule": true,
