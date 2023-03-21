@@ -8,7 +8,7 @@ describe('sanitizeAddress', () => {
 			'0x14d97bde56483534b553ec13c1867924b2eb559cbf9767090af5d8ecf8ee2936'
 		);
 	});
-	it('Should the public key if its already valid', () => {
+	it('Should return the public key if its already valid', () => {
 		expect(
 			sanitizeAddress(
 				'0x14d97bde56483534b553ec13c1867924b2eb559cbf9767090af5d8ecf8ee2936'
