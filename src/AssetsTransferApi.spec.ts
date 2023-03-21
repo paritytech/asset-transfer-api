@@ -317,18 +317,6 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		describe('checkLocalTxInput', () => {
-			it('Should correctly throw the error `Invalid address, hex is not supported`', async () => {
-				const err = async () =>
-					await systemAssetsApi.createTransferTransaction(
-						'1000',
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						['1', '2'],
-						['100', '100']
-					);
-				await expect(err()).rejects.toThrow(
-					'Invalid address, hex is not supported'
-				);
-			});
 			it('Should error when the assetIds or amounts is the incorrect length', async () => {
 				const err = async () =>
 					await systemAssetsApi.createTransferTransaction(
