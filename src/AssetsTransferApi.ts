@@ -136,12 +136,6 @@ export class AssetsTransferApi {
 			);
 		}
 
-		{
-			('');
-			('');
-			('');
-			('');
-		}
 		return this.constructFormat<T>(
 			transaction,
 			xcmDirection,
