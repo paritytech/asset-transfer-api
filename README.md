@@ -174,7 +174,7 @@ For more information, refer to the [docs](https://github.com/paritytech/asset-tr
 
 ## License
 
-The source code in this repository is distributed under the GPLv3 license. See the <LICENSE> file. This source code comes with absolutely no warranty. Use at your own risk.
+The source code in this repository is distributed under the Apache 2.0 license. See the <LICENSE> file. This source code comes with absolutely no warranty. Use at your own risk.
 
 ## Zombienet Testing
 
