@@ -36,7 +36,7 @@ a `payload` or `call` will return a hex.
 
 #### Defined in
 
-[types.ts:47](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L47)
+[types.ts:49](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L49)
 
 ___
 
@@ -49,7 +49,7 @@ Deafult is unlimited.
 
 #### Defined in
 
-[types.ts:62](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L62)
+[types.ts:64](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L64)
 
 ___
 
@@ -62,7 +62,7 @@ to a `transfer`.
 
 #### Defined in
 
-[types.ts:77](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L77)
+[types.ts:79](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L79)
 
 ___
 
@@ -76,7 +76,7 @@ Statemine: default KSM
 
 #### Defined in
 
-[types.ts:53](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L53)
+[types.ts:55](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L55)
 
 ___
 
@@ -88,7 +88,7 @@ AssetId to pay fee's on the destination parachain.
 
 #### Defined in
 
-[types.ts:57](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L57)
+[types.ts:59](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L59)
 
 ___
 
@@ -101,7 +101,7 @@ If not inputted it will default to `Unlimited`.
 
 #### Defined in
 
-[types.ts:67](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L67)
+[types.ts:69](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L69)
 
 ___
 
@@ -114,4 +114,4 @@ will be queried, and if there is no supported version a safe version will be que
 
 #### Defined in
 
-[types.ts:72](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L72)
+[types.ts:74](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L74)
