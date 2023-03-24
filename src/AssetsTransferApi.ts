@@ -234,15 +234,16 @@ export class AssetsTransferApi {
 		format?: T
 	): TxResult<T> {
 		const { _api } = this;
+		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			direction,
 			xcmVersion,
 			method,
-			format: format as Format | 'local',
+			format: fmt as Format | 'local',
 			tx: '' as ConstructedFormat<T>,
 		};
 
-		if (format === 'call') {
+		if (fmt === 'call') {
 			result.tx = _api.registry
 				.createType('Call', {
 					callIndex: tx.callIndex,
@@ -251,11 +252,11 @@ export class AssetsTransferApi {
 				.toHex() as ConstructedFormat<T>;
 		}
 
-		if (format === 'submittable') {
+		if (fmt === 'submittable') {
 			result.tx = tx as ConstructedFormat<T>;
 		}
 
-		if (format === 'payload') {
+		if (fmt === 'payload') {
 			result.tx = _api.registry
 				.createType('ExtrinsicPayload', tx, {
 					version: tx.version,
