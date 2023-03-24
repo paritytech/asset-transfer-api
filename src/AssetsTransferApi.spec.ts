@@ -7,7 +7,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import { AssetsTransferApi } from './AssetsTransferApi';
 import { mockRelayApi } from './testHelpers/mockRelayApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
-import { ConstructedFormat, Format } from './types';
+import { Format, IDirection, TxResult } from './types';
 
 const getSystemRuntimeVersion = () =>
 	Promise.resolve().then(() => {
@@ -133,7 +133,7 @@ describe('AssetTransferAPI', () => {
 				format: T,
 				isLimited: boolean,
 				xcmVersion: number
-			): Promise<ConstructedFormat<T>> => {
+			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -161,7 +161,7 @@ describe('AssetTransferAPI', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V0', async () => {
 					const res = await baseSystemCreateTx('submittable', true, 0);
-					expect(res.toRawType()).toEqual('Extrinsic');
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V0', async () => {
 					const res = await baseSystemCreateTx('call', false, 0);
@@ -177,7 +177,7 @@ describe('AssetTransferAPI', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V0', async () => {
 					const res = await baseSystemCreateTx('submittable', false, 0);
-					expect(res.toRawType()).toEqual('Extrinsic');
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V1', () => {
@@ -195,7 +195,7 @@ describe('AssetTransferAPI', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V0', async () => {
 					const res = await baseSystemCreateTx('submittable', true, 1);
-					expect(res.toRawType()).toEqual('Extrinsic');
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V1', async () => {
 					const res = await baseSystemCreateTx('call', false, 1);
@@ -211,7 +211,7 @@ describe('AssetTransferAPI', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V0', async () => {
 					const res = await baseSystemCreateTx('submittable', false, 1);
-					expect(res.toRawType()).toEqual('Extrinsic');
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 		});
@@ -220,7 +220,7 @@ describe('AssetTransferAPI', () => {
 				format: T,
 				isLimited: boolean,
 				xcmVersion: number
-			): Promise<ConstructedFormat<T>> => {
+			): Promise<TxResult<T>> => {
 				return await relayAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -248,7 +248,7 @@ describe('AssetTransferAPI', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V0', async () => {
 					const res = await baseRelayCreateTx('submittable', true, 0);
-					expect(res.toRawType()).toEqual('Extrinsic');
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V0', async () => {
 					const res = await baseRelayCreateTx('call', false, 0);
@@ -264,7 +264,7 @@ describe('AssetTransferAPI', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V0', async () => {
 					const res = await baseRelayCreateTx('submittable', false, 0);
-					expect(res.toRawType()).toEqual('Extrinsic');
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V1', () => {
@@ -282,7 +282,7 @@ describe('AssetTransferAPI', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V0', async () => {
 					const res = await baseRelayCreateTx('submittable', true, 1);
-					expect(res.toRawType()).toEqual('Extrinsic');
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V0', async () => {
 					const res = await baseRelayCreateTx('call', false, 1);
@@ -298,7 +298,7 @@ describe('AssetTransferAPI', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V0', async () => {
 					const res = await baseRelayCreateTx('submittable', false, 1);
-					expect(res.toRawType()).toEqual('Extrinsic');
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 		});
@@ -341,6 +341,9 @@ describe('AssetTransferAPI', () => {
 		it('Should construct the correct call', () => {
 			const res = systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
+				IDirection.SystemToPara,
+				1,
+				'limitedReserveTransferAssets',
 				'call'
 			);
 			expect(res).toEqual(
@@ -350,6 +353,9 @@ describe('AssetTransferAPI', () => {
 		it('Should construct the correct payload', () => {
 			const res = systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
+				IDirection.SystemToPara,
+				1,
+				'limitedReserveTransferAssets',
 				'payload'
 			);
 			expect(res).toEqual(
@@ -359,9 +365,12 @@ describe('AssetTransferAPI', () => {
 		it('Should construct the correct submittable', () => {
 			const res = systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
+				IDirection.SystemToPara,
+				1,
+				'limitedReserveTransferAssets',
 				'submittable'
 			);
-			expect(res.toRawType()).toEqual('Extrinsic');
+			expect(res.tx.toRawType()).toEqual('Extrinsic');
 		});
 	});
 	describe('fetchSafeXcmVersion', () => {

@@ -22,6 +22,22 @@ export type ConstructedFormat<T> = T extends 'payload'
 	? SubmittableExtrinsic<'promise', ISubmittableResult>
 	: never;
 
+export type IMethods =
+	| 'transfer'
+	| 'transferKeepAlive'
+	| 'reserveTransferAssets'
+	| 'limitedReserveTransferAssets'
+	| 'teleportAssets'
+	| 'limitedTeleportAssets';
+
+export interface TxResult<T> {
+	format: string;
+	xcmVersion: number | null;
+	direction: IDirection | 'local';
+	method: IMethods;
+	tx: ConstructedFormat<T>;
+}
+
 export interface ITransferArgsOpts<T extends Format> {
 	/**
 	 * Option that specifies the format in which to return a transaction.
