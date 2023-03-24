@@ -32,7 +32,7 @@
 
 #### Defined in
 
-[AssetsTransferApi.ts:48](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L48)
+[AssetsTransferApi.ts:38](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L38)
 
 ## Properties
 
@@ -42,7 +42,7 @@
 
 #### Defined in
 
-[AssetsTransferApi.ts:44](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L44)
+[AssetsTransferApi.ts:34](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L34)
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 #### Defined in
 
-[AssetsTransferApi.ts:45](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L45)
+[AssetsTransferApi.ts:35](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L35)
 
 ___
 
@@ -62,13 +62,13 @@ ___
 
 #### Defined in
 
-[AssetsTransferApi.ts:46](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L46)
+[AssetsTransferApi.ts:36](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L36)
 
 ## Methods
 
 ### createTransferTransaction
 
-▸ **createTransferTransaction**<`T`\>(`destChainId`, `destAddr`, `assetIds`, `amounts`, `opts?`): `Promise`<[`ConstructedFormat`](../modules/internal_.md#constructedformat)<`T`\>\>
+▸ **createTransferTransaction**<`T`\>(`destChainId`, `destAddr`, `assetIds`, `amounts`, `opts?`): `Promise`<[`TxResult`](../interfaces/internal_.TxResult.md)<`T`\>\>
 
 Create an asset transfer transaction. This can be either locally on a systems parachain,
 or between chains using xcm.
@@ -91,8 +91,8 @@ or between chains using xcm.
 
 #### Returns
 
-`Promise`<[`ConstructedFormat`](../modules/internal_.md#constructedformat)<`T`\>\>
+`Promise`<[`TxResult`](../interfaces/internal_.TxResult.md)<`T`\>\>
 
 #### Defined in
 
-[AssetsTransferApi.ts:64](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/AssetsTransferApi.ts#L64)
+[AssetsTransferApi.ts:54](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L54)

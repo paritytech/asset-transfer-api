@@ -12,11 +12,13 @@
 
 - [IChainInfo](../interfaces/internal_.IChainInfo.md)
 - [ITransferArgsOpts](../interfaces/internal_.ITransferArgsOpts.md)
+- [TxResult](../interfaces/internal_.TxResult.md)
 
 ### Type Aliases
 
 - [ConstructedFormat](internal_.md#constructedformat)
 - [Format](internal_.md#format)
+- [IMethods](internal_.md#imethods)
 
 ## Type Aliases
 
@@ -32,7 +34,7 @@
 
 #### Defined in
 
-[types.ts:31](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L31)
+[types.ts:17](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L17)
 
 ___
 
@@ -42,4 +44,14 @@ ___
 
 #### Defined in
 
-[types.ts:29](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L29)
+[types.ts:15](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L15)
+
+___
+
+### IMethods
+
+Ƭ **IMethods**: ``"transfer"`` \| ``"transferKeepAlive"`` \| ``"reserveTransferAssets"`` \| ``"limitedReserveTransferAssets"`` \| ``"teleportAssets"`` \| ``"limitedTeleportAssets"``
+
+#### Defined in
+
+[types.ts:25](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L25)

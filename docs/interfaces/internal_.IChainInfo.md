@@ -19,7 +19,7 @@
 
 #### Defined in
 
-[types.ts:81](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L81)
+[types.ts:83](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L83)
 
 ___
 
@@ -29,4 +29,4 @@ ___
 
 #### Defined in
 
-[types.ts:82](https://github.com/paritytech/asset-transfer-api/blob/84176ef/src/types.ts#L82)
+[types.ts:84](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L84)

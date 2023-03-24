@@ -25,7 +25,9 @@ import {
 	Format,
 	IChainInfo,
 	IDirection,
+	IMethods,
 	ITransferArgsOpts,
+	TxResult,
 } from './types';
 
 export class AssetsTransferApi {
@@ -55,7 +57,7 @@ export class AssetsTransferApi {
 		assetIds: string[],
 		amounts: string[],
 		opts?: ITransferArgsOpts<T>
-	): Promise<ConstructedFormat<T>> {
+	): Promise<TxResult<T>> {
 		const { _api, _info, _safeXcmVersion } = this;
 		const { specName } = await _info;
 		const safeXcmVersion = await _safeXcmVersion;
@@ -77,12 +79,13 @@ export class AssetsTransferApi {
 			 * fit the constraints for creating a local asset transfer.
 			 */
 			checkLocalTxInput(assetIds, amounts);
+			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
+			const tx =
+				method === 'transferKeepAlive'
+					? transferKeepAlive(_api, addr, assetIds[0], amounts[0])
+					: transfer(_api, addr, assetIds[0], amounts[0]);
 
-			const tx = opts?.keepAlive
-				? transferKeepAlive(_api, addr, assetIds[0], amounts[0])
-				: transfer(_api, addr, assetIds[0], amounts[0]);
-
-			return this.constructFormat(tx, opts?.format);
+			return this.constructFormat(tx, 'local', null, method, opts?.format);
 		}
 
 		/**
@@ -106,8 +109,10 @@ export class AssetsTransferApi {
 			);
 		}
 
+		let txMethod: IMethods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 		if (opts?.isLimited) {
+			txMethod = 'limitedReserveTransferAssets';
 			transaction = limitedReserveTransferAssets(
 				_api,
 				xcmDirection,
@@ -119,6 +124,7 @@ export class AssetsTransferApi {
 				opts?.weightLimit
 			);
 		} else {
+			txMethod = 'reserveTransferAssets';
 			transaction = reserveTransferAssets(
 				_api,
 				xcmDirection,
@@ -130,7 +136,13 @@ export class AssetsTransferApi {
 			);
 		}
 
-		return this.constructFormat<T>(transaction, opts?.format);
+		return this.constructFormat<T>(
+			transaction,
+			xcmDirection,
+			xcmVersion,
+			txMethod,
+			opts?.format
+		);
 	}
 
 	/**
@@ -216,11 +228,23 @@ export class AssetsTransferApi {
 	 */
 	private constructFormat<T extends Format>(
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
+		direction: IDirection | 'local',
+		xcmVersion: number | null = null,
+		method: IMethods,
 		format?: T
-	): ConstructedFormat<T> {
+	): TxResult<T> {
 		const { _api } = this;
-		if (format === 'call') {
-			return _api.registry
+		const fmt = format ? format : 'payload';
+		const result: TxResult<T> = {
+			direction,
+			xcmVersion,
+			method,
+			format: fmt as Format | 'local',
+			tx: '' as ConstructedFormat<T>,
+		};
+
+		if (fmt === 'call') {
+			result.tx = _api.registry
 				.createType('Call', {
 					callIndex: tx.callIndex,
 					args: tx.args,
@@ -228,15 +252,19 @@ export class AssetsTransferApi {
 				.toHex() as ConstructedFormat<T>;
 		}
 
-		if (format === 'submittable') {
-			return tx as ConstructedFormat<T>;
+		if (fmt === 'submittable') {
+			result.tx = tx as ConstructedFormat<T>;
 		}
 
-		return _api.registry
-			.createType('ExtrinsicPayload', tx, {
-				version: tx.version,
-			})
-			.toHex() as ConstructedFormat<T>;
+		if (fmt === 'payload') {
+			result.tx = _api.registry
+				.createType('ExtrinsicPayload', tx, {
+					version: tx.version,
+				})
+				.toHex() as ConstructedFormat<T>;
+		}
+
+		return result;
 	}
 
 	/**

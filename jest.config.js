@@ -14,7 +14,7 @@ module.exports = {
 	testEnvironment: 'node',
 	maxConcurrency: 3,
 	maxWorkers: '50%',
-	testPathIgnorePatterns: ['/build/', '/node_modules/'],
+	testPathIgnorePatterns: ['/lib/', '/node_modules/'],
 	// The below resolves `jest-haste-map:...`
-	modulePathIgnorePatterns: ['/build']
+	modulePathIgnorePatterns: ['/lib']
 };

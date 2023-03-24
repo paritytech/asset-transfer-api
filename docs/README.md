@@ -22,6 +22,8 @@
 
 ## About
 
+WARNING: THIS PACKAGE IS NOT PRODUCTION READY!
+
 **ALPHA**: This package is in alpha and is being rapidly and actively developed on, so some design choices are subject to change. 
 
 **Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Statemine and Statemint. It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
@@ -116,16 +118,16 @@ interface ITransferArgsOpts<T extends Format> {
 	 */
 	format?: T;
 	/**
-     * NOTE: This is in development, and being worked on and not yet supported.
-     * 
+         * NOTE: This is in development, and being worked on and not yet supported.
+         * 
 	 * AssetId to pay fee's on the current common good parachain.
 	 * Statemint: default DOT
 	 * Statemine: default KSM
 	 */
 	payFeeWith?: string;
 	/**
-     * NOTE: This is in development, and being worked on and not yet supported.
-     * 
+         * NOTE: This is in development, and being worked on and not yet supported.
+         * 
 	 * AssetId to pay fee's on the destination parachain.
 	 */
 	payFeeWithTo?: string;
@@ -144,7 +146,7 @@ interface ITransferArgsOpts<T extends Format> {
 	 * will be queried, and if there is no supported version a safe version will be queried.
 	 */
 	xcmVersion?: number;
-  /**
+        /**
 	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
 	 * to a `transfer`.
 	 */
@@ -174,7 +176,7 @@ For more information, refer to the [docs](https://github.com/paritytech/asset-tr
 
 ## License
 
-The source code in this repository is distributed under the GPLv3 license. See the <LICENSE> file. This source code comes with absolutely no warranty. Use at your own risk.
+The source code in this repository is distributed under the Apache 2.0 license. See the <LICENSE> file. This source code comes with absolutely no warranty. Use at your own risk.
 
 ## Zombienet Testing
 
