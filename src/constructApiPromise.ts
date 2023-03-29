@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { ApiPromise } from '@polkadot/api';
-import { ApiOptions } from '@polkadot/api/types';
+import type { ApiOptions } from '@polkadot/api/types';
 import { WsProvider } from '@polkadot/rpc-provider';
 
 /**
