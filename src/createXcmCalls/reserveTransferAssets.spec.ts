@@ -8,7 +8,7 @@ import { reserveTransferAssets } from './reserveTransferAssets';
 
 describe('reserveTransferAssets', () => {
 	describe('SystemToPara', () => {
-		it('Should correctly construct a tx for a system parachain with V0', () => {
+		it('Should correctly construct a tx for a system parachain with V2', () => {
 			const ext = reserveTransferAssets(
 				mockSystemApi,
 				IDirection.SystemToPara,
@@ -16,22 +16,7 @@ describe('reserveTransferAssets', () => {
 				['1'],
 				['100'],
 				'1000',
-				0
-			);
-
-			expect(ext.toHex()).toBe(
-				'0xe8041f0200010200f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b000101a10f00040a0205320604910100000000'
-			);
-		});
-		it('Should correctly construct a tx for a system parachain with V1', () => {
-			const ext = reserveTransferAssets(
-				mockSystemApi,
-				IDirection.SystemToPara,
-				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['1'],
-				['100'],
-				'1000',
-				1
+				2
 			);
 
 			expect(ext.toHex()).toBe(
@@ -48,7 +33,7 @@ describe('reserveTransferAssets', () => {
 					['1'],
 					['100'],
 					'1000',
-					1
+					2
 				);
 
 			expect(err).toThrowError(

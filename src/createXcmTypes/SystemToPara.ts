@@ -2,8 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type {
-	MultiAssetsV1,
-	MultiAssetV0,
+	MultiAssetsV2,
 	VersionedMultiAssets,
 	VersionedMultiLocation,
 	WeightLimitV2,
@@ -25,21 +24,12 @@ export const SystemToPara: ICreateXcmType = {
 		accountId: string,
 		xcmVersion?: number
 	): VersionedMultiLocation => {
-		if (xcmVersion === 0) {
-			return api.registry.createType('XcmVersionedMultiLocation', {
-				V0: {
-					X1: {
-						AccountId32: {
-							network: 'Any',
-							id: accountId,
-						},
-					},
-				},
-			});
+		if (xcmVersion && xcmVersion < 2) {
+			console.warn('xcmVersion must be 2 or greater');
 		}
 
 		return api.registry.createType('XcmVersionedMultiLocation', {
-			V1: {
+			V2: {
 				parents: 0,
 				interior: {
 					X1: {
@@ -64,14 +54,8 @@ export const SystemToPara: ICreateXcmType = {
 		paraId: string,
 		xcmVersion?: number
 	): VersionedMultiLocation => {
-		if (xcmVersion === 0) {
-			return api.registry.createType('XcmVersionedMultiLocation', {
-				V0: {
-					X1: {
-						parachain: paraId,
-					},
-				},
-			});
+		if (xcmVersion && xcmVersion < 2) {
+			console.warn('xcmVersion must be 2 or greater');
 		}
 
 		/**
@@ -79,7 +63,7 @@ export const SystemToPara: ICreateXcmType = {
 		 * from a system parachain to a sovereign parachain.
 		 */
 		return api.registry.createType('XcmVersionedMultiLocation', {
-			V1: {
+			V2: {
 				parents: 1,
 				interior: {
 					X1: {
@@ -102,6 +86,9 @@ export const SystemToPara: ICreateXcmType = {
 		xcmVersion: number,
 		assets?: string[]
 	): VersionedMultiAssets => {
+		if (xcmVersion < 2) {
+			console.warn('xcmVersion must be 2 or greater');
+		}
 		// TODO: We should consider a centralized place where these errors are check for.
 		if (!assets) {
 			throw Error(
@@ -109,64 +96,37 @@ export const SystemToPara: ICreateXcmType = {
 			);
 		}
 		const palletId = fetchPalletInstanceId(api);
-		/**
-		 * Defaults to V1 if not V0
-		 */
-		if (xcmVersion === 0) {
-			const multiAssets: MultiAssetV0[] = [];
 
-			for (let i = 0; i < assets.length; i++) {
-				const assetId = assets[i];
-				const amount = amounts[i];
-				const multiAsset = {
-					ConcreteFungible: {
-						id: {
+		const multiAssets = [];
+
+		for (let i = 0; i < assets.length; i++) {
+			const assetId = assets[i];
+			const amount = amounts[i];
+			const multiAsset = {
+				id: {
+					Concrete: {
+						parents: 0,
+						interior: {
 							X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 						},
-						amount,
 					},
-				};
+				},
+				fun: {
+					Fungible: amount,
+				},
+			};
 
-				multiAssets.push(
-					api.registry.createType('XcmV0MultiAsset', multiAsset)
-				);
-			}
-
-			return api.registry.createType('XcmVersionedMultiAssets', {
-				V0: multiAssets,
-			});
-		} else {
-			const multiAssets = [];
-
-			for (let i = 0; i < assets.length; i++) {
-				const assetId = assets[i];
-				const amount = amounts[i];
-				const multiAsset = {
-					id: {
-						Concrete: {
-							parents: 0,
-							interior: {
-								X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-							},
-						},
-					},
-					fun: {
-						Fungible: amount,
-					},
-				};
-
-				multiAssets.push(multiAsset);
-			}
-
-			const multiAssetsType: MultiAssetsV1 = api.registry.createType(
-				'XcmV1MultiassetMultiAssets',
-				multiAssets
-			);
-
-			return api.registry.createType('XcmVersionedMultiAssets', {
-				V1: multiAssetsType,
-			});
+			multiAssets.push(multiAsset);
 		}
+
+		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
+			'XcmV2MultiassetMultiAssets',
+			multiAssets
+		);
+
+		return api.registry.createType('XcmVersionedMultiAssets', {
+			V2: multiAssetsType,
+		});
 	},
 	/**
 	 * TODO: Generalize the weight type with V3.

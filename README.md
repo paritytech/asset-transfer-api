@@ -32,7 +32,7 @@ The below chart is focusing on what directions are supported for constructing as
 
 | Direction              | V0                 | V1                 | V2                 | V3                 |
 | ---------------------  | ------------------ | ------------------ | ------------------ | ------------------ |
-| System to Parachain    | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
+| System to Parachain    | :x:                | :x:                | :white_check_mark: | :x:                |
 | System to Relay        | :x:                | :x:                | :x:                | :x:                |
 | Relay to Parachain     | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
 | Relay to System        | :x:                | :x:                | :x:                | :x:                |

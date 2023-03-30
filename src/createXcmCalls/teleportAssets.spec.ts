@@ -6,7 +6,7 @@ import { teleportAssets } from './teleportAssets';
 
 describe('teleportAssets', () => {
 	describe('SystemToPara', () => {
-		it('Should correctly construct a tx for a system parachain with V1', () => {
+		it('Should correctly construct a tx for a system parachain with V2', () => {
 			const ext = teleportAssets(
 				mockSystemApi,
 				IDirection.SystemToPara,
@@ -14,7 +14,7 @@ describe('teleportAssets', () => {
 				['1'],
 				['100'],
 				'1000',
-				1
+				2
 			);
 
 			expect(ext.toHex()).toBe(
@@ -31,7 +31,7 @@ describe('teleportAssets', () => {
 					['1'],
 					['100'],
 					'1000',
-					1
+					2
 				);
 
 			expect(err).toThrowError(
