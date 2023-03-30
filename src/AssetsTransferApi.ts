@@ -96,7 +96,7 @@ export class AssetsTransferApi {
 			opts?.xcmVersion === undefined
 				? safeXcmVersion.toNumber()
 				: opts.xcmVersion;
-		// TODO: Ensure the Xcm Version is either 2 or 3. 
+		// TODO: Ensure the Xcm Version is either 2 or 3.
 		const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
 
 		// TODO: Check for xcm construction errors depending on the input.
