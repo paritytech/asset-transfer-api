@@ -2,3 +2,4 @@
 
 export { BaseError } from './BaseError';
 export { checkLocalTxInput } from './checkLocalTxInputs';
+export { checkXcmVersion } from './checkXcmVersion';

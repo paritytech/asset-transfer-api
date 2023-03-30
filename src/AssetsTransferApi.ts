@@ -18,7 +18,7 @@ import {
 	reserveTransferAssets,
 } from './createXcmCalls';
 import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
-import { checkLocalTxInput } from './errors/checkLocalTxInputs';
+import { checkLocalTxInput, checkXcmVersion } from './errors';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	ConstructedFormat,
@@ -79,7 +79,7 @@ export class AssetsTransferApi {
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			checkLocalTxInput(assetIds, amounts);
+			checkLocalTxInput(assetIds, amounts); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
 			const tx =
 				method === 'transferKeepAlive'
@@ -93,12 +93,15 @@ export class AssetsTransferApi {
 		 * Establish the Transaction Direction
 		 */
 		const xcmDirection = this.establishDirection(destChainId, specName);
+		const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
+		/**
+		 * Establish an xcmVersion
+		 */
 		const xcmVersion =
 			opts?.xcmVersion === undefined
 				? safeXcmVersion.toNumber()
 				: opts.xcmVersion;
-		// TODO: Ensure the Xcm Version is either 2 or 3.
-		const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
+		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
 
 		// TODO: Check for xcm construction errors depending on the input.
 
