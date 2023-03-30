@@ -30,14 +30,14 @@ WARNING: THIS PACKAGE IS NOT PRODUCTION READY!
 
 The below chart is focusing on what directions are supported for constructing asset transfers and in what XCM version. The goal is to have everything in green checkmarks. Note that local transfers (intra-chain) are not visualized here.
 
-| Direction              | V0                 | V1                 | V2                 | V3                 |
-| ---------------------  | ------------------ | ------------------ | ------------------ | ------------------ |
-| System to Parachain    | :x:                | :x:                | :white_check_mark: | :x:                |
-| System to Relay        | :x:                | :x:                | :x:                | :x:                |
-| Relay to Parachain     | :white_check_mark: | :white_check_mark: | :x:                | :x:                |
-| Relay to System        | :x:                | :x:                | :x:                | :x:                |
-| Parachain to Parachain | :x:                | :x:                | :x:                | :x:                |
-| Parachain to Relay     | :x:                | :x:                | :x:                | :x:                |
+| Direction              | V2                 | V3                 |
+| ---------------------  | ------------------ | ------------------ |
+| System to Parachain    | :white_check_mark: | :x:                |
+| System to Relay        | :x:                | :x:                |
+| Relay to Parachain     | :white_check_mark: | :x:                |
+| Relay to System        | :x:                | :x:                |
+| Parachain to Parachain | :x:                | :x:                |
+| Parachain to Relay     | :x:                | :x:                |
 
 Note: System refers to System Parachains like `Statemine` and `Statemint`.
 
