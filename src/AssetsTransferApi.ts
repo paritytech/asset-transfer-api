@@ -61,9 +61,10 @@ export class AssetsTransferApi {
 		const { _api, _info, _safeXcmVersion } = this;
 		const { specName } = await _info;
 		const safeXcmVersion = await _safeXcmVersion;
-		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
+		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			specName.toLowerCase()
 		);
+		const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
 
 		/**
 		 * Sanitize the address to a hex, and ensure that the past in SS58, or publickey
@@ -73,7 +74,7 @@ export class AssetsTransferApi {
 		/**
 		 * Create a local asset transfer.
 		 */
-		if (SYSTEM_PARACHAINS_IDS.includes(destChainId) && isSystemParachain) {
+		if (isDestSystemParachain && isOriginSystemParachain) {
 			/**
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
