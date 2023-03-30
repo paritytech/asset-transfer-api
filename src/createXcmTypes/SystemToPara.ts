@@ -7,6 +7,7 @@ import type {
 	VersionedMultiLocation,
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
+import { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { ICreateXcmType, IWeightLimit } from './types';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
@@ -24,17 +25,28 @@ export const SystemToPara: ICreateXcmType = {
 		accountId: string,
 		xcmVersion?: number
 	): VersionedMultiLocation => {
-		if (xcmVersion && xcmVersion < 2) {
-			console.warn('xcmVersion must be 2 or greater');
+		if (xcmVersion == 2) {
+			return api.registry.createType('XcmVersionedMultiLocation', {
+				V2: {
+					parents: 0,
+					interior: {
+						X1: {
+							AccountId32: {
+								network: 'Any',
+								id: accountId,
+							},
+						},
+					},
+				},
+			});
 		}
 
 		return api.registry.createType('XcmVersionedMultiLocation', {
-			V2: {
+			V3: {
 				parents: 0,
 				interior: {
 					X1: {
 						AccountId32: {
-							network: 'Any',
 							id: accountId,
 						},
 					},
@@ -54,8 +66,17 @@ export const SystemToPara: ICreateXcmType = {
 		paraId: string,
 		xcmVersion?: number
 	): VersionedMultiLocation => {
-		if (xcmVersion && xcmVersion < 2) {
-			console.warn('xcmVersion must be 2 or greater');
+		if (xcmVersion === 2) {
+			return api.registry.createType('XcmVersionedMultiLocation', {
+				V2: {
+					parents: 1,
+					interior: {
+						X1: {
+							parachain: paraId,
+						},
+					},
+				},
+			});
 		}
 
 		/**
@@ -63,7 +84,7 @@ export const SystemToPara: ICreateXcmType = {
 		 * from a system parachain to a sovereign parachain.
 		 */
 		return api.registry.createType('XcmVersionedMultiLocation', {
-			V2: {
+			V3: {
 				parents: 1,
 				interior: {
 					X1: {
@@ -86,9 +107,6 @@ export const SystemToPara: ICreateXcmType = {
 		xcmVersion: number,
 		assets?: string[]
 	): VersionedMultiAssets => {
-		if (xcmVersion < 2) {
-			console.warn('xcmVersion must be 2 or greater');
-		}
 		// TODO: We should consider a centralized place where these errors are check for.
 		if (!assets) {
 			throw Error(
@@ -96,7 +114,6 @@ export const SystemToPara: ICreateXcmType = {
 			);
 		}
 		const palletId = fetchPalletInstanceId(api);
-
 		const multiAssets = [];
 
 		for (let i = 0; i < assets.length; i++) {
@@ -119,14 +136,23 @@ export const SystemToPara: ICreateXcmType = {
 			multiAssets.push(multiAsset);
 		}
 
-		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
-			'XcmV2MultiassetMultiAssets',
-			multiAssets
-		);
+		if (xcmVersion === 2) {
+			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
+				'XcmV2MultiassetMultiAssets',
+				multiAssets
+			);
 
-		return api.registry.createType('XcmVersionedMultiAssets', {
-			V2: multiAssetsType,
-		});
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V2: multiAssetsType,
+			});
+		} else {
+			const multiAssetsType: XcmV3MultiassetMultiAssets =
+				api.registry.createType('XcmV3MultiassetMultiAssets', multiAssets);
+
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V3: multiAssetsType,
+			});
+		}
 	},
 	/**
 	 * TODO: Generalize the weight type with V3.

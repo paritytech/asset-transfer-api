@@ -30,6 +30,29 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
 		});
+		it('Should work for V3', () => {
+			const beneficiary = SystemToPara.createBeneficiary(
+				mockSystemApi,
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				3
+			);
+
+			const expectedRes = {
+				v3: {
+					parents: 0,
+					interior: {
+						x1: {
+							accountId32: {
+								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								network: null,
+							},
+						},
+					},
+				},
+			};
+
+			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+		});
 	});
 
 	describe('Destination', () => {
@@ -38,6 +61,22 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 			const expectedRes = {
 				v2: {
+					parents: 1,
+					interior: {
+						x1: {
+							parachain: 100,
+						},
+					},
+				},
+			};
+
+			expect(destination.toJSON()).toStrictEqual(expectedRes);
+		});
+		it('Should work for V3', () => {
+			const destination = SystemToPara.createDest(mockSystemApi, '100', 3);
+
+			const expectedRes = {
+				v3: {
 					parents: 1,
 					interior: {
 						x1: {
@@ -62,6 +101,47 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 			const expectedRes = {
 				v2: [
+					{
+						id: {
+							concrete: {
+								parents: 0,
+								interior: {
+									x2: [{ palletInstance: 50 }, { generalIndex: 1 }],
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+					{
+						id: {
+							concrete: {
+								parents: 0,
+								interior: {
+									x2: [{ palletInstance: 50 }, { generalIndex: 2 }],
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
+		it('Should work for V3', () => {
+			const assets = SystemToPara.createAssets(
+				mockSystemApi,
+				['100', '100'],
+				3,
+				['1', '2']
+			);
+
+			const expectedRes = {
+				v3: [
 					{
 						id: {
 							concrete: {
