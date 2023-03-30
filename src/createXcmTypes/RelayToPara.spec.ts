@@ -5,38 +5,15 @@ import { RelayToPara } from './RelayToPara';
 
 describe('XcmVersionedMultiLocation Generation', () => {
 	describe('Beneficiary', () => {
-		it('Should work for V0', () => {
+		it('Should work for V2', () => {
 			const beneficiary = RelayToPara.createBeneficiary(
 				mockRelayApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				0
+				2
 			);
 
 			const expectedRes = {
-				v0: {
-					x1: {
-						accountId32: {
-							id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-							network: {
-								any: null,
-							},
-						},
-					},
-				},
-			};
-
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
-		});
-
-		it('Should work for V1', () => {
-			const beneficiary = RelayToPara.createBeneficiary(
-				mockRelayApi,
-				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				1
-			);
-
-			const expectedRes = {
-				v1: {
+				v2: {
 					parents: 0,
 					interior: {
 						x1: {
@@ -56,25 +33,11 @@ describe('XcmVersionedMultiLocation Generation', () => {
 	});
 
 	describe('Destination', () => {
-		it('Should work for V0', () => {
-			const destination = RelayToPara.createDest(mockRelayApi, '100', 0);
+		it('Should work for V2', () => {
+			const destination = RelayToPara.createDest(mockRelayApi, '100', 2);
 
 			const expectedRes = {
-				v0: {
-					x1: {
-						parachain: 100,
-					},
-				},
-			};
-
-			expect(destination.toJSON()).toStrictEqual(expectedRes);
-		});
-
-		it('Should work for V1', () => {
-			const destination = RelayToPara.createDest(mockRelayApi, '100', 1);
-
-			const expectedRes = {
-				v1: {
+				v2: {
 					parents: 0,
 					interior: {
 						x1: {
@@ -88,29 +51,11 @@ describe('XcmVersionedMultiLocation Generation', () => {
 		});
 	});
 	describe('Assets', () => {
-		it('Should work for V0', () => {
-			const assets = RelayToPara.createAssets(mockRelayApi, ['100'], 0);
+		it('Should work for V2', () => {
+			const assets = RelayToPara.createAssets(mockRelayApi, ['100'], 2);
 
 			const expectedRes = {
-				v0: [
-					{
-						concreteFungible: {
-							amount: 100,
-							id: {
-								null: null,
-							},
-						},
-					},
-				],
-			};
-
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
-		});
-		it('Should work for V1', () => {
-			const assets = RelayToPara.createAssets(mockRelayApi, ['100'], 1);
-
-			const expectedRes = {
-				v1: [
+				v2: [
 					{
 						fun: {
 							fungible: 100,
