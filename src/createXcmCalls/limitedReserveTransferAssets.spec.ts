@@ -8,7 +8,7 @@ import { limitedReserveTransferAssets } from './limitedReserveTransferAssets';
 
 describe('limitedReserveTransferAssets', () => {
 	describe('SystemToPara', () => {
-		it('Should correctly construct a tx for a system parachain with V0', () => {
+		it('Should correctly construct a tx for a system parachain with V2', () => {
 			const ext = limitedReserveTransferAssets(
 				mockSystemApi,
 				IDirection.SystemToPara,
@@ -16,22 +16,7 @@ describe('limitedReserveTransferAssets', () => {
 				['1'],
 				['100'],
 				'1000',
-				0
-			);
-
-			expect(ext.toHex()).toBe(
-				'0xec041f0800010200f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b000101a10f00040a020532060491010000000000'
-			);
-		});
-		it('Should correctly construct a tx for a system parachain with V1', () => {
-			const ext = limitedReserveTransferAssets(
-				mockSystemApi,
-				IDirection.SystemToPara,
-				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['1'],
-				['100'],
-				'1000',
-				1
+				2
 			);
 
 			expect(ext.toHex()).toBe(
@@ -46,12 +31,12 @@ describe('limitedReserveTransferAssets', () => {
 				['1'],
 				['100'],
 				'1000',
-				1,
+				2,
 				'1000000000'
 			);
 
 			expect(ext.toHex()).toBe(
-				'0x0d01041f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f010400000204320504009101000000000102286bee'
+				'0x0501041f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f01040000020432050400910100000000010000'
 			);
 		});
 		it('Should error when a api does not support the required pallets', () => {
@@ -64,7 +49,7 @@ describe('limitedReserveTransferAssets', () => {
 					['1'],
 					['100'],
 					'1000',
-					1
+					2
 				);
 
 			expect(err).toThrowError(
