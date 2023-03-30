@@ -2,8 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type {
-	MultiAssetsV1,
-	MultiAssetV0,
+	MultiAssetsV2,
 	VersionedMultiAssets,
 	VersionedMultiLocation,
 	WeightLimitV2,
@@ -27,27 +26,12 @@ export const RelayToPara: ICreateXcmType = {
 		accountId: string,
 		xcmVersion?: number
 	): VersionedMultiLocation => {
-		/**
-		 * The main difference between V0 vs V1 is that there is no parent associated.
-		 */
-		if (xcmVersion === 0) {
-			return api.registry.createType('XcmVersionedMultiLocation', {
-				V0: {
-					X1: {
-						AccountId32: {
-							network: 'Any',
-							id: accountId,
-						},
-					},
-				},
-			});
+		if (xcmVersion && xcmVersion < 2) {
+			console.warn('xcmVersion must be 2 or greater');
 		}
 
-		/**
-		 * This accounts for an xcmVersion of 1, or if no xcmVersion is passed in
-		 */
 		return api.registry.createType('XcmVersionedMultiLocation', {
-			V1: {
+			V2: {
 				parents: 0,
 				interior: {
 					X1: {
@@ -72,21 +56,12 @@ export const RelayToPara: ICreateXcmType = {
 		paraId: string,
 		xcmVersion?: number
 	): VersionedMultiLocation => {
-		if (xcmVersion === 0) {
-			return api.registry.createType('XcmVersionedMultiLocation', {
-				V0: {
-					X1: {
-						parachain: paraId,
-					},
-				},
-			});
+		if (xcmVersion && xcmVersion < 2) {
+			console.warn('xcmVersion must be 2 or greater');
 		}
 
-		/**
-		 * This accounts for an xcmVersion of 1, or if no xcmVersion is passed in
-		 */
 		return api.registry.createType('XcmVersionedMultiLocation', {
-			V1: {
+			V2: {
 				parents: 0,
 				interior: {
 					X1: {
@@ -109,62 +84,39 @@ export const RelayToPara: ICreateXcmType = {
 		amounts: string[],
 		xcmVersion: number
 	): VersionedMultiAssets => {
-		/**
-		 * Defaults to V1 if not V0
-		 */
-		if (xcmVersion === 0) {
-			const multiAssets: MultiAssetV0[] = [];
-
-			for (let i = 0; i < amounts.length; i++) {
-				const amount = amounts[i];
-				const multiAsset = {
-					ConcreteFungible: {
-						id: {
-							Null: '',
-						},
-						amount,
-					},
-				};
-
-				multiAssets.push(
-					api.registry.createType('XcmV0MultiAsset', multiAsset)
-				);
-			}
-
-			return api.registry.createType('XcmVersionedMultiAssets', {
-				V0: multiAssets,
-			});
-		} else {
-			const multiAssets = [];
-
-			for (let i = 0; i < amounts.length; i++) {
-				const amount = amounts[i];
-				const multiAsset = {
-					fun: {
-						Fungible: amount,
-					},
-					id: {
-						Concrete: {
-							interior: {
-								Here: '',
-							},
-							parents: 0,
-						},
-					},
-				};
-
-				multiAssets.push(multiAsset);
-			}
-
-			const multiAssetsType: MultiAssetsV1 = api.registry.createType(
-				'XcmV1MultiassetMultiAssets',
-				multiAssets
-			);
-
-			return api.registry.createType('XcmVersionedMultiAssets', {
-				V1: multiAssetsType,
-			});
+		if (xcmVersion < 2) {
+			console.warn('xcmVersion must be 2 or greater');
 		}
+
+		const multiAssets = [];
+
+		for (let i = 0; i < amounts.length; i++) {
+			const amount = amounts[i];
+			const multiAsset = {
+				fun: {
+					Fungible: amount,
+				},
+				id: {
+					Concrete: {
+						interior: {
+							Here: '',
+						},
+						parents: 0,
+					},
+				},
+			};
+
+			multiAssets.push(multiAsset);
+		}
+
+		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
+			'XcmV2MultiassetMultiAssets',
+			multiAssets
+		);
+
+		return api.registry.createType('XcmVersionedMultiAssets', {
+			V2: multiAssetsType,
+		});
 	},
 	/**
 	 * TODO: Generalize the weight type with V3.
