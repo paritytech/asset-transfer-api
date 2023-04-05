@@ -3,7 +3,7 @@
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { SystemToPara } from './SystemToPara';
 
-describe('XcmVersionedMultiLocation Generation', () => {
+describe('XcmVersioned Generation', () => {
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = SystemToPara.createBeneficiary(
