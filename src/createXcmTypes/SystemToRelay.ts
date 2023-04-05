@@ -29,9 +29,11 @@ export const SystemToRelay: ICreateXcmType = {
 				V2: {
 					parents: 0,
 					interior: {
-						AccountId32: {
-							network: 'Any',
-							id: accountId,
+						X1: {
+							AccountId32: {
+								network: 'Any',
+								id: accountId,
+							},
 						},
 					},
 				},
@@ -42,8 +44,10 @@ export const SystemToRelay: ICreateXcmType = {
 			V3: {
 				parents: 0,
 				interior: {
-					AccountId32: {
-						id: accountId,
+					X1: {
+						AccountId32: {
+							id: accountId,
+						},
 					},
 				},
 			},
