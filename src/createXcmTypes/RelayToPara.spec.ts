@@ -3,7 +3,7 @@
 import { mockRelayApi } from '../testHelpers/mockRelayApi';
 import { RelayToPara } from './RelayToPara';
 
-describe('XcmVersionedMultiLocation Generation', () => {
+describe('XcmVersioned Generation', () => {
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = RelayToPara.createBeneficiary(

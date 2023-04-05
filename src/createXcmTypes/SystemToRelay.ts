@@ -11,10 +11,7 @@ import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { ICreateXcmType, IWeightLimit } from './types';
 
-/**
- * XCM type generation for transactions from the relay chain to a parachain.
- */
-export const RelayToPara: ICreateXcmType = {
+export const SystemToRelay: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
@@ -60,22 +57,25 @@ export const RelayToPara: ICreateXcmType = {
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
 	 * @param api ApiPromise
-	 * @param paraId The parachain Id of the destination
+	 * @param paraId The destId in this case, which is the relay chain
 	 * @param xcmVersion The accepted xcm version
 	 */
 	createDest: (
 		api: ApiPromise,
 		paraId: string,
-		xcmVersion?: number
+		xcmVersion: number
 	): VersionedMultiLocation => {
+		// TODO: This line will never be hit, and we should consider adding the destination ID
+		// to an options param as it is not needed for Chain -> Relay transfers.
+		if (paraId !== '0') {
+			throw Error('SystemToRelay must have a destination Id of 0');
+		}
 		if (xcmVersion === 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
-					parents: 0,
+					parents: 1,
 					interior: {
-						X1: {
-							parachain: paraId,
-						},
+						here: null,
 					},
 				},
 			});
@@ -83,11 +83,9 @@ export const RelayToPara: ICreateXcmType = {
 
 		return api.registry.createType('XcmVersionedMultiLocation', {
 			V3: {
-				parents: 0,
+				parents: 1,
 				interior: {
-					X1: {
-						parachain: paraId,
-					},
+					here: null,
 				},
 			},
 		});
@@ -95,8 +93,7 @@ export const RelayToPara: ICreateXcmType = {
 	/**
 	 * Create a VersionedMultiAsset type.
 	 *
-	 * @param api ApiPromise
-	 * @param assets Assets to be sent
+	 * @param assets
 	 * @param amounts
 	 * @param xcmVersion
 	 */
@@ -118,7 +115,7 @@ export const RelayToPara: ICreateXcmType = {
 						interior: {
 							Here: '',
 						},
-						parents: 0,
+						parents: 1,
 					},
 				},
 			};
@@ -145,7 +142,6 @@ export const RelayToPara: ICreateXcmType = {
 		}
 	},
 	/**
-	 * TODO: Generalize the weight type with V3.
 	 * Create a WeightLimitV2 type.
 	 *
 	 * @param api ApiPromise

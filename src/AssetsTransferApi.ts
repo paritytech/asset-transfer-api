@@ -184,8 +184,6 @@ export class AssetsTransferApi {
 		 * Check if the origin is a System Parachain
 		 */
 		if (isSystemParachain && destChainId === '0') {
-			throw Error('SystemToRelay is not yet implemented');
-
 			return IDirection.SystemToRelay;
 		}
 
