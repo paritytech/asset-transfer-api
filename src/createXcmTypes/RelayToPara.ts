@@ -131,7 +131,7 @@ export const RelayToPara: ICreateXcmType = {
 				'XcmV2MultiassetMultiAssets',
 				multiAssets
 			);
-	
+
 			return api.registry.createType('XcmVersionedMultiAssets', {
 				V2: multiAssetsType,
 			});
