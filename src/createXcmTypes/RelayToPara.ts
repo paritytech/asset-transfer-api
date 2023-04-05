@@ -26,17 +26,28 @@ export const RelayToPara: ICreateXcmType = {
 		accountId: string,
 		xcmVersion?: number
 	): VersionedMultiLocation => {
-		if (xcmVersion && xcmVersion < 2) {
-			console.warn('xcmVersion must be 2 or greater');
+		if (xcmVersion === 2) {
+			return api.registry.createType('XcmVersionedMultiLocation', {
+				V2: {
+					parents: 0,
+					interior: {
+						X1: {
+							AccountId32: {
+								network: 'Any',
+								id: accountId,
+							},
+						},
+					},
+				},
+			});
 		}
 
 		return api.registry.createType('XcmVersionedMultiLocation', {
-			V2: {
+			V3: {
 				parents: 0,
 				interior: {
 					X1: {
 						AccountId32: {
-							network: 'Any',
 							id: accountId,
 						},
 					},

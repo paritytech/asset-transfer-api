@@ -30,6 +30,29 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
 		});
+		it('Should work for V3', () => {
+			const beneficiary = RelayToPara.createBeneficiary(
+				mockRelayApi,
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				3
+			);
+
+			const expectedRes = {
+				v3: {
+					parents: 0,
+					interior: {
+						x1: {
+							accountId32: {
+								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								network: null,
+							},
+						},
+					},
+				},
+			};
+
+			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+		});
 	});
 
 	describe('Destination', () => {
