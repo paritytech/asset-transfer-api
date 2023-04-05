@@ -34,7 +34,7 @@ The below chart is focusing on what directions are supported for constructing as
 | ---------------------  | ------------------ | ------------------ |
 | System to Parachain    | :white_check_mark: | :white_check_mark: |
 | System to Relay        | :x:                | :x:                |
-| Relay to Parachain     | :white_check_mark: | :x:                |
+| Relay to Parachain     | :white_check_mark: | :white_check_mark: |
 | Relay to System        | :x:                | :x:                |
 | Parachain to Parachain | :x:                | :x:                |
 | Parachain to Relay     | :x:                | :x:                |

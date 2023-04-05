@@ -30,6 +30,29 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
 		});
+		it('Should work for V3', () => {
+			const beneficiary = RelayToPara.createBeneficiary(
+				mockRelayApi,
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				3
+			);
+
+			const expectedRes = {
+				v3: {
+					parents: 0,
+					interior: {
+						x1: {
+							accountId32: {
+								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								network: null,
+							},
+						},
+					},
+				},
+			};
+
+			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+		});
 	});
 
 	describe('Destination', () => {
@@ -49,6 +72,22 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 			expect(destination.toJSON()).toStrictEqual(expectedRes);
 		});
+		it('Should work for V3', () => {
+			const destination = RelayToPara.createDest(mockRelayApi, '100', 3);
+
+			const expectedRes = {
+				v3: {
+					parents: 0,
+					interior: {
+						x1: {
+							parachain: 100,
+						},
+					},
+				},
+			};
+
+			expect(destination.toJSON()).toStrictEqual(expectedRes);
+		});
 	});
 	describe('Assets', () => {
 		it('Should work for V2', () => {
@@ -56,6 +95,29 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 			const expectedRes = {
 				v2: [
+					{
+						fun: {
+							fungible: 100,
+						},
+						id: {
+							concrete: {
+								interior: {
+									here: null,
+								},
+								parents: 0,
+							},
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
+		it('Should work for V3', () => {
+			const assets = RelayToPara.createAssets(mockRelayApi, ['100'], 3);
+
+			const expectedRes = {
+				v3: [
 					{
 						fun: {
 							fungible: 100,
