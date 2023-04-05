@@ -57,17 +57,17 @@ export const SystemToRelay: ICreateXcmType = {
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
 	 * @param api ApiPromise
-	 * @param paraId The destId in this case, which is the relay chain
+	 * @param destId The destId in this case, which is the relay chain
 	 * @param xcmVersion The accepted xcm version
 	 */
 	createDest: (
 		api: ApiPromise,
-		paraId: string,
+		destId: string,
 		xcmVersion: number
 	): VersionedMultiLocation => {
 		// TODO: This line will never be hit, and we should consider adding the destination ID
 		// to an options param as it is not needed for Chain -> Relay transfers.
-		if (paraId !== '0') {
+		if (destId !== '0') {
 			throw Error('SystemToRelay must have a destination Id of 0');
 		}
 		if (xcmVersion === 2) {

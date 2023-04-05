@@ -60,12 +60,12 @@ export const RelayToPara: ICreateXcmType = {
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
 	 * @param api ApiPromise
-	 * @param paraId The parachain Id of the destination
+	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
 	createDest: (
 		api: ApiPromise,
-		paraId: string,
+		destId: string,
 		xcmVersion?: number
 	): VersionedMultiLocation => {
 		if (xcmVersion === 2) {
@@ -74,7 +74,7 @@ export const RelayToPara: ICreateXcmType = {
 					parents: 0,
 					interior: {
 						X1: {
-							parachain: paraId,
+							parachain: destId,
 						},
 					},
 				},
@@ -86,7 +86,7 @@ export const RelayToPara: ICreateXcmType = {
 				parents: 0,
 				interior: {
 					X1: {
-						parachain: paraId,
+						parachain: destId,
 					},
 				},
 			},

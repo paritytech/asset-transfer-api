@@ -24,7 +24,7 @@ export interface ICreateXcmType {
 	) => VersionedMultiLocation;
 	createDest: (
 		api: ApiPromise,
-		paraId: string,
+		destId: string,
 		xcmVersion: number
 	) => VersionedMultiLocation;
 	createAssets: (
