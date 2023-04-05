@@ -72,6 +72,22 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 			expect(destination.toJSON()).toStrictEqual(expectedRes);
 		});
+		it('Should work for V3', () => {
+			const destination = RelayToPara.createDest(mockRelayApi, '100', 3);
+
+			const expectedRes = {
+				v3: {
+					parents: 0,
+					interior: {
+						x1: {
+							parachain: 100,
+						},
+					},
+				},
+			};
+
+			expect(destination.toJSON()).toStrictEqual(expectedRes);
+		});
 	});
 	describe('Assets', () => {
 		it('Should work for V2', () => {

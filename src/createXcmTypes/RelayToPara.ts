@@ -67,12 +67,21 @@ export const RelayToPara: ICreateXcmType = {
 		paraId: string,
 		xcmVersion?: number
 	): VersionedMultiLocation => {
-		if (xcmVersion && xcmVersion < 2) {
-			console.warn('xcmVersion must be 2 or greater');
+		if (xcmVersion === 2) {
+			return api.registry.createType('XcmVersionedMultiLocation', {
+				V2: {
+					parents: 0,
+					interior: {
+						X1: {
+							parachain: paraId,
+						},
+					},
+				},
+			});
 		}
 
 		return api.registry.createType('XcmVersionedMultiLocation', {
-			V2: {
+			V3: {
 				parents: 0,
 				interior: {
 					X1: {
