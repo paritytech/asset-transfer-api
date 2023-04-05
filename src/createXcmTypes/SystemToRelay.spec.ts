@@ -84,4 +84,70 @@ describe('XcmVersioned Generation', () => {
 			expect(destination.toJSON()).toStrictEqual(expectedRes);
 		});
 	});
+	describe('Assets', () => {
+		it('Should work for V2', () => {
+			const assets = SystemToRelay.createAssets(mockSystemApi, ['100'], 2);
+
+			const expectedRes = {
+				v2: [
+					{
+						id: {
+							concrete: {
+								parents: 1,
+								interior: {
+									here: null,
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
+		it('Should work for V3', () => {
+			const assets = SystemToRelay.createAssets(mockSystemApi, ['100'], 3);
+
+			const expectedRes = {
+				v3: [
+					{
+						id: {
+							concrete: {
+								parents: 1,
+								interior: {
+									here: null,
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
+	});
+	describe('WeightLimit', () => {
+		it('Should work when given a weightLimit', () => {
+			const weightLimit = SystemToRelay.createWeightLimit(
+				mockSystemApi,
+				'100000000'
+			);
+			expect(weightLimit.toJSON()).toStrictEqual({
+				limited: 100000000,
+			});
+		});
+		it('Should work when no weightLimit is present', () => {
+			const weightLimit = SystemToRelay.createWeightLimit(mockSystemApi);
+
+			expect(weightLimit.toJSON()).toStrictEqual({
+				unlimited: null,
+			});
+		});
+	});
 });
