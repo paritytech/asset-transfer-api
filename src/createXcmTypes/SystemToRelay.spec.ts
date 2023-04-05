@@ -54,4 +54,34 @@ describe('XcmVersioned Generation', () => {
 			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
 		});
 	});
+	describe('Destination', () => {
+		it('Should work for V2', () => {
+			const destination = SystemToRelay.createDest(mockSystemApi, '0', 2);
+
+			const expectedRes = {
+				v2: {
+					parents: 1,
+					interior: {
+						here: null,
+					},
+				},
+			};
+
+			expect(destination.toJSON()).toStrictEqual(expectedRes);
+		});
+		it('Should work for V3', () => {
+			const destination = SystemToRelay.createDest(mockSystemApi, '0', 3);
+
+			const expectedRes = {
+				v3: {
+					parents: 1,
+					interior: {
+						here: null,
+					},
+				},
+			};
+
+			expect(destination.toJSON()).toStrictEqual(expectedRes);
+		});
+	});
 });

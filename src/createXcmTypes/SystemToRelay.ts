@@ -82,7 +82,7 @@ export const SystemToRelay: ICreateXcmType = {
 		}
 
 		return api.registry.createType('XcmVersionedMultiLocation', {
-			V2: {
+			V3: {
 				parents: 1,
 				interior: {
 					here: null,
