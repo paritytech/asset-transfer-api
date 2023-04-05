@@ -7,7 +7,7 @@ import type {
 	VersionedMultiLocation,
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
-import { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
+import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { ICreateXcmType, IWeightLimit } from './types';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
