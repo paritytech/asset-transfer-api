@@ -7,6 +7,7 @@ import type {
 	VersionedMultiLocation,
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
+import { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { ICreateXcmType, IWeightLimit } from './types';
 
@@ -104,10 +105,6 @@ export const RelayToPara: ICreateXcmType = {
 		amounts: string[],
 		xcmVersion: number
 	): VersionedMultiAssets => {
-		if (xcmVersion < 2) {
-			console.warn('xcmVersion must be 2 or greater');
-		}
-
 		const multiAssets = [];
 
 		for (let i = 0; i < amounts.length; i++) {
@@ -129,14 +126,23 @@ export const RelayToPara: ICreateXcmType = {
 			multiAssets.push(multiAsset);
 		}
 
-		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
-			'XcmV2MultiassetMultiAssets',
-			multiAssets
-		);
+		if (xcmVersion === 2) {
+			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
+				'XcmV2MultiassetMultiAssets',
+				multiAssets
+			);
+	
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V2: multiAssetsType,
+			});
+		} else {
+			const multiAssetsType: XcmV3MultiassetMultiAssets =
+				api.registry.createType('XcmV3MultiassetMultiAssets', multiAssets);
 
-		return api.registry.createType('XcmVersionedMultiAssets', {
-			V2: multiAssetsType,
-		});
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V3: multiAssetsType,
+			});
+		}
 	},
 	/**
 	 * TODO: Generalize the weight type with V3.

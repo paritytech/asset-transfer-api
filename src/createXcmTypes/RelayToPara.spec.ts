@@ -113,6 +113,29 @@ describe('XcmVersionedMultiLocation Generation', () => {
 
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
+		it('Should work for V3', () => {
+			const assets = RelayToPara.createAssets(mockRelayApi, ['100'], 3);
+
+			const expectedRes = {
+				v3: [
+					{
+						fun: {
+							fungible: 100,
+						},
+						id: {
+							concrete: {
+								interior: {
+									here: null,
+								},
+								parents: 0,
+							},
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
 	});
 	describe('WeightLimit', () => {
 		// NOTE: for V0, V1, and V2 Weightlimit just uses V2 so we only need to test once.
