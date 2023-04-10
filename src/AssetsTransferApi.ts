@@ -195,8 +195,6 @@ export class AssetsTransferApi {
 		 * Check if the origin is a Relay Chain
 		 */
 		if (_api.query.paras && isDestIdSystemPara) {
-			throw Error('RelayToSystem is not yet implemented');
-
 			return IDirection.RelayToSystem;
 		}
 
