@@ -144,6 +144,13 @@ export const RelayToSystem: ICreateXcmType = {
 			});
 		}
 	},
+    /**
+	 * TODO: Generalize the weight type with V3.
+	 * Create a WeightLimitV2 type.
+	 *
+	 * @param api ApiPromise
+	 * @param weightLimit WeightLimit passed in as an option.
+	 */
 	createWeightLimit: (api: ApiPromise, weightLimit?: string): WeightLimitV2 => {
 		const limit: IWeightLimit = weightLimit
 			? { Limited: weightLimit }
