@@ -144,7 +144,7 @@ export const RelayToSystem: ICreateXcmType = {
 			});
 		}
 	},
-    /**
+	/**
 	 * TODO: Generalize the weight type with V3.
 	 * Create a WeightLimitV2 type.
 	 *
