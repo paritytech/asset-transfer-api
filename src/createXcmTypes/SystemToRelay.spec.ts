@@ -3,7 +3,7 @@
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { SystemToRelay } from './SystemToRelay';
 
-describe('XcmVersioned Generation', () => {
+describe('SystemToRelay XcmVersioned Generation', () => {
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = SystemToRelay.createBeneficiary(
