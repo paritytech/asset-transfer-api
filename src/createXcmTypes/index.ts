@@ -2,7 +2,9 @@
 
 import { IDirection } from '../types';
 import { RelayToPara } from './RelayToPara';
+import { RelayToSystem } from './RelayToSystem';
 import { SystemToPara } from './SystemToPara';
+import { SystemToRelay } from './SystemToRelay';
 import { ICreateXcmType } from './types';
 
 type ICreateXcmTypeLookup = {
@@ -12,9 +14,8 @@ type ICreateXcmTypeLookup = {
 export const createXcmTypes: ICreateXcmTypeLookup = {
 	SystemToPara,
 	RelayToPara,
-	// TODO: Implement the following!
-	SystemToRelay: {} as ICreateXcmType,
+	SystemToRelay,
+	RelayToSystem,
 	ParaToPara: {} as ICreateXcmType,
 	ParaToRelay: {} as ICreateXcmType,
-	RelayToSystem: {} as ICreateXcmType,
 };
