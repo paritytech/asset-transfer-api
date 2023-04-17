@@ -27,6 +27,7 @@
   "homepage": "https://github.com/paritytech/asset-transfer-api#readme",
   "packageManager": "yarn@3.3.1",
   "devDependencies": {
+    "@polkadot/apps-config": "^0.126.1",
     "@substrate/dev": "^0.6.6",
     "chalk": "4.1.2",
     "typedoc": "^0.23.26",
