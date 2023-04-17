@@ -1,3 +1,5 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
 import '@polkadot/api-augment';
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
@@ -13,6 +15,7 @@ import {
 	testRelayWestend,
 } from '@polkadot/apps-config';
 import type { EndpointOption } from '@polkadot/apps-config/endpoints/types';
+import fs from 'fs';
 
 type TokenRegistry = {
 	polkadot: {};
@@ -39,6 +42,22 @@ const unreliableIds = {
 	westend: [],
 };
 
+/**
+ * Write Json to a file path.
+ *
+ * @param path Path to write the json file too
+ * @param data Data that will be written to file.
+ */
+const writeJson = (path: string, data: TokenRegistry): void => {
+	fs.writeFileSync(path, JSON.stringify(data, null, 2));
+};
+
+/**
+ * Fetch chain token and spec info.
+ *
+ * @param endpointOpts
+ * @param isRelay
+ */
 const fetchChainInfo = async (
 	endpointOpts: EndpointOption,
 	isRelay?: boolean
@@ -55,11 +74,13 @@ const fetchChainInfo = async (
 
 	const api = await ApiPromise.create({
 		provider: new WsProvider(wsUrls),
+		noInitWarn: true,
 	});
 
 	await api.isReady;
 
 	const { tokenSymbol } = await api.rpc.system.properties();
+	const { specName } = await api.rpc.state.getRuntimeVersion();
 	const tokens = tokenSymbol.isSome
 		? tokenSymbol
 				.unwrap()
@@ -71,15 +92,22 @@ const fetchChainInfo = async (
 
 	return {
 		tokens,
-		paraId,
+		specName: specName.toString(),
 	};
 };
 
+/**
+ * This adds to the chain registry for each chain that is passed in.
+ *
+ * @param chainName Relay chain name
+ * @param endpoints Endpoints we are going to iterate through, and query
+ * @param registry Registry we want to add the info too
+ */
 const createChainRegistryFromParas = async (
 	chainName: ChainName,
 	endpoints: Omit<EndpointOption, 'teleport'>[],
 	registry: TokenRegistry
-) => {
+): Promise<void> => {
 	for (const endpoint of endpoints) {
 		const unreliable: boolean = (unreliableIds[chainName] as number[]).includes(
 			endpoint.paraId as number
@@ -89,18 +117,24 @@ const createChainRegistryFromParas = async (
 		}
 		const res = await fetchChainInfo(endpoint);
 		if (res !== null) {
-			registry[chainName][`${res.paraId as number}`] = res;
+			registry[chainName][`${endpoint.paraId as number}`] = res;
 		}
-
-		console.log(registry);
 	}
 };
 
+/**
+ * Similar to `createChainRegistryFromParas`, this will only add to the registry for a single chain,
+ * in this case the relay chain.
+ *
+ * @param chainName Relay chain name
+ * @param endpoint Endpoint we are going to fetch the info from
+ * @param registry Registry we want to add the info too
+ */
 const createChainRegistryFromRelay = async (
 	chainName: ChainName,
 	endpoint: EndpointOption,
 	registry: TokenRegistry
-) => {
+): Promise<void> => {
 	const res = await fetchChainInfo(endpoint, true);
 	console.log('Res result: ', res);
 	if (res !== null) {
@@ -118,12 +152,12 @@ const main = async () => {
 	const kusamaEndpoints = [prodParasKusama, prodParasKusamaCommon];
 	const westendEndpoints = [testParasWestend, testParasWestendCommon];
 
+	// Set the relay chain info to the registry
 	await createChainRegistryFromRelay('polkadot', prodRelayPolkadot, registry);
 	await createChainRegistryFromRelay('kusama', prodRelayKusama, registry);
 	await createChainRegistryFromRelay('westend', testRelayWestend, registry);
 
-	console.log(registry);
-
+	// Set the paras info to the registry
 	for (const endpoints of polkadotEndpoints) {
 		await createChainRegistryFromParas('polkadot', endpoints, registry);
 	}
@@ -136,8 +170,8 @@ const main = async () => {
 		await createChainRegistryFromParas('westend', endpoints, registry);
 	}
 
-	// Write registry to JSON file
-	return registry;
+	const path = __dirname + '/../../src/registry/registry.json';
+	writeJson(path, registry);
 };
 
 main()
