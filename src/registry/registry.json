@@ -1,0 +1,537 @@
+{
+  "polkadot": {
+    "0": {
+      "tokens": [
+        "DOT"
+      ],
+      "specName": "polkadot"
+    },
+    "1000": {
+      "tokens": [
+        "DOT"
+      ],
+      "specName": "statemint"
+    },
+    "1001": {
+      "tokens": [
+        "DOT"
+      ],
+      "specName": "collectives"
+    },
+    "1002": {
+      "tokens": [
+        "DOT"
+      ],
+      "specName": "bridge-hub-polkadot"
+    },
+    "2000": {
+      "tokens": [
+        "ACA",
+        "AUSD",
+        "DOT",
+        "LDOT"
+      ],
+      "specName": "acala"
+    },
+    "2002": {
+      "tokens": [
+        "CLV"
+      ],
+      "specName": "clover-mainnet"
+    },
+    "2004": {
+      "tokens": [
+        "GLMR"
+      ],
+      "specName": "moonbeam"
+    },
+    "2006": {
+      "tokens": [
+        "ASTR"
+      ],
+      "specName": "astar"
+    },
+    "2007": {
+      "tokens": [
+        "KPX"
+      ],
+      "specName": "totem-parachain"
+    },
+    "2008": {
+      "tokens": [
+        "CRU"
+      ],
+      "specName": "polkadot-crust-parachain"
+    },
+    "2011": {
+      "tokens": [
+        "TOKEN"
+      ],
+      "specName": "Equilibrium-parachain"
+    },
+    "2012": {
+      "tokens": [
+        "PARA"
+      ],
+      "specName": "parallel"
+    },
+    "2013": {
+      "tokens": [
+        "LIT"
+      ],
+      "specName": "litentry-parachain"
+    },
+    "2019": {
+      "tokens": [
+        "LAYR"
+      ],
+      "specName": "composable"
+    },
+    "2021": {
+      "tokens": [
+        "EFI"
+      ],
+      "specName": "efinity"
+    },
+    "2026": {
+      "tokens": [
+        "NODL"
+      ],
+      "specName": "nodle-para"
+    },
+    "2030": {
+      "tokens": [
+        "BNC"
+      ],
+      "specName": "bifrost_polkadot"
+    },
+    "2031": {
+      "tokens": [
+        "CFG"
+      ],
+      "specName": "centrifuge"
+    },
+    "2032": {
+      "tokens": [
+        "INTR",
+        "IBTC",
+        "DOT",
+        "KINT",
+        "KBTC",
+        "KSM"
+      ],
+      "specName": "interlay-parachain"
+    },
+    "2034": {
+      "tokens": [
+        "HDX"
+      ],
+      "specName": "hydradx"
+    },
+    "2035": {
+      "tokens": [
+        "PHA"
+      ],
+      "specName": "phala"
+    },
+    "2037": {
+      "tokens": [
+        "UNQ"
+      ],
+      "specName": "unique"
+    },
+    "2039": {
+      "tokens": [
+        "TEER"
+      ],
+      "specName": "integritee-parachain"
+    },
+    "2040": {
+      "tokens": [
+        "PDEX"
+      ],
+      "specName": "node"
+    },
+    "2043": {
+      "tokens": [
+        "OTP"
+      ],
+      "specName": "origintrail-parachain"
+    },
+    "2046": {
+      "tokens": [
+        "RING"
+      ],
+      "specName": "Darwinia Parachain"
+    },
+    "2048": {
+      "tokens": [
+        "BBB"
+      ],
+      "specName": "bitgreen-parachain"
+    },
+    "2051": {
+      "tokens": [
+        "AJUN"
+      ],
+      "specName": "ajuna"
+    },
+    "2052": {
+      "tokens": [
+        "KYL"
+      ],
+      "specName": "kylin"
+    },
+    "2056": {
+      "tokens": [
+        "AVT"
+      ],
+      "specName": "avn-parachain"
+    },
+    "2058": {
+      "tokens": [
+        "WATR"
+      ],
+      "specName": "watr-mainnet"
+    },
+    "2086": {
+      "tokens": [
+        "KILT"
+      ],
+      "specName": "kilt-spiritnet"
+    },
+    "2091": {
+      "tokens": [
+        "FRQCY"
+      ],
+      "specName": "frequency"
+    },
+    "2092": {
+      "tokens": [
+        "ZTG"
+      ],
+      "specName": "zeitgeist"
+    },
+    "2093": {
+      "tokens": [
+        "HASH"
+      ],
+      "specName": "luhn"
+    },
+    "2094": {
+      "tokens": [
+        "PEN"
+      ],
+      "specName": "pendulum"
+    },
+    "2101": {
+      "tokens": [
+        "SUB"
+      ],
+      "specName": "subsocial-parachain"
+    },
+    "2104": {
+      "tokens": [
+        "MANTA"
+      ],
+      "specName": "manta"
+    },
+    "3333": {
+      "tokens": [
+        "TRN"
+      ],
+      "specName": "t3rn"
+    }
+  },
+  "kusama": {
+    "0": {
+      "tokens": [
+        "KSM"
+      ],
+      "specName": "kusama"
+    },
+    "1000": {
+      "tokens": [
+        "KSM"
+      ],
+      "specName": "statemine"
+    },
+    "1001": {
+      "tokens": [
+        "KSM"
+      ],
+      "specName": "encointer-parachain"
+    },
+    "1002": {
+      "tokens": [
+        "KSM"
+      ],
+      "specName": "bridge-hub-kusama"
+    },
+    "2000": {
+      "tokens": [
+        "KAR",
+        "KUSD",
+        "KSM",
+        "LKSM",
+        "BNC",
+        "VSKSM",
+        "PHA",
+        "KINT",
+        "KBTC",
+        "TAI"
+      ],
+      "specName": "karura"
+    },
+    "2001": {
+      "tokens": [
+        "BNC",
+        "KUSD",
+        "DOT",
+        "KSM",
+        "KAR",
+        "ZLK",
+        "PHA",
+        "RMRK",
+        "MOVR"
+      ],
+      "specName": "bifrost"
+    },
+    "2004": {
+      "tokens": [
+        "PHA"
+      ],
+      "specName": "khala"
+    },
+    "2007": {
+      "tokens": [
+        "SDN"
+      ],
+      "specName": "shiden"
+    },
+    "2011": {
+      "tokens": [],
+      "specName": "sora_ksm"
+    },
+    "2012": {
+      "tokens": [
+        "CSM"
+      ],
+      "specName": "crust-collator"
+    },
+    "2015": {
+      "tokens": [
+        "TEER"
+      ],
+      "specName": "integritee-parachain"
+    },
+    "2023": {
+      "tokens": [
+        "MOVR"
+      ],
+      "specName": "moonriver"
+    },
+    "2024": {
+      "tokens": [
+        "TOKEN"
+      ],
+      "specName": "Genshiro"
+    },
+    "2048": {
+      "tokens": [
+        "XRT"
+      ],
+      "specName": "robonomics"
+    },
+    "2084": {
+      "tokens": [
+        "KMA"
+      ],
+      "specName": "calamari"
+    },
+    "2085": {
+      "tokens": [
+        "HKO"
+      ],
+      "specName": "heiko"
+    },
+    "2087": {
+      "tokens": [
+        "PICA"
+      ],
+      "specName": "picasso"
+    },
+    "2088": {
+      "tokens": [
+        "AIR"
+      ],
+      "specName": "altair"
+    },
+    "2090": {
+      "tokens": [
+        "BSX"
+      ],
+      "specName": "basilisk"
+    },
+    "2092": {
+      "tokens": [
+        "KINT",
+        "KBTC",
+        "KSM",
+        "INTR",
+        "IBTC",
+        "DOT"
+      ],
+      "specName": "kintsugi-parachain"
+    },
+    "2095": {
+      "tokens": [
+        "QTZ"
+      ],
+      "specName": "quartz"
+    },
+    "2096": {
+      "tokens": [
+        "NEER"
+      ],
+      "specName": "pioneer-runtime"
+    },
+    "2102": {
+      "tokens": [
+        "PCHU"
+      ],
+      "specName": "pichiu"
+    },
+    "2105": {
+      "tokens": [
+        "CRAB"
+      ],
+      "specName": "Crab2"
+    },
+    "2106": {
+      "tokens": [
+        "LIT"
+      ],
+      "specName": "litmus-parachain"
+    },
+    "2110": {
+      "tokens": [
+        "MGX"
+      ],
+      "specName": "mangata-parachain"
+    },
+    "2113": {
+      "tokens": [
+        "KAB"
+      ],
+      "specName": "kabocha-parachain"
+    },
+    "2114": {
+      "tokens": [
+        "TUR"
+      ],
+      "specName": "turing"
+    },
+    "2115": {
+      "tokens": [
+        "DORA"
+      ],
+      "specName": "DORA KSM Parachain"
+    },
+    "2116": {
+      "tokens": [
+        "DHX"
+      ],
+      "specName": "datahighway-parachain"
+    },
+    "2119": {
+      "tokens": [
+        "BAJU"
+      ],
+      "specName": "bajun"
+    },
+    "2120": {
+      "tokens": [
+        "SDN"
+      ],
+      "specName": "shiden"
+    },
+    "2123": {
+      "tokens": [
+        "FREN"
+      ],
+      "specName": "gm_parachain"
+    },
+    "2124": {
+      "tokens": [
+        "AMPE"
+      ],
+      "specName": "amplitude"
+    },
+    "2125": {
+      "tokens": [
+        "TNKR"
+      ],
+      "specName": "tinkernet_node"
+    },
+    "2129": {
+      "tokens": [
+        "ICZ"
+      ],
+      "specName": "snow"
+    },
+    "2222": {
+      "tokens": [
+        "MITO"
+      ],
+      "specName": "ipci"
+    },
+    "2226": {
+      "tokens": [
+        "TOKEN"
+      ],
+      "specName": "Genshiro"
+    },
+    "2236": {
+      "tokens": [
+        "ZERO",
+        "PLAY",
+        "GAME",
+        "DOT"
+      ],
+      "specName": "subzero"
+    },
+    "2240": {
+      "tokens": [
+        "XRT"
+      ],
+      "specName": "robonomics"
+    }
+  },
+  "westend": {
+    "0": {
+      "tokens": [
+        "WND"
+      ],
+      "specName": "westend"
+    },
+    "1000": {
+      "tokens": [
+        "WND"
+      ],
+      "specName": "westmint"
+    },
+    "1001": {
+      "tokens": [
+        "WND"
+      ],
+      "specName": "collectives"
+    },
+    "1002": {
+      "tokens": [
+        "WND"
+      ],
+      "specName": "bridge-hub-kusama"
+    }
+  }
+}
