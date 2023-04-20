@@ -19,6 +19,8 @@ import {
 } from './createXcmCalls';
 import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
 import { checkLocalTxInput, checkXcmVersion } from './errors';
+import { parseRegistry } from './registry/parseRegistry';
+import type { ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	ConstructedFormat,
@@ -34,11 +36,13 @@ export class AssetsTransferApi {
 	readonly _api: ApiPromise;
 	readonly _info: Promise<IChainInfo>;
 	readonly _safeXcmVersion: Promise<u32>;
+	readonly _registry: ChainInfoRegistry;
 
 	constructor(api: ApiPromise) {
 		this._api = api;
 		this._info = this.fetchChainInfo();
 		this._safeXcmVersion = this.fetchSafeXcmVersion();
+		this._registry = parseRegistry();
 	}
 
 	/**
