@@ -3,6 +3,16 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
+import type { ChainInfoRegistry } from './registry/types';
+
+export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
+	T,
+	Exclude<keyof T, Keys>
+> &
+	{
+		[K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
+	}[Keys];
+
 export enum IDirection {
 	SystemToPara = 'SystemToPara',
 	SystemToRelay = 'SystemToRelay',
@@ -29,6 +39,10 @@ export type IMethods =
 	| 'limitedReserveTransferAssets'
 	| 'teleportAssets'
 	| 'limitedTeleportAssets';
+
+export type IAssetsTransferApiOpts = {
+	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
+};
 
 export interface TxResult<T> {
 	format: string;
