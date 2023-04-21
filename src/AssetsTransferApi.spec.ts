@@ -359,4 +359,23 @@ describe('AssetTransferAPI', () => {
 			expect(version.toNumber()).toEqual(2);
 		});
 	});
+	describe('Opts', () => {
+		it('Should correctly read in the injectedRegistry option', () => {
+			const injectedRegistry = {
+				polkadot: {
+					'9876': {
+						tokens: ['TST'],
+						specName: 'testing',
+					},
+				},
+			};
+			const mockSystemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, {
+				injectedRegistry,
+			});
+
+			expect(mockSystemAssetsApi._opts.injectedRegistry).toStrictEqual(
+				injectedRegistry
+			);
+		});
+	});
 });

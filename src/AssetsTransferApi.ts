@@ -25,6 +25,7 @@ import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	ConstructedFormat,
 	Format,
+	IAssetsTransferApiOpts,
 	IChainInfo,
 	IDirection,
 	IMethods,
@@ -34,15 +35,17 @@ import {
 
 export class AssetsTransferApi {
 	readonly _api: ApiPromise;
+	readonly _opts: IAssetsTransferApiOpts;
 	readonly _info: Promise<IChainInfo>;
 	readonly _safeXcmVersion: Promise<u32>;
 	readonly _registry: ChainInfoRegistry;
 
-	constructor(api: ApiPromise) {
+	constructor(api: ApiPromise, opts: IAssetsTransferApiOpts = {}) {
 		this._api = api;
+		this._opts = opts;
 		this._info = this.fetchChainInfo();
 		this._safeXcmVersion = this.fetchSafeXcmVersion();
-		this._registry = parseRegistry();
+		this._registry = parseRegistry(opts);
 	}
 
 	/**
