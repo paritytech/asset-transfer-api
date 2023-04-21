@@ -299,14 +299,21 @@ describe('AssetTransferAPI', () => {
 		});
 	});
 	describe('establishDirection', () => {
-		// TODO: Add tests for the remaining directions when they are implemented
 		it('Should correctly determine direction for SystemToPara', () => {
 			const res = systemAssetsApi['establishDirection']('2000', 'statemint');
 			expect(res).toEqual('SystemToPara');
 		});
+		it('Should correctly determine direction for SystemToRelay', () => {
+			const res = systemAssetsApi['establishDirection']('0', 'statemint');
+			expect(res).toEqual('SystemToRelay');
+		});
 		it('Should correctly determine direction for RelayToPara', () => {
 			const res = relayAssetsApi['establishDirection']('2000', 'polkadot');
 			expect(res).toEqual('RelayToPara');
+		});
+		it('Should correctly determine direction for RelayToSystem', () => {
+			const res = relayAssetsApi['establishDirection']('1000', 'polkadot');
+			expect(res).toEqual('RelayToSystem');
 		});
 	});
 	describe('constructFormat', () => {
