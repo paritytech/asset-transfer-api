@@ -29,7 +29,7 @@
   "packageManager": "yarn@3.3.1",
   "devDependencies": {
     "@polkadot/apps-config": "^0.127.1",
-    "@substrate/dev": "^0.6.6",
+    "@substrate/dev": "^0.6.7",
     "chalk": "4.1.2",
     "typedoc": "^0.23.26",
     "typedoc-plugin-markdown": "^3.14.0",
