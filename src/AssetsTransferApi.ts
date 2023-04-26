@@ -18,7 +18,7 @@ import {
 	reserveTransferAssets,
 } from './createXcmCalls';
 import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
-import { checkLocalTxInput, checkXcmVersion } from './errors';
+import { checkLocalTxInput, checkXcmTxInputs, checkXcmVersion } from './errors';
 import { parseRegistry } from './registry/parseRegistry';
 import type { ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
@@ -96,30 +96,13 @@ export class AssetsTransferApi {
 			return this.constructFormat(tx, 'local', null, method, opts?.format);
 		}
 
-		/**
-		 * Establish the Transaction Direction
-		 */
 		const xcmDirection = this.establishDirection(destChainId, specName);
-		const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
-		/**
-		 * Establish an xcmVersion
-		 */
 		const xcmVersion =
 			opts?.xcmVersion === undefined
 				? safeXcmVersion.toNumber()
 				: opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
-
-		// TODO: Check for xcm construction errors depending on the input.
-
-		/**
-		 * Lengths should match, and indicies between both the amounts and assetIds should match.
-		 */
-		if (assetIds.length !== amounts.length && !isRelayDirection) {
-			throw Error(
-				'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
-			);
-		}
+		checkXcmTxInputs(assetIds, amounts, xcmDirection);
 
 		let txMethod: IMethods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
