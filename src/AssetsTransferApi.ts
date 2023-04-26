@@ -74,7 +74,7 @@ export class AssetsTransferApi {
 		const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
 
 		/**
-		 * Sanitize the address to a hex, and ensure that the past in SS58, or publickey
+		 * Sanitize the address to a hex, and ensure that the passed in SS58, or publickey
 		 * is validated correctly.
 		 */
 		const addr = sanitizeAddress(destAddr);
