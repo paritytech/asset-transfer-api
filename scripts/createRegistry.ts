@@ -38,6 +38,7 @@ const unreliableIds = {
 		2080, // loomNetwork
 		2016, // sakura
 		2018, // subgame
+		2236, // zero
 	],
 	westend: [],
 };

@@ -162,7 +162,7 @@
       "tokens": [
         "RING"
       ],
-      "specName": "Darwinia Parachain"
+      "specName": "Darwinia2"
     },
     "2048": {
       "tokens": [
@@ -187,12 +187,6 @@
         "AVT"
       ],
       "specName": "avn-parachain"
-    },
-    "2058": {
-      "tokens": [
-        "WATR"
-      ],
-      "specName": "watr-mainnet"
     },
     "2086": {
       "tokens": [
@@ -438,12 +432,6 @@
       ],
       "specName": "DORA KSM Parachain"
     },
-    "2116": {
-      "tokens": [
-        "DHX"
-      ],
-      "specName": "datahighway-parachain"
-    },
     "2119": {
       "tokens": [
         "BAJU"
@@ -492,15 +480,6 @@
       ],
       "specName": "Genshiro"
     },
-    "2236": {
-      "tokens": [
-        "ZERO",
-        "PLAY",
-        "GAME",
-        "DOT"
-      ],
-      "specName": "subzero"
-    },
     "2240": {
       "tokens": [
         "XRT"
@@ -526,12 +505,6 @@
         "WND"
       ],
       "specName": "collectives"
-    },
-    "1002": {
-      "tokens": [
-        "WND"
-      ],
-      "specName": "bridge-hub-kusama"
     }
   }
 }
