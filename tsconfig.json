@@ -6,6 +6,7 @@
       "rootDirs": ["./src", "./scripts"],
       "suppressImplicitAnyIndexErrors": true,
       "resolveJsonModule": true,
+      "esModuleInterop": true,
     },
     "typeRoots": [
       "./node_modules/@types"

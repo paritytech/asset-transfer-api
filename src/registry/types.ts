@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-type ChainInfo = {
+export type ChainInfo = {
 	[x: string]: {
 		specName: string;
 		tokens: string[];
