@@ -1,7 +1,8 @@
-import { ChainInfoRegistry, ChainInfo } from 'src/registry/types';
+import { ChainInfo, ChainInfoRegistry } from 'src/registry/types';
+
+import { findRelayChain } from '../registry/findRelayChain';
 import type { IDirection } from '../types';
 import { BaseError } from './BaseError';
-import { findRelayChain } from '../registry/findRelayChain';
 
 /**
  * This will check the given assetIds and ensure they are either valid integers as strings
@@ -13,10 +14,14 @@ import { findRelayChain } from '../registry/findRelayChain';
  * @param relayChainInfo
  * @param specName
  */
-export const checkAssetIdInput = (assetIds: string[], relayChainInfo: ChainInfo, specName: string) => {
+export const checkAssetIdInput = (
+	assetIds: string[],
+	relayChainInfo: ChainInfo,
+	specName: string
+) => {
 	let isInvalidNumber = false;
 
-	for(let i = 0; i < assetIds.length; i++) {
+	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		// check if assetId is a valid number
@@ -29,10 +34,11 @@ export const checkAssetIdInput = (assetIds: string[], relayChainInfo: ChainInfo,
 				// check if assetId symbol exists within the chains registered tokens list
 				for (const tokenSymbol of chainInfo.tokens) {
 					let isValidTokenSymbol = false;
-					let isNativeChain = chainInfo.specName.toLowerCase() === specName.toLowerCase();
+					const isNativeChain =
+						chainInfo.specName.toLowerCase() === specName.toLowerCase();
 
 					if (tokenSymbol === assetId && isNativeChain) {
-							isValidTokenSymbol = true;
+						isValidTokenSymbol = true;
 					}
 
 					// if not valid token symbol throw an error
@@ -40,7 +46,7 @@ export const checkAssetIdInput = (assetIds: string[], relayChainInfo: ChainInfo,
 						throw new BaseError(
 							`'assetIds' must be either valid number or valid chain token symbols. Got: ${assetId}`
 						);
-					} 
+					}
 				}
 			}
 		}
@@ -62,7 +68,7 @@ export const checkXcmTxInputs = (
 	amounts: string[],
 	xcmDirection: IDirection,
 	specName: string,
-	registry: ChainInfoRegistry,
+	registry: ChainInfoRegistry
 ) => {
 	const relayChainName = findRelayChain(specName, registry);
 	const relayChainInfo: ChainInfo = registry[relayChainName];
