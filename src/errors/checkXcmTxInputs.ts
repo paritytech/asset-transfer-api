@@ -1,4 +1,4 @@
-import { ChainInfo, ChainInfoRegistry } from 'src/registry/types';
+import { ChainInfo, ChainInfoRegistry } from '../registry/types';
 
 import { findRelayChain } from '../registry/findRelayChain';
 import type { IDirection } from '../types';
