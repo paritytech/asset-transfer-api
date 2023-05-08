@@ -65,7 +65,7 @@ export class AssetsTransferApi {
 		amounts: string[],
 		opts?: ITransferArgsOpts<T>
 	): Promise<TxResult<T>> {
-		const { _api, _info, _safeXcmVersion } = this;
+		const { _api, _info, _safeXcmVersion, _registry } = this;
 		const { specName } = await _info;
 		const safeXcmVersion = await _safeXcmVersion;
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
@@ -102,7 +102,14 @@ export class AssetsTransferApi {
 				? safeXcmVersion.toNumber()
 				: opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
-		checkXcmTxInputs(assetIds, amounts, xcmDirection);
+		checkXcmTxInputs(
+			assetIds,
+			amounts,
+			xcmDirection,
+			destChainId,
+			specName,
+			_registry
+		);
 
 		let txMethod: IMethods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
