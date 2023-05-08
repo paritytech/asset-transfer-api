@@ -31,7 +31,7 @@ export const checkAssetIdInput = (
 			const chainInfo = relayChainInfo[destChainId];
 
 			const isNativeChain =
-			chainInfo.specName.toLowerCase() === specName.toLowerCase();
+				chainInfo.specName.toLowerCase() === specName.toLowerCase();
 
 			// if chain specNames don't match throw an error
 			if (!isNativeChain) {

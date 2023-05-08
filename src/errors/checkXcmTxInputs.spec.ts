@@ -51,6 +51,12 @@ describe('checkAssetIds', () => {
 				['BNCC', '1', '2', '3', '4'],
 				`'assetIds' must be either valid number or valid chain token symbols. Got: BNCC`,
 			],
+			[
+				'2104',
+				'Manta',
+				['', 'MANTA'],
+				`'assetIds' must be either valid number or valid chain token symbols. Got: `,
+			],
 		];
 
 		for (const test of tests) {
@@ -64,7 +70,7 @@ describe('checkAssetIds', () => {
 		}
 	});
 
-	it('Should error when a token in assetIds does not exactly match a valid token symbol', () => {
+	it("Should error when a token in assetId's does not exactly match a valid token symbol", () => {
 		const registry = parseRegistry({});
 
 		const tests: Test[] = [
@@ -99,7 +105,7 @@ describe('checkAssetIds', () => {
 		}
 	});
 
-	it('Should error when assetIds includes a foreign chains asset', () => {
+	it("Should error when assetId's includes a foreign chains asset", () => {
 		const registry = parseRegistry({});
 
 		const tests: Test[] = [
