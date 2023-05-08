@@ -214,7 +214,7 @@ describe('AssetTransferAPI', () => {
 				return await relayAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1', '2'],
+					[],
 					['100', '100'],
 					{
 						format,
