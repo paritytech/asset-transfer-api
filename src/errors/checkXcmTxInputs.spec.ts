@@ -29,7 +29,7 @@ type Test = [
 ];
 
 describe('checkAssetIds', () => {
-	it("Should error when inputted assetId's are not valid numbers or valid token symbols", () => {
+	it("Should error when inputted assetId's are not valid integer numbers or valid token symbols", () => {
 		const registry = parseRegistry({});
 
 		const tests: Test[] = [
@@ -37,25 +37,25 @@ describe('checkAssetIds', () => {
 				'0',
 				'Polkadot',
 				['DOT', 'hello', '2', 'DOT'],
-				`'assetIds' must be either valid number or valid chain token symbols. Got: hello`,
+				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: hello`,
 			],
 			[
 				'2004',
 				'Moonbeam',
 				['1', 'two', 'GLMR'],
-				`'assetIds' must be either valid number or valid chain token symbols. Got: two`,
+				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: two`,
 			],
 			[
 				'2030',
 				'Bifrost_Polkadot',
 				['BNCC', '1', '2', '3', '4'],
-				`'assetIds' must be either valid number or valid chain token symbols. Got: BNCC`,
+				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: BNCC`,
 			],
 			[
 				'2104',
 				'Manta',
 				['', 'MANTA'],
-				`'assetIds' must be either valid number or valid chain token symbols. Got: `,
+				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: `,
 			],
 		];
 
@@ -78,19 +78,19 @@ describe('checkAssetIds', () => {
 				'2006',
 				'Astar',
 				['1', '2', '3', 'ASTR', 'DOT'],
-				`'assetIds' must be either valid number or valid chain token symbols. Got: DOT`,
+				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: DOT`,
 			],
 			[
 				'2004',
 				'Moonbeam',
 				['1', '2', '3', 'GLMR', 'BNC'],
-				`'assetIds' must be either valid number or valid chain token symbols. Got: BNC`,
+				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: BNC`,
 			],
 			[
 				'2000',
 				'Acala',
 				['ACA', 'GLMR'],
-				`'assetIds' must be either valid number or valid chain token symbols. Got: GLMR`,
+				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: GLMR`,
 			],
 		];
 

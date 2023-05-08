@@ -44,7 +44,7 @@ export const checkAssetIdInput = (
 
 			if (!isValidTokenSymbol) {
 				throw new BaseError(
-					`'assetIds' must be either valid number or valid chain token symbols. Got: ${assetId}`
+					`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: ${assetId}`
 				);
 			}
 		}
