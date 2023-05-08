@@ -11,12 +11,27 @@ describe('checkXcmTxinputs', () => {
 				['10', '10'],
 				IDirection.SystemToPara,
 				'0',
-				'Polkadot',
+				'Statemint',
 				parseRegistry({})
 			);
 
 		expect(err).toThrow(
 			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
+		);
+	});
+	it('Should error when inputting assetIds when a transactions origin is the relay chain', () => {
+		const err = () =>
+			checkXcmTxInputs(
+				['DOT'],
+				['1000'],
+				IDirection.RelayToSystem,
+				'1000',
+				'Polkadot',
+				parseRegistry({})
+			);
+
+		expect(err).toThrow(
+			"`assetIds` should be empty when sending tx's from the relay chain."
 		);
 	});
 });

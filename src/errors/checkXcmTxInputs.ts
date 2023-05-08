@@ -72,6 +72,14 @@ export const checkXcmTxInputs = (
 	const relayChainName = findRelayChain(specName, registry);
 	const relayChainInfo: ChainInfo = registry[relayChainName];
 	/**
+	 * Ensure that tx's originating from the relay chain should have no assets attached to the assetId's
+	 */
+	if (xcmDirection.toLowerCase().startsWith('relay') && assetIds.length > 0) {
+		throw new BaseError(
+			"`assetIds` should be empty when sending tx's from the relay chain."
+		);
+	}
+	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
 	checkAssetIdInput(assetIds, relayChainInfo, specName, destChainId);
