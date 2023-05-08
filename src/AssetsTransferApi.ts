@@ -106,7 +106,7 @@ export class AssetsTransferApi {
 			assetIds,
 			amounts,
 			xcmDirection,
-			destAddr,
+			destChainId,
 			specName,
 			_registry
 		);

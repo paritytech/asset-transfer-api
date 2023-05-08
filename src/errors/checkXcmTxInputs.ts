@@ -18,7 +18,7 @@ export const checkAssetIdInput = (
 	assetIds: string[],
 	relayChainInfo: ChainInfo,
 	specName: string,
-	destAddress: string
+	destChainId: string
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
@@ -28,7 +28,7 @@ export const checkAssetIdInput = (
 
 		if (isInvalidNumber) {
 			let isValidTokenSymbol = false;
-			const chainInfo = relayChainInfo[destAddress];
+			const chainInfo = relayChainInfo[destChainId];
 
 			// check if assetId symbol exists within the chains registered tokens list
 			for (const tokenSymbol of chainInfo.tokens) {
@@ -65,13 +65,13 @@ export const checkXcmTxInputs = (
 	assetIds: string[],
 	amounts: string[],
 	xcmDirection: IDirection,
-	destAddress: string,
+	destChainId: string,
 	specName: string,
 	registry: ChainInfoRegistry
 ) => {
 	const relayChainName = findRelayChain(specName, registry);
 	const relayChainInfo: ChainInfo = registry[relayChainName];
-	checkAssetIdInput(assetIds, relayChainInfo, specName, destAddress);
+	checkAssetIdInput(assetIds, relayChainInfo, specName, destChainId);
 
 	const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
 	/**

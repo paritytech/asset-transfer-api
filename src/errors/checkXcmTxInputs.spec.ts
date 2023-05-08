@@ -22,7 +22,7 @@ describe('checkXcmTxinputs', () => {
 });
 
 type Test = [
-	destAddress: string,
+	destChainId: string,
 	specName: string,
 	inputs: string[],
 	errorMessage: string
@@ -54,12 +54,12 @@ describe('checkAssetIds', () => {
 		];
 
 		for (const test of tests) {
-			const [destAddress, specName, testInputs, errorMessage] = test;
+			const [destChainId, specName, testInputs, errorMessage] = test;
 			const relayChainName = findRelayChain(specName, registry);
 			const currentRegistry = registry[relayChainName];
 
 			const err = () =>
-				checkAssetIdInput(testInputs, currentRegistry, specName, destAddress);
+				checkAssetIdInput(testInputs, currentRegistry, specName, destChainId);
 			expect(err).toThrow(errorMessage);
 		}
 	});
@@ -89,12 +89,12 @@ describe('checkAssetIds', () => {
 		];
 
 		for (const test of tests) {
-			const [destAddress, specName, testInputs, errorMessage] = test;
+			const [destChainId, specName, testInputs, errorMessage] = test;
 			const relayChainName = findRelayChain(specName, registry);
 			const currentRegistry = registry[relayChainName];
 
 			const err = () =>
-				checkAssetIdInput(testInputs, currentRegistry, specName, destAddress);
+				checkAssetIdInput(testInputs, currentRegistry, specName, destChainId);
 			expect(err).toThrow(errorMessage);
 		}
 	});
@@ -124,12 +124,12 @@ describe('checkAssetIds', () => {
 		];
 
 		for (const test of tests) {
-			const [destAddress, specName, testInputs, errorMessage] = test;
+			const [destChainId, specName, testInputs, errorMessage] = test;
 			const relayChainName = findRelayChain(specName, registry);
 			const currentRegistry = registry[relayChainName];
 
 			const err = () =>
-				checkAssetIdInput(testInputs, currentRegistry, specName, destAddress);
+				checkAssetIdInput(testInputs, currentRegistry, specName, destChainId);
 			expect(err).toThrow(errorMessage);
 		}
 	});
