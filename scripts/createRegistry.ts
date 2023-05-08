@@ -91,7 +91,7 @@ const fetchChainInfo = async (
 		: [];
 
 	const specNameStr = specName.toString();
-	
+
 	// get common good parachain asset ids and add them to tokens
 	const assetIds: number[] = [];
 
@@ -187,10 +187,12 @@ const main = async () => {
 	writeJson(path, registry);
 };
 
-const fetchCommonGoodParachainAssetIds = async (api: ApiPromise): Promise<number[]> => {
+const fetchCommonGoodParachainAssetIds = async (
+	api: ApiPromise
+): Promise<number[]> => {
 	const keys = await api.query.assets.asset.keys();
 	return keys.map(({ args: [assetId] }) => assetId.toNumber());
-}
+};
 
 main()
 	.catch((err) => console.error(err))
