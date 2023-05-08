@@ -23,20 +23,27 @@ export const checkAssetIdInput = (
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		// check if assetId is a valid number
-		const isInvalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+		// check if parsed assetId is a valid number
+		const notValidNumber = Number.isNaN(parsedAssetIdAsNumber);
 
-		if (isInvalidNumber) {
+		if (notValidNumber) {
 			let isValidTokenSymbol = false;
 			const chainInfo = relayChainInfo[destChainId];
 
+			const isNativeChain =
+			chainInfo.specName.toLowerCase() === specName.toLowerCase();
+
+			// if chain specNames don't match throw an error
+			if (!isNativeChain) {
+				throw new BaseError(
+					`non matching chains. Received: ${specName.toLowerCase()}. Expected: ${chainInfo.specName.toLowerCase()}`
+				);
+			}
+
 			// check if assetId symbol exists within the chains registered tokens list
 			for (const tokenSymbol of chainInfo.tokens) {
-				const isNativeChain =
-					chainInfo.specName.toLowerCase() === specName.toLowerCase();
-
 				// token is valid symbol on correct chain
-				if (tokenSymbol === assetId && isNativeChain) {
+				if (tokenSymbol === assetId) {
 					isValidTokenSymbol = true;
 				}
 			}

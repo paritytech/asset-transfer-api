@@ -133,4 +133,39 @@ describe('checkAssetIds', () => {
 			expect(err).toThrow(errorMessage);
 		}
 	});
+
+	it('Should error when the given specName does not match the destChainIds specName', () => {
+		const registry = parseRegistry({});
+
+		const tests: Test[] = [
+			[
+				'2006',
+				'Polkadot',
+				['1', '2', '3', 'ASTR', 'DOT'],
+				`non matching chains. Received: polkadot. Expected: astar`,
+			],
+			[
+				'2004',
+				'Bifrost_Polkadot',
+				['1', '2', '3', 'GLMR'],
+				`non matching chains. Received: bifrost_polkadot. Expected: moonbeam`,
+			],
+			[
+				'2000',
+				'Origintrail-Parachain',
+				['ACA'],
+				`non matching chains. Received: origintrail-parachain. Expected: acala`,
+			],
+		];
+
+		for (const test of tests) {
+			const [destChainId, specName, testInputs, errorMessage] = test;
+			const relayChainName = findRelayChain(specName, registry);
+			const currentRegistry = registry[relayChainName];
+
+			const err = () =>
+				checkAssetIdInput(testInputs, currentRegistry, specName, destChainId);
+			expect(err).toThrow(errorMessage);
+		}
+	});
 });
