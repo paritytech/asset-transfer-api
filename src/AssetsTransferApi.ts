@@ -102,7 +102,14 @@ export class AssetsTransferApi {
 				? safeXcmVersion.toNumber()
 				: opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
-		checkXcmTxInputs(assetIds, amounts, xcmDirection, specName, _registry);
+		checkXcmTxInputs(
+			assetIds,
+			amounts,
+			xcmDirection,
+			destAddr,
+			specName,
+			_registry
+		);
 
 		let txMethod: IMethods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
