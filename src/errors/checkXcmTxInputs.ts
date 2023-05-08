@@ -7,10 +7,10 @@ import { BaseError } from './BaseError';
  * This will check the given assetIds and ensure they are either valid integers as strings
  * or known token symbols
  *
- *
  * @param assetIds
  * @param relayChainInfo
  * @param specName
+ * @param destChainId
  */
 export const checkAssetIdInput = (
 	assetIds: string[],
@@ -71,6 +71,9 @@ export const checkXcmTxInputs = (
 ) => {
 	const relayChainName = findRelayChain(specName, registry);
 	const relayChainInfo: ChainInfo = registry[relayChainName];
+	/**
+	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
+	 */
 	checkAssetIdInput(assetIds, relayChainInfo, specName, destChainId);
 
 	const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
