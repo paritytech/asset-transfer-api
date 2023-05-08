@@ -39,6 +39,7 @@ const unreliableIds = {
 		2016, // sakura
 		2018, // subgame
 		2236, // zero
+		2129, // Ice Network
 	],
 	westend: [],
 };
@@ -89,11 +90,22 @@ const fetchChainInfo = async (
 				.map((token) => token.toString())
 		: [];
 
+	const specNameStr = specName.toString();
+	
+	// get common good parachain asset ids and add them to tokens
+	const assetIds: number[] = [];
+
+	if (specNameStr === 'statemine' || specNameStr === 'statemint') {
+		const commonGoodAssetIds = await fetchCommonGoodParachainAssetIds(api);
+		assetIds.push(...commonGoodAssetIds);
+	}
+
 	await api.disconnect();
 
 	return {
 		tokens,
-		specName: specName.toString(),
+		assetIds,
+		specName: specNameStr,
 	};
 };
 
@@ -174,6 +186,11 @@ const main = async () => {
 	const path = __dirname + '/../../src/registry/registry.json';
 	writeJson(path, registry);
 };
+
+const fetchCommonGoodParachainAssetIds = async (api: ApiPromise): Promise<number[]> => {
+	const keys = await api.query.assets.asset.keys();
+	return keys.map(({ args: [assetId] }) => assetId.toNumber());
+}
 
 main()
 	.catch((err) => console.error(err))
