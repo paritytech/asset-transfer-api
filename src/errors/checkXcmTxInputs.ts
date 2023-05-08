@@ -1,5 +1,5 @@
 import { findRelayChain } from '../registry/findRelayChain';
-import { ChainInfo, ChainInfoRegistry } from '../registry/types';
+import type { ChainInfo, ChainInfoRegistry } from '../registry/types';
 import type { IDirection } from '../types';
 import { BaseError } from './BaseError';
 
