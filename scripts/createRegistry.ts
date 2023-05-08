@@ -91,8 +91,6 @@ const fetchChainInfo = async (
 		: [];
 
 	const specNameStr = specName.toString();
-
-	// get common good parachain asset ids and add them to tokens
 	const assetIds: number[] = [];
 
 	if (specNameStr === 'statemine' || specNameStr === 'statemint') {
