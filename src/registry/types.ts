@@ -4,6 +4,7 @@ export type ChainInfo = {
 	[x: string]: {
 		specName: string;
 		tokens: string[];
+		assetIds: number[];
 	};
 };
 

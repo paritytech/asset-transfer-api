@@ -12,11 +12,13 @@ describe('parseRegistry', () => {
 	});
 
 	it('Should correctly inject an injectedRegsitry', () => {
+		const assetIds: number[] = [];
 		const opts = {
 			injectedRegistry: {
 				polkadot: {
 					'9876': {
 						tokens: ['TST'],
+						assetIds,
 						specName: 'testing',
 					},
 				},
@@ -26,6 +28,7 @@ describe('parseRegistry', () => {
 
 		expect(registry.polkadot['9876']).toStrictEqual({
 			tokens: ['TST'],
+			assetIds: [],
 			specName: 'testing',
 		});
 		// Ensure nothing was overwritten
