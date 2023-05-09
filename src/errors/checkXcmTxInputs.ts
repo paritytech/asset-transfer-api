@@ -16,14 +16,40 @@ export const checkAssetIdInput = (
 	assetIds: string[],
 	relayChainInfo: ChainInfo,
 	specName: string,
-	destChainId: string
+	destChainId: string,
+	xcmDirection: IDirection
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const notValidNumber = Number.isNaN(parsedAssetIdAsNumber);
+		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
 
-		if (notValidNumber) {
+		// check that the specific assetId exists for the destChain
+		if (!invalidNumber) {
+			if (xcmDirection.toLowerCase().startsWith('system')) {
+				const systemParachainId = 1000;
+				const chainInfo = relayChainInfo[systemParachainId];
+				let isValidAssetId = false;
+
+				for (const id of chainInfo.assetIds) {
+					if (id === parsedAssetIdAsNumber) {
+						isValidAssetId = true;
+						break;
+					}
+				}
+
+				if (!isValidAssetId) {
+					throw new BaseError(`assetId ${assetId} not found in ${specName}`);
+				}
+			} else {
+				// if the asset id is a valid number and the chain isn't a system parachain throw an error
+				throw new BaseError(
+					`integer assetId's can only be used for transfers from system parachains. Expected a valid token symbol. Got ${parsedAssetIdAsNumber}`
+				);
+			}
+		}
+
+		if (invalidNumber) {
 			let isValidTokenSymbol = false;
 			const chainInfo = relayChainInfo[destChainId];
 
@@ -82,7 +108,13 @@ export const checkXcmTxInputs = (
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
-	checkAssetIdInput(assetIds, relayChainInfo, specName, destChainId);
+	checkAssetIdInput(
+		assetIds,
+		relayChainInfo,
+		specName,
+		destChainId,
+		xcmDirection
+	);
 
 	const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
 	/**
