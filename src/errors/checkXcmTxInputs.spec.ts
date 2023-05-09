@@ -239,5 +239,5 @@ describe('checkAssetIds', () => {
 				);
 			expect(err).toThrow(errorMessage);
 		}
-	})
+	});
 });
