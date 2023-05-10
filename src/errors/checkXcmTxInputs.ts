@@ -2,6 +2,7 @@ import { findRelayChain } from '../registry/findRelayChain';
 import type { ChainInfo, ChainInfoRegistry } from '../registry/types';
 import type { IDirection } from '../types';
 import { BaseError } from './BaseError';
+import { SYSTEM_PARACHAINS_IDS } from '../consts'
 
 /**
  * This will check the given assetIds and ensure they are either valid integers as strings
@@ -27,7 +28,7 @@ export const checkAssetIdInput = (
 		// check that the specific assetId exists for the destChain
 		if (!invalidNumber) {
 			if (xcmDirection.toLowerCase().startsWith('system')) {
-				const systemParachainId = 1000;
+				const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
 				const chainInfo = relayChainInfo[systemParachainId];
 				let isValidAssetId = false;
 
