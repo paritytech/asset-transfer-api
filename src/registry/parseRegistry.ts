@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { IAssetsTransferApiOpts } from '../types';
-import registry from './registry.json';
+import registry from '@substrate/asset-transfer-api-registry';
 import type { ChainInfoRegistry } from './types';
 
 export const parseRegistry = (

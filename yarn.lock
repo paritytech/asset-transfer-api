@@ -3026,12 +3026,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@substrate/asset-transfer-api-registry@file:../asset-transfer-api-registry::locator=%40substrate%2Fasset-transfer-api%40workspace%3A.":
+  version: 0.1.0
+  resolution: "@substrate/asset-transfer-api-registry@file:../asset-transfer-api-registry#../asset-transfer-api-registry::hash=879b0a&locator=%40substrate%2Fasset-transfer-api%40workspace%3A."
+  checksum: dcdc5920f6f19672dbd64a4172f2411506da739c5ced466741840ecdbdc36769deb9f426da44fd532ce2d05778ce8e4d5b26534ecd86d048dc824df59e15cff0
+  languageName: node
+  linkType: hard
+
 "@substrate/asset-transfer-api@workspace:.":
   version: 0.0.0-use.local
   resolution: "@substrate/asset-transfer-api@workspace:."
   dependencies:
     "@polkadot/api": ^10.5.1
     "@polkadot/apps-config": ^0.129.1
+    "@substrate/asset-transfer-api-registry": "file:../asset-transfer-api-registry"
     "@substrate/dev": ^0.6.7
     chalk: 4.1.2
     typedoc: ^0.23.26
