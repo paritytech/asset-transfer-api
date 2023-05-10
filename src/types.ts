@@ -63,7 +63,7 @@ export interface TxResult<T> {
 }
 
 /**
- * The ITransferArgsOpts are the options passed into AssetsTransferApi.
+ * The ITransferArgsOpts are the options passed into createTransferTransaction.
  */
 export interface ITransferArgsOpts<T extends Format> {
 	/**

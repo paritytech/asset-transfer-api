@@ -7,7 +7,7 @@ module.exports = {
 		'node_modules/**',
 		'./src/testHelpers/**',
 	],
-	// "excludeNotDocumented": true,
+	"excludeNotDocumented": true,
 	// "navigationLinks": {
     //     "ATApi": "./docs/classes"
     // },
