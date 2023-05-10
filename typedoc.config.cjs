@@ -8,17 +8,10 @@ module.exports = {
 		'./src/testHelpers/**',
 	],
 	"excludeNotDocumented": true,
-	// "navigationLinks": {
-    //     "ATApi": "./docs/classes"
-    // },
-	// "sidebarLinks": {
-    //     "ATApi": "./docs/classes"
-    // },
-	// "navigation": {
-    //     "includeCategories": true,
-    //     "includeGroups": false
-    // },
-    // "categorizeByGroup": false,
+	"navigationLinks": {
+        "Repository": "https://github.com/paritytech/asset-transfer-api",
+		"Parity.io": "https://www.parity.io/"
+    },
 	includeVersion: true,
 	excludeExternals: true,
 	excludePrivate: true,
