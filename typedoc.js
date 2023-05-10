@@ -10,6 +10,6 @@ module.exports = {
 	excludeExternals: true,
 	excludePrivate: true,
 	hideGenerator: true,
-	out: 'docs',
+	out: 'docs/generatedDocs',
 	theme: 'markdown',
 };

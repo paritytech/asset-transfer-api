@@ -23,7 +23,7 @@
 
 #### Defined in
 
-[types.ts:9](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L9)
+[types.ts:19](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/types.ts#L19)
 
 ___
 
@@ -33,7 +33,7 @@ ___
 
 #### Defined in
 
-[types.ts:10](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L10)
+[types.ts:20](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/types.ts#L20)
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 #### Defined in
 
-[types.ts:12](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L12)
+[types.ts:22](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/types.ts#L22)
 
 ___
 
@@ -53,7 +53,7 @@ ___
 
 #### Defined in
 
-[types.ts:11](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L11)
+[types.ts:21](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/types.ts#L21)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 #### Defined in
 
-[types.ts:7](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L7)
+[types.ts:17](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/types.ts#L17)
 
 ___
 
@@ -73,4 +73,4 @@ ___
 
 #### Defined in
 
-[types.ts:8](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/types.ts#L8)
+[types.ts:18](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/types.ts#L18)
