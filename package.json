@@ -8,7 +8,6 @@
     "build:scripts": "substrate-exec-rimraf scripts/build/ && substrate-exec-tsc --project scripts/tsconfig.json",
     "start": "node ./lib/index.js",
     "start:zombienet-post-script": "yarn build:scripts && node ./scripts/build/testNetworkSetup.js",
-    "start:registry": "yarn build:scripts && node ./scripts/build/createRegistry.js",
     "lint": "substrate-dev-run-lint",
     "lint:fix": "substrate-dev-run-lint --fix",
     "test": "NODE_ENV=test substrate-exec-jest --detectOpenHandles",
@@ -28,7 +27,6 @@
   "homepage": "https://github.com/paritytech/asset-transfer-api#readme",
   "packageManager": "yarn@3.5.0",
   "devDependencies": {
-    "@polkadot/apps-config": "^0.129.1",
     "@substrate/dev": "^0.6.7",
     "chalk": "4.1.2",
     "typedoc": "^0.23.26",
@@ -39,6 +37,7 @@
     "typescript": "4.9.4"
   },
   "dependencies": {
-    "@polkadot/api": "^10.5.1"
+    "@polkadot/api": "^10.5.1",
+    "@substrate/asset-transfer-api-registry": "0.1.0"
   }
 }
