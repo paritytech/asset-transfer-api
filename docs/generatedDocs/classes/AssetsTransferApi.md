@@ -12,6 +12,8 @@
 
 - [\_api](AssetsTransferApi.md#_api)
 - [\_info](AssetsTransferApi.md#_info)
+- [\_opts](AssetsTransferApi.md#_opts)
+- [\_registry](AssetsTransferApi.md#_registry)
 - [\_safeXcmVersion](AssetsTransferApi.md#_safexcmversion)
 
 ### Methods
@@ -22,17 +24,18 @@
 
 ### constructor
 
-• **new AssetsTransferApi**(`api`)
+• **new AssetsTransferApi**(`api`, `opts?`)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `api` | `ApiPromise` |
+| `opts` | [`IAssetsTransferApiOpts`](../modules/internal_.md#iassetstransferapiopts) |
 
 #### Defined in
 
-[AssetsTransferApi.ts:38](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L38)
+[AssetsTransferApi.ts:43](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/AssetsTransferApi.ts#L43)
 
 ## Properties
 
@@ -42,7 +45,7 @@
 
 #### Defined in
 
-[AssetsTransferApi.ts:34](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L34)
+[AssetsTransferApi.ts:37](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/AssetsTransferApi.ts#L37)
 
 ___
 
@@ -52,7 +55,27 @@ ___
 
 #### Defined in
 
-[AssetsTransferApi.ts:35](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L35)
+[AssetsTransferApi.ts:39](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/AssetsTransferApi.ts#L39)
+
+___
+
+### \_opts
+
+• `Readonly` **\_opts**: [`IAssetsTransferApiOpts`](../modules/internal_.md#iassetstransferapiopts)
+
+#### Defined in
+
+[AssetsTransferApi.ts:38](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/AssetsTransferApi.ts#L38)
+
+___
+
+### \_registry
+
+• `Readonly` **\_registry**: [`ChainInfoRegistry`](../modules/internal_.md#chaininforegistry)
+
+#### Defined in
+
+[AssetsTransferApi.ts:41](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/AssetsTransferApi.ts#L41)
 
 ___
 
@@ -62,7 +85,7 @@ ___
 
 #### Defined in
 
-[AssetsTransferApi.ts:36](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L36)
+[AssetsTransferApi.ts:40](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/AssetsTransferApi.ts#L40)
 
 ## Methods
 
@@ -95,4 +118,4 @@ or between chains using xcm.
 
 #### Defined in
 
-[AssetsTransferApi.ts:54](https://github.com/paritytech/asset-transfer-api/blob/96cf018/src/AssetsTransferApi.ts#L54)
+[AssetsTransferApi.ts:61](https://github.com/Rymul/asset-transfer-api/blob/e89a971/src/AssetsTransferApi.ts#L61)
