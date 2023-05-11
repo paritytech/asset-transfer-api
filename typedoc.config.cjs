@@ -7,9 +7,9 @@ module.exports = {
 		'node_modules/**',
 		'./src/testHelpers/**',
 	],
+	includeVersion: true,
 	excludeExternals: true,
 	excludePrivate: true,
 	hideGenerator: true,
-	out: 'docs/generatedDocs',
-	theme: 'markdown',
+	out: 'docs',
 };
