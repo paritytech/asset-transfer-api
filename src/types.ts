@@ -22,6 +22,12 @@ export enum IDirection {
 	RelayToPara = 'RelayToPara',
 }
 
+/**
+ * AssetTransferApi supports three formats to be returned:
+ * - payload: This returns a Polkadot-js `ExtrinsicPayload` as a hex.
+ * - call: This returns a Polkadot-js `Call` as a hex.
+ * - submittable: This returns a Polkadot-js `SubmittableExtrinsic`.
+ */
 export type Format = 'payload' | 'call' | 'submittable';
 
 export type ConstructedFormat<T> = T extends 'payload'
@@ -44,6 +50,10 @@ export type IAssetsTransferApiOpts = {
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
 };
 
+/**
+ * The TxResult is the result of constructing a transaction.
+ * T extends Format in the context of the options passed in for the Format the user expects.
+ */
 export interface TxResult<T> {
 	format: string;
 	xcmVersion: number | null;
@@ -52,6 +62,9 @@ export interface TxResult<T> {
 	tx: ConstructedFormat<T>;
 }
 
+/**
+ * The ITransferArgsOpts are the options passed into createTransferTransaction.
+ */
 export interface ITransferArgsOpts<T extends Format> {
 	/**
 	 * Option that specifies the format in which to return a transaction.

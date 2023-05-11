@@ -33,6 +33,16 @@ import {
 	TxResult,
 } from './types';
 
+/**
+ * Holds open an api connection to a specified chain within the ApiPromise in order to help
+ * construct transactions for assets and estimating fees. The main public functions this
+ * will expose are:
+ * - createTransferTransaction
+ * - TODO: add estimate fee function when ready
+ *
+ * @constructor api ApiPromise provided by Polkadot-js
+ * @constructor opts IAssetsTransferApiOpts
+ */
 export class AssetsTransferApi {
 	readonly _api: ApiPromise;
 	readonly _opts: IAssetsTransferApiOpts;
