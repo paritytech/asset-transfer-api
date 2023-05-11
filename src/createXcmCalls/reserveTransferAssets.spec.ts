@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
-import { IDirection } from '../types';
+import { Direction } from '../types';
 import { reserveTransferAssets } from './reserveTransferAssets';
 
 describe('reserveTransferAssets', () => {
@@ -11,7 +11,7 @@ describe('reserveTransferAssets', () => {
 		it('Should correctly construct a tx for a system parachain with V2', () => {
 			const ext = reserveTransferAssets(
 				mockSystemApi,
-				IDirection.SystemToPara,
+				Direction.SystemToPara,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1'],
 				['100'],
@@ -28,7 +28,7 @@ describe('reserveTransferAssets', () => {
 			const err = () =>
 				reserveTransferAssets(
 					mockApi,
-					IDirection.SystemToPara,
+					Direction.SystemToPara,
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					['1'],
 					['100'],

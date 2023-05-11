@@ -2,11 +2,11 @@
 
 import registry from '@substrate/asset-transfer-api-registry';
 
-import type { IAssetsTransferApiOpts } from '../types';
+import type { AssetsTransferApiOpts } from '../types';
 import type { ChainInfoRegistry } from './types';
 
 export const parseRegistry = (
-	assetsOpts: IAssetsTransferApiOpts
+	assetsOpts: AssetsTransferApiOpts
 ): ChainInfoRegistry => {
 	if (assetsOpts.injectedRegistry) {
 		const { injectedRegistry } = assetsOpts;

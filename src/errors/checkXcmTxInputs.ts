@@ -1,7 +1,7 @@
 import { SYSTEM_PARACHAINS_IDS } from '../consts';
 import { findRelayChain } from '../registry/findRelayChain';
 import type { ChainInfo, ChainInfoRegistry } from '../registry/types';
-import type { IDirection } from '../types';
+import type { Direction } from '../types';
 import { BaseError } from './BaseError';
 
 /**
@@ -18,7 +18,7 @@ export const checkAssetIdInput = (
 	relayChainInfo: ChainInfo,
 	specName: string,
 	destChainId: string,
-	xcmDirection: IDirection
+	xcmDirection: Direction
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
@@ -91,7 +91,7 @@ export const checkAssetIdInput = (
 export const checkXcmTxInputs = (
 	assetIds: string[],
 	amounts: string[],
-	xcmDirection: IDirection,
+	xcmDirection: Direction,
 	destChainId: string,
 	specName: string,
 	registry: ChainInfoRegistry

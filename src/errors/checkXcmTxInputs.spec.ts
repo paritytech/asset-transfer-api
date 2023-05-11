@@ -1,6 +1,6 @@
 import { findRelayChain } from '../registry/findRelayChain';
 import { parseRegistry } from '../registry/parseRegistry';
-import { IDirection } from '../types';
+import { Direction } from '../types';
 import { checkAssetIdInput, checkXcmTxInputs } from './checkXcmTxInputs';
 
 describe('checkXcmTxinputs', () => {
@@ -9,7 +9,7 @@ describe('checkXcmTxinputs', () => {
 			checkXcmTxInputs(
 				['1'],
 				['10', '10'],
-				IDirection.SystemToPara,
+				Direction.SystemToPara,
 				'0',
 				'Statemint',
 				parseRegistry({})
@@ -24,7 +24,7 @@ describe('checkXcmTxinputs', () => {
 			checkXcmTxInputs(
 				['DOT'],
 				['1000'],
-				IDirection.RelayToSystem,
+				Direction.RelayToSystem,
 				'1000',
 				'Polkadot',
 				parseRegistry({})
@@ -85,7 +85,7 @@ describe('checkAssetIds', () => {
 					currentRegistry,
 					specName,
 					destChainId,
-					IDirection.SystemToPara
+					Direction.SystemToPara
 				);
 			expect(err).toThrow(errorMessage);
 		}
@@ -126,7 +126,7 @@ describe('checkAssetIds', () => {
 					currentRegistry,
 					specName,
 					destChainId,
-					IDirection.SystemToPara
+					Direction.SystemToPara
 				);
 			expect(err).toThrow(errorMessage);
 		}
@@ -167,7 +167,7 @@ describe('checkAssetIds', () => {
 					currentRegistry,
 					specName,
 					destChainId,
-					IDirection.SystemToPara
+					Direction.SystemToPara
 				);
 			expect(err).toThrow(errorMessage);
 		}
@@ -201,7 +201,7 @@ describe('checkAssetIds', () => {
 					currentRegistry,
 					specName,
 					destChainId,
-					IDirection.SystemToPara
+					Direction.SystemToPara
 				);
 			expect(err).toThrow(errorMessage);
 		}
@@ -235,7 +235,7 @@ describe('checkAssetIds', () => {
 					currentRegistry,
 					specName,
 					destChainId,
-					IDirection.ParaToPara
+					Direction.ParaToPara
 				);
 			expect(err).toThrow(errorMessage);
 		}

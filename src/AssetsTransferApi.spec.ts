@@ -7,7 +7,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import { AssetsTransferApi } from './AssetsTransferApi';
 import { mockRelayApi } from './testHelpers/mockRelayApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
-import { Format, IDirection, TxResult } from './types';
+import { Direction, Format, TxResult } from './types';
 
 const getSystemRuntimeVersion = () =>
 	Promise.resolve().then(() => {
@@ -320,7 +320,7 @@ describe('AssetTransferAPI', () => {
 		it('Should construct the correct call', () => {
 			const res = systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
-				IDirection.SystemToPara,
+				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
 				'call'
@@ -336,7 +336,7 @@ describe('AssetTransferAPI', () => {
 		it('Should construct the correct payload', () => {
 			const res = systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
-				IDirection.SystemToPara,
+				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
 				'payload'
@@ -352,7 +352,7 @@ describe('AssetTransferAPI', () => {
 		it('Should construct the correct submittable', () => {
 			const res = systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
-				IDirection.SystemToPara,
+				Direction.SystemToPara,
 				1,
 				'limitedReserveTransferAssets',
 				'submittable'
