@@ -6,7 +6,7 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { Option, u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
-
+import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types/interfaces';
 import {
 	DEFAULT_XCM_VERSION,
 	SYSTEM_PARACHAINS_IDS,
@@ -146,6 +146,41 @@ export class AssetsTransferApi {
 			opts?.format
 		);
 	}
+	/**
+	 * Fetch estimated fee information for an extrinsic
+	 *
+	 * @param tx TxResult<T>
+	 */
+	public async fetchFeeInfo<T extends Format>(tx: SubmittableExtrinsic<'promise', ISubmittableResult>, format?: T): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
+		const { _api: api } = this;
+		const fmt = format ? format: 'payload';
+
+		if (fmt === 'payload') {
+			const payload = api.registry
+			.createType('ExtrinsicPayload', tx, {
+				version: tx.version,
+			})
+			.toHex();
+
+			return api.call.transactionPaymentApi.queryInfo(payload, payload.length);
+		} else if (fmt === 'call') {
+			const call = api.registry
+			.createType('Call', {
+				callIndex: tx.callIndex,
+				args: tx.args,
+			})
+			.toHex();
+
+			return api.call.transactionPaymentApi.queryInfo(call, call.length);
+		} else if(fmt === 'submittable') {
+			const ext = api.registry.createType('Extrinsic', tx);
+			const u8a = ext.toU8a();
+	
+			return api.call.transactionPaymentApi.queryInfo(u8a, u8a.length);
+		}
+
+		return null;
+	}
 
 	/**
 	 * Fetch runtime information based on the connected chain.
@@ -255,6 +290,7 @@ export class AssetsTransferApi {
 		}
 
 		if (fmt === 'payload') {
+			console.log('TX VERSIONNNNNN', tx.version);
 			result.tx = _api.registry
 				.createType('ExtrinsicPayload', tx, {
 					version: tx.version,
