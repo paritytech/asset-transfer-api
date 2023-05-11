@@ -7,7 +7,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import { AssetsTransferApi } from './AssetsTransferApi';
 import { mockRelayApi } from './testHelpers/mockRelayApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
-import { Format, Direction, TxResult } from './types';
+import { Direction, Format, TxResult } from './types';
 
 const getSystemRuntimeVersion = () =>
 	Promise.resolve().then(() => {

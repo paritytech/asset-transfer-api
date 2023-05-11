@@ -23,11 +23,11 @@ import { parseRegistry } from './registry/parseRegistry';
 import type { ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
-	ConstructedFormat,
-	Format,
 	AssetsTransferApiOpts,
 	ChainInfo,
+	ConstructedFormat,
 	Direction,
+	Format,
 	Methods,
 	TransferArgsOpts,
 	TxResult,
@@ -177,10 +177,7 @@ export class AssetsTransferApi {
 	 * @param destChainId
 	 * @param specName
 	 */
-	private establishDirection(
-		destChainId: string,
-		specName: string
-	): Direction {
+	private establishDirection(destChainId: string, specName: string): Direction {
 		const { _api } = this;
 		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			specName.toLowerCase()
