@@ -79,7 +79,7 @@ const call = await assetsApi.createTransferTransaction(
 )
 ```
 
-### AssetTransferApi & ITransferArgsOpts
+### AssetTransferApi & TransferArgsOpts
 
 ```Typescript
 // The AssetsTransferApi exposes one method as of now called: `createTransferTransaction`
@@ -99,14 +99,14 @@ AssetsTransferApi.createTransferTransaction(
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: ITransferArgsOpts<T>
+		opts?: TransferArgsOpts<T>
 )
 ```
 
 ```typescript
-// The ITransferArgsOpts are options that give the possibility of adding certain customization to the transaction.
+// The TransferArgsOpts are options that give the possibility of adding certain customization to the transaction.
 
-interface ITransferArgsOpts<T extends Format> {
+interface TransferArgsOpts<T extends Format> {
 	/**
 	 * Option that specifies the format in which to return a transaction.
 	 * It can either be a `payload`, `call`, or `submittable`.

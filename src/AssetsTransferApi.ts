@@ -25,11 +25,11 @@ import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	ConstructedFormat,
 	Format,
-	IAssetsTransferApiOpts,
-	IChainInfo,
-	IDirection,
-	IMethods,
-	ITransferArgsOpts,
+	AssetsTransferApiOpts,
+	ChainInfo,
+	Direction,
+	Methods,
+	TransferArgsOpts,
 	TxResult,
 } from './types';
 
@@ -41,16 +41,16 @@ import {
  * - TODO: add estimate fee function when ready
  *
  * @constructor api ApiPromise provided by Polkadot-js
- * @constructor opts IAssetsTransferApiOpts
+ * @constructor opts AssetsTransferApiOpts
  */
 export class AssetsTransferApi {
 	readonly _api: ApiPromise;
-	readonly _opts: IAssetsTransferApiOpts;
-	readonly _info: Promise<IChainInfo>;
+	readonly _opts: AssetsTransferApiOpts;
+	readonly _info: Promise<ChainInfo>;
 	readonly _safeXcmVersion: Promise<u32>;
 	readonly _registry: ChainInfoRegistry;
 
-	constructor(api: ApiPromise, opts: IAssetsTransferApiOpts = {}) {
+	constructor(api: ApiPromise, opts: AssetsTransferApiOpts = {}) {
 		this._api = api;
 		this._opts = opts;
 		this._info = this.fetchChainInfo();
@@ -73,7 +73,7 @@ export class AssetsTransferApi {
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: ITransferArgsOpts<T>
+		opts?: TransferArgsOpts<T>
 	): Promise<TxResult<T>> {
 		const { _api, _info, _safeXcmVersion, _registry } = this;
 		const { specName } = await _info;
@@ -121,7 +121,7 @@ export class AssetsTransferApi {
 			_registry
 		);
 
-		let txMethod: IMethods;
+		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 		if (opts?.isLimited) {
 			txMethod = 'limitedReserveTransferAssets';
@@ -162,7 +162,7 @@ export class AssetsTransferApi {
 	 *
 	 * @param api ApiPromise
 	 */
-	private async fetchChainInfo(): Promise<IChainInfo> {
+	private async fetchChainInfo(): Promise<ChainInfo> {
 		const { _api } = this;
 		const { specName, specVersion } = await _api.rpc.state.getRuntimeVersion();
 		return {
@@ -180,7 +180,7 @@ export class AssetsTransferApi {
 	private establishDirection(
 		destChainId: string,
 		specName: string
-	): IDirection {
+	): Direction {
 		const { _api } = this;
 		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			specName.toLowerCase()
@@ -191,22 +191,22 @@ export class AssetsTransferApi {
 		 * Check if the origin is a System Parachain
 		 */
 		if (isSystemParachain && destChainId === '0') {
-			return IDirection.SystemToRelay;
+			return Direction.SystemToRelay;
 		}
 
 		if (isSystemParachain && destChainId !== '0') {
-			return IDirection.SystemToPara;
+			return Direction.SystemToPara;
 		}
 
 		/**
 		 * Check if the origin is a Relay Chain
 		 */
 		if (_api.query.paras && isDestIdSystemPara) {
-			return IDirection.RelayToSystem;
+			return Direction.RelayToSystem;
 		}
 
 		if (_api.query.paras && !isDestIdSystemPara) {
-			return IDirection.RelayToPara;
+			return Direction.RelayToPara;
 		}
 
 		/**
@@ -215,13 +215,13 @@ export class AssetsTransferApi {
 		if (_api.query.polkadotXcm && !isDestIdSystemPara) {
 			throw Error('ParaToRelay is not yet implemented');
 
-			return IDirection.ParaToRelay;
+			return Direction.ParaToRelay;
 		}
 
 		if (_api.query.polkadotXcm) {
 			throw Error('ParaToPara is not yet implemented');
 
-			return IDirection.ParaToPara;
+			return Direction.ParaToPara;
 		}
 
 		throw Error('Could not establish a xcm transaction direction');
@@ -236,9 +236,9 @@ export class AssetsTransferApi {
 	 */
 	private constructFormat<T extends Format>(
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		direction: IDirection | 'local',
+		direction: Direction | 'local',
 		xcmVersion: number | null = null,
-		method: IMethods,
+		method: Methods,
 		format?: T
 	): TxResult<T> {
 		const { _api } = this;
