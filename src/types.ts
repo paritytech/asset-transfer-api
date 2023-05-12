@@ -13,7 +13,7 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
 		[K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
 	}[Keys];
 
-export enum IDirection {
+export enum Direction {
 	SystemToPara = 'SystemToPara',
 	SystemToRelay = 'SystemToRelay',
 	ParaToPara = 'ParaToPara',
@@ -22,6 +22,12 @@ export enum IDirection {
 	RelayToPara = 'RelayToPara',
 }
 
+/**
+ * AssetTransferApi supports three formats to be returned:
+ * - payload: This returns a Polkadot-js `ExtrinsicPayload` as a hex.
+ * - call: This returns a Polkadot-js `Call` as a hex.
+ * - submittable: This returns a Polkadot-js `SubmittableExtrinsic`.
+ */
 export type Format = 'payload' | 'call' | 'submittable';
 
 export type ConstructedFormat<T> = T extends 'payload'
@@ -32,7 +38,7 @@ export type ConstructedFormat<T> = T extends 'payload'
 	? SubmittableExtrinsic<'promise', ISubmittableResult>
 	: never;
 
-export type IMethods =
+export type Methods =
 	| 'transfer'
 	| 'transferKeepAlive'
 	| 'reserveTransferAssets'
@@ -40,19 +46,26 @@ export type IMethods =
 	| 'teleportAssets'
 	| 'limitedTeleportAssets';
 
-export type IAssetsTransferApiOpts = {
+export type AssetsTransferApiOpts = {
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
 };
 
+/**
+ * The TxResult is the result of constructing a transaction.
+ * T extends Format in the context of the options passed in for the Format the user expects.
+ */
 export interface TxResult<T> {
 	format: string;
 	xcmVersion: number | null;
-	direction: IDirection | 'local';
-	method: IMethods;
+	direction: Direction | 'local';
+	method: Methods;
 	tx: ConstructedFormat<T>;
 }
 
-export interface ITransferArgsOpts<T extends Format> {
+/**
+ * The TransferArgsOpts are the options passed into createTransferTransaction.
+ */
+export interface TransferArgsOpts<T extends Format> {
 	/**
 	 * Option that specifies the format in which to return a transaction.
 	 * It can either be a `payload`, `call`, or `submittable`.
@@ -93,7 +106,7 @@ export interface ITransferArgsOpts<T extends Format> {
 	keepAlive?: boolean;
 }
 
-export interface IChainInfo {
+export interface ChainInfo {
 	specName: string;
 	specVersion: string;
 }

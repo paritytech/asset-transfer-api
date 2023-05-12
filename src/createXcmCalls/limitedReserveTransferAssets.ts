@@ -5,7 +5,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../createXcmTypes';
-import { IDirection } from '../types';
+import { Direction } from '../types';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { establishXcmPallet } from './util/establishXcmPallet';
 
@@ -23,7 +23,7 @@ import { establishXcmPallet } from './util/establishXcmPallet';
  */
 export const limitedReserveTransferAssets = (
 	api: ApiPromise,
-	direction: IDirection,
+	direction: Direction,
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[],

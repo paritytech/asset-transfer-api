@@ -2,13 +2,13 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { Weight } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { AssetsTransferApi } from './AssetsTransferApi';
 import { mockRelayApi } from './testHelpers/mockRelayApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
-import { Format, IDirection, TxResult } from './types';
-import type { Weight } from '@polkadot/types/interfaces';
+import { Direction, Format, TxResult } from './types';
 
 const getSystemRuntimeVersion = () =>
 	Promise.resolve().then(() => {
@@ -116,11 +116,10 @@ const adjustedMockSystemApi = {
 	},
 	call: {
 		transactionPaymentApi: {
-			queryInfo: mockApiAt.call.transactionPaymentApi.queryInfo
-		}
-	}
+			queryInfo: mockApiAt.call.transactionPaymentApi.queryInfo,
+		},
+	},
 } as unknown as ApiPromise;
-
 
 const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
 const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
@@ -356,7 +355,7 @@ describe('AssetTransferAPI', () => {
 		it('Should construct the correct call', () => {
 			const res = systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
-				IDirection.SystemToPara,
+				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
 				'call'
@@ -372,7 +371,7 @@ describe('AssetTransferAPI', () => {
 		it('Should construct the correct payload', () => {
 			const res = systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
-				IDirection.SystemToPara,
+				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
 				'payload'
@@ -388,7 +387,7 @@ describe('AssetTransferAPI', () => {
 		it('Should construct the correct submittable', () => {
 			const res = systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
-				IDirection.SystemToPara,
+				Direction.SystemToPara,
 				1,
 				'limitedReserveTransferAssets',
 				'submittable'
@@ -425,18 +424,33 @@ describe('AssetTransferAPI', () => {
 
 	describe('fetchFeeInfo', () => {
 		it('Should correctly fetch estimate for submittable extrinsic xcm', async () => {
-			const submittableFeeInfo = await systemAssetsApi.fetchFeeEstimate(mockSubmittableExt, 'submittable');
-			expect((submittableFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
+			const submittableFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				mockSubmittableExt,
+				'submittable'
+			);
+			expect((submittableFeeInfo?.weight as Weight).refTime.toString()).toEqual(
+				mockWeightInfo.weight.refTime
+			);
 		});
 
 		it('Should correctly fetch estimate for a payload based xcm message', async () => {
-			const payloadFeeInfo = await systemAssetsApi.fetchFeeEstimate(mockSubmittableExt, 'payload');
-			expect((payloadFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
+			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				mockSubmittableExt,
+				'payload'
+			);
+			expect((payloadFeeInfo?.weight as Weight).refTime.toString()).toEqual(
+				mockWeightInfo.weight.refTime
+			);
 		});
 
 		it('Should correctly fetch estimate for a call based xcm message', async () => {
-			const callFeeInfo = await systemAssetsApi.fetchFeeEstimate(mockSubmittableExt, 'call');
-			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
+			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				mockSubmittableExt,
+				'call'
+			);
+			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(
+				mockWeightInfo.weight.refTime
+			);
 		});
-	})
+	});
 });

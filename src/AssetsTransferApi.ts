@@ -5,8 +5,12 @@ import '@polkadot/api-augment';
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { Option, u32 } from '@polkadot/types';
+import type {
+	RuntimeDispatchInfo,
+	RuntimeDispatchInfoV1,
+} from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
-import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types/interfaces';
+
 import {
 	DEFAULT_XCM_VERSION,
 	SYSTEM_PARACHAINS_IDS,
@@ -23,24 +27,34 @@ import { parseRegistry } from './registry/parseRegistry';
 import type { ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
+	AssetsTransferApiOpts,
+	ChainInfo,
 	ConstructedFormat,
+	Direction,
 	Format,
-	IAssetsTransferApiOpts,
-	IChainInfo,
-	IDirection,
-	IMethods,
-	ITransferArgsOpts,
+	Methods,
+	TransferArgsOpts,
 	TxResult,
 } from './types';
 
+/**
+ * Holds open an api connection to a specified chain within the ApiPromise in order to help
+ * construct transactions for assets and estimating fees. The main public functions this
+ * will expose are:
+ * - createTransferTransaction
+ * - TODO: add estimate fee function when ready
+ *
+ * @constructor api ApiPromise provided by Polkadot-js
+ * @constructor opts AssetsTransferApiOpts
+ */
 export class AssetsTransferApi {
 	readonly _api: ApiPromise;
-	readonly _opts: IAssetsTransferApiOpts;
-	readonly _info: Promise<IChainInfo>;
+	readonly _opts: AssetsTransferApiOpts;
+	readonly _info: Promise<ChainInfo>;
 	readonly _safeXcmVersion: Promise<u32>;
 	readonly _registry: ChainInfoRegistry;
 
-	constructor(api: ApiPromise, opts: IAssetsTransferApiOpts = {}) {
+	constructor(api: ApiPromise, opts: AssetsTransferApiOpts = {}) {
 		this._api = api;
 		this._opts = opts;
 		this._info = this.fetchChainInfo();
@@ -63,7 +77,7 @@ export class AssetsTransferApi {
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: ITransferArgsOpts<T>
+		opts?: TransferArgsOpts<T>
 	): Promise<TxResult<T>> {
 		const { _api, _info, _safeXcmVersion, _registry } = this;
 		const { specName } = await _info;
@@ -111,7 +125,7 @@ export class AssetsTransferApi {
 			_registry
 		);
 
-		let txMethod: IMethods;
+		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 		if (opts?.isLimited) {
 			txMethod = 'limitedReserveTransferAssets';
@@ -151,31 +165,34 @@ export class AssetsTransferApi {
 	 *
 	 * @param tx TxResult<T>
 	 */
-	public async fetchFeeInfo<T extends Format>(tx: SubmittableExtrinsic<'promise', ISubmittableResult>, format?: T): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
+	public async fetchFeeInfo<T extends Format>(
+		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
+		format?: T
+	): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
 		const { _api: api } = this;
-		const fmt = format ? format: 'payload';
+		const fmt = format ? format : 'payload';
 
 		if (fmt === 'payload') {
 			const payload = api.registry
-			.createType('ExtrinsicPayload', tx, {
-				version: tx.version,
-			})
-			.toHex();
+				.createType('ExtrinsicPayload', tx, {
+					version: tx.version,
+				})
+				.toHex();
 
 			return api.call.transactionPaymentApi.queryInfo(payload, payload.length);
 		} else if (fmt === 'call') {
 			const call = api.registry
-			.createType('Call', {
-				callIndex: tx.callIndex,
-				args: tx.args,
-			})
-			.toHex();
+				.createType('Call', {
+					callIndex: tx.callIndex,
+					args: tx.args,
+				})
+				.toHex();
 
 			return api.call.transactionPaymentApi.queryInfo(call, call.length);
-		} else if(fmt === 'submittable') {
+		} else if (fmt === 'submittable') {
 			const ext = api.registry.createType('Extrinsic', tx);
 			const u8a = ext.toU8a();
-	
+
 			return api.call.transactionPaymentApi.queryInfo(u8a, u8a.length);
 		}
 
@@ -187,7 +204,7 @@ export class AssetsTransferApi {
 	 *
 	 * @param api ApiPromise
 	 */
-	private async fetchChainInfo(): Promise<IChainInfo> {
+	private async fetchChainInfo(): Promise<ChainInfo> {
 		const { _api } = this;
 		const { specName, specVersion } = await _api.rpc.state.getRuntimeVersion();
 		return {
@@ -202,10 +219,7 @@ export class AssetsTransferApi {
 	 * @param destChainId
 	 * @param specName
 	 */
-	private establishDirection(
-		destChainId: string,
-		specName: string
-	): IDirection {
+	private establishDirection(destChainId: string, specName: string): Direction {
 		const { _api } = this;
 		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			specName.toLowerCase()
@@ -216,22 +230,22 @@ export class AssetsTransferApi {
 		 * Check if the origin is a System Parachain
 		 */
 		if (isSystemParachain && destChainId === '0') {
-			return IDirection.SystemToRelay;
+			return Direction.SystemToRelay;
 		}
 
 		if (isSystemParachain && destChainId !== '0') {
-			return IDirection.SystemToPara;
+			return Direction.SystemToPara;
 		}
 
 		/**
 		 * Check if the origin is a Relay Chain
 		 */
 		if (_api.query.paras && isDestIdSystemPara) {
-			return IDirection.RelayToSystem;
+			return Direction.RelayToSystem;
 		}
 
 		if (_api.query.paras && !isDestIdSystemPara) {
-			return IDirection.RelayToPara;
+			return Direction.RelayToPara;
 		}
 
 		/**
@@ -240,13 +254,13 @@ export class AssetsTransferApi {
 		if (_api.query.polkadotXcm && !isDestIdSystemPara) {
 			throw Error('ParaToRelay is not yet implemented');
 
-			return IDirection.ParaToRelay;
+			return Direction.ParaToRelay;
 		}
 
 		if (_api.query.polkadotXcm) {
 			throw Error('ParaToPara is not yet implemented');
 
-			return IDirection.ParaToPara;
+			return Direction.ParaToPara;
 		}
 
 		throw Error('Could not establish a xcm transaction direction');
@@ -261,9 +275,9 @@ export class AssetsTransferApi {
 	 */
 	private constructFormat<T extends Format>(
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		direction: IDirection | 'local',
+		direction: Direction | 'local',
 		xcmVersion: number | null = null,
-		method: IMethods,
+		method: Methods,
 		format?: T
 	): TxResult<T> {
 		const { _api } = this;
