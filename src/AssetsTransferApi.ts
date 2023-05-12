@@ -15,15 +15,19 @@ import {
 import { transfer, transferKeepAlive } from './createCalls';
 import {
 	limitedReserveTransferAssets,
+	limitedTeleportAssets,
 	reserveTransferAssets,
+	teleportAssets,
 } from './createXcmCalls';
 import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
 import { checkLocalTxInput, checkXcmTxInputs, checkXcmVersion } from './errors';
+import { findRelayChain } from './registry/findRelayChain';
 import { parseRegistry } from './registry/parseRegistry';
 import type { ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetsTransferApiOpts,
+	AssetType,
 	ChainInfo,
 	ConstructedFormat,
 	Direction,
@@ -121,31 +125,60 @@ export class AssetsTransferApi {
 			_registry
 		);
 
+		const assetType = this.fetchAssetType(specName, destChainId, assetIds);
+
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-		if (opts?.isLimited) {
-			txMethod = 'limitedReserveTransferAssets';
-			transaction = limitedReserveTransferAssets(
-				_api,
-				xcmDirection,
-				addr,
-				assetIds,
-				amounts,
-				destChainId,
-				xcmVersion,
-				opts?.weightLimit
-			);
+		if (assetType === AssetType.Foreign) {
+			if (opts?.isLimited) {
+				txMethod = 'limitedReserveTransferAssets';
+				transaction = limitedReserveTransferAssets(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					destChainId,
+					xcmVersion,
+					opts?.weightLimit
+				);
+			} else {
+				txMethod = 'reserveTransferAssets';
+				transaction = reserveTransferAssets(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					destChainId,
+					xcmVersion
+				);
+			}
 		} else {
-			txMethod = 'reserveTransferAssets';
-			transaction = reserveTransferAssets(
-				_api,
-				xcmDirection,
-				addr,
-				assetIds,
-				amounts,
-				destChainId,
-				xcmVersion
-			);
+			if (opts?.isLimited) {
+				txMethod = 'limitedTeleportAssets';
+				transaction = limitedTeleportAssets(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					destChainId,
+					xcmVersion,
+					opts?.weightLimit
+				);
+			} else {
+				txMethod = 'teleportAssets';
+				transaction = teleportAssets(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					destChainId,
+					xcmVersion
+				);
+			}
 		}
 
 		return this.constructFormat<T>(
@@ -285,5 +318,27 @@ export class AssetsTransferApi {
 			: _api.registry.createType('u32', DEFAULT_XCM_VERSION);
 
 		return version;
+	}
+
+	private fetchAssetType(
+		specName: string,
+		destChainId: string,
+		assets: string[]
+	): AssetType {
+		const relayChainName = findRelayChain(specName, this._registry);
+		const relayChainInfo = this._registry[relayChainName];
+
+		/**
+		 * We can assume all the assets in `assets` are either foreign or native since we check
+		 * all possible cases in `checkXcmTxInputs`.
+		 */
+		const { assetIds, tokens } = relayChainInfo[destChainId];
+		const assetIdsAsStr = assetIds.map((num) => num.toString());
+
+		if (assetIdsAsStr.includes(assets[0]) || tokens.includes(assets[0])) {
+			return AssetType.Native;
+		} else {
+			return AssetType.Foreign;
+		}
 	}
 }

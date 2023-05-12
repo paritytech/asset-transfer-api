@@ -366,6 +366,40 @@ describe('AssetTransferAPI', () => {
 			expect(version.toNumber()).toEqual(2);
 		});
 	});
+	describe('fetchAssetType', () => {
+		describe('SystemToRelay', () => {
+			it('Should corectly return Native', () => {
+				const assetType = systemAssetsApi['fetchAssetType']('statemint', '0', [
+					'DOT',
+				]);
+
+				expect(assetType).toEqual('Native');
+			});
+		});
+		describe('RelayToSystem', () => {
+			it('Should correctly return Native', () => {
+				const assetType = systemAssetsApi['fetchAssetType'](
+					'polkadot',
+					'1000',
+					['DOT']
+				);
+
+				expect(assetType).toEqual('Native');
+			});
+		});
+
+		describe('SystemToPara', () => {
+			it('Should correctly return Foreign', () => {
+				const assetType = systemAssetsApi['fetchAssetType'](
+					'statemint',
+					'2000',
+					['1']
+				);
+
+				expect(assetType).toEqual('Foreign');
+			});
+		});
+	});
 	describe('Opts', () => {
 		it('Should correctly read in the injectedRegistry option', () => {
 			const injectedRegistry = {
