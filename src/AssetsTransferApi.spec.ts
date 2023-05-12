@@ -58,6 +58,9 @@ const adjustedMockSystemApi = {
 				mockSystemApi.tx['polkadotXcm'].limitedReserveTransferAssets,
 			reserveTransferAssets:
 				mockSystemApi.tx['polkadotXcm'].reserveTransferAssets,
+			teleportAssets: mockSystemApi.tx['polkadotXcm'].teleportAssets,
+			limitedTeleportAssets:
+				mockSystemApi.tx['polkadotXcm'].limitedTeleportAssets,
 		},
 		assets: {
 			transfer: mockSystemApi.tx.assets.transfer,
@@ -292,6 +295,47 @@ describe('AssetTransferAPI', () => {
 				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V2', async () => {
 					const res = await baseRelayCreateTx('submittable', false, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+		});
+		describe('SystemToRelay', () => {
+			const nativeBaseSystemCreateTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await systemAssetsApi.createTransferTransaction(
+					'0', // `0` indicating the dest chain is a relay chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['DOT'],
+					['100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
+					}
+				);
+			};
+			describe('V2', () => {
+				it('Should correctly build a teleportAssets call for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', false, 2);
+					expect(res).toEqual({
+						direction: 'SystemToRelay',
+						format: 'call',
+						method: 'teleportAssets',
+						tx: '0x1f010100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010100010400010000910100000000',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', true, 2);
+					expect(res).toEqual({
+						direction: 'SystemToRelay',
+						format: 'call',
+						method: 'limitedTeleportAssets',
+						tx: '0x1f090100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010001040001000091010000000000',
+						xcmVersion: 2,
+					});
 				});
 			});
 		});
