@@ -125,7 +125,12 @@ export class AssetsTransferApi {
 			_registry
 		);
 
-		const assetType = this.fetchAssetType(specName, destChainId, assetIds);
+		const assetType = this.fetchAssetType(
+			specName,
+			destChainId,
+			assetIds,
+			xcmDirection
+		);
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
@@ -323,8 +328,12 @@ export class AssetsTransferApi {
 	private fetchAssetType(
 		specName: string,
 		destChainId: string,
-		assets: string[]
+		assets: string[],
+		xcmDirection: Direction
 	): AssetType {
+		if (xcmDirection === 'RelayToSystem') {
+			return AssetType.Native;
+		}
 		const relayChainName = findRelayChain(specName, this._registry);
 		const relayChainInfo = this._registry[relayChainName];
 

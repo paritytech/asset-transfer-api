@@ -87,6 +87,8 @@ const adjustedMockRelayApi = {
 			limitedReserveTransferAssets:
 				mockRelayApi.tx['xcmPallet'].limitedReserveTransferAssets,
 			reserveTransferAssets: mockRelayApi.tx['xcmPallet'].reserveTransferAssets,
+			teleportAssets: mockRelayApi.tx['xcmPallet'].teleportAssets,
+			limitedTeleportAssets: mockRelayApi.tx['xcmPallet'].limitedTeleportAssets,
 		},
 	},
 } as unknown as ApiPromise;
@@ -339,6 +341,47 @@ describe('AssetTransferAPI', () => {
 				});
 			});
 		});
+		describe('RelayToSystem', () => {
+			const nativeBaseSystemCreateTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await relayAssetsApi.createTransferTransaction(
+					'1000', // `0` indicating the dest chain is a relay chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
+					}
+				);
+			};
+			describe('V2', () => {
+				it('Should correctly build a teleportAssets call for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', false, 2);
+					expect(res).toEqual({
+						direction: 'RelayToSystem',
+						format: 'call',
+						method: 'teleportAssets',
+						tx: '0x63010100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01000100a10f010400000000910100000000',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', true, 2);
+					expect(res).toEqual({
+						direction: 'RelayToSystem',
+						format: 'call',
+						method: 'limitedTeleportAssets',
+						tx: '0x63090100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01000100a10f01040000000091010000000000',
+						xcmVersion: 2,
+					});
+				});
+			});
+		});
 		describe('checkLocalTxInput', () => {
 			it('Should error when the assetIds or amounts is the incorrect length', async () => {
 				const err = async () =>
@@ -434,9 +477,12 @@ describe('AssetTransferAPI', () => {
 	describe('fetchAssetType', () => {
 		describe('SystemToRelay', () => {
 			it('Should corectly return Native', () => {
-				const assetType = systemAssetsApi['fetchAssetType']('statemint', '0', [
-					'DOT',
-				]);
+				const assetType = systemAssetsApi['fetchAssetType'](
+					'statemint',
+					'0',
+					['DOT'],
+					Direction.SystemToRelay
+				);
 
 				expect(assetType).toEqual('Native');
 			});
@@ -446,19 +492,20 @@ describe('AssetTransferAPI', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
 					'polkadot',
 					'1000',
-					['DOT']
+					['DOT'],
+					Direction.RelayToSystem
 				);
 
 				expect(assetType).toEqual('Native');
 			});
 		});
-
 		describe('SystemToPara', () => {
 			it('Should correctly return Foreign', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
 					'statemint',
 					'2000',
-					['1']
+					['1'],
+					Direction.SystemToPara
 				);
 
 				expect(assetType).toEqual('Foreign');
