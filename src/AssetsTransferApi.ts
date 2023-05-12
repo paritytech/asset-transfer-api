@@ -304,7 +304,6 @@ export class AssetsTransferApi {
 		}
 
 		if (fmt === 'payload') {
-			console.log('TX VERSIONNNNNN', tx.version);
 			result.tx = _api.registry
 				.createType('ExtrinsicPayload', tx, {
 					version: tx.version,
