@@ -54,14 +54,14 @@ export const checkAssetIdInput = (
 			let isValidTokenSymbol = false;
 			const chainInfo = relayChainInfo[destChainId];
 
-			const isNativeChain =
-				chainInfo.specName.toLowerCase() === specName.toLowerCase();
+			// const isNativeChain =
+			// 	chainInfo.specName.toLowerCase() === specName.toLowerCase();
 
-			if (!isNativeChain) {
-				throw new BaseError(
-					`non matching chains. Received: ${specName.toLowerCase()}. Expected: ${chainInfo.specName.toLowerCase()}`
-				);
-			}
+			// if (!isNativeChain) {
+			// 	throw new BaseError(
+			// 		`non matching chains. Received: ${specName.toLowerCase()}. Expected: ${chainInfo.specName.toLowerCase()}`
+			// 	);
+			// }
 
 			for (const tokenSymbol of chainInfo.tokens) {
 				if (tokenSymbol.toUpperCase() === assetId.toUpperCase()) {

@@ -137,7 +137,7 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		describe('SystemToPara', () => {
-			const baseSystemCreateTx = async <T extends Format>(
+			const foreignBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
 				xcmVersion: number
@@ -154,9 +154,26 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 			};
+			const nativeBaseSystemCreateTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await systemAssetsApi.createTransferTransaction(
+					'2000', // Since this is not `0` we know this is to a parachain
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['DOT'],
+					['100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
+					}
+				);
+			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('call', true, 2);
+					const res = await foreignBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -166,7 +183,7 @@ describe('AssetTransferAPI', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('payload', true, 2);
+					const res = await foreignBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -176,11 +193,11 @@ describe('AssetTransferAPI', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('submittable', true, 2);
+					const res = await foreignBaseSystemCreateTx('submittable', true, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('call', false, 2);
+					const res = await foreignBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -190,7 +207,7 @@ describe('AssetTransferAPI', () => {
 					});
 				});
 				it('Should correctly build a payload for a reserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('payload', false, 2);
+					const res = await foreignBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -200,8 +217,12 @@ describe('AssetTransferAPI', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('submittable', false, 2);
+					const res = await foreignBaseSystemCreateTx('submittable', false, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a call for a teleportAssets for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', false, 2);
+					expect(res).toEqual({});
 				});
 			});
 		});
