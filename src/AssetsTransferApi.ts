@@ -163,37 +163,38 @@ export class AssetsTransferApi {
 	/**
 	 * Fetch estimated fee information for an extrinsic
 	 *
-	 * @param tx TxResult<T>
+	 * @param tx A polkadot-js submittable extrinsic
+	 * @param format The format the tx is in
 	 */
 	public async fetchFeeInfo<T extends Format>(
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
 		format?: T
 	): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
-		const { _api: api } = this;
+		const { _api } = this;
 		const fmt = format ? format : 'payload';
 
 		if (fmt === 'payload') {
-			const payload = api.registry
+			const payload = _api.registry
 				.createType('ExtrinsicPayload', tx, {
 					version: tx.version,
 				})
 				.toHex();
 
-			return api.call.transactionPaymentApi.queryInfo(payload, payload.length);
+			return _api.call.transactionPaymentApi.queryInfo(payload, payload.length);
 		} else if (fmt === 'call') {
-			const call = api.registry
+			const call = _api.registry
 				.createType('Call', {
 					callIndex: tx.callIndex,
 					args: tx.args,
 				})
 				.toHex();
 
-			return api.call.transactionPaymentApi.queryInfo(call, call.length);
+			return _api.call.transactionPaymentApi.queryInfo(call, call.length);
 		} else if (fmt === 'submittable') {
-			const ext = api.registry.createType('Extrinsic', tx);
+			const ext = _api.registry.createType('Extrinsic', tx);
 			const u8a = ext.toU8a();
 
-			return api.call.transactionPaymentApi.queryInfo(u8a, u8a.length);
+			return _api.call.transactionPaymentApi.queryInfo(u8a, u8a.length);
 		}
 
 		return null;
