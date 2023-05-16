@@ -119,24 +119,6 @@ const adjustedMockSystemApi = {
 const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
 const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
 
-const baseSystemCreateTx = async <T extends Format>(
-	format: T,
-	isLimited: boolean,
-	xcmVersion: number
-): Promise<TxResult<T>> => {
-	return await systemAssetsApi.createTransferTransaction(
-		'2000', // Since this is not `0` we know this is to a parachain
-		'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-		['1', '2'],
-		['100', '100'],
-		{
-			format,
-			isLimited,
-			xcmVersion,
-		}
-	);
-};
-
 const baseRelayCreateTx = async <T extends Format>(
 	format: T,
 	isLimited: boolean,
@@ -201,6 +183,23 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		describe('SystemToPara', () => {
+			const baseSystemCreateTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await systemAssetsApi.createTransferTransaction(
+					'2000', // Since this is not `0` we know this is to a parachain
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['1', '2'],
+					['100', '100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
+					}
+				);
+			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await baseSystemCreateTx('call', true, 2);
