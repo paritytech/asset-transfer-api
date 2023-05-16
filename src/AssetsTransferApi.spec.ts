@@ -72,18 +72,18 @@ const mockWeightInfo = {
 	partialFee: '171607466',
 };
 
-// const queryInfoCallAt = () =>
-// 	Promise.resolve().then(() =>
-// 		mockSystemApi.createType('RuntimeDispatchInfoV2', mockWeightInfo)
-// 	);
+const queryInfoCallAt = () =>
+	Promise.resolve().then(() =>
+		mockSystemApi.createType('RuntimeDispatchInfoV2', mockWeightInfo)
+	);
 
-// const mockApiAt = {
-// 	call: {
-// 		transactionPaymentApi: {
-// 			queryInfo: queryInfoCallAt,
-// 		},
-// 	},
-// };
+const mockApiAt = {
+	call: {
+		transactionPaymentApi: {
+			queryInfo: queryInfoCallAt,
+		},
+	},
+};
 
 const adjustedMockSystemApi = {
 	registry: mockSystemApi.registry,
@@ -111,7 +111,7 @@ const adjustedMockSystemApi = {
 	},
 	call: {
 		transactionPaymentApi: {
-			queryInfo: mockSystemApi.call.transactionPaymentApi.queryInfo,
+			queryInfo: mockApiAt.call.transactionPaymentApi.queryInfo,
 		},
 	},
 } as unknown as ApiPromise;
