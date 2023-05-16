@@ -2,6 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { Weight } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { AssetsTransferApi } from './AssetsTransferApi';
@@ -40,6 +41,50 @@ const mockSubmittableExt = mockSystemApi.registry.createType(
 	'0xfc041f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000'
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
+const adjustedMockRelayApi = {
+	registry: mockRelayApi.registry,
+	rpc: {
+		state: {
+			getRuntimeVersion: getRelayRuntimeVersion,
+		},
+	},
+	query: {
+		paras: {},
+		xcmPallet: {
+			safeXcmVersion: getRelaySafeXcmVersion,
+		},
+	},
+	tx: {
+		xcmPallet: {
+			limitedReserveTransferAssets:
+				mockRelayApi.tx['xcmPallet'].limitedReserveTransferAssets,
+			reserveTransferAssets: mockRelayApi.tx['xcmPallet'].reserveTransferAssets,
+		},
+	},
+} as unknown as ApiPromise;
+
+const mockWeightInfo = {
+	weight: {
+		refTime: '133179000',
+		proofSize: '0',
+	},
+	class: 'Normal',
+	partialFee: '171607466',
+};
+
+const queryInfoCallAt = () =>
+	Promise.resolve().then(() =>
+		mockSystemApi.createType('RuntimeDispatchInfoV2', mockWeightInfo)
+	);
+
+const mockApiAt = {
+	call: {
+		transactionPaymentApi: {
+			queryInfo: queryInfoCallAt,
+		},
+	},
+};
+
 const adjustedMockSystemApi = {
 	registry: mockSystemApi.registry,
 	rpc: {
@@ -64,32 +109,33 @@ const adjustedMockSystemApi = {
 			transferKeepAlive: mockSystemApi.tx.assets.transferKeepAlive,
 		},
 	},
-} as unknown as ApiPromise;
-
-const adjustedMockRelayApi = {
-	registry: mockRelayApi.registry,
-	rpc: {
-		state: {
-			getRuntimeVersion: getRelayRuntimeVersion,
-		},
-	},
-	query: {
-		paras: {},
-		xcmPallet: {
-			safeXcmVersion: getRelaySafeXcmVersion,
-		},
-	},
-	tx: {
-		xcmPallet: {
-			limitedReserveTransferAssets:
-				mockRelayApi.tx['xcmPallet'].limitedReserveTransferAssets,
-			reserveTransferAssets: mockRelayApi.tx['xcmPallet'].reserveTransferAssets,
+	call: {
+		transactionPaymentApi: {
+			queryInfo: mockApiAt.call.transactionPaymentApi.queryInfo,
 		},
 	},
 } as unknown as ApiPromise;
 
 const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
 const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
+
+const baseRelayCreateTx = async <T extends Format>(
+	format: T,
+	isLimited: boolean,
+	xcmVersion: number
+): Promise<TxResult<T>> => {
+	return await relayAssetsApi.createTransferTransaction(
+		'2000', // Since this is not `0` we know this is to a parachain
+		'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+		[],
+		['100', '100'],
+		{
+			format,
+			isLimited,
+			xcmVersion,
+		}
+	);
+};
 
 describe('AssetTransferAPI', () => {
 	/**
@@ -206,23 +252,6 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		describe('RelayToPara', () => {
-			const baseRelayCreateTx = async <T extends Format>(
-				format: T,
-				isLimited: boolean,
-				xcmVersion: number
-			): Promise<TxResult<T>> => {
-				return await relayAssetsApi.createTransferTransaction(
-					'2000', // Since this is not `0` we know this is to a parachain
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					[],
-					['100', '100'],
-					{
-						format,
-						isLimited,
-						xcmVersion,
-					}
-				);
-			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await baseRelayCreateTx('call', true, 2);
@@ -383,6 +412,38 @@ describe('AssetTransferAPI', () => {
 
 			expect(mockSystemAssetsApi._opts.injectedRegistry).toStrictEqual(
 				injectedRegistry
+			);
+		});
+	});
+
+	describe('fetchFeeInfo', () => {
+		it('Should correctly fetch estimate for submittable extrinsic xcm', async () => {
+			const submittableFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				mockSubmittableExt,
+				'submittable'
+			);
+			expect((submittableFeeInfo?.weight as Weight).refTime.toString()).toEqual(
+				mockWeightInfo.weight.refTime
+			);
+		});
+
+		it('Should correctly fetch estimate for a payload based xcm message', async () => {
+			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				mockSubmittableExt,
+				'payload'
+			);
+			expect((payloadFeeInfo?.weight as Weight).refTime.toString()).toEqual(
+				mockWeightInfo.weight.refTime
+			);
+		});
+
+		it('Should correctly fetch estimate for a call based xcm message', async () => {
+			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				mockSubmittableExt,
+				'call'
+			);
+			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(
+				mockWeightInfo.weight.refTime
 			);
 		});
 	});
