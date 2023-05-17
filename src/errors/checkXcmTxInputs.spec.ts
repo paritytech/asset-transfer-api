@@ -132,46 +132,6 @@ describe('checkAssetIds', () => {
 		}
 	});
 
-	it('Should error when the given specName does not match the destChainIds specName', () => {
-		const registry = parseRegistry({});
-
-		const tests: Test[] = [
-			[
-				'2006',
-				'Polkadot',
-				['ASTR', 'DOT'],
-				`non matching chains. Received: polkadot. Expected: astar`,
-			],
-			[
-				'2004',
-				'Bifrost_Polkadot',
-				['GLMR'],
-				`non matching chains. Received: bifrost_polkadot. Expected: moonbeam`,
-			],
-			[
-				'2000',
-				'Origintrail-Parachain',
-				['ACA'],
-				`non matching chains. Received: origintrail-parachain. Expected: acala`,
-			],
-		];
-
-		for (const test of tests) {
-			const [destChainId, specName, testInputs, errorMessage] = test;
-			const relayChainName = findRelayChain(specName, registry);
-			const currentRegistry = registry[relayChainName];
-
-			const err = () =>
-				checkAssetIdInput(
-					testInputs,
-					currentRegistry,
-					specName,
-					destChainId,
-					Direction.SystemToPara
-				);
-			expect(err).toThrow(errorMessage);
-		}
-	});
 	it('Should error when the given integer asset id is not found in system parachain asset ids', () => {
 		const registry = parseRegistry({});
 

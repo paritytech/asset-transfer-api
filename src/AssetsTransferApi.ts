@@ -145,6 +145,7 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
+					specName,
 					opts?.weightLimit
 				);
 			} else {
@@ -156,7 +157,8 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion
+					xcmVersion,
+					specName
 				);
 			}
 		} else {
@@ -170,6 +172,7 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
+					specName,
 					opts?.weightLimit
 				);
 			} else {
@@ -181,7 +184,8 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion
+					xcmVersion,
+					specName
 				);
 			}
 		}

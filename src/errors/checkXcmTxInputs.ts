@@ -54,16 +54,6 @@ export const checkAssetIdInput = (
 			let isValidTokenSymbol = false;
 			const chainInfo = relayChainInfo[destChainId];
 
-			const isNativeChain =
-				chainInfo.specName.toLowerCase() === specName.toLowerCase();
-
-			// TODO: This logic breaks when we have 2 chains that share the same native tokens.
-			if (!isNativeChain) {
-				throw new BaseError(
-					`non matching chains. Received: ${specName.toLowerCase()}. Expected: ${chainInfo.specName.toLowerCase()}`
-				);
-			}
-
 			for (const tokenSymbol of chainInfo.tokens) {
 				if (tokenSymbol.toUpperCase() === assetId.toUpperCase()) {
 					isValidTokenSymbol = true;

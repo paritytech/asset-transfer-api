@@ -27,7 +27,8 @@ export const teleportAssets = (
 	assetIds: string[],
 	amounts: string[],
 	destChainId: string,
-	xcmVersion: number
+	xcmVersion: number,
+	specName: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].teleportAssets;
@@ -38,6 +39,7 @@ export const teleportAssets = (
 		api,
 		normalizeArrToStr(amounts),
 		xcmVersion,
+		specName,
 		assetIds
 	);
 
