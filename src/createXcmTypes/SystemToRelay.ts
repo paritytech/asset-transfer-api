@@ -100,7 +100,8 @@ export const SystemToRelay: ICreateXcmType = {
 	createAssets: (
 		api: ApiPromise,
 		amounts: string[],
-		xcmVersion: number
+		xcmVersion: number,
+		_: string
 	): VersionedMultiAssets => {
 		const multiAssets = [];
 

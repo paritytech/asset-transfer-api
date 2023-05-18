@@ -27,7 +27,8 @@ export const reserveTransferAssets = (
 	assetIds: string[],
 	amounts: string[],
 	destChainId: string,
-	xcmVersion: number
+	xcmVersion: number,
+	specName: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].reserveTransferAssets;
@@ -38,6 +39,7 @@ export const reserveTransferAssets = (
 		api,
 		normalizeArrToStr(amounts),
 		xcmVersion,
+		specName,
 		assetIds
 	);
 

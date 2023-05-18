@@ -59,6 +59,8 @@ const adjustedMockRelayApi = {
 			limitedReserveTransferAssets:
 				mockRelayApi.tx['xcmPallet'].limitedReserveTransferAssets,
 			reserveTransferAssets: mockRelayApi.tx['xcmPallet'].reserveTransferAssets,
+			teleportAssets: mockRelayApi.tx['xcmPallet'].teleportAssets,
+			limitedTeleportAssets: mockRelayApi.tx['xcmPallet'].limitedTeleportAssets,
 		},
 	},
 } as unknown as ApiPromise;
@@ -103,6 +105,9 @@ const adjustedMockSystemApi = {
 				mockSystemApi.tx['polkadotXcm'].limitedReserveTransferAssets,
 			reserveTransferAssets:
 				mockSystemApi.tx['polkadotXcm'].reserveTransferAssets,
+			teleportAssets: mockSystemApi.tx['polkadotXcm'].teleportAssets,
+			limitedTeleportAssets:
+				mockSystemApi.tx['polkadotXcm'].limitedTeleportAssets,
 		},
 		assets: {
 			transfer: mockSystemApi.tx.assets.transfer,
@@ -183,7 +188,7 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		describe('SystemToPara', () => {
-			const baseSystemCreateTx = async <T extends Format>(
+			const foreignBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
 				xcmVersion: number
@@ -200,9 +205,26 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 			};
+			const nativeBaseSystemCreateTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await systemAssetsApi.createTransferTransaction(
+					'2000', // Since this is not `0` we know this is to a parachain
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['DOT'],
+					['100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
+					}
+				);
+			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('call', true, 2);
+					const res = await foreignBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -212,7 +234,7 @@ describe('AssetTransferAPI', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('payload', true, 2);
+					const res = await foreignBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -222,11 +244,11 @@ describe('AssetTransferAPI', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('submittable', true, 2);
+					const res = await foreignBaseSystemCreateTx('submittable', true, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('call', false, 2);
+					const res = await foreignBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -236,7 +258,7 @@ describe('AssetTransferAPI', () => {
 					});
 				});
 				it('Should correctly build a payload for a reserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('payload', false, 2);
+					const res = await foreignBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -246,8 +268,18 @@ describe('AssetTransferAPI', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseSystemCreateTx('submittable', false, 2);
+					const res = await foreignBaseSystemCreateTx('submittable', false, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a call for a teleportAssets for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', false, 2);
+					expect(res).toEqual({
+						direction: 'SystemToPara',
+						format: 'call',
+						method: 'teleportAssets',
+						tx: '0x1f010100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100411f010400000000910100000000',
+						xcmVersion: 2,
+					});
 				});
 			});
 		});
@@ -300,6 +332,88 @@ describe('AssetTransferAPI', () => {
 				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V2', async () => {
 					const res = await baseRelayCreateTx('submittable', false, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+		});
+		describe('SystemToRelay', () => {
+			const nativeBaseSystemCreateTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await systemAssetsApi.createTransferTransaction(
+					'0', // `0` indicating the dest chain is a relay chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['DOT'],
+					['100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
+					}
+				);
+			};
+			describe('V2', () => {
+				it('Should correctly build a teleportAssets call for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', false, 2);
+					expect(res).toEqual({
+						direction: 'SystemToRelay',
+						format: 'call',
+						method: 'teleportAssets',
+						tx: '0x1f010100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010100010400010000910100000000',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', true, 2);
+					expect(res).toEqual({
+						direction: 'SystemToRelay',
+						format: 'call',
+						method: 'limitedTeleportAssets',
+						tx: '0x1f090100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010001040001000091010000000000',
+						xcmVersion: 2,
+					});
+				});
+			});
+		});
+		describe('RelayToSystem', () => {
+			const nativeBaseSystemCreateTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await relayAssetsApi.createTransferTransaction(
+					'1000', // `0` indicating the dest chain is a relay chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
+					}
+				);
+			};
+			describe('V2', () => {
+				it('Should correctly build a teleportAssets call for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', false, 2);
+					expect(res).toEqual({
+						direction: 'RelayToSystem',
+						format: 'call',
+						method: 'teleportAssets',
+						tx: '0x63010100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01000100a10f010400000000910100000000',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
+					const res = await nativeBaseSystemCreateTx('call', true, 2);
+					expect(res).toEqual({
+						direction: 'RelayToSystem',
+						format: 'call',
+						method: 'limitedTeleportAssets',
+						tx: '0x63090100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01000100a10f01040000000091010000000000',
+						xcmVersion: 2,
+					});
 				});
 			});
 		});
@@ -393,6 +507,44 @@ describe('AssetTransferAPI', () => {
 		it('Should return the correct value when the Option is true', async () => {
 			const version = await systemAssetsApi['fetchSafeXcmVersion']();
 			expect(version.toNumber()).toEqual(2);
+		});
+	});
+	describe('fetchAssetType', () => {
+		describe('SystemToRelay', () => {
+			it('Should corectly return Native', () => {
+				const assetType = systemAssetsApi['fetchAssetType'](
+					'statemint',
+					'0',
+					['DOT'],
+					Direction.SystemToRelay
+				);
+
+				expect(assetType).toEqual('Native');
+			});
+		});
+		describe('RelayToSystem', () => {
+			it('Should correctly return Native', () => {
+				const assetType = systemAssetsApi['fetchAssetType'](
+					'polkadot',
+					'1000',
+					['DOT'],
+					Direction.RelayToSystem
+				);
+
+				expect(assetType).toEqual('Native');
+			});
+		});
+		describe('SystemToPara', () => {
+			it('Should correctly return Foreign', () => {
+				const assetType = systemAssetsApi['fetchAssetType'](
+					'statemint',
+					'2000',
+					['1'],
+					Direction.SystemToPara
+				);
+
+				expect(assetType).toEqual('Foreign');
+			});
 		});
 	});
 	describe('Opts', () => {

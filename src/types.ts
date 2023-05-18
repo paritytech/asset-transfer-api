@@ -22,6 +22,11 @@ export enum Direction {
 	RelayToPara = 'RelayToPara',
 }
 
+export enum AssetType {
+	Native = 'Native',
+	Foreign = 'Foreign',
+}
+
 /**
  * AssetTransferApi supports three formats to be returned:
  * - payload: This returns a Polkadot-js `ExtrinsicPayload` as a hex.

@@ -14,7 +14,8 @@ describe('limitedTeleportAssets', () => {
 				['1'],
 				['100'],
 				'1000',
-				2
+				2,
+				'statemint'
 			);
 
 			expect(ext.toHex()).toBe(
@@ -31,7 +32,8 @@ describe('limitedTeleportAssets', () => {
 					['1'],
 					['100'],
 					'1000',
-					2
+					2,
+					'statemint'
 				);
 
 			expect(err).toThrowError(

@@ -96,6 +96,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				mockSystemApi,
 				['100', '100'],
 				2,
+				'statemint',
 				['1', '2']
 			);
 
@@ -137,6 +138,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				mockSystemApi,
 				['100', '100'],
 				3,
+				'statemint',
 				['1', '2']
 			);
 

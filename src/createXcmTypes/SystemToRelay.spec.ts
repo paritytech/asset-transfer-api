@@ -86,7 +86,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 	});
 	describe('Assets', () => {
 		it('Should work for V2', () => {
-			const assets = SystemToRelay.createAssets(mockSystemApi, ['100'], 2);
+			const assets = SystemToRelay.createAssets(mockSystemApi, ['100'], 2, '');
 
 			const expectedRes = {
 				v2: [
@@ -109,7 +109,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const assets = SystemToRelay.createAssets(mockSystemApi, ['100'], 3);
+			const assets = SystemToRelay.createAssets(mockSystemApi, ['100'], 3, '');
 
 			const expectedRes = {
 				v3: [

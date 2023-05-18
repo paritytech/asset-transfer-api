@@ -1,5 +1,5 @@
 import { BaseError } from '../errors';
-import type { ChainInfoRegistry } from './types';
+import type { ChainInfoRegistry, RelayChains } from './types';
 
 /**
  * Finds the name of the relay chain of a given specName. If the chain does not exist within the registry
@@ -11,7 +11,7 @@ import type { ChainInfoRegistry } from './types';
 export const findRelayChain = (
 	specName: string,
 	registry: ChainInfoRegistry
-) => {
+): RelayChains => {
 	const polkadotChains = Object.keys(registry.polkadot).map(
 		(val) => registry.polkadot[val].specName
 	);
