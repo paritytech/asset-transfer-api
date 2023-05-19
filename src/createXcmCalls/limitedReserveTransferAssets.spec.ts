@@ -16,7 +16,8 @@ describe('limitedReserveTransferAssets', () => {
 				['1'],
 				['100'],
 				'1000',
-				2
+				2,
+				'statemint'
 			);
 
 			expect(ext.toHex()).toBe(
@@ -32,6 +33,7 @@ describe('limitedReserveTransferAssets', () => {
 				['100'],
 				'1000',
 				2,
+				'statemint',
 				'1000000000'
 			);
 
@@ -49,7 +51,8 @@ describe('limitedReserveTransferAssets', () => {
 					['1'],
 					['100'],
 					'1000',
-					2
+					2,
+					'statemint'
 				);
 
 			expect(err).toThrowError(

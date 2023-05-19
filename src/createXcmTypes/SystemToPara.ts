@@ -9,6 +9,7 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
+import { findRelayChain, parseRegistry } from '../registry';
 import { ICreateXcmType, IWeightLimit } from './types';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 
@@ -105,6 +106,7 @@ export const SystemToPara: ICreateXcmType = {
 		api: ApiPromise,
 		amounts: string[],
 		xcmVersion: number,
+		specName: string,
 		assets?: string[]
 	): VersionedMultiAssets => {
 		// TODO: We should consider a centralized place where these errors are check for.
@@ -115,17 +117,24 @@ export const SystemToPara: ICreateXcmType = {
 		}
 		const palletId = fetchPalletInstanceId(api);
 		const multiAssets = [];
+		const registry = parseRegistry({});
+		const relayChain = findRelayChain(specName, registry);
+		// We know this is a System parachain direction which is chainId 1000.
+		const { tokens } = registry[relayChain]['1000'];
 
 		for (let i = 0; i < assets.length; i++) {
 			const assetId = assets[i];
 			const amount = amounts[i];
+
+			const interior = tokens.includes(assetId)
+				? { Here: '' }
+				: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
+
 			const multiAsset = {
 				id: {
 					Concrete: {
 						parents: 0,
-						interior: {
-							X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-						},
+						interior,
 					},
 				},
 				fun: {

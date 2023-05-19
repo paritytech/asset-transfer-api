@@ -17,3 +17,5 @@ export type ChainInfoRegistry = {
 	kusama: ChainInfo;
 	westend: ChainInfo;
 };
+
+export type RelayChains = 'polkadot' | 'kusama' | 'westend';
