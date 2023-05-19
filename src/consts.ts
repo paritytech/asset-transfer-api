@@ -1,6 +1,15 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 /**
+ * List of all known relay chains.
+ */
+export const RELAY_CHAIN_NAMES = ['kusama', 'polkadot', 'westend'];
+/**
+ * As of now all the known relay chains have an ID of 0.
+ */
+export const RELAY_CHAIN_IDS = ['0'];
+
+/**
  * List of all known system parachains.
  */
 export const SYSTEM_PARACHAINS_NAMES = ['statemine', 'statemint', 'westmint'];

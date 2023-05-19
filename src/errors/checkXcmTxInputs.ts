@@ -1,8 +1,178 @@
-import { SYSTEM_PARACHAINS_IDS } from '../consts';
+import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
 import { findRelayChain } from '../registry/findRelayChain';
 import type { ChainInfo, ChainInfoRegistry } from '../registry/types';
-import type { Direction } from '../types';
+import { Direction } from '../types';
 import { BaseError } from './BaseError';
+
+/**
+ * This will check that a given assetId is neither an empty string
+ * or known blank space
+ *
+ * @param assetId
+ */
+const checkIfAssetIdIsEmptyOrBlankSpace = (assetId: string) => {
+	// check if empty or space
+	// if assetId is an empty space or space error
+	if (assetId === '' || assetId === ' ') {
+		const assetIdLength = assetId.length;
+		const errorMessageDetails =
+			assetIdLength > 0 ? 'Found blank space' : 'Found empty string';
+
+		throw new BaseError(
+			`assetId cannot be blank spaces or empty. ${errorMessageDetails}`
+		);
+	}
+};
+/**
+ * This will check the given assetId and ensure that it is the native token of the relay chain
+ *
+ * @param assetId
+ * @param relayChainInfo
+ */
+const checkRelayToSystemAssetId = (
+	assetId: string,
+	relayChainInfo: ChainInfo
+) => {
+	const relayChainId = RELAY_CHAIN_IDS[0];
+	const relayChain = relayChainInfo[relayChainId];
+	const relayChainNativeAsset = relayChain.tokens[0];
+
+	// relay chain can only send its native asset
+	// ensure the asset being sent is the native asset of the relay chain
+	// no need to check if id is a number, if it is, it fails the check by default
+	let assetIsRelayChainNativeAsset = false;
+	if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
+		assetIsRelayChainNativeAsset = true;
+	}
+
+	if (!assetIsRelayChainNativeAsset) {
+		throw new BaseError(
+			`Relay to System: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
+		);
+	}
+};
+
+/**
+ * This will check the given assetId and ensure that it is the native token of the relay chain
+ *
+ *
+ * @param assetId
+ * @param relayChainInfo
+ */
+const checkRelayToParaAssetId = (
+	assetId: string,
+	relayChainInfo: ChainInfo
+) => {
+	const relayChainId = RELAY_CHAIN_IDS[0];
+	const relayChain = relayChainInfo[relayChainId];
+	const relayChainNativeAsset = relayChain.tokens[0];
+
+	// relay chain can only send its native asset
+	// ensure the asset being sent is the native asset of the relay chain
+	// no need to check if id is a number, if it is, it fails the check by default
+	let assetIsRelayChainNativeAsset = false;
+	if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
+		assetIsRelayChainNativeAsset = true;
+	}
+
+	if (!assetIsRelayChainNativeAsset) {
+		throw new BaseError(
+			`Relay to System: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
+		);
+	}
+};
+/**
+ * This will check the given assetId and ensure that it is the native token of the relay chain
+ *
+ *
+ * @param assetId
+ * @param relayChainInfo
+ */
+const checkSystemToRelayAssetId = (
+	assetId: string,
+	relayChainInfo: ChainInfo
+) => {
+	const relayChainId = RELAY_CHAIN_IDS[0];
+	const relayChain = relayChainInfo[relayChainId];
+	const relayChainNativeAsset = relayChain.tokens[0];
+
+	// ensure assetId is relay chain's native token
+	let matchedRelayChainNativeToken = false;
+
+	if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
+		matchedRelayChainNativeToken = true;
+	}
+
+	if (!matchedRelayChainNativeToken) {
+		throw new BaseError(
+			`assetId ${assetId} not native to ${relayChain.specName}`
+		);
+	}
+};
+/**
+ * This will check the given assetId and validate it in either string integer, or string symbol format
+ *
+ *
+ * @param assetId
+ * @param relayChainInfo
+ */
+const checkSystemToParaAssetId = (
+	assetId: string,
+	specName: string,
+	relayChainInfo: ChainInfo
+) => {
+	const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
+	const systemParachainInfo = relayChainInfo[systemParachainId];
+
+	// check if assetId is a number
+	const parsedAssetIdAsNumber = Number.parseInt(assetId);
+	const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+
+	if (!invalidNumber) {
+		// assetId is a valid number
+		// ensure the assetId exists as an asset on the system parachain
+		const assetSymbol: string | undefined =
+			systemParachainInfo.assetsInfo[assetId];
+
+		if (assetSymbol === undefined) {
+			throw new BaseError(
+				`integer assetId ${assetId} not found in ${specName}`
+			);
+		}
+	} else {
+		// not a valid number
+		// check if id is a valid token symbol of the system parachain chain
+		let isValidTokenSymbol = false;
+
+		// ensure character string is valid symbol for the system chain
+		for (const token of systemParachainInfo.tokens) {
+			if (token.toLowerCase() === assetId.toLowerCase()) {
+				isValidTokenSymbol = true;
+				break;
+			}
+		}
+
+		// if not found in system parachains tokens, check its assetsInfo
+		if (!isValidTokenSymbol) {
+			for (const symbol of Object.values(systemParachainInfo.assetsInfo)) {
+				if (symbol.toLowerCase() === assetId.toLowerCase()) {
+					isValidTokenSymbol = true;
+					break;
+				}
+			}
+		}
+
+		// if no native token for the system parachain was matched, throw an error
+		if (!isValidTokenSymbol) {
+			throw new BaseError(
+				`assetId ${assetId} not found for system parachain ${specName}`
+			);
+		}
+
+		// TODO:
+		// check if destination chain has the asset?
+	}
+};
 
 /**
  * This will check the given assetIds and ensure they are either valid integers as strings
@@ -17,64 +187,39 @@ export const checkAssetIdInput = (
 	assetIds: string[],
 	relayChainInfo: ChainInfo,
 	specName: string,
-	destChainId: string,
+	_destChainId: string,
 	xcmDirection: Direction
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+		// check if assetId is empty string or blank space
+		checkIfAssetIdIsEmptyOrBlankSpace(assetId);
 
-		// check that the specific assetId exists for the destChain
-		if (!invalidNumber) {
-			if (xcmDirection.toLowerCase().startsWith('system')) {
-				const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
-				const chainInfo = relayChainInfo[systemParachainId];
-				let isValidAssetId = false;
-
-				for (const id of chainInfo.assetIds) {
-					if (id === parsedAssetIdAsNumber) {
-						isValidAssetId = true;
-						break;
-					}
-				}
-
-				if (!isValidAssetId) {
-					throw new BaseError(`assetId ${assetId} not found in ${specName}`);
-				}
-			} else {
-				// if the asset id is a valid number and the chain isn't a system parachain throw an error
-				throw new BaseError(
-					`integer assetId's can only be used for transfers from system parachains. Expected a valid token symbol. Got ${parsedAssetIdAsNumber}`
-				);
-			}
+		if (xcmDirection === Direction.RelayToSystem) {
+			checkRelayToSystemAssetId(assetId, relayChainInfo);
 		}
 
-		if (invalidNumber) {
-			let isValidTokenSymbol = false;
-			const chainInfo = relayChainInfo[destChainId];
-
-			const isNativeChain =
-				chainInfo.specName.toLowerCase() === specName.toLowerCase();
-
-			if (!isNativeChain) {
-				throw new BaseError(
-					`non matching chains. Received: ${specName.toLowerCase()}. Expected: ${chainInfo.specName.toLowerCase()}`
-				);
-			}
-
-			for (const tokenSymbol of chainInfo.tokens) {
-				if (tokenSymbol.toUpperCase() === assetId.toUpperCase()) {
-					isValidTokenSymbol = true;
-				}
-			}
-
-			if (!isValidTokenSymbol) {
-				throw new BaseError(
-					`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: ${assetId}`
-				);
-			}
+		if (xcmDirection === Direction.RelayToPara) {
+			checkRelayToParaAssetId(assetId, relayChainInfo);
 		}
+
+		if (xcmDirection === Direction.SystemToRelay) {
+			checkSystemToRelayAssetId(assetId, relayChainInfo);
+		}
+
+		if (xcmDirection === Direction.SystemToPara) {
+			checkSystemToParaAssetId(assetId, specName, relayChainInfo);
+		}
+
+		// TODO:
+		// if (xcmDirection === Direction.ParaToPara) {
+		// 	// handle para to para checks
+		// }
+
+		// TODO:
+		// if (xcmDirection === Direction.ParaToRelay) {
+		// 	// handle para to relay checks
+		// }
 	}
 };
 
