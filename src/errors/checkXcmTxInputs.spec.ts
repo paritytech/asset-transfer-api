@@ -45,7 +45,7 @@ type Test = [
 ];
 
 describe('checkAssetIds', () => {
-	it('Should error when direction is RelayToSystem and an assetId is found that is empty or a blank space', () => {
+	it('Should error when an assetId is found that is empty or a blank space', () => {
 		const registry = parseRegistry({});
 
 		const tests: Test[] = [
@@ -57,10 +57,10 @@ describe('checkAssetIds', () => {
 				`assetId cannot be blank spaces or empty. Found empty string`,
 			],
 			[
-				'1000',
+				'0',
 				'Statemine',
-				[' ', 'DOT'],
-				Direction.RelayToSystem,
+				[' ', 'KSM'],
+				Direction.SystemToRelay,
 				`assetId cannot be blank spaces or empty. Found blank space`,
 			],
 		];
@@ -69,8 +69,6 @@ describe('checkAssetIds', () => {
 			const [destChainId, specName, testInputs, direction, errorMessage] = test;
 			const relayChainName = findRelayChain(specName, registry);
 			const currentRegistry = registry[relayChainName];
-
-			console.log('current registry', currentRegistry);
 
 			const err = () =>
 				checkAssetIdInput(
