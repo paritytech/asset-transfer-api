@@ -79,7 +79,7 @@ const checkRelayToParaAssetId = (
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`Relay to System: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
+			`Relay to Para: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
@@ -109,7 +109,7 @@ const checkSystemToRelayAssetId = (
 
 	if (!matchedRelayChainNativeToken) {
 		throw new BaseError(
-			`assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`
+			`System to Relay: assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
@@ -141,7 +141,7 @@ const checkSystemToParaAssetId = (
 
 			if (assetSymbol === undefined) {
 				throw new BaseError(
-					`integer assetId ${assetId} not found in ${specName}`
+					`System to Para: integer assetId ${assetId} not found in ${specName}`
 				);
 			}
 		} else {
@@ -170,7 +170,7 @@ const checkSystemToParaAssetId = (
 			// if no native token for the system parachain was matched, throw an error
 			if (!isValidTokenSymbol) {
 				throw new BaseError(
-					`assetId ${assetId} not found for system parachain ${specName}`
+					`System to Para: assetId ${assetId} not found for system parachain ${specName}`
 				);
 			}
 		}

@@ -118,6 +118,29 @@ describe('checkAssetIds', () => {
 		runTests(tests, registry);
 	});
 
+	it('Should error when direction is RelayToPara and assetId does not match relay chains native token', () => {
+		const registry = parseRegistry({});
+
+		const tests: Test[] = [
+			[
+				'2004',
+				'Polkadot',
+				['1', 'DOT'],
+				Direction.RelayToPara,
+				`Relay to Para: asset 1 is not polkadot's native asset. Expected DOT`,
+			],
+			[
+				'2001',
+				'Kusama',
+				['DOT', 'KSM'],
+				Direction.RelayToPara,
+				`Relay to Para: asset DOT is not kusama's native asset. Expected KSM`,
+			],
+		];
+
+		runTests(tests, registry);
+	});
+
 	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', () => {
 		const registry = parseRegistry({});
 
@@ -127,21 +150,21 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['0'],
 				Direction.SystemToRelay,
-				`assetId 0 not native to polkadot`,
+				`System to Relay: assetId 0 not native to polkadot`,
 			],
 			[
 				'0',
 				'Statemine',
 				['MOVR', 'KSM'],
 				Direction.SystemToRelay,
-				`assetId MOVR not native to kusama`,
+				`System to Relay: assetId MOVR not native to kusama`,
 			],
 			[
 				'0',
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToRelay,
-				`assetId 250 not native to westend`,
+				`System to Relay: assetId 250 not native to westend`,
 			],
 		];
 
@@ -157,21 +180,21 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'DOT', '3500000'],
 				Direction.SystemToPara,
-				`integer assetId 3500000 not found in Statemint`,
+				`System to Para: integer assetId 3500000 not found in Statemint`,
 			],
 			[
 				'2023',
 				'Statemine',
 				['KSM', '8', 'stateMineDoge'],
 				Direction.SystemToPara,
-				`assetId stateMineDoge not found for system parachain Statemine`,
+				`System to Para: assetId stateMineDoge not found for system parachain Statemine`,
 			],
 			[
 				'1002',
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToPara,
-				`integer assetId 250 not found in Westmint`,
+				`System to Para: integer assetId 250 not found in Westmint`,
 			],
 		];
 
@@ -201,21 +224,21 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToPara,
-				`assetId xcDOT not found for system parachain Statemint`,
+				`System to Para: assetId xcDOT not found for system parachain Statemint`,
 			],
 			[
 				'2023',
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToPara,
-				`assetId xcMOVR not found for system parachain Statemine`,
+				`System to Para: assetId xcMOVR not found for system parachain Statemine`,
 			],
 			[
 				'1002',
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToPara,
-				`assetId Test Westend not found for system parachain Westmint`,
+				`System to Para: assetId Test Westend not found for system parachain Westmint`,
 			],
 		];
 
