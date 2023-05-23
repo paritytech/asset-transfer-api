@@ -1,9 +1,7 @@
-import type { MultiLocation } from '@polkadot/types/interfaces';
 import { ChainInfoRegistry } from 'src/registry/types';
 
 import { findRelayChain } from '../registry/findRelayChain';
 import { parseRegistry } from '../registry/parseRegistry';
-import { mockRelayApi } from '../testHelpers/mockRelayApi';
 import { Direction } from '../types';
 import { checkAssetIdInput, checkXcmTxInputs } from './checkXcmTxInputs';
 
@@ -61,7 +59,7 @@ describe('checkXcmTxinputs', () => {
 type Test = [
 	destChainId: string,
 	specName: string,
-	inputs: (string | MultiLocation)[],
+	inputs: string[],
 	xcmDirection: Direction,
 	errorMessage: string
 ];
@@ -120,49 +118,6 @@ describe('checkAssetIds', () => {
 		runTests(tests, registry);
 	});
 
-	it('Should error when direction is RelayToSystem or RelayToPara for a MultiLocation assetId with a non 1 parents field or non Here interior', () => {
-		const registry = parseRegistry({});
-
-		const nonOneParentMultiLocation = mockRelayApi.registry.createType(
-			'MultiLocation',
-			{
-				parents: 0,
-				interior: {
-					Here: '',
-				},
-			}
-		);
-
-		const nonHereInteriorMultiLocation = mockRelayApi.registry.createType(
-			'MultiLocation',
-			{
-				parents: 0,
-				interior: {
-					X1: { Parachain: 1000 },
-				},
-			}
-		);
-
-		const tests: Test[] = [
-			[
-				'1000',
-				'Polkadot',
-				[nonOneParentMultiLocation, 'DOT'],
-				Direction.RelayToSystem,
-				`Relay to System: asset ${nonOneParentMultiLocation.toString()} is not polkadot's native asset. Expected DOT or relaychain MultiLocation with parents of 1 and Here interior`,
-			],
-			[
-				'2006',
-				'Polkadot',
-				[nonHereInteriorMultiLocation, 'DOT'],
-				Direction.RelayToPara,
-				`Relay to System: asset ${nonHereInteriorMultiLocation.toString()} is not polkadot's native asset. Expected DOT or relaychain MultiLocation with parents of 1 and Here interior`,
-			],
-		];
-
-		runTests(tests, registry);
-	});
-
 	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', () => {
 		const registry = parseRegistry({});
 
@@ -193,127 +148,91 @@ describe('checkAssetIds', () => {
 		runTests(tests, registry);
 	});
 
-	it('Should error when xcm direction is SystemToRelay for a MultiLocation assetId with a "parents" value that is not 0', () => {
+	it('Should error when direction is SystemToPara and integer assetId is not found in system parachains assets', () => {
 		const registry = parseRegistry({});
-
-		const nonZeroParentsMultiLocation = mockRelayApi.createType(
-			'MultiLocation',
-			{
-				parents: 1,
-				interior: {
-					Here: '',
-				},
-			}
-		);
 
 		const tests: Test[] = [
 			[
-				'1000',
-				'Polkadot',
-				[nonZeroParentsMultiLocation, 'DOT'],
-				Direction.SystemToRelay,
-				`assetId ${nonZeroParentsMultiLocation.toString()} not native to polkadot. Expected DOT or relaychain MultiLocation with parents of 0 and Here interior`,
+				'2004',
+				'Statemint',
+				['1337', 'DOT', '3500000'],
+				Direction.SystemToPara,
+				`integer assetId 3500000 not found in Statemint`,
+			],
+			[
+				'2023',
+				'Statemine',
+				['KSM', '8', 'stateMineDoge'],
+				Direction.SystemToPara,
+				`assetId stateMineDoge not found for system parachain Statemine`,
+			],
+			[
+				'1002',
+				'Westmint',
+				['WND', '250'],
+				Direction.SystemToPara,
+				`integer assetId 250 not found in Westmint`,
 			],
 		];
 
-		runTests(tests, registry);
+		for (const test of tests) {
+			const [destChainId, specName, testInputs, direction, errorMessage] = test;
+			const relayChainName = findRelayChain(specName, registry);
+			const currentRegistry = registry[relayChainName];
+
+			const err = () =>
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					destChainId,
+					direction
+				);
+			expect(err).toThrow(errorMessage);
+		}
 	});
 
-	// it('Should error when direction is SystemToPara and integer assetId is not found in system parachains assets', () => {
-	// 	const registry = parseRegistry({});
+	it('Should error when direction is SystemToPara and the string assetId is not found in the system parachains tokens or assets', () => {
+		const registry = parseRegistry({});
 
-	// 	const tests: Test[] = [
-	// 		[
-	// 			'2004',
-	// 			'Statemint',
-	// 			['1337', 'DOT', '3500000'],
-	// 			Direction.SystemToPara,
-	// 			`integer assetId 3500000 not found in Statemint`,
-	// 		],
-	// 		[
-	// 			'2023',
-	// 			'Statemine',
-	// 			['KSM', '8', 'stateMineDoge'],
-	// 			Direction.SystemToPara,
-	// 			`assetId stateMineDoge not found for system parachain Statemine`,
-	// 		],
-	// 		[
-	// 			'1002',
-	// 			'Westmint',
-	// 			['WND', '250'],
-	// 			Direction.SystemToPara,
-	// 			`integer assetId 250 not found in Westmint`,
-	// 		],
-	// 	];
+		const tests: Test[] = [
+			[
+				'2004',
+				'Statemint',
+				['1337', 'xcDOT'],
+				Direction.SystemToPara,
+				`assetId xcDOT not found for system parachain Statemint`,
+			],
+			[
+				'2023',
+				'Statemine',
+				['KSM', 'xcMOVR'],
+				Direction.SystemToPara,
+				`assetId xcMOVR not found for system parachain Statemine`,
+			],
+			[
+				'1002',
+				'Westmint',
+				['WND', 'Test Westend'],
+				Direction.SystemToPara,
+				`assetId Test Westend not found for system parachain Westmint`,
+			],
+		];
 
-	// 	for (const test of tests) {
-	// 		const [destChainId, specName, testInputs, direction, errorMessage] = test;
-	// 		const relayChainName = findRelayChain(specName, registry);
-	// 		const currentRegistry = registry[relayChainName];
+		for (const test of tests) {
+			const [destChainId, specName, testInputs, direction, errorMessage] = test;
+			const relayChainName = findRelayChain(specName, registry);
+			const currentRegistry = registry[relayChainName];
 
-	// 		const err = () =>
-	// 			checkAssetIdInput(
-	// 				testInputs,
-	// 				currentRegistry,
-	// 				specName,
-	// 				destChainId,
-	// 				direction
-	// 			);
-	// 		expect(err).toThrow(errorMessage);
-	// 	}
-	// });
-
-	// it('Should error when direction is SystemToPara and the string assetId is not found in the system parachains tokens or assets', () => {
-	// 	const registry = parseRegistry({});
-
-	// 	const tests: Test[] = [
-	// 		[
-	// 			'2004',
-	// 			'Statemint',
-	// 			['1337', 'xcDOT'],
-	// 			Direction.SystemToPara,
-	// 			`assetId xcDOT not found for system parachain Statemint`,
-	// 		],
-	// 		[
-	// 			'2023',
-	// 			'Statemine',
-	// 			['KSM', 'xcMOVR'],
-	// 			Direction.SystemToPara,
-	// 			`assetId xcMOVR not found for system parachain Statemine`,
-	// 		],
-	// 		[
-	// 			'1002',
-	// 			'Westmint',
-	// 			['WND', 'Test Westend'],
-	// 			Direction.SystemToPara,
-	// 			`assetId Test Westend not found for system parachain Westmint`,
-	// 		],
-	// 	];
-
-	// 	for (const test of tests) {
-	// 		const [destChainId, specName, testInputs, direction, errorMessage] = test;
-	// 		const relayChainName = findRelayChain(specName, registry);
-	// 		const currentRegistry = registry[relayChainName];
-
-	// 		const err = () =>
-	// 			checkAssetIdInput(
-	// 				testInputs,
-	// 				currentRegistry,
-	// 				specName,
-	// 				destChainId,
-	// 				direction
-	// 			);
-	// 		expect(err).toThrow(errorMessage);
-	// 	}
-	// });
-
-	// TODO:
-	// it('Should error when direction is ParaToRelay and the string assetId is not the relay chains native asset', () => {
-
-	// });
-
-	// TODO:
-	// it('Should error when direction is ParaToPara and the string assetId is not found in the origin chains assets', () => {
-
-	// });
+			const err = () =>
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					destChainId,
+					direction
+				);
+			expect(err).toThrow(errorMessage);
+		}
+	});
 });

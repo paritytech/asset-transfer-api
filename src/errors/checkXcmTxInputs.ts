@@ -1,5 +1,3 @@
-import type { MultiLocation } from '@polkadot/types/interfaces';
-
 import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
 import { findRelayChain } from '../registry/findRelayChain';
 import type { ChainInfo, ChainInfoRegistry } from '../registry/types';
@@ -12,7 +10,7 @@ import { BaseError } from './BaseError';
  *
  * @param assetId
  */
-const checkIfAssetIdIsEmptyOrBlankSpace = (assetId: string | MultiLocation) => {
+const checkIfAssetIdIsEmptyOrBlankSpace = (assetId: string) => {
 	// check if empty or space
 	// if assetId is an empty space or space error
 	if (assetId === '' || assetId === ' ') {
@@ -32,7 +30,7 @@ const checkIfAssetIdIsEmptyOrBlankSpace = (assetId: string | MultiLocation) => {
  * @param relayChainInfo
  */
 const checkRelayToSystemAssetId = (
-	assetId: string | MultiLocation,
+	assetId: string,
 	relayChainInfo: ChainInfo
 ) => {
 	const relayChainId = RELAY_CHAIN_IDS[0];
@@ -43,26 +41,13 @@ const checkRelayToSystemAssetId = (
 	// ensure the asset being sent is the native asset of the relay chain
 	// no need to check if id is a number, if it is, it fails the check by default
 	let assetIsRelayChainNativeAsset = false;
-	if (typeof assetId === 'string') {
-		if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
-			assetIsRelayChainNativeAsset = true;
-		}
-	} else {
-		// parents value for dest chain (system chain) should be 1
-		// Here to reference relay chain interior
-		if (assetId.parents.toNumber() === 1 && assetId.interior.isHere) {
-			assetIsRelayChainNativeAsset = true;
-		}
-		// TODO:
-		// use multilocation based on destchain origin to check if the dest chain
-		// contains the given multilocations asset id
+	if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
+		assetIsRelayChainNativeAsset = true;
 	}
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`Relay to System: asset ${assetId.toString()} is not ${
-				relayChain.specName
-			}'s native asset. Expected ${relayChainNativeAsset} or relaychain MultiLocation with parents of 1 and Here interior`
+			`Relay to System: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
@@ -75,7 +60,7 @@ const checkRelayToSystemAssetId = (
  * @param relayChainInfo
  */
 const checkRelayToParaAssetId = (
-	assetId: string | MultiLocation,
+	assetId: string,
 	relayChainInfo: ChainInfo
 ) => {
 	const relayChainId = RELAY_CHAIN_IDS[0];
@@ -90,24 +75,11 @@ const checkRelayToParaAssetId = (
 		if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
 			assetIsRelayChainNativeAsset = true;
 		}
-	} else {
-		// handle multilocation case
-		// parents value for dest chain (parachain) should be 1
-		// Here to reference relay chain interior
-		if (assetId.parents.toNumber() === 1 && assetId.interior.isHere) {
-			assetIsRelayChainNativeAsset = true;
-		}
-
-		// TODO:
-		// use multilocation based on destchain origin to check if the dest chain
-		// contains the given multilocations asset id
 	}
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`Relay to System: asset ${assetId.toString()} is not ${
-				relayChain.specName
-			}'s native asset. Expected ${relayChainNativeAsset} or relaychain MultiLocation with parents of 1 and Here interior`
+			`Relay to System: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
@@ -119,7 +91,7 @@ const checkRelayToParaAssetId = (
  * @param relayChainInfo
  */
 const checkSystemToRelayAssetId = (
-	assetId: string | MultiLocation,
+	assetId: string,
 	relayChainInfo: ChainInfo
 ) => {
 	const relayChainId = RELAY_CHAIN_IDS[0];
@@ -133,20 +105,11 @@ const checkSystemToRelayAssetId = (
 		if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
 			matchedRelayChainNativeToken = true;
 		}
-	} else {
-		// handle multilocation case
-		// multilocation parents value from relay chain perspective is 0
-		// Here interior for relay chain
-		if (assetId.parents.toNumber() === 0 && assetId.interior.isHere) {
-			matchedRelayChainNativeToken = true;
-		}
 	}
 
 	if (!matchedRelayChainNativeToken) {
 		throw new BaseError(
-			`assetId ${assetId.toString()} not native to ${
-				relayChain.specName
-			}. Expected ${relayChainNativeAsset} or relaychain MultiLocation with parents of 0 and Here interior`
+			`assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
@@ -158,7 +121,7 @@ const checkSystemToRelayAssetId = (
  * @param relayChainInfo
  */
 const checkSystemToParaAssetId = (
-	assetId: string | MultiLocation,
+	assetId: string,
 	specName: string,
 	relayChainInfo: ChainInfo
 ) => {
@@ -211,10 +174,6 @@ const checkSystemToParaAssetId = (
 				);
 			}
 		}
-		// TODO:
-		// check if destination chain has the asset?
-	} else {
-		// handle multilocation case
 	}
 };
 
@@ -228,7 +187,7 @@ const checkSystemToParaAssetId = (
  * @param destChainId
  */
 export const checkAssetIdInput = (
-	assetIds: (string | MultiLocation)[],
+	assetIds: string[],
 	relayChainInfo: ChainInfo,
 	specName: string,
 	_destChainId: string,
@@ -254,22 +213,6 @@ export const checkAssetIdInput = (
 		if (xcmDirection === Direction.SystemToPara) {
 			checkSystemToParaAssetId(assetId, specName, relayChainInfo);
 		}
-
-		// TODO:
-		// if (xcmDirection === Direction.ParaToPara) {
-		// 	// handle para to para checks
-
-		// check that asset is valid in tokens or assetsInfo
-
-		// check if asset exists on destination chain
-		// by hashing the multilocation of the asset from the perspective of the destination
-		// and taking the first 16 bytes to get the id
-		// }
-
-		// TODO:
-		// if (xcmDirection === Direction.ParaToRelay) {
-		// 	// handle para to relay checks
-		// }
 	}
 };
 
@@ -284,7 +227,7 @@ export const checkAssetIdInput = (
  * @param xcmDirection
  */
 export const checkXcmTxInputs = (
-	assetIds: (string | MultiLocation)[],
+	assetIds: string[],
 	amounts: string[],
 	xcmDirection: Direction,
 	destChainId: string,
