@@ -195,7 +195,7 @@ export const checkAssetIdInput = (
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
-		
+
 		checkIfAssetIdIsEmptyOrBlankSpace(assetId);
 
 		if (xcmDirection === Direction.RelayToSystem) {
