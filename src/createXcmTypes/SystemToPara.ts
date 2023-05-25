@@ -126,14 +126,16 @@ export const SystemToPara: ICreateXcmType = {
 			const assetId = assets[i];
 			const amount = amounts[i];
 
-			const interior = tokens.includes(assetId)
+			const isNative = tokens.includes(assetId);
+			const interior = isNative
 				? { Here: '' }
 				: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
+			const parents = isNative ? 1 : 0;
 
 			const multiAsset = {
 				id: {
 					Concrete: {
-						parents: 0,
+						parents,
 						interior,
 					},
 				},
