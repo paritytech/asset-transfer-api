@@ -225,7 +225,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignBaseSystemCreateTx('submittable', true, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-                it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
+				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
 					const res = await foreignBaseSystemCreateTx('call', false, 3);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
@@ -247,6 +247,54 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignBaseSystemCreateTx('submittable', false, 3);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a call for a teleportAssets for V3', async () => {
+					const res = await nativeBaseSystemCreateTx('call', false, 3);
+					expect(res).toEqual({
+						direction: 'SystemToPara',
+						format: 'call',
+						method: 'teleportAssets',
+						tx: '0x1f010300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03010100411f030400010000910100000000',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a payload for a teleportAssets for V3', async () => {
+					const res = await nativeBaseSystemCreateTx('payload', false, 3);
+					expect(res).toEqual({
+						direction: 'SystemToPara',
+						format: 'payload',
+						method: 'teleportAssets',
+						tx: '0xdd057b2263616c6c496e646578223a22307831663031222c2261726773223a7b2264657374223a7b227633223a7b22706172656e7473223a302c22696e746572696f72223a7b227831223a7b226163636f756e7449643332223a7b226e6574776f726b223a6e756c6c2c226964223a22307866356435373134633038346331313238343361636137346638633439386461303663633561326436333135336238323531383962616135313034336231663062227d7d7d7d7d2c2262656e6566696369617279223a7b227633223a7b22706172656e7473223a312c22696e746572696f72223a7b227831223a7b2270617261636861696e223a323030307d7d7d7d2c22617373657473223a7b227633223a5b7b226964223a7b22636f6e6372657465223a7b22706172656e7473223a312c22696e746572696f72223a7b2268657265223a6e756c6c7d7d7d2c2266756e223a7b2266756e6769626c65223a3130307d7d5d7d2c226665655f61737365745f6974656d223a307d7d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a submittable extrinsic for a teleportsAssets for V3', async () => {
+					const res = await nativeBaseSystemCreateTx('submittable', false, 3);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a call for limitedTeleportAssets for V3', async () => {
+					const res = await nativeBaseSystemCreateTx('call', true, 3);
+					expect(res).toEqual({
+						direction: 'SystemToPara',
+						format: 'call',
+						method: 'limitedTeleportAssets',
+						tx: '0x1f090300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03010100411f03040001000091010000000000',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a payload for limitedTeleportAssets for V3', async () => {
+					const res = await nativeBaseSystemCreateTx('payload', true, 3);
+					expect(res).toEqual({
+						direction: 'SystemToPara',
+						format: 'payload',
+						method: 'limitedTeleportAssets',
+						tx: '0x65067b2263616c6c496e646578223a22307831663039222c2261726773223a7b2264657374223a7b227633223a7b22706172656e7473223a302c22696e746572696f72223a7b227831223a7b226163636f756e7449643332223a7b226e6574776f726b223a6e756c6c2c226964223a22307866356435373134633038346331313238343361636137346638633439386461303663633561326436333135336238323531383962616135313034336231663062227d7d7d7d7d2c2262656e6566696369617279223a7b227633223a7b22706172656e7473223a312c22696e746572696f72223a7b227831223a7b2270617261636861696e223a323030307d7d7d7d2c22617373657473223a7b227633223a5b7b226964223a7b22636f6e6372657465223a7b22706172656e7473223a312c22696e746572696f72223a7b2268657265223a6e756c6c7d7d7d2c2266756e223a7b2266756e6769626c65223a3130307d7d5d7d2c226665655f61737365745f6974656d223a302c227765696768745f6c696d6974223a7b22756e6c696d69746564223a6e756c6c7d7d7d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a submittable extrinsic for a limitedTeleportsAssets for V3', async () => {
+					const res = await nativeBaseSystemCreateTx('submittable', true, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
