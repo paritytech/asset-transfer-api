@@ -1,10 +1,14 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+interface AssetsInfo {
+	[key: string]: string;
+}
+
 export type ChainInfo = {
 	[x: string]: {
 		specName: string;
 		tokens: string[];
-		assetIds: number[];
+		assetsInfo: AssetsInfo;
 	};
 };
 

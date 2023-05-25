@@ -1,7 +1,27 @@
+import { ChainInfoRegistry } from 'src/registry/types';
+
 import { findRelayChain } from '../registry/findRelayChain';
 import { parseRegistry } from '../registry/parseRegistry';
 import { Direction } from '../types';
 import { checkAssetIdInput, checkXcmTxInputs } from './checkXcmTxInputs';
+
+const runTests = (tests: Test[], registry: ChainInfoRegistry) => {
+	for (const test of tests) {
+		const [destChainId, specName, testInputs, direction, errorMessage] = test;
+		const relayChainName = findRelayChain(specName, registry);
+		const currentRegistry = registry[relayChainName];
+
+		const err = () =>
+			checkAssetIdInput(
+				testInputs,
+				currentRegistry,
+				specName,
+				destChainId,
+				direction
+			);
+		expect(err).toThrow(errorMessage);
+	}
+};
 
 describe('checkXcmTxinputs', () => {
 	it("Should error when inputted assetId's dont match amounts length", () => {
@@ -40,152 +60,146 @@ type Test = [
 	destChainId: string,
 	specName: string,
 	inputs: string[],
+	xcmDirection: Direction,
 	errorMessage: string
 ];
 
 describe('checkAssetIds', () => {
-	it("Should error when inputted assetId's are not valid integer numbers or valid token symbols", () => {
+	it('Should error when an assetId is found that is empty or a blank space', () => {
 		const registry = parseRegistry({});
 
 		const tests: Test[] = [
 			[
 				'1000',
 				'Statemint',
-				['1', '2', '3', 'hello'],
-				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: hello`,
+				['', 'DOT'],
+				Direction.RelayToSystem,
+				`assetId cannot be blank spaces or empty. Found empty string`,
 			],
 			[
-				'2004',
-				'Moonbeam',
-				['two', 'GLMR'],
-				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: two`,
-			],
-			[
-				'2030',
-				'Bifrost_Polkadot',
-				['BNCC'],
-				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: BNCC`,
-			],
-			[
-				'2104',
-				'Manta',
-				['', 'MANTA'],
-				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: `,
-			],
-		];
-
-		for (const test of tests) {
-			const [destChainId, specName, testInputs, errorMessage] = test;
-			const relayChainName = findRelayChain(specName, registry);
-			const currentRegistry = registry[relayChainName];
-
-			const err = () =>
-				checkAssetIdInput(
-					testInputs,
-					currentRegistry,
-					specName,
-					destChainId,
-					Direction.SystemToPara
-				);
-			expect(err).toThrow(errorMessage);
-		}
-	});
-
-	it("Should error when assetId's includes a foreign chains asset", () => {
-		const registry = parseRegistry({});
-
-		const tests: Test[] = [
-			[
-				'2006',
-				'Astar',
-				['ASTR', 'DOT'],
-				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: DOT`,
-			],
-			[
-				'2004',
-				'Moonbeam',
-				['GLMR', 'BNC'],
-				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: BNC`,
-			],
-			[
-				'2000',
-				'Acala',
-				['ACA', 'GLMR'],
-				`'assetIds' must be either valid integer numbers or valid chain token symbols. Got: GLMR`,
-			],
-		];
-
-		for (const test of tests) {
-			const [destChainId, specName, testInputs, errorMessage] = test;
-			const relayChainName = findRelayChain(specName, registry);
-			const currentRegistry = registry[relayChainName];
-
-			const err = () =>
-				checkAssetIdInput(
-					testInputs,
-					currentRegistry,
-					specName,
-					destChainId,
-					Direction.SystemToPara
-				);
-			expect(err).toThrow(errorMessage);
-		}
-	});
-
-	it('Should error when the given integer asset id is not found in system parachain asset ids', () => {
-		const registry = parseRegistry({});
-
-		const tests: Test[] = [
-			[
-				'1000',
+				'0',
 				'Statemine',
-				['11250986484', 'KSM'],
-				`assetId 11250986484 not found in Statemine`,
-			],
-			[
-				'1000',
-				'Statemint',
-				['28250986484', 'DOT'],
-				`assetId 28250986484 not found in Statemint`,
+				[' ', 'KSM'],
+				Direction.SystemToRelay,
+				`assetId cannot be blank spaces or empty. Found blank space`,
 			],
 		];
 
-		for (const test of tests) {
-			const [destChainId, specName, testInputs, errorMessage] = test;
-			const relayChainName = findRelayChain(specName, registry);
-			const currentRegistry = registry[relayChainName];
-
-			const err = () =>
-				checkAssetIdInput(
-					testInputs,
-					currentRegistry,
-					specName,
-					destChainId,
-					Direction.SystemToPara
-				);
-			expect(err).toThrow(errorMessage);
-		}
+		runTests(tests, registry);
 	});
-	it('Should error when integer assetId is found for non system parachain origin', () => {
+
+	it('Should error when direction is RelayToSystem and assetId does not match relay chains native token', () => {
+		const registry = parseRegistry({});
+
+		const tests: Test[] = [
+			[
+				'1000',
+				'Polkadot',
+				['1', 'DOT'],
+				Direction.RelayToSystem,
+				`Relay to System: asset 1 is not polkadot's native asset. Expected DOT`,
+			],
+			[
+				'1000',
+				'Kusama',
+				['DOT', 'KSM'],
+				Direction.RelayToSystem,
+				`Relay to System: asset DOT is not kusama's native asset. Expected KSM`,
+			],
+			[
+				'1000',
+				'Westend',
+				['WND', '100000'],
+				Direction.RelayToSystem,
+				`Relay to System: asset 100000 is not westend's native asset. Expected WND`,
+			],
+		];
+
+		runTests(tests, registry);
+	});
+
+	it('Should error when direction is RelayToPara and assetId does not match relay chains native token', () => {
 		const registry = parseRegistry({});
 
 		const tests: Test[] = [
 			[
 				'2004',
-				'Moonbeam',
-				['2', 'GLMR'],
-				`integer assetId's can only be used for transfers from system parachains. Expected a valid token symbol. Got 2`,
+				'Polkadot',
+				['1', 'DOT'],
+				Direction.RelayToPara,
+				`Relay to Para: asset 1 is not polkadot's native asset. Expected DOT`,
 			],
 			[
-				'2012',
-				'Parallel',
-				['1', 'PARA'],
-				`integer assetId's can only be used for transfers from system parachains. Expected a valid token symbol. Got 1`,
+				'2001',
+				'Kusama',
+				['DOT', 'KSM'],
+				Direction.RelayToPara,
+				`Relay to Para: asset DOT is not kusama's native asset. Expected KSM`,
+			],
+		];
+
+		runTests(tests, registry);
+	});
+
+	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', () => {
+		const registry = parseRegistry({});
+
+		const tests: Test[] = [
+			[
+				'0',
+				'Statemint',
+				['0'],
+				Direction.SystemToRelay,
+				`System to Relay: assetId 0 not native to polkadot`,
+			],
+			[
+				'0',
+				'Statemine',
+				['MOVR', 'KSM'],
+				Direction.SystemToRelay,
+				`System to Relay: assetId MOVR not native to kusama`,
+			],
+			[
+				'0',
+				'Westmint',
+				['WND', '250'],
+				Direction.SystemToRelay,
+				`System to Relay: assetId 250 not native to westend`,
+			],
+		];
+
+		runTests(tests, registry);
+	});
+
+	it('Should error when direction is SystemToPara and integer assetId is not found in system parachains assets', () => {
+		const registry = parseRegistry({});
+
+		const tests: Test[] = [
+			[
+				'2004',
+				'Statemint',
+				['1337', 'DOT', '3500000'],
+				Direction.SystemToPara,
+				`System to Para: integer assetId 3500000 not found in Statemint`,
+			],
+			[
+				'2023',
+				'Statemine',
+				['KSM', '8', 'stateMineDoge'],
+				Direction.SystemToPara,
+				`System to Para: assetId stateMineDoge not found for system parachain Statemine`,
+			],
+			[
+				'1002',
+				'Westmint',
+				['WND', '250'],
+				Direction.SystemToPara,
+				`System to Para: integer assetId 250 not found in Westmint`,
 			],
 		];
 
 		for (const test of tests) {
-			const [destChainId, specName, testInputs, errorMessage] = test;
+			const [destChainId, specName, testInputs, direction, errorMessage] = test;
 			const relayChainName = findRelayChain(specName, registry);
 			const currentRegistry = registry[relayChainName];
 
@@ -195,7 +209,51 @@ describe('checkAssetIds', () => {
 					currentRegistry,
 					specName,
 					destChainId,
-					Direction.ParaToPara
+					direction
+				);
+			expect(err).toThrow(errorMessage);
+		}
+	});
+
+	it('Should error when direction is SystemToPara and the string assetId is not found in the system parachains tokens or assets', () => {
+		const registry = parseRegistry({});
+
+		const tests: Test[] = [
+			[
+				'2004',
+				'Statemint',
+				['1337', 'xcDOT'],
+				Direction.SystemToPara,
+				`System to Para: assetId xcDOT not found for system parachain Statemint`,
+			],
+			[
+				'2023',
+				'Statemine',
+				['KSM', 'xcMOVR'],
+				Direction.SystemToPara,
+				`System to Para: assetId xcMOVR not found for system parachain Statemine`,
+			],
+			[
+				'1002',
+				'Westmint',
+				['WND', 'Test Westend'],
+				Direction.SystemToPara,
+				`System to Para: assetId Test Westend not found for system parachain Westmint`,
+			],
+		];
+
+		for (const test of tests) {
+			const [destChainId, specName, testInputs, direction, errorMessage] = test;
+			const relayChainName = findRelayChain(specName, registry);
+			const currentRegistry = registry[relayChainName];
+
+			const err = () =>
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					destChainId,
+					direction
 				);
 			expect(err).toThrow(errorMessage);
 		}

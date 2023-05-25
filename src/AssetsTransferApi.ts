@@ -388,8 +388,8 @@ export class AssetsTransferApi {
 		 * We can assume all the assets in `assets` are either foreign or native since we check
 		 * all possible cases in `checkXcmTxInputs`.
 		 */
-		const { assetIds, tokens } = relayChainInfo[destChainId];
-		const assetIdsAsStr = assetIds.map((num) => num.toString());
+		const { assetsInfo, tokens } = relayChainInfo[destChainId];
+		const assetIdsAsStr = Object.keys(assetsInfo).map((num) => num.toString());
 
 		if (assetIdsAsStr.includes(assets[0]) || tokens.includes(assets[0])) {
 			return AssetType.Native;

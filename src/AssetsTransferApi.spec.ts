@@ -553,7 +553,7 @@ describe('AssetTransferAPI', () => {
 				polkadot: {
 					'9876': {
 						tokens: ['TST'],
-						assetIds: [],
+						assetsInfo: {},
 						specName: 'testing',
 					},
 				},
