@@ -277,7 +277,7 @@ describe('AssetTransferAPI', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'teleportAssets',
-						tx: '0x1f010100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100411f010400000000910100000000',
+						tx: '0x1f010100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100411f010400010000910100000000',
 						xcmVersion: 2,
 					});
 				});
