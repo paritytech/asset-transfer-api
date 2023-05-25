@@ -13,7 +13,7 @@ import { BaseError } from './BaseError';
 const checkIfAssetIdIsEmptyOrBlankSpace = (assetId: string) => {
 	// check if empty or space
 	// if assetId is an empty space or space error
-	if (assetId === '' || assetId === ' ') {
+	if (assetId === '' || assetId.trim() === '') {
 		const assetIdLength = assetId.length;
 		const errorMessageDetails =
 			assetIdLength > 0 ? 'Found blank space' : 'Found empty string';
