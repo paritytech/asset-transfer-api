@@ -12,3 +12,6 @@
 
 # Ignore all test files.
 /lib/**/*.spec.*
+
+# Ignore all integration tests
+/lib/integrationTests
