@@ -184,19 +184,23 @@ Zombienet is used to launch a complete network including a relay chain, and two 
 
 **Zombienet Binary**: You can download the appropriate binary from the zombienet repositor [here](https://github.com/paritytech/zombienet/releases). Ensure that it is in the root of this directory. Note: For macos users if permission is denied to run the binary you can `chmod 755 <file_name>` to allow permissions.
 
-**Test Network Binaries**: You will need the following binaries:
+**Test Network Binaries**: You will need the following binaries depending on whether you want to run a small or medium network:
 
-- polkadot: You can find the the releases [here](https://github.com/paritytech/polkadot/releases).
-- trappist-collator: This binary is compiled along with polkadot above. You can find it [here](https://github.com/paritytech/trappist).
-- polkadot-parachain (ie: cumulus): You can find the releases [here](https://github.com/paritytech/cumulus/releases).
+- polkadot: You can find the the releases [here](https://github.com/paritytech/polkadot/releases). (Needed for small, or medium network)
+- trappist-collator: This binary is compiled along with polkadot above. You can find it [here](https://github.com/paritytech/trappist). (Needed for medium network)
+- polkadot-parachain (ie: cumulus): You can find the releases [here](https://github.com/paritytech/cumulus/releases). (Needed for small, or medium network)
 
-NOTE: When it comes to picking a version for both `cumulus` and and `polkadot` ensure they are the same. Cumulus will have an extra 0 at the end though. Ex: v0.9.37 (polkadot) -> v0.9.370 (cumulus)
+NOTES: 
+
+- When it comes to picking a version for both `cumulus` and and `polkadot` ensure they are the same. Cumulus will have an extra 0 at the end though. Ex: v0.9.37 (polkadot) -> v0.9.370 (cumulus)
+
+- You can retrieve the binaries via the release, or by compiling yourself. It's recommended to compile it yourself.
 
 Copy each binary that is necessary into the root `<root>/bin` folder.
 
 ### Running Zombienet
 
-From the root directory run `./<zombienet_binary_name> -p native spawn zombienet.toml | tee zombienet.log`
+From the root directory run `./<zombienet_binary_name> -p native spawn ./zombienet/<network_file>.toml | tee zombienet.log`
 
 ### Create an asset
 
