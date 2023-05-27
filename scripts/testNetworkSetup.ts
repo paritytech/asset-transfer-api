@@ -131,7 +131,7 @@ const main = async () => {
 	});
 	const xcmOriginType = rococoApi.createType('XcmOriginKind', 'Superuser');
 	const xcmDest = {
-		V1: {
+		V3: {
 			parents: 0,
 			interior: {
 				X1: {
@@ -141,11 +141,14 @@ const main = async () => {
 		},
 	};
 	const xcmMessage = {
-		V2: [
+		V3: [
 			{
 				transact: {
 					originType: xcmOriginType,
-					requireWeightAtMost: 1000000000,
+					requireWeightAtMost: {
+						refTime: 1000000000,
+						proofSize: 0,
+					},
 					call: xcmDoubleEncoded,
 				},
 			},
