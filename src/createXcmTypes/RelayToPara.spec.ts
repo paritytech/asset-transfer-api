@@ -54,7 +54,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			};
 
 			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
-		})
+		});
 		it('Should work for V3', () => {
 			const beneficiary = RelayToPara.createBeneficiary(
 				mockRelayApi,
@@ -92,7 +92,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 						x1: {
 							accountKey20: {
 								key: '0x96bd611ebe3af39544104e26764f4939924f6ece',
-								network: null
+								network: null,
 							},
 						},
 					},
@@ -100,7 +100,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			};
 
 			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
-		})
+		});
 	});
 
 	describe('Destination', () => {

@@ -92,7 +92,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 						x1: {
 							accountKey20: {
 								key: '0x96bd611ebe3af39544104e26764f4939924f6ece',
-								network: null
+								network: null,
 							},
 						},
 					},
