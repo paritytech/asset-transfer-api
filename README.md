@@ -79,7 +79,7 @@ const call = await assetsApi.createTransferTransaction(
 )
 ```
 
-### AssetTransferApi & TransferArgsOpts
+### AssetTransferApi & AssetsTransferApiOpts & TransferArgsOpts
 
 ```Typescript
 // The AssetsTransferApi exposes one method as of now called: `createTransferTransaction`
@@ -101,6 +101,32 @@ AssetsTransferApi.createTransferTransaction(
 		amounts: string[],
 		opts?: TransferArgsOpts<T>
 )
+```
+
+
+```typescript
+// AssetsTransferApiOpts are the options for the `AssetsTransferApi`
+
+type AssetsTransferApiOpts = {
+	/**
+	 * The injectedRegistry allows you to add custom values to the predefined initialized registry.
+	 * If you would like to see the registry you may visit https://github.com/paritytech/asset-transfer-api-registry/blob/main/registry.json
+	 * 
+	 * An example input of the registry would be:
+	 * {
+	 *     polkadot: {
+	 *         '9876': {
+	 *             tokens: ['TST'],
+	 *             assetsInfo,
+	 *             specName: 'testing',
+	 *         }
+	 *     }
+	 * }
+	 * 
+	 * NOTE: It supports adding info for `polkadot`, `kusama`, and `westend`.
+	 */
+	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
+};
 ```
 
 ```typescript
@@ -159,14 +185,14 @@ Sending an Asset locally on a System Parachain is easy. In order to create a tra
 An example would look like:
 ```typescript
 await api.createTransferTransaction(
-  	destChainId: '1000',
-	destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-	assetIds: ['1984'],
-	amounts: ['10000000000'],
-	opts?: {
+  	'1000', // destChainId
+	'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b', // destAddr
+	['1984'], // assetIds
+	['10000000000'], // amounts
+	{
 		format: 'call',
 		keepAlive: true
-	}
+	} // opts
 )
 ```
 
