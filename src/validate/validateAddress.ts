@@ -5,6 +5,7 @@ import {
 	base58Decode,
 	checkAddressChecksum,
 	encodeAddress,
+	isEthereumAddress,
 } from '@polkadot/util-crypto';
 import { defaults } from '@polkadot/util-crypto/address/defaults';
 
@@ -20,6 +21,11 @@ export const validateAddress = (
 	address: string
 ): [boolean, string | undefined] => {
 	let u8Address;
+
+	if (isEthereumAddress(address)) {
+		return [true, undefined];
+	}
+
 	if (isHex(address)) {
 		u8Address = base58Decode(encodeAddress(hexToU8a(address)));
 	} else {

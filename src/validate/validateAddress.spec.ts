@@ -15,6 +15,11 @@ describe('validateAddress', () => {
 			)
 		).toEqual([true, undefined]);
 	});
+	it('Should not error with a valid ethereum address', () => {
+		expect(
+			validateAddress('0x96Bd611EbE3Af39544104e26764F4939924F6Ece')
+		).toEqual([true, undefined]);
+	});
 	it('Should error with a nonsense address', () => {
 		expect(validateAddress('hello')).toEqual([
 			false,
