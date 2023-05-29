@@ -36,7 +36,7 @@
     "typescript": "4.9.4"
   },
   "dependencies": {
-    "@polkadot/api": "^10.5.1",
+    "@polkadot/api": "^10.7.3",
     "@substrate/asset-transfer-api-registry": "0.2.0"
   }
 }
