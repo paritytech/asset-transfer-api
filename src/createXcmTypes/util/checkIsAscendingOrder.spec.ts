@@ -9,7 +9,7 @@ describe('isAscendingOrder', () => {
 		const multiAssets: MultiAsset[] = [
 			{
 				fun: {
-					Fungible: '50000',
+					Fungible: '340282366920938463463374607431768211455',
 				},
 				id: {
 					Concrete: {

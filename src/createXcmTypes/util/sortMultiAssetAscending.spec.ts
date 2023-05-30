@@ -8,19 +8,6 @@ describe('sortMultiAssetsAscending', () => {
 		const expected: MultiAsset[] = [
 			{
 				fun: {
-					Fungible: '50000',
-				},
-				id: {
-					Concrete: {
-						interior: {
-							Here: '',
-						},
-						parents: 0,
-					},
-				},
-			},
-			{
-				fun: {
 					Fungible: '100000',
 				},
 				id: {
@@ -45,12 +32,25 @@ describe('sortMultiAssetsAscending', () => {
 					},
 				},
 			},
+			{
+				fun: {
+					Fungible: '340282366920938463463374607431768211455',
+				},
+				id: {
+					Concrete: {
+						interior: {
+							Here: '',
+						},
+						parents: 0,
+					},
+				},
+			},
 		];
 
 		const multiAssets: MultiAsset[] = [
 			{
 				fun: {
-					Fungible: '50000',
+					Fungible: '340282366920938463463374607431768211455',
 				},
 				id: {
 					Concrete: {

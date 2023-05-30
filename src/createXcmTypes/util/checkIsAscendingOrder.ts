@@ -25,10 +25,10 @@ export const isAscendingOrder = (assets: MultiAsset[]): boolean => {
 		return true;
 	}
 
-	return assets.every(function (asset, idx) {
+	return assets.every((asset, idx) => {
 		return (
 			idx === 0 ||
-			parseInt(asset.fun.Fungible) >= parseInt(assets[idx - 1].fun.Fungible)
+			BigInt(asset.fun.Fungible) >= BigInt(assets[idx - 1].fun.Fungible)
 		);
 	});
 };
