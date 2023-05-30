@@ -409,7 +409,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				return await systemAssetsApi.createTransferTransaction(
 					'0', // `0` indicating the dest chain is a relay chain.
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['DOT'],
+					[],
 					['100'],
 					{
 						format,

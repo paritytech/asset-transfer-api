@@ -378,7 +378,7 @@ export class AssetsTransferApi {
 		assets: string[],
 		xcmDirection: Direction
 	): AssetType {
-		if (xcmDirection === 'RelayToSystem') {
+		if (xcmDirection === 'RelayToSystem' || xcmDirection === 'SystemToRelay') {
 			return AssetType.Native;
 		}
 		const relayChainName = findRelayChain(specName, this._registry);

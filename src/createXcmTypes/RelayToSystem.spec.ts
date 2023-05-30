@@ -91,7 +91,13 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 	});
 	describe('Assets', () => {
 		it('Should work for V2', () => {
-			const assets = RelayToSystem.createAssets(mockRelayApi, ['100'], 2, '');
+			const assets = RelayToSystem.createAssets(
+				mockRelayApi,
+				['100'],
+				2,
+				'',
+				[]
+			);
 
 			const expectedRes = {
 				v2: [
@@ -114,7 +120,13 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const assets = RelayToSystem.createAssets(mockRelayApi, ['100'], 3, '');
+			const assets = RelayToSystem.createAssets(
+				mockRelayApi,
+				['100'],
+				3,
+				'',
+				[]
+			);
 
 			const expectedRes = {
 				v3: [

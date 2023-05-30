@@ -5,6 +5,48 @@ import { Direction } from '../types';
 import { BaseError } from './BaseError';
 
 /**
+ * Ensure when sending tx's to or from the relay chain that the length of the assetIds array
+ * is zero
+ *
+ * @param assetIds
+ */
+const checkRelayAssetIdLength = (assetIds: string[]) => {
+	if (assetIds.length > 0) {
+		throw new BaseError(
+			"`assetIds` should be empty when sending tx's to or from the relay chain."
+		);
+	}
+};
+
+/**
+ * Ensure when sending tx's to or from the relay chain that the length of the amounts array is
+ * eqaul to 1
+ *
+ * @param amounts
+ */
+const checkRelayAmountsLength = (amounts: string[]) => {
+	if (amounts.length !== 1) {
+		throw new BaseError(
+			'`amounts` should be of length 1 when sending to or from a relay chain'
+		);
+	}
+};
+
+/**
+ * Ensure that both the assetIds array and amounts array match in length
+ *
+ * @param assetIds
+ * @param amounts
+ */
+const checkAssetsAmountMatch = (assetIds: string[], amounts: string[]) => {
+	if (assetIds.length !== amounts.length) {
+		throw new BaseError(
+			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
+		);
+	}
+};
+
+/**
  * This will check that a given assetId is neither an empty string
  * or known blank space
  *
@@ -237,14 +279,6 @@ export const checkXcmTxInputs = (
 	const relayChainName = findRelayChain(specName, registry);
 	const relayChainInfo: ChainInfo = registry[relayChainName];
 	/**
-	 * Ensure that tx's originating from the relay chain should have no assets attached to the assetId's
-	 */
-	if (xcmDirection.toLowerCase().startsWith('relay') && assetIds.length > 0) {
-		throw new BaseError(
-			"`assetIds` should be empty when sending tx's from the relay chain."
-		);
-	}
-	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
 	checkAssetIdInput(
@@ -255,13 +289,22 @@ export const checkXcmTxInputs = (
 		xcmDirection
 	);
 
-	const isRelayDirection = xcmDirection.toLowerCase().includes('relay');
-	/**
-	 * Lengths should match, and indicies between both the amounts and assetIds should match.
-	 */
-	if (assetIds.length !== amounts.length && !isRelayDirection) {
-		throw new BaseError(
-			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
-		);
+	if (xcmDirection === 'RelayToSystem') {
+		checkRelayAssetIdLength(assetIds);
+		checkRelayAmountsLength(amounts);
+	}
+
+	if (xcmDirection === 'RelayToPara') {
+		checkRelayAssetIdLength(assetIds);
+		checkRelayAmountsLength(amounts);
+	}
+
+	if (xcmDirection === 'SystemToRelay') {
+		checkRelayAssetIdLength(assetIds);
+		checkRelayAmountsLength(amounts);
+	}
+
+	if (xcmDirection === 'SystemToPara') {
+		checkAssetsAmountMatch(assetIds, amounts);
 	}
 };
