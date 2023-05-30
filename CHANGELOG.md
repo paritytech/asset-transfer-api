@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.0-alpha.3](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.2..v0.1.0-alpha.3) (2023-05-30)
+
+- Fix bug in args passed into ext construction
+
 ## [0.1.0-alpha.2](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.1..v0.1.0-alpha.2) (2023-05-29)
 
 - Update polkadot-js deps
