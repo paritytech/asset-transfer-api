@@ -112,14 +112,8 @@ export const SystemToPara: ICreateXcmType = {
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
-		assets?: string[]
+		assets: string[]
 	): VersionedMultiAssets => {
-		// TODO: We should consider a centralized place where these errors are check for.
-		if (!assets) {
-			throw Error(
-				'Assets are required for constructing a MultiAsset from SystemToPara'
-			);
-		}
 		const palletId = fetchPalletInstanceId(api);
 		const multiAssets = [];
 		const registry = parseRegistry({});
@@ -131,11 +125,11 @@ export const SystemToPara: ICreateXcmType = {
 			const assetId = assets[i];
 			const amount = amounts[i];
 
-			const isNative = tokens.includes(assetId);
-			const interior: MultiAssetInterior = isNative
+			const isRelayNative = tokens.includes(assetId);
+			const interior: MultiAssetInterior = isRelayNative
 				? { Here: '' }
 				: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
-			const parents = isNative ? 1 : 0;
+			const parents = isRelayNative ? 1 : 0;
 
 			const multiAsset = {
 				id: {

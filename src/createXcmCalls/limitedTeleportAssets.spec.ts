@@ -19,7 +19,7 @@ describe('limitedTeleportAssets', () => {
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xfc041f090100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000'
+				'0xfc041f0901010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000000'
 			);
 		});
 		it('Should error when a api does not support the required pallets', () => {

@@ -51,7 +51,7 @@ describe('checkXcmTxinputs', () => {
 			);
 
 		expect(err).toThrow(
-			"`assetIds` should be empty when sending tx's from the relay chain."
+			"`assetIds` should be empty when sending tx's to or from the relay chain."
 		);
 	});
 });

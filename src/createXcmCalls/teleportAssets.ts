@@ -43,5 +43,5 @@ export const teleportAssets = (
 		assetIds
 	);
 
-	return ext(beneficiary, dest, assets, 0);
+	return ext(dest, beneficiary, assets, 0);
 };
