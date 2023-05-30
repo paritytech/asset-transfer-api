@@ -17,7 +17,7 @@ import {
 	MultiAssetInterior,
 } from './util/checkIsAscendingOrder';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { sortMultiAssetsAscending } from './util/sortMultiAssetAscending';
+import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
