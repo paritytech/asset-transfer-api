@@ -4,8 +4,7 @@ import { MultiAsset } from './checkIsAscendingOrder';
 
 export const sortMultiAssetsAscending = (multiAssets: MultiAsset[]) => {
 	multiAssets.sort((a, b) => {
-		const sortOrder =
-			BigInt(a.fun.Fungible) < BigInt(b.fun.Fungible) ? -1 : 1;
+		const sortOrder = BigInt(a.fun.Fungible) < BigInt(b.fun.Fungible) ? -1 : 1;
 
 		return sortOrder;
 	});
