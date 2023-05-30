@@ -45,5 +45,5 @@ export const limitedTeleportAssets = (
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 
-	return ext(beneficiary, dest, assets, 0, weightLimitType);
+	return ext(dest, beneficiary, assets, 0, weightLimitType);
 };

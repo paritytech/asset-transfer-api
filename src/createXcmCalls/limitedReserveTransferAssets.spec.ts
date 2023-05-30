@@ -21,7 +21,7 @@ describe('limitedReserveTransferAssets', () => {
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xfc041f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000'
+				'0xfc041f0801010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000000'
 			);
 		});
 		it('Should correctly construct a tx for when a weightLimit is available', () => {
@@ -38,7 +38,7 @@ describe('limitedReserveTransferAssets', () => {
 			);
 
 			expect(ext.toHex()).toBe(
-				'0x0501041f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f01040000020432050400910100000000010000'
+				'0x0501041f0801010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000020432050400910100000000010000'
 			);
 		});
 		it('Should error when a api does not support the required pallets', () => {
