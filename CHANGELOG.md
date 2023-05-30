@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.0-alpha.4](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.3..v0.1.0-alpha.4)(2023-05-30)
+## [0.1.0-alpha.4](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.3..v0.1.0-alpha.4)(2023-05-30)
 
 - change isNative to isRelayNative for System to Para 
 - Add additional xcmDirection validation checks, fix SystemToRelay AssetType
