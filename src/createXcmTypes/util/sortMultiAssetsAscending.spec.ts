@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { MultiAsset } from './checkIsAscendingOrder';
+import { MultiAsset } from '../../types';
 import { sortMultiAssetsAscending } from './sortMultiAssetsAscending';
 
 describe('sortMultiAssetsAscending', () => {

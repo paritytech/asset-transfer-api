@@ -1,24 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-export type MultiAssetInterior =
-	| {
-			X2: [{ PalletInstance: string }, { GeneralIndex: string }];
-	  }
-	| {
-			Here: string;
-	  };
-
-export type MultiAsset = {
-	fun: {
-		Fungible: string;
-	};
-	id: {
-		Concrete: {
-			interior: MultiAssetInterior;
-			parents: number;
-		};
-	};
-};
+import { MultiAsset } from '../../types';
 
 export const isAscendingOrder = (assets: MultiAsset[]): boolean => {
 	if (assets.length === 0) {

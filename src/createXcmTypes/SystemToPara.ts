@@ -11,11 +11,9 @@ import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { findRelayChain, parseRegistry } from '../registry';
+import { MultiAssetInterior } from '../types';
 import { ICreateXcmType, IWeightLimit } from './types';
-import {
-	isAscendingOrder,
-	MultiAssetInterior,
-} from './util/checkIsAscendingOrder';
+import { isAscendingOrder } from './util/checkIsAscendingOrder';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 

@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { MultiAsset } from './checkIsAscendingOrder';
+import { MultiAsset } from '../../types';
 
 export const sortMultiAssetsAscending = (multiAssets: MultiAsset[]) => {
 	multiAssets.sort((a, b) => {

@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { isAscendingOrder, MultiAsset } from './checkIsAscendingOrder';
+import { MultiAsset } from '../../types';
+import { isAscendingOrder } from './checkIsAscendingOrder';
 
 describe('isAscendingOrder', () => {
 	it('Should return false if MultiAsset array is not in ascending order', () => {
