@@ -107,14 +107,8 @@ export const SystemToPara: ICreateXcmType = {
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
-		assets?: string[]
+		assets: string[]
 	): VersionedMultiAssets => {
-		// TODO: We should consider a centralized place where these errors are check for.
-		if (!assets) {
-			throw Error(
-				'Assets are required for constructing a MultiAsset from SystemToPara'
-			);
-		}
 		const palletId = fetchPalletInstanceId(api);
 		const multiAssets = [];
 		const registry = parseRegistry({});
