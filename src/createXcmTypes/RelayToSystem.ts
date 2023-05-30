@@ -10,7 +10,6 @@ import type {
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { ICreateXcmType, IWeightLimit } from './types';
-
 /**
  * XCM type generation for transactions from the relay chain to a system parachain.
  */
@@ -108,24 +107,22 @@ export const RelayToSystem: ICreateXcmType = {
 	): VersionedMultiAssets => {
 		const multiAssets = [];
 
-		for (let i = 0; i < amounts.length; i++) {
-			const amount = amounts[i];
-			const multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					Concrete: {
-						interior: {
-							Here: '',
-						},
-						parents: 0,
+		const amount = amounts[0];
+		const multiAsset = {
+			fun: {
+				Fungible: amount,
+			},
+			id: {
+				Concrete: {
+					interior: {
+						Here: '',
 					},
+					parents: 0,
 				},
-			};
+			},
+		};
 
-			multiAssets.push(multiAsset);
-		}
+		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
 			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
