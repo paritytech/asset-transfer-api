@@ -11,8 +11,12 @@ import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { findRelayChain, parseRegistry } from '../registry';
+import { MultiAssetInterior } from '../types';
 import { ICreateXcmType, IWeightLimit } from './types';
+import { isAscendingOrder } from './util/checkIsAscendingOrder';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
+import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
+import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
@@ -121,7 +125,7 @@ export const SystemToPara: ICreateXcmType = {
 			const amount = amounts[i];
 
 			const isRelayNative = tokens.includes(assetId);
-			const interior = isRelayNative
+			const interior: MultiAssetInterior = isRelayNative
 				? { Here: '' }
 				: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
 			const parents = isRelayNative ? 1 : 0;
@@ -141,10 +145,16 @@ export const SystemToPara: ICreateXcmType = {
 			multiAssets.push(multiAsset);
 		}
 
+		if (!isAscendingOrder(multiAssets)) {
+			sortMultiAssetsAscending(multiAssets);
+		}
+
+		const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
+
 		if (xcmVersion === 2) {
 			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
 				'XcmV2MultiassetMultiAssets',
-				multiAssets
+				sortedAndDedupedMultiAssets
 			);
 
 			return api.registry.createType('XcmVersionedMultiAssets', {
@@ -152,7 +162,7 @@ export const SystemToPara: ICreateXcmType = {
 			});
 		} else {
 			const multiAssetsType: XcmV3MultiassetMultiAssets =
-				api.registry.createType('XcmV3MultiassetMultiAssets', multiAssets);
+				api.registry.createType('XcmV3MultiassetMultiAssets', sortedAndDedupedMultiAssets);
 
 			return api.registry.createType('XcmVersionedMultiAssets', {
 				V3: multiAssetsType,
