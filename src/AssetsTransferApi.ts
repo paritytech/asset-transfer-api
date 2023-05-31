@@ -397,4 +397,36 @@ export class AssetsTransferApi {
 			return AssetType.Foreign;
 		}
 	}
+
+	public async decodeExtrinsic<T extends Format>(
+		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
+		format?: T
+	): Promise<any> {
+		const { _api } = this;
+		const fmt = format ? format : 'payload';
+
+		if (fmt === 'payload') {
+			const payload = _api.registry
+				.createType('ExtrinsicPayload', tx, {
+					version: tx.version,
+				}).toJSON();
+
+			return payload;
+		} else if (fmt === 'call') {
+			const call = _api.registry
+				.createType('Call', {
+					callIndex: tx.callIndex,
+					args: tx.args,
+				})
+				.toJSON();
+
+			return call;
+		} else if (fmt === 'submittable') {
+			const ext = _api.registry.createType('Extrinsic', tx);
+
+			return ext.toJSON();
+		}
+		
+		return ''
+	}
 }
