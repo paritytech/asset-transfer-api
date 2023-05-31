@@ -381,6 +381,11 @@ export class AssetsTransferApi {
 		if (xcmDirection === 'RelayToSystem' || xcmDirection === 'SystemToRelay') {
 			return AssetType.Native;
 		}
+
+		if (xcmDirection === 'RelayToPara') {
+			return AssetType.Foreign;
+		}
+
 		const relayChainName = findRelayChain(specName, this._registry);
 		const relayChainInfo = this._registry[relayChainName];
 
