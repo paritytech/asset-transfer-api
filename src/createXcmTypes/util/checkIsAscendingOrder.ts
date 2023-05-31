@@ -2,15 +2,20 @@
 
 import { MultiAsset } from '../../types';
 
-export const isAscendingOrder = (assets: MultiAsset[]): boolean => {
-	if (assets.length === 0) {
+/**
+ * This returns whether a given multiasset array is sorted in ascending order.
+ *
+ * @param multiAssets MultiAsset[]
+ */
+export const isAscendingOrder = (multiAssets: MultiAsset[]): boolean => {
+	if (multiAssets.length === 0) {
 		return true;
 	}
 
-	return assets.every((asset, idx) => {
+	return multiAssets.every((asset, idx) => {
 		return (
 			idx === 0 ||
-			BigInt(asset.fun.Fungible) >= BigInt(assets[idx - 1].fun.Fungible)
+			BigInt(asset.fun.Fungible) >= BigInt(multiAssets[idx - 1].fun.Fungible)
 		);
 	});
 };

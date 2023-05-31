@@ -14,6 +14,7 @@ import { findRelayChain, parseRegistry } from '../registry';
 import { MultiAssetInterior } from '../types';
 import { ICreateXcmType, IWeightLimit } from './types';
 import { isAscendingOrder } from './util/checkIsAscendingOrder';
+import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -148,10 +149,12 @@ export const SystemToPara: ICreateXcmType = {
 			sortMultiAssetsAscending(multiAssets);
 		}
 
+		const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
+
 		if (xcmVersion === 2) {
 			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
 				'XcmV2MultiassetMultiAssets',
-				multiAssets
+				sortedAndDedupedMultiAssets
 			);
 
 			return api.registry.createType('XcmVersionedMultiAssets', {
@@ -159,7 +162,10 @@ export const SystemToPara: ICreateXcmType = {
 			});
 		} else {
 			const multiAssetsType: XcmV3MultiassetMultiAssets =
-				api.registry.createType('XcmV3MultiassetMultiAssets', multiAssets);
+				api.registry.createType(
+					'XcmV3MultiassetMultiAssets',
+					sortedAndDedupedMultiAssets
+				);
 
 			return api.registry.createType('XcmVersionedMultiAssets', {
 				V3: multiAssetsType,
