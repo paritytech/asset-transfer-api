@@ -3,7 +3,7 @@
 import { MultiAsset } from '../../types';
 
 /**
- * This fetches the metadata for the chain we are connected to and searches for the Assets pallet and returns its index.
+ * This returns whether a given multiasset array sorted in ascending order.
  *
  * @param multiAssets MultiAsset[]
  */
