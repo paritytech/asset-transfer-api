@@ -78,7 +78,7 @@ describe('dedupeMultiAssets', () => {
 		const deduped = dedupeMultiAssets(multiAssets);
 
 		expect(deduped.length).toEqual(expected.length);
-        expect(deduped[1].fun.Fungible).toEqual(expected[1].fun.Fungible);
-        expect(JSON.stringify(deduped)).toEqual(JSON.stringify(expected));
+		expect(deduped[1].fun.Fungible).toEqual(expected[1].fun.Fungible);
+		expect(JSON.stringify(deduped)).toEqual(JSON.stringify(expected));
 	});
 });
