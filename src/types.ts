@@ -115,3 +115,23 @@ export interface ChainInfo {
 	specName: string;
 	specVersion: string;
 }
+
+export type MultiAssetInterior =
+	| {
+			X2: [{ PalletInstance: string }, { GeneralIndex: string }];
+	  }
+	| {
+			Here: string;
+	  };
+
+export type MultiAsset = {
+	fun: {
+		Fungible: string;
+	};
+	id: {
+		Concrete: {
+			interior: MultiAssetInterior;
+			parents: number;
+		};
+	};
+};

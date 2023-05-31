@@ -11,8 +11,11 @@ import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { findRelayChain, parseRegistry } from '../registry';
+import { MultiAssetInterior } from '../types';
 import { ICreateXcmType, IWeightLimit } from './types';
+import { isAscendingOrder } from './util/checkIsAscendingOrder';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
+import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
@@ -121,7 +124,7 @@ export const SystemToPara: ICreateXcmType = {
 			const amount = amounts[i];
 
 			const isRelayNative = tokens.includes(assetId);
-			const interior = isRelayNative
+			const interior: MultiAssetInterior = isRelayNative
 				? { Here: '' }
 				: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
 			const parents = isRelayNative ? 1 : 0;
@@ -139,6 +142,10 @@ export const SystemToPara: ICreateXcmType = {
 			};
 
 			multiAssets.push(multiAsset);
+		}
+
+		if (!isAscendingOrder(multiAssets)) {
+			sortMultiAssetsAscending(multiAssets);
 		}
 
 		if (xcmVersion === 2) {

@@ -105,24 +105,22 @@ export const SystemToRelay: ICreateXcmType = {
 	): VersionedMultiAssets => {
 		const multiAssets = [];
 
-		for (let i = 0; i < amounts.length; i++) {
-			const amount = amounts[i];
-			const multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					Concrete: {
-						interior: {
-							Here: '',
-						},
-						parents: 1,
+		const amount = amounts[0];
+		const multiAsset = {
+			fun: {
+				Fungible: amount,
+			},
+			id: {
+				Concrete: {
+					interior: {
+						Here: '',
 					},
+					parents: 1,
 				},
-			};
+			},
+		};
 
-			multiAssets.push(multiAsset);
-		}
+		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
 			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
