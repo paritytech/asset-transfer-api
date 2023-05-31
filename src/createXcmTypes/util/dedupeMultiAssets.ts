@@ -1,5 +1,12 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
 import { MultiAsset } from '../../types';
 
+/**
+ * This removes duplicate multi assets when given a sorted list
+ *
+ * @param multiAssets MulitAsset[]
+ */
 export const dedupeMultiAssets = (multiAssets: MultiAsset[]): MultiAsset[] => {
 	const dedupedAssets: MultiAsset[] = [];
 
