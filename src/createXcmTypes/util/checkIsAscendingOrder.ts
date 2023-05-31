@@ -3,7 +3,7 @@
 import { MultiAsset } from '../../types';
 
 /**
- * This returns whether a given multiasset array sorted in ascending order.
+ * This returns whether a given multiasset array is sorted in ascending order.
  *
  * @param multiAssets MultiAsset[]
  */
