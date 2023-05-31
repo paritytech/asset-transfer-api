@@ -7,15 +7,15 @@ import { MultiAsset } from '../../types';
  *
  * @param multiAssets MultiAsset[]
  */
-export const isAscendingOrder = (Assets: MultiAsset[]): boolean => {
-	if (Assets.length === 0) {
+export const isAscendingOrder = (multiAssets: MultiAsset[]): boolean => {
+	if (multiAssets.length === 0) {
 		return true;
 	}
 
-	return Assets.every((asset, idx) => {
+	return multiAssets.every((asset, idx) => {
 		return (
 			idx === 0 ||
-			BigInt(asset.fun.Fungible) >= BigInt(Assets[idx - 1].fun.Fungible)
+			BigInt(asset.fun.Fungible) >= BigInt(multiAssets[idx - 1].fun.Fungible)
 		);
 	});
 };
