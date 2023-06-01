@@ -400,7 +400,7 @@ export class AssetsTransferApi {
 	/**
 	 * Decodes the hex of an extrinsic into a string readable format
 	 *
-	 * @param tx A polkadot-js submittable extrinsic
+	 * @param encodedTransaction the hex of an extrinsic tx
 	 * @param format The format the tx is in
 	 */
 	public decodeExtrinsic<T extends Format>(
