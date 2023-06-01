@@ -11,7 +11,7 @@ const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
 describe('AssetTransferApi Integration Tests', () => {
 	describe('createTransferTransaction', () => {
 		describe('Local Asset Transfer', () => {
-			it('Should construct a `transfer` call', async () => {
+			it('Should construct a `assets::transfer` call on a system parachain', async () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
@@ -24,12 +24,12 @@ describe('AssetTransferApi Integration Tests', () => {
 				expect(res).toEqual({
 					direction: 'local',
 					format: 'call',
-					method: 'transfer',
+					method: 'assets::transfer',
 					tx: '0x3208040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
 					xcmVersion: null,
 				});
 			});
-			it('Should construct a `transferKeepAlive` call', async () => {
+			it('Should construct a `assets::transferKeepAlive` call on a system parachain', async () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
@@ -43,8 +43,45 @@ describe('AssetTransferApi Integration Tests', () => {
 				expect(res).toEqual({
 					direction: 'local',
 					format: 'call',
-					method: 'transferKeepAlive',
+					method: 'assets::transferKeepAlive',
 					tx: '0x3209040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					xcmVersion: null,
+				});
+			});
+			it('Should construct a `balances::transfer` call on a system parachain', async () => {
+				const res = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
+					['DOT'],
+					['100'],
+					{
+						format: 'call',
+					}
+				);
+				expect(res).toEqual({
+					direction: 'local',
+					format: 'call',
+					method: 'balances::transfer',
+					tx: '0x0a000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					xcmVersion: null,
+				});
+			});
+			it('Should construct a `balances::transferKeepAlive` call on a system parachain', async () => {
+				const res = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
+					['DOT'],
+					['100'],
+					{
+						format: 'call',
+						keepAlive: true,
+					}
+				);
+				expect(res).toEqual({
+					direction: 'local',
+					format: 'call',
+					method: 'balances::transferKeepAlive',
+					tx: '0x0a030078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
 					xcmVersion: null,
 				});
 			});
@@ -648,7 +685,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						['100', '100']
 					);
 				await expect(err()).rejects.toThrow(
-					'Local transactions must have the `assetIds` input be a length of 1, and the `amounts` input be a length of 1'
+					'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1'
 				);
 			});
 		});
