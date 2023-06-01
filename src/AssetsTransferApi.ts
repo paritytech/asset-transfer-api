@@ -13,10 +13,12 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 
 import {
 	DEFAULT_XCM_VERSION,
+	RELAY_CHAIN_NAMES,
 	SYSTEM_PARACHAINS_IDS,
 	SYSTEM_PARACHAINS_NAMES,
 } from './consts';
 import * as assets from './createCalls/assets';
+import * as balances from './createCalls/balances';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
@@ -36,6 +38,7 @@ import {
 	ConstructedFormat,
 	Direction,
 	Format,
+	LocalTransferTypes,
 	Methods,
 	TransferArgsOpts,
 	TxResult,
@@ -96,22 +99,67 @@ export class AssetsTransferApi {
 		 * is validated correctly.
 		 */
 		const addr = sanitizeAddress(destAddr);
+		const isLocalSystemTx = isDestSystemParachain && isOriginSystemParachain;
+		const isLocalRelayTx =
+			destChainId === '0' && RELAY_CHAIN_NAMES.includes(specName.toLowerCase());
 		/**
-		 * Create a local asset transfer.
+		 * Create a local asset transfer on a system parachain
 		 */
-		if (isDestSystemParachain && isOriginSystemParachain) {
+		if (isLocalSystemTx || isLocalRelayTx) {
 			/**
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			checkLocalTxInput(assetIds, amounts); // Throws an error when any of the inputs are incorrect.
+			const localAssetType = checkLocalTxInput(
+				assetIds,
+				amounts,
+				specName,
+				this._registry
+			); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
-			const tx =
-				method === 'transferKeepAlive'
-					? assets.transferKeepAlive(_api, addr, assetIds[0], amounts[0])
-					: assets.transfer(_api, addr, assetIds[0], amounts[0]);
-
-			return this.constructFormat(tx, 'local', null, method, opts?.format);
+			if (isLocalSystemTx) {
+				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
+				let palletMethod: LocalTransferTypes;
+				/**
+				 *
+				 */
+				if (localAssetType === 'Balances') {
+					tx =
+						method === 'transferKeepAlive'
+							? balances.transferKeepAlive(_api, addr, amounts[0])
+							: balances.transfer(_api, addr, amounts[0]);
+					palletMethod = `balances::${method}`;
+				} else {
+					tx =
+						method === 'transferKeepAlive'
+							? assets.transferKeepAlive(_api, addr, assetIds[0], amounts[0])
+							: assets.transfer(_api, addr, assetIds[0], amounts[0]);
+					palletMethod = `assets::${method}`;
+				}
+				return this.constructFormat(
+					tx,
+					'local',
+					null,
+					palletMethod,
+					opts?.format
+				);
+			} else {
+				/**
+				 * By default local transaction on a relay chain will always be from the balances pallet
+				 */
+				const palletMethod: LocalTransferTypes = `balances::${method}`;
+				const tx =
+					method === 'transferKeepAlive'
+						? balances.transferKeepAlive(_api, addr, amounts[0])
+						: balances.transfer(_api, addr, amounts[0]);
+				return this.constructFormat(
+					tx,
+					'local',
+					null,
+					palletMethod,
+					opts?.format
+				);
+			}
 		}
 
 		const xcmDirection = this.establishDirection(destChainId, specName);

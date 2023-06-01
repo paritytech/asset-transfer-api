@@ -1,16 +1,21 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { parseRegistry } from '../registry/parseRegistry';
 import { checkLocalTxInput } from './checkLocalTxInputs';
 
 describe('checkLocalTxInput', () => {
+	const registry = parseRegistry({});
+
 	it('Should correctly throw an error for incorrect length on `assetIds`', () => {
-		const err = () => checkLocalTxInput(['1', '2'], ['10000']);
+		const err = () =>
+			checkLocalTxInput(['1', '2'], ['10000'], 'statemine', registry);
 		expect(err).toThrowError(
 			'Local transactions must have the `assetIds` input be a length of 1, and the `amounts` input be a length of 1'
 		);
 	});
 	it('Should correctly throw an error for incorrect length on `amounts`', () => {
-		const err = () => checkLocalTxInput(['1'], ['10000', '20000']);
+		const err = () =>
+			checkLocalTxInput(['1'], ['10000', '20000'], 'statemine', registry);
 		expect(err).toThrowError(
 			'Local transactions must have the `assetIds` input be a length of 1, and the `amounts` input be a length of 1'
 		);

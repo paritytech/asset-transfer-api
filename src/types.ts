@@ -43,9 +43,14 @@ export type ConstructedFormat<T> = T extends 'payload'
 	? SubmittableExtrinsic<'promise', ISubmittableResult>
 	: never;
 
+export type LocalTransferTypes =
+	| 'assets::transfer'
+	| 'assets::transferKeepAlive'
+	| 'balances::transfer'
+	| 'balances::transferKeepAlive';
+
 export type Methods =
-	| 'transfer'
-	| 'transferKeepAlive'
+	| LocalTransferTypes
 	| 'reserveTransferAssets'
 	| 'limitedReserveTransferAssets'
 	| 'teleportAssets'
