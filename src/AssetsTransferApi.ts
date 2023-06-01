@@ -419,9 +419,11 @@ export class AssetsTransferApi {
 				}
 			);
 
-			const extrinsicMethodInfo = extrinsicPayload.method.toHuman() as string;
+			const extrinsicMethodInfo = extrinsicPayload.method.toHuman()?.toString();
 
-			return extrinsicMethodInfo;
+			if (extrinsicMethodInfo) {
+				return extrinsicMethodInfo;
+			}
 		} else if (fmt === 'call') {
 			const call = _api.registry.createType('Call', encodedTransaction);
 
