@@ -180,7 +180,7 @@ interface TransferArgsOpts<T extends Format> {
 
 #### **Local Transactions**
 
-Sending an Asset locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Statemine`, `Statemint`, `Westmint` and as a side affect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
+Sending an Asset or Native token locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Statemine`, `Statemint`, `Westmint` and as a side affect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
 
 An example would look like:
 ```typescript
@@ -195,6 +195,10 @@ await api.createTransferTransaction(
 	} // opts
 )
 ```
+
+The api can also send native tokens as well. Similar to the above you would replace the `assetIds` with `['DOT']`, in addition to that you may provide an empty array to denote you want to send the chains native token. 
+
+The api can also send local transactions for Relay chains. Its the same principal as above, the only difference being that the `destChainId` woule need to be `'0'`.
 
 For more information, refer to the [docs](https://github.com/paritytech/asset-transfer-api/tree/main/docs) in the repository.
 
