@@ -269,7 +269,10 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 
-				const decoded = westmintAssetsAPi.decodeExtrinsic(callTxResult.tx, 'call');
+				const decoded = westmintAssetsAPi.decodeExtrinsic(
+					callTxResult.tx,
+					'call'
+				);
 				expect(decoded).toEqual(expected);
 			});
 
