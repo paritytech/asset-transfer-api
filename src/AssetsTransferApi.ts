@@ -16,7 +16,7 @@ import {
 	SYSTEM_PARACHAINS_IDS,
 	SYSTEM_PARACHAINS_NAMES,
 } from './consts';
-import { transfer, transferKeepAlive } from './createCalls';
+import * as assets from './createCalls/assets';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
@@ -46,7 +46,7 @@ import {
  * construct transactions for assets and estimating fees. The main public functions this
  * will expose are:
  * - createTransferTransaction
- * - TODO: add estimate fee function when ready
+ * - fetchFeeInfo
  *
  * @constructor api ApiPromise provided by Polkadot-js
  * @constructor opts AssetsTransferApiOpts
@@ -108,8 +108,8 @@ export class AssetsTransferApi {
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
 			const tx =
 				method === 'transferKeepAlive'
-					? transferKeepAlive(_api, addr, assetIds[0], amounts[0])
-					: transfer(_api, addr, assetIds[0], amounts[0]);
+					? assets.transferKeepAlive(_api, addr, assetIds[0], amounts[0])
+					: assets.transfer(_api, addr, assetIds[0], amounts[0]);
 
 			return this.constructFormat(tx, 'local', null, method, opts?.format);
 		}
