@@ -85,7 +85,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
-			it('Should construct a `balances::transfer` call on a system parachain', async () => {
+			it('Should construct a `balances::transfer` call on a relay chain', async () => {
 				const res = await relayAssetsApi.createTransferTransaction(
 					'0',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
@@ -103,7 +103,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
-			it('Should construct a `balances::transferKeepAlive` call on a system parachain', async () => {
+			it('Should construct a `balances::transferKeepAlive` call on a relay chain', async () => {
 				const res = await relayAssetsApi.createTransferTransaction(
 					'0',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
