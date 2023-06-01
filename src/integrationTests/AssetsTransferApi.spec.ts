@@ -85,6 +85,43 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
+			it('Should construct a `balances::transfer` call on a system parachain', async () => {
+				const res = await relayAssetsApi.createTransferTransaction(
+					'0',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
+					['DOT'],
+					['100'],
+					{
+						format: 'call',
+					}
+				);
+				expect(res).toEqual({
+					direction: 'local',
+					format: 'call',
+					method: 'balances::transfer',
+					tx: '0x04000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					xcmVersion: null,
+				});
+			});
+			it('Should construct a `balances::transferKeepAlive` call on a system parachain', async () => {
+				const res = await relayAssetsApi.createTransferTransaction(
+					'0',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
+					['DOT'],
+					['100'],
+					{
+						format: 'call',
+						keepAlive: true,
+					}
+				);
+				expect(res).toEqual({
+					direction: 'local',
+					format: 'call',
+					method: 'balances::transferKeepAlive',
+					tx: '0x04030078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					xcmVersion: null,
+				});
+			});
 		});
 		describe('SystemToPara', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(
