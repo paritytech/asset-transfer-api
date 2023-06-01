@@ -70,12 +70,12 @@ export class AssetsTransferApi {
 	}
 
 	/**
-	 * Create an asset transfer transaction. This can be either locally on a systems parachain,
+	 * Create an asset transfer transaction. This can be either locally on a systems parachain or relay chain,
 	 * or between chains using xcm.
 	 *
 	 * @param destChainId ID of the destination (para) chain (‘0’ for Relaychain)
 	 * @param destAddr Address of destination account
-	 * @param assetIds Array of assetId's to be transferred (‘0’ for Native Relay Token)
+	 * @param assetIds Array of assetId's to be transferred
 	 * @param amounts Array of the amounts of each token to transfer
 	 * @param opts Options
 	 */
