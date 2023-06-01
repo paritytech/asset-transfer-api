@@ -397,36 +397,44 @@ export class AssetsTransferApi {
 			return AssetType.Foreign;
 		}
 	}
-
-	public async decodeExtrinsic<T extends Format>(
-		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		format?: T
-	): Promise<any> {
+	/**
+	 * Decodes the hex of an extrinsic into a string readable format
+	 *
+	 * @param tx A polkadot-js submittable extrinsic
+	 * @param format The format the tx is in
+	 */
+	public decodeExtrinsic<T extends Format>(
+		encodedTransaction: string,
+		format: T
+	): string {
 		const { _api } = this;
 		const fmt = format ? format : 'payload';
 
 		if (fmt === 'payload') {
-			const payload = _api.registry
-				.createType('ExtrinsicPayload', tx, {
-					version: tx.version,
-				}).toJSON();
+			const extrinsicPayload = _api.registry.createType(
+				'ExtrinsicPayload',
+				encodedTransaction,
+				{
+					version: 4,
+				}
+			);
 
-			return payload;
+			const extrinsicMethodInfo = extrinsicPayload.method.toHuman() as string;
+
+			return extrinsicMethodInfo;
 		} else if (fmt === 'call') {
-			const call = _api.registry
-				.createType('Call', {
-					callIndex: tx.callIndex,
-					args: tx.args,
-				})
-				.toJSON();
+			const call = _api.registry.createType('Call', encodedTransaction);
 
-			return call;
+			return call.toString();
 		} else if (fmt === 'submittable') {
-			const ext = _api.registry.createType('Extrinsic', tx);
+			const extrinsic = _api.registry.createType(
+				'Extrinsic',
+				encodedTransaction
+			);
 
-			return ext.toJSON();
+			return extrinsic.method.toString();
 		}
-		
-		return ''
+
+		return '';
 	}
 }

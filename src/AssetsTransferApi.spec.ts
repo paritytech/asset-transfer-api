@@ -7,6 +7,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import { AssetsTransferApi } from './AssetsTransferApi';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApi';
+import { adjustedMockWestmintApi } from './testHelpers/adjustedMockWestmintApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { Direction } from './types';
@@ -18,6 +19,7 @@ const mockSubmittableExt = mockSystemApi.registry.createType(
 
 const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
 const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
+const westmintAssetsAPi = new AssetsTransferApi(adjustedMockWestmintApi);
 
 describe('AssetTransferAPI', () => {
 	describe('fetchChainInfo', () => {
@@ -185,6 +187,135 @@ describe('AssetTransferAPI', () => {
 			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(
 				mockWeightInfo.weight.refTime
 			);
+		});
+	});
+
+	describe('decodeExtrinsic', () => {
+		describe('RelayToSystem', () => {
+			it('Should decode a calls extrinsic given its hash for RelayToSystem', async () => {
+				const expected =
+					'{"callIndex":"0x6301","args":{"dest":{"v2":{"parents":0,"interior":{"x1":{"parachain":1000}}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":0,"interior":{"here":null}}},"fun":{"fungible":1000000}}]},"fee_asset_item":0}}';
+				const call = await relayAssetsApi.createTransferTransaction(
+					'1000',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['1000000'],
+					{
+						format: 'call',
+						keepAlive: true,
+					}
+				);
+
+				const decoded = relayAssetsApi.decodeExtrinsic(call.tx, 'call');
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a payloads extrinsic given its hash for RelayToSystem', async () => {
+				const expected =
+					'{"callIndex":"0x6301","args":{"dest":{"v2":{"parents":0,"interior":{"x1":{"parachain":1000}}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":0,"interior":{"here":null}}},"fun":{"fungible":1000000}}]},"fee_asset_item":0}}';
+				const payloadTxResult = await relayAssetsApi.createTransferTransaction(
+					'1000',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['1000000'],
+					{
+						format: 'payload',
+						keepAlive: true,
+					}
+				);
+
+				const decoded = relayAssetsApi.decodeExtrinsic(
+					payloadTxResult.tx,
+					'payload'
+				);
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a submittables extrinsic given its hash for RelayToSystem', async () => {
+				const expected =
+					'{"callIndex":"0x6301","args":{"dest":{"v2":{"parents":0,"interior":{"x1":{"parachain":1000}}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":0,"interior":{"here":null}}},"fun":{"fungible":1000000}}]},"fee_asset_item":0}}';
+				const submittableTxResult =
+					await relayAssetsApi.createTransferTransaction(
+						'1000',
+						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+						[],
+						['1000000'],
+						{
+							format: 'submittable',
+							keepAlive: true,
+						}
+					);
+
+				const decoded = relayAssetsApi.decodeExtrinsic(
+					submittableTxResult.tx.toHex(),
+					'submittable'
+				);
+				expect(decoded).toEqual(expected);
+			});
+		});
+
+		describe('SystemToRelay', () => {
+			it('Should decode a calls extrinsic given its hash for SystemToRelay', async () => {
+				const expected =
+					'{"callIndex":"0x1f01","args":{"dest":{"v2":{"parents":1,"interior":{"here":null}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":1000000}}]},"fee_asset_item":0}}';
+				const call = await westmintAssetsAPi.createTransferTransaction(
+					'0',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['1000000'],
+					{
+						format: 'call',
+						keepAlive: true,
+					}
+				);
+
+				const decoded = westmintAssetsAPi.decodeExtrinsic(call.tx, 'call');
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a payloads extrinsic given its hash for SystemToRelay', async () => {
+				const expected =
+					'{"callIndex":"0x1f01","args":{"dest":{"v2":{"parents":1,"interior":{"here":null}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":2000000}}]},"fee_asset_item":0}}';
+				const payloadTxResult =
+					await westmintAssetsAPi.createTransferTransaction(
+						'0',
+						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+						[],
+						['2000000'],
+						{
+							format: 'payload',
+							keepAlive: true,
+						}
+					);
+
+				const decoded = westmintAssetsAPi.decodeExtrinsic(
+					payloadTxResult.tx,
+					'payload'
+				);
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a submittables extrinsic given its hash for SystemToRelay', async () => {
+				const expected =
+					'{"callIndex":"0x1f01","args":{"dest":{"v2":{"parents":1,"interior":{"here":null}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":50000000}}]},"fee_asset_item":0}}';
+				const submittableTxResult =
+					await westmintAssetsAPi.createTransferTransaction(
+						'0',
+						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+						[],
+						['50000000'],
+						{
+							format: 'submittable',
+							keepAlive: true,
+						}
+					);
+
+				const decoded = westmintAssetsAPi.decodeExtrinsic(
+					submittableTxResult.tx.toHex(),
+					'submittable'
+				);
+				expect(decoded).toEqual(expected);
+			});
 		});
 	});
 });
