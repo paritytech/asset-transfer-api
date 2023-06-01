@@ -25,9 +25,10 @@ export const checkLocalTxInput = (
 ): LocalTxType => {
 	const relayChain = findRelayChain(specName, registry);
 	const relayChainInfo = registry[relayChain];
+	const systemParachainInfo = relayChainInfo[SYSTEM_PARACHAINS_IDS[0]];
 
 	// Ensure the lengths in assetIds and amounts is correct
-	if (assetIds.length <= 1 || amounts.length !== 1) {
+	if (assetIds.length > 1 || amounts.length !== 1) {
 		throw new BaseError(
 			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1'
 		);
@@ -46,12 +47,22 @@ export const checkLocalTxInput = (
 	if (isNativeToken) {
 		return LocalTxType.Balances;
 	} else {
-		const isInvalidAssetId = Number.isNaN(assetIds[0]);
+		const isInvalidAssetId = Number.isNaN(parseInt(assetIds[0]));
 		if (isInvalidAssetId) {
 			throw new BaseError(
 				`The assetId passed in is not a valid number: ${assetIds[0]}`
 			);
 		}
+
+		const isAssetAvailable = Object.keys(
+			systemParachainInfo.assetsInfo
+		).includes(assetIds[0]);
+		if (!isAssetAvailable) {
+			throw new BaseError(
+				`The assetId ${assetIds[0]} does not exist in the registry.`
+			);
+		}
+
 		return LocalTxType.Assets;
 	}
 };
