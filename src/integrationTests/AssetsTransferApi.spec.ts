@@ -52,7 +52,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
-					['DOT'],
+					['KSM'],
 					['100'],
 					{
 						format: 'call',
@@ -62,7 +62,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					direction: 'local',
 					format: 'call',
 					method: 'balances::transfer',
-					tx: '0x0a000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					tx: '0x0a070078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
 					xcmVersion: null,
 				});
 			});
@@ -70,7 +70,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
-					['DOT'],
+					['KSM'],
 					['100'],
 					{
 						format: 'call',
@@ -89,7 +89,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				const res = await relayAssetsApi.createTransferTransaction(
 					'0',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
-					['DOT'],
+					['KSM'],
 					['100'],
 					{
 						format: 'call',
@@ -99,7 +99,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					direction: 'local',
 					format: 'call',
 					method: 'balances::transfer',
-					tx: '0x04000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					tx: '0x04070078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
 					xcmVersion: null,
 				});
 			});
@@ -107,7 +107,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				const res = await relayAssetsApi.createTransferTransaction(
 					'0',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
-					['DOT'],
+					['KSM'],
 					['100'],
 					{
 						format: 'call',
@@ -149,7 +149,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['DOT'],
+					['KSM'],
 					['100'],
 					{
 						format,
