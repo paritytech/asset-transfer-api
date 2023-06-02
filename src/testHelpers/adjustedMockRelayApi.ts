@@ -38,5 +38,9 @@ export const adjustedMockRelayApi = {
 			teleportAssets: mockRelayApi.tx['xcmPallet'].teleportAssets,
 			limitedTeleportAssets: mockRelayApi.tx['xcmPallet'].limitedTeleportAssets,
 		},
+		balances: {
+			transfer: mockRelayApi.tx.balances.transfer,
+			transferKeepAlive: mockRelayApi.tx.balances.transferKeepAlive,
+		},
 	},
 } as unknown as ApiPromise;

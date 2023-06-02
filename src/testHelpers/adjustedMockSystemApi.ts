@@ -57,6 +57,10 @@ export const adjustedMockSystemApi = {
 			transfer: mockSystemApi.tx.assets.transfer,
 			transferKeepAlive: mockSystemApi.tx.assets.transferKeepAlive,
 		},
+		balances: {
+			transfer: mockSystemApi.tx.balances.transfer,
+			transferKeepAlive: mockSystemApi.tx.balances.transferKeepAlive,
+		},
 	},
 	call: {
 		transactionPaymentApi: {
