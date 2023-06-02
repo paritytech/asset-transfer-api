@@ -277,17 +277,16 @@ describe('AssetTransferAPI', () => {
 			it('Should decode a payloads extrinsic given its hash for SystemToRelay', async () => {
 				const expected =
 					'{"callIndex":"0x1f01","args":{"dest":{"v2":{"parents":1,"interior":{"here":null}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":20000000000000}}]},"fee_asset_item":0}}';
-				const payloadTxResult =
-					await systemAssetsApi.createTransferTransaction(
-						'0',
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						[],
-						['20000000000000'],
-						{
-							format: 'payload',
-							keepAlive: true,
-						}
-					);
+				const payloadTxResult = await systemAssetsApi.createTransferTransaction(
+					'0',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['20000000000000'],
+					{
+						format: 'payload',
+						keepAlive: true,
+					}
+				);
 
 				const decoded = systemAssetsApi.decodeExtrinsic(
 					payloadTxResult.tx,
