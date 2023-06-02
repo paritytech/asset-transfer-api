@@ -450,4 +450,46 @@ export class AssetsTransferApi {
 			return AssetType.Foreign;
 		}
 	}
+	/**
+	 * Decodes the hex of an extrinsic into a string readable format
+	 *
+	 * @param encodedTransaction the hex of an extrinsic tx
+	 * @param format The format the tx is in
+	 */
+	public decodeExtrinsic<T extends Format>(
+		encodedTransaction: string,
+		format: T
+	): string {
+		const { _api } = this;
+		const fmt = format ? format : 'payload';
+
+		if (fmt === 'payload') {
+			const extrinsicPayload = _api.registry.createType(
+				'ExtrinsicPayload',
+				encodedTransaction,
+				{
+					version: 4,
+				}
+			);
+
+			const extrinsicMethodInfo = extrinsicPayload.method.toHuman()?.toString();
+
+			if (extrinsicMethodInfo) {
+				return extrinsicMethodInfo;
+			}
+		} else if (fmt === 'call') {
+			const call = _api.registry.createType('Call', encodedTransaction);
+
+			return call.toString();
+		} else if (fmt === 'submittable') {
+			const extrinsic = _api.registry.createType(
+				'Extrinsic',
+				encodedTransaction
+			);
+
+			return extrinsic.method.toString();
+		}
+
+		return '';
+	}
 }
