@@ -6,14 +6,14 @@ import { BaseError } from './BaseError';
 
 /**
  * Ensure when sending tx's to or from the relay chain that the length of the assetIds array
- * is zero
+ * is zero or 1, and contains the correct token.
  *
  * @param assetIds
  */
-const checkRelayAssetIdLength = (assetIds: string[]) => {
-	if (assetIds.length > 0) {
+export const checkRelayAssetIdLength = (assetIds: string[]) => {
+	if (assetIds.length > 1) {
 		throw new BaseError(
-			"`assetIds` should be empty when sending tx's to or from the relay chain."
+			"`assetIds` should be empty or length 1 when sending tx's to or from the relay chain."
 		);
 	}
 };
@@ -24,7 +24,7 @@ const checkRelayAssetIdLength = (assetIds: string[]) => {
  *
  * @param amounts
  */
-const checkRelayAmountsLength = (amounts: string[]) => {
+export const checkRelayAmountsLength = (amounts: string[]) => {
 	if (amounts.length !== 1) {
 		throw new BaseError(
 			'`amounts` should be of length 1 when sending to or from a relay chain'
@@ -38,7 +38,10 @@ const checkRelayAmountsLength = (amounts: string[]) => {
  * @param assetIds
  * @param amounts
  */
-const checkAssetsAmountMatch = (assetIds: string[], amounts: string[]) => {
+export const checkAssetsAmountMatch = (
+	assetIds: string[],
+	amounts: string[]
+) => {
 	if (assetIds.length !== amounts.length) {
 		throw new BaseError(
 			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'

@@ -3,7 +3,12 @@ import { ChainInfoRegistry } from 'src/registry/types';
 import { findRelayChain } from '../registry/findRelayChain';
 import { parseRegistry } from '../registry/parseRegistry';
 import { Direction } from '../types';
-import { checkAssetIdInput, checkXcmTxInputs } from './checkXcmTxInputs';
+import {
+	checkAssetIdInput,
+	checkAssetsAmountMatch,
+	checkRelayAmountsLength,
+	checkRelayAssetIdLength,
+} from './checkXcmTxInputs';
 
 const runTests = (tests: Test[], registry: ChainInfoRegistry) => {
 	for (const test of tests) {
@@ -23,35 +28,31 @@ const runTests = (tests: Test[], registry: ChainInfoRegistry) => {
 	}
 };
 
-describe('checkXcmTxinputs', () => {
+describe('checkRelayAssetIdLength', () => {
+	it('Should error with an incorrect assetId length for inputs to or from relay chains', () => {
+		const err = () => checkRelayAssetIdLength(['dot', 'usdt']);
+
+		expect(err).toThrow(
+			"`assetIds` should be empty or length 1 when sending tx's to or from the relay chain."
+		);
+	});
+});
+
+describe('checkRelayAmountsLength', () => {
+	it('Should error with an incorrect amounts length', () => {
+		const err = () => checkRelayAmountsLength(['1000000000', '10000000000']);
+		expect(err).toThrow(
+			'`amounts` should be of length 1 when sending to or from a relay chain'
+		);
+	});
+});
+
+describe('checkAssetsAmountMatch', () => {
 	it("Should error when inputted assetId's dont match amounts length", () => {
-		const err = () =>
-			checkXcmTxInputs(
-				['1'],
-				['10', '10'],
-				Direction.SystemToPara,
-				'0',
-				'Statemint',
-				parseRegistry({})
-			);
+		const err = () => checkAssetsAmountMatch(['1'], ['10', '10']);
 
 		expect(err).toThrow(
 			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
-		);
-	});
-	it('Should error when inputting assetIds when a transactions origin is the relay chain', () => {
-		const err = () =>
-			checkXcmTxInputs(
-				['DOT'],
-				['1000'],
-				Direction.RelayToSystem,
-				'1000',
-				'Polkadot',
-				parseRegistry({})
-			);
-
-		expect(err).toThrow(
-			"`assetIds` should be empty when sending tx's to or from the relay chain."
 		);
 	});
 });
