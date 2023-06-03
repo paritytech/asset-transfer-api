@@ -8,8 +8,8 @@ import { mockWeightInfo } from './mockWeightInfo';
 const getSystemRuntimeVersion = () =>
 	Promise.resolve().then(() => {
 		return {
-			specName: mockSystemApi.registry.createType('Text', 'statemint'),
-			specVersion: mockSystemApi.registry.createType('u32', 9370),
+			specName: mockSystemApi.registry.createType('Text', 'statemine'),
+			specVersion: mockSystemApi.registry.createType('u32', 9420),
 		};
 	});
 

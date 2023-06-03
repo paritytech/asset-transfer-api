@@ -12,8 +12,8 @@ const getRelaySafeXcmVersion = () =>
 const getRelayRuntimeVersion = () =>
 	Promise.resolve().then(() => {
 		return {
-			specName: mockRelayApi.registry.createType('Text', 'polkadot'),
-			specVersion: mockRelayApi.registry.createType('u32', 9370),
+			specName: mockRelayApi.registry.createType('Text', 'kusama'),
+			specVersion: mockRelayApi.registry.createType('u32', 9420),
 		};
 	});
 
