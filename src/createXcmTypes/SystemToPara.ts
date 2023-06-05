@@ -12,11 +12,13 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { findRelayChain, parseRegistry } from '../registry';
 import { MultiAssetInterior } from '../types';
+import { applyPaysWithFeeDestination } from '../util/applyPaysWithFeesDest';
 import { ICreateXcmType, IWeightLimit } from './types';
 import { isAscendingOrder } from './util/checkIsAscendingOrder';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
+// import { ChainInfoRegistry } from 'src/registry/types';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
@@ -111,7 +113,8 @@ export const SystemToPara: ICreateXcmType = {
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
-		assets: string[]
+		assets: string[],
+		paysWithFeeDest?: string
 	): VersionedMultiAssets => {
 		const palletId = fetchPalletInstanceId(api);
 		const multiAssets = [];
@@ -161,6 +164,15 @@ export const SystemToPara: ICreateXcmType = {
 				V2: multiAssetsType,
 			});
 		} else {
+			// assign the correct destination chain fee asset if paysWithFeeDest option is provided
+			if (paysWithFeeDest) {
+				applyPaysWithFeeDestination(
+					paysWithFeeDest,
+					assets,
+					sortedAndDedupedMultiAssets
+				);
+			}
+
 			const multiAssetsType: XcmV3MultiassetMultiAssets =
 				api.registry.createType(
 					'XcmV3MultiassetMultiAssets',

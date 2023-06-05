@@ -30,7 +30,8 @@ export const limitedReserveTransferAssets = (
 	destChainId: string,
 	xcmVersion: number,
 	specName: string,
-	weightLimit?: string
+	weightLimit?: string,
+	paysWithFeeDest?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedReserveTransferAssets;
@@ -42,7 +43,8 @@ export const limitedReserveTransferAssets = (
 		normalizeArrToStr(amounts),
 		xcmVersion,
 		specName,
-		assetIds
+		assetIds,
+		paysWithFeeDest
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 

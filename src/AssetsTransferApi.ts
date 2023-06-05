@@ -198,7 +198,9 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					specName,
-					opts?.weightLimit
+					// _registry,
+					opts?.weightLimit,
+					opts?.paysWithFeeDest
 				);
 			} else {
 				txMethod = 'reserveTransferAssets';
