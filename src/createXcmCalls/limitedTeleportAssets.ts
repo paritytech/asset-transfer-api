@@ -13,6 +13,7 @@ import { establishXcmPallet } from './util/establishXcmPallet';
  * Build a Polkadot-js SubmittableExtrinsic for a `limitedTeleportAssets` call.
  *
  * @param api ApiPromise
+ * @param registry Registry of all available assets
  * @param direction Denotes the xcm direction of the call.
  * @param destAddr The address the funds will be transfered too.
  * @param assetIds An array of asset ids. Note, this should be the same size and order as amounts.
