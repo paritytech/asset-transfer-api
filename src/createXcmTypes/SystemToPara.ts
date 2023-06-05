@@ -130,7 +130,6 @@ export const SystemToPara: ICreateXcmType = {
 			const isRelayNative = tokens.includes(assetId);
 
 			if (!isRelayNative && isNotANumber) {
-				// get the corresponding asset ids index from the assets registry
 				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
 			}
 

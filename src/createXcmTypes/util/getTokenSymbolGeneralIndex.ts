@@ -17,7 +17,6 @@ export const getSystemChainTokenSymbolGeneralIndex = (
 ): string => {
 	const registry = parseRegistry({});
 	const relayChain = findRelayChain(specName, registry);
-
 	const { assetsInfo } = registry[relayChain][SYSTEM_PARACHAINS_IDS[0]];
 
 	// get the corresponding asset id index from the assets registry
