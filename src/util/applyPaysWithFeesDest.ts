@@ -15,11 +15,33 @@ export const applyPaysWithFeeDestination = (
 	assets: string[],
 	multiAssets: MultiAsset[]
 ): MultiAsset | string => {
+	// type RelayAssetSymbol = 'dot' | 'ksm' | 'wnd';
+
 	let result: MultiAsset | string =
 		'destination chain fee asset was not updated';
 
 	if (paysWithFeeDest) {
-		for (let i = 0; i < assets.length; i++) {
+		const isRelayFeeAsset = (
+			paysWithFeeDest.toLowerCase() === 'dot' 
+			|| paysWithFeeDest.toLowerCase() === 'ksm'
+			|| paysWithFeeDest.toLowerCase() === 'wnd'
+			|| paysWithFeeDest.toLocaleLowerCase() === '0'
+			);
+
+		
+			if (isRelayFeeAsset) {
+				const relayMultiAssetInterior = { Here: '' };
+
+				for (let i = 0; i < multiAssets.length; i++) {
+					const multiAsset = multiAssets[i];
+
+					if (multiAsset.id.Concrete.interior === relayMultiAssetInterior) {
+
+					}
+				}
+			}
+
+		for (let i = 0; i < multiAssets.length; i++) {
 			const assetId = assets[i];
 
 			// find the asset the user wants to pay the fee with on the dest chain
