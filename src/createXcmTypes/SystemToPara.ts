@@ -17,6 +17,7 @@ import { ICreateXcmType, IWeightLimit } from './types';
 import { isAscendingOrder } from './util/checkIsAscendingOrder';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
+import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 // import { ChainInfoRegistry } from 'src/registry/types';
 
@@ -124,10 +125,17 @@ export const SystemToPara: ICreateXcmType = {
 		const { tokens } = registry[relayChain]['1000'];
 
 		for (let i = 0; i < assets.length; i++) {
-			const assetId = assets[i];
+			let assetId: string = assets[i];
 			const amount = amounts[i];
 
+			const parsedAssetIdAsNumber = Number.parseInt(assetId);
+			const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 			const isRelayNative = tokens.includes(assetId);
+
+			if (!isRelayNative && isNotANumber) {
+				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
+			}
+
 			const interior: MultiAssetInterior = isRelayNative
 				? { Here: '' }
 				: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
@@ -168,8 +176,8 @@ export const SystemToPara: ICreateXcmType = {
 			if (paysWithFeeDest) {
 				applyPaysWithFeeDestination(
 					paysWithFeeDest,
-					assets,
-					sortedAndDedupedMultiAssets
+					sortedAndDedupedMultiAssets,
+					specName
 				);
 			}
 

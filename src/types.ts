@@ -129,9 +129,7 @@ export type RelayNativeInterior = {
 	Here: string;
 };
 
-export type MultiAssetInterior =
-	| NonRelayNativeInterior
-	| RelayNativeInterior;
+export type MultiAssetInterior = NonRelayNativeInterior | RelayNativeInterior;
 
 export type MultiAsset = {
 	fun: {
