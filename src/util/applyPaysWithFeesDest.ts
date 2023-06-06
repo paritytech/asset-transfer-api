@@ -40,12 +40,17 @@ export const applyPaysWithFeeDestination = (
 							result = multiAssets[0];
 						}
 					} else {
+						const parsedAssetIdAsNumber = Number.parseInt(paysWithFeeDest);
+						const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+						
 						// if not a number, get the general index of the pays with fee asset
 						// to compare against the current multi asset
-						const paysWithFeeDestGeneralIndex = getSystemChainTokenSymbolGeneralIndex(paysWithFeeDest, specName);
-						if ((multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2[1].GeneralIndex === paysWithFeeDestGeneralIndex) {
-							swapPayWithFeeDestMultiAssets(multiAssets, i);
-							result = multiAssets[0];
+						if (isNotANumber) {
+							const paysWithFeeDestGeneralIndex = getSystemChainTokenSymbolGeneralIndex(paysWithFeeDest, specName);
+							if ((multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2[1].GeneralIndex === paysWithFeeDestGeneralIndex) {
+								swapPayWithFeeDestMultiAssets(multiAssets, i);
+								result = multiAssets[0];
+							}
 						}
 					}
 				}

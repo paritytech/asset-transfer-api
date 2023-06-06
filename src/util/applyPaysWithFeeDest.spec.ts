@@ -6,6 +6,7 @@ import { applyPaysWithFeeDestination } from './applyPaysWithFeesDest';
 describe('applyPaysWithFeeDestination', () => {
 	it('Should select and update the multiasset array with the correct fee asset when given a token symbol', () => {
 		const paysWithFeeDest = 'usdt';
+        const specName = 'polkadot';
 		const expected: MultiAsset = {
 			id: {
 				Concrete: {
@@ -20,7 +21,6 @@ describe('applyPaysWithFeeDestination', () => {
 			},
 		};
 
-		const assets: string[] = ['DOT', 'USDT'];
 		const multiAssets: MultiAsset[] = [
 			{
 				id: {
@@ -49,13 +49,14 @@ describe('applyPaysWithFeeDestination', () => {
 		];
 
 		expect(
-			applyPaysWithFeeDestination(paysWithFeeDest, assets, multiAssets)
+			applyPaysWithFeeDestination(paysWithFeeDest, multiAssets, specName)
 		).toEqual(expected);
 		expect(multiAssets[0]).toEqual(expected);
 	});
 
 	it('Should select and update the multiasset array with the correct fee asset when given an assets Id as a string', () => {
 		const paysWithFeeDest = '1337';
+        const specName = 'polkadot';
 		const expected: MultiAsset = {
 			id: {
 				Concrete: {
@@ -70,7 +71,6 @@ describe('applyPaysWithFeeDestination', () => {
 			},
 		};
 
-		const assets: string[] = ['DOT', '1337', 'USDT'];
 		const multiAssets: MultiAsset[] = [
 			{
 				id: {
@@ -112,16 +112,16 @@ describe('applyPaysWithFeeDestination', () => {
 		];
 
 		expect(
-			applyPaysWithFeeDestination(paysWithFeeDest, assets, multiAssets)
+			applyPaysWithFeeDestination(paysWithFeeDest, multiAssets, specName)
 		).toEqual(expected);
 		expect(multiAssets[0]).toEqual(expected);
 	});
 
 	it('Should return a message indicating the multiassets were not updated if paysWithFeeDest matches no assets in list', () => {
 		const paysWithFeeDest = 'xcUSDT';
+        const specName = 'polkadot';
 		const expected = 'destination chain fee asset was not updated';
 
-		const assets: string[] = ['DOT', 'USDC'];
 		const multiAssets: MultiAsset[] = [
 			{
 				id: {
@@ -150,7 +150,7 @@ describe('applyPaysWithFeeDestination', () => {
 		];
 
 		expect(
-			applyPaysWithFeeDestination(paysWithFeeDest, assets, multiAssets)
+			applyPaysWithFeeDestination(paysWithFeeDest, multiAssets, specName)
 		).toEqual(expected);
 	});
 });
