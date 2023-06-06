@@ -122,7 +122,7 @@ export const SystemToPara: ICreateXcmType = {
 		const { tokens } = registry[relayChain]['1000'];
 
 		for (let i = 0; i < assets.length; i++) {
-			let assetId: string | undefined = assets[i];
+			let assetId: string = assets[i];
 			const amount = amounts[i];
 
 			const parsedAssetIdAsNumber = Number.parseInt(assetId);
