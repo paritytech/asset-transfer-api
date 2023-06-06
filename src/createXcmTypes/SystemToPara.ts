@@ -19,7 +19,6 @@ import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
-// import { ChainInfoRegistry } from 'src/registry/types';
 
 export const SystemToPara: ICreateXcmType = {
 	/**

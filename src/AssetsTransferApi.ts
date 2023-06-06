@@ -198,7 +198,6 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					specName,
-					// _registry,
 					opts?.weightLimit,
 					opts?.paysWithFeeDest
 				);
