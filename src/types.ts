@@ -121,13 +121,17 @@ export interface ChainInfo {
 	specVersion: string;
 }
 
+export type NonRelayNativeInterior = {
+	X2: [{ PalletInstance: string }, { GeneralIndex: string }];
+};
+
+export type RelayNativeInterior = {
+	Here: string;
+};
+
 export type MultiAssetInterior =
-	| {
-			X2: [{ PalletInstance: string }, { GeneralIndex: string }];
-	  }
-	| {
-			Here: string;
-	  };
+	| NonRelayNativeInterior
+	| RelayNativeInterior;
 
 export type MultiAsset = {
 	fun: {
