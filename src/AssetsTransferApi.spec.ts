@@ -16,7 +16,11 @@ const mockSubmittableExt = mockSystemApi.registry.createType(
 	'0xfc041f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000'
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2);
+const systemAssetsApi = new AssetsTransferApi(
+	adjustedMockSystemApi,
+	'statemine',
+	2
+);
 const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
 
 describe('AssetTransferAPI', () => {
@@ -131,9 +135,14 @@ describe('AssetTransferAPI', () => {
 					},
 				},
 			};
-			const mockSystemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2,  {
-				injectedRegistry,
-			});
+			const mockSystemAssetsApi = new AssetsTransferApi(
+				adjustedMockSystemApi,
+				'statemine',
+				2,
+				{
+					injectedRegistry,
+				}
+			);
 
 			expect(mockSystemAssetsApi._opts.injectedRegistry).toStrictEqual(
 				injectedRegistry
@@ -175,10 +184,10 @@ describe('AssetTransferAPI', () => {
 
 	describe('decodeExtrinsic', () => {
 		describe('RelayToSystem', () => {
-			it('Should decode a calls extrinsic given its hash for RelayToSystem', async () => {
+			it('Should decode a calls extrinsic given its hash for RelayToSystem', () => {
 				const expected =
 					'{"callIndex":"0x6301","args":{"dest":{"v2":{"parents":0,"interior":{"x1":{"parachain":1000}}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":0,"interior":{"here":null}}},"fun":{"fungible":120000000000000}}]},"fee_asset_item":0}}';
-				const call = await relayAssetsApi.createTransferTransaction(
+				const call = relayAssetsApi.createTransferTransaction(
 					'1000',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					[],
@@ -193,10 +202,10 @@ describe('AssetTransferAPI', () => {
 				expect(decoded).toEqual(expected);
 			});
 
-			it('Should decode a payloads extrinsic given its hash for RelayToSystem', async () => {
+			it('Should decode a payloads extrinsic given its hash for RelayToSystem', () => {
 				const expected =
 					'{"callIndex":"0x6301","args":{"dest":{"v2":{"parents":0,"interior":{"x1":{"parachain":1000}}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":0,"interior":{"here":null}}},"fun":{"fungible":250000000000000}}]},"fee_asset_item":0}}';
-				const payloadTxResult = await relayAssetsApi.createTransferTransaction(
+				const payloadTxResult = relayAssetsApi.createTransferTransaction(
 					'1000',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					[],
@@ -214,20 +223,19 @@ describe('AssetTransferAPI', () => {
 				expect(decoded).toEqual(expected);
 			});
 
-			it('Should decode a submittables extrinsic given its hash for RelayToSystem', async () => {
+			it('Should decode a submittables extrinsic given its hash for RelayToSystem', () => {
 				const expected =
 					'{"callIndex":"0x6301","args":{"dest":{"v2":{"parents":0,"interior":{"x1":{"parachain":1000}}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":0,"interior":{"here":null}}},"fun":{"fungible":520000000000000}}]},"fee_asset_item":0}}';
-				const submittableTxResult =
-					await relayAssetsApi.createTransferTransaction(
-						'1000',
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						[],
-						['520000000000000'],
-						{
-							format: 'submittable',
-							keepAlive: true,
-						}
-					);
+				const submittableTxResult = relayAssetsApi.createTransferTransaction(
+					'1000',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['520000000000000'],
+					{
+						format: 'submittable',
+						keepAlive: true,
+					}
+				);
 
 				const decoded = relayAssetsApi.decodeExtrinsic(
 					submittableTxResult.tx.toHex(),
@@ -238,10 +246,10 @@ describe('AssetTransferAPI', () => {
 		});
 
 		describe('SystemToRelay', () => {
-			it('Should decode a calls extrinsic given its hash for SystemToRelay', async () => {
+			it('Should decode a calls extrinsic given its hash for SystemToRelay', () => {
 				const expected =
 					'{"callIndex":"0x1f01","args":{"dest":{"v2":{"parents":1,"interior":{"here":null}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":10000000000000}}]},"fee_asset_item":0}}';
-				const callTxResult = await systemAssetsApi.createTransferTransaction(
+				const callTxResult = systemAssetsApi.createTransferTransaction(
 					'0',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					[],
@@ -259,10 +267,10 @@ describe('AssetTransferAPI', () => {
 				expect(decoded).toEqual(expected);
 			});
 
-			it('Should decode a payloads extrinsic given its hash for SystemToRelay', async () => {
+			it('Should decode a payloads extrinsic given its hash for SystemToRelay', () => {
 				const expected =
 					'{"callIndex":"0x1f01","args":{"dest":{"v2":{"parents":1,"interior":{"here":null}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":20000000000000}}]},"fee_asset_item":0}}';
-				const payloadTxResult = await systemAssetsApi.createTransferTransaction(
+				const payloadTxResult = systemAssetsApi.createTransferTransaction(
 					'0',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					[],
@@ -280,20 +288,19 @@ describe('AssetTransferAPI', () => {
 				expect(decoded).toEqual(expected);
 			});
 
-			it('Should decode a submittables extrinsic given its hash for SystemToRelay', async () => {
+			it('Should decode a submittables extrinsic given its hash for SystemToRelay', () => {
 				const expected =
 					'{"callIndex":"0x1f01","args":{"dest":{"v2":{"parents":1,"interior":{"here":null}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":50000000000000}}]},"fee_asset_item":0}}';
-				const submittableTxResult =
-					await systemAssetsApi.createTransferTransaction(
-						'0',
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						[],
-						['50000000000000'],
-						{
-							format: 'submittable',
-							keepAlive: true,
-						}
-					);
+				const submittableTxResult = systemAssetsApi.createTransferTransaction(
+					'0',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['50000000000000'],
+					{
+						format: 'submittable',
+						keepAlive: true,
+					}
+				);
 
 				const decoded = systemAssetsApi.decodeExtrinsic(
 					submittableTxResult.tx.toHex(),

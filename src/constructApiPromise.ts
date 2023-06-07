@@ -3,12 +3,13 @@
 import { ApiPromise } from '@polkadot/api';
 import type { ApiOptions } from '@polkadot/api/types';
 import { WsProvider } from '@polkadot/rpc-provider';
+
 import { fetchSafeXcmVersion } from './createXcmCalls/util/fetchSafeXcmVersion';
 
 interface ApiInfo {
 	api: ApiPromise;
 	specName: string;
-	safeXcmVersion: number
+	safeXcmVersion: number;
 }
 
 /**
@@ -21,7 +22,7 @@ export const constructApiPromise = async (
 	wsUrl: string,
 	opts: ApiOptions = {}
 ): Promise<ApiInfo> => {
-	 const api = await ApiPromise.create({
+	const api = await ApiPromise.create({
 		provider: new WsProvider(wsUrl),
 		noInitWarn: true,
 		...opts,
@@ -34,6 +35,6 @@ export const constructApiPromise = async (
 	return {
 		api,
 		specName: specName.toString(),
-		safeXcmVersion: safeXcmVersion.toNumber()
-	}
+		safeXcmVersion: safeXcmVersion.toNumber(),
+	};
 };

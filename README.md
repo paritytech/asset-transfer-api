@@ -59,7 +59,7 @@ import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfe
 // NOTE: This should all be wrapped in an asynchronous layer.
 
 // This constructs a polkadot-js ApiPromise, it is totally viable for one to construct their
-// own ApiPromise, and pass it into AssetsTransferApi, but ther `specName`, and `safeXcmVersion` are also necessary.
+// own ApiPromise, and pass it into AssetsTransferApi, but keep in mind the `specName`, and `safeXcmVersion` are also necessary.
 const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westmint-rpc.polkadot.io');
 
 const assetsApi = new AssetsTransferApi(api, specName, safeXcmVersion);

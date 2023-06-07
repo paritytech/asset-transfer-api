@@ -61,7 +61,12 @@ export class AssetsTransferApi {
 	readonly _safeXcmVersion: number;
 	readonly _registry: ChainInfoRegistry;
 
-	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetsTransferApiOpts = {}) {
+	constructor(
+		api: ApiPromise,
+		specName: string,
+		safeXcmVersion: number,
+		opts: AssetsTransferApiOpts = {}
+	) {
 		this._api = api;
 		this._opts = opts;
 		this._specName = specName;
@@ -105,7 +110,8 @@ export class AssetsTransferApi {
 		const addr = sanitizeAddress(destAddr);
 		const isLocalSystemTx = isDestSystemParachain && isOriginSystemParachain;
 		const isLocalRelayTx =
-			destChainId === '0' && RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
+			destChainId === '0' &&
+			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
 		/**
 		 * Create a local asset transfer on a system parachain
 		 */
@@ -168,9 +174,7 @@ export class AssetsTransferApi {
 
 		const xcmDirection = this.establishDirection(destChainId, _specName);
 		const xcmVersion =
-			opts?.xcmVersion === undefined
-				? _safeXcmVersion
-				: opts.xcmVersion;
+			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
 		checkXcmTxInputs(
 			assetIds,
