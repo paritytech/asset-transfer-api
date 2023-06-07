@@ -23,8 +23,7 @@ export const getFeeAssetItemIndex = (
 		const isRelayFeeAsset =
 			paysWithFeeDest.toLowerCase() === 'dot' ||
 			paysWithFeeDest.toLowerCase() === 'ksm' ||
-			paysWithFeeDest.toLowerCase() === 'wnd' ||
-			paysWithFeeDest === '0';
+			paysWithFeeDest.toLowerCase() === 'wnd';
 
 		for (let i = 0; i < multiAssets.length; i++) {
 			const multiAsset = multiAssets[i];
