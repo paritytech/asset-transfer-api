@@ -199,7 +199,7 @@ export const SystemToPara: ICreateXcmType = {
 				multiAssets,
 				specName
 			);
-			
+
 			return api.registry.createType('u32', assetIndex);
 		}
 
