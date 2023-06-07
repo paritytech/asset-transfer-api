@@ -4,7 +4,6 @@ import '@polkadot/api-augment';
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { Option, u32 } from '@polkadot/types';
 import type {
 	RuntimeDispatchInfo,
 	RuntimeDispatchInfoV1,
@@ -12,7 +11,6 @@ import type {
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import {
-	DEFAULT_XCM_VERSION,
 	RELAY_CHAIN_NAMES,
 	SYSTEM_PARACHAINS_IDS,
 	SYSTEM_PARACHAINS_NAMES,
@@ -25,7 +23,6 @@ import {
 	reserveTransferAssets,
 	teleportAssets,
 } from './createXcmCalls';
-import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
 import {
 	checkBaseInputTypes,
 	checkLocalTxInput,
@@ -39,7 +36,6 @@ import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetsTransferApiOpts,
 	AssetType,
-	ChainInfo,
 	ConstructedFormat,
 	Direction,
 	Format,
@@ -51,26 +47,30 @@ import {
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
- * construct transactions for assets and estimating fees. The main public functions this
- * will expose are:
- * - createTransferTransaction
- * - fetchFeeInfo
+ * construct transactions for assets and estimating fees.
  *
  * @constructor api ApiPromise provided by Polkadot-js
+ * @constructor specName The specName of the provided chains api
+ * @constructor safeXcmVersion The safeXcmVersion of the chain.
  * @constructor opts AssetsTransferApiOpts
  */
 export class AssetsTransferApi {
 	readonly _api: ApiPromise;
 	readonly _opts: AssetsTransferApiOpts;
-	readonly _info: Promise<ChainInfo>;
-	readonly _safeXcmVersion: Promise<u32>;
+	readonly _specName: string;
+	readonly _safeXcmVersion: number;
 	readonly _registry: ChainInfoRegistry;
 
-	constructor(api: ApiPromise, opts: AssetsTransferApiOpts = {}) {
+	constructor(
+		api: ApiPromise,
+		specName: string,
+		safeXcmVersion: number,
+		opts: AssetsTransferApiOpts = {}
+	) {
 		this._api = api;
 		this._opts = opts;
-		this._info = this.fetchChainInfo();
-		this._safeXcmVersion = this.fetchSafeXcmVersion();
+		this._specName = specName;
+		this._safeXcmVersion = safeXcmVersion;
 		this._registry = parseRegistry(opts);
 	}
 
@@ -84,24 +84,22 @@ export class AssetsTransferApi {
 	 * @param amounts Array of the amounts of each token to transfer
 	 * @param opts Options
 	 */
-	public async createTransferTransaction<T extends Format>(
+	public createTransferTransaction<T extends Format>(
 		destChainId: string,
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
 		opts?: TransferArgsOpts<T>
-	): Promise<TxResult<T>> {
+	): TxResult<T> {
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
 		 */
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
-		const { _api, _info, _safeXcmVersion, _registry } = this;
-		const { specName } = await _info;
-		const safeXcmVersion = await _safeXcmVersion;
+		const { _api, _specName, _safeXcmVersion, _registry } = this;
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
-			specName.toLowerCase()
+			_specName.toLowerCase()
 		);
 		const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
 
@@ -112,7 +110,8 @@ export class AssetsTransferApi {
 		const addr = sanitizeAddress(destAddr);
 		const isLocalSystemTx = isDestSystemParachain && isOriginSystemParachain;
 		const isLocalRelayTx =
-			destChainId === '0' && RELAY_CHAIN_NAMES.includes(specName.toLowerCase());
+			destChainId === '0' &&
+			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
 		/**
 		 * Create a local asset transfer on a system parachain
 		 */
@@ -124,8 +123,8 @@ export class AssetsTransferApi {
 			const localAssetType = checkLocalTxInput(
 				assetIds,
 				amounts,
-				specName,
-				this._registry
+				_specName,
+				_registry
 			); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
 			if (isLocalSystemTx) {
@@ -173,23 +172,21 @@ export class AssetsTransferApi {
 			}
 		}
 
-		const xcmDirection = this.establishDirection(destChainId, specName);
+		const xcmDirection = this.establishDirection(destChainId, _specName);
 		const xcmVersion =
-			opts?.xcmVersion === undefined
-				? safeXcmVersion.toNumber()
-				: opts.xcmVersion;
+			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
 		checkXcmTxInputs(
 			assetIds,
 			amounts,
 			xcmDirection,
 			destChainId,
-			specName,
+			_specName,
 			_registry
 		);
 
 		const assetType = this.fetchAssetType(
-			specName,
+			_specName,
 			destChainId,
 			assetIds,
 			xcmDirection
@@ -208,7 +205,7 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					specName,
+					_specName,
 					opts?.weightLimit
 				);
 			} else {
@@ -221,7 +218,7 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					specName
+					_specName
 				);
 			}
 		} else {
@@ -235,7 +232,7 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					specName,
+					_specName,
 					opts?.weightLimit
 				);
 			} else {
@@ -248,7 +245,7 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					specName
+					_specName
 				);
 			}
 		}
@@ -299,20 +296,6 @@ export class AssetsTransferApi {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Fetch runtime information based on the connected chain.
-	 *
-	 * @param api ApiPromise
-	 */
-	private async fetchChainInfo(): Promise<ChainInfo> {
-		const { _api } = this;
-		const { specName, specVersion } = await _api.rpc.state.getRuntimeVersion();
-		return {
-			specName: specName.toString(),
-			specVersion: specVersion.toString(),
-		};
 	}
 
 	/**
@@ -414,21 +397,6 @@ export class AssetsTransferApi {
 		}
 
 		return result;
-	}
-
-	/**
-	 * Fetch for a safe Xcm Version from the chain, if none exists the
-	 * in app default version will be used.
-	 */
-	private async fetchSafeXcmVersion(): Promise<u32> {
-		const { _api } = this;
-		const pallet = establishXcmPallet(_api);
-		const safeVersion = await _api.query[pallet].safeXcmVersion<Option<u32>>();
-		const version = safeVersion.isSome
-			? safeVersion.unwrap()
-			: _api.registry.createType('u32', DEFAULT_XCM_VERSION);
-
-		return version;
 	}
 
 	private fetchAssetType(

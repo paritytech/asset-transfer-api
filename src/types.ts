@@ -116,11 +116,6 @@ export interface TransferArgsOpts<T extends Format> {
 	keepAlive?: boolean;
 }
 
-export interface ChainInfo {
-	specName: string;
-	specVersion: string;
-}
-
 export type MultiAssetInterior =
 	| {
 			X2: [{ PalletInstance: string }, { GeneralIndex: string }];
