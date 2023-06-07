@@ -28,8 +28,7 @@ export const teleportAssets = (
 	amounts: string[],
 	destChainId: string,
 	xcmVersion: number,
-	specName: string,
-	paysWithFeeDest?: string
+	specName: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].teleportAssets;
@@ -41,9 +40,10 @@ export const teleportAssets = (
 		normalizeArrToStr(amounts),
 		xcmVersion,
 		specName,
-		assetIds,
-		paysWithFeeDest
+		assetIds
 	);
 
-	return ext(dest, beneficiary, assets, 0);
+	const feeAssetItem = 0;
+
+	return ext(dest, beneficiary, assets, feeAssetItem);
 };

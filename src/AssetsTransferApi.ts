@@ -211,7 +211,8 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					specName
+					specName,
+					opts?.paysWithFeeDest
 				);
 			}
 		} else {

@@ -10,15 +10,8 @@ import type {
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { findRelayChain, parseRegistry } from '../registry';
-import { MultiAssetInterior } from '../types';
-import { applyPaysWithFeeDestination } from '../util/applyPaysWithFeesDest';
 import { ICreateXcmType, IWeightLimit } from './types';
-import { isAscendingOrder } from './util/checkIsAscendingOrder';
-import { dedupeMultiAssets } from './util/dedupeMultiAssets';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
-import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
+import { createSystemToParaMultiAssets } from './util/createSystemToParaMultiAssets';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
@@ -113,53 +106,14 @@ export const SystemToPara: ICreateXcmType = {
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
-		assets: string[],
-		paysWithFeeDest?: string
+		assets: string[]
 	): VersionedMultiAssets => {
-		const palletId = fetchPalletInstanceId(api);
-		const multiAssets = [];
-		const registry = parseRegistry({});
-		const relayChain = findRelayChain(specName, registry);
-		// We know this is a System parachain direction which is chainId 1000.
-		const { tokens } = registry[relayChain]['1000'];
-
-		for (let i = 0; i < assets.length; i++) {
-			let assetId: string = assets[i];
-			const amount = amounts[i];
-
-			const parsedAssetIdAsNumber = Number.parseInt(assetId);
-			const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
-			const isRelayNative = tokens.includes(assetId);
-
-			if (!isRelayNative && isNotANumber) {
-				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
-			}
-
-			const interior: MultiAssetInterior = isRelayNative
-				? { Here: '' }
-				: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
-			const parents = isRelayNative ? 1 : 0;
-
-			const multiAsset = {
-				id: {
-					Concrete: {
-						parents,
-						interior,
-					},
-				},
-				fun: {
-					Fungible: amount,
-				},
-			};
-
-			multiAssets.push(multiAsset);
-		}
-
-		if (!isAscendingOrder(multiAssets)) {
-			sortMultiAssetsAscending(multiAssets);
-		}
-
-		const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
+		const sortedAndDedupedMultiAssets = createSystemToParaMultiAssets(
+			api,
+			amounts,
+			specName,
+			assets
+		);
 
 		if (xcmVersion === 2) {
 			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
@@ -171,15 +125,6 @@ export const SystemToPara: ICreateXcmType = {
 				V2: multiAssetsType,
 			});
 		} else {
-			// assign the correct destination chain fee asset if paysWithFeeDest option is provided
-			if (paysWithFeeDest) {
-				applyPaysWithFeeDestination(
-					paysWithFeeDest,
-					sortedAndDedupedMultiAssets,
-					specName
-				);
-			}
-
 			const multiAssetsType: XcmV3MultiassetMultiAssets =
 				api.registry.createType(
 					'XcmV3MultiassetMultiAssets',

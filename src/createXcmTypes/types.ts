@@ -32,8 +32,7 @@ export interface ICreateXcmType {
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
-		assets: string[],
-		paysWithFeeDest?: string
+		assets: string[]
 	) => VersionedMultiAssets;
 	createWeightLimit: (api: ApiPromise, weightLimit?: string) => WeightLimitV2;
 }

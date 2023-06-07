@@ -5,7 +5,9 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../createXcmTypes';
+import { createSystemToParaMultiAssets } from '../createXcmTypes/util/createSystemToParaMultiAssets';
 import { Direction } from '../types';
+import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { establishXcmPallet } from './util/establishXcmPallet';
 
@@ -43,10 +45,25 @@ export const limitedReserveTransferAssets = (
 		normalizeArrToStr(amounts),
 		xcmVersion,
 		specName,
-		assetIds,
-		paysWithFeeDest
+		assetIds
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 
-	return ext(dest, beneficiary, assets, 0, weightLimitType);
+	let feeAssetItem = 0;
+	if (
+		paysWithFeeDest &&
+		xcmVersion === 3 &&
+		direction === Direction.SystemToPara
+	) {
+		const multiAssets = createSystemToParaMultiAssets(
+			api,
+			normalizeArrToStr(amounts),
+			specName,
+			assetIds
+		);
+
+		feeAssetItem = getFeeAssetItemIndex(paysWithFeeDest, multiAssets, specName);
+	}
+
+	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);
 };
