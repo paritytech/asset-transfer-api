@@ -89,7 +89,7 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Statemint: default DOT
 	 * Statemine: default KSM
 	 */
-	payFeeWith?: string;
+	paysWithFeeOrigin?: string;
 	/**
 	 * AssetId to pay fee's on the destination parachain.
 	 */

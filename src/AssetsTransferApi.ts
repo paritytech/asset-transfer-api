@@ -199,6 +199,7 @@ export class AssetsTransferApi {
 					xcmVersion,
 					specName,
 					opts?.weightLimit
+					opts?.paysWithFeeOrigin
 				);
 			} else {
 				txMethod = 'reserveTransferAssets';

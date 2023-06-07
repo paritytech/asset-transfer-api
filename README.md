@@ -148,7 +148,7 @@ interface TransferArgsOpts<T extends Format> {
 	 * Statemint: default DOT
 	 * Statemine: default KSM
 	 */
-	payFeeWith?: string;
+	paysWithFeeOrigin?: string;
 	/**
          * NOTE: This is in development, and being worked on and not yet supported.
          * 
