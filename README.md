@@ -59,14 +59,12 @@ import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfe
 // NOTE: This should all be wrapped in an asynchronous layer.
 
 // This constructs a polkadot-js ApiPromise, it is totally viable for one to construct their
-// own ApiPromise, and pass it into AssetsTransferApi.
-const apiPromise = await constructApiPromise('wss://westmint-rpc.polkadot.io');
+// own ApiPromise, and pass it into AssetsTransferApi, but ther `specName`, and `safeXcmVersion` are also necessary.
+const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westmint-rpc.polkadot.io');
 
-await apiPromise.isReady
+const assetsApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 
-const assetsApi = new AssetsTransferApi(apiPromise);
-
-const call = await assetsApi.createTransferTransaction(
+const call = assetsApi.createTransferTransaction(
   '2001', // destChainId (If the destination is a relay chain put `0`)
   '0x00', // destAddress
   ['1', '2'], // Array of AssetIds
@@ -96,10 +94,10 @@ const call = await assetsApi.createTransferTransaction(
  */
 AssetsTransferApi.createTransferTransaction(
   	destChainId: string,
-		destAddr: string,
-		assetIds: string[],
-		amounts: string[],
-		opts?: TransferArgsOpts<T>
+	destAddr: string,
+	assetIds: string[],
+	amounts: string[],
+	opts?: TransferArgsOpts<T>
 )
 ```
 
@@ -184,7 +182,7 @@ Sending an Asset or Native token locally on a System Parachain is easy. In order
 
 An example would look like:
 ```typescript
-await api.createTransferTransaction(
+api.createTransferTransaction(
   	'1000', // destChainId
 	'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b', // destAddr
 	['1984'], // assetIds
