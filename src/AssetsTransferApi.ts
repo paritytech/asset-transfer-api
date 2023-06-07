@@ -26,7 +26,12 @@ import {
 	teleportAssets,
 } from './createXcmCalls';
 import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
-import { checkLocalTxInput, checkXcmTxInputs, checkXcmVersion } from './errors';
+import {
+	checkBaseInputTypes,
+	checkLocalTxInput,
+	checkXcmTxInputs,
+	checkXcmVersion,
+} from './errors';
 import { findRelayChain } from './registry/findRelayChain';
 import { parseRegistry } from './registry/parseRegistry';
 import type { ChainInfoRegistry } from './registry/types';
@@ -86,6 +91,12 @@ export class AssetsTransferApi {
 		amounts: string[],
 		opts?: TransferArgsOpts<T>
 	): Promise<TxResult<T>> {
+		/**
+		 * Ensure all the inputs are the corrects primitive and or object types.
+		 * It will throw an error if any are incorrect.
+		 */
+		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
+
 		const { _api, _info, _safeXcmVersion, _registry } = this;
 		const { specName } = await _info;
 		const safeXcmVersion = await _safeXcmVersion;
