@@ -24,9 +24,9 @@ export const getFeeAssetItemIndex = (
 			paysWithFeeDest.toLowerCase() === 'dot' ||
 			paysWithFeeDest.toLowerCase() === 'ksm' ||
 			paysWithFeeDest.toLowerCase() === 'wnd' ||
-			paysWithFeeDest.toLowerCase() === '0';
+			paysWithFeeDest === '0';
 
-		for (let i = 1; i < multiAssets.length; i++) {
+		for (let i = 0; i < multiAssets.length; i++) {
 			const multiAsset = multiAssets[i];
 
 			if (isRelayFeeAsset) {
@@ -35,6 +35,7 @@ export const getFeeAssetItemIndex = (
 					(multiAsset.id.Concrete.interior as RelayNativeInterior).Here === ''
 				) {
 					result = i;
+					break;
 				}
 			} else {
 				const parsedAssetIdAsNumber = Number.parseInt(paysWithFeeDest);
@@ -51,6 +52,7 @@ export const getFeeAssetItemIndex = (
 							.GeneralIndex === paysWithFeeDestGeneralIndex
 					) {
 						result = i;
+						break;
 					}
 				} else {
 					if (
@@ -59,6 +61,7 @@ export const getFeeAssetItemIndex = (
 							.GeneralIndex === paysWithFeeDest
 					) {
 						result = i;
+						break;
 					}
 				}
 			}

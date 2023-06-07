@@ -158,9 +158,12 @@ export const RelayToSystem: ICreateXcmType = {
 		return api.registry.createType('XcmV2WeightLimit', limit);
 	},
 
+	/**
+	 * return the correct feeAssetItem based on XCM direction.
+	 *
+	 * @param api ApiPromise
+	 */
 	createFeeAssetItem: (api: ApiPromise): u32 => {
-		const feeAssetItem = api.registry.createType('u32', 0);
-
-		return feeAssetItem;
+		return api.registry.createType('u32', 0);
 	},
 };

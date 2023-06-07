@@ -160,6 +160,17 @@ export const SystemToPara: ICreateXcmType = {
 		return api.registry.createType('XcmV2WeightLimit', limit);
 	},
 
+	/**
+	 * returns the correct feeAssetItem based on XCM direction.
+	 *
+	 * @param api ApiPromise
+	 * @param paysWithFeeDest string
+	 * @param specName string
+	 * @param assetIds string[]
+	 * @param amounts string[]
+	 * @xcmVersion number
+	 *
+	 */
 	createFeeAssetItem: (
 		api: ApiPromise,
 		paysWithFeeDest?: string,
