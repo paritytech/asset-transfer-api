@@ -11,7 +11,7 @@ import { getSystemChainTokenSymbolGeneralIndex } from './getTokenSymbolGeneralIn
 import { sortMultiAssetsAscending } from './sortMultiAssetsAscending';
 
 /**
- * Creates and returns a MultiAsset array for system parachains based on provided specName, assets and amounts 
+ * Creates and returns a MultiAsset array for system parachains based on provided specName, assets and amounts
  *
  * @param api ApiPromise[]
  * @param amounts string[]
