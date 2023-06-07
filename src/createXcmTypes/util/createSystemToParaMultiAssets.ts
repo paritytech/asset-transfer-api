@@ -10,6 +10,14 @@ import { fetchPalletInstanceId } from './fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './getTokenSymbolGeneralIndex';
 import { sortMultiAssetsAscending } from './sortMultiAssetsAscending';
 
+/**
+ * Creates and returns a list of MultiAsset's given the amounts and assetIds
+ *
+ * @param api ApiPromise[]
+ * @param amounts string[]
+ * @param specName string
+ * @param assets string[]
+ */
 export const createSystemToParaMultiAssets = (
 	api: ApiPromise,
 	amounts: string[],
