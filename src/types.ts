@@ -93,7 +93,7 @@ export interface TransferArgsOpts<T extends Format> {
 	/**
 	 * AssetId to pay fee's on the destination parachain.
 	 */
-	payFeeWithTo?: string;
+	paysWithFeeDest?: string;
 	/**
 	 * Boolean to declare if this will be with limited XCM transfers.
 	 * Deafult is unlimited.
@@ -116,13 +116,20 @@ export interface TransferArgsOpts<T extends Format> {
 	keepAlive?: boolean;
 }
 
-export type MultiAssetInterior =
-	| {
-			X2: [{ PalletInstance: string }, { GeneralIndex: string }];
-	  }
-	| {
-			Here: string;
-	  };
+export interface ChainInfo {
+	specName: string;
+	specVersion: string;
+}
+
+export type NonRelayNativeInterior = {
+	X2: [{ PalletInstance: string }, { GeneralIndex: string }];
+};
+
+export type RelayNativeInterior = {
+	Here: string;
+};
+
+export type MultiAssetInterior = NonRelayNativeInterior | RelayNativeInterior;
 
 export type MultiAsset = {
 	fun: {

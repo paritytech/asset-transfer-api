@@ -152,7 +152,7 @@ interface TransferArgsOpts<T extends Format> {
          * 
 	 * AssetId to pay fee's on the destination parachain.
 	 */
-	payFeeWithTo?: string;
+	paysWithFeeDest?: string;
 	/**
 	 * Boolean to declare if this will be with limited XCM transfers.
 	 * Deafult is unlimited.

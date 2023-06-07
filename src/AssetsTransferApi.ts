@@ -206,7 +206,8 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
-					opts?.weightLimit
+					opts?.weightLimit,
+					opts?.paysWithFeeDest
 				);
 			} else {
 				txMethod = 'reserveTransferAssets';
@@ -218,7 +219,8 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					_specName
+					_specName,
+					opts?.paysWithFeeDest
 				);
 			}
 		} else {

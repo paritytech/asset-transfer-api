@@ -310,4 +310,48 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 	});
+
+	describe('feeAssetItem', () => {
+		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a limitedReserveTransferAssets call', () => {
+			const expected =
+				'{"callIndex":"0x1f08","args":{"dest":{"v3":{"parents":1,"interior":{"x1":{"parachain":2000}}}},"beneficiary":{"v3":{"parents":0,"interior":{"x1":{"accountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v3":[{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":10}]}}},"fun":{"fungible":10000000000000}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":11}]}}},"fun":{"fungible":20000000000000}},{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":30000000000000}}]},"fee_asset_item":1,"weight_limit":{"limited":{"refTime":0,"proofSize":0}}}}';
+			const callTxResult = systemAssetsApi.createTransferTransaction(
+				'2000',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				['ksm', '10', '11'],
+				['30000000000000', '10000000000000', '20000000000000'],
+				{
+					xcmVersion: 3,
+					weightLimit: '100000',
+					isLimited: true,
+					format: 'call',
+					keepAlive: true,
+					paysWithFeeDest: 'usdt',
+				}
+			);
+
+			const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
+			expect(decoded).toEqual(expected);
+		});
+
+		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a reserveTransferAssets call', () => {
+			const expected =
+				'{"callIndex":"0x1f02","args":{"dest":{"v3":{"parents":1,"interior":{"x1":{"parachain":2000}}}},"beneficiary":{"v3":{"parents":0,"interior":{"x1":{"accountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v3":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":100}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":34}]}}},"fun":{"fungible":300}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":36}]}}},"fun":{"fungible":400}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":11}]}}},"fun":{"fungible":500}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":12}]}}},"fun":{"fungible":700}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":10}]}}},"fun":{"fungible":2000}}]},"fee_asset_item":5}}';
+			const callTxResult = systemAssetsApi.createTransferTransaction(
+				'2000',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				['ksm', '10', '34', '36', '11', '12'],
+				['100', '2000', '300', '400', '500', '700'],
+				{
+					paysWithFeeDest: '10',
+					xcmVersion: 3,
+					format: 'call',
+					keepAlive: true,
+				}
+			);
+
+			const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
+			expect(decoded).toEqual(expected);
+		});
+	});
 });

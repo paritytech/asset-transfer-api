@@ -2,6 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../createXcmTypes';
@@ -30,7 +31,8 @@ export const limitedReserveTransferAssets = (
 	destChainId: string,
 	xcmVersion: number,
 	specName: string,
-	weightLimit?: string
+	weightLimit?: string,
+	paysWithFeeDest?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedReserveTransferAssets;
@@ -46,5 +48,16 @@ export const limitedReserveTransferAssets = (
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 
-	return ext(dest, beneficiary, assets, 0, weightLimitType);
+	const feeAssetItem: u32 = paysWithFeeDest
+		? typeCreator.createFeeAssetItem(
+				api,
+				paysWithFeeDest,
+				specName,
+				assetIds,
+				amounts,
+				xcmVersion
+		  )
+		: api.registry.createType('u32', 0);
+
+	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);
 };
