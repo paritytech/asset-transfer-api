@@ -2,6 +2,14 @@
 
 import { BaseError } from './BaseError';
 
+/**
+ * Check the base types for the inputs for createTransferTransaction
+ *
+ * @param destChainId
+ * @param destAddr
+ * @param assetIds
+ * @param amounts
+ */
 export const checkBaseInputTypes = (
 	destChainId: string,
 	destAddr: string,
@@ -25,7 +33,7 @@ export const checkBaseInputTypes = (
 			`'assetIds' must be a array. Received: ${typeof assetIds}`
 		);
 	} else {
-		for (let i = 0; i < assetIds.length - 1; i++) {
+		for (let i = 0; i < assetIds.length; i++) {
 			if (typeof assetIds[i] !== 'string') {
 				throw new BaseError(
 					`All inputs in the 'assetIds' array must be strings: Received: a ${typeof assetIds[
@@ -38,10 +46,10 @@ export const checkBaseInputTypes = (
 
 	if (!Array.isArray(amounts)) {
 		throw new BaseError(
-			`'amounts' must be a array. Received: ${typeof assetIds}`
+			`'amounts' must be a array. Received: ${typeof amounts}`
 		);
 	} else {
-		for (let i = 0; i < amounts.length - 1; i++) {
+		for (let i = 0; i < amounts.length; i++) {
 			if (typeof amounts[i] !== 'string') {
 				throw new BaseError(
 					`All inputs in the 'amounts' array must be strings: Received: a ${typeof amounts[
