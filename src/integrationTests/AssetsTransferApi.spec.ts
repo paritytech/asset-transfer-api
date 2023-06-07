@@ -5,8 +5,8 @@ import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import type { Format, TxResult } from '../types';
 
-const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
-const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
+const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
+const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2);
 
 describe('AssetTransferApi Integration Tests', () => {
 	describe('createTransferTransaction', () => {

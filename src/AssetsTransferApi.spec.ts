@@ -16,19 +16,10 @@ const mockSubmittableExt = mockSystemApi.registry.createType(
 	'0xfc041f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000'
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
-const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
+const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2);
+const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
 
 describe('AssetTransferAPI', () => {
-	describe('fetchChainInfo', () => {
-		it('Should fetch the correct chain info', async () => {
-			const { specName, specVersion } = await systemAssetsApi[
-				'fetchChainInfo'
-			]();
-			expect(specName).toEqual('statemine');
-			expect(specVersion).toEqual('9420');
-		});
-	});
 	describe('establishDirection', () => {
 		it('Should correctly determine direction for SystemToPara', () => {
 			const res = systemAssetsApi['establishDirection']('2000', 'statemint');
@@ -91,12 +82,6 @@ describe('AssetTransferAPI', () => {
 			expect(res.tx.toRawType()).toEqual('Extrinsic');
 		});
 	});
-	describe('fetchSafeXcmVersion', () => {
-		it('Should return the correct value when the Option is true', async () => {
-			const version = await systemAssetsApi['fetchSafeXcmVersion']();
-			expect(version.toNumber()).toEqual(2);
-		});
-	});
 	describe('fetchAssetType', () => {
 		describe('SystemToRelay', () => {
 			it('Should corectly return Native', () => {
@@ -146,7 +131,7 @@ describe('AssetTransferAPI', () => {
 					},
 				},
 			};
-			const mockSystemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, {
+			const mockSystemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2,  {
 				injectedRegistry,
 			});
 
