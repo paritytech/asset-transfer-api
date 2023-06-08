@@ -1,8 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { SYSTEM_PARACHAINS_IDS } from '../consts';
-import { findRelayChain } from '../registry/findRelayChain';
-import type { ChainInfoRegistry } from '../registry/types';
+import { Registry } from '../registry';
 import { BaseError } from './BaseError';
 
 enum LocalTxType {
@@ -20,11 +19,9 @@ enum LocalTxType {
 export const checkLocalTxInput = (
 	assetIds: string[],
 	amounts: string[],
-	specName: string,
-	registry: ChainInfoRegistry
+	registry: Registry
 ): LocalTxType => {
-	const relayChain = findRelayChain(specName, registry);
-	const relayChainInfo = registry[relayChain];
+	const relayChainInfo = registry.currentRelayRegistry;
 	const systemParachainInfo = relayChainInfo[SYSTEM_PARACHAINS_IDS[0]];
 
 	// Ensure the lengths in assetIds and amounts is correct

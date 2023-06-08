@@ -68,12 +68,14 @@ describe('Registry', () => {
 	describe('lookupParachainInfo', () => {
 		it('Should return the correct result', () => {
 			const res = registry.lookupParachainInfo('2000');
-			const expected = [{
-				tokens: ['ACA', 'AUSD', 'DOT', 'LDOT'],
-				assetsInfo: {},
-				specName: 'acala',
-                chainId: '2000'
-			}];
+			const expected = [
+				{
+					tokens: ['ACA', 'AUSD', 'DOT', 'LDOT'],
+					assetsInfo: {},
+					specName: 'acala',
+					chainId: '2000',
+				},
+			];
 			expect(res).toEqual(expected);
 		});
 	});
