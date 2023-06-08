@@ -20,18 +20,34 @@ export class Registry {
 		this.currentRelayRegistry = this.registry[this.relayChain];
 	}
 
+	/**
+	 * Getter for the complete registry.
+	 */
 	public get getRegistry() {
 		return this.registry;
 	}
 
+	/**
+	 * Getter for the name of the relay chain for this network.
+	 */
 	public get getRelayChain() {
 		return this.relayChain;
 	}
 
+	/**
+	 * Getter for the registry associated with this networks relay chain.
+	 */
 	public get getRelaysRegistry() {
 		return this.currentRelayRegistry;
 	}
 
+	/**
+	 * Lookup all chains that have the following token symbol. It will return an array
+	 * with all the chains that have the following token symbols. Note this will only
+	 * be searched in the respective relay chains registry.
+	 *
+	 * @param symbol Token symbol to lookup
+	 */
 	public lookupTokenSymbol(symbol: string): ExpandedChainInfoKeys[] {
 		const chainIds = Object.keys(this.currentRelayRegistry);
 		const result = [];
@@ -46,6 +62,13 @@ export class Registry {
 		return result;
 	}
 
+	/**
+	 * Lookup all chains that have the following assetId. It will return an array
+	 * with all the chains that have the following AssetId. Note this will only
+	 * be searched in the respective relay chains registry.
+	 *
+	 * @param id AssetId to lookup
+	 */
 	public lookupAssetId(id: string) {
 		const chainIds = Object.keys(this.currentRelayRegistry);
 		const result = [];
@@ -60,6 +83,11 @@ export class Registry {
 		return result;
 	}
 
+	/**
+	 * Check whether a parachain id exists within the relay chains registry.
+	 *
+	 * @param id Id of the parachain
+	 */
 	public lookupParachainId(id: string): boolean {
 		const chainIds = Object.keys(this.currentRelayRegistry);
 		if (chainIds.includes(id)) return true;
@@ -67,6 +95,11 @@ export class Registry {
 		return false;
 	}
 
+	/**
+	 * Return the info for a parachain within a relay chains registry.
+	 *
+	 * @param id
+	 */
 	public lookupParachainInfo(id: string): ExpandedChainInfoKeys[] {
 		const chainIds = Object.keys(this.currentRelayRegistry);
 		if (chainIds.includes(id)) {
