@@ -1,15 +1,19 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-interface AssetsInfo {
+export interface AssetsInfo {
 	[key: string]: string;
 }
 
+export interface ChainInfoKeys {
+	specName: string;
+	tokens: string[];
+	assetsInfo: AssetsInfo;
+}
+
+export type ExpandedChainInfoKeys = { chainId: string } & ChainInfoKeys;
+
 export type ChainInfo = {
-	[x: string]: {
-		specName: string;
-		tokens: string[];
-		assetsInfo: AssetsInfo;
-	};
+	[x: string]: ChainInfoKeys;
 };
 
 export type ChainInfoRegistry = {
