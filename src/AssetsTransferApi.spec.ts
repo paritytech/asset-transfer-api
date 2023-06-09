@@ -90,7 +90,6 @@ describe('AssetTransferAPI', () => {
 		describe('SystemToRelay', () => {
 			it('Should corectly return Native', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
-					'statemint',
 					'0',
 					['DOT'],
 					Direction.SystemToRelay
@@ -102,7 +101,6 @@ describe('AssetTransferAPI', () => {
 		describe('RelayToSystem', () => {
 			it('Should correctly return Native', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
-					'polkadot',
 					'1000',
 					['DOT'],
 					Direction.RelayToSystem
@@ -114,7 +112,6 @@ describe('AssetTransferAPI', () => {
 		describe('SystemToPara', () => {
 			it('Should correctly return Foreign', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
-					'statemint',
 					'2000',
 					['1'],
 					Direction.SystemToPara

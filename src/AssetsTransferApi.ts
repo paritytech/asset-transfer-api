@@ -29,9 +29,7 @@ import {
 	checkXcmTxInputs,
 	checkXcmVersion,
 } from './errors';
-import { findRelayChain } from './registry/findRelayChain';
-import { parseRegistry } from './registry/parseRegistry';
-import type { ChainInfoRegistry } from './registry/types';
+import { Registry } from './registry';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetsTransferApiOpts,
@@ -59,7 +57,7 @@ export class AssetsTransferApi {
 	readonly _opts: AssetsTransferApiOpts;
 	readonly _specName: string;
 	readonly _safeXcmVersion: number;
-	readonly _registry: ChainInfoRegistry;
+	readonly registry: Registry;
 
 	constructor(
 		api: ApiPromise,
@@ -71,7 +69,7 @@ export class AssetsTransferApi {
 		this._opts = opts;
 		this._specName = specName;
 		this._safeXcmVersion = safeXcmVersion;
-		this._registry = parseRegistry(opts);
+		this.registry = new Registry(specName, this._opts);
 	}
 
 	/**
@@ -97,7 +95,7 @@ export class AssetsTransferApi {
 		 */
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
-		const { _api, _specName, _safeXcmVersion, _registry } = this;
+		const { _api, _specName, _safeXcmVersion, registry } = this;
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			_specName.toLowerCase()
 		);
@@ -120,12 +118,7 @@ export class AssetsTransferApi {
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			const localAssetType = checkLocalTxInput(
-				assetIds,
-				amounts,
-				_specName,
-				_registry
-			); // Throws an error when any of the inputs are incorrect.
+			const localAssetType = checkLocalTxInput(assetIds, amounts, registry); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
 			if (isLocalSystemTx) {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
@@ -182,15 +175,10 @@ export class AssetsTransferApi {
 			xcmDirection,
 			destChainId,
 			_specName,
-			_registry
+			registry
 		);
 
-		const assetType = this.fetchAssetType(
-			_specName,
-			destChainId,
-			assetIds,
-			xcmDirection
-		);
+		const assetType = this.fetchAssetType(destChainId, assetIds, xcmDirection);
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
@@ -402,7 +390,6 @@ export class AssetsTransferApi {
 	}
 
 	private fetchAssetType(
-		specName: string,
 		destChainId: string,
 		assets: string[],
 		xcmDirection: Direction
@@ -415,8 +402,7 @@ export class AssetsTransferApi {
 			return AssetType.Foreign;
 		}
 
-		const relayChainName = findRelayChain(specName, this._registry);
-		const relayChainInfo = this._registry[relayChainName];
+		const relayChainInfo = this.registry.currentRelayRegistry;
 
 		/**
 		 * We can assume all the assets in `assets` are either foreign or native since we check
