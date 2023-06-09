@@ -332,6 +332,12 @@ export class AssetsTransferApi {
 			return Direction.ParaToRelay;
 		}
 
+		if (_api.query.polkadotXcm && isDestIdSystemPara) {
+			throw Error('ParaToSystem is not yet implemented');
+
+			return Direction.ParaToSystem;
+		}
+
 		if (_api.query.polkadotXcm) {
 			throw Error('ParaToPara is not yet implemented');
 

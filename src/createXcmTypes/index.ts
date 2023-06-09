@@ -18,4 +18,5 @@ export const createXcmTypes: ICreateXcmTypeLookup = {
 	RelayToSystem,
 	ParaToPara: {} as ICreateXcmType,
 	ParaToRelay: {} as ICreateXcmType,
+	ParaToSystem: {} as ICreateXcmType,
 };

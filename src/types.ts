@@ -27,6 +27,7 @@ export enum Direction {
 	SystemToRelay = 'SystemToRelay',
 	ParaToPara = 'ParaToPara',
 	ParaToRelay = 'ParaToRelay',
+	ParaToSystem = 'ParaToSystem',
 	RelayToSystem = 'RelayToSystem',
 	RelayToPara = 'RelayToPara',
 }
