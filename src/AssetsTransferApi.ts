@@ -498,6 +498,7 @@ export class AssetsTransferApi {
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
 		paysWithFeeOrigin?: string
 	): Promise<`0x${string}`> => {
+		this._registry
 		const submittableString = JSON.stringify(tx.toHuman());
 		const submittableData: SubmittableMethodData = JSON.parse(
 			submittableString
