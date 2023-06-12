@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
+import { u32 } from '@polkadot/types';
 import type {
 	MultiAssetsV2,
 	VersionedMultiAssets,
@@ -152,5 +153,14 @@ export const SystemToRelay: ICreateXcmType = {
 			: { Unlimited: null };
 
 		return api.registry.createType('XcmV2WeightLimit', limit);
+	},
+
+	/**
+	 * returns the correct feeAssetItem based on XCM direction.
+	 *
+	 * @param api ApiPromise
+	 */
+	createFeeAssetItem: (api: ApiPromise): u32 => {
+		return api.registry.createType('u32', 0);
 	},
 };

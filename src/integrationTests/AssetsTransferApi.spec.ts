@@ -5,14 +5,18 @@ import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import type { Format, TxResult } from '../types';
 
-const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
-const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
+const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
+const systemAssetsApi = new AssetsTransferApi(
+	adjustedMockSystemApi,
+	'statemine',
+	2
+);
 
 describe('AssetTransferApi Integration Tests', () => {
 	describe('createTransferTransaction', () => {
 		describe('Local Asset Transfer', () => {
-			it('Should construct a `assets::transfer` call on a system parachain', async () => {
-				const res = await systemAssetsApi.createTransferTransaction(
+			it('Should construct a `assets::transfer` call on a system parachain', () => {
+				const res = systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['1'],
@@ -29,8 +33,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
-			it('Should construct a `assets::transferKeepAlive` call on a system parachain', async () => {
-				const res = await systemAssetsApi.createTransferTransaction(
+			it('Should construct a `assets::transferKeepAlive` call on a system parachain', () => {
+				const res = systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['1'],
@@ -48,8 +52,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
-			it('Should construct a `balances::transfer` call on a system parachain', async () => {
-				const res = await systemAssetsApi.createTransferTransaction(
+			it('Should construct a `balances::transfer` call on a system parachain', () => {
+				const res = systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['KSM'],
@@ -66,8 +70,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
-			it('Should construct a `balances::transferKeepAlive` call on a system parachain', async () => {
-				const res = await systemAssetsApi.createTransferTransaction(
+			it('Should construct a `balances::transferKeepAlive` call on a system parachain', () => {
+				const res = systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['KSM'],
@@ -85,8 +89,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
-			it('Should construct a `balances::transfer` call on a relay chain', async () => {
-				const res = await relayAssetsApi.createTransferTransaction(
+			it('Should construct a `balances::transfer` call on a relay chain', () => {
+				const res = relayAssetsApi.createTransferTransaction(
 					'0',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['KSM'],
@@ -103,8 +107,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
-			it('Should construct a `balances::transferKeepAlive` call on a relay chain', async () => {
-				const res = await relayAssetsApi.createTransferTransaction(
+			it('Should construct a `balances::transferKeepAlive` call on a relay chain', () => {
+				const res = relayAssetsApi.createTransferTransaction(
 					'0',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['KSM'],
@@ -159,8 +163,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				);
 			};
 			describe('V2', () => {
-				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('call', true, 2);
+				it('Should correctly build a call for a limitedReserveTransferAsset for V2', () => {
+					const res = foreignBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -169,8 +173,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('payload', true, 2);
+				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', () => {
+					const res = foreignBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -183,8 +187,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignBaseSystemCreateTx('submittable', true, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('call', false, 2);
+				it('Should correctly build a call for a reserveTransferAsset for V2', () => {
+					const res = foreignBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -193,8 +197,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a reserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('payload', false, 2);
+				it('Should correctly build a payload for a reserveTransferAsset for V2', () => {
+					const res = foreignBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -207,8 +211,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignBaseSystemCreateTx('submittable', false, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a teleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('call', false, 2);
+				it('Should correctly build a call for a teleportAssets for V2', () => {
+					const res = nativeBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -217,8 +221,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a teleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', false, 2);
+				it('Should correctly build a payload for a teleportAssets for V2', () => {
+					const res = nativeBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -231,8 +235,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await nativeBaseSystemCreateTx('submittable', false, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for limitedTeleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 2);
+				it('Should correctly build a call for limitedTeleportAssets for V2', () => {
+					const res = nativeBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -241,8 +245,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for limitedTeleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 2);
+				it('Should correctly build a payload for limitedTeleportAssets for V2', () => {
+					const res = nativeBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -257,8 +261,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 			});
 			describe('V3', () => {
-				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('call', true, 3);
+				it('Should correctly build a call for a limitedReserveTransferAsset for V3', () => {
+					const res = foreignBaseSystemCreateTx('call', true, 3);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -267,8 +271,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('payload', true, 3);
+				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', () => {
+					const res = foreignBaseSystemCreateTx('payload', true, 3);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -281,8 +285,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignBaseSystemCreateTx('submittable', true, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('call', false, 3);
+				it('Should correctly build a call for a reserveTransferAsset for V3', () => {
+					const res = foreignBaseSystemCreateTx('call', false, 3);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -291,8 +295,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a reserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('payload', false, 3);
+				it('Should correctly build a payload for a reserveTransferAsset for V3', () => {
+					const res = foreignBaseSystemCreateTx('payload', false, 3);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -305,8 +309,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignBaseSystemCreateTx('submittable', false, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a teleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('call', false, 3);
+				it('Should correctly build a call for a teleportAssets for V3', () => {
+					const res = nativeBaseSystemCreateTx('call', false, 3);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -315,8 +319,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a teleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', false, 3);
+				it('Should correctly build a payload for a teleportAssets for V3', () => {
+					const res = nativeBaseSystemCreateTx('payload', false, 3);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -329,8 +333,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await nativeBaseSystemCreateTx('submittable', false, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for limitedTeleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 3);
+				it('Should correctly build a call for limitedTeleportAssets for V3', () => {
+					const res = nativeBaseSystemCreateTx('call', true, 3);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'call',
@@ -339,8 +343,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for limitedTeleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 3);
+				it('Should correctly build a payload for limitedTeleportAssets for V3', () => {
+					const res = nativeBaseSystemCreateTx('payload', true, 3);
 					expect(res).toEqual({
 						direction: 'SystemToPara',
 						format: 'payload',
@@ -374,8 +378,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				);
 			};
 			describe('V2', () => {
-				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('call', true, 2);
+				it('Should correctly build a call for a limitedReserveTransferAsset for V2', () => {
+					const res = baseRelayCreateTx('call', true, 2);
 					expect(res).toEqual({
 						direction: 'RelayToPara',
 						format: 'call',
@@ -384,8 +388,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('payload', true, 2);
+				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', () => {
+					const res = baseRelayCreateTx('payload', true, 2);
 					expect(res).toEqual({
 						direction: 'RelayToPara',
 						format: 'payload',
@@ -398,8 +402,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseRelayCreateTx('submittable', true, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('call', false, 2);
+				it('Should correctly build a call for a reserveTransferAsset for V2', () => {
+					const res = baseRelayCreateTx('call', false, 2);
 					expect(res).toEqual({
 						direction: 'RelayToPara',
 						format: 'call',
@@ -408,8 +412,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a reserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('payload', false, 2);
+				it('Should correctly build a payload for a reserveTransferAsset for V2', () => {
+					const res = baseRelayCreateTx('payload', false, 2);
 					expect(res).toEqual({
 						direction: 'RelayToPara',
 						format: 'payload',
@@ -424,8 +428,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 			});
 			describe('V3', () => {
-				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('call', true, 3);
+				it('Should correctly build a call for a limitedReserveTransferAsset for V3', () => {
+					const res = baseRelayCreateTx('call', true, 3);
 					expect(res).toEqual({
 						direction: 'RelayToPara',
 						format: 'call',
@@ -434,8 +438,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('payload', true, 3);
+				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', () => {
+					const res = baseRelayCreateTx('payload', true, 3);
 					expect(res).toEqual({
 						direction: 'RelayToPara',
 						format: 'payload',
@@ -448,8 +452,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseRelayCreateTx('submittable', true, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('call', false, 3);
+				it('Should correctly build a call for a reserveTransferAsset for V3', () => {
+					const res = baseRelayCreateTx('call', false, 3);
 					expect(res).toEqual({
 						direction: 'RelayToPara',
 						format: 'call',
@@ -458,8 +462,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a reserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('payload', false, 3);
+				it('Should correctly build a payload for a reserveTransferAsset for V3', () => {
+					const res = baseRelayCreateTx('payload', false, 3);
 					expect(res).toEqual({
 						direction: 'RelayToPara',
 						format: 'payload',
@@ -493,8 +497,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				);
 			};
 			describe('V2', () => {
-				it('Should correctly build a teleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('call', false, 2);
+				it('Should correctly build a teleportAssets call for V2', () => {
+					const res = nativeBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToRelay',
 						format: 'call',
@@ -503,8 +507,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a teleportAssets payload for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', false, 2);
+				it('Should correctly build a teleportAssets payload for V2', () => {
+					const res = nativeBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
 						direction: 'SystemToRelay',
 						format: 'payload',
@@ -517,8 +521,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await nativeBaseSystemCreateTx('submittable', false, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 2);
+				it('Should correctly build a limitedTeleportAssets call for V2', () => {
+					const res = nativeBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToRelay',
 						format: 'call',
@@ -527,8 +531,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a limitedTeleportAssets payload for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 2);
+				it('Should correctly build a limitedTeleportAssets payload for V2', () => {
+					const res = nativeBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
 						direction: 'SystemToRelay',
 						format: 'payload',
@@ -543,8 +547,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 			});
 			describe('V3', () => {
-				it('Should correctly build a teleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('call', false, 3);
+				it('Should correctly build a teleportAssets call for V3', () => {
+					const res = nativeBaseSystemCreateTx('call', false, 3);
 					expect(res).toEqual({
 						direction: 'SystemToRelay',
 						format: 'call',
@@ -553,8 +557,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a teleportAssets payload for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', false, 3);
+				it('Should correctly build a teleportAssets payload for V3', () => {
+					const res = nativeBaseSystemCreateTx('payload', false, 3);
 					expect(res).toEqual({
 						direction: 'SystemToRelay',
 						format: 'payload',
@@ -567,8 +571,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await nativeBaseSystemCreateTx('submittable', false, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 3);
+				it('Should correctly build a limitedTeleportAssets call for V3', () => {
+					const res = nativeBaseSystemCreateTx('call', true, 3);
 					expect(res).toEqual({
 						direction: 'SystemToRelay',
 						format: 'call',
@@ -577,8 +581,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a limitedTeleportAssets payload for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 3);
+				it('Should correctly build a limitedTeleportAssets payload for V3', () => {
+					const res = nativeBaseSystemCreateTx('payload', true, 3);
 					expect(res).toEqual({
 						direction: 'SystemToRelay',
 						format: 'payload',
@@ -612,8 +616,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				);
 			};
 			describe('V2', () => {
-				it('Should correctly build a teleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('call', false, 2);
+				it('Should correctly build a teleportAssets call for V2', () => {
+					const res = nativeBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
 						direction: 'RelayToSystem',
 						format: 'call',
@@ -622,8 +626,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a teleportAssets payload for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', false, 2);
+				it('Should correctly build a teleportAssets payload for V2', () => {
+					const res = nativeBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
 						direction: 'RelayToSystem',
 						format: 'payload',
@@ -636,8 +640,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await nativeBaseSystemCreateTx('submittable', false, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 2);
+				it('Should correctly build a limitedTeleportAssets call for V2', () => {
+					const res = nativeBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
 						direction: 'RelayToSystem',
 						format: 'call',
@@ -646,8 +650,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 2);
+				it('Should correctly build a limitedTeleportAssets call for V2', () => {
+					const res = nativeBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
 						direction: 'RelayToSystem',
 						format: 'payload',
@@ -662,8 +666,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 			});
 			describe('V3', () => {
-				it('Should correctly build a teleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('call', false, 3);
+				it('Should correctly build a teleportAssets call for V3', () => {
+					const res = nativeBaseSystemCreateTx('call', false, 3);
 					expect(res).toEqual({
 						direction: 'RelayToSystem',
 						format: 'call',
@@ -672,8 +676,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a teleportAssets payload for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', false, 3);
+				it('Should correctly build a teleportAssets payload for V3', () => {
+					const res = nativeBaseSystemCreateTx('payload', false, 3);
 					expect(res).toEqual({
 						direction: 'RelayToSystem',
 						format: 'payload',
@@ -686,8 +690,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await nativeBaseSystemCreateTx('submittable', false, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 3);
+				it('Should correctly build a limitedTeleportAssets call for V3', () => {
+					const res = nativeBaseSystemCreateTx('call', true, 3);
 					expect(res).toEqual({
 						direction: 'RelayToSystem',
 						format: 'call',
@@ -696,8 +700,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 3);
+				it('Should correctly build a limitedTeleportAssets call for V3', () => {
+					const res = nativeBaseSystemCreateTx('payload', true, 3);
 					expect(res).toEqual({
 						direction: 'RelayToSystem',
 						format: 'payload',
@@ -713,15 +717,15 @@ describe('AssetTransferApi Integration Tests', () => {
 			});
 		});
 		describe('checkLocalTxInput', () => {
-			it('Should error when the assetIds or amounts is the incorrect length', async () => {
-				const err = async () =>
-					await systemAssetsApi.createTransferTransaction(
+			it('Should error when the assetIds or amounts is the incorrect length', () => {
+				const err = () =>
+					systemAssetsApi.createTransferTransaction(
 						'1000',
 						'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 						['1', '2'],
 						['100', '100']
 					);
-				await expect(err()).rejects.toThrow(
+				expect(err).toThrow(
 					'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1'
 				);
 			});

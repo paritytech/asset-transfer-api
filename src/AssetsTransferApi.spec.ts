@@ -16,19 +16,14 @@ const mockSubmittableExt = mockSystemApi.registry.createType(
 	'0xfc041f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000'
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi);
-const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi);
+const systemAssetsApi = new AssetsTransferApi(
+	adjustedMockSystemApi,
+	'statemine',
+	2
+);
+const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
 
 describe('AssetTransferAPI', () => {
-	describe('fetchChainInfo', () => {
-		it('Should fetch the correct chain info', async () => {
-			const { specName, specVersion } = await systemAssetsApi[
-				'fetchChainInfo'
-			]();
-			expect(specName).toEqual('statemine');
-			expect(specVersion).toEqual('9420');
-		});
-	});
 	describe('establishDirection', () => {
 		it('Should correctly determine direction for SystemToPara', () => {
 			const res = systemAssetsApi['establishDirection']('2000', 'statemint');
@@ -80,8 +75,8 @@ describe('AssetTransferAPI', () => {
 				xcmVersion: 2,
 			});
 		});
-		it('Should construct the correct submittable', () => {
-			const res = systemAssetsApi['constructFormat'](
+		it('Should construct the correct submittable', async () => {
+			const res = await systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
 				Direction.SystemToPara,
 				1,
@@ -89,12 +84,6 @@ describe('AssetTransferAPI', () => {
 				'submittable'
 			);
 			expect(res.tx.toRawType()).toEqual('Extrinsic');
-		});
-	});
-	describe('fetchSafeXcmVersion', () => {
-		it('Should return the correct value when the Option is true', async () => {
-			const version = await systemAssetsApi['fetchSafeXcmVersion']();
-			expect(version.toNumber()).toEqual(2);
 		});
 	});
 	describe('fetchAssetType', () => {
@@ -146,9 +135,14 @@ describe('AssetTransferAPI', () => {
 					},
 				},
 			};
-			const mockSystemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, {
-				injectedRegistry,
-			});
+			const mockSystemAssetsApi = new AssetsTransferApi(
+				adjustedMockSystemApi,
+				'statemine',
+				2,
+				{
+					injectedRegistry,
+				}
+			);
 
 			expect(mockSystemAssetsApi._opts.injectedRegistry).toStrictEqual(
 				injectedRegistry
@@ -318,4 +312,84 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 	});
+
+	describe('feeAssetItem', () => {
+		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a limitedReserveTransferAssets call', async () => {
+			const expected =
+				'{"callIndex":"0x1f08","args":{"dest":{"v3":{"parents":1,"interior":{"x1":{"parachain":2000}}}},"beneficiary":{"v3":{"parents":0,"interior":{"x1":{"accountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v3":[{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":10}]}}},"fun":{"fungible":10000000000000}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":11}]}}},"fun":{"fungible":20000000000000}},{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":30000000000000}}]},"fee_asset_item":1,"weight_limit":{"limited":{"refTime":0,"proofSize":0}}}}';
+			const callTxResult = await systemAssetsApi.createTransferTransaction(
+				'2000',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				['ksm', '10', '11'],
+				['30000000000000', '10000000000000', '20000000000000'],
+				{
+					xcmVersion: 3,
+					weightLimit: '100000',
+					isLimited: true,
+					format: 'call',
+					keepAlive: true,
+					paysWithFeeDest: 'usdt',
+				}
+			);
+
+			const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
+			expect(decoded).toEqual(expected);
+		});
+
+		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a reserveTransferAssets call', async () => {
+			const expected =
+				'{"callIndex":"0x1f02","args":{"dest":{"v3":{"parents":1,"interior":{"x1":{"parachain":2000}}}},"beneficiary":{"v3":{"parents":0,"interior":{"x1":{"accountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v3":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":100}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":34}]}}},"fun":{"fungible":300}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":36}]}}},"fun":{"fungible":400}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":11}]}}},"fun":{"fungible":500}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":12}]}}},"fun":{"fungible":700}},{"id":{"concrete":{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":10}]}}},"fun":{"fungible":2000}}]},"fee_asset_item":5}}';
+			const callTxResult = await systemAssetsApi.createTransferTransaction(
+				'2000',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				['ksm', '10', '34', '36', '11', '12'],
+				['100', '2000', '300', '400', '500', '700'],
+				{
+					paysWithFeeDest: '10',
+					xcmVersion: 3,
+					format: 'call',
+					keepAlive: true,
+				}
+			);
+
+			const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
+			expect(decoded).toEqual(expected);
+		});
+	});
+	describe('paysWithFeeOrigin', () => {
+		it('Should correctly assign the assedId field to an unsigned transaction when a valid paysWithFeeOrigin option is provided', async () => {
+			const result = await systemAssetsApi.createTransferTransaction(
+				'1000',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				[],
+				['100'],
+				{
+					paysWithFeeOrigin: '1984',
+					format: 'payload',
+					keepAlive: true,
+				}
+			);
+			
+			const decoded = systemAssetsApi.decodeExtrinsic(result.tx, 'payload');
+			expect(decoded).toEqual('hello');
+		})
+
+		it('Should throw an error for directions that are non local', async () => {
+			await expect(systemAssetsApi.createTransferTransaction(
+				'2023',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				['ksm'],
+				['100'],
+				{
+					paysWithFeeOrigin: '1984',
+					format: 'payload',
+					keepAlive: true,
+				}
+			))
+			.rejects
+			.toThrowError(
+				'paysWithFeeOrigin can only be used to construct local transactions. Found direction SystemToPara'
+			);
+		})
+	})
 });

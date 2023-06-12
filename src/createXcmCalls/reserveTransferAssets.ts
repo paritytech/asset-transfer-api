@@ -28,7 +28,8 @@ export const reserveTransferAssets = (
 	amounts: string[],
 	destChainId: string,
 	xcmVersion: number,
-	specName: string
+	specName: string,
+	paysWithFeeDest?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].reserveTransferAssets;
@@ -43,5 +44,16 @@ export const reserveTransferAssets = (
 		assetIds
 	);
 
-	return ext(dest, beneficiary, assets, 0);
+	const feeAssetItem = paysWithFeeDest
+		? typeCreator.createFeeAssetItem(
+				api,
+				paysWithFeeDest,
+				specName,
+				assetIds,
+				amounts,
+				xcmVersion
+		  )
+		: api.registry.createType('u32', 0);
+
+	return ext(dest, beneficiary, assets, feeAssetItem);
 };

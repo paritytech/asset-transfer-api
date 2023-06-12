@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.0-alpha.5](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.4..v0.1.0-alpha.5)(2023-06-07)
+
+- Breaking Change: Rework `AssetTransferApi` constructor, and `constructApiPromise`
+- Check primitive and object types for `createTransferTransaction` inputs
+- Fix CI set-output
+- Add function to get General Index of a valid token symbol
+- Ensure a user can input a native token symbol or an empty array for relay directions
+- Update tests to use v9420 metadata
+- Add `decodeExtrinsic` to `AssetsTransferApi`
+- Add balances pallet support for local transfers on relay, and system parachains
+- Set `RelayToPara` AssetType explicitly to Foreign
+- Ensure MultiAsset Ordering
+
 ## [0.1.0-alpha.4](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.3..v0.1.0-alpha.4)(2023-05-30)
 
 - change isNative to isRelayNative for System to Para 

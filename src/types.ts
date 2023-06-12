@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import type { ChainInfoRegistry } from './registry/types';
@@ -93,7 +94,7 @@ export interface TransferArgsOpts<T extends Format> {
 	/**
 	 * AssetId to pay fee's on the destination parachain.
 	 */
-	payFeeWithTo?: string;
+	paysWithFeeDest?: string;
 	/**
 	 * Boolean to declare if this will be with limited XCM transfers.
 	 * Deafult is unlimited.
@@ -121,13 +122,15 @@ export interface ChainInfo {
 	specVersion: string;
 }
 
-export type MultiAssetInterior =
-	| {
-			X2: [{ PalletInstance: string }, { GeneralIndex: string }];
-	  }
-	| {
-			Here: string;
-	  };
+export type NonRelayNativeInterior = {
+	X2: [{ PalletInstance: string }, { GeneralIndex: string }];
+};
+
+export type RelayNativeInterior = {
+	Here: string;
+};
+
+export type MultiAssetInterior = NonRelayNativeInterior | RelayNativeInterior;
 
 export type MultiAsset = {
 	fun: {
@@ -140,3 +143,85 @@ export type MultiAsset = {
 		};
 	};
 };
+
+export interface SignerPayloadJSON {
+	/**
+	 * @description The ss-58 encoded address
+	 */
+	address: string;
+	/**
+	 * @description The checkpoint hash of the block, in hex
+	 */
+	blockHash: string;
+	/**
+	 * @description The checkpoint block number, in hex
+	 */
+	blockNumber: string;
+	/**
+	 * @description The era for this transaction, in hex
+	 */
+	era: string;
+	/**
+	 * @description The genesis hash of the chain, in hex
+	 */
+	genesisHash: string;
+	/**
+	 * @description The encoded method (with arguments) in hex
+	 */
+	method: string;
+	/**
+	 * @description The nonce for this transaction, in hex
+	 */
+	nonce: string;
+	/**
+	 * @description The current spec version for the runtime
+	 */
+	specVersion: string;
+	/**
+	 * @description The tip for this transaction, in hex
+	 */
+	tip: string;
+	/**
+	 * @description The current transaction version for the runtime
+	 */
+	transactionVersion: string;
+	/**
+	 * @description The applicable signed extensions for this runtime
+	 */
+	signedExtensions: string[];
+	/**
+	 * @description The version of the extrinsic we are dealing with
+	 */
+	version: number;
+}
+
+/**
+ * JSON format for an unsigned transaction.
+ */
+export interface UnsignedTransaction extends SignerPayloadJSON {
+	/**
+	 * The assetId used in ChargeAssetTxPayment
+	 *
+	 * @default 0
+	 */
+	assetId?: number;
+}
+
+export interface Dest {
+	id: string;
+}
+
+export interface Args {
+	dest: Dest;
+	value: u32;
+}
+
+export interface Method {
+	args: Args;
+	method: string;
+	section: string;
+}
+export interface SubmittableMethodData {
+	isSigned: boolean;
+	method: Method;
+}

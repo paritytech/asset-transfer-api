@@ -4,15 +4,14 @@ import '@polkadot/api-augment';
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { Option, u32 } from '@polkadot/types';
 import type {
 	RuntimeDispatchInfo,
 	RuntimeDispatchInfoV1,
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
+// import { GenericExtrinsicPayload } from '@polkadot/types';
 
 import {
-	DEFAULT_XCM_VERSION,
 	RELAY_CHAIN_NAMES,
 	SYSTEM_PARACHAINS_IDS,
 	SYSTEM_PARACHAINS_NAMES,
@@ -25,8 +24,13 @@ import {
 	reserveTransferAssets,
 	teleportAssets,
 } from './createXcmCalls';
-import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
-import { checkLocalTxInput, checkXcmTxInputs, checkXcmVersion } from './errors';
+import {
+	BaseError,
+	checkBaseInputTypes,
+	checkLocalTxInput,
+	checkXcmTxInputs,
+	checkXcmVersion,
+} from './errors';
 import { findRelayChain } from './registry/findRelayChain';
 import { parseRegistry } from './registry/parseRegistry';
 import type { ChainInfoRegistry } from './registry/types';
@@ -34,38 +38,43 @@ import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetsTransferApiOpts,
 	AssetType,
-	ChainInfo,
 	ConstructedFormat,
 	Direction,
 	Format,
 	LocalTransferTypes,
 	Methods,
+	SubmittableMethodData,
 	TransferArgsOpts,
 	TxResult,
+	UnsignedTransaction,
 } from './types';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
- * construct transactions for assets and estimating fees. The main public functions this
- * will expose are:
- * - createTransferTransaction
- * - fetchFeeInfo
+ * construct transactions for assets and estimating fees.
  *
  * @constructor api ApiPromise provided by Polkadot-js
+ * @constructor specName The specName of the provided chains api
+ * @constructor safeXcmVersion The safeXcmVersion of the chain.
  * @constructor opts AssetsTransferApiOpts
  */
 export class AssetsTransferApi {
 	readonly _api: ApiPromise;
 	readonly _opts: AssetsTransferApiOpts;
-	readonly _info: Promise<ChainInfo>;
-	readonly _safeXcmVersion: Promise<u32>;
+	readonly _specName: string;
+	readonly _safeXcmVersion: number;
 	readonly _registry: ChainInfoRegistry;
 
-	constructor(api: ApiPromise, opts: AssetsTransferApiOpts = {}) {
+	constructor(
+		api: ApiPromise,
+		specName: string,
+		safeXcmVersion: number,
+		opts: AssetsTransferApiOpts = {}
+	) {
 		this._api = api;
 		this._opts = opts;
-		this._info = this.fetchChainInfo();
-		this._safeXcmVersion = this.fetchSafeXcmVersion();
+		this._specName = specName;
+		this._safeXcmVersion = safeXcmVersion;
 		this._registry = parseRegistry(opts);
 	}
 
@@ -86,11 +95,15 @@ export class AssetsTransferApi {
 		amounts: string[],
 		opts?: TransferArgsOpts<T>
 	): Promise<TxResult<T>> {
-		const { _api, _info, _safeXcmVersion, _registry } = this;
-		const { specName } = await _info;
-		const safeXcmVersion = await _safeXcmVersion;
+		/**
+		 * Ensure all the inputs are the corrects primitive and or object types.
+		 * It will throw an error if any are incorrect.
+		 */
+		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
+
+		const { _api, _specName, _safeXcmVersion, _registry } = this;
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
-			specName.toLowerCase()
+			_specName.toLowerCase()
 		);
 		const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
 
@@ -101,7 +114,8 @@ export class AssetsTransferApi {
 		const addr = sanitizeAddress(destAddr);
 		const isLocalSystemTx = isDestSystemParachain && isOriginSystemParachain;
 		const isLocalRelayTx =
-			destChainId === '0' && RELAY_CHAIN_NAMES.includes(specName.toLowerCase());
+			destChainId === '0' &&
+			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
 		/**
 		 * Create a local asset transfer on a system parachain
 		 */
@@ -113,8 +127,8 @@ export class AssetsTransferApi {
 			const localAssetType = checkLocalTxInput(
 				assetIds,
 				amounts,
-				specName,
-				this._registry
+				_specName,
+				_registry
 			); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
 			if (isLocalSystemTx) {
@@ -136,12 +150,15 @@ export class AssetsTransferApi {
 							: assets.transfer(_api, addr, assetIds[0], amounts[0]);
 					palletMethod = `assets::${method}`;
 				}
-				return this.constructFormat(
+
+				console.log('WHAT ARE OPTS', opts);
+				return await this.constructFormat(
 					tx,
 					'local',
 					null,
 					palletMethod,
-					opts?.format
+					opts?.format,
+					opts?.paysWithFeeOrigin
 				);
 			} else {
 				/**
@@ -157,28 +174,27 @@ export class AssetsTransferApi {
 					'local',
 					null,
 					palletMethod,
-					opts?.format
+					opts?.format,
+					opts?.paysWithFeeOrigin
 				);
 			}
 		}
 
-		const xcmDirection = this.establishDirection(destChainId, specName);
+		const xcmDirection = this.establishDirection(destChainId, _specName);
 		const xcmVersion =
-			opts?.xcmVersion === undefined
-				? safeXcmVersion.toNumber()
-				: opts.xcmVersion;
+			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
 		checkXcmTxInputs(
 			assetIds,
 			amounts,
 			xcmDirection,
 			destChainId,
-			specName,
+			_specName,
 			_registry
 		);
 
 		const assetType = this.fetchAssetType(
-			specName,
+			_specName,
 			destChainId,
 			assetIds,
 			xcmDirection
@@ -197,9 +213,9 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					specName,
-					opts?.weightLimit
-					opts?.paysWithFeeOrigin
+					_specName,
+					opts?.weightLimit,
+					opts?.paysWithFeeDest
 				);
 			} else {
 				txMethod = 'reserveTransferAssets';
@@ -211,7 +227,8 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					specName
+					_specName,
+					opts?.paysWithFeeDest
 				);
 			}
 		} else {
@@ -225,7 +242,7 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					specName,
+					_specName,
 					opts?.weightLimit
 				);
 			} else {
@@ -238,7 +255,7 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					specName
+					_specName
 				);
 			}
 		}
@@ -248,7 +265,8 @@ export class AssetsTransferApi {
 			xcmDirection,
 			xcmVersion,
 			txMethod,
-			opts?.format
+			opts?.format,
+			opts?.paysWithFeeOrigin
 		);
 	}
 	/**
@@ -289,20 +307,6 @@ export class AssetsTransferApi {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Fetch runtime information based on the connected chain.
-	 *
-	 * @param api ApiPromise
-	 */
-	private async fetchChainInfo(): Promise<ChainInfo> {
-		const { _api } = this;
-		const { specName, specVersion } = await _api.rpc.state.getRuntimeVersion();
-		return {
-			specName: specName.toString(),
-			specVersion: specVersion.toString(),
-		};
 	}
 
 	/**
@@ -365,13 +369,14 @@ export class AssetsTransferApi {
 	 * @param tx A polkadot-js submittable extrinsic
 	 * @param format The format to return the tx in.
 	 */
-	private constructFormat<T extends Format>(
+	private async constructFormat<T extends Format>(
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
 		direction: Direction | 'local',
 		xcmVersion: number | null = null,
 		method: Methods,
-		format?: T
-	): TxResult<T> {
+		format?: T,
+		paysWithFeeOrigin?: string
+	): Promise<TxResult<T>> {
 		const { _api } = this;
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
@@ -396,29 +401,15 @@ export class AssetsTransferApi {
 		}
 
 		if (fmt === 'payload') {
-			result.tx = _api.registry
-				.createType('ExtrinsicPayload', tx, {
-					version: tx.version,
-				})
-				.toHex() as ConstructedFormat<T>;
-		}
+			if(paysWithFeeOrigin) {
+				result.tx = ((await createPaysWithFeeOriginPayload(
+						_api,
+						tx,
+						paysWithFeeOrigin
+					)) as ConstructedFormat<T>)
 
+			} 
 		return result;
-	}
-
-	/**
-	 * Fetch for a safe Xcm Version from the chain, if none exists the
-	 * in app default version will be used.
-	 */
-	private async fetchSafeXcmVersion(): Promise<u32> {
-		const { _api } = this;
-		const pallet = establishXcmPallet(_api);
-		const safeVersion = await _api.query[pallet].safeXcmVersion<Option<u32>>();
-		const version = safeVersion.isSome
-			? safeVersion.unwrap()
-			: _api.registry.createType('u32', DEFAULT_XCM_VERSION);
-
-		return version;
 	}
 
 	private fetchAssetType(
@@ -493,4 +484,80 @@ export class AssetsTransferApi {
 
 		return '';
 	}
+
+	/**
+	 * returns an ExtrinsicPayload with the provided paysWithFeeOrigin set as the assetId
+	 *
+	 * @param api ApiPromise
+	 * @param tx SubmittableExtrinsic<'promise', ISubmittableResult>
+	 * @param paysWithFeeOrigin string
+	 * @returns
+	 */
+	createPaysWithFeeOriginPayload = async (
+		api: ApiPromise,
+		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
+		paysWithFeeOrigin?: string
+	): Promise<`0x${string}`> => {
+		const submittableString = JSON.stringify(tx.toHuman());
+		const submittableData: SubmittableMethodData = JSON.parse(
+			submittableString
+		) as unknown as SubmittableMethodData;
+		const addr = submittableData.method.args.dest.id;
+		const lastHeader = await api.rpc.chain.getHeader();
+		const blockNumber = api.registry.createType(
+			'BlockNumber',
+			lastHeader.number.toNumber()
+		);
+		const method = api.createType('Call', tx);
+		const era = api.registry.createType('ExtrinsicEra', {
+			current: lastHeader.number.toNumber(),
+			period: 64,
+		});
+
+		const nonce = await api.rpc.system.accountNextIndex(addr);
+		const assetId = Number.parseInt(paysWithFeeOrigin);
+		const isNotANumber = Number.isNaN(assetId);
+
+		if (isNotANumber) {
+			throw new BaseError(
+				`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`
+			);
+		}
+
+		const unsignedPayload: UnsignedTransaction = {
+			specVersion: api.runtimeVersion.specVersion.toHex(),
+			transactionVersion: api.runtimeVersion.transactionVersion.toHex(),
+			assetId,
+			address: addr,
+			blockHash: lastHeader.hash.toHex(),
+			blockNumber: blockNumber.toHex(),
+			era: era.toHex(),
+			genesisHash: api.genesisHash.toHex(),
+			method: method.toHex(),
+			nonce: nonce.toHex(),
+			signedExtensions: [
+				'CheckNonZeroSender',
+				'CheckSpecVersion',
+				'CheckTxVersion',
+				'CheckGenesis',
+				'CheckMortality',
+				'CheckNonce',
+				'CheckWeight',
+				'ChargeTransactionPayment',
+			],
+			tip: api.registry.createType('Compact<Balance>', 0).toHex(),
+			version: tx.version,
+		};
+
+		const extrinsicPayload = api.registry.createType(
+			'ExtrinsicPayload',
+			unsignedPayload,
+			{
+				version: unsignedPayload.version,
+			}
+		);
+
+		return extrinsicPayload.toHex();
+	};
 }
+

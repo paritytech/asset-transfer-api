@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
+import { u32 } from '@polkadot/types';
 import type {
 	VersionedMultiAssets,
 	VersionedMultiLocation,
@@ -35,6 +36,14 @@ export interface ICreateXcmType {
 		assets: string[]
 	) => VersionedMultiAssets;
 	createWeightLimit: (api: ApiPromise, weightLimit?: string) => WeightLimitV2;
+	createFeeAssetItem: (
+		api: ApiPromise,
+		paysWithFeeDest?: string,
+		specName?: string,
+		assetIds?: string[],
+		amounts?: string[],
+		xcmVersion?: number
+	) => u32;
 }
 
 interface IWeightLimitBase {
