@@ -453,17 +453,18 @@ export class AssetsTransferApi {
 		} else if (fmt === 'call') {
 			const call = _api.registry.createType('Call', encodedTransaction);
 
-			return call.toString();
+			const decodedMethodInfo = JSON.stringify(call.toHuman());
+
+			return decodedMethodInfo;
 		} else if (fmt === 'submittable') {
 			const extrinsic = _api.registry.createType(
 				'Extrinsic',
 				encodedTransaction
 			);
 
-			const extrinsicMethodInfo = extrinsic.method.toString();
-			if (extrinsicMethodInfo) {
-				return extrinsicMethodInfo;
-			}
+			const decodedMethodInfo = JSON.stringify(extrinsic.method.toHuman());
+
+			return decodedMethodInfo;
 		}
 
 		return '';
