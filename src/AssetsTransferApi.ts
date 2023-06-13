@@ -499,7 +499,7 @@ export class AssetsTransferApi {
 			}
 
 			const isSufficient = await checkAssetIsSufficient(this._api, assetId);
-			
+
 			if (!isSufficient) {
 				throw new BaseError(
 					`asset with assetId ${assetId} is not a sufficient asset to pay for fees`
