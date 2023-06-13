@@ -1,18 +1,19 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { Metadata, TypeRegistry } from '@polkadot/types';
+import { Metadata, Option, TypeRegistry } from '@polkadot/types';
 import type { Header } from '@polkadot/types/interfaces';
+import { PalletAssetsAssetDetails } from '@polkadot/types/lookup';
 import { getSpecTypes } from '@polkadot/types-known';
 
 import { statemineV9420 } from './metadata/statemineV9420';
 import { mockSystemApi } from './mockSystemApi';
 import { mockWeightInfo } from './mockWeightInfo';
 /**
- * Create a type registry for Kusama.
+ * Create a type registry for Statemine.
  * Useful for creating types in order to facilitate testing.
  *
- * @param specVersion Kusama runtime spec version to get type defs for.
+ * @param specVersion Statemine runtime spec version to get type defs for.
  */
 function createStatemineRegistry(specVersion: number): TypeRegistry {
 	const registry = new TypeRegistry();
@@ -70,6 +71,93 @@ const getHeader = (): Promise<Header> =>
 const createType = mockSystemApi.registry.createType.bind(mockSystemApi);
 const accountNextIndex = () => mockSystemApi.registry.createType('u32', 10);
 
+const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
+	Promise.resolve().then(() => {
+		const assets: Map<number, PalletAssetsAssetDetails> = new Map();
+
+		const insufficientAssetInfo = {
+			owner: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockSystemApi.registry.createType('u128', 100),
+			deposit: mockSystemApi.registry.createType('u128', 100),
+			minBalance: mockSystemApi.registry.createType('u128', 100),
+			isSufficient: mockSystemApi.registry.createType('bool', false),
+			accounts: mockSystemApi.registry.createType('u32', 100),
+			sufficients: mockSystemApi.registry.createType('u32', 100),
+			approvals: mockSystemApi.registry.createType('u32', 100),
+			status: mockSystemApi.registry.createType(
+				'PalletAssetsAssetStatus',
+				'live'
+			),
+		};
+		const insufficientAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			insufficientAssetInfo
+		);
+		assets.set(100, insufficientAsset);
+
+		const sufficientAssetInfo = {
+			owner: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockSystemApi.registry.createType('u128', 100),
+			deposit: mockSystemApi.registry.createType('u128', 100),
+			minBalance: mockSystemApi.registry.createType('u128', 100),
+			isSufficient: mockSystemApi.registry.createType('bool', true),
+			accounts: mockSystemApi.registry.createType('u32', 100),
+			sufficients: mockSystemApi.registry.createType('u32', 100),
+			approvals: mockSystemApi.registry.createType('u32', 100),
+			status: mockSystemApi.registry.createType(
+				'PalletAssetsAssetStatus',
+				'live'
+			),
+		};
+		const sufficientAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			sufficientAssetInfo
+		);
+		assets.set(1984, sufficientAsset);
+
+		const maybeAsset = assets.has(assetId) ? assets.get(assetId) : undefined;
+
+		if (maybeAsset) {
+			return new Option(
+				createStatemineRegistry(9420),
+				'PalletAssetsAssetDetails',
+				maybeAsset
+			);
+		}
+
+		return new Option(createStatemineRegistry(9420), 'undefined', undefined);
+	});
+
 const mockApiAt = {
 	call: {
 		transactionPaymentApi: {
@@ -96,6 +184,9 @@ export const adjustedMockSystemApi = {
 	query: {
 		polkadotXcm: {
 			safeXcmVersion: getSystemSafeXcmVersion,
+		},
+		assets: {
+			asset: asset,
 		},
 	},
 	tx: {

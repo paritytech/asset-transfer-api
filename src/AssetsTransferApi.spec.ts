@@ -354,7 +354,7 @@ describe('AssetTransferAPI', () => {
 		});
 	});
 	describe('paysWithFeeOrigin', () => {
-		it('Should correctly assign the assedId field to an unsigned transaction when a valid paysWithFeeOrigin option is provided', async () => {
+		it('Should correctly assign the assedId field to an unsigned transaction when a valid sufficient paysWithFeeOrigin option is provided', async () => {
 			const expected = '1,984';
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
@@ -399,6 +399,26 @@ describe('AssetTransferAPI', () => {
 				);
 			}).rejects.toThrowError(
 				'paysWithFeeOrigin value must be a valid number. Received: hello there'
+			);
+		});
+
+		it('Should error during payload construction when a paysWithFeeOrigin that matches a non sufficient asset', async () => {
+			await expect(async () => {
+				await systemAssetsApi.createTransferTransaction(
+					'2023',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['usdt', 'usdc'],
+					['5000000', '4000000000'],
+					{
+						paysWithFeeOrigin: '100',
+						format: 'payload',
+						keepAlive: true,
+						paysWithFeeDest: 'USDC',
+						xcmVersion: 3,
+					}
+				);
+			}).rejects.toThrowError(
+				'asset with assetId 100 is not a sufficient asset to pay for fees'
 			);
 		});
 	});

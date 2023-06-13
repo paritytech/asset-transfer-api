@@ -485,17 +485,26 @@ export class AssetsTransferApi {
 
 		// if a paysWithFeeOrigin is provided and the chain is not the relay chain
 		// we assign the assetId to the value of paysWithFeeOrigin
-		if (
-			paysWithFeeOrigin &&
-			this.registry.specName.toLowerCase() !=
-				this.registry.relayChain.toLowerCase()
-		) {
+		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
+			this._specName.toLowerCase()
+		);
+
+		if (paysWithFeeOrigin && isOriginSystemParachain) {
 			assetId = Number.parseInt(paysWithFeeOrigin);
 			const isNotANumber = Number.isNaN(assetId);
 
 			if (isNotANumber) {
 				throw new BaseError(
 					`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`
+				);
+			}
+
+			const isSufficient = await checkAssetIsSufficient(this._api, assetId);
+			console.log('is sufficient?', isSufficient);
+
+			if (!isSufficient) {
+				throw new BaseError(
+					`asset with assetId ${assetId} is not a sufficient asset to pay for fees`
 				);
 			}
 		}
@@ -554,3 +563,20 @@ export class AssetsTransferApi {
 		return extrinsicPayload.toHex();
 	};
 }
+
+const checkAssetIsSufficient = async (
+	api: ApiPromise,
+	assetId: number
+): Promise<boolean> => {
+	try {
+		const asset = (await api.query.assets.asset(assetId)).unwrap();
+
+		if (asset.isSufficient.toString().toLowerCase() === 'true') {
+			return true;
+		}
+
+		return false;
+	} catch (err: unknown) {
+		throw new BaseError(`assetId ${assetId} does not match a valid asset`);
+	}
+};
