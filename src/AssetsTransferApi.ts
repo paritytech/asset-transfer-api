@@ -498,7 +498,7 @@ export class AssetsTransferApi {
 				);
 			}
 
-			const isSufficient = await checkAssetIsSufficient(this._api, assetId);
+			const isSufficient = await this.checkAssetIsSufficient(assetId);
 
 			if (!isSufficient) {
 				throw new BaseError(
@@ -560,29 +560,27 @@ export class AssetsTransferApi {
 
 		return extrinsicPayload.toHex();
 	};
-}
 
-/**
- * checks the chains state to determine whether an asset is valid
- * if it is valid, it returns whether it is marked as sufficient for paying fees
- *
- * @param api ApiPromise
- * @param assetId number
- * @returns Promise<boolean>
- */
-const checkAssetIsSufficient = async (
-	api: ApiPromise,
-	assetId: number
-): Promise<boolean> => {
-	try {
-		const asset = (await api.query.assets.asset(assetId)).unwrap();
+	/**
+	 * checks the chains state to determine whether an asset is valid
+	 * if it is valid, it returns whether it is marked as sufficient for paying fees
+	 *
+	 * @param assetId number
+	 * @returns Promise<boolean>
+	 */
+	public checkAssetIsSufficient = async (
+		assetId: number
+	): Promise<boolean> => {
+		try {
+			const asset = (await this._api.query.assets.asset(assetId)).unwrap();
 
-		if (asset.isSufficient.toString().toLowerCase() === 'true') {
-			return true;
+			if (asset.isSufficient.toString().toLowerCase() === 'true') {
+				return true;
+			}
+
+			return false;
+		} catch (err: unknown) {
+			throw new BaseError(`assetId ${assetId} does not match a valid asset`);
 		}
-
-		return false;
-	} catch (err: unknown) {
-		throw new BaseError(`assetId ${assetId} does not match a valid asset`);
-	}
-};
+	};
+}
