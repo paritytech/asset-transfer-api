@@ -477,12 +477,14 @@ export class AssetsTransferApi {
 	 * @param tx SubmittableExtrinsic<'promise', ISubmittableResult>
 	 * @param paysWithFeeOrigin string
 	 */
-	createPayload = async (
+	public createPayload = async (
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
 		paysWithFeeOrigin?: string
 	): Promise<`0x${string}`> => {
 		let assetId = 0;
 
+		// if a paysWithFeeOrigin is provided and the chain is not the relay chain
+		// we assign the assetId to the value of paysWithFeeOrigin
 		if (
 			paysWithFeeOrigin &&
 			this.registry.specName.toLowerCase() !=

@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { Header } from '@polkadot/types/interfaces';
+import type { Header } from '@polkadot/types/interfaces';
 
 import { mockRelayApi } from './mockRelayApi';
 

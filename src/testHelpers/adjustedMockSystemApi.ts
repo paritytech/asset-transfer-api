@@ -2,7 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { Metadata, TypeRegistry } from '@polkadot/types';
-import { Header } from '@polkadot/types/interfaces';
+import type { Header } from '@polkadot/types/interfaces';
 import { getSpecTypes } from '@polkadot/types-known';
 
 import { statemineV9420 } from './metadata/statemineV9420';

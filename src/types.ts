@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import { u32 } from '@polkadot/types';
+import type { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import type { ChainInfoRegistry } from './registry/types';
