@@ -10,7 +10,6 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-// import { GenericExtrinsicPayload } from '@polkadot/types';
 import {
 	RELAY_CHAIN_NAMES,
 	SYSTEM_PARACHAINS_IDS,
