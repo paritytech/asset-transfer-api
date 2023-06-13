@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
 import type {
@@ -11,18 +9,12 @@ import type {
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { findRelayChain, parseRegistry } from '../registry';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import type { MultiAsset, MultiAssetInterior } from './../types';
+import { createSystemToParaMultiAssets } from './SystemToPara';
 import type { ICreateXcmType, IWeightLimit } from './types';
-import { isAscendingOrder } from './util/checkIsAscendingOrder';
-import { dedupeMultiAssets } from './util/dedupeMultiAssets';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
-import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
-export const SystemToPara: ICreateXcmType = {
+export const ParaToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
@@ -70,11 +62,7 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (
-		api: ApiPromise,
-		destId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createDest: (api: ApiPromise, destId: string, xcmVersion?: number) => {
 		if (xcmVersion === 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -159,7 +147,6 @@ export const SystemToPara: ICreateXcmType = {
 
 		return api.registry.createType('XcmV2WeightLimit', limit);
 	},
-
 	/**
 	 * returns the correct feeAssetItem based on XCM direction.
 	 *
@@ -205,77 +192,4 @@ export const SystemToPara: ICreateXcmType = {
 
 		return api.registry.createType('u32', 0);
 	},
-};
-
-/**
- * Creates and returns a MultiAsset array for system parachains based on provided specName, assets and amounts
- *
- * @param api ApiPromise[]
- * @param amounts string[]
- * @param specName string
- * @param assets string[]
- */
-export const createSystemToParaMultiAssets = (
-	api: ApiPromise,
-	amounts: string[],
-	specName: string,
-	assets: string[]
-): MultiAsset[] => {
-	const palletId = fetchPalletInstanceId(api);
-	const multiAssets = [];
-	const registry = parseRegistry({});
-	const relayChain = findRelayChain(specName, registry);
-
-	// We know this is a System parachain direction which is chainId 1000.
-	const { tokens } = registry[relayChain]['1000'];
-
-	for (let i = 0; i < assets.length; i++) {
-		let assetId: string = assets[i];
-		const amount = amounts[i];
-
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
-		const isRelayNative = isRelayNativeAsset(tokens, assetId);
-
-		if (!isRelayNative && isNotANumber) {
-			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
-		}
-
-		const interior: MultiAssetInterior = isRelayNative
-			? { Here: '' }
-			: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
-		const parents = isRelayNative ? 1 : 0;
-
-		const multiAsset = {
-			id: {
-				Concrete: {
-					parents,
-					interior,
-				},
-			},
-			fun: {
-				Fungible: amount,
-			},
-		};
-
-		multiAssets.push(multiAsset);
-	}
-
-	if (!isAscendingOrder(multiAssets)) {
-		sortMultiAssetsAscending(multiAssets);
-	}
-
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
-
-	return sortedAndDedupedMultiAssets;
-};
-
-const isRelayNativeAsset = (tokens: string[], assetId: string): boolean => {
-	for (const token of tokens) {
-		if (token.toLowerCase() === assetId.toLowerCase()) {
-			return true;
-		}
-	}
-
-	return false;
 };
