@@ -6,6 +6,9 @@ import { WsProvider } from '@polkadot/rpc-provider';
 
 import { fetchSafeXcmVersion } from './createXcmCalls/util/fetchSafeXcmVersion';
 
+/**
+ * the api promise, specName and safeXcmVersion for the currently connect rpc endpoint
+ */
 interface ApiInfo {
 	api: ApiPromise;
 	specName: string;

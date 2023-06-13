@@ -473,7 +473,6 @@ export class AssetsTransferApi {
 	/**
 	 * returns an ExtrinsicPayload
 	 *
-	 * @param api ApiPromise
 	 * @param tx SubmittableExtrinsic<'promise', ISubmittableResult>
 	 * @param paysWithFeeOrigin string
 	 */
@@ -483,7 +482,7 @@ export class AssetsTransferApi {
 	): Promise<`0x${string}`> => {
 		let assetId = 0;
 
-		// if a paysWithFeeOrigin is provided and the chain is not the relay chain
+		// if a paysWithFeeOrigin is provided and the chain is of system origin
 		// we assign the assetId to the value of paysWithFeeOrigin
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			this._specName.toLowerCase()
@@ -564,6 +563,14 @@ export class AssetsTransferApi {
 	};
 }
 
+/**
+ * checks the chains state to determine whether an asset is valid
+ * if it is valid, it returns whether it is marked as sufficient for paying fees
+ *
+ * @param api ApiPromise
+ * @param assetId number
+ * @returns Promise<boolean>
+ */
 const checkAssetIsSufficient = async (
 	api: ApiPromise,
 	assetId: number
