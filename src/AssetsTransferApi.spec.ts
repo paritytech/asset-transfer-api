@@ -9,7 +9,7 @@ import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
-import { Direction } from './types';
+import { Direction, UnsignedTransaction } from './types';
 
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',
@@ -43,8 +43,8 @@ describe('AssetTransferAPI', () => {
 		});
 	});
 	describe('constructFormat', () => {
-		it('Should construct the correct call', () => {
-			const res = systemAssetsApi['constructFormat'](
+		it('Should construct the correct call', async () => {
+			const res = await systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
 				Direction.SystemToPara,
 				2,
@@ -59,8 +59,8 @@ describe('AssetTransferAPI', () => {
 				xcmVersion: 2,
 			});
 		});
-		it('Should construct the correct payload', () => {
-			const res = systemAssetsApi['constructFormat'](
+		it('Should construct the correct payload', async () => {
+			const res = await systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
 				Direction.SystemToPara,
 				2,
@@ -71,7 +71,7 @@ describe('AssetTransferAPI', () => {
 				direction: 'SystemToPara',
 				format: 'payload',
 				method: 'limitedReserveTransferAssets',
-				tx: '0x15077b2263616c6c496e646578223a22307831663038222c2261726773223a7b2264657374223a7b227632223a7b22706172656e7473223a302c22696e746572696f72223a7b227831223a7b226163636f756e7449643332223a7b226e6574776f726b223a7b22616e79223a6e756c6c7d2c226964223a22307866356435373134633038346331313238343361636137346638633439386461303663633561326436333135336238323531383962616135313034336231663062227d7d7d7d7d2c2262656e6566696369617279223a7b227632223a7b22706172656e7473223a312c22696e746572696f72223a7b227831223a7b2270617261636861696e223a313030307d7d7d7d2c22617373657473223a7b227632223a5b7b226964223a7b22636f6e6372657465223a7b22706172656e7473223a302c22696e746572696f72223a7b227832223a5b7b2270616c6c6574496e7374616e6365223a35307d2c7b2267656e6572616c496e646578223a317d5d7d7d7d2c2266756e223a7b2266756e6769626c65223a3130307d7d5d7d2c226665655f61737365745f6974656d223a302c227765696768745f6c696d6974223a7b22756e6c696d69746564223a6e756c6c7d7d7d00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+				tx: '0xf81f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 				xcmVersion: 2,
 			});
 		});
@@ -90,7 +90,6 @@ describe('AssetTransferAPI', () => {
 		describe('SystemToRelay', () => {
 			it('Should corectly return Native', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
-					'statemint',
 					'0',
 					['DOT'],
 					Direction.SystemToRelay
@@ -102,7 +101,6 @@ describe('AssetTransferAPI', () => {
 		describe('RelayToSystem', () => {
 			it('Should correctly return Native', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
-					'polkadot',
 					'1000',
 					['DOT'],
 					Direction.RelayToSystem
@@ -114,7 +112,6 @@ describe('AssetTransferAPI', () => {
 		describe('SystemToPara', () => {
 			it('Should correctly return Foreign', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
-					'statemint',
 					'2000',
 					['1'],
 					Direction.SystemToPara
@@ -204,7 +201,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a payloads extrinsic given its hash for RelayToSystem', async () => {
 				const expected =
-					'{"callIndex":"0x6301","args":{"dest":{"v2":{"parents":0,"interior":{"x1":{"parachain":1000}}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":0,"interior":{"here":null}}},"fun":{"fungible":250000000000000}}]},"fee_asset_item":0}}';
+					'{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"250,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"xcmPallet"}';
 				const payloadTxResult = await relayAssetsApi.createTransferTransaction(
 					'1000',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -270,7 +267,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a payloads extrinsic given its hash for SystemToRelay', async () => {
 				const expected =
-					'{"callIndex":"0x1f01","args":{"dest":{"v2":{"parents":1,"interior":{"here":null}}},"beneficiary":{"v2":{"parents":0,"interior":{"x1":{"accountId32":{"network":{"any":null},"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"v2":[{"id":{"concrete":{"parents":1,"interior":{"here":null}}},"fun":{"fungible":20000000000000}}]},"fee_asset_item":0}}';
+					'{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"20,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"polkadotXcm"}';
 				const payloadTxResult = await systemAssetsApi.createTransferTransaction(
 					'0',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -358,38 +355,51 @@ describe('AssetTransferAPI', () => {
 	});
 	describe('paysWithFeeOrigin', () => {
 		it('Should correctly assign the assedId field to an unsigned transaction when a valid paysWithFeeOrigin option is provided', async () => {
-			const result = await systemAssetsApi.createTransferTransaction(
-				'1000',
-				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				[],
-				['100'],
-				{
-					paysWithFeeOrigin: '1984',
-					format: 'payload',
-					keepAlive: true,
-				}
-			);
-			
-			const decoded = systemAssetsApi.decodeExtrinsic(result.tx, 'payload');
-			expect(decoded).toEqual('hello');
-		})
-
-		it('Should throw an error for directions that are non local', async () => {
-			await expect(systemAssetsApi.createTransferTransaction(
+			const expected = '1,984';
+			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['ksm'],
-				['100'],
+				['usdt', 'usdc'],
+				['5000000', '4000000000'],
 				{
 					paysWithFeeOrigin: '1984',
 					format: 'payload',
 					keepAlive: true,
+					paysWithFeeDest: 'USDC',
+					xcmVersion: 3,
 				}
-			))
-			.rejects
-			.toThrowError(
-				'paysWithFeeOrigin can only be used to construct local transactions. Found direction SystemToPara'
 			);
-		})
-	})
+
+			const result = mockSystemApi.registry.createType(
+				'ExtrinsicPayload',
+				payload.tx,
+				{
+					version: 4,
+				}
+			);
+			const unsigned = result.toHuman() as unknown as UnsignedTransaction;
+
+			expect(unsigned.assetId).toEqual(expected);
+		});
+
+		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not a number', async () => {
+			await expect(async () => {
+				await systemAssetsApi.createTransferTransaction(
+					'2023',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['usdt', 'usdc'],
+					['5000000', '4000000000'],
+					{
+						paysWithFeeOrigin: 'hello there',
+						format: 'payload',
+						keepAlive: true,
+						paysWithFeeDest: 'USDC',
+						xcmVersion: 3,
+					}
+				);
+			}).rejects.toThrowError(
+				'paysWithFeeOrigin value must be a valid number. Received: hello there'
+			);
+		});
+	});
 });

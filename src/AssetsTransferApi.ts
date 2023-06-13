@@ -9,8 +9,8 @@ import type {
 	RuntimeDispatchInfoV1,
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
-// import { GenericExtrinsicPayload } from '@polkadot/types';
 
+// import { GenericExtrinsicPayload } from '@polkadot/types';
 import {
 	RELAY_CHAIN_NAMES,
 	SYSTEM_PARACHAINS_IDS,
@@ -31,9 +31,7 @@ import {
 	checkXcmTxInputs,
 	checkXcmVersion,
 } from './errors';
-import { findRelayChain } from './registry/findRelayChain';
-import { parseRegistry } from './registry/parseRegistry';
-import type { ChainInfoRegistry } from './registry/types';
+import { Registry } from './registry';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetsTransferApiOpts,
@@ -63,7 +61,7 @@ export class AssetsTransferApi {
 	readonly _opts: AssetsTransferApiOpts;
 	readonly _specName: string;
 	readonly _safeXcmVersion: number;
-	readonly _registry: ChainInfoRegistry;
+	readonly registry: Registry;
 
 	constructor(
 		api: ApiPromise,
@@ -75,7 +73,7 @@ export class AssetsTransferApi {
 		this._opts = opts;
 		this._specName = specName;
 		this._safeXcmVersion = safeXcmVersion;
-		this._registry = parseRegistry(opts);
+		this.registry = new Registry(specName, this._opts);
 	}
 
 	/**
@@ -101,7 +99,7 @@ export class AssetsTransferApi {
 		 */
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
-		const { _api, _specName, _safeXcmVersion, _registry } = this;
+		const { _api, _specName, _safeXcmVersion, registry } = this;
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			_specName.toLowerCase()
 		);
@@ -124,12 +122,7 @@ export class AssetsTransferApi {
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			const localAssetType = checkLocalTxInput(
-				assetIds,
-				amounts,
-				_specName,
-				_registry
-			); // Throws an error when any of the inputs are incorrect.
+			const localAssetType = checkLocalTxInput(assetIds, amounts, registry); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
 			if (isLocalSystemTx) {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
@@ -151,7 +144,6 @@ export class AssetsTransferApi {
 					palletMethod = `assets::${method}`;
 				}
 
-				console.log('WHAT ARE OPTS', opts);
 				return await this.constructFormat(
 					tx,
 					'local',
@@ -190,15 +182,10 @@ export class AssetsTransferApi {
 			xcmDirection,
 			destChainId,
 			_specName,
-			_registry
+			registry
 		);
 
-		const assetType = this.fetchAssetType(
-			_specName,
-			destChainId,
-			assetIds,
-			xcmDirection
-		);
+		const assetType = this.fetchAssetType(destChainId, assetIds, xcmDirection);
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
@@ -401,19 +388,16 @@ export class AssetsTransferApi {
 		}
 
 		if (fmt === 'payload') {
-			if(paysWithFeeOrigin) {
-				result.tx = ((await createPaysWithFeeOriginPayload(
-						_api,
-						tx,
-						paysWithFeeOrigin
-					)) as ConstructedFormat<T>)
+			result.tx = (await this.createPayload(
+				tx,
+				paysWithFeeOrigin
+			)) as ConstructedFormat<T>;
+		}
 
-			} 
 		return result;
 	}
 
 	private fetchAssetType(
-		specName: string,
 		destChainId: string,
 		assets: string[],
 		xcmDirection: Direction
@@ -426,8 +410,7 @@ export class AssetsTransferApi {
 			return AssetType.Foreign;
 		}
 
-		const relayChainName = findRelayChain(specName, this._registry);
-		const relayChainInfo = this._registry[relayChainName];
+		const relayChainInfo = this.registry.currentRelayRegistry;
 
 		/**
 		 * We can assume all the assets in `assets` are either foreign or native since we check
@@ -464,11 +447,10 @@ export class AssetsTransferApi {
 				}
 			);
 
-			const extrinsicMethodInfo = extrinsicPayload.method.toHuman()?.toString();
+			const call = _api.registry.createType('Call', extrinsicPayload.method);
+			const decodedMethodInfo = JSON.stringify(call.toHuman());
 
-			if (extrinsicMethodInfo) {
-				return extrinsicMethodInfo;
-			}
+			return decodedMethodInfo;
 		} else if (fmt === 'call') {
 			const call = _api.registry.createType('Call', encodedTransaction);
 
@@ -479,61 +461,70 @@ export class AssetsTransferApi {
 				encodedTransaction
 			);
 
-			return extrinsic.method.toString();
+			const extrinsicMethodInfo = extrinsic.method.toString();
+			if (extrinsicMethodInfo) {
+				return extrinsicMethodInfo;
+			}
 		}
 
 		return '';
 	}
 
 	/**
-	 * returns an ExtrinsicPayload with the provided paysWithFeeOrigin set as the assetId
+	 * returns an ExtrinsicPayload
 	 *
 	 * @param api ApiPromise
 	 * @param tx SubmittableExtrinsic<'promise', ISubmittableResult>
 	 * @param paysWithFeeOrigin string
-	 * @returns
 	 */
-	createPaysWithFeeOriginPayload = async (
-		api: ApiPromise,
+	createPayload = async (
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
 		paysWithFeeOrigin?: string
 	): Promise<`0x${string}`> => {
-		this._registry
+		let assetId = 0;
+
+		if (
+			paysWithFeeOrigin &&
+			this.registry.specName.toLowerCase() !=
+				this.registry.relayChain.toLowerCase()
+		) {
+			assetId = Number.parseInt(paysWithFeeOrigin);
+			const isNotANumber = Number.isNaN(assetId);
+
+			if (isNotANumber) {
+				throw new BaseError(
+					`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`
+				);
+			}
+		}
+
 		const submittableString = JSON.stringify(tx.toHuman());
 		const submittableData: SubmittableMethodData = JSON.parse(
 			submittableString
 		) as unknown as SubmittableMethodData;
 		const addr = submittableData.method.args.dest.id;
-		const lastHeader = await api.rpc.chain.getHeader();
-		const blockNumber = api.registry.createType(
+		const lastHeader = await this._api.rpc.chain.getHeader();
+		const blockNumber = this._api.registry.createType(
 			'BlockNumber',
 			lastHeader.number.toNumber()
 		);
-		const method = api.createType('Call', tx);
-		const era = api.registry.createType('ExtrinsicEra', {
+		const method = this._api.registry.createType('Call', tx);
+		const era = this._api.registry.createType('ExtrinsicEra', {
 			current: lastHeader.number.toNumber(),
 			period: 64,
 		});
 
-		const nonce = await api.rpc.system.accountNextIndex(addr);
-		const assetId = Number.parseInt(paysWithFeeOrigin);
-		const isNotANumber = Number.isNaN(assetId);
-
-		if (isNotANumber) {
-			throw new BaseError(
-				`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`
-			);
-		}
+		const nonce = await this._api.rpc.system.accountNextIndex(addr);
 
 		const unsignedPayload: UnsignedTransaction = {
-			specVersion: api.runtimeVersion.specVersion.toHex(),
-			transactionVersion: api.runtimeVersion.transactionVersion.toHex(),
+			specVersion: this._api.runtimeVersion.specVersion.toHex(),
+			transactionVersion: this._api.runtimeVersion.transactionVersion.toHex(),
 			assetId,
 			address: addr,
 			blockHash: lastHeader.hash.toHex(),
 			blockNumber: blockNumber.toHex(),
 			era: era.toHex(),
-			genesisHash: api.genesisHash.toHex(),
+			genesisHash: this._api.genesisHash.toHex(),
 			method: method.toHex(),
 			nonce: nonce.toHex(),
 			signedExtensions: [
@@ -546,11 +537,11 @@ export class AssetsTransferApi {
 				'CheckWeight',
 				'ChargeTransactionPayment',
 			],
-			tip: api.registry.createType('Compact<Balance>', 0).toHex(),
+			tip: this._api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,
 		};
 
-		const extrinsicPayload = api.registry.createType(
+		const extrinsicPayload = this._api.registry.createType(
 			'ExtrinsicPayload',
 			unsignedPayload,
 			{
@@ -561,4 +552,3 @@ export class AssetsTransferApi {
 		return extrinsicPayload.toHex();
 	};
 }
-

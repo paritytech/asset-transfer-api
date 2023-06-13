@@ -1,7 +1,6 @@
-import { ChainInfoRegistry } from 'src/registry/types';
+// Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { findRelayChain } from '../registry/findRelayChain';
-import { parseRegistry } from '../registry/parseRegistry';
+import { Registry } from '../registry';
 import { Direction } from '../types';
 import {
 	checkAssetIdInput,
@@ -10,11 +9,11 @@ import {
 	checkRelayAssetIdLength,
 } from './checkXcmTxInputs';
 
-const runTests = (tests: Test[], registry: ChainInfoRegistry) => {
+const runTests = (tests: Test[]) => {
 	for (const test of tests) {
 		const [destChainId, specName, testInputs, direction, errorMessage] = test;
-		const relayChainName = findRelayChain(specName, registry);
-		const currentRegistry = registry[relayChainName];
+		const registry = new Registry(specName, {});
+		const currentRegistry = registry.currentRelayRegistry;
 
 		const err = () =>
 			checkAssetIdInput(
@@ -67,8 +66,6 @@ type Test = [
 
 describe('checkAssetIds', () => {
 	it('Should error when an assetId is found that is empty or a blank space', () => {
-		const registry = parseRegistry({});
-
 		const tests: Test[] = [
 			[
 				'1000',
@@ -86,12 +83,10 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests, registry);
+		runTests(tests);
 	});
 
 	it('Should error when direction is RelayToSystem and assetId does not match relay chains native token', () => {
-		const registry = parseRegistry({});
-
 		const tests: Test[] = [
 			[
 				'1000',
@@ -116,12 +111,10 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests, registry);
+		runTests(tests);
 	});
 
 	it('Should error when direction is RelayToPara and assetId does not match relay chains native token', () => {
-		const registry = parseRegistry({});
-
 		const tests: Test[] = [
 			[
 				'2004',
@@ -139,12 +132,10 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests, registry);
+		runTests(tests);
 	});
 
 	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', () => {
-		const registry = parseRegistry({});
-
 		const tests: Test[] = [
 			[
 				'0',
@@ -169,12 +160,10 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests, registry);
+		runTests(tests);
 	});
 
 	it('Should error when direction is SystemToPara and integer assetId is not found in system parachains assets', () => {
-		const registry = parseRegistry({});
-
 		const tests: Test[] = [
 			[
 				'2004',
@@ -201,8 +190,8 @@ describe('checkAssetIds', () => {
 
 		for (const test of tests) {
 			const [destChainId, specName, testInputs, direction, errorMessage] = test;
-			const relayChainName = findRelayChain(specName, registry);
-			const currentRegistry = registry[relayChainName];
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
 
 			const err = () =>
 				checkAssetIdInput(
@@ -217,8 +206,6 @@ describe('checkAssetIds', () => {
 	});
 
 	it('Should error when direction is SystemToPara and the string assetId is not found in the system parachains tokens or assets', () => {
-		const registry = parseRegistry({});
-
 		const tests: Test[] = [
 			[
 				'2004',
@@ -245,8 +232,8 @@ describe('checkAssetIds', () => {
 
 		for (const test of tests) {
 			const [destChainId, specName, testInputs, direction, errorMessage] = test;
-			const relayChainName = findRelayChain(specName, registry);
-			const currentRegistry = registry[relayChainName];
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
 
 			const err = () =>
 				checkAssetIdInput(

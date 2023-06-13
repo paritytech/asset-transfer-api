@@ -1,6 +1,6 @@
 import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
-import { findRelayChain } from '../registry/findRelayChain';
-import type { ChainInfo, ChainInfoRegistry } from '../registry/types';
+import { Registry } from '../registry';
+import type { ChainInfo } from '../registry/types';
 import { Direction } from '../types';
 import { BaseError } from './BaseError';
 
@@ -277,10 +277,9 @@ export const checkXcmTxInputs = (
 	xcmDirection: Direction,
 	destChainId: string,
 	specName: string,
-	registry: ChainInfoRegistry
+	registry: Registry
 ) => {
-	const relayChainName = findRelayChain(specName, registry);
-	const relayChainInfo: ChainInfo = registry[relayChainName];
+	const relayChainInfo = registry.currentRelayRegistry;
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
