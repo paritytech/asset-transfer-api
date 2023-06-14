@@ -246,4 +246,39 @@ describe('checkAssetIds', () => {
 			expect(err).toThrow(errorMessage);
 		}
 	});
+
+	it('Should error when an asset id is provided that matches multiple asset symbols in the assets registry', () => {
+		const tests: Test[] = [
+			[
+				'2004',
+				'Statemint',
+				['btc'],
+				Direction.SystemToPara,
+				`Multiple assets found with symbol btc`,
+			],
+			[
+				'2023',
+				'Statemine',
+				['USDT'],
+				Direction.SystemToPara,
+				`Multiple assets found with symbol USDT`,
+			],
+		];
+
+		for (const test of tests) {
+			const [destChainId, specName, testInputs, direction, errorMessage] = test;
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
+
+			const err = () =>
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					destChainId,
+					direction
+				);
+			expect(err).toThrowError(errorMessage);
+		}
+	});
 });
