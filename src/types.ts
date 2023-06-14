@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import type { ChainInfoRegistry } from './registry/types';
@@ -99,7 +100,7 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Statemint: default DOT
 	 * Statemine: default KSM
 	 */
-	payFeeWith?: string;
+	paysWithFeeOrigin?: string;
 	/**
 	 * AssetId to pay fee's on the destination parachain.
 	 */
@@ -152,3 +153,85 @@ export type MultiAsset = {
 		};
 	};
 };
+
+export interface SignerPayloadJSON {
+	/**
+	 * @description The ss-58 encoded address
+	 */
+	address: string;
+	/**
+	 * @description The checkpoint hash of the block, in hex
+	 */
+	blockHash: string;
+	/**
+	 * @description The checkpoint block number, in hex
+	 */
+	blockNumber: string;
+	/**
+	 * @description The era for this transaction, in hex
+	 */
+	era: string;
+	/**
+	 * @description The genesis hash of the chain, in hex
+	 */
+	genesisHash: string;
+	/**
+	 * @description The encoded method (with arguments) in hex
+	 */
+	method: string;
+	/**
+	 * @description The nonce for this transaction, in hex
+	 */
+	nonce: string;
+	/**
+	 * @description The current spec version for the runtime
+	 */
+	specVersion: string;
+	/**
+	 * @description The tip for this transaction, in hex
+	 */
+	tip: string;
+	/**
+	 * @description The current transaction version for the runtime
+	 */
+	transactionVersion: string;
+	/**
+	 * @description The applicable signed extensions for this runtime
+	 */
+	signedExtensions: string[];
+	/**
+	 * @description The version of the extrinsic we are dealing with
+	 */
+	version: number;
+}
+
+/**
+ * JSON format for an unsigned transaction.
+ */
+export interface UnsignedTransaction extends SignerPayloadJSON {
+	/**
+	 * The assetId used in ChargeAssetTxPayment
+	 *
+	 * @default 0
+	 */
+	assetId?: number;
+}
+
+export interface Dest {
+	id: string;
+}
+
+export interface Args {
+	dest: Dest;
+	value: u32;
+}
+
+export interface Method {
+	args: Args;
+	method: string;
+	section: string;
+}
+export interface SubmittableMethodData {
+	isSigned: boolean;
+	method: Method;
+}
