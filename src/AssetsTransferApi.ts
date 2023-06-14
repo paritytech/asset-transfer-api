@@ -184,7 +184,7 @@ export class AssetsTransferApi {
 			registry
 		);
 
-		const assetType = this.fetchAssetType(destChainId, assetIds, xcmDirection);
+		const assetType = this.fetchAssetType(xcmDirection);
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
@@ -402,33 +402,21 @@ export class AssetsTransferApi {
 		return result;
 	}
 
-	private fetchAssetType(
-		destChainId: string,
-		assets: string[],
-		xcmDirection: Direction
-	): AssetType {
+	private fetchAssetType(xcmDirection: Direction): AssetType {
 		if (xcmDirection === 'RelayToSystem' || xcmDirection === 'SystemToRelay') {
 			return AssetType.Native;
 		}
 
-		if (xcmDirection === 'RelayToPara') {
-			return AssetType.Foreign;
-		}
-
-		const relayChainInfo = this.registry.currentRelayRegistry;
-
 		/**
-		 * We can assume all the assets in `assets` are either foreign or native since we check
-		 * all possible cases in `checkXcmTxInputs`.
+		 * When MultiLocation of System parachains are stored for trusted assets across
+		 * parachains then this logic will change. But for now all assets, and native tokens
+		 * transferred from a System parachain to a parachain it should use a reserve transfer.
 		 */
-		const { assetsInfo, tokens } = relayChainInfo[destChainId];
-		const assetIdsAsStr = Object.keys(assetsInfo).map((num) => num.toString());
-
-		if (assetIdsAsStr.includes(assets[0]) || tokens.includes(assets[0])) {
-			return AssetType.Native;
-		} else {
+		if (xcmDirection === 'RelayToPara' || xcmDirection === 'SystemToPara') {
 			return AssetType.Foreign;
 		}
+
+		return AssetType.Foreign;
 	}
 	/**
 	 * Decodes the hex of an extrinsic into a string readable format
