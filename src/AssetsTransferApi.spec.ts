@@ -162,8 +162,16 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly fetch estimate for a payload based xcm message', async () => {
-			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(
+			const payloadTexResult = await systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
+				Direction.SystemToPara,
+				2,
+				'limitedReserveTransferAssets',
+				'payload'
+			);
+
+			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				payloadTexResult.tx,
 				'payload'
 			);
 			expect((payloadFeeInfo?.weight as Weight).refTime.toString()).toEqual(
@@ -172,8 +180,15 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly fetch estimate for a call based xcm message', async () => {
-			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
+			const callTxResult = await systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
+				Direction.SystemToPara,
+				2,
+				'limitedReserveTransferAssets',
+				'call'
+			);
+			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				callTxResult.tx,
 				'call'
 			);
 			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(

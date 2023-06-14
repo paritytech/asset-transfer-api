@@ -9,6 +9,7 @@ import type {
 	RuntimeDispatchInfoV1,
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
+import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 
 import {
 	RELAY_CHAIN_NAMES,
@@ -262,30 +263,40 @@ export class AssetsTransferApi {
 	 * @param format The format the tx is in
 	 */
 	public async fetchFeeInfo<T extends Format>(
-		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		format?: T
+		tx: ConstructedFormat<T>,
+		format: T
 	): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
 		const { _api } = this;
-		const fmt = format ? format : 'payload';
+		// const fmt = format ? format : 'payload';
 
-		if (fmt === 'payload') {
-			const payload = _api.registry
+		if (format === 'payload') {
+			const extrinsicPayload = _api.registry
 				.createType('ExtrinsicPayload', tx, {
-					version: tx.version,
-				})
-				.toHex();
+					version: 4
+				});
+			
+			// const method = extrinsicPayload.method.toString();
+		
+			console.log('WHAT IS extrinsic payload', extrinsicPayload.toHuman());
+			// const methodCall = _api.registry.createType('Call', extrinsic.method.toU8a());
+			// console.log('METHOD CALL', methodCall.toHuman())
+			
+			// const call = _api.registry
+			// .createType('ExtrinsicPayload', extrinsic.method, {
+			// 	version: 4
+			// }).toHex();
 
-			return _api.call.transactionPaymentApi.queryInfo(payload, payload.length);
-		} else if (fmt === 'call') {
-			const call = _api.registry
-				.createType('Call', {
-					callIndex: tx.callIndex,
-					args: tx.args,
-				})
-				.toHex();
+			// const method = _api.registry.createType('Call', call);
+			// console.log('METHOD', method.toHuman())
 
-			return _api.call.transactionPaymentApi.queryInfo(call, call.length);
-		} else if (fmt === 'submittable') {
+			return _api.call.transactionPaymentApi.queryInfo(extrinsicPayload.toHex(), extrinsicPayload.toHex().length);
+		} else if (format === 'call') {
+			// const call = _api.registry
+			// 	.createType('Call', tx)
+			// 	.toHex();
+
+			return _api.call.transactionPaymentApi.queryInfo(tx, tx.length);
+		} else if (format === 'submittable') {
 			const ext = _api.registry.createType('Extrinsic', tx);
 			const u8a = ext.toU8a();
 
@@ -436,7 +447,7 @@ export class AssetsTransferApi {
 				'ExtrinsicPayload',
 				encodedTransaction,
 				{
-					version: 4,
+					version: EXTRINSIC_VERSION,
 				}
 			);
 
@@ -518,7 +529,7 @@ export class AssetsTransferApi {
 		});
 
 		const nonce = await this._api.rpc.system.accountNextIndex(addr);
-
+		console.log('WHAT IS TRANSACTION VERSION', this._api.runtimeVersion.transactionVersion.toNumber());
 		const unsignedPayload: UnsignedTransaction = {
 			specVersion: this._api.runtimeVersion.specVersion.toHex(),
 			transactionVersion: this._api.runtimeVersion.transactionVersion.toHex(),
