@@ -200,6 +200,7 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
+					this.registry,
 					opts?.weightLimit,
 					opts?.paysWithFeeDest
 				);
@@ -214,6 +215,7 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
+					this.registry,
 					opts?.paysWithFeeDest
 				);
 			}
@@ -229,6 +231,7 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
+					this.registry,
 					opts?.weightLimit
 				);
 			} else {
@@ -241,7 +244,8 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					_specName
+					_specName,
+					this.registry
 				);
 			}
 		}

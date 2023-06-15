@@ -1,11 +1,13 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { MultiAsset } from '../types';
 import { SystemToPara } from './SystemToPara';
 import { createSystemToParaMultiAssets } from './SystemToPara';
 
 describe('SystemToPara XcmVersioned Generation', () => {
+	const registry = new Registry('statemine', {});
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = SystemToPara.createBeneficiary(
@@ -147,7 +149,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				['100', '100'],
 				2,
 				'statemint',
-				['1', '2']
+				['1', '2'],
+				{ registry }
 			);
 
 			const expectedRes = {
@@ -189,7 +192,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				['100', '100'],
 				3,
 				'statemint',
-				['1', '2']
+				['1', '2'],
+				{ registry }
 			);
 
 			const expectedRes = {
@@ -285,7 +289,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				mockSystemApi,
 				amounts,
 				specName,
-				assets
+				assets,
+				registry
 			);
 
 			expect(result).toEqual(expected);

@@ -1,9 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { Registry } from '../registry';
 import { mockRelayApi } from '../testHelpers/mockRelayApi';
 import { RelayToPara } from './RelayToPara';
 
 describe('RelayToPara XcmVersioned Generation', () => {
+	const registry = new Registry('kusama', {});
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = RelayToPara.createBeneficiary(
@@ -139,7 +141,14 @@ describe('RelayToPara XcmVersioned Generation', () => {
 	});
 	describe('Assets', () => {
 		it('Should work for V2', () => {
-			const assets = RelayToPara.createAssets(mockRelayApi, ['100'], 2, '', []);
+			const assets = RelayToPara.createAssets(
+				mockRelayApi,
+				['100'],
+				2,
+				'',
+				[],
+				{ registry }
+			);
 
 			const expectedRes = {
 				v2: [
@@ -162,7 +171,14 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const assets = RelayToPara.createAssets(mockRelayApi, ['100'], 3, '', []);
+			const assets = RelayToPara.createAssets(
+				mockRelayApi,
+				['100'],
+				3,
+				'',
+				[],
+				{ registry }
+			);
 
 			const expectedRes = {
 				v3: [
