@@ -5,6 +5,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../createXcmTypes';
+import { Registry } from '../registry';
 import { Direction } from '../types';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { establishXcmPallet } from './util/establishXcmPallet';
@@ -29,6 +30,7 @@ export const teleportAssets = (
 	destChainId: string,
 	xcmVersion: number,
 	specName: string,
+	registry: Registry,
 	paysWithFeeDest?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api);
@@ -41,11 +43,12 @@ export const teleportAssets = (
 		normalizeArrToStr(amounts),
 		xcmVersion,
 		specName,
-		assetIds
+		assetIds,
+		{ registry }
 	);
 
 	const feeAssetItem = paysWithFeeDest
-		? typeCreator.createFeeAssetItem(api)
+		? typeCreator.createFeeAssetItem(api, { registry })
 		: api.registry.createType('u32', 0);
 
 	return ext(dest, beneficiary, assets, feeAssetItem);

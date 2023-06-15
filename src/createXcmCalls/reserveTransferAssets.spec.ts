@@ -2,11 +2,13 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
+import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import { reserveTransferAssets } from './reserveTransferAssets';
 
 describe('reserveTransferAssets', () => {
+	const registry = new Registry('statemine', {});
 	describe('SystemToPara', () => {
 		it('Should correctly construct a tx for a system parachain with V2', () => {
 			const ext = reserveTransferAssets(
@@ -17,7 +19,8 @@ describe('reserveTransferAssets', () => {
 				['100'],
 				'1000',
 				2,
-				'statemint'
+				'statemint',
+				registry
 			);
 
 			expect(ext.toHex()).toBe(
@@ -35,7 +38,8 @@ describe('reserveTransferAssets', () => {
 					['100'],
 					'1000',
 					2,
-					'statemint'
+					'statemint',
+					registry
 				);
 
 			expect(err).toThrowError(

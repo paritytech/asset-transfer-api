@@ -1,10 +1,12 @@
 import type { ApiPromise } from '@polkadot/api';
 
+import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import { limitedTeleportAssets } from './limitedTeleportAssets';
 
 describe('limitedTeleportAssets', () => {
+	const registry = new Registry('statemine', {});
 	describe('SystemToPara', () => {
 		it('Should correctly construct a tx for a system parachain with V2', () => {
 			const ext = limitedTeleportAssets(
@@ -15,7 +17,8 @@ describe('limitedTeleportAssets', () => {
 				['100'],
 				'1000',
 				2,
-				'statemint'
+				'statemint',
+				registry
 			);
 
 			expect(ext.toHex()).toBe(
@@ -33,7 +36,8 @@ describe('limitedTeleportAssets', () => {
 					['100'],
 					'1000',
 					2,
-					'statemint'
+					'statemint',
+					registry
 				);
 
 			expect(err).toThrowError(
