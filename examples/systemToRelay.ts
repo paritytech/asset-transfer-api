@@ -4,6 +4,8 @@
  * import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
 import { AssetsTransferApi, constructApiPromise } from '../src';
+import { TxResult } from '../src/types';
+import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a call to send 1 WND from a Westmint (System Parachain) account
@@ -18,8 +20,9 @@ const main = async () => {
 	);
 	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 
+	let callInfo: TxResult<'call'>;
 	try {
-		const callInfo = await assetApi.createTransferTransaction(
+		callInfo = await assetApi.createTransferTransaction(
 			'0', // NOTE: The destination id is `0` noting that we are sending to the relay chain.
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			['WND'],
@@ -34,7 +37,17 @@ const main = async () => {
 		console.log(callInfo);
 	} catch (e) {
 		console.error(e);
+		throw Error(e as string);
 	}
+
+	const decoded = assetApi.decodeExtrinsic(callInfo.tx, 'call');
+	console.log(
+		`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(
+			JSON.parse(decoded),
+			null,
+			4
+		)}${RESET}`
+	);
 };
 
 main().finally(() => process.exit());

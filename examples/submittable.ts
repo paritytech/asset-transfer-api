@@ -8,6 +8,7 @@ import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 import { AssetsTransferApi, constructApiPromise } from '../src';
 import { TxResult } from '../src/types';
+import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example, we are creating a `SubmittableExtrinsic` and showing how one may sign and send it over
@@ -36,7 +37,13 @@ const main = async () => {
 			}
 		);
 
-		console.log(callInfo);
+		console.log(
+			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(
+				callInfo,
+				null,
+				4
+			)}${RESET}`
+		);
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);
