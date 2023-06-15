@@ -3,8 +3,7 @@
  *
  * import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetsTransferApi } from '../src/AssetsTransferApi';
-import { constructApiPromise } from '../src/constructApiPromise';
+import { AssetsTransferApi, constructApiPromise } from '../src';
 
 /**
  * In this example we are creating a call to send 1 KSM from a Kusama (Relay Chain) account
@@ -20,7 +19,7 @@ const main = async () => {
 	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 
 	try {
-		const callHex = await assetApi.createTransferTransaction(
+		const callInfo = await assetApi.createTransferTransaction(
 			'2023',
 			'0xF977814e90dA44bFA03b6295A0616a897441aceC',
 			['KSM'],
@@ -32,7 +31,7 @@ const main = async () => {
 			}
 		);
 
-		console.log(callHex);
+		console.log(callInfo);
 	} catch (e) {
 		console.error(e);
 	}
