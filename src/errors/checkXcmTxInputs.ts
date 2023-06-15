@@ -2,6 +2,7 @@ import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
 import { Registry } from '../registry';
 import type { ChainInfo } from '../registry/types';
 import { Direction } from '../types';
+import { AssetInfo } from '../types';
 import { BaseError } from './BaseError';
 
 /**
@@ -202,10 +203,6 @@ const checkSystemToParaAssetId = (
 				}
 			}
 
-			type AssetInfo = {
-				id: string;
-				symbol: string;
-			};
 			const tokenSymbolsMatched: AssetInfo[] = [];
 
 			// if not found in system parachains tokens, check its assetsInfo
