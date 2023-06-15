@@ -22,9 +22,9 @@ const main = async () => {
 	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 
 	// When declaring this type it will ensure that the inputted `format` matches it or the type checker will error.
-	let callHex: TxResult<'submittable'>;
+	let callInfo: TxResult<'submittable'>;
 	try {
-		callHex = await assetApi.createTransferTransaction(
+		callInfo = await assetApi.createTransferTransaction(
 			'1000',
 			'EGP7XztdTosm1EmaATZVMjSWujGEj9nNidhjqA2zZtttkFg',
 			['KSM'],
@@ -36,7 +36,7 @@ const main = async () => {
 			}
 		);
 
-		console.log(callHex);
+		console.log(callInfo);
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);
@@ -47,7 +47,7 @@ const main = async () => {
 	const keyring = new Keyring();
 	const alice = keyring.addFromUri('//Alice', { name: 'Alice' }, 'sr25519');
 
-	await callHex.tx.signAndSend(alice);
+	await callInfo.tx.signAndSend(alice);
 };
 
 main().finally(() => process.exit());
