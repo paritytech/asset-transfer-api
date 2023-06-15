@@ -5,13 +5,14 @@
  */
 import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
+
 import { AssetsTransferApi, constructApiPromise } from '../src';
 import { TxResult } from '../src/types';
 
 /**
- * In this example, we are creating a `SubmittableExtrinsic` and showing how one may sign and send it over 
+ * In this example, we are creating a `SubmittableExtrinsic` and showing how one may sign and send it over
  * a network. Since it is the `SubmittableExtrinsic`, there are a plethora of attached methods to use such as:
- * 
+ *
  * `sign`, `signAsync`, `dryRun`, `addSignature`, `paymentInfo`, etc.
  */
 const main = async () => {
@@ -21,7 +22,7 @@ const main = async () => {
 	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 
 	// When declaring this type it will ensure that the inputted `format` matches it or the type checker will error.
-    let callHex: TxResult<'submittable'>;
+	let callHex: TxResult<'submittable'>;
 	try {
 		callHex = await assetApi.createTransferTransaction(
 			'1000',
@@ -46,7 +47,7 @@ const main = async () => {
 	const keyring = new Keyring();
 	const alice = keyring.addFromUri('//Alice', { name: 'Alice' }, 'sr25519');
 
-	await callHex.tx.signAndSend(alice)
-}
+	await callHex.tx.signAndSend(alice);
+};
 
 main().finally(() => process.exit());
