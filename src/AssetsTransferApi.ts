@@ -566,7 +566,9 @@ export class AssetsTransferApi {
 	 * @param assetId number
 	 * @returns Promise<boolean>
 	 */
-	private checkAssetIsSufficient = async (assetId: number): Promise<boolean> => {
+	private checkAssetIsSufficient = async (
+		assetId: number
+	): Promise<boolean> => {
 		try {
 			const asset = (await this._api.query.assets.asset(assetId)).unwrap();
 
