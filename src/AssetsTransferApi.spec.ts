@@ -362,7 +362,7 @@ describe('AssetTransferAPI', () => {
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['usdt', 'usdc'],
+				['1984', 'usdc'],
 				['5000000', '4000000000'],
 				{
 					paysWithFeeOrigin: '1984',
@@ -390,7 +390,7 @@ describe('AssetTransferAPI', () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['usdt', 'usdc'],
+					['1984', 'usdc'],
 					['5000000', '4000000000'],
 					{
 						paysWithFeeOrigin: 'hello there',
@@ -405,12 +405,12 @@ describe('AssetTransferAPI', () => {
 			);
 		});
 
-		it('Should error during payload construction when a paysWithFeeOrigin that matches a non sufficient asset', async () => {
+		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['usdt', 'usdc'],
+					['1984', 'usdc'],
 					['5000000', '4000000000'],
 					{
 						paysWithFeeOrigin: '100',

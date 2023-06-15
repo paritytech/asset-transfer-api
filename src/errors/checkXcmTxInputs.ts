@@ -2,6 +2,7 @@ import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
 import { Registry } from '../registry';
 import type { ChainInfo } from '../registry/types';
 import { Direction } from '../types';
+import { AssetInfo } from '../types';
 import { BaseError } from './BaseError';
 
 /**
@@ -202,14 +203,38 @@ const checkSystemToParaAssetId = (
 				}
 			}
 
+			const tokenSymbolsMatched: AssetInfo[] = [];
+
 			// if not found in system parachains tokens, check its assetsInfo
 			if (!isValidTokenSymbol) {
-				for (const symbol of Object.values(systemParachainInfo.assetsInfo)) {
+				for (const [id, symbol] of Object.entries(
+					systemParachainInfo.assetsInfo
+				)) {
 					if (symbol.toLowerCase() === assetId.toLowerCase()) {
-						isValidTokenSymbol = true;
-						break;
+						const assetInfo: AssetInfo = {
+							id,
+							symbol,
+						};
+						tokenSymbolsMatched.push(assetInfo);
 					}
 				}
+			}
+
+			// check if multiple matches found
+			// if more than 1 match is found throw an error and include details on the matched tokens
+			if (tokenSymbolsMatched.length > 1) {
+				const assetMessageInfo = tokenSymbolsMatched.map(
+					(token) => `assetId: ${token.id} symbol: ${token.symbol}`
+				);
+				const message =
+					`Multiple assets found with symbol ${assetId}:\n${assetMessageInfo.toString()}\nPlease retry using an assetId rather than the token symbol
+				`
+						.trim()
+						.replace(',', '\n');
+
+				throw new BaseError(message);
+			} else if (tokenSymbolsMatched.length === 1) {
+				isValidTokenSymbol = true;
 			}
 
 			// if no native token for the system parachain was matched, throw an error
