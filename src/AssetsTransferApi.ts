@@ -474,7 +474,7 @@ export class AssetsTransferApi {
 	 * @param tx SubmittableExtrinsic<'promise', ISubmittableResult>
 	 * @param paysWithFeeOrigin string
 	 */
-	public createPayload = async (
+	private createPayload = async (
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
 		paysWithFeeOrigin?: string
 	): Promise<`0x${string}`> => {
@@ -566,7 +566,7 @@ export class AssetsTransferApi {
 	 * @param assetId number
 	 * @returns Promise<boolean>
 	 */
-	public checkAssetIsSufficient = async (assetId: number): Promise<boolean> => {
+	private checkAssetIsSufficient = async (assetId: number): Promise<boolean> => {
 		try {
 			const asset = (await this._api.query.assets.asset(assetId)).unwrap();
 
