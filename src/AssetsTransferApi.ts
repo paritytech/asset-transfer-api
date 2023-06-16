@@ -11,8 +11,6 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-// import { hexToU8a } from '@polkadot/util';
-// import { stringToU8a } from '@polkadot/util';
 import {
 	RELAY_CHAIN_NAMES,
 	SYSTEM_PARACHAINS_IDS,
