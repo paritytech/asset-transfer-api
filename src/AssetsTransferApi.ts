@@ -280,27 +280,32 @@ export class AssetsTransferApi {
 				.createType('ExtrinsicPayload', tx, {
 					version: 4
 				});		
-			console.log('WHAT IS extrinsic payload', extrinsicPayload.toHuman());
+			console.log('WHAT IS EXTRINSIC FOR PAYLOAD', extrinsicPayload.toHuman());
 		
 			const extrinsic = _api.registry
-			.createType('Extrinsic', { method: extrinsicPayload.method }, { version: 4 });
-			console.log('EXTRINSIC', extrinsic.toHuman())
-			// const u8a = extrinsic.toU8a();
+			.createType('Extrinsic', { method: extrinsicPayload.method }, { version: EXTRINSIC_VERSION });
+			console.log('EXTRINSIC for PAYLOAD', extrinsic.toHuman());
 
-			const methodCall = _api.registry.createType('Call', extrinsic.method).toHex();
+			const u8a = extrinsic.toU8a();
 
-			return _api.call.transactionPaymentApi.queryFeeDetails(methodCall, methodCall.length);
+			return await _api.call.transactionPaymentApi.queryInfo(extrinsic, u8a.length);
 		} else if (format === 'call') {
-			// const call = _api.registry
-			// 	.createType('Call', tx)
-			// 	.toHex();
+			const call = _api.registry
+				.createType('Call', tx).toHex();
+			// console.log('WHAT IS CALL', call.toHuman());
 
-			return _api.call.transactionPaymentApi.queryInfo(tx, tx.length);
+			return await _api.call.transactionPaymentApi.queryInfo(call, call.length);
 		} else if (format === 'submittable') {
-			const ext = _api.registry.createType('Extrinsic', tx);
+			const ext = _api.registry.createType('Extrinsic',
+				{ method: (tx as SubmittableExtrinsic<'promise', ISubmittableResult>).method },
+				{ version: EXTRINSIC_VERSION }
+			);
 			const u8a = ext.toU8a();
 
-			return _api.call.transactionPaymentApi.queryInfo(u8a, u8a.length);
+			console.log('WHAT IS EXTRINSIC FOR SUBMITTABLE', ext.toHuman());
+			console.log('EXTRINSIC HEX', ext.toHex());
+			// _api.tx.xcmPallet.limitedReserveTransferAssets(params_here).paymentInfo('GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ')
+			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
 		}
 
 		return null;
