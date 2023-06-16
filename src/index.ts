@@ -2,3 +2,4 @@
 
 export * from './AssetsTransferApi';
 export * from './constructApiPromise';
+export * from './types';

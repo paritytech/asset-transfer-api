@@ -9,7 +9,7 @@ import { fetchSafeXcmVersion } from './createXcmCalls/util/fetchSafeXcmVersion';
 /**
  * the api promise, specName and safeXcmVersion for the currently connected rpc endpoint
  */
-interface ApiInfo {
+export interface ApiInfo {
 	api: ApiPromise;
 	specName: string;
 	safeXcmVersion: number;
