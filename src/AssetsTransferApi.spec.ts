@@ -177,6 +177,8 @@ describe('AssetTransferAPI', () => {
 				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
+				'2000',
+				'statmine',
 				'payload'
 			);
 
@@ -195,6 +197,8 @@ describe('AssetTransferAPI', () => {
 				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
+				'2000',
+				'statmine',
 				'call'
 			);
 			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
