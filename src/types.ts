@@ -110,6 +110,14 @@ export type AssetsTransferApiOpts = {
  */
 export interface TxResult<T> {
 	/**
+	 * @description The destination specName of the transaction
+	 */
+	dest: string;
+	/**
+	 * @description The origin specName of the transaction
+	 */
+	origin: string;
+	/**
 	 * @description The format type the tx is ouputted in.
 	 */
 	format: Format | 'local';

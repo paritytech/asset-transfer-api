@@ -38,6 +38,8 @@ The below chart is focusing on what directions are supported for constructing as
 | Relay to System        | :white_check_mark: | :white_check_mark: |
 | Parachain to Parachain | :x:                | :x:                |
 | Parachain to Relay     | :x:                | :x:                |
+| Parachain to System    | :x:                | :x:                |
+| System to System       | :x:                | :x:                |
 
 Note: System refers to System Parachains like `Statemine` and `Statemint`.
 

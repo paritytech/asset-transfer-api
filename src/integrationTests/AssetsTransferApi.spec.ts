@@ -26,6 +26,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					}
 				);
 				expect(res).toEqual({
+					dest: 'statemine',
+					origin: 'statemine',
 					direction: 'local',
 					format: 'call',
 					method: 'assets::transfer',
@@ -45,6 +47,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					}
 				);
 				expect(res).toEqual({
+					dest: 'statemine',
+					origin: 'statemine',
 					direction: 'local',
 					format: 'call',
 					method: 'assets::transferKeepAlive',
@@ -63,6 +67,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					}
 				);
 				expect(res).toEqual({
+					dest: 'statemine',
+					origin: 'statemine',
 					direction: 'local',
 					format: 'call',
 					method: 'balances::transfer',
@@ -82,6 +88,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					}
 				);
 				expect(res).toEqual({
+					dest: 'statemine',
+					origin: 'statemine',
 					direction: 'local',
 					format: 'call',
 					method: 'balances::transferKeepAlive',
@@ -100,6 +108,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					}
 				);
 				expect(res).toEqual({
+					dest: 'kusama',
+					origin: 'kusama',
 					direction: 'local',
 					format: 'call',
 					method: 'balances::transfer',
@@ -119,6 +129,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					}
 				);
 				expect(res).toEqual({
+					dest: 'kusama',
+					origin: 'kusama',
 					direction: 'local',
 					format: 'call',
 					method: 'balances::transferKeepAlive',
@@ -166,6 +178,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
@@ -176,6 +190,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
@@ -190,6 +206,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
 					const res = await foreignBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'reserveTransferAssets',
@@ -200,6 +218,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a reserveTransferAsset for V2', async () => {
 					const res = await foreignBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
@@ -214,6 +234,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a reserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'reserveTransferAssets',
@@ -224,6 +246,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a reserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
@@ -238,6 +262,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
@@ -248,6 +274,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
@@ -264,6 +292,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignBaseSystemCreateTx('call', true, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
@@ -274,6 +304,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignBaseSystemCreateTx('payload', true, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
@@ -288,6 +320,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
 					const res = await foreignBaseSystemCreateTx('call', false, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'reserveTransferAssets',
@@ -298,6 +332,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a reserveTransferAsset for V3', async () => {
 					const res = await foreignBaseSystemCreateTx('payload', false, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
@@ -312,6 +348,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a reserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx('call', false, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'reserveTransferAssets',
@@ -322,6 +360,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a reserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', false, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
@@ -336,6 +376,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for limitedReserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx('call', true, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
@@ -346,6 +388,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for limitedReserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', true, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
@@ -381,6 +425,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await baseRelayCreateTx('call', true, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
@@ -391,6 +437,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
 					const res = await baseRelayCreateTx('payload', true, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
@@ -405,6 +453,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
 					const res = await baseRelayCreateTx('call', false, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'call',
 						method: 'reserveTransferAssets',
@@ -415,6 +465,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a reserveTransferAsset for V2', async () => {
 					const res = await baseRelayCreateTx('payload', false, 2);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
@@ -431,6 +483,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
 					const res = await baseRelayCreateTx('call', true, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
@@ -441,6 +495,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
 					const res = await baseRelayCreateTx('payload', true, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
@@ -455,6 +511,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
 					const res = await baseRelayCreateTx('call', false, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'call',
 						method: 'reserveTransferAssets',
@@ -465,6 +523,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a reserveTransferAsset for V3', async () => {
 					const res = await baseRelayCreateTx('payload', false, 3);
 					expect(res).toEqual({
+						dest: 'karura',
+						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
@@ -500,6 +560,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a teleportAssets call for V2', async () => {
 					const res = await nativeBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
+						dest: 'kusama',
+						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'call',
 						method: 'teleportAssets',
@@ -510,6 +572,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a teleportAssets payload for V2', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
+						dest: 'kusama',
+						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'teleportAssets',
@@ -524,6 +588,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
 					const res = await nativeBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
+						dest: 'kusama',
+						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'call',
 						method: 'limitedTeleportAssets',
@@ -534,6 +600,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a limitedTeleportAssets payload for V2', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
+						dest: 'kusama',
+						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
@@ -550,6 +618,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a teleportAssets call for V3', async () => {
 					const res = await nativeBaseSystemCreateTx('call', false, 3);
 					expect(res).toEqual({
+						dest: 'kusama',
+						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'call',
 						method: 'teleportAssets',
@@ -560,6 +630,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a teleportAssets payload for V3', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', false, 3);
 					expect(res).toEqual({
+						dest: 'kusama',
+						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'teleportAssets',
@@ -574,6 +646,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
 					const res = await nativeBaseSystemCreateTx('call', true, 3);
 					expect(res).toEqual({
+						dest: 'kusama',
+						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'call',
 						method: 'limitedTeleportAssets',
@@ -584,6 +658,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a limitedTeleportAssets payload for V3', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', true, 3);
 					expect(res).toEqual({
+						dest: 'kusama',
+						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
@@ -619,6 +695,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a teleportAssets call for V2', async () => {
 					const res = await nativeBaseSystemCreateTx('call', false, 2);
 					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'call',
 						method: 'teleportAssets',
@@ -629,6 +707,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a teleportAssets payload for V2', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', false, 2);
 					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'payload',
 						method: 'teleportAssets',
@@ -643,6 +723,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
 					const res = await nativeBaseSystemCreateTx('call', true, 2);
 					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
@@ -653,6 +735,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', true, 2);
 					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
@@ -669,6 +753,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a teleportAssets call for V3', async () => {
 					const res = await nativeBaseSystemCreateTx('call', false, 3);
 					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'call',
 						method: 'teleportAssets',
@@ -679,6 +765,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a teleportAssets payload for V3', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', false, 3);
 					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'payload',
 						method: 'teleportAssets',
@@ -693,6 +781,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
 					const res = await nativeBaseSystemCreateTx('call', true, 3);
 					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
@@ -703,6 +793,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', true, 3);
 					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
