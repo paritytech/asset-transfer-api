@@ -1,9 +1,12 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { SystemToRelay } from './SystemToRelay';
 
 describe('SystemToRelay XcmVersioned Generation', () => {
+	const registry = new Registry('statemine', {});
+
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = SystemToRelay.createBeneficiary(
@@ -91,7 +94,8 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				['100'],
 				2,
 				'',
-				[]
+				[],
+				{ registry }
 			);
 
 			const expectedRes = {
@@ -120,7 +124,8 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				['100'],
 				3,
 				'',
-				[]
+				[],
+				{ registry }
 			);
 
 			const expectedRes = {

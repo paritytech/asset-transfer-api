@@ -10,6 +10,7 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
+// import { hexToU8a } from '@polkadot/util';
 
 import {
 	RELAY_CHAIN_NAMES,
@@ -201,6 +202,7 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
+					this.registry,
 					opts?.weightLimit,
 					opts?.paysWithFeeDest
 				);
@@ -215,6 +217,7 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
+					this.registry,
 					opts?.paysWithFeeDest
 				);
 			}
@@ -230,6 +233,7 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
+					this.registry,
 					opts?.weightLimit
 				);
 			} else {
@@ -242,7 +246,8 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					_specName
+					_specName,
+					this.registry
 				);
 			}
 		}
@@ -270,26 +275,21 @@ export class AssetsTransferApi {
 		// const fmt = format ? format : 'payload';
 
 		if (format === 'payload') {
+			console.log('what is tx', tx);
 			const extrinsicPayload = _api.registry
 				.createType('ExtrinsicPayload', tx, {
 					version: 4
-				});
-			
-			// const method = extrinsicPayload.method.toString();
-		
+				});		
 			console.log('WHAT IS extrinsic payload', extrinsicPayload.toHuman());
-			// const methodCall = _api.registry.createType('Call', extrinsic.method.toU8a());
-			// console.log('METHOD CALL', methodCall.toHuman())
-			
-			// const call = _api.registry
-			// .createType('ExtrinsicPayload', extrinsic.method, {
-			// 	version: 4
-			// }).toHex();
+		
+			const extrinsic = _api.registry
+			.createType('Extrinsic', { method: extrinsicPayload.method }, { version: 4 });
+			console.log('EXTRINSIC', extrinsic.toHuman())
+			// const u8a = extrinsic.toU8a();
 
-			// const method = _api.registry.createType('Call', call);
-			// console.log('METHOD', method.toHuman())
+			const methodCall = _api.registry.createType('Call', extrinsic.method).toHex();
 
-			return _api.call.transactionPaymentApi.queryInfo(extrinsicPayload.toHex(), extrinsicPayload.toHex().length);
+			return _api.call.transactionPaymentApi.queryFeeDetails(methodCall, methodCall.length);
 		} else if (format === 'call') {
 			// const call = _api.registry
 			// 	.createType('Call', tx)

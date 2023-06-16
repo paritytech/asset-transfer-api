@@ -67,7 +67,7 @@ const main = async () => {
 	const payload = await assetTransferApi.createTransferTransaction(
 		'2023',
 		'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
-		['usdt', 'usdc'],
+		['1984', 'usdc'],
 		['5000000', '4000000000'],
 		{
 			format: 'payload',

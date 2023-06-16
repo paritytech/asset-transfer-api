@@ -235,3 +235,8 @@ export interface SubmittableMethodData {
 	isSigned: boolean;
 	method: Method;
 }
+
+export type AssetInfo = {
+	id: string;
+	symbol: string;
+};
