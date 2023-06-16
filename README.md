@@ -18,11 +18,15 @@
 
 <br /><br />
 
+## Docs
+
+Find full documentation [here](https://paritytech.github.io/asset-transfer-api/), for quick start guide read below. All examples can be found [here](./examples/).
+
 ## About
 
-WARNING: THIS PACKAGE IS NOT PRODUCTION READY!
+WARNING: This package is in stable beta, and does not support sending assets in all directions. Read **Current Cross-chain Support** for more info.
 
-**ALPHA**: This package is in alpha and is being rapidly and actively developed on, so some design choices are subject to change. 
+**BETA**: This package is in stable beta.
 
 **Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Statemine and Statemint. It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
 
