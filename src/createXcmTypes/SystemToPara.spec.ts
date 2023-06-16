@@ -256,19 +256,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const expected: MultiAsset[] = [
 				{
 					fun: {
-						Fungible: '100000000000000',
-					},
-					id: {
-						Concrete: {
-							interior: {
-								Here: '',
-							},
-							parents: 1,
-						},
-					},
-				},
-				{
-					fun: {
 						Fungible: '300000000000000',
 					},
 					id: {
@@ -277,6 +264,19 @@ describe('SystemToPara XcmVersioned Generation', () => {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 							},
 							parents: 0,
+						},
+					},
+				},
+				{
+					fun: {
+						Fungible: '100000000000000',
+					},
+					id: {
+						Concrete: {
+							interior: {
+								Here: '',
+							},
+							parents: 1,
 						},
 					},
 				},

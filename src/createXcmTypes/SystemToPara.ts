@@ -21,7 +21,6 @@ import {
 	ICreateXcmType,
 	IWeightLimit,
 } from './types';
-import { isAscendingOrder } from './util/checkIsAscendingOrder';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
@@ -232,7 +231,7 @@ export const createSystemToParaMultiAssets = (
 	registry: Registry
 ): MultiAsset[] => {
 	const palletId = fetchPalletInstanceId(api);
-	const multiAssets = [];
+	let multiAssets = [];
 
 	// We know this is a System parachain direction which is chainId 1000.
 	const { tokens } = registry.currentRelayRegistry['1000'];
@@ -269,9 +268,7 @@ export const createSystemToParaMultiAssets = (
 		multiAssets.push(multiAsset);
 	}
 
-	if (!isAscendingOrder(multiAssets)) {
-		sortMultiAssetsAscending(multiAssets);
-	}
+	multiAssets = sortMultiAssetsAscending(multiAssets);
 
 	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
 
