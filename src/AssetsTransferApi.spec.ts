@@ -49,9 +49,13 @@ describe('AssetTransferAPI', () => {
 				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
+				'2023',
+				'statemine',
 				'call'
 			);
 			expect(res).toEqual({
+				dest: 'moonriver',
+				origin: 'statemine',
 				direction: 'SystemToPara',
 				format: 'call',
 				method: 'limitedReserveTransferAssets',
@@ -65,9 +69,13 @@ describe('AssetTransferAPI', () => {
 				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
+				'2023',
+				'statemine',
 				'payload'
 			);
 			expect(res).toEqual({
+				dest: 'moonriver',
+				origin: 'statemine',
 				direction: 'SystemToPara',
 				format: 'payload',
 				method: 'limitedReserveTransferAssets',
@@ -81,6 +89,8 @@ describe('AssetTransferAPI', () => {
 				Direction.SystemToPara,
 				1,
 				'limitedReserveTransferAssets',
+				'2023',
+				'Statmine',
 				'submittable'
 			);
 			expect(res.tx.toRawType()).toEqual('Extrinsic');

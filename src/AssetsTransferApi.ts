@@ -148,6 +148,8 @@ export class AssetsTransferApi {
 					'local',
 					null,
 					palletMethod,
+					destChainId,
+					_specName,
 					opts?.format,
 					opts?.paysWithFeeOrigin
 				);
@@ -165,6 +167,8 @@ export class AssetsTransferApi {
 					'local',
 					null,
 					palletMethod,
+					destChainId,
+					_specName,
 					opts?.format,
 					opts?.paysWithFeeOrigin
 				);
@@ -255,6 +259,8 @@ export class AssetsTransferApi {
 			xcmDirection,
 			xcmVersion,
 			txMethod,
+			destChainId,
+			_specName,
 			opts?.format,
 			opts?.paysWithFeeOrigin
 		);
@@ -370,12 +376,16 @@ export class AssetsTransferApi {
 		direction: Direction | 'local',
 		xcmVersion: number | null = null,
 		method: Methods,
+		dest: string,
+		origin: string,
 		format?: T,
 		paysWithFeeOrigin?: string
 	): Promise<TxResult<T>> {
 		const { _api } = this;
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
+			origin,
+			dest: this.getDestinationSpecName(dest, this.registry),
 			direction,
 			xcmVersion,
 			method,
@@ -581,4 +591,19 @@ export class AssetsTransferApi {
 			throw new BaseError(`assetId ${assetId} does not match a valid asset`);
 		}
 	};
+
+	/**
+	 * Return the specName of the destination chainId
+	 *
+	 * @param destChainId
+	 * @param registry
+	 * @returns
+	 */
+	private getDestinationSpecName(destId: string, registry: Registry): string {
+		if (destId === '0') {
+			return registry.relayChain;
+		}
+
+		return registry.lookupParachainInfo(destId)[0].specName;
+	}
 }
