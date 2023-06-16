@@ -1,15 +1,31 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { MultiAsset } from '../../types';
+import { MultiAsset, NonRelayNativeInterior } from '../../types';
 
 /**
- * This sorts a list of multiassets in ascending order based on their Fungible value.
+ * This sorts a list of multiassets in ascending order based on their id.
  *
  * @param multiAssets MultiAsset[]
  */
 export const sortMultiAssetsAscending = (multiAssets: MultiAsset[]) => {
-	multiAssets.sort((a, b) => {
-		const sortOrder = BigInt(a.fun.Fungible) < BigInt(b.fun.Fungible) ? -1 : 1;
+	return multiAssets.sort((a, b) => {
+		const isAHere = Object.keys(a.id.Concrete.interior).includes('Here');
+		const isBHere = Object.keys(b.id.Concrete.interior).includes('Here');
+		if (isAHere) {
+			return 1;
+		} else if (isBHere) {
+			return -1;
+		}
+
+		const sortOrder =
+			BigInt(
+				(a.id.Concrete.interior as NonRelayNativeInterior).X2[1].GeneralIndex
+			) <
+			BigInt(
+				(b.id.Concrete.interior as NonRelayNativeInterior).X2[1].GeneralIndex
+			)
+				? -1
+				: 1;
 
 		return sortOrder;
 	});
