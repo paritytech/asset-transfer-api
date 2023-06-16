@@ -353,7 +353,6 @@ describe('AssetTransferAPI', () => {
 			);
 
 			const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
-			console.log(decoded);
 			expect(decoded).toEqual(expected);
 		});
 	});
