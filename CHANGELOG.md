@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.1.0-beta.0](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.5..v0.1.0-beta.0)(2023-06-16)
+
+### Stable Beta is here!
+
+- Add `AssetsTransferApi.fetchFeeInfo`
+- Add `AssetsTransferApi.regsitry` which exposes a bunch of useful functionality now. Check out the following [PR #183](https://github.com/paritytech/asset-transfer-api/pull/183)
+- Implement `paysWithFeeOrigin` as an option for `AssetsTransferApi.createTransferTransaction`
+- Fix type issues for `SystemToPara`
+- Add examples
+- Update polkadot-js deps
+- More verbose errors for when multiple identical assets symbols exists in the same registry.
+- Fix ascending order for multiple multi assets for `SystemToPara`.
+- Export types at top level.
+- Add `dest`, and `origin` to `TxResult<T>`.
+- Update `fetchFeeInfo` to take in `call`, and `payload` types.
+
+NOTE - The API is considered stable for the following direction:
+
+- RelayToPara
+- RelayToSystem
+- SystemToRelay
+- SystemToPara
+
 ## [0.1.0-alpha.5](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.4..v0.1.0-alpha.5)(2023-06-07)
 
 - Breaking Change: Rework `AssetTransferApi` constructor, and `constructApiPromise`
