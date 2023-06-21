@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.0-beta.1](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.0..v0.1.0-beta.1)(2023-06-21)
+
+## Chore
+
+- chore(registry): update registry
+
 ## [0.1.0-beta.0](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.5..v0.1.0-beta.0)(2023-06-16)
 
 ### Stable Beta is here!
