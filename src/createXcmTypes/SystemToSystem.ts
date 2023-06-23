@@ -25,11 +25,11 @@ import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
-import { SYSTEM_PARACHAINS_IDS } from '../consts';
 import { BaseError } from '../errors';
+import { SYSTEM_PARACHAINS_IDS } from '../consts';
+import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 
-export const SystemToPara: ICreateXcmType = {
+export const SystemToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
@@ -125,12 +125,14 @@ export const SystemToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): VersionedMultiAssets => {
-		const sortedAndDedupedMultiAssets = createSystemToParaMultiAssets(
+		const { registry } = opts;
+
+		const sortedAndDedupedMultiAssets = createSystemToSystemMultiAssets(
 			api,
 			amounts,
 			specName,
 			assets,
-			opts.registry
+			registry,
 		);
 
 		if (xcmVersion === 2) {
@@ -197,7 +199,7 @@ export const SystemToPara: ICreateXcmType = {
 			assetIds &&
 			paysWithFeeDest
 		) {
-			const multiAssets = createSystemToParaMultiAssets(
+			const multiAssets = createSystemToSystemMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
 				specName,
@@ -206,10 +208,11 @@ export const SystemToPara: ICreateXcmType = {
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
+
 			if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
 				throw new BaseError(`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`);
 			}
-		
+
 			const assetIndex = getFeeAssetItemIndex(
 				paysWithFeeDest,
 				multiAssets,
@@ -225,28 +228,29 @@ export const SystemToPara: ICreateXcmType = {
 };
 
 /**
- * Creates and returns a MultiAsset array for system parachains based on provided specName, assets and amounts
+ * Creates and returns a MultiAsset array for system parachains based on provided specName, chain ID, assets and amounts
  *
  * @param api ApiPromise[]
  * @param amounts string[]
  * @param specName string
  * @param assets string[]
+ * @param chainId string
  */
-export const createSystemToParaMultiAssets = (
+export const createSystemToSystemMultiAssets = (
 	api: ApiPromise,
 	amounts: string[],
 	specName: string,
 	assets: string[],
-	registry: Registry
+	registry: Registry,
 ): MultiAsset[] => {
 	const palletId = fetchPalletInstanceId(api);
 	let multiAssets = [];
 
 	const systemChainId = getChainIdBySpecName(registry, specName);
 
-	if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
-		throw new BaseError(`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`);
-	}
+    if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
+        throw new BaseError(`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`);
+    }
 
 	const { tokens } = registry.currentRelayRegistry[systemChainId];
 
@@ -257,7 +261,6 @@ export const createSystemToParaMultiAssets = (
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
-		
 
 		if (!isRelayNative && isNotANumber) {
 			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName, systemChainId);

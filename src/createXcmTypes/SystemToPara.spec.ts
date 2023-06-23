@@ -284,7 +284,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
-			const specName = 'kusama';
+			const specName = 'statemine';
 			const result = createSystemToParaMultiAssets(
 				mockSystemApi,
 				amounts,

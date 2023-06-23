@@ -15,7 +15,8 @@ import { NonRelayNativeInterior, RelayNativeInterior } from '../types';
 export const getFeeAssetItemIndex = (
 	paysWithFeeDest: string,
 	multiAssets: MultiAsset[],
-	specName: string
+	specName: string,
+	systemChainId?: string
 ): number => {
 	let result = 0;
 
@@ -42,9 +43,9 @@ export const getFeeAssetItemIndex = (
 
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
-				if (isNotANumber) {
+				if (isNotANumber && systemChainId) {
 					const paysWithFeeDestGeneralIndex =
-						getSystemChainTokenSymbolGeneralIndex(paysWithFeeDest, specName);
+						getSystemChainTokenSymbolGeneralIndex(paysWithFeeDest, specName, systemChainId);
 					if (
 						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2 &&
 						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2[1]

@@ -14,9 +14,9 @@ export const RELAY_CHAIN_IDS = ['0'];
  */
 export const SYSTEM_PARACHAINS_NAMES = ['statemine', 'statemint', 'westmint'];
 /**
- * As of now all the known system parachains have an ID of 1000.
+ * List of IDs for assets and bridge hub system parachains.
  */
-export const SYSTEM_PARACHAINS_IDS = ['1000'];
+export const SYSTEM_PARACHAINS_IDS = ['1000', '1002'];
 /**
  * The default xcm version to construct a xcm message.
  */

@@ -1,6 +1,5 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { SYSTEM_PARACHAINS_IDS } from '../../consts';
 import { BaseError } from '../../errors';
 import { findRelayChain, parseRegistry } from '../../registry';
 
@@ -13,11 +12,16 @@ import { findRelayChain, parseRegistry } from '../../registry';
  */
 export const getSystemChainTokenSymbolGeneralIndex = (
 	tokenSymbol: string,
-	specName: string
+	specName: string,
+	systemChainId: string,
 ): string => {
 	const registry = parseRegistry({});
 	const relayChain = findRelayChain(specName, registry);
-	const { assetsInfo } = registry[relayChain][SYSTEM_PARACHAINS_IDS[0]];
+	const { assetsInfo } = registry[relayChain][systemChainId];
+
+	if (Object.keys(assetsInfo).length === 0) {
+		throw new BaseError(`${specName} has no associated token symbol ${tokenSymbol}`);
+	}
 
 	// get the corresponding asset id index from the assets registry
 	const assetId: string | undefined = Object.keys(assetsInfo).find(

@@ -36,6 +36,10 @@ export enum Direction {
 	 */
 	SystemToRelay = 'SystemToRelay',
 	/**
+	 * System parachain to System parachain chain.
+	 */
+	SystemToSystem = 'SystemToSystem',
+	/**
 	 * Parachain to Parachain.
 	 */
 	ParaToPara = 'ParaToPara',

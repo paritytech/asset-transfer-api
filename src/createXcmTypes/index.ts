@@ -3,6 +3,7 @@
 import { Direction } from '../types';
 import { RelayToPara } from './RelayToPara';
 import { RelayToSystem } from './RelayToSystem';
+import { SystemToSystem } from './SystemToSystem';
 import { SystemToPara } from './SystemToPara';
 import { SystemToRelay } from './SystemToRelay';
 import { ICreateXcmType } from './types';
@@ -12,6 +13,7 @@ type ICreateXcmTypeLookup = {
 };
 
 export const createXcmTypes: ICreateXcmTypeLookup = {
+	SystemToSystem,
 	SystemToPara,
 	RelayToPara,
 	SystemToRelay,
