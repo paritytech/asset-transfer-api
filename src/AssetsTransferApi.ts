@@ -16,7 +16,7 @@ import {
 	SYSTEM_PARACHAINS_IDS,
 	SYSTEM_PARACHAINS_NAMES,
 } from './consts';
-// import * as assets from './createCalls/assets';
+import * as assets from './createCalls/assets';
 import * as balances from './createCalls/balances';
 import {
 	limitedReserveTransferAssets,
@@ -27,7 +27,7 @@ import {
 import {
 	BaseError,
 	checkBaseInputTypes,
-	// checkLocalTxInput,
+	checkLocalTxInput,
 	checkXcmTxInputs,
 	checkXcmVersion,
 } from './errors';
@@ -46,6 +46,7 @@ import {
 	TxResult,
 	UnsignedTransaction,
 } from './types';
+import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -104,58 +105,59 @@ export class AssetsTransferApi {
 		// 	_specName.toLowerCase()
 		// );
 		// const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
-
+		
 		/**
 		 * Sanitize the address to a hex, and ensure that the passed in SS58, or publickey
 		 * is validated correctly.
 		 */
 		const addr = sanitizeAddress(destAddr);
-		// const isLocalSystemTx = isDestSystemParachain && isOriginSystemParachain;
+
+		const originChainId = getChainIdBySpecName(registry, _specName);
+		const isLocalSystemTx = originChainId === destChainId;
 		const isLocalRelayTx =
 			destChainId === '0' &&
 			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
 		/**
 		 * Create a local asset transfer on a system parachain
 		 */
-		if (isLocalRelayTx) {
+		if (isLocalSystemTx || isLocalRelayTx) {
 			/**
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			// const localAssetType = checkLocalTxInput(assetIds, amounts, registry); // Throws an error when any of the inputs are incorrect.
+			const localAssetType = checkLocalTxInput(assetIds, amounts, registry); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
-			// if (isLocalSystemTx) {
-			// 	let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
-			// 	let palletMethod: LocalTransferTypes;
-			// 	/**
-			// 	 *
-			// 	 */
-			// 	if (localAssetType === 'Balances') {
-			// 		tx =
-			// 			method === 'transferKeepAlive'
-			// 				? balances.transferKeepAlive(_api, addr, amounts[0])
-			// 				: balances.transfer(_api, addr, amounts[0]);
-			// 		palletMethod = `balances::${method}`;
-			// 	} else {
-			// 		tx =
-			// 			method === 'transferKeepAlive'
-			// 				? assets.transferKeepAlive(_api, addr, assetIds[0], amounts[0])
-			// 				: assets.transfer(_api, addr, assetIds[0], amounts[0]);
-			// 		palletMethod = `assets::${method}`;
-			// 	}
+			if (isLocalSystemTx) {
+				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
+				let palletMethod: LocalTransferTypes;
+				/**
+				 *
+				 */
+				if (localAssetType === 'Balances') {
+					tx =
+						method === 'transferKeepAlive'
+							? balances.transferKeepAlive(_api, addr, amounts[0])
+							: balances.transfer(_api, addr, amounts[0]);
+					palletMethod = `balances::${method}`;
+				} else {
+					tx =
+						method === 'transferKeepAlive'
+							? assets.transferKeepAlive(_api, addr, assetIds[0], amounts[0])
+							: assets.transfer(_api, addr, assetIds[0], amounts[0]);
+					palletMethod = `assets::${method}`;
+				}
 
-			// 	return await this.constructFormat(
-			// 		tx,
-			// 		'local',
-			// 		null,
-			// 		palletMethod,
-			// 		destChainId,
-			// 		_specName,
-			// 		opts?.format,
-			// 		opts?.paysWithFeeOrigin
-			// 	);
-			// } else 
-			//  if{
+				return await this.constructFormat(
+					tx,
+					'local',
+					null,
+					palletMethod,
+					destChainId,
+					_specName,
+					opts?.format,
+					opts?.paysWithFeeOrigin
+				);
+			} else {
 				/**
 				 * By default local transaction on a relay chain will always be from the balances pallet
 				 */
@@ -174,7 +176,7 @@ export class AssetsTransferApi {
 					opts?.format,
 					opts?.paysWithFeeOrigin
 				);
-			// }
+			}
 		}
 
 		const xcmDirection = this.establishDirection(destChainId, _specName);

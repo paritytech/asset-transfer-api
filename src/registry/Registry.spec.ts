@@ -36,7 +36,6 @@ describe('Registry', () => {
 						'11': 'web3',
 						'21': 'WBTC',
 						'77': 'TRQ',
-						'99': 'Cypress',
 						'100': 'WETH',
 						'101': 'DOTMA',
 						'123': '123',

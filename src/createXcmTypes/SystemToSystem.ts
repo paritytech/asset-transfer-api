@@ -217,7 +217,6 @@ export const SystemToSystem: ICreateXcmType = {
 				paysWithFeeDest,
 				multiAssets,
 				specName,
-				systemChainId
 			);
 
 			return api.registry.createType('u32', assetIndex);
@@ -263,7 +262,7 @@ export const createSystemToSystemMultiAssets = (
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
 		if (!isRelayNative && isNotANumber) {
-			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName, systemChainId);
+			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
 		}
 
 		const interior: MultiAssetInterior = isRelayNative

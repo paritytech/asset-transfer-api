@@ -69,14 +69,14 @@ const main = async () => {
     const payload = await assetTransferApi.createTransferTransaction(
         '1000',
         'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
-        ['usdt', 'usdc'],
-        ['5000000', '4000000000'],
+        ['usdt'],
+        ['100000'],
         {
             format: 'payload',
             isLimited: true,
-            xcmVersion: 3,
+            // xcmVersion: 3,
             paysWithFeeOrigin: '1984',
-            paysWithFeeDest: 'USDC'
+            // paysWithFeeDest: 'USDC'
         }
     );
 

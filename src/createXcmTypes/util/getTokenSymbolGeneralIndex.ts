@@ -1,7 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { BaseError } from '../../errors';
-import { findRelayChain, parseRegistry } from '../../registry';
+import { Registry } from '../../registry';
+import { SYSTEM_PARACHAINS_IDS } from '../../consts';
+import { getChainIdBySpecName } from './getChainIdBySpecName';
 
 /**
  * Returns the correct asset index for a valid system chain token symbol
@@ -13,11 +15,16 @@ import { findRelayChain, parseRegistry } from '../../registry';
 export const getSystemChainTokenSymbolGeneralIndex = (
 	tokenSymbol: string,
 	specName: string,
-	systemChainId: string,
 ): string => {
-	const registry = parseRegistry({});
-	const relayChain = findRelayChain(specName, registry);
-	const { assetsInfo } = registry[relayChain][systemChainId];
+	const newRegistry = new Registry(specName, {});
+
+	const systemChainId = getChainIdBySpecName(newRegistry, specName);
+
+	if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
+		throw new BaseError(`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`);
+	}
+
+	const { assetsInfo } = newRegistry.currentRelayRegistry[systemChainId];
 
 	if (Object.keys(assetsInfo).length === 0) {
 		throw new BaseError(`${specName} has no associated token symbol ${tokenSymbol}`);

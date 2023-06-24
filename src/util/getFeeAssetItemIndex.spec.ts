@@ -7,15 +7,16 @@ type Test = [
 	paysWithFeeDest: string,
 	specName: string,
 	multiAssets: MultiAsset[],
-	expected: number
+	expected: number,
 ];
 
 describe('getFeeAssetItemIndex', () => {
 	it('Should select and return the index of the correct multiassets when given their token symbols', () => {
+
 		const tests: Test[] = [
 			[
 				'usdt',
-				'polkadot',
+				'statemint',
 				[
 					{
 						id: {
@@ -46,7 +47,7 @@ describe('getFeeAssetItemIndex', () => {
 			],
 			[
 				'USDC',
-				'kusama',
+				'statemine',
 				[
 					{
 						id: {
@@ -202,7 +203,7 @@ describe('getFeeAssetItemIndex', () => {
 
 	it('Should throw an error indicating the general index was not found for an invalid paysWithFeeDest value', () => {
 		const paysWithFeeDest = 'xcUSDT';
-		const specName = 'polkadot';
+		const specName = 'statemint';
 
 		const multiAssets: MultiAsset[] = [
 			{
