@@ -101,10 +101,10 @@ export class AssetsTransferApi {
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
 		const { _api, _specName, _safeXcmVersion, registry } = this;
-		// const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
-		// 	_specName.toLowerCase()
-		// );
-		// const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
+		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
+			_specName.toLowerCase()
+		);
+		const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
 		
 		/**
 		 * Sanitize the address to a hex, and ensure that the passed in SS58, or publickey
@@ -113,7 +113,7 @@ export class AssetsTransferApi {
 		const addr = sanitizeAddress(destAddr);
 
 		const originChainId = getChainIdBySpecName(registry, _specName);
-		const isLocalSystemTx = originChainId === destChainId;
+		const isLocalSystemTx = (isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId)
 		const isLocalRelayTx =
 			destChainId === '0' &&
 			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
