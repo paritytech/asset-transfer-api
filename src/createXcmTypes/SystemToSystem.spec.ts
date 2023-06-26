@@ -151,8 +151,6 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				],
 			};
 
-			console.log('ASSETS TO JSON', assets.toJSON());
-
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 

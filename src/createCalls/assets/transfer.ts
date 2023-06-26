@@ -10,6 +10,5 @@ export const transfer = (
 	assetId: string,
 	amount: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
-	console.log('WHAT IS THE ASSET ID IN TRANSFER', assetId);
 	return api.tx.assets.transfer(assetId, destAddr, amount);
 };

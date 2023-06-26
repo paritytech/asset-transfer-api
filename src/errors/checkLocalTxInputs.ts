@@ -50,10 +50,6 @@ export const checkLocalTxInput = (
 		const isNotANumber = Number.isNaN(parseInt(assetId));
 		if (isNotANumber) {
 			 assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
-			 console.log('WHAT IS THE ASSET ID', assetId);
-			// throw new BaseError(
-			// 	`The assetId passed in is not a valid number: ${assetId}`
-			// );
 		}
 
 		const isAssetAvailable = Object.keys(

@@ -114,11 +114,7 @@ export class AssetsTransferApi {
 		const addr = sanitizeAddress(destAddr);
 
 		const originChainId = getChainIdBySpecName(registry, _specName);
-		console.log('SPECNAME IS', _specName);
-		console.log('ORIGIN CHAIN ID', originChainId);
-		console.log('DEST CHAIN ID', destChainId);
 		const isLocalSystemTx = (isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId)
-		console.log('IS LOCAL SYSTEM TX?', isLocalSystemTx);
 		const isLocalRelayTx =
 			destChainId === '0' &&
 			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
@@ -556,7 +552,6 @@ export class AssetsTransferApi {
 		}
 
 		const submittableString = JSON.stringify(tx.toHuman());
-		console.log('WHAT IS SUBMITTABLE STRING', submittableString);
 		const submittableData: SubmittableMethodData = JSON.parse(
 			submittableString
 		) as unknown as SubmittableMethodData;
