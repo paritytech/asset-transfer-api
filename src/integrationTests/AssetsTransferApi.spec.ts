@@ -28,11 +28,11 @@ describe('AssetTransferApi Integration Tests', () => {
 				expect(res).toEqual({
 					dest: 'statemine',
 					origin: 'statemine',
-					direction: 'SystemToSystem',
+					direction: 'local',
 					format: 'call',
-					method: 'reserveTransferAssets',
-					tx: '0x1f0201010100a10f010001010078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba266501040000020432050400910100000000',
-					xcmVersion: 2,
+					method: 'assets::transfer',
+					tx: '0x3208040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					xcmVersion: null,
 				});
 			});
 			it('Should construct a `assets::transferKeepAlive` call on a system parachain', async () => {
@@ -49,11 +49,11 @@ describe('AssetTransferApi Integration Tests', () => {
 				expect(res).toEqual({
 					dest: 'statemine',
 					origin: 'statemine',
-					direction: 'SystemToSystem',
+					direction: 'local',
 					format: 'call',
-					method: 'reserveTransferAssets',
-					tx: '0x1f0201010100a10f010001010078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba266501040000020432050400910100000000',
-					xcmVersion: 2,
+					method: 'assets::transferKeepAlive',
+					tx: '0x3209040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					xcmVersion: null,
 				});
 			});
 			it('Should construct a `balances::transfer` call on a system parachain', async () => {
@@ -69,11 +69,11 @@ describe('AssetTransferApi Integration Tests', () => {
 				expect(res).toEqual({
 					dest: 'statemine',
 					origin: 'statemine',
-					direction: 'SystemToSystem',
+					direction: 'local',
 					format: 'call',
-					method: 'reserveTransferAssets',
-					tx: '0x1f0201010100a10f010001010078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba2665010400010000910100000000',
-					xcmVersion: 2,
+					method: 'balances::transfer',
+					tx: '0x0a070078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					xcmVersion: null,
 				});
 			});
 			it('Should construct a `balances::transferKeepAlive` call on a system parachain', async () => {
@@ -90,11 +90,11 @@ describe('AssetTransferApi Integration Tests', () => {
 				expect(res).toEqual({
 					dest: 'statemine',
 					origin: 'statemine',
-					direction: 'SystemToSystem',
+					direction: 'local',
 					format: 'call',
-					method: 'reserveTransferAssets',
-					tx: '0x1f0201010100a10f010001010078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba2665010400010000910100000000',
-					xcmVersion: 2,
+					method: 'balances::transferKeepAlive',
+					tx: '0x0a030078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					xcmVersion: null,
 				});
 			});
 			it('Should construct a `balances::transfer` call on a relay chain', async () => {

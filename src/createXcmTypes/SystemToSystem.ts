@@ -242,7 +242,7 @@ export const createSystemToSystemMultiAssets = (
 	assets: string[],
 	registry: Registry,
 ): MultiAsset[] => {
-	const palletId = fetchPalletInstanceId(api);
+	let palletId: string | undefined = undefined;
 	let multiAssets = [];
 
 	const systemChainId = getChainIdBySpecName(registry, specName);
@@ -261,8 +261,13 @@ export const createSystemToSystemMultiAssets = (
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
-		if (!isRelayNative && isNotANumber) {
-			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
+
+		if (!isRelayNative) {
+			palletId = fetchPalletInstanceId(api);
+
+			if (isNotANumber) {
+				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
+			}
 		}
 
 		const interior: MultiAssetInterior = isRelayNative

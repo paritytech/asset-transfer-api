@@ -47,6 +47,7 @@ import {
 	UnsignedTransaction,
 } from './types';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
+import { getSystemChainTokenSymbolGeneralIndex } from './createXcmTypes/util/getTokenSymbolGeneralIndex';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -113,20 +114,42 @@ export class AssetsTransferApi {
 		const addr = sanitizeAddress(destAddr);
 
 		const originChainId = getChainIdBySpecName(registry, _specName);
+		console.log('SPECNAME IS', _specName);
+		console.log('ORIGIN CHAIN ID', originChainId);
+		console.log('DEST CHAIN ID', destChainId);
 		const isLocalSystemTx = (isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId)
+		console.log('IS LOCAL SYSTEM TX?', isLocalSystemTx);
 		const isLocalRelayTx =
 			destChainId === '0' &&
 			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
+
+		const xcmDirection = this.establishDirection(destChainId, _specName);
 		/**
 		 * Create a local asset transfer on a system parachain
 		 */
 		if (isLocalSystemTx || isLocalRelayTx) {
+			let assetId = assetIds[0];
+			const amount = amounts[0];
+			const systemChainId = getChainIdBySpecName(registry, _specName);
+			const localAssetIdIsNotANumber = Number.isNaN(parseInt(assetId));
+		
+			if (
+				xcmDirection === 'SystemToSystem' && 
+				localAssetIdIsNotANumber &&
+				assetIds.length !== 0 &&
+				!registry.currentRelayRegistry[
+					systemChainId
+				].tokens.includes(assetId.toUpperCase())
+			) {
+				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, _specName);
+			}
 			/**
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			const localAssetType = checkLocalTxInput(assetIds, amounts, registry); // Throws an error when any of the inputs are incorrect.
+			const localAssetType = checkLocalTxInput(assetIds, amounts, _specName, registry); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
+
 			if (isLocalSystemTx) {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 				let palletMethod: LocalTransferTypes;
@@ -136,14 +159,14 @@ export class AssetsTransferApi {
 				if (localAssetType === 'Balances') {
 					tx =
 						method === 'transferKeepAlive'
-							? balances.transferKeepAlive(_api, addr, amounts[0])
-							: balances.transfer(_api, addr, amounts[0]);
+							? balances.transferKeepAlive(_api, addr, amount)
+							: balances.transfer(_api, addr, amount);
 					palletMethod = `balances::${method}`;
 				} else {
 					tx =
 						method === 'transferKeepAlive'
-							? assets.transferKeepAlive(_api, addr, assetIds[0], amounts[0])
-							: assets.transfer(_api, addr, assetIds[0], amounts[0]);
+							? assets.transferKeepAlive(_api, addr, assetId, amount)
+							: assets.transfer(_api, addr, assetId, amount);
 					palletMethod = `assets::${method}`;
 				}
 
@@ -164,8 +187,8 @@ export class AssetsTransferApi {
 				const palletMethod: LocalTransferTypes = `balances::${method}`;
 				const tx =
 					method === 'transferKeepAlive'
-						? balances.transferKeepAlive(_api, addr, amounts[0])
-						: balances.transfer(_api, addr, amounts[0]);
+						? balances.transferKeepAlive(_api, addr, amount)
+						: balances.transfer(_api, addr, amount);
 				return this.constructFormat(
 					tx,
 					'local',
@@ -179,7 +202,6 @@ export class AssetsTransferApi {
 			}
 		}
 
-		const xcmDirection = this.establishDirection(destChainId, _specName);
 		const xcmVersion =
 			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
@@ -534,10 +556,15 @@ export class AssetsTransferApi {
 		}
 
 		const submittableString = JSON.stringify(tx.toHuman());
+		console.log('WHAT IS SUBMITTABLE STRING', submittableString);
 		const submittableData: SubmittableMethodData = JSON.parse(
 			submittableString
 		) as unknown as SubmittableMethodData;
-		const addr = submittableData.method.args.dest.id;
+
+		const addr: string = submittableData.method.args.target ?
+		submittableData.method.args.target?.Id :
+		'';
+
 		const lastHeader = await this._api.rpc.chain.getHeader();
 		const blockNumber = this._api.registry.createType(
 			'BlockNumber',

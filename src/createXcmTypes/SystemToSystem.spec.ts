@@ -156,7 +156,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 
-		it('Should error when system chain ID is not found for V3', () => {
+		it('Should error when asset ID is not found for V3', () => {
 			const expectedErrorMessage = 'bridge-hub-kusama has no associated token symbol usdc';
 
 			const err = () => SystemToSystem.createAssets(

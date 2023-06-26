@@ -1,8 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { SYSTEM_PARACHAINS_IDS } from '../consts';
 import { Registry } from '../registry';
 import { BaseError } from './BaseError';
+import { getSystemChainTokenSymbolGeneralIndex } from '../createXcmTypes/util/getTokenSymbolGeneralIndex';
+import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 
 enum LocalTxType {
 	Assets = 'Assets',
@@ -19,10 +20,12 @@ enum LocalTxType {
 export const checkLocalTxInput = (
 	assetIds: string[],
 	amounts: string[],
+	specName: string,
 	registry: Registry
 ): LocalTxType => {
 	const relayChainInfo = registry.currentRelayRegistry;
-	const systemParachainInfo = relayChainInfo[SYSTEM_PARACHAINS_IDS[0]];
+	const systemChainId = getChainIdBySpecName(registry, specName);
+	const systemParachainInfo = relayChainInfo[systemChainId];
 
 	// Ensure the lengths in assetIds and amounts is correct
 	if (assetIds.length > 1 || amounts.length !== 1) {
@@ -38,25 +41,27 @@ export const checkLocalTxInput = (
 		return LocalTxType.Balances;
 	}
 
-	const isNativeToken = relayChainInfo[
-		SYSTEM_PARACHAINS_IDS[0]
-	].tokens.includes(assetIds[0]);
-	if (isNativeToken) {
+	let assetId = assetIds[0];
+
+	const isNativeToken = systemParachainInfo.tokens.find((token) => token.toLowerCase() === assetId.toLowerCase());
+	if (isNativeToken !== undefined) {
 		return LocalTxType.Balances;
 	} else {
-		const isInvalidAssetId = Number.isNaN(parseInt(assetIds[0]));
-		if (isInvalidAssetId) {
-			throw new BaseError(
-				`The assetId passed in is not a valid number: ${assetIds[0]}`
-			);
+		const isNotANumber = Number.isNaN(parseInt(assetId));
+		if (isNotANumber) {
+			 assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
+			 console.log('WHAT IS THE ASSET ID', assetId);
+			// throw new BaseError(
+			// 	`The assetId passed in is not a valid number: ${assetId}`
+			// );
 		}
 
 		const isAssetAvailable = Object.keys(
 			systemParachainInfo.assetsInfo
-		).includes(assetIds[0]);
+		).find((asset) => asset.toLowerCase() === assetId.toLowerCase());
 		if (!isAssetAvailable) {
 			throw new BaseError(
-				`The assetId ${assetIds[0]} does not exist in the registry.`
+				`The assetId ${assetId} does not exist in the registry.`
 			);
 		}
 

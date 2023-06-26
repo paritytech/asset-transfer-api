@@ -193,7 +193,7 @@ export interface ChainInfo {
 }
 
 export type NonRelayNativeInterior = {
-	X2: [{ PalletInstance: string }, { GeneralIndex: string }];
+	X2: [{ PalletInstance: string | undefined }, { GeneralIndex: string }];
 };
 
 export type RelayNativeInterior = {
@@ -286,9 +286,15 @@ export interface Dest {
 	id: string;
 }
 
+export interface Target {
+	Id: string;
+}
+
 export interface Args {
-	dest: Dest;
-	value: u32;
+	id?: string;
+	target?: Target
+	dest?: Dest;
+	value?: u32;
 }
 
 export interface Method {

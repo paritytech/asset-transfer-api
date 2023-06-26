@@ -22,12 +22,14 @@ import { AssetsTransferApi } from './AssetsTransferApi';
 // };
 
 const main = async () => {
-    const provider = new WsProvider('wss://statemine-rpc.polkadot.io');
+    // const specName = 'bridge-hub-kusama';
+    // const specname = 'statemine';
+    const provider = new WsProvider(`wss://kusama-bridge-hub-rpc.polkadot.io`);
     const api = await ApiPromise.create({ provider });
 
     await api.isReady;
 
-    const assetTransferApi = new AssetsTransferApi(api, 'statemine', 2);
+    const assetTransferApi = new AssetsTransferApi(api, 'bridge-hub-kusama', 2);
 
     // call
     // const call = await assetTransferApi.createTransferTransaction(
@@ -69,13 +71,13 @@ const main = async () => {
     const payload = await assetTransferApi.createTransferTransaction(
         '1000',
         'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
-        ['usdt'],
+        ['ksm'],
         ['100000'],
         {
             format: 'payload',
             isLimited: true,
-            // xcmVersion: 3,
-            paysWithFeeOrigin: '1984',
+            xcmVersion: 2,
+            // paysWithFeeOrigin: '1984',
             // paysWithFeeDest: 'USDC'
         }
     );
