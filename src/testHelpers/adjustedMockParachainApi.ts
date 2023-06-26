@@ -1,5 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { ApiPromise } from '@polkadot/api';
+
 import { mockParachainApi } from './mockParachainApi';
 
 const getSystemSafeXcmVersion = () =>
@@ -24,4 +26,4 @@ export const adjustedMockParachainApi = {
 				mockParachainApi.tx['polkadotXcm'].limitedTeleportAssets,
 		},
 	},
-};
+} as unknown as ApiPromise;

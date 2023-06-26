@@ -339,9 +339,10 @@ export class AssetsTransferApi {
 			return Direction.ParaToRelay;
 		}
 
+		/**
+		 * Check if the origin is a parachain, and the destination is a system parachain.
+		 */
 		if (_api.query.polkadotXcm && isDestIdSystemPara) {
-			throw Error('ParaToSystem is not yet implemented');
-
 			return Direction.ParaToSystem;
 		}
 

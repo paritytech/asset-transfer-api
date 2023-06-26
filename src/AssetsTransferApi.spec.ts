@@ -5,6 +5,7 @@ import type { Weight } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { AssetsTransferApi } from './AssetsTransferApi';
+import { adjustedMockParachainApi } from './testHelpers/adjustedMockParachainApi';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
@@ -22,6 +23,11 @@ const systemAssetsApi = new AssetsTransferApi(
 	2
 );
 const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
+const moonbeamAssetsApi = new AssetsTransferApi(
+	adjustedMockParachainApi,
+	'moonbeam',
+	2
+);
 
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
@@ -40,6 +46,10 @@ describe('AssetTransferAPI', () => {
 		it('Should correctly determine direction for RelayToSystem', () => {
 			const res = relayAssetsApi['establishDirection']('1000', 'polkadot');
 			expect(res).toEqual('RelayToSystem');
+		});
+		it('Should correctly determine direction for ParaToSystem', () => {
+			const res = moonbeamAssetsApi['establishDirection']('1000', 'moonbeam');
+			expect(res).toEqual('ParaToSystem');
 		});
 	});
 	describe('constructFormat', () => {
