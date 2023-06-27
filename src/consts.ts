@@ -12,7 +12,15 @@ export const RELAY_CHAIN_IDS = ['0'];
 /**
  * List of all known system parachains.
  */
-export const SYSTEM_PARACHAINS_NAMES = ['statemine', 'statemint', 'westmint', 'bridge-hub-kusama', 'bridge-hub-polkadot', 'encointer-parachain', 'collectives'];
+export const SYSTEM_PARACHAINS_NAMES = [
+	'statemine',
+	'statemint',
+	'westmint',
+	'bridge-hub-kusama',
+	'bridge-hub-polkadot',
+	'encointer-parachain',
+	'collectives',
+];
 /**
  * List of IDs for assets and bridge hub system parachains.
  */

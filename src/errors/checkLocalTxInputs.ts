@@ -1,9 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
+import { getSystemChainTokenSymbolGeneralIndex } from '../createXcmTypes/util/getTokenSymbolGeneralIndex';
 import { Registry } from '../registry';
 import { BaseError } from './BaseError';
-import { getSystemChainTokenSymbolGeneralIndex } from '../createXcmTypes/util/getTokenSymbolGeneralIndex';
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 
 enum LocalTxType {
 	Assets = 'Assets',
@@ -43,18 +43,20 @@ export const checkLocalTxInput = (
 
 	let assetId = assetIds[0];
 
-	const isNativeToken = systemParachainInfo.tokens.find((token) => token.toLowerCase() === assetId.toLowerCase());
+	const isNativeToken = systemParachainInfo.tokens.find(
+		(token) => token.toLowerCase() === assetId.toLowerCase()
+	);
 	if (isNativeToken !== undefined) {
 		return LocalTxType.Balances;
 	} else {
 		const isNotANumber = Number.isNaN(parseInt(assetId));
 		if (isNotANumber) {
-			 assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
+			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
 		}
 
-		const isAssetAvailable = Object.keys(
-			systemParachainInfo.assetsInfo
-		).find((asset) => asset.toLowerCase() === assetId.toLowerCase());
+		const isAssetAvailable = Object.keys(systemParachainInfo.assetsInfo).find(
+			(asset) => asset.toLowerCase() === assetId.toLowerCase()
+		);
 		if (!isAssetAvailable) {
 			throw new BaseError(
 				`The assetId ${assetId} does not exist in the registry.`

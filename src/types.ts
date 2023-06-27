@@ -292,7 +292,7 @@ export interface Target {
 
 export interface Args {
 	id?: string;
-	target?: Target
+	target?: Target;
 	dest?: Dest;
 	value?: u32;
 }

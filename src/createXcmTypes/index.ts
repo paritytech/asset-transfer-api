@@ -3,9 +3,9 @@
 import { Direction } from '../types';
 import { RelayToPara } from './RelayToPara';
 import { RelayToSystem } from './RelayToSystem';
-import { SystemToSystem } from './SystemToSystem';
 import { SystemToPara } from './SystemToPara';
 import { SystemToRelay } from './SystemToRelay';
+import { SystemToSystem } from './SystemToSystem';
 import { ICreateXcmType } from './types';
 
 type ICreateXcmTypeLookup = {

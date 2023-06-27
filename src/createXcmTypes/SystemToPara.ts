@@ -11,6 +11,9 @@ import type {
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
+import { SYSTEM_PARACHAINS_IDS } from '../consts';
+import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
+import { BaseError } from '../errors';
 import type { Registry } from '../registry';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
@@ -25,9 +28,6 @@ import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
-import { SYSTEM_PARACHAINS_IDS } from '../consts';
-import { BaseError } from '../errors';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
@@ -207,13 +207,15 @@ export const SystemToPara: ICreateXcmType = {
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
 			if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
-				throw new BaseError(`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`);
+				throw new BaseError(
+					`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`
+				);
 			}
-		
+
 			const assetIndex = getFeeAssetItemIndex(
 				paysWithFeeDest,
 				multiAssets,
-				specName,
+				specName
 			);
 
 			return api.registry.createType('u32', assetIndex);
@@ -244,7 +246,9 @@ export const createSystemToParaMultiAssets = (
 	const systemChainId = getChainIdBySpecName(registry, specName);
 
 	if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
-		throw new BaseError(`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`);
+		throw new BaseError(
+			`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`
+		);
 	}
 
 	const { tokens } = registry.currentRelayRegistry[systemChainId];
@@ -256,7 +260,6 @@ export const createSystemToParaMultiAssets = (
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
-		
 
 		if (!isRelayNative && isNotANumber) {
 			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);

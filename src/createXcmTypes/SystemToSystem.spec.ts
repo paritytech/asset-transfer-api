@@ -66,8 +66,8 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					parents: 1,
 					interior: {
 						x1: {
-                            parachain: 1000
-                        },
+							parachain: 1000,
+						},
 					},
 				},
 			};
@@ -82,8 +82,8 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					parents: 1,
 					interior: {
 						x1: {
-                            parachain: 1002,
-                        }
+							parachain: 1002,
+						},
 					},
 				},
 			};
@@ -110,8 +110,8 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 							concrete: {
 								parents: 0,
 								interior: {
-									x2: [{ palletInstance: 50 },{ generalIndex: 11 }]
-								}
+									x2: [{ palletInstance: 50 }, { generalIndex: 11 }],
+								},
 							},
 						},
 						fun: {
@@ -155,18 +155,18 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		});
 
 		it('Should error when asset ID is not found for V3', () => {
-			const expectedErrorMessage = 'bridge-hub-kusama has no associated token symbol usdc';
+			const expectedErrorMessage =
+				'bridge-hub-kusama has no associated token symbol usdc';
 
-			const err = () => SystemToSystem.createAssets(
-				mockSystemApi,
-				['100'],
-				3,
-				'bridge-hub-kusama',
-				['usdc'],
-				{ registry }
-			);
-
-
+			const err = () =>
+				SystemToSystem.createAssets(
+					mockSystemApi,
+					['100'],
+					3,
+					'bridge-hub-kusama',
+					['usdc'],
+					{ registry }
+				);
 
 			expect(err).toThrowError(expectedErrorMessage);
 		});

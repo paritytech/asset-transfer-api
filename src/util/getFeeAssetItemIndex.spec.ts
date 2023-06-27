@@ -7,12 +7,11 @@ type Test = [
 	paysWithFeeDest: string,
 	specName: string,
 	multiAssets: MultiAsset[],
-	expected: number,
+	expected: number
 ];
 
 describe('getFeeAssetItemIndex', () => {
 	it('Should select and return the index of the correct multiassets when given their token symbols', () => {
-
 		const tests: Test[] = [
 			[
 				'usdt',

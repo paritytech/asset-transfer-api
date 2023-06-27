@@ -12,6 +12,7 @@ import type {
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import {
+	RELAY_CHAIN_IDS,
 	RELAY_CHAIN_NAMES,
 	SYSTEM_PARACHAINS_IDS,
 	SYSTEM_PARACHAINS_NAMES,
@@ -24,6 +25,8 @@ import {
 	reserveTransferAssets,
 	teleportAssets,
 } from './createXcmCalls';
+import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
+import { getSystemChainTokenSymbolGeneralIndex } from './createXcmTypes/util/getTokenSymbolGeneralIndex';
 import {
 	BaseError,
 	checkBaseInputTypes,
@@ -46,8 +49,6 @@ import {
 	TxResult,
 	UnsignedTransaction,
 } from './types';
-import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
-import { getSystemChainTokenSymbolGeneralIndex } from './createXcmTypes/util/getTokenSymbolGeneralIndex';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -106,7 +107,7 @@ export class AssetsTransferApi {
 			_specName.toLowerCase()
 		);
 		const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
-		
+
 		/**
 		 * Sanitize the address to a hex, and ensure that the passed in SS58, or publickey
 		 * is validated correctly.
@@ -114,7 +115,10 @@ export class AssetsTransferApi {
 		const addr = sanitizeAddress(destAddr);
 
 		const originChainId = getChainIdBySpecName(registry, _specName);
-		const isLocalSystemTx = (isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId)
+		const isLocalSystemTx =
+			isOriginSystemParachain &&
+			isDestSystemParachain &&
+			originChainId === destChainId;
 		const isLocalRelayTx =
 			destChainId === '0' &&
 			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
@@ -126,24 +130,37 @@ export class AssetsTransferApi {
 		if (isLocalSystemTx || isLocalRelayTx) {
 			let assetId = assetIds[0];
 			const amount = amounts[0];
-			const systemChainId = getChainIdBySpecName(registry, _specName);
 			const localAssetIdIsNotANumber = Number.isNaN(parseInt(assetId));
-		
+			const relayChainID = RELAY_CHAIN_IDS[0];
+			const nativeRelayChainAsset =
+				registry.currentRelayRegistry[relayChainID].tokens[0];
+			let isNativeRelayChainAsset = false;
 			if (
-				xcmDirection === 'SystemToSystem' && 
-				localAssetIdIsNotANumber &&
-				assetIds.length !== 0 &&
-				!registry.currentRelayRegistry[
-					systemChainId
-				].tokens.includes(assetId.toUpperCase())
+				assetIds.length === 0 ||
+				nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()
 			) {
+				isNativeRelayChainAsset = true;
+			}
+			if (
+				xcmDirection === 'SystemToSystem' &&
+				localAssetIdIsNotANumber &&
+				!isNativeRelayChainAsset
+			) {
+				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
+				// check for the general index of the assetId and assign the correct value for the local tx
+				// throws an error if the general index is not found
 				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, _specName);
 			}
 			/**
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			const localAssetType = checkLocalTxInput(assetIds, amounts, _specName, registry); // Throws an error when any of the inputs are incorrect.
+			const localAssetType = checkLocalTxInput(
+				assetIds,
+				amounts,
+				_specName,
+				registry
+			); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
 
 			if (isLocalSystemTx) {
@@ -453,7 +470,11 @@ export class AssetsTransferApi {
 	}
 
 	private fetchAssetType(xcmDirection: Direction): AssetType {
-		if (xcmDirection === 'RelayToSystem' || xcmDirection === 'SystemToRelay' || xcmDirection === 'SystemToSystem') {
+		if (
+			xcmDirection === 'RelayToSystem' ||
+			xcmDirection === 'SystemToRelay' ||
+			xcmDirection === 'SystemToSystem'
+		) {
 			return AssetType.Native;
 		}
 
@@ -556,9 +577,9 @@ export class AssetsTransferApi {
 			submittableString
 		) as unknown as SubmittableMethodData;
 
-		const addr: string = submittableData.method.args.target ?
-		submittableData.method.args.target?.Id :
-		'';
+		const addr: string = submittableData.method.args.target
+			? submittableData.method.args.target?.Id
+			: '';
 
 		const lastHeader = await this._api.rpc.chain.getHeader();
 		const blockNumber = this._api.registry.createType(

@@ -15,7 +15,7 @@ import { NonRelayNativeInterior, RelayNativeInterior } from '../types';
 export const getFeeAssetItemIndex = (
 	paysWithFeeDest: string,
 	multiAssets: MultiAsset[],
-	specName: string,
+	specName: string
 ): number => {
 	let result = 0;
 
