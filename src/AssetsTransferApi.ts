@@ -453,7 +453,7 @@ export class AssetsTransferApi {
 	}
 
 	private fetchAssetType(xcmDirection: Direction): AssetType {
-		if (xcmDirection === 'RelayToSystem' || xcmDirection === 'SystemToRelay') {
+		if (xcmDirection === 'RelayToSystem' || xcmDirection === 'SystemToRelay' || xcmDirection === 'SystemToSystem') {
 			return AssetType.Native;
 		}
 
