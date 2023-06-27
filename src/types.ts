@@ -23,13 +23,37 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
 		[K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
 	}[Keys];
 
+/**
+ * The direction of the cross chain transfer. This only concerns XCM transactions.
+ */
 export enum Direction {
+	/**
+	 * System parachain to Parachain.
+	 */
 	SystemToPara = 'SystemToPara',
+	/**
+	 * System parachain to Relay chain.
+	 */
 	SystemToRelay = 'SystemToRelay',
+	/**
+	 * Parachain to Parachain.
+	 */
 	ParaToPara = 'ParaToPara',
+	/**
+	 * Parachain to Relay chain.
+	 */
 	ParaToRelay = 'ParaToRelay',
+	/**
+	 * Parachain to System parachain.
+	 */
 	ParaToSystem = 'ParaToSystem',
+	/**
+	 * Relay to System Parachain.
+	 */
 	RelayToSystem = 'RelayToSystem',
+	/**
+	 * Relay chain to Parachain.
+	 */
 	RelayToPara = 'RelayToPara',
 }
 
@@ -46,6 +70,9 @@ export enum AssetType {
  */
 export type Format = 'payload' | 'call' | 'submittable';
 
+/**
+ * The Format types possible for a constructed transaction.
+ */
 export type ConstructedFormat<T> = T extends 'payload'
 	? `0x${string}`
 	: T extends 'call'
@@ -54,12 +81,18 @@ export type ConstructedFormat<T> = T extends 'payload'
 	? SubmittableExtrinsic<'promise', ISubmittableResult>
 	: never;
 
+/**
+ * The types of local transactions the api can construct.
+ */
 export type LocalTransferTypes =
 	| 'assets::transfer'
 	| 'assets::transferKeepAlive'
 	| 'balances::transfer'
 	| 'balances::transferKeepAlive';
 
+/**
+ * The Methods are the collections of methods the API will use to construct a transaction.
+ */
 export type Methods =
 	| LocalTransferTypes
 	| 'reserveTransferAssets'
@@ -76,10 +109,33 @@ export type AssetsTransferApiOpts = {
  * T extends Format in the context of the options passed in for the Format the user expects.
  */
 export interface TxResult<T> {
-	format: string;
+	/**
+	 * @description The destination specName of the transaction
+	 */
+	dest: string;
+	/**
+	 * @description The origin specName of the transaction
+	 */
+	origin: string;
+	/**
+	 * @description The format type the tx is ouputted in.
+	 */
+	format: Format | 'local';
+	/**
+	 * @description The xcm version that was used to construct the tx.
+	 */
 	xcmVersion: number | null;
+	/**
+	 * @description The direction of the cross chain transfer.
+	 */
 	direction: Direction | 'local';
+	/**
+	 * @description The method used in the transaction.
+	 */
 	method: Methods;
+	/**
+	 * @description The constructed transaction.
+	 */
 	tx: ConstructedFormat<T>;
 }
 
@@ -154,6 +210,9 @@ export type MultiAsset = {
 	};
 };
 
+/**
+ * @hidden
+ */
 export interface SignerPayloadJSON {
 	/**
 	 * @description The ss-58 encoded address
@@ -207,6 +266,8 @@ export interface SignerPayloadJSON {
 
 /**
  * JSON format for an unsigned transaction.
+ *
+ * @hidden
  */
 export interface UnsignedTransaction extends SignerPayloadJSON {
 	/**
@@ -235,3 +296,8 @@ export interface SubmittableMethodData {
 	isSigned: boolean;
 	method: Method;
 }
+
+export type AssetInfo = {
+	id: string;
+	symbol: string;
+};

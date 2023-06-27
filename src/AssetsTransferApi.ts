@@ -4,6 +4,7 @@ import '@polkadot/api-augment';
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 import type {
 	RuntimeDispatchInfo,
 	RuntimeDispatchInfoV1,
@@ -148,6 +149,8 @@ export class AssetsTransferApi {
 					'local',
 					null,
 					palletMethod,
+					destChainId,
+					_specName,
 					opts?.format,
 					opts?.paysWithFeeOrigin
 				);
@@ -165,6 +168,8 @@ export class AssetsTransferApi {
 					'local',
 					null,
 					palletMethod,
+					destChainId,
+					_specName,
 					opts?.format,
 					opts?.paysWithFeeOrigin
 				);
@@ -200,6 +205,7 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
+					this.registry,
 					opts?.weightLimit,
 					opts?.paysWithFeeDest
 				);
@@ -214,6 +220,7 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
+					this.registry,
 					opts?.paysWithFeeDest
 				);
 			}
@@ -229,6 +236,7 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
+					this.registry,
 					opts?.weightLimit
 				);
 			} else {
@@ -241,7 +249,8 @@ export class AssetsTransferApi {
 					amounts,
 					destChainId,
 					xcmVersion,
-					_specName
+					_specName,
+					this.registry
 				);
 			}
 		}
@@ -251,6 +260,8 @@ export class AssetsTransferApi {
 			xcmDirection,
 			xcmVersion,
 			txMethod,
+			destChainId,
+			_specName,
 			opts?.format,
 			opts?.paysWithFeeOrigin
 		);
@@ -258,38 +269,48 @@ export class AssetsTransferApi {
 	/**
 	 * Fetch estimated fee information for an extrinsic
 	 *
-	 * @param tx A polkadot-js submittable extrinsic
+	 * @param tx a payload, call or submittable
 	 * @param format The format the tx is in
 	 */
 	public async fetchFeeInfo<T extends Format>(
-		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		format?: T
+		tx: ConstructedFormat<T>,
+		format: T
 	): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
 		const { _api } = this;
-		const fmt = format ? format : 'payload';
 
-		if (fmt === 'payload') {
-			const payload = _api.registry
-				.createType('ExtrinsicPayload', tx, {
-					version: tx.version,
-				})
-				.toHex();
+		if (format === 'payload') {
+			const extrinsicPayload = _api.registry.createType(
+				'ExtrinsicPayload',
+				tx,
+				{
+					version: EXTRINSIC_VERSION,
+				}
+			);
 
-			return _api.call.transactionPaymentApi.queryInfo(payload, payload.length);
-		} else if (fmt === 'call') {
-			const call = _api.registry
-				.createType('Call', {
-					callIndex: tx.callIndex,
-					args: tx.args,
-				})
-				.toHex();
-
-			return _api.call.transactionPaymentApi.queryInfo(call, call.length);
-		} else if (fmt === 'submittable') {
-			const ext = _api.registry.createType('Extrinsic', tx);
+			const ext = _api.registry.createType(
+				'Extrinsic',
+				{ method: extrinsicPayload.method },
+				{ version: EXTRINSIC_VERSION }
+			);
 			const u8a = ext.toU8a();
 
-			return _api.call.transactionPaymentApi.queryInfo(u8a, u8a.length);
+			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+		} else if (format === 'call') {
+			const ext = _api.registry.createType(
+				'Extrinsic',
+				{ method: tx },
+				{ version: EXTRINSIC_VERSION }
+			);
+			const u8a = ext.toU8a();
+
+			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+		} else if (format === 'submittable') {
+			const ext = _api.registry.createType('Extrinsic', tx, {
+				version: EXTRINSIC_VERSION,
+			});
+			const u8a = ext.toU8a();
+
+			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
 		}
 
 		return null;
@@ -367,12 +388,16 @@ export class AssetsTransferApi {
 		direction: Direction | 'local',
 		xcmVersion: number | null = null,
 		method: Methods,
+		dest: string,
+		origin: string,
 		format?: T,
 		paysWithFeeOrigin?: string
 	): Promise<TxResult<T>> {
 		const { _api } = this;
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
+			origin,
+			dest: this.getDestinationSpecName(dest, this.registry),
 			direction,
 			xcmVersion,
 			method,
@@ -437,7 +462,7 @@ export class AssetsTransferApi {
 				'ExtrinsicPayload',
 				encodedTransaction,
 				{
-					version: 4,
+					version: EXTRINSIC_VERSION,
 				}
 			);
 
@@ -471,7 +496,7 @@ export class AssetsTransferApi {
 	 * @param tx SubmittableExtrinsic<'promise', ISubmittableResult>
 	 * @param paysWithFeeOrigin string
 	 */
-	public createPayload = async (
+	private createPayload = async (
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
 		paysWithFeeOrigin?: string
 	): Promise<`0x${string}`> => {
@@ -519,7 +544,6 @@ export class AssetsTransferApi {
 		});
 
 		const nonce = await this._api.rpc.system.accountNextIndex(addr);
-
 		const unsignedPayload: UnsignedTransaction = {
 			specVersion: this._api.runtimeVersion.specVersion.toHex(),
 			transactionVersion: this._api.runtimeVersion.transactionVersion.toHex(),
@@ -563,7 +587,9 @@ export class AssetsTransferApi {
 	 * @param assetId number
 	 * @returns Promise<boolean>
 	 */
-	public checkAssetIsSufficient = async (assetId: number): Promise<boolean> => {
+	private checkAssetIsSufficient = async (
+		assetId: number
+	): Promise<boolean> => {
 		try {
 			const asset = (await this._api.query.assets.asset(assetId)).unwrap();
 
@@ -576,4 +602,19 @@ export class AssetsTransferApi {
 			throw new BaseError(`assetId ${assetId} does not match a valid asset`);
 		}
 	};
+
+	/**
+	 * Return the specName of the destination chainId
+	 *
+	 * @param destChainId
+	 * @param registry
+	 * @returns
+	 */
+	private getDestinationSpecName(destId: string, registry: Registry): string {
+		if (destId === '0') {
+			return registry.relayChain;
+		}
+
+		return registry.lookupParachainInfo(destId)[0].specName;
+	}
 }

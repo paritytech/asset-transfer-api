@@ -8,7 +8,21 @@ import type {
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 
+import type { Registry } from '../registry';
 import type { RequireOnlyOne } from '../types';
+
+export interface CreateAssetsOpts {
+	registry: Registry;
+}
+
+export interface CreateFeeAssetItemOpts {
+	registry: Registry;
+	paysWithFeeDest?: string;
+	specName?: string;
+	assetIds?: string[];
+	amounts?: string[];
+	xcmVersion?: number;
+}
 
 export interface ICreateXcmType {
 	createBeneficiary: (
@@ -26,17 +40,11 @@ export interface ICreateXcmType {
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
-		assets: string[]
+		assets: string[],
+		opts: CreateAssetsOpts
 	) => VersionedMultiAssets;
 	createWeightLimit: (api: ApiPromise, weightLimit?: string) => WeightLimitV2;
-	createFeeAssetItem: (
-		api: ApiPromise,
-		paysWithFeeDest?: string,
-		specName?: string,
-		assetIds?: string[],
-		amounts?: string[],
-		xcmVersion?: number
-	) => u32;
+	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => u32;
 }
 
 interface IWeightLimitBase {

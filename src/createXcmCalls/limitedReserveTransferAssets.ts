@@ -6,6 +6,7 @@ import { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../createXcmTypes';
+import type { Registry } from '../registry';
 import { Direction } from '../types';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { establishXcmPallet } from './util/establishXcmPallet';
@@ -31,6 +32,7 @@ export const limitedReserveTransferAssets = (
 	destChainId: string,
 	xcmVersion: number,
 	specName: string,
+	registry: Registry,
 	weightLimit?: string,
 	paysWithFeeDest?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
@@ -44,19 +46,20 @@ export const limitedReserveTransferAssets = (
 		normalizeArrToStr(amounts),
 		xcmVersion,
 		specName,
-		assetIds
+		assetIds,
+		{ registry }
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 
 	const feeAssetItem: u32 = paysWithFeeDest
-		? typeCreator.createFeeAssetItem(
-				api,
+		? typeCreator.createFeeAssetItem(api, {
+				registry,
 				paysWithFeeDest,
 				specName,
 				assetIds,
 				amounts,
-				xcmVersion
-		  )
+				xcmVersion,
+		  })
 		: api.registry.createType('u32', 0);
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);

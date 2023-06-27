@@ -11,12 +11,16 @@ import type {
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { findRelayChain, parseRegistry } from '../registry';
+import type { Registry } from '../registry';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import type { MultiAsset, MultiAssetInterior } from './../types';
-import type { ICreateXcmType, IWeightLimit } from './types';
-import { isAscendingOrder } from './util/checkIsAscendingOrder';
+import { MultiAsset, MultiAssetInterior } from './../types';
+import {
+	CreateAssetsOpts,
+	CreateFeeAssetItemOpts,
+	ICreateXcmType,
+	IWeightLimit,
+} from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
@@ -115,13 +119,15 @@ export const SystemToPara: ICreateXcmType = {
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
-		assets: string[]
+		assets: string[],
+		opts: CreateAssetsOpts
 	): VersionedMultiAssets => {
 		const sortedAndDedupedMultiAssets = createSystemToParaMultiAssets(
 			api,
 			amounts,
 			specName,
-			assets
+			assets,
+			opts.registry
 		);
 
 		if (xcmVersion === 2) {
@@ -171,14 +177,15 @@ export const SystemToPara: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: (
-		api: ApiPromise,
-		paysWithFeeDest?: string,
-		specName?: string,
-		assetIds?: string[],
-		amounts?: string[],
-		xcmVersion?: number
-	): u32 => {
+	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts): u32 => {
+		const {
+			registry,
+			paysWithFeeDest,
+			specName,
+			assetIds,
+			amounts,
+			xcmVersion,
+		} = opts;
 		if (
 			xcmVersion &&
 			xcmVersion === 3 &&
@@ -191,7 +198,8 @@ export const SystemToPara: ICreateXcmType = {
 				api,
 				normalizeArrToStr(amounts),
 				specName,
-				assetIds
+				assetIds,
+				registry
 			);
 
 			const assetIndex = getFeeAssetItemIndex(
@@ -219,15 +227,14 @@ export const createSystemToParaMultiAssets = (
 	api: ApiPromise,
 	amounts: string[],
 	specName: string,
-	assets: string[]
+	assets: string[],
+	registry: Registry
 ): MultiAsset[] => {
 	const palletId = fetchPalletInstanceId(api);
-	const multiAssets = [];
-	const registry = parseRegistry({});
-	const relayChain = findRelayChain(specName, registry);
+	let multiAssets = [];
 
 	// We know this is a System parachain direction which is chainId 1000.
-	const { tokens } = registry[relayChain]['1000'];
+	const { tokens } = registry.currentRelayRegistry['1000'];
 
 	for (let i = 0; i < assets.length; i++) {
 		let assetId: string = assets[i];
@@ -261,9 +268,7 @@ export const createSystemToParaMultiAssets = (
 		multiAssets.push(multiAsset);
 	}
 
-	if (!isAscendingOrder(multiAssets)) {
-		sortMultiAssetsAscending(multiAssets);
-	}
+	multiAssets = sortMultiAssetsAscending(multiAssets);
 
 	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
 

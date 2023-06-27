@@ -59,9 +59,13 @@ describe('AssetTransferAPI', () => {
 				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
+				'2023',
+				'statemine',
 				'call'
 			);
 			expect(res).toEqual({
+				dest: 'moonriver',
+				origin: 'statemine',
 				direction: 'SystemToPara',
 				format: 'call',
 				method: 'limitedReserveTransferAssets',
@@ -75,9 +79,13 @@ describe('AssetTransferAPI', () => {
 				Direction.SystemToPara,
 				2,
 				'limitedReserveTransferAssets',
+				'2023',
+				'statemine',
 				'payload'
 			);
 			expect(res).toEqual({
+				dest: 'moonriver',
+				origin: 'statemine',
 				direction: 'SystemToPara',
 				format: 'payload',
 				method: 'limitedReserveTransferAssets',
@@ -91,6 +99,8 @@ describe('AssetTransferAPI', () => {
 				Direction.SystemToPara,
 				1,
 				'limitedReserveTransferAssets',
+				'2023',
+				'Statmine',
 				'submittable'
 			);
 			expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -172,8 +182,18 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly fetch estimate for a payload based xcm message', async () => {
-			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(
+			const payloadTexResult = await systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
+				Direction.SystemToPara,
+				2,
+				'limitedReserveTransferAssets',
+				'2000',
+				'statmine',
+				'payload'
+			);
+
+			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				payloadTexResult.tx,
 				'payload'
 			);
 			expect((payloadFeeInfo?.weight as Weight).refTime.toString()).toEqual(
@@ -182,8 +202,17 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly fetch estimate for a call based xcm message', async () => {
-			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
+			const callTxResult = await systemAssetsApi['constructFormat'](
 				mockSubmittableExt,
+				Direction.SystemToPara,
+				2,
+				'limitedReserveTransferAssets',
+				'2000',
+				'statmine',
+				'call'
+			);
+			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
+				callTxResult.tx,
 				'call'
 			);
 			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(
@@ -348,7 +377,7 @@ describe('AssetTransferAPI', () => {
 
 		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a reserveTransferAssets call', async () => {
 			const expected =
-				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"100"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"34"}]}}},"fun":{"Fungible":"300"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"36"}]}}},"fun":{"Fungible":"400"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"11"}]}}},"fun":{"Fungible":"500"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"12"}]}}},"fun":{"Fungible":"700"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}}]},"fee_asset_item":"5"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
+				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"11"}]}}},"fun":{"Fungible":"500"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"12"}]}}},"fun":{"Fungible":"700"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"34"}]}}},"fun":{"Fungible":"300"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"36"}]}}},"fun":{"Fungible":"400"}},{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"100"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
 			const callTxResult = await systemAssetsApi.createTransferTransaction(
 				'2000',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -372,7 +401,7 @@ describe('AssetTransferAPI', () => {
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['usdt', 'usdc'],
+				['1984', 'usdc'],
 				['5000000', '4000000000'],
 				{
 					paysWithFeeOrigin: '1984',
@@ -400,7 +429,7 @@ describe('AssetTransferAPI', () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['usdt', 'usdc'],
+					['1984', 'usdc'],
 					['5000000', '4000000000'],
 					{
 						paysWithFeeOrigin: 'hello there',
@@ -415,12 +444,12 @@ describe('AssetTransferAPI', () => {
 			);
 		});
 
-		it('Should error during payload construction when a paysWithFeeOrigin that matches a non sufficient asset', async () => {
+		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['usdt', 'usdc'],
+					['1984', 'usdc'],
 					['5000000', '4000000000'],
 					{
 						paysWithFeeOrigin: '100',
