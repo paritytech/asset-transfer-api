@@ -12,9 +12,9 @@ import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import type { Registry } from '../registry';
+import { MultiAsset, MultiAssetInterior } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import { MultiAsset, MultiAssetInterior } from './../types';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
