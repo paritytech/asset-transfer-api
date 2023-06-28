@@ -293,7 +293,6 @@ export const checkAssetIdInput = (
  * @param assetIds
  * @param amounts
  * @param xcmDirection
- * @param destChainId
  * @param specName
  * @param registry
  */
