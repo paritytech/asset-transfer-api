@@ -142,7 +142,7 @@ export class AssetsTransferApi {
 				isNativeRelayChainAsset = true;
 			}
 			if (
-				xcmDirection === 'SystemToSystem' &&
+				xcmDirection === Direction.SystemToSystem &&
 				localAssetIdIsNotANumber &&
 				!isNativeRelayChainAsset
 			) {
@@ -471,9 +471,9 @@ export class AssetsTransferApi {
 
 	private fetchAssetType(xcmDirection: Direction): AssetType {
 		if (
-			xcmDirection === 'RelayToSystem' ||
-			xcmDirection === 'SystemToRelay' ||
-			xcmDirection === 'SystemToSystem'
+			xcmDirection === Direction.RelayToSystem ||
+			xcmDirection === Direction.SystemToRelay ||
+			xcmDirection === Direction.SystemToSystem
 		) {
 			return AssetType.Native;
 		}
@@ -483,7 +483,7 @@ export class AssetsTransferApi {
 		 * parachains then this logic will change. But for now all assets, and native tokens
 		 * transferred from a System parachain to a parachain it should use a reserve transfer.
 		 */
-		if (xcmDirection === 'RelayToPara' || xcmDirection === 'SystemToPara') {
+		if (xcmDirection === Direction.RelayToPara || xcmDirection === Direction.SystemToPara) {
 			return AssetType.Foreign;
 		}
 
