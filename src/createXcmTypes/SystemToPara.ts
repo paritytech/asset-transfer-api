@@ -15,9 +15,9 @@ import { SYSTEM_PARACHAINS_IDS } from '../consts';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { BaseError } from '../errors';
 import type { Registry } from '../registry';
+import { MultiAsset, MultiAssetInterior } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import { MultiAsset, MultiAssetInterior } from './../types';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,

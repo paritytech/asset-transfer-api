@@ -221,14 +221,7 @@ export class AssetsTransferApi {
 		const xcmVersion =
 			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
-		checkXcmTxInputs(
-			assetIds,
-			amounts,
-			xcmDirection,
-			destChainId,
-			_specName,
-			registry
-		);
+		checkXcmTxInputs(assetIds, amounts, xcmDirection, _specName, registry);
 
 		const assetType = this.fetchAssetType(xcmDirection);
 

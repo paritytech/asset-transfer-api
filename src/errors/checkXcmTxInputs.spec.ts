@@ -12,7 +12,7 @@ import {
 
 const runTests = (tests: Test[]) => {
 	for (const test of tests) {
-		const [destChainId, specName, testInputs, direction, errorMessage] = test;
+		const [specName, testInputs, direction, errorMessage] = test;
 		const registry = new Registry(specName, {});
 		const currentRegistry = registry.currentRelayRegistry;
 
@@ -21,7 +21,6 @@ const runTests = (tests: Test[]) => {
 				testInputs,
 				currentRegistry,
 				specName,
-				destChainId,
 				direction,
 				registry
 			);
@@ -59,7 +58,6 @@ describe('checkAssetsAmountMatch', () => {
 });
 
 type Test = [
-	destChainId: string,
 	specName: string,
 	inputs: string[],
 	xcmDirection: Direction,
@@ -70,14 +68,12 @@ describe('checkAssetIds', () => {
 	it('Should error when an assetId is found that is empty or a blank space', () => {
 		const tests: Test[] = [
 			[
-				'1000',
 				'Statemint',
 				['', 'DOT'],
 				Direction.RelayToSystem,
 				`assetId cannot be blank spaces or empty. Found empty string`,
 			],
 			[
-				'0',
 				'Statemine',
 				[' ', 'KSM'],
 				Direction.SystemToRelay,
@@ -91,21 +87,18 @@ describe('checkAssetIds', () => {
 	it('Should error when direction is RelayToSystem and assetId does not match relay chains native token', () => {
 		const tests: Test[] = [
 			[
-				'1000',
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToSystem,
 				`Relay to System: asset 1 is not polkadot's native asset. Expected DOT`,
 			],
 			[
-				'1000',
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToSystem,
 				`Relay to System: asset DOT is not kusama's native asset. Expected KSM`,
 			],
 			[
-				'1000',
 				'Westend',
 				['WND', '100000'],
 				Direction.RelayToSystem,
@@ -119,14 +112,12 @@ describe('checkAssetIds', () => {
 	it('Should error when direction is RelayToPara and assetId does not match relay chains native token', () => {
 		const tests: Test[] = [
 			[
-				'2004',
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToPara,
 				`Relay to Para: asset 1 is not polkadot's native asset. Expected DOT`,
 			],
 			[
-				'2001',
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToPara,
@@ -140,21 +131,18 @@ describe('checkAssetIds', () => {
 	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', () => {
 		const tests: Test[] = [
 			[
-				'0',
 				'Statemint',
 				['0'],
 				Direction.SystemToRelay,
 				`System to Relay: assetId 0 not native to polkadot`,
 			],
 			[
-				'0',
 				'Statemine',
 				['MOVR', 'KSM'],
 				Direction.SystemToRelay,
 				`System to Relay: assetId MOVR not native to kusama`,
 			],
 			[
-				'0',
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToRelay,
@@ -168,21 +156,18 @@ describe('checkAssetIds', () => {
 	it('Should error when direction is SystemToPara and integer assetId is not found in system parachains assets', () => {
 		const tests: Test[] = [
 			[
-				'2004',
 				'Statemint',
 				['1337', 'DOT', '3500000'],
 				Direction.SystemToPara,
 				`System to Para: integer assetId 3500000 not found in Statemint`,
 			],
 			[
-				'2023',
 				'Statemine',
 				['KSM', '8', 'stateMineDoge'],
 				Direction.SystemToPara,
 				`System to Para: assetId stateMineDoge not found for system parachain Statemine`,
 			],
 			[
-				'1002',
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToPara,
@@ -191,7 +176,7 @@ describe('checkAssetIds', () => {
 		];
 
 		for (const test of tests) {
-			const [destChainId, specName, testInputs, direction, errorMessage] = test;
+			const [specName, testInputs, direction, errorMessage] = test;
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
@@ -200,7 +185,6 @@ describe('checkAssetIds', () => {
 					testInputs,
 					currentRegistry,
 					specName,
-					destChainId,
 					direction,
 					registry
 				);
@@ -211,21 +195,18 @@ describe('checkAssetIds', () => {
 	it('Should error when direction is SystemToPara and the string assetId is not found in the system parachains tokens or assets', () => {
 		const tests: Test[] = [
 			[
-				'2004',
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToPara,
 				`System to Para: assetId xcDOT not found for system parachain Statemint`,
 			],
 			[
-				'2023',
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToPara,
 				`System to Para: assetId xcMOVR not found for system parachain Statemine`,
 			],
 			[
-				'1002',
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToPara,
@@ -234,7 +215,7 @@ describe('checkAssetIds', () => {
 		];
 
 		for (const test of tests) {
-			const [destChainId, specName, testInputs, direction, errorMessage] = test;
+			const [specName, testInputs, direction, errorMessage] = test;
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
@@ -243,7 +224,6 @@ describe('checkAssetIds', () => {
 					testInputs,
 					currentRegistry,
 					specName,
-					destChainId,
 					direction,
 					registry
 				);
@@ -254,14 +234,12 @@ describe('checkAssetIds', () => {
 	it('Should error when an asset id is provided that matches multiple asset symbols in the assets registry', () => {
 		const tests: Test[] = [
 			[
-				'2004',
 				'Statemint',
 				['btc'],
 				Direction.SystemToPara,
 				`Multiple assets found with symbol btc`,
 			],
 			[
-				'2023',
 				'Statemine',
 				['USDT'],
 				Direction.SystemToPara,
@@ -270,7 +248,7 @@ describe('checkAssetIds', () => {
 		];
 
 		for (const test of tests) {
-			const [destChainId, specName, testInputs, direction, errorMessage] = test;
+			const [specName, testInputs, direction, errorMessage] = test;
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
@@ -279,7 +257,6 @@ describe('checkAssetIds', () => {
 					testInputs,
 					currentRegistry,
 					specName,
-					destChainId,
 					direction,
 					registry
 				);

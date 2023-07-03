@@ -334,13 +334,13 @@ const checkSystemToSystemAssetId = (
  * @param assetIds
  * @param relayChainInfo
  * @param specName
- * @param destChainId
+ * @param xcmDirection
+ * @param registry
  */
 export const checkAssetIdInput = (
 	assetIds: string[],
 	relayChainInfo: ChainInfo,
 	specName: string,
-	_destChainId: string,
 	xcmDirection: Direction,
 	registry: Registry
 ) => {
@@ -375,17 +375,16 @@ export const checkAssetIdInput = (
  * This will check the given inputs and ensure there is no issues when constructing
  * the xcm transaction.
  *
- * TODO: This should be expanded upon and inputs may be added. This is just a base implementation.
- *
  * @param assetIds
  * @param amounts
  * @param xcmDirection
+ * @param specName
+ * @param registry
  */
 export const checkXcmTxInputs = (
 	assetIds: string[],
 	amounts: string[],
 	xcmDirection: Direction,
-	destChainId: string,
 	specName: string,
 	registry: Registry
 ) => {
@@ -397,7 +396,6 @@ export const checkXcmTxInputs = (
 		assetIds,
 		relayChainInfo,
 		specName,
-		destChainId,
 		xcmDirection,
 		registry
 	);
