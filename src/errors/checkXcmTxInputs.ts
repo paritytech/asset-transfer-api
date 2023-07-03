@@ -392,13 +392,7 @@ export const checkXcmTxInputs = (
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
-	checkAssetIdInput(
-		assetIds,
-		relayChainInfo,
-		specName,
-		xcmDirection,
-		registry
-	);
+	checkAssetIdInput(assetIds, relayChainInfo, specName, xcmDirection, registry);
 
 	if (xcmDirection === Direction.RelayToSystem) {
 		checkRelayAssetIdLength(assetIds);
