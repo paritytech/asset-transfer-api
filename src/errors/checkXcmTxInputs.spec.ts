@@ -5,6 +5,7 @@ import { Direction } from '../types';
 import {
 	checkAssetIdInput,
 	checkAssetsAmountMatch,
+	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
 } from './checkXcmTxInputs';
@@ -21,7 +22,8 @@ const runTests = (tests: Test[]) => {
 				currentRegistry,
 				specName,
 				destChainId,
-				direction
+				direction,
+				registry
 			);
 		expect(err).toThrow(errorMessage);
 	}
@@ -199,7 +201,8 @@ describe('checkAssetIds', () => {
 					currentRegistry,
 					specName,
 					destChainId,
-					direction
+					direction,
+					registry
 				);
 			expect(err).toThrow(errorMessage);
 		}
@@ -241,7 +244,8 @@ describe('checkAssetIds', () => {
 					currentRegistry,
 					specName,
 					destChainId,
-					direction
+					direction,
+					registry
 				);
 			expect(err).toThrow(errorMessage);
 		}
@@ -276,9 +280,24 @@ describe('checkAssetIds', () => {
 					currentRegistry,
 					specName,
 					destChainId,
-					direction
+					direction,
+					registry
 				);
 			expect(err).toThrowError(errorMessage);
 		}
+	});
+});
+
+describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
+	it('Should error when the relay native asset and system assets are in the same assetIds list when direction', () => {
+		const expectErrorMessage =
+			'Found the relay chains native asset in list ksm,usdc. assetIds list must be empty or only contain the relay chain asset for direction SystemToSystem';
+		const assetIds = ['ksm', 'usdc'];
+		const specName = 'statemine';
+		const registry = new Registry(specName, {});
+
+		const err = () =>
+			checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
+		expect(err).toThrowError(expectErrorMessage);
 	});
 });

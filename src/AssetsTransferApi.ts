@@ -34,6 +34,7 @@ import {
 	checkXcmTxInputs,
 	checkXcmVersion,
 } from './errors';
+import { containsNativeRelayAsset } from './errors/checkXcmTxInputs';
 import { Registry } from './registry';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
@@ -123,6 +124,9 @@ export class AssetsTransferApi {
 			destChainId === '0' &&
 			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
 
+		const relayChainID = RELAY_CHAIN_IDS[0];
+		const nativeRelayChainAsset =
+			registry.currentRelayRegistry[relayChainID].tokens[0];
 		const xcmDirection = this.establishDirection(destChainId, _specName);
 		/**
 		 * Create a local asset transfer on a system parachain
@@ -131,9 +135,6 @@ export class AssetsTransferApi {
 			let assetId = assetIds[0];
 			const amount = amounts[0];
 			const localAssetIdIsNotANumber = Number.isNaN(parseInt(assetId));
-			const relayChainID = RELAY_CHAIN_IDS[0];
-			const nativeRelayChainAsset =
-				registry.currentRelayRegistry[relayChainID].tokens[0];
 			let isNativeRelayChainAsset = false;
 			if (
 				assetIds.length === 0 ||
@@ -141,6 +142,7 @@ export class AssetsTransferApi {
 			) {
 				isNativeRelayChainAsset = true;
 			}
+
 			if (
 				xcmDirection === Direction.SystemToSystem &&
 				localAssetIdIsNotANumber &&
@@ -151,6 +153,7 @@ export class AssetsTransferApi {
 				// throws an error if the general index is not found
 				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, _specName);
 			}
+
 			/**
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
@@ -231,7 +234,12 @@ export class AssetsTransferApi {
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-		if (assetType === AssetType.Foreign) {
+		if (
+			assetType === AssetType.Foreign ||
+			(assetType === AssetType.Native &&
+				xcmDirection === Direction.SystemToSystem &&
+				!containsNativeRelayAsset(assetIds, nativeRelayChainAsset))
+		) {
 			if (opts?.isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
 				transaction = limitedReserveTransferAssets(
@@ -483,7 +491,10 @@ export class AssetsTransferApi {
 		 * parachains then this logic will change. But for now all assets, and native tokens
 		 * transferred from a System parachain to a parachain it should use a reserve transfer.
 		 */
-		if (xcmDirection === Direction.RelayToPara || xcmDirection === Direction.SystemToPara) {
+		if (
+			xcmDirection === Direction.RelayToPara ||
+			xcmDirection === Direction.SystemToPara
+		) {
 			return AssetType.Foreign;
 		}
 
@@ -655,8 +666,8 @@ export class AssetsTransferApi {
 	/**
 	 * Return the specName of the destination chainId
 	 *
-	 * @param destChainId
-	 * @param registry
+	 * @param destChainId string
+	 * @param registry Registry
 	 * @returns
 	 */
 	private getDestinationSpecName(destId: string, registry: Registry): string {
