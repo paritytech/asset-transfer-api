@@ -1,3 +1,5 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
 import type {
@@ -209,6 +211,15 @@ export const ParaToSystem: ICreateXcmType = {
 	},
 };
 
+/**
+ * Create multiassets for ParaToSystem direction.
+ *
+ * @param api
+ * @param amounts
+ * @param specName
+ * @param assets
+ * @param registry
+ */
 const createParaToSystemMultiAssets = (
 	api: ApiPromise,
 	amounts: string[],
