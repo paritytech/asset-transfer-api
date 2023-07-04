@@ -20,6 +20,7 @@ describe('parseRegistry', () => {
 						tokens: ['TST'],
 						assetsInfo,
 						specName: 'testing',
+						assetsPalletInstance: '100',
 					},
 				},
 			},

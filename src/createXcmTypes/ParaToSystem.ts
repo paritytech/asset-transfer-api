@@ -22,7 +22,6 @@ import type {
 	IWeightLimit,
 } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
@@ -120,7 +119,6 @@ export const ParaToSystem: ICreateXcmType = {
 		opts: CreateAssetsOpts
 	): VersionedMultiAssets => {
 		const sortedAndDedupedMultiAssets = createParaToSystemMultiAssets(
-			api,
 			amounts,
 			specName,
 			assets,
@@ -191,7 +189,6 @@ export const ParaToSystem: ICreateXcmType = {
 			paysWithFeeDest
 		) {
 			const multiAssets = createParaToSystemMultiAssets(
-				api,
 				normalizeArrToStr(amounts),
 				specName,
 				assetIds,
@@ -221,13 +218,15 @@ export const ParaToSystem: ICreateXcmType = {
  * @param registry
  */
 const createParaToSystemMultiAssets = (
-	api: ApiPromise,
 	amounts: string[],
 	specName: string,
 	assets: string[],
 	registry: Registry
 ): MultiAsset[] => {
-	const palletId = fetchPalletInstanceId(api);
+	// This will always result in a value and will never be null because the assets-hub will always
+	// have the assets pallet present, so we type cast here to work around the type compiler.
+	const { assetsPalletInstance } = registry.currentRelayRegistry['1000'];
+	const palletId = assetsPalletInstance as string;
 	let multiAssets = [];
 
 	const { tokens } = registry.currentRelayRegistry['0'];

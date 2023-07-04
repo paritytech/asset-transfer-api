@@ -127,7 +127,7 @@ describe('ParaToSystem', () => {
 							},
 						},
 						fun: {
-							fungible: 100,
+							fungible: 200,
 						},
 					},
 				],
@@ -170,7 +170,7 @@ describe('ParaToSystem', () => {
 							},
 						},
 						fun: {
-							fungible: 100,
+							fungible: 200,
 						},
 					},
 				],

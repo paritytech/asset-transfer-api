@@ -152,6 +152,7 @@ describe('AssetTransferAPI', () => {
 						tokens: ['TST'],
 						assetsInfo: {},
 						specName: 'testing',
+						assetsPalletInstance: '100',
 					},
 				},
 			};
