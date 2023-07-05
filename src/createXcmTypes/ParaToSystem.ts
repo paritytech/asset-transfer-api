@@ -9,6 +9,7 @@ import type {
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
+import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import type { Registry } from '../registry';
@@ -243,7 +244,9 @@ const createParaToSystemMultiAssets = (
 			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
 		}
 
-		const interior: MultiAssetInterior = isRelayNative
+		const interior: MultiAssetInterior = isHex(assetId)
+			? { X2: [{ GeneralKey: assetId }] }
+			: isRelayNative
 			? { Here: '' }
 			: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
 		const parents = isRelayNative ? 1 : 0;
