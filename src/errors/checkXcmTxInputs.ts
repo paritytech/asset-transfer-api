@@ -97,7 +97,7 @@ const checkRelayToSystemAssetId = (
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`Relay to System: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
+			`RelayToSystem: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
@@ -129,7 +129,7 @@ const checkRelayToParaAssetId = (
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`Relay to Para: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
+			`RelayToPara: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
@@ -159,7 +159,7 @@ const checkSystemToRelayAssetId = (
 
 	if (!matchedRelayChainNativeToken) {
 		throw new BaseError(
-			`System to Relay: assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`
+			`SystemToRelay: assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`
 		);
 	}
 };

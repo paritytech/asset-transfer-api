@@ -83,19 +83,19 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToSystem,
-				`Relay to System: asset 1 is not polkadot's native asset. Expected DOT`,
+				`RelayToSystem: asset 1 is not polkadot's native asset. Expected DOT`,
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToSystem,
-				`Relay to System: asset DOT is not kusama's native asset. Expected KSM`,
+				`RelayToSystem: asset DOT is not kusama's native asset. Expected KSM`,
 			],
 			[
 				'Westend',
 				['WND', '100000'],
 				Direction.RelayToSystem,
-				`Relay to System: asset 100000 is not westend's native asset. Expected WND`,
+				`RelayToSystem: asset 100000 is not westend's native asset. Expected WND`,
 			],
 		];
 
@@ -108,13 +108,13 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToPara,
-				`Relay to Para: asset 1 is not polkadot's native asset. Expected DOT`,
+				`RelayToPara: asset 1 is not polkadot's native asset. Expected DOT`,
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToPara,
-				`Relay to Para: asset DOT is not kusama's native asset. Expected KSM`,
+				`RelayToPara: asset DOT is not kusama's native asset. Expected KSM`,
 			],
 		];
 
@@ -127,19 +127,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['0'],
 				Direction.SystemToRelay,
-				`System to Relay: assetId 0 not native to polkadot`,
+				`SystemToRelay: assetId 0 not native to polkadot`,
 			],
 			[
 				'Statemine',
 				['MOVR', 'KSM'],
 				Direction.SystemToRelay,
-				`System to Relay: assetId MOVR not native to kusama`,
+				`SystemToRelay: assetId MOVR not native to kusama`,
 			],
 			[
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToRelay,
-				`System to Relay: assetId 250 not native to westend`,
+				`SystemToRelay: assetId 250 not native to westend`,
 			],
 		];
 
