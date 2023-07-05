@@ -152,19 +152,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'DOT', '3500000'],
 				Direction.SystemToPara,
-				`System to Para: integer assetId 3500000 not found in Statemint`,
+				`SystemToPara: integer assetId 3500000 not found in Statemint`,
 			],
 			[
 				'Statemine',
 				['KSM', '8', 'stateMineDoge'],
 				Direction.SystemToPara,
-				`System to Para: assetId stateMineDoge not found for system parachain Statemine`,
+				`SystemToPara: assetId stateMineDoge not found for system parachain Statemine`,
 			],
 			[
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToPara,
-				`System to Para: integer assetId 250 not found in Westmint`,
+				`SystemToPara: integer assetId 250 not found in Westmint`,
 			],
 		];
 
@@ -185,19 +185,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToPara,
-				`System to Para: assetId xcDOT not found for system parachain Statemint`,
+				`SystemToPara: assetId xcDOT not found for system parachain Statemint`,
 			],
 			[
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToPara,
-				`System to Para: assetId xcMOVR not found for system parachain Statemine`,
+				`SystemToPara: assetId xcMOVR not found for system parachain Statemine`,
 			],
 			[
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToPara,
-				`System to Para: assetId Test Westend not found for system parachain Westmint`,
+				`SystemToPara: assetId Test Westend not found for system parachain Westmint`,
 			],
 		];
 
