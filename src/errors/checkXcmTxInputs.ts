@@ -255,12 +255,12 @@ const checkSystemToParaAssetId = (
  * @param relayChainInfo
  * @param specName
  * @param destChainId
+ * @param xcmDirection
  */
 export const checkAssetIdInput = (
 	assetIds: string[],
 	relayChainInfo: ChainInfo,
 	specName: string,
-	_destChainId: string,
 	xcmDirection: Direction
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
@@ -290,17 +290,16 @@ export const checkAssetIdInput = (
  * This will check the given inputs and ensure there is no issues when constructing
  * the xcm transaction.
  *
- * TODO: This should be expanded upon and inputs may be added. This is just a base implementation.
- *
  * @param assetIds
  * @param amounts
  * @param xcmDirection
+ * @param specName
+ * @param registry
  */
 export const checkXcmTxInputs = (
 	assetIds: string[],
 	amounts: string[],
 	xcmDirection: Direction,
-	destChainId: string,
 	specName: string,
 	registry: Registry
 ) => {
@@ -308,30 +307,24 @@ export const checkXcmTxInputs = (
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
-	checkAssetIdInput(
-		assetIds,
-		relayChainInfo,
-		specName,
-		destChainId,
-		xcmDirection
-	);
+	checkAssetIdInput(assetIds, relayChainInfo, specName, xcmDirection);
 
-	if (xcmDirection === 'RelayToSystem') {
+	if (xcmDirection === Direction.RelayToSystem) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
 	}
 
-	if (xcmDirection === 'RelayToPara') {
+	if (xcmDirection === Direction.RelayToPara) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
 	}
 
-	if (xcmDirection === 'SystemToRelay') {
+	if (xcmDirection === Direction.SystemToRelay) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
 	}
 
-	if (xcmDirection === 'SystemToPara') {
+	if (xcmDirection === Direction.SystemToPara) {
 		checkAssetsAmountMatch(assetIds, amounts);
 	}
 };
