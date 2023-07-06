@@ -20,6 +20,7 @@ describe('parseRegistry', () => {
 						tokens: ['TST'],
 						assetsInfo,
 						specName: 'testing',
+						assetsPalletInstance: '100',
 					},
 				},
 			},
@@ -30,6 +31,7 @@ describe('parseRegistry', () => {
 			tokens: ['TST'],
 			assetsInfo: {},
 			specName: 'testing',
+			assetsPalletInstance: '100',
 		});
 		// Ensure nothing was overwritten
 		expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);

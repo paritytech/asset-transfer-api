@@ -1,6 +1,11 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
+import { isHex } from '@polkadot/util';
+import { isEthereumAddress } from '@polkadot/util-crypto';
+
 import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
 import { Registry } from '../registry';
-import type { ChainInfo } from '../registry/types';
+import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { Direction } from '../types';
 import { AssetInfo } from '../types';
 import { BaseError } from './BaseError';
@@ -93,7 +98,7 @@ const checkRelayToSystemAssetId = (
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`Relay to System: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
+			`RelayToSystem: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
@@ -125,7 +130,7 @@ const checkRelayToParaAssetId = (
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`Relay to Para: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
+			`RelayToPara: asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
@@ -155,10 +160,88 @@ const checkSystemToRelayAssetId = (
 
 	if (!matchedRelayChainNativeToken) {
 		throw new BaseError(
-			`System to Relay: assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`
+			`SystemToRelay: assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`
 		);
 	}
 };
+
+const checkSystemAssets = (
+	assetId: string,
+	specName: string,
+	systemParachainInfo: ChainInfoKeys,
+	xcmDirection: string
+) => {
+	// check if assetId is a number
+	const parsedAssetIdAsNumber = Number.parseInt(assetId);
+	const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+
+	if (!invalidNumber) {
+		// assetId is a valid number
+		// ensure the assetId exists as an asset on the system parachain
+		const assetSymbol: string | undefined =
+			systemParachainInfo.assetsInfo[assetId];
+
+		if (assetSymbol === undefined) {
+			throw new BaseError(
+				`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`
+			);
+		}
+	} else {
+		// not a valid number
+		// check if id is a valid token symbol of the system parachain chain
+		let isValidTokenSymbol = false;
+
+		// ensure character string is valid symbol for the system chain
+		for (const token of systemParachainInfo.tokens) {
+			if (token.toLowerCase() === assetId.toLowerCase()) {
+				isValidTokenSymbol = true;
+				break;
+			}
+		}
+
+		const tokenSymbolsMatched: AssetInfo[] = [];
+
+		// if not found in system parachains tokens, check its assetsInfo
+		if (!isValidTokenSymbol) {
+			for (const [id, symbol] of Object.entries(
+				systemParachainInfo.assetsInfo
+			)) {
+				if (symbol.toLowerCase() === assetId.toLowerCase()) {
+					const assetInfo: AssetInfo = {
+						id,
+						symbol,
+					};
+					tokenSymbolsMatched.push(assetInfo);
+				}
+			}
+		}
+
+		// check if multiple matches found
+		// if more than 1 match is found throw an error and include details on the matched tokens
+		if (tokenSymbolsMatched.length > 1) {
+			const assetMessageInfo = tokenSymbolsMatched.map(
+				(token) => `assetId: ${token.id} symbol: ${token.symbol}`
+			);
+			const message =
+				`Multiple assets found with symbol ${assetId}:\n${assetMessageInfo.toString()}\nPlease retry using an assetId rather than the token symbol
+			`
+					.trim()
+					.replace(',', '\n');
+
+			throw new BaseError(message);
+		} else if (tokenSymbolsMatched.length === 1) {
+			isValidTokenSymbol = true;
+		}
+
+		// if no native token for the system parachain was matched, throw an error
+		if (!isValidTokenSymbol) {
+			throw new BaseError(
+				`${xcmDirection}: assetId ${assetId} not found for system parachain ${specName}`
+			);
+		}
+	}
+};
+
 /**
  * This will check the given assetId and validate it in either string integer, or string symbol format
  *
@@ -175,75 +258,47 @@ const checkSystemToParaAssetId = (
 	const systemParachainInfo = relayChainInfo[systemParachainId];
 
 	if (typeof assetId === 'string') {
-		// check if assetId is a number
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+		checkSystemAssets(assetId, specName, systemParachainInfo, 'SystemToPara');
+	}
+};
 
-		if (!invalidNumber) {
-			// assetId is a valid number
-			// ensure the assetId exists as an asset on the system parachain
-			const assetSymbol: string | undefined =
-				systemParachainInfo.assetsInfo[assetId];
+/**
+ * The current functionality of ParaToSystem requires the passed in assets to be
+ * in the format to which it is stored in the corresponding system parachain.
+ * Therefore we can share the same functionality as SystemToPara.
+ *
+ * @param assetId
+ * @param specName
+ * @param relayChainInfo
+ */
+const checkParaToSystemAssetId = (
+	assetId: string,
+	relayChainInfo: ChainInfo
+) => {
+	const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
+	const systemParachainInfo = relayChainInfo[systemParachainId];
+	const systemSpecName = systemParachainInfo.specName;
 
-			if (assetSymbol === undefined) {
+	if (typeof assetId === 'string') {
+		// An assetId may be a hex value to represent a GeneralKey for erc20 tokens.
+		// These will be represented as Foreign Assets in regard to its MultiLocation
+		if (isHex(assetId)) {
+			const ethAddr = isEthereumAddress(assetId);
+			if (!ethAddr) {
 				throw new BaseError(
-					`System to Para: integer assetId ${assetId} not found in ${specName}`
+					`ParaToSystem: assetId ${assetId}, is not a valid erc20 token.`
 				);
 			}
-		} else {
-			// not a valid number
-			// check if id is a valid token symbol of the system parachain chain
-			let isValidTokenSymbol = false;
 
-			// ensure character string is valid symbol for the system chain
-			for (const token of systemParachainInfo.tokens) {
-				if (token.toLowerCase() === assetId.toLowerCase()) {
-					isValidTokenSymbol = true;
-					break;
-				}
-			}
-
-			const tokenSymbolsMatched: AssetInfo[] = [];
-
-			// if not found in system parachains tokens, check its assetsInfo
-			if (!isValidTokenSymbol) {
-				for (const [id, symbol] of Object.entries(
-					systemParachainInfo.assetsInfo
-				)) {
-					if (symbol.toLowerCase() === assetId.toLowerCase()) {
-						const assetInfo: AssetInfo = {
-							id,
-							symbol,
-						};
-						tokenSymbolsMatched.push(assetInfo);
-					}
-				}
-			}
-
-			// check if multiple matches found
-			// if more than 1 match is found throw an error and include details on the matched tokens
-			if (tokenSymbolsMatched.length > 1) {
-				const assetMessageInfo = tokenSymbolsMatched.map(
-					(token) => `assetId: ${token.id} symbol: ${token.symbol}`
-				);
-				const message =
-					`Multiple assets found with symbol ${assetId}:\n${assetMessageInfo.toString()}\nPlease retry using an assetId rather than the token symbol
-				`
-						.trim()
-						.replace(',', '\n');
-
-				throw new BaseError(message);
-			} else if (tokenSymbolsMatched.length === 1) {
-				isValidTokenSymbol = true;
-			}
-
-			// if no native token for the system parachain was matched, throw an error
-			if (!isValidTokenSymbol) {
-				throw new BaseError(
-					`System to Para: assetId ${assetId} not found for system parachain ${specName}`
-				);
-			}
+			return;
 		}
+
+		checkSystemAssets(
+			assetId,
+			systemSpecName,
+			systemParachainInfo,
+			'ParaToSystem'
+		);
 	}
 };
 
@@ -282,6 +337,10 @@ export const checkAssetIdInput = (
 
 		if (xcmDirection === Direction.SystemToPara) {
 			checkSystemToParaAssetId(assetId, specName, relayChainInfo);
+		}
+
+		if (xcmDirection === Direction.ParaToSystem) {
+			checkParaToSystemAssetId(assetId, relayChainInfo);
 		}
 	}
 };
@@ -325,6 +384,10 @@ export const checkXcmTxInputs = (
 	}
 
 	if (xcmDirection === Direction.SystemToPara) {
+		checkAssetsAmountMatch(assetIds, amounts);
+	}
+
+	if (xcmDirection === Direction.ParaToSystem) {
 		checkAssetsAmountMatch(assetIds, amounts);
 	}
 };

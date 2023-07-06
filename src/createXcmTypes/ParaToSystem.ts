@@ -9,25 +9,24 @@ import type {
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
-import { isEthereumAddress } from '@polkadot/util-crypto';
+import { isHex } from '@polkadot/util';
 
 import type { Registry } from '../registry';
 import { MultiAsset, MultiAssetInterior } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import {
+import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	ICreateXcmType,
 	IWeightLimit,
 } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
-export const SystemToPara: ICreateXcmType = {
+export const ParaToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
@@ -41,29 +40,21 @@ export const SystemToPara: ICreateXcmType = {
 		xcmVersion?: number
 	): VersionedMultiLocation => {
 		if (xcmVersion == 2) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { network: 'Any', key: accountId } }
-				: { AccountId32: { network: 'Any', id: accountId } };
-
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
 					parents: 0,
 					interior: {
-						X1,
+						X1: { AccountId32: { network: 'Any', id: accountId } },
 					},
 				},
 			});
 		}
 
-		const X1 = isEthereumAddress(accountId)
-			? { AccountKey20: { key: accountId } }
-			: { AccountId32: { id: accountId } };
-
 		return api.registry.createType('XcmVersionedMultiLocation', {
 			V3: {
 				parents: 0,
 				interior: {
-					X1,
+					X1: { AccountId32: { id: accountId } },
 				},
 			},
 		});
@@ -75,11 +66,7 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (
-		api: ApiPromise,
-		destId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createDest: (api: ApiPromise, destId: string, xcmVersion?: number) => {
 		if (xcmVersion === 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -123,8 +110,7 @@ export const SystemToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): VersionedMultiAssets => {
-		const sortedAndDedupedMultiAssets = createSystemToParaMultiAssets(
-			api,
+		const sortedAndDedupedMultiAssets = createParaToSystemMultiAssets(
 			amounts,
 			specName,
 			assets,
@@ -166,7 +152,6 @@ export const SystemToPara: ICreateXcmType = {
 
 		return api.registry.createType('XcmV2WeightLimit', limit);
 	},
-
 	/**
 	 * returns the correct feeAssetItem based on XCM direction.
 	 *
@@ -195,8 +180,7 @@ export const SystemToPara: ICreateXcmType = {
 			assetIds &&
 			paysWithFeeDest
 		) {
-			const multiAssets = createSystemToParaMultiAssets(
-				api,
+			const multiAssets = createParaToSystemMultiAssets(
 				normalizeArrToStr(amounts),
 				specName,
 				assetIds,
@@ -217,29 +201,31 @@ export const SystemToPara: ICreateXcmType = {
 };
 
 /**
- * Creates and returns a MultiAsset array for system parachains based on provided specName, assets and amounts
+ * Create multiassets for ParaToSystem direction.
  *
- * @param api ApiPromise[]
- * @param amounts string[]
- * @param specName string
- * @param assets string[]
+ * @param api
+ * @param amounts
+ * @param specName
+ * @param assets
+ * @param registry
  */
-export const createSystemToParaMultiAssets = (
-	api: ApiPromise,
+const createParaToSystemMultiAssets = (
 	amounts: string[],
 	specName: string,
 	assets: string[],
 	registry: Registry
 ): MultiAsset[] => {
-	const palletId = fetchPalletInstanceId(api);
+	// This will always result in a value and will never be null because the assets-hub will always
+	// have the assets pallet present, so we type cast here to work around the type compiler.
+	const { assetsPalletInstance } = registry.currentRelayRegistry['1000'];
+	const palletId = assetsPalletInstance as string;
 	let multiAssets = [];
 
-	// We know this is a System parachain direction which is chainId 1000.
-	const { tokens } = registry.currentRelayRegistry['1000'];
+	const { tokens } = registry.currentRelayRegistry['0'];
 
 	for (let i = 0; i < assets.length; i++) {
-		let assetId: string = assets[i];
 		const amount = amounts[i];
+		let assetId = assets[i];
 
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
@@ -249,7 +235,9 @@ export const createSystemToParaMultiAssets = (
 			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
 		}
 
-		const interior: MultiAssetInterior = isRelayNative
+		const interior: MultiAssetInterior = isHex(assetId)
+			? { X2: [{ GeneralKey: assetId }] }
+			: isRelayNative
 			? { Here: '' }
 			: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
 		const parents = isRelayNative ? 1 : 0;
