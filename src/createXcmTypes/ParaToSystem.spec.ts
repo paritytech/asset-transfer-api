@@ -8,7 +8,6 @@ describe('ParaToSystem', () => {
 	const registry = new Registry('kusama', {});
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
-			console.log(registry !== undefined);
 			const beneficiary = ParaToSystem.createBeneficiary(
 				mockParachainApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',

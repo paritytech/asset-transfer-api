@@ -25,7 +25,7 @@ const systemAssetsApi = new AssetsTransferApi(
 const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
 const moonbeamAssetsApi = new AssetsTransferApi(
 	adjustedMockParachainApi,
-	'moonbeam',
+	'moonriver',
 	2
 );
 
