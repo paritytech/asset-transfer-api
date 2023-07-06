@@ -308,3 +308,5 @@ export type AssetInfo = {
 	id: string;
 	symbol: string;
 };
+
+export type AssetsPalletType = 'basic' | 'foreign' | 'pool';

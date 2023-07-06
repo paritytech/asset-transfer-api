@@ -34,6 +34,7 @@ import {
 import { Registry } from './registry';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
+	AssetsPalletType,
 	AssetsTransferApiOpts,
 	AssetType,
 	ConstructedFormat,
@@ -91,13 +92,14 @@ export class AssetsTransferApi {
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: TransferArgsOpts<T>
+		opts?: TransferArgsOpts<T>,
+		assetsPalletType?: AssetsPalletType, // defaults to basic assets pallet
 	): Promise<TxResult<T>> {
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
 		 */
-		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
+		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts, assetsPalletType);
 
 		const { _api, _specName, _safeXcmVersion, registry } = this;
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
