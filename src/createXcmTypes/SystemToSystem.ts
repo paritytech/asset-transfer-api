@@ -9,7 +9,6 @@ import type {
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
-import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { SYSTEM_PARACHAINS_IDS } from '../consts';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
@@ -44,29 +43,21 @@ export const SystemToSystem: ICreateXcmType = {
 		xcmVersion?: number
 	): VersionedMultiLocation => {
 		if (xcmVersion == 2) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { network: 'Any', key: accountId } }
-				: { AccountId32: { network: 'Any', id: accountId } };
-
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
 					parents: 0,
 					interior: {
-						X1,
+						X1: { AccountId32: { network: 'Any', id: accountId } },
 					},
 				},
 			});
 		}
 
-		const X1 = isEthereumAddress(accountId)
-			? { AccountKey20: { key: accountId } }
-			: { AccountId32: { id: accountId } };
-
 		return api.registry.createType('XcmVersionedMultiLocation', {
 			V3: {
 				parents: 0,
 				interior: {
-					X1,
+					X1: { AccountId32: { id: accountId } },
 				},
 			},
 		});
