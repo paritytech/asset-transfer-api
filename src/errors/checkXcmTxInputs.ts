@@ -224,16 +224,24 @@ const checkSystemToParaAssetId = (
 	assetId: string,
 	specName: string,
 	relayChainInfo: ChainInfo,
-	registry: Registry
+	registry: Registry,
+	xcmDirection: Direction
 ) => {
-	checkIsValidSystemChainAssetId(assetId, specName, relayChainInfo, registry);
+	checkIsValidSystemChainAssetId(
+		assetId,
+		specName,
+		relayChainInfo,
+		registry,
+		xcmDirection
+	);
 };
 
 export const checkIsValidSystemChainAssetId = (
 	assetId: string,
 	specName: string,
 	relayChainInfo: ChainInfo,
-	registry: Registry
+	registry: Registry,
+	xcmDirection: Direction
 ) => {
 	const systemChainId = getChainIdBySpecName(registry, specName);
 	const systemParachainInfo = relayChainInfo[systemChainId];
@@ -251,7 +259,7 @@ export const checkIsValidSystemChainAssetId = (
 
 			if (assetSymbol === undefined) {
 				throw new BaseError(
-					`System to Para: integer assetId ${assetId} not found in ${specName}`
+					`${xcmDirection.toString()}: integer assetId ${assetId} not found in ${specName}`
 				);
 			}
 		} else {
@@ -305,7 +313,7 @@ export const checkIsValidSystemChainAssetId = (
 			// if no native token for the system parachain was matched, throw an error
 			if (!isValidTokenSymbol) {
 				throw new BaseError(
-					`System to Para: assetId ${assetId} not found for system parachain ${specName}`
+					`${xcmDirection.toString()}: assetId ${assetId} not found for system parachain ${specName}`
 				);
 			}
 		}
@@ -322,9 +330,16 @@ const checkSystemToSystemAssetId = (
 	assetId: string,
 	specName: string,
 	relayChainInfo: ChainInfo,
-	registry: Registry
+	registry: Registry,
+	xcmDirection: Direction
 ) => {
-	checkIsValidSystemChainAssetId(assetId, specName, relayChainInfo, registry);
+	checkIsValidSystemChainAssetId(
+		assetId,
+		specName,
+		relayChainInfo,
+		registry,
+		xcmDirection
+	);
 };
 
 /**
@@ -362,11 +377,23 @@ export const checkAssetIdInput = (
 		}
 
 		if (xcmDirection === Direction.SystemToPara) {
-			checkSystemToParaAssetId(assetId, specName, relayChainInfo, registry);
+			checkSystemToParaAssetId(
+				assetId,
+				specName,
+				relayChainInfo,
+				registry,
+				xcmDirection
+			);
 		}
 
 		if (xcmDirection === Direction.SystemToSystem) {
-			checkSystemToSystemAssetId(assetId, specName, relayChainInfo, registry);
+			checkSystemToSystemAssetId(
+				assetId,
+				specName,
+				relayChainInfo,
+				registry,
+				xcmDirection
+			);
 		}
 	}
 };

@@ -159,19 +159,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'DOT', '3500000'],
 				Direction.SystemToPara,
-				`System to Para: integer assetId 3500000 not found in Statemint`,
+				`SystemToPara: integer assetId 3500000 not found in Statemint`,
 			],
 			[
 				'Statemine',
 				['KSM', '8', 'stateMineDoge'],
 				Direction.SystemToPara,
-				`System to Para: assetId stateMineDoge not found for system parachain Statemine`,
+				`SystemToPara: assetId stateMineDoge not found for system parachain Statemine`,
 			],
 			[
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToPara,
-				`System to Para: integer assetId 250 not found in Westmint`,
+				`SystemToPara: integer assetId 250 not found in Westmint`,
 			],
 		];
 
@@ -198,19 +198,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToPara,
-				`System to Para: assetId xcDOT not found for system parachain Statemint`,
+				`SystemToPara: assetId xcDOT not found for system parachain Statemint`,
 			],
 			[
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToPara,
-				`System to Para: assetId xcMOVR not found for system parachain Statemine`,
+				`SystemToPara: assetId xcMOVR not found for system parachain Statemine`,
 			],
 			[
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToPara,
-				`System to Para: assetId Test Westend not found for system parachain Westmint`,
+				`SystemToPara: assetId Test Westend not found for system parachain Westmint`,
 			],
 		];
 
@@ -263,10 +263,49 @@ describe('checkAssetIds', () => {
 			expect(err).toThrowError(errorMessage);
 		}
 	});
+
+	it('Should error when direction is SystemToSystem and the string assetId is not found in the system parachains tokens or assets', () => {
+		const tests: Test[] = [
+			[
+				'Statemint',
+				['1337', 'xcDOT'],
+				Direction.SystemToSystem,
+				`SystemToSystem: assetId xcDOT not found for system parachain Statemint`,
+			],
+			[
+				'Statemine',
+				['KSM', 'xcMOVR'],
+				Direction.SystemToSystem,
+				`SystemToSystem: assetId xcMOVR not found for system parachain Statemine`,
+			],
+			[
+				'Westmint',
+				['WND', 'Test Westend'],
+				Direction.SystemToSystem,
+				`SystemToSystem: assetId Test Westend not found for system parachain Westmint`,
+			],
+		];
+
+		for (const test of tests) {
+			const [specName, testInputs, direction, errorMessage] = test;
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
+
+			const err = () =>
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry
+				);
+			expect(err).toThrowError(errorMessage);
+		}
+	});
 });
 
 describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
-	it('Should error when the relay native asset and system assets are in the same assetIds list when direction', () => {
+	it('Should error when the relay native asset and system assets are in the same assetIds list when direction is SystemToSystem', () => {
 		const expectErrorMessage =
 			'Found the relay chains native asset in list ksm,usdc. assetIds list must be empty or only contain the relay chain asset for direction SystemToSystem';
 		const assetIds = ['ksm', 'usdc'];
