@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import type { ChainInfoRegistry } from './registry/types';
@@ -313,15 +312,8 @@ export interface XCMV3DestBenificiary {
 
 export type XCMDestBenificiary = XCMV3DestBenificiary | XCMV2DestBenificiary;
 
-export interface Target {
-	Id: string;
-}
-
 export interface Args {
-	id?: string;
-	target?: Target;
 	dest?: LocalDest;
-	value?: u32;
 	beneficiary?: XCMDestBenificiary;
 }
 
