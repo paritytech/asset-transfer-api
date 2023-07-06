@@ -49,6 +49,8 @@ import {
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
+	XCMV2DestBenificiary,
+	XCMV3DestBenificiary,
 } from './types';
 
 /**
@@ -582,9 +584,26 @@ export class AssetsTransferApi {
 			submittableString
 		) as unknown as SubmittableMethodData;
 
-		const addr: string = submittableData.method.args.target
-			? submittableData.method.args.target?.Id
-			: '';
+		let addr = '';
+		if (submittableData.method.args.beneficiary) {
+			if (
+				(submittableData.method.args.beneficiary as XCMV2DestBenificiary).V2
+			) {
+				addr = (submittableData.method.args.beneficiary as XCMV2DestBenificiary)
+					.V2.interior.X1.AccountId32.id;
+			} else {
+				addr = (submittableData.method.args.beneficiary as XCMV3DestBenificiary)
+					.V3.interior.X1.AccountId32.id;
+			}
+		} else if (submittableData.method.args.dest) {
+			addr = submittableData.method.args.dest.Id;
+		}
+
+		if (!addr) {
+			throw new BaseError(
+				`Unable to derive payload address for tx ${tx.toString()}`
+			);
+		}
 
 		const lastHeader = await this._api.rpc.chain.getHeader();
 		const blockNumber = this._api.registry.createType(

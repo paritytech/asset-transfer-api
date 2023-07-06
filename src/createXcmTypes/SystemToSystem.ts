@@ -236,7 +236,6 @@ export const createSystemToSystemMultiAssets = (
 	assets: string[],
 	registry: Registry
 ): MultiAsset[] => {
-	let palletId: string | undefined = undefined;
 	let multiAssets = [];
 
 	const systemChainId = getChainIdBySpecName(registry, specName);
@@ -258,8 +257,6 @@ export const createSystemToSystemMultiAssets = (
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
 		if (!isRelayNative) {
-			palletId = fetchPalletInstanceId(api);
-
 			if (isNotANumber) {
 				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
 			}
@@ -267,7 +264,12 @@ export const createSystemToSystemMultiAssets = (
 
 		const interior: MultiAssetInterior = isRelayNative
 			? { Here: '' }
-			: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
+			: {
+					X2: [
+						{ PalletInstance: fetchPalletInstanceId(api) },
+						{ GeneralIndex: assetId },
+					],
+			  };
 		const parents = isRelayNative ? 1 : 0;
 
 		const multiAsset = {

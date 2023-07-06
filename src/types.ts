@@ -193,7 +193,7 @@ export interface ChainInfo {
 }
 
 export type NonRelayNativeInterior = {
-	X2: [{ PalletInstance: string | undefined }, { GeneralIndex: string }];
+	X2: [{ PalletInstance: string }, { GeneralIndex: string }];
 };
 
 export type GeneralKeyInterior = {
@@ -289,9 +289,29 @@ export interface UnsignedTransaction extends SignerPayloadJSON {
 	assetId?: number;
 }
 
-export interface Dest {
-	id: string;
+export interface LocalDest {
+	Id: string;
 }
+
+export interface XCMV2DestBenificiary {
+	V2: {
+		parents: string;
+		interior: {
+			X1: { AccountId32: { network: string; id: string } };
+		};
+	};
+}
+
+export interface XCMV3DestBenificiary {
+	V3: {
+		parents: string;
+		interior: {
+			X1: { AccountId32: { network: string; id: string } };
+		};
+	};
+}
+
+export type XCMDestBenificiary = XCMV3DestBenificiary | XCMV2DestBenificiary;
 
 export interface Target {
 	Id: string;
@@ -300,8 +320,9 @@ export interface Target {
 export interface Args {
 	id?: string;
 	target?: Target;
-	dest?: Dest;
+	dest?: LocalDest;
 	value?: u32;
+	beneficiary?: XCMDestBenificiary;
 }
 
 export interface Method {
