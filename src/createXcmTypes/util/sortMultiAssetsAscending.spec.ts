@@ -102,7 +102,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: {
 						interior: {
-							X2: [{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+							X2: [
+								{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
+							],
 						},
 						parents: 0,
 					},
@@ -183,7 +185,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: {
 						interior: {
-							X2: [{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+							X2: [
+								{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
+							],
 						},
 						parents: 0,
 					},
@@ -207,5 +211,5 @@ describe('sortMultiAssetsAscending', () => {
 		const res = sortMultiAssetsAscending(multiAssets);
 
 		expect(res).toEqual(expected);
-	})
+	});
 });

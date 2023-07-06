@@ -1,6 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { MultiAsset, NonRelayNativeInterior, GeneralKeyInterior } from '../../types';
+import {
+	GeneralKeyInterior,
+	MultiAsset,
+	NonRelayNativeInterior,
+} from '../../types';
 
 /**
  * This sorts a list of multiassets in ascending order based on their id.
@@ -18,9 +22,11 @@ export const sortMultiAssetsAscending = (multiAssets: MultiAsset[]) => {
 		}
 
 		if ((a.id.Concrete.interior as GeneralKeyInterior).X2[0].GeneralKey) {
-			return 1
-		} else if ((b.id.Concrete.interior as GeneralKeyInterior).X2[0].GeneralKey) {
-			return -1
+			return 1;
+		} else if (
+			(b.id.Concrete.interior as GeneralKeyInterior).X2[0].GeneralKey
+		) {
+			return -1;
 		}
 
 		const sortOrder =

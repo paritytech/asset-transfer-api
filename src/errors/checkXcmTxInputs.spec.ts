@@ -273,8 +273,16 @@ describe('checkAssetIds', () => {
 	it('Should error for an invalid erc20 token.', () => {
 		const registry = new Registry('moonriver', {});
 		const currentRegistry = registry.currentRelayRegistry;
-		const err = () => checkAssetIdInput(['0x1234'], currentRegistry, 'moonriver', Direction.ParaToSystem);
+		const err = () =>
+			checkAssetIdInput(
+				['0x1234'],
+				currentRegistry,
+				'moonriver',
+				Direction.ParaToSystem
+			);
 
-		expect(err).toThrow('ParaToSystem: assetId 0x1234, is not a valid erc20 token.');
-	})
+		expect(err).toThrow(
+			'ParaToSystem: assetId 0x1234, is not a valid erc20 token.'
+		);
+	});
 });

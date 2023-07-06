@@ -284,8 +284,10 @@ const checkParaToSystemAssetId = (
 		// These will be represented as Foreign Assets in regard to its MultiLocation
 		if (isHex(assetId)) {
 			const ethAddr = isEthereumAddress(assetId);
-			if(!ethAddr) {
-				throw new BaseError(`ParaToSystem: assetId ${assetId}, is not a valid erc20 token.`)
+			if (!ethAddr) {
+				throw new BaseError(
+					`ParaToSystem: assetId ${assetId}, is not a valid erc20 token.`
+				);
 			}
 
 			return;
