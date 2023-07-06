@@ -10,7 +10,6 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isHex } from '@polkadot/util';
-import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import type { Registry } from '../registry';
 import { MultiAsset, MultiAssetInterior } from '../types';
@@ -41,29 +40,21 @@ export const ParaToSystem: ICreateXcmType = {
 		xcmVersion?: number
 	): VersionedMultiLocation => {
 		if (xcmVersion == 2) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { network: 'Any', key: accountId } }
-				: { AccountId32: { network: 'Any', id: accountId } };
-
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
 					parents: 0,
 					interior: {
-						X1,
+						X1: { AccountId32: { network: 'Any', id: accountId } },
 					},
 				},
 			});
 		}
 
-		const X1 = isEthereumAddress(accountId)
-			? { AccountKey20: { key: accountId } }
-			: { AccountId32: { id: accountId } };
-
 		return api.registry.createType('XcmVersionedMultiLocation', {
 			V3: {
 				parents: 0,
 				interior: {
-					X1,
+					X1: { AccountId32: { id: accountId } },
 				},
 			},
 		});
