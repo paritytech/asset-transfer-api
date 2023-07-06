@@ -26,7 +26,7 @@ const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
 		it('Should correctly determine direction for SystemToSystem', () => {
-			const res = relayAssetsApi['establishDirection']('1000', 'statemint');
+			const res = systemAssetsApi['establishDirection']('1000', 'statemint');
 			expect(res).toEqual('SystemToSystem');
 		});
 		it('Should correctly determine direction for SystemToPara', () => {
@@ -113,7 +113,7 @@ describe('AssetTransferAPI', () => {
 		describe('SystemToSystem', () => {
 			it('Should corectly return Native', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
-					Direction.SystemToRelay
+					Direction.SystemToSystem
 				);
 
 				expect(assetType).toEqual('Native');
