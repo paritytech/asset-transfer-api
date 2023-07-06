@@ -227,12 +227,12 @@ export class AssetsTransferApi {
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-		if (
-			assetType === AssetType.Foreign ||
-			(assetType === AssetType.Native &&
-				xcmDirection === Direction.SystemToSystem &&
-				!containsNativeRelayAsset(assetIds, nativeRelayChainAsset))
-		) {
+		const isSystemToSystemReserveTransfer =
+			assetType === AssetType.Native &&
+			xcmDirection === Direction.SystemToSystem &&
+			!containsNativeRelayAsset(assetIds, nativeRelayChainAsset);
+
+		if (assetType === AssetType.Foreign || isSystemToSystemReserveTransfer) {
 			if (opts?.isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
 				transaction = limitedReserveTransferAssets(
