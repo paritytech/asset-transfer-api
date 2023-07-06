@@ -821,7 +821,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				xcmVersion: number
 			): Promise<TxResult<T>> => {
 				return await moonbeamAssetsApi.createTransferTransaction(
-					'1000', // `0` indicating the dest chain is a relay chain.
+					'1000', // `1000` indicating the dest chain is a system chain.
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					['1984', '8'],
 					['100000', '1000000'],
