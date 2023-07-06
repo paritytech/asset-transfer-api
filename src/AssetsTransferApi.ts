@@ -12,6 +12,7 @@ import type {
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import {
+	RELAY_CHAIN_IDS,
 	RELAY_CHAIN_NAMES,
 	SYSTEM_PARACHAINS_IDS,
 	SYSTEM_PARACHAINS_NAMES,
@@ -24,6 +25,8 @@ import {
 	reserveTransferAssets,
 	teleportAssets,
 } from './createXcmCalls';
+import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
+import { getSystemChainTokenSymbolGeneralIndex } from './createXcmTypes/util/getTokenSymbolGeneralIndex';
 import {
 	BaseError,
 	checkBaseInputTypes,
@@ -31,6 +34,7 @@ import {
 	checkXcmTxInputs,
 	checkXcmVersion,
 } from './errors';
+import { containsNativeRelayAsset } from './errors/checkXcmTxInputs';
 import { Registry } from './registry';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
@@ -46,6 +50,8 @@ import {
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
+	XCMV2DestBenificiary,
+	XCMV3DestBenificiary,
 } from './types';
 
 /**
@@ -112,20 +118,58 @@ export class AssetsTransferApi {
 		 * is validated correctly.
 		 */
 		const addr = sanitizeAddress(destAddr);
-		const isLocalSystemTx = isDestSystemParachain && isOriginSystemParachain;
+
+		const originChainId = getChainIdBySpecName(registry, _specName);
+		const isLocalSystemTx =
+			isOriginSystemParachain &&
+			isDestSystemParachain &&
+			originChainId === destChainId;
 		const isLocalRelayTx =
 			destChainId === '0' &&
 			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
+
+		const relayChainID = RELAY_CHAIN_IDS[0];
+		const nativeRelayChainAsset =
+			registry.currentRelayRegistry[relayChainID].tokens[0];
+		const xcmDirection = this.establishDirection(destChainId, _specName);
 		/**
 		 * Create a local asset transfer on a system parachain
 		 */
 		if (isLocalSystemTx || isLocalRelayTx) {
+			let assetId = assetIds[0];
+			const amount = amounts[0];
+			const localAssetIdIsNotANumber = Number.isNaN(parseInt(assetId));
+			let isNativeRelayChainAsset = false;
+			if (
+				assetIds.length === 0 ||
+				nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()
+			) {
+				isNativeRelayChainAsset = true;
+			}
+
+			if (
+				xcmDirection === Direction.SystemToSystem &&
+				localAssetIdIsNotANumber &&
+				!isNativeRelayChainAsset
+			) {
+				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
+				// check for the general index of the assetId and assign the correct value for the local tx
+				// throws an error if the general index is not found
+				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, _specName);
+			}
+
 			/**
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			const localAssetType = checkLocalTxInput(assetIds, amounts, registry); // Throws an error when any of the inputs are incorrect.
+			const localAssetType = checkLocalTxInput(
+				assetIds,
+				amounts,
+				_specName,
+				registry
+			); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
+
 			if (isLocalSystemTx) {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 				let palletMethod: LocalTransferTypes;
@@ -135,14 +179,14 @@ export class AssetsTransferApi {
 				if (localAssetType === 'Balances') {
 					tx =
 						method === 'transferKeepAlive'
-							? balances.transferKeepAlive(_api, addr, amounts[0])
-							: balances.transfer(_api, addr, amounts[0]);
+							? balances.transferKeepAlive(_api, addr, amount)
+							: balances.transfer(_api, addr, amount);
 					palletMethod = `balances::${method}`;
 				} else {
 					tx =
 						method === 'transferKeepAlive'
-							? assets.transferKeepAlive(_api, addr, assetIds[0], amounts[0])
-							: assets.transfer(_api, addr, assetIds[0], amounts[0]);
+							? assets.transferKeepAlive(_api, addr, assetId, amount)
+							: assets.transfer(_api, addr, assetId, amount);
 					palletMethod = `assets::${method}`;
 				}
 
@@ -163,8 +207,8 @@ export class AssetsTransferApi {
 				const palletMethod: LocalTransferTypes = `balances::${method}`;
 				const tx =
 					method === 'transferKeepAlive'
-						? balances.transferKeepAlive(_api, addr, amounts[0])
-						: balances.transfer(_api, addr, amounts[0]);
+						? balances.transferKeepAlive(_api, addr, amount)
+						: balances.transfer(_api, addr, amount);
 				return this.constructFormat(
 					tx,
 					'local',
@@ -178,7 +222,6 @@ export class AssetsTransferApi {
 			}
 		}
 
-		const xcmDirection = this.establishDirection(destChainId, _specName);
 		const xcmVersion =
 			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
@@ -188,7 +231,12 @@ export class AssetsTransferApi {
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-		if (assetType === AssetType.Foreign) {
+		const isSystemToSystemReserveTransfer =
+			assetType === AssetType.Native &&
+			xcmDirection === Direction.SystemToSystem &&
+			!containsNativeRelayAsset(assetIds, nativeRelayChainAsset);
+
+		if (assetType === AssetType.Foreign || isSystemToSystemReserveTransfer) {
 			if (opts?.isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
 				transaction = limitedReserveTransferAssets(
@@ -331,6 +379,10 @@ export class AssetsTransferApi {
 			return Direction.SystemToRelay;
 		}
 
+		if (isSystemParachain && SYSTEM_PARACHAINS_IDS.includes(destChainId)) {
+			return Direction.SystemToSystem;
+		}
+
 		if (isSystemParachain && destChainId !== '0') {
 			return Direction.SystemToPara;
 		}
@@ -424,7 +476,11 @@ export class AssetsTransferApi {
 	}
 
 	private fetchAssetType(xcmDirection: Direction): AssetType {
-		if (xcmDirection === 'RelayToSystem' || xcmDirection === 'SystemToRelay') {
+		if (
+			xcmDirection === Direction.RelayToSystem ||
+			xcmDirection === Direction.SystemToRelay ||
+			xcmDirection === Direction.SystemToSystem
+		) {
 			return AssetType.Native;
 		}
 
@@ -433,7 +489,10 @@ export class AssetsTransferApi {
 		 * parachains then this logic will change. But for now all assets, and native tokens
 		 * transferred from a System parachain to a parachain it should use a reserve transfer.
 		 */
-		if (xcmDirection === 'RelayToPara' || xcmDirection === 'SystemToPara') {
+		if (
+			xcmDirection === Direction.RelayToPara ||
+			xcmDirection === Direction.SystemToPara
+		) {
 			return AssetType.Foreign;
 		}
 
@@ -526,7 +585,28 @@ export class AssetsTransferApi {
 		const submittableData: SubmittableMethodData = JSON.parse(
 			submittableString
 		) as unknown as SubmittableMethodData;
-		const addr = submittableData.method.args.dest.id;
+
+		let addr = '';
+		if (submittableData.method.args.beneficiary) {
+			if (
+				(submittableData.method.args.beneficiary as XCMV2DestBenificiary).V2
+			) {
+				addr = (submittableData.method.args.beneficiary as XCMV2DestBenificiary)
+					.V2.interior.X1.AccountId32.id;
+			} else {
+				addr = (submittableData.method.args.beneficiary as XCMV3DestBenificiary)
+					.V3.interior.X1.AccountId32.id;
+			}
+		} else if (submittableData.method.args.dest) {
+			addr = submittableData.method.args.dest.Id;
+		}
+
+		if (!addr) {
+			throw new BaseError(
+				`Unable to derive payload address for tx ${tx.toString()}`
+			);
+		}
+
 		const lastHeader = await this._api.rpc.chain.getHeader();
 		const blockNumber = this._api.registry.createType(
 			'BlockNumber',
@@ -601,9 +681,9 @@ export class AssetsTransferApi {
 	/**
 	 * Return the specName of the destination chainId
 	 *
-	 * @param destChainId
-	 * @param registry
-	 * @returns
+	 * @param destChainId string
+	 * @param registry Registry
+	 * @returns string
 	 */
 	private getDestinationSpecName(destId: string, registry: Registry): string {
 		if (destId === '0') {

@@ -5,6 +5,7 @@ import { Direction } from '../types';
 import {
 	checkAssetIdInput,
 	checkAssetsAmountMatch,
+	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
 } from './checkXcmTxInputs';
@@ -16,7 +17,13 @@ const runTests = (tests: Test[]) => {
 		const currentRegistry = registry.currentRelayRegistry;
 
 		const err = () =>
-			checkAssetIdInput(testInputs, currentRegistry, specName, direction);
+			checkAssetIdInput(
+				testInputs,
+				currentRegistry,
+				specName,
+				direction,
+				registry
+			);
 		expect(err).toThrow(errorMessage);
 	}
 };
@@ -174,7 +181,13 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			const err = () =>
-				checkAssetIdInput(testInputs, currentRegistry, specName, direction);
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry
+				);
 			expect(err).toThrow(errorMessage);
 		}
 	});
@@ -207,7 +220,13 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			const err = () =>
-				checkAssetIdInput(testInputs, currentRegistry, specName, direction);
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry
+				);
 			expect(err).toThrow(errorMessage);
 		}
 	});
@@ -234,7 +253,52 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			const err = () =>
-				checkAssetIdInput(testInputs, currentRegistry, specName, direction);
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry
+				);
+			expect(err).toThrowError(errorMessage);
+		}
+	});
+
+	it('Should error when direction is SystemToSystem and the string assetId is not found in the system parachains tokens or assets', () => {
+		const tests: Test[] = [
+			[
+				'Statemint',
+				['1337', 'xcDOT'],
+				Direction.SystemToSystem,
+				`SystemToSystem: assetId xcDOT not found for system parachain Statemint`,
+			],
+			[
+				'Statemine',
+				['KSM', 'xcMOVR'],
+				Direction.SystemToSystem,
+				`SystemToSystem: assetId xcMOVR not found for system parachain Statemine`,
+			],
+			[
+				'Westmint',
+				['WND', 'Test Westend'],
+				Direction.SystemToSystem,
+				`SystemToSystem: assetId Test Westend not found for system parachain Westmint`,
+			],
+		];
+
+		for (const test of tests) {
+			const [specName, testInputs, direction, errorMessage] = test;
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
+
+			const err = () =>
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry
+				);
 			expect(err).toThrowError(errorMessage);
 		}
 	});
@@ -266,7 +330,13 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			const err = () =>
-				checkAssetIdInput(testInputs, currentRegistry, specName, direction);
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry
+				);
 			expect(err).toThrow(errorMessage);
 		}
 	});
@@ -278,11 +348,26 @@ describe('checkAssetIds', () => {
 				['0x1234'],
 				currentRegistry,
 				'moonriver',
-				Direction.ParaToSystem
+				Direction.ParaToSystem,
+				registry
 			);
 
 		expect(err).toThrow(
 			'ParaToSystem: assetId 0x1234, is not a valid erc20 token.'
 		);
+	});
+});
+
+describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
+	it('Should error when the relay native asset and system assets are in the same assetIds list when direction is SystemToSystem', () => {
+		const expectErrorMessage =
+			'Found the relay chains native asset in list ksm,usdc. assetIds list must be empty or only contain the relay chain asset for direction SystemToSystem';
+		const assetIds = ['ksm', 'usdc'];
+		const specName = 'statemine';
+		const registry = new Registry(specName, {});
+
+		const err = () =>
+			checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
+		expect(err).toThrowError(expectErrorMessage);
 	});
 });
