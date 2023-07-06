@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { u32 } from '@polkadot/types';
+import type { u32 } from '@polkadot/types';
 import type {
 	MultiAssetsV2,
 	VersionedMultiAssets,
@@ -27,6 +27,7 @@ import {
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
+import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const SystemToPara: ICreateXcmType = {
@@ -290,14 +291,4 @@ export const createSystemToParaMultiAssets = (
 	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
 
 	return sortedAndDedupedMultiAssets;
-};
-
-const isRelayNativeAsset = (tokens: string[], assetId: string): boolean => {
-	for (const token of tokens) {
-		if (token.toLowerCase() === assetId.toLowerCase()) {
-			return true;
-		}
-	}
-
-	return false;
 };

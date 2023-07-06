@@ -8,6 +8,7 @@ export interface ChainInfoKeys {
 	specName: string;
 	tokens: string[];
 	assetsInfo: AssetsInfo;
+	assetsPalletInstance: string | null;
 }
 
 export type ExpandedChainInfoKeys = { chainId: string } & ChainInfoKeys;

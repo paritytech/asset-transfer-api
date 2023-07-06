@@ -196,11 +196,18 @@ export type NonRelayNativeInterior = {
 	X2: [{ PalletInstance: string | undefined }, { GeneralIndex: string }];
 };
 
+export type GeneralKeyInterior = {
+	X2: [{ GeneralKey: string }];
+};
+
 export type RelayNativeInterior = {
 	Here: string;
 };
 
-export type MultiAssetInterior = NonRelayNativeInterior | RelayNativeInterior;
+export type MultiAssetInterior =
+	| NonRelayNativeInterior
+	| RelayNativeInterior
+	| GeneralKeyInterior;
 
 export type MultiAsset = {
 	fun: {
