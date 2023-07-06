@@ -890,6 +890,64 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
+			describe('V3', () => {
+				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
+					const res = await baseParachainCreateTx('call', true, 3);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'limitedReserveTransferAssets',
+						tx: '0x670803010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205200002093d00000002043205011f00821a06000000000000',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
+					const res = await baseParachainCreateTx('payload', true, 3);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'limitedReserveTransferAssets',
+						tx: '0x3501670803010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205200002093d00000002043205011f00821a0600000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
+					const res = await baseParachainCreateTx('submittable', true, 3);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
+					const res = await baseParachainCreateTx('call', false, 3);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'reserveTransferAssets',
+						tx: '0x670203010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205200002093d00000002043205011f00821a060000000000',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a payload for a reserveTransferAsset for V3', async () => {
+					const res = await baseParachainCreateTx('payload', false, 3);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'reserveTransferAssets',
+						tx: '0x3101670203010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205200002093d00000002043205011f00821a06000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V3', async () => {
+					const res = await baseParachainCreateTx('submittable', false, 3);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
 		});
 		describe('checkLocalTxInput', () => {
 			it('Should error when the assetIds or amounts is the incorrect length', async () => {
