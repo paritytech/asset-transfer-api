@@ -23,7 +23,7 @@ const systemAssetsApi = new AssetsTransferApi(
 	2
 );
 const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
-const moonbeamAssetsApi = new AssetsTransferApi(
+const moonriverAssetsApi = new AssetsTransferApi(
 	adjustedMockParachainApi,
 	'moonriver',
 	2
@@ -48,7 +48,7 @@ describe('AssetTransferAPI', () => {
 			expect(res).toEqual('RelayToSystem');
 		});
 		it('Should correctly determine direction for ParaToSystem', () => {
-			const res = moonbeamAssetsApi['establishDirection']('1000', 'moonbeam');
+			const res = moonriverAssetsApi['establishDirection']('1000', 'moonriver');
 			expect(res).toEqual('ParaToSystem');
 		});
 	});

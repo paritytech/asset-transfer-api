@@ -12,7 +12,7 @@ const systemAssetsApi = new AssetsTransferApi(
 	'statemine',
 	2
 );
-const moonbeamAssetsApi = new AssetsTransferApi(
+const moonriverAssetsApi = new AssetsTransferApi(
 	adjustedMockParachainApi,
 	'moonriver',
 	2
@@ -820,7 +820,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number
 			): Promise<TxResult<T>> => {
-				return await moonbeamAssetsApi.createTransferTransaction(
+				return await moonriverAssetsApi.createTransferTransaction(
 					'1000', // `1000` indicating the dest chain is a system chain.
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					['1984', '8'],
