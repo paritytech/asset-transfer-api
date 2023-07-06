@@ -238,4 +238,43 @@ describe('checkAssetIds', () => {
 			expect(err).toThrowError(errorMessage);
 		}
 	});
+	it('Should error when direction is ParaToSystem and the string assetId is not found in the system parachains tokens or assets', () => {
+		const tests: Test[] = [
+			[
+				'Statemint',
+				['1337', 'xcDOT'],
+				Direction.ParaToSystem,
+				`ParaToSystem: assetId xcDOT not found for system parachain statemint`,
+			],
+			[
+				'Statemine',
+				['KSM', 'xcMOVR'],
+				Direction.ParaToSystem,
+				`ParaToSystem: assetId xcMOVR not found for system parachain statemine`,
+			],
+			[
+				'Westmint',
+				['WND', 'Test Westend'],
+				Direction.ParaToSystem,
+				`ParaToSystem: assetId Test Westend not found for system parachain westmint`,
+			],
+		];
+
+		for (const test of tests) {
+			const [specName, testInputs, direction, errorMessage] = test;
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
+
+			const err = () =>
+				checkAssetIdInput(testInputs, currentRegistry, specName, direction);
+			expect(err).toThrow(errorMessage);
+		}
+	});
+	it('Should error for an invalid erc20 token.', () => {
+		const registry = new Registry('moonriver', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const err = () => checkAssetIdInput(['0x1234'], currentRegistry, 'moonriver', Direction.ParaToSystem);
+
+		expect(err).toThrow('ParaToSystem: assetId 0x1234, is not a valid erc20 token.');
+	})
 });

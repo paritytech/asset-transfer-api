@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { isHex } from '@polkadot/util';
+import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
 import { Registry } from '../registry';
@@ -266,17 +267,12 @@ const checkSystemToParaAssetId = (
  * in the format to which it is stored in the corresponding system parachain.
  * Therefore we can share the same functionality as SystemToPara.
  *
- * TODO: If we extend the input of `ParaToSystem` to take in the assetId name
- * of the parachain, and match it with the system parachains assetIds we will also need
- * to check for that.
- *
  * @param assetId
  * @param specName
  * @param relayChainInfo
  */
 const checkParaToSystemAssetId = (
 	assetId: string,
-	specName: string,
 	relayChainInfo: ChainInfo
 ) => {
 	const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
@@ -286,9 +282,12 @@ const checkParaToSystemAssetId = (
 	if (typeof assetId === 'string') {
 		// An assetId may be a hex value to represent a GeneralKey for erc20 tokens.
 		// These will be represented as Foreign Assets in regard to its MultiLocation
-		// TODO: Find if there is a way to confirm the Hex value as a token.
 		if (isHex(assetId)) {
-			console.log(specName);
+			const ethAddr = isEthereumAddress(assetId);
+			if(!ethAddr) {
+				throw new BaseError(`ParaToSystem: assetId ${assetId}, is not a valid erc20 token.`)
+			}
+
 			return;
 		}
 
@@ -339,7 +338,7 @@ export const checkAssetIdInput = (
 		}
 
 		if (xcmDirection === Direction.ParaToSystem) {
-			checkParaToSystemAssetId(assetId, specName, relayChainInfo);
+			checkParaToSystemAssetId(assetId, relayChainInfo);
 		}
 	}
 };
