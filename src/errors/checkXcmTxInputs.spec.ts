@@ -330,7 +330,13 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			const err = () =>
-				checkAssetIdInput(testInputs, currentRegistry, specName, direction, registry);
+				checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry
+				);
 			expect(err).toThrow(errorMessage);
 		}
 	});

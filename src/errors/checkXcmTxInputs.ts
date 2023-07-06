@@ -501,7 +501,7 @@ export const checkXcmTxInputs = (
 	if (xcmDirection === Direction.SystemToSystem) {
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 	}
-	
+
 	if (xcmDirection === Direction.ParaToSystem) {
 		checkAssetsAmountMatch(assetIds, amounts);
 	}

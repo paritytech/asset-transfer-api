@@ -18,7 +18,6 @@ import type { Registry } from '../registry';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { MultiAsset, MultiAssetInterior } from './../types';
-import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -28,6 +27,7 @@ import {
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
+import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const SystemToSystem: ICreateXcmType = {
@@ -300,4 +300,3 @@ export const createSystemToSystemMultiAssets = (
 
 	return sortedAndDedupedMultiAssets;
 };
-
