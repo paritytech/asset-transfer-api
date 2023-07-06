@@ -661,7 +661,7 @@ export class AssetsTransferApi {
 	 *
 	 * @param destChainId string
 	 * @param registry Registry
-	 * @returns
+	 * @returns string
 	 */
 	private getDestinationSpecName(destId: string, registry: Registry): string {
 		if (destId === '0') {

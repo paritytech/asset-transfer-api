@@ -110,6 +110,15 @@ describe('AssetTransferAPI', () => {
 				expect(assetType).toEqual('Native');
 			});
 		});
+		describe('SystemToSystem', () => {
+			it('Should corectly return Native', () => {
+				const assetType = systemAssetsApi['fetchAssetType'](
+					Direction.SystemToRelay
+				);
+
+				expect(assetType).toEqual('Native');
+			});
+		});
 		describe('RelayToSystem', () => {
 			it('Should correctly return Native', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
