@@ -14,7 +14,7 @@ import { getChainIdBySpecName } from './getChainIdBySpecName';
  */
 export const getSystemChainTokenSymbolGeneralIndex = (
 	tokenSymbol: string,
-	specName: string
+	specName: string,
 ): string => {
 	const newRegistry = new Registry(specName, {});
 

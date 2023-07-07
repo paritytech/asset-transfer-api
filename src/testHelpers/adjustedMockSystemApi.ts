@@ -6,7 +6,7 @@ import type { Header } from '@polkadot/types/interfaces';
 import { PalletAssetsAssetDetails } from '@polkadot/types/lookup';
 import { getSpecTypes } from '@polkadot/types-known';
 
-import { statemineV9420 } from './metadata/statemineV9420';
+import { statemineV9430 } from './metadata/statemineV9430';
 import { mockSystemApi } from './mockSystemApi';
 import { mockWeightInfo } from './mockWeightInfo';
 /**
@@ -30,7 +30,7 @@ function createStatemineRegistry(specVersion: number): TypeRegistry {
 		getSpecTypes(registry, 'Statemine', 'statemine', specVersion)
 	);
 
-	registry.setMetadata(new Metadata(registry, statemineV9420));
+	registry.setMetadata(new Metadata(registry, statemineV9430));
 
 	return registry;
 }
@@ -54,7 +54,7 @@ const queryInfoCallAt = () =>
 
 const getMetadata = () =>
 	Promise.resolve().then(() =>
-		mockSystemApi.registry.createType('Metadata', statemineV9420)
+		mockSystemApi.registry.createType('Metadata', statemineV9430)
 	);
 
 const getHeader = (): Promise<Header> =>

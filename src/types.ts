@@ -184,6 +184,12 @@ export interface TransferArgsOpts<T extends Format> {
 	 * to a `transfer`.
 	 */
 	keepAlive?: boolean;
+
+	/**
+	 * Boolean to declare if this will transfer foreign assets.
+	 * Default is false
+	 */
+	transferForeignAsset?: boolean
 }
 
 export interface ChainInfo {
@@ -331,5 +337,3 @@ export type AssetInfo = {
 	id: string;
 	symbol: string;
 };
-
-export type AssetsPalletType = 'basic' | 'foreign' | 'pool';
