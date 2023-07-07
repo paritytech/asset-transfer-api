@@ -4,6 +4,7 @@ import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
+import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { Direction } from '../types';
@@ -74,6 +75,59 @@ const checkIfAssetIdIsEmptyOrBlankSpace = (assetId: string) => {
 		);
 	}
 };
+
+/**
+ *  checks if assetIds contain the current relay chains native asset
+ *
+ * @param assetIds string[]
+ * @param relayChainAsset string
+ * @returns boolean
+ */
+export const containsNativeRelayAsset = (
+	assetIds: string[],
+	relayChainAsset: string
+): boolean => {
+	// We assume when the assetId's input is empty that the native token is to be transferred.
+	if (assetIds.length === 0) {
+		return true;
+	}
+
+	for (let i = 0; i < assetIds.length; i++) {
+		const assetId = assetIds[i];
+
+		if (assetId.toLowerCase() === relayChainAsset.toLowerCase()) {
+			return true;
+		}
+	}
+
+	return false;
+};
+
+/**
+ * if direction is SystemToSystem, assetIds should contain either only the relay chains
+ * native asset or only assets native to the system chain and not both
+ *
+ * @param assetIds string[]
+ * @param registry Registry
+ */
+export const checkIfNativeRelayChainAssetPresentInMultiAssetIdList = (
+	assetIds: string[],
+	registry: Registry
+) => {
+	const relayChainID = RELAY_CHAIN_IDS[0];
+	const nativeRelayChainAsset =
+		registry.currentRelayRegistry[relayChainID].tokens[0];
+
+	if (
+		assetIds.length > 1 &&
+		containsNativeRelayAsset(assetIds, nativeRelayChainAsset)
+	) {
+		throw new BaseError(
+			`Found the relay chains native asset in list ${assetIds.toString()}. assetIds list must be empty or only contain the relay chain asset for direction SystemToSystem`
+		);
+	}
+};
+
 /**
  * This will check the given assetId and ensure that it is the native token of the relay chain
  *
@@ -252,13 +306,31 @@ const checkSystemAssets = (
 const checkSystemToParaAssetId = (
 	assetId: string,
 	specName: string,
-	relayChainInfo: ChainInfo
+	relayChainInfo: ChainInfo,
+	registry: Registry,
+	xcmDirection: Direction
 ) => {
-	const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
-	const systemParachainInfo = relayChainInfo[systemParachainId];
+	checkIsValidSystemChainAssetId(
+		assetId,
+		specName,
+		relayChainInfo,
+		registry,
+		xcmDirection
+	);
+};
+
+export const checkIsValidSystemChainAssetId = (
+	assetId: string,
+	specName: string,
+	relayChainInfo: ChainInfo,
+	registry: Registry,
+	xcmDirection: Direction
+) => {
+	const systemChainId = getChainIdBySpecName(registry, specName);
+	const systemParachainInfo = relayChainInfo[systemChainId];
 
 	if (typeof assetId === 'string') {
-		checkSystemAssets(assetId, specName, systemParachainInfo, 'SystemToPara');
+		checkSystemAssets(assetId, specName, systemParachainInfo, xcmDirection);
 	}
 };
 
@@ -303,20 +375,43 @@ const checkParaToSystemAssetId = (
 };
 
 /**
+ * This will check the given assetId and ensure that it is a valid system chain asset or relay chain native token
+ *
+ * @param assetId
+ * @param relayChainInfo
+ */
+const checkSystemToSystemAssetId = (
+	assetId: string,
+	specName: string,
+	relayChainInfo: ChainInfo,
+	registry: Registry,
+	xcmDirection: Direction
+) => {
+	checkIsValidSystemChainAssetId(
+		assetId,
+		specName,
+		relayChainInfo,
+		registry,
+		xcmDirection
+	);
+};
+
+/**
  * This will check the given assetIds and ensure they are either valid integers as strings
  * or known token symbols
  *
  * @param assetIds
  * @param relayChainInfo
  * @param specName
- * @param destChainId
  * @param xcmDirection
+ * @param registry
  */
 export const checkAssetIdInput = (
 	assetIds: string[],
 	relayChainInfo: ChainInfo,
 	specName: string,
-	xcmDirection: Direction
+	xcmDirection: Direction,
+	registry: Registry
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
@@ -336,7 +431,23 @@ export const checkAssetIdInput = (
 		}
 
 		if (xcmDirection === Direction.SystemToPara) {
-			checkSystemToParaAssetId(assetId, specName, relayChainInfo);
+			checkSystemToParaAssetId(
+				assetId,
+				specName,
+				relayChainInfo,
+				registry,
+				xcmDirection
+			);
+		}
+
+		if (xcmDirection === Direction.SystemToSystem) {
+			checkSystemToSystemAssetId(
+				assetId,
+				specName,
+				relayChainInfo,
+				registry,
+				xcmDirection
+			);
 		}
 
 		if (xcmDirection === Direction.ParaToSystem) {
@@ -366,7 +477,7 @@ export const checkXcmTxInputs = (
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
-	checkAssetIdInput(assetIds, relayChainInfo, specName, xcmDirection);
+	checkAssetIdInput(assetIds, relayChainInfo, specName, xcmDirection, registry);
 
 	if (xcmDirection === Direction.RelayToSystem) {
 		checkRelayAssetIdLength(assetIds);
@@ -385,6 +496,10 @@ export const checkXcmTxInputs = (
 
 	if (xcmDirection === Direction.SystemToPara) {
 		checkAssetsAmountMatch(assetIds, amounts);
+	}
+
+	if (xcmDirection === Direction.SystemToSystem) {
+		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 	}
 
 	if (xcmDirection === Direction.ParaToSystem) {

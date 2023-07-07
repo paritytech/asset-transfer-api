@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import type { ChainInfoRegistry } from './registry/types';
@@ -35,6 +34,10 @@ export enum Direction {
 	 * System parachain to Relay chain.
 	 */
 	SystemToRelay = 'SystemToRelay',
+	/**
+	 * System parachain to System parachain chain.
+	 */
+	SystemToSystem = 'SystemToSystem',
 	/**
 	 * Parachain to Parachain.
 	 */
@@ -285,13 +288,33 @@ export interface UnsignedTransaction extends SignerPayloadJSON {
 	assetId?: number;
 }
 
-export interface Dest {
-	id: string;
+export interface LocalDest {
+	Id: string;
 }
 
+export interface XCMV2DestBenificiary {
+	V2: {
+		parents: string;
+		interior: {
+			X1: { AccountId32: { network: string; id: string } };
+		};
+	};
+}
+
+export interface XCMV3DestBenificiary {
+	V3: {
+		parents: string;
+		interior: {
+			X1: { AccountId32: { network: string; id: string } };
+		};
+	};
+}
+
+export type XCMDestBenificiary = XCMV3DestBenificiary | XCMV2DestBenificiary;
+
 export interface Args {
-	dest: Dest;
-	value: u32;
+	dest?: LocalDest;
+	beneficiary?: XCMDestBenificiary;
 }
 
 export interface Method {

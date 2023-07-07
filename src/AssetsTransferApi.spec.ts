@@ -14,7 +14,7 @@ import { Direction, UnsignedTransaction } from './types';
 
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',
-	'0xfc041f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000'
+	'0xfc041f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000'
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
 const systemAssetsApi = new AssetsTransferApi(
@@ -31,6 +31,10 @@ const moonriverAssetsApi = new AssetsTransferApi(
 
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
+		it('Should correctly determine direction for SystemToSystem', () => {
+			const res = systemAssetsApi['establishDirection']('1000', 'statemint');
+			expect(res).toEqual('SystemToSystem');
+		});
 		it('Should correctly determine direction for SystemToPara', () => {
 			const res = systemAssetsApi['establishDirection']('2000', 'statemint');
 			expect(res).toEqual('SystemToPara');
@@ -69,7 +73,7 @@ describe('AssetTransferAPI', () => {
 				direction: 'SystemToPara',
 				format: 'call',
 				method: 'limitedReserveTransferAssets',
-				tx: '0x1f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000',
+				tx: '0x1f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000',
 				xcmVersion: 2,
 			});
 		});
@@ -89,7 +93,7 @@ describe('AssetTransferAPI', () => {
 				direction: 'SystemToPara',
 				format: 'payload',
 				method: 'limitedReserveTransferAssets',
-				tx: '0xf81f080100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01010100a10f0104000002043205040091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+				tx: '0xf81f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 				xcmVersion: 2,
 			});
 		});
@@ -111,6 +115,15 @@ describe('AssetTransferAPI', () => {
 			it('Should corectly return Native', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
 					Direction.SystemToRelay
+				);
+
+				expect(assetType).toEqual('Native');
+			});
+		});
+		describe('SystemToSystem', () => {
+			it('Should corectly return Native', () => {
+				const assetType = systemAssetsApi['fetchAssetType'](
+					Direction.SystemToSystem
 				);
 
 				expect(assetType).toEqual('Native');
@@ -189,7 +202,7 @@ describe('AssetTransferAPI', () => {
 				2,
 				'limitedReserveTransferAssets',
 				'2000',
-				'statmine',
+				'statemine',
 				'payload'
 			);
 

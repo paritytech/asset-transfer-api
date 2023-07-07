@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import type { u32 } from '@polkadot/types';
+import { u32 } from '@polkadot/types';
 import type {
 	MultiAssetsV2,
 	VersionedMultiAssets,
@@ -9,15 +9,14 @@ import type {
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
-import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { SYSTEM_PARACHAINS_IDS } from '../consts';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { BaseError } from '../errors';
 import type { Registry } from '../registry';
-import { MultiAsset, MultiAssetInterior } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import { MultiAsset, MultiAssetInterior } from './../types';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -30,7 +29,7 @@ import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGene
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
-export const SystemToPara: ICreateXcmType = {
+export const SystemToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
@@ -44,29 +43,21 @@ export const SystemToPara: ICreateXcmType = {
 		xcmVersion?: number
 	): VersionedMultiLocation => {
 		if (xcmVersion == 2) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { network: 'Any', key: accountId } }
-				: { AccountId32: { network: 'Any', id: accountId } };
-
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
 					parents: 0,
 					interior: {
-						X1,
+						X1: { AccountId32: { network: 'Any', id: accountId } },
 					},
 				},
 			});
 		}
 
-		const X1 = isEthereumAddress(accountId)
-			? { AccountKey20: { key: accountId } }
-			: { AccountId32: { id: accountId } };
-
 		return api.registry.createType('XcmVersionedMultiLocation', {
 			V3: {
 				parents: 0,
 				interior: {
-					X1,
+					X1: { AccountId32: { id: accountId } },
 				},
 			},
 		});
@@ -126,12 +117,14 @@ export const SystemToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): VersionedMultiAssets => {
-		const sortedAndDedupedMultiAssets = createSystemToParaMultiAssets(
+		const { registry } = opts;
+
+		const sortedAndDedupedMultiAssets = createSystemToSystemMultiAssets(
 			api,
 			amounts,
 			specName,
 			assets,
-			opts.registry
+			registry
 		);
 
 		if (xcmVersion === 2) {
@@ -198,7 +191,7 @@ export const SystemToPara: ICreateXcmType = {
 			assetIds &&
 			paysWithFeeDest
 		) {
-			const multiAssets = createSystemToParaMultiAssets(
+			const multiAssets = createSystemToSystemMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
 				specName,
@@ -207,6 +200,7 @@ export const SystemToPara: ICreateXcmType = {
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
+
 			if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
 				throw new BaseError(
 					`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`
@@ -227,21 +221,21 @@ export const SystemToPara: ICreateXcmType = {
 };
 
 /**
- * Creates and returns a MultiAsset array for system parachains based on provided specName, assets and amounts
+ * Creates and returns a MultiAsset array for system parachains based on provided specName, chain ID, assets and amounts
  *
  * @param api ApiPromise[]
  * @param amounts string[]
  * @param specName string
  * @param assets string[]
+ * @param chainId string
  */
-export const createSystemToParaMultiAssets = (
+export const createSystemToSystemMultiAssets = (
 	api: ApiPromise,
 	amounts: string[],
 	specName: string,
 	assets: string[],
 	registry: Registry
 ): MultiAsset[] => {
-	const palletId = fetchPalletInstanceId(api);
 	let multiAssets = [];
 
 	const systemChainId = getChainIdBySpecName(registry, specName);
@@ -262,13 +256,20 @@ export const createSystemToParaMultiAssets = (
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
-		if (!isRelayNative && isNotANumber) {
-			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
+		if (!isRelayNative) {
+			if (isNotANumber) {
+				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
+			}
 		}
 
 		const interior: MultiAssetInterior = isRelayNative
 			? { Here: '' }
-			: { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] };
+			: {
+					X2: [
+						{ PalletInstance: fetchPalletInstanceId(api) },
+						{ GeneralIndex: assetId },
+					],
+			  };
 		const parents = isRelayNative ? 1 : 0;
 
 		const multiAsset = {

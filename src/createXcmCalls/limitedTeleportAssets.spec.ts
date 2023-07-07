@@ -17,7 +17,7 @@ describe('limitedTeleportAssets', () => {
 				['100'],
 				'1000',
 				2,
-				'statemint',
+				'statemine',
 				registry
 			);
 
@@ -36,7 +36,7 @@ describe('limitedTeleportAssets', () => {
 					['100'],
 					'1000',
 					2,
-					'statemint',
+					'statemine',
 					registry
 				);
 

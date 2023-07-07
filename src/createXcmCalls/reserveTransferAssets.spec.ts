@@ -19,7 +19,7 @@ describe('reserveTransferAssets', () => {
 				['100'],
 				'1000',
 				2,
-				'statemint',
+				'statemine',
 				registry
 			);
 
@@ -38,7 +38,7 @@ describe('reserveTransferAssets', () => {
 					['100'],
 					'1000',
 					2,
-					'statemint',
+					'statemine',
 					registry
 				);
 

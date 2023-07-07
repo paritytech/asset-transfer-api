@@ -15,14 +15,14 @@ describe('teleportAssets', () => {
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1'],
 				['100'],
-				'1000',
+				'2004',
 				2,
-				'statemint',
+				'statemine',
 				registry
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xf8041f0101010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000020432050400910100000000'
+				'0xf8041f0101010100511f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000020432050400910100000000'
 			);
 		});
 		it('Should error when a api does not support the required pallets', () => {
@@ -36,7 +36,7 @@ describe('teleportAssets', () => {
 					['100'],
 					'1000',
 					2,
-					'statemint',
+					'statemine',
 					registry
 				);
 
