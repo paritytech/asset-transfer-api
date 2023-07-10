@@ -189,7 +189,7 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Boolean to declare if this will transfer foreign assets.
 	 * Default is false
 	 */
-	transferForeignAsset?: boolean
+	transferForeignAssets?: boolean
 }
 
 export interface ChainInfo {
@@ -336,4 +336,20 @@ export interface SubmittableMethodData {
 export type AssetInfo = {
 	id: string;
 	symbol: string;
+};
+
+
+export type ForeignAssetInterior = {
+	X2: [
+		{
+			Parachain: string
+		},
+		{
+			GeneralIndex: string
+		}
+	]
+};
+export type ForeignAssetMultiLocation = {
+	parents: string, 
+	interior: ForeignAssetInterior
 };

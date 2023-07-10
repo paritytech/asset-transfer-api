@@ -153,7 +153,7 @@ export class AssetsTransferApi {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
-				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, _specName);
+				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, _specName, opts?.transferForeignAssets);
 			}
 
 			/**

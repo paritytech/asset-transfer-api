@@ -1,5 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { ForeignAssetMultiLocation } from '../../types';
 import { SYSTEM_PARACHAINS_IDS } from '../../consts';
 import { BaseError } from '../../errors';
 import { Registry } from '../../registry';
@@ -13,9 +14,13 @@ import { getChainIdBySpecName } from './getChainIdBySpecName';
  * @param specName string
  */
 export const getSystemChainTokenSymbolGeneralIndex = (
-	tokenSymbol: string,
+	asset: string,
 	specName: string,
+	transferForeignAssets?: boolean
 ): string => {
+	console.log('WHAT IS ASSET', asset);
+	let assetId: string | undefined = '';
+
 	const newRegistry = new Registry(specName, {});
 
 	const systemChainId = getChainIdBySpecName(newRegistry, specName);
@@ -26,24 +31,35 @@ export const getSystemChainTokenSymbolGeneralIndex = (
 		);
 	}
 
-	const { assetsInfo } = newRegistry.currentRelayRegistry[systemChainId];
+	if (transferForeignAssets) {
+		const foreignAsset = (JSON.stringify(asset)) as unknown as ForeignAssetMultiLocation;
+		console.log('foreign asset is', foreignAsset);
 
-	if (Object.keys(assetsInfo).length === 0) {
-		throw new BaseError(
-			`${specName} has no associated token symbol ${tokenSymbol}`
+		const { foreignAssetsInfo } = newRegistry.currentRelayRegistry[systemChainId];
+		console.log('foreign assets', foreignAssetsInfo);
+
+		if (foreignAssetsInfo)
+	} else {
+		const { assetsInfo } = newRegistry.currentRelayRegistry[systemChainId];
+
+		if (Object.keys(assetsInfo).length === 0) {
+			throw new BaseError(
+				`${specName} has no associated token symbol ${asset}`
+			);
+		}
+	
+		// get the corresponding asset id index from the assets registry
+		assetId = Object.keys(assetsInfo).find(
+			(key) => assetsInfo[key].toLowerCase() === asset.toLowerCase()
 		);
+	
+		if (!assetId) {
+			throw new BaseError(
+				`general index for assetId ${asset} was not found`
+			);
+		}
+	
 	}
-
-	// get the corresponding asset id index from the assets registry
-	const assetId: string | undefined = Object.keys(assetsInfo).find(
-		(key) => assetsInfo[key].toLowerCase() === tokenSymbol.toLowerCase()
-	);
-
-	if (!assetId) {
-		throw new BaseError(
-			`general index for assetId ${tokenSymbol} was not found`
-		);
-	}
-
+	
 	return assetId;
 };

@@ -5,11 +5,11 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import { ForeignAssetMultiLocation } from '../../types';
 
-export const transferKeepAlive = (
+export const transfer = (
 	api: ApiPromise,
 	destAddr: string,
 	assetId: ForeignAssetMultiLocation,
 	amount: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
-	return api.tx.foreignAssets.transferKeepAlive(assetId, destAddr, amount);
+	return api.tx.foreignAssets.transfer(assetId, destAddr, amount);
 };

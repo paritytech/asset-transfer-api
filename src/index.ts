@@ -35,7 +35,7 @@ const main = async () => {
 
 	await api.isReady;
 
-	const assetTransferApi = new AssetsTransferApi(api, 'statemint', 2);
+	const assetTransferApi = new AssetsTransferApi(api, 'statemine', 2);
 	// const assetTransferApi = new AssetsTransferApi(api, 'collectives', 2);
 
 	// call
@@ -75,15 +75,17 @@ const main = async () => {
 	// console.log('payload is', payload);
 
 	const payload = await assetTransferApi.createTransferTransaction(
-		'2125',
+		'1000',
 		'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
-		[`{ parents: '1', interior: { X2: [ {'Parachain': '2,125'}, {"GeneralIndex": "0"} ] } }`],
+		[
+            `{ parents: '1', interior: { X2: [ {'Parachain': '2125'}, {"GeneralIndex": "0"} ] } }`,
+        ],
 		['100'],
 		{
 			format: 'payload',
 			isLimited: true,
 			xcmVersion: 2,
-            transferForeignAsset: true
+            transferForeignAssets: true
 			// paysWithFeeOrigin: '1984',
 			// paysWithFeeDest: 'USDC'
 		}

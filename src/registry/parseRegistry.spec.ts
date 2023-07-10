@@ -13,12 +13,14 @@ describe('parseRegistry', () => {
 
 	it('Should correctly inject an injectedRegsitry', () => {
 		const assetsInfo = {};
+		const foreignAssetsInfo = {};
 		const opts = {
 			injectedRegistry: {
 				polkadot: {
 					'9876': {
 						tokens: ['TST'],
 						assetsInfo,
+						foreignAssetsInfo,
 						specName: 'testing',
 						assetsPalletInstance: '100',
 					},
