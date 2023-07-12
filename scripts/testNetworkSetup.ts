@@ -143,12 +143,12 @@ const main = async () => {
 	const xcmMessage = {
 		V3: [
 			{
-				unpaidExecution: { 
-					weightLimit: { Unlimited: '' }, 
+				unpaidExecution: {
+					weightLimit: { Unlimited: '' },
 					checkOrigin: {
 						parents: 1,
 						interior: { Here: '' },
-				 	} 
+					},
 				},
 			},
 			{
