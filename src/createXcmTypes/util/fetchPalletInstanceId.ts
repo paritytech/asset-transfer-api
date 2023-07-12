@@ -18,7 +18,7 @@ export const fetchPalletInstanceId = (
 
 	if (pallet.length === 0) {
 		throw Error(
-			"No assets pallet available, can't find a valid PalletInstance."
+			`No ${palletName} pallet available, can't find a valid PalletInstance.`
 		);
 	}
 

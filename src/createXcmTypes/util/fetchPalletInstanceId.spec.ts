@@ -5,7 +5,7 @@ import type { ApiPromise } from '@polkadot/api';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId';
 
-describe('fetchPalletInstandId', () => {
+describe('fetchPalletInstanceId', () => {
 	it('Should return the correct string when the api has the assets pallet', () => {
 		const res = fetchPalletInstanceId(mockSystemApi, false);
 
@@ -22,7 +22,7 @@ describe('fetchPalletInstandId', () => {
 		const res = () => fetchPalletInstanceId(mockApi, false);
 
 		expect(res).toThrowError(
-			"No assets pallet available, can't find a valid PalletInstance."
+			"No Assets pallet available, can't find a valid PalletInstance."
 		);
 	});
 });
