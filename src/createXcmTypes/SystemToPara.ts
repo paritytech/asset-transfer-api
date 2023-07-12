@@ -126,12 +126,15 @@ export const SystemToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): VersionedMultiAssets => {
+		const { registry, transferLiquidToken } = opts;
+		const isLiquidToken = transferLiquidToken === true;
 		const sortedAndDedupedMultiAssets = createSystemToParaMultiAssets(
 			api,
 			amounts,
 			specName,
 			assets,
-			opts.registry
+			registry,
+			isLiquidToken
 		);
 
 		if (xcmVersion === 2) {
@@ -189,21 +192,23 @@ export const SystemToPara: ICreateXcmType = {
 			assetIds,
 			amounts,
 			xcmVersion,
+			transferLiquidToken,
 		} = opts;
 		if (
-			xcmVersion &&
 			xcmVersion === 3 &&
 			specName &&
 			amounts &&
 			assetIds &&
 			paysWithFeeDest
 		) {
+			const isLiquidToken = transferLiquidToken === true;
 			const multiAssets = createSystemToParaMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
 				specName,
 				assetIds,
-				registry
+				registry,
+				isLiquidToken
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
@@ -239,9 +244,10 @@ export const createSystemToParaMultiAssets = (
 	amounts: string[],
 	specName: string,
 	assets: string[],
-	registry: Registry
+	registry: Registry,
+	isLiquidToken: boolean
 ): MultiAsset[] => {
-	const palletId = fetchPalletInstanceId(api);
+	const palletId = fetchPalletInstanceId(api, isLiquidToken);
 	let multiAssets = [];
 
 	const systemChainId = getChainIdBySpecName(registry, specName);

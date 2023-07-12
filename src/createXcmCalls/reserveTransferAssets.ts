@@ -34,7 +34,7 @@ export const reserveTransferAssets = (
 	registry: Registry,
 	opts: CreateXcmCallOpts = {}
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
-	const { paysWithFeeDest } = opts;
+	const { paysWithFeeDest, transferLiquidToken } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].reserveTransferAssets;
 	const typeCreator = createXcmTypes[direction];
@@ -46,7 +46,7 @@ export const reserveTransferAssets = (
 		xcmVersion,
 		specName,
 		assetIds,
-		{ registry }
+		{ registry, transferLiquidToken }
 	);
 
 	const feeAssetItem = paysWithFeeDest
@@ -57,6 +57,7 @@ export const reserveTransferAssets = (
 				assetIds,
 				amounts,
 				xcmVersion,
+				transferLiquidToken,
 		  })
 		: api.registry.createType('u32', 0);
 

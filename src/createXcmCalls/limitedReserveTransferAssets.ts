@@ -36,7 +36,7 @@ export const limitedReserveTransferAssets = (
 	registry: Registry,
 	opts: CreateXcmCallOpts = {}
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
-	const { paysWithFeeDest, weightLimit } = opts;
+	const { paysWithFeeDest, transferLiquidToken, weightLimit } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedReserveTransferAssets;
 	const typeCreator = createXcmTypes[direction];
@@ -48,7 +48,7 @@ export const limitedReserveTransferAssets = (
 		xcmVersion,
 		specName,
 		assetIds,
-		{ registry }
+		{ registry, transferLiquidToken }
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 
@@ -60,6 +60,7 @@ export const limitedReserveTransferAssets = (
 				assetIds,
 				amounts,
 				xcmVersion,
+				transferLiquidToken,
 		  })
 		: api.registry.createType('u32', 0);
 

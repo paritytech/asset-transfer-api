@@ -13,6 +13,7 @@ import type { RequireOnlyOne } from '../types';
 
 export interface CreateAssetsOpts {
 	registry: Registry;
+	transferLiquidToken?: boolean;
 }
 
 export interface CreateFeeAssetItemOpts {
@@ -22,6 +23,7 @@ export interface CreateFeeAssetItemOpts {
 	assetIds?: string[];
 	amounts?: string[];
 	xcmVersion?: number;
+	transferLiquidToken?: boolean;
 }
 
 export interface ICreateXcmType {

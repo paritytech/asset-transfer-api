@@ -266,7 +266,8 @@ export const createSystemToSystemMultiAssets = (
 			? { Here: '' }
 			: {
 					X2: [
-						{ PalletInstance: fetchPalletInstanceId(api) },
+						// TODO: Should SystemToSystem support liquid tokens.
+						{ PalletInstance: fetchPalletInstanceId(api, false) },
 						{ GeneralIndex: assetId },
 					],
 			  };

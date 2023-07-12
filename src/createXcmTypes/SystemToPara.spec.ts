@@ -290,7 +290,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				amounts,
 				specName,
 				assets,
-				registry
+				registry,
+				false
 			);
 
 			expect(result).toEqual(expected);

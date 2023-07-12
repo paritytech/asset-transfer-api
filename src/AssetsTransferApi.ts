@@ -107,6 +107,7 @@ export class AssetsTransferApi {
 			weightLimit,
 			xcmVersion,
 			keepAlive,
+			transferLiquidToken,
 		} = opts;
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
@@ -256,7 +257,7 @@ export class AssetsTransferApi {
 					declaredXcmVersion,
 					_specName,
 					this.registry,
-					{ paysWithFeeDest, weightLimit }
+					{ paysWithFeeDest, weightLimit, transferLiquidToken }
 				);
 			} else {
 				txMethod = 'reserveTransferAssets';
@@ -270,7 +271,7 @@ export class AssetsTransferApi {
 					declaredXcmVersion,
 					_specName,
 					this.registry,
-					{ paysWithFeeDest }
+					{ paysWithFeeDest, transferLiquidToken }
 				);
 			}
 		} else {

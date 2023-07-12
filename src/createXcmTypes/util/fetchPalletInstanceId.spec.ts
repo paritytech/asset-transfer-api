@@ -7,7 +7,7 @@ import { fetchPalletInstanceId } from './fetchPalletInstanceId';
 
 describe('fetchPalletInstandId', () => {
 	it('Should return the correct string when the api has the assets pallet', () => {
-		const res = fetchPalletInstanceId(mockSystemApi);
+		const res = fetchPalletInstanceId(mockSystemApi, false);
 
 		expect(res).toEqual('50');
 	});
@@ -19,7 +19,7 @@ describe('fetchPalletInstandId', () => {
 				},
 			},
 		} as unknown as ApiPromise;
-		const res = () => fetchPalletInstanceId(mockApi);
+		const res = () => fetchPalletInstanceId(mockApi, false);
 
 		expect(res).toThrowError(
 			"No assets pallet available, can't find a valid PalletInstance."
