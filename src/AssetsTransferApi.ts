@@ -97,8 +97,17 @@ export class AssetsTransferApi {
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: TransferArgsOpts<T>
+		opts: TransferArgsOpts<T> = {}
 	): Promise<TxResult<T>> {
+		const {
+			format,
+			paysWithFeeDest,
+			paysWithFeeOrigin,
+			isLimited,
+			weightLimit,
+			xcmVersion,
+			keepAlive,
+		} = opts;
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
@@ -166,7 +175,7 @@ export class AssetsTransferApi {
 				_specName,
 				registry
 			); // Throws an error when any of the inputs are incorrect.
-			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
+			const method = keepAlive ? 'transferKeepAlive' : 'transfer';
 
 			if (isLocalSystemTx) {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
@@ -195,8 +204,8 @@ export class AssetsTransferApi {
 					palletMethod,
 					destChainId,
 					_specName,
-					opts?.format,
-					opts?.paysWithFeeOrigin
+					format,
+					paysWithFeeOrigin
 				);
 			} else {
 				/**
@@ -214,15 +223,15 @@ export class AssetsTransferApi {
 					palletMethod,
 					destChainId,
 					_specName,
-					opts?.format,
-					opts?.paysWithFeeOrigin
+					format,
+					paysWithFeeOrigin
 				);
 			}
 		}
 
-		const xcmVersion =
-			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
-		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
+		const declaredXcmVersion =
+			xcmVersion === undefined ? _safeXcmVersion : xcmVersion;
+		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 		checkXcmTxInputs(assetIds, amounts, xcmDirection, _specName, registry);
 
 		const assetType = this.fetchAssetType(xcmDirection);
@@ -235,7 +244,7 @@ export class AssetsTransferApi {
 			!containsNativeRelayAsset(assetIds, nativeRelayChainAsset);
 
 		if (assetType === AssetType.Foreign || isSystemToSystemReserveTransfer) {
-			if (opts?.isLimited) {
+			if (isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
 				transaction = limitedReserveTransferAssets(
 					_api,
@@ -244,11 +253,10 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
-					opts?.weightLimit,
-					opts?.paysWithFeeDest
+					{ paysWithFeeDest, weightLimit }
 				);
 			} else {
 				txMethod = 'reserveTransferAssets';
@@ -259,14 +267,14 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
-					opts?.paysWithFeeDest
+					{ paysWithFeeDest }
 				);
 			}
 		} else {
-			if (opts?.isLimited) {
+			if (isLimited) {
 				txMethod = 'limitedTeleportAssets';
 				transaction = limitedTeleportAssets(
 					_api,
@@ -275,10 +283,10 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
-					opts?.weightLimit
+					{ weightLimit }
 				);
 			} else {
 				txMethod = 'teleportAssets';
@@ -289,7 +297,7 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry
 				);
@@ -299,12 +307,12 @@ export class AssetsTransferApi {
 		return this.constructFormat<T>(
 			transaction,
 			xcmDirection,
-			xcmVersion,
+			declaredXcmVersion,
 			txMethod,
 			destChainId,
 			_specName,
-			opts?.format,
-			opts?.paysWithFeeOrigin
+			format,
+			paysWithFeeOrigin
 		);
 	}
 	/**

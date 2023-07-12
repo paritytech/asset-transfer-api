@@ -38,7 +38,7 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				'1000000000'
+				{ weightLimit: '1000000000' }
 			);
 
 			expect(ext.toHex()).toBe(

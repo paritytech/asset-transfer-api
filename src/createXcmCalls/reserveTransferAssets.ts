@@ -8,6 +8,7 @@ import { createXcmTypes } from '../createXcmTypes';
 import type { Registry } from '../registry';
 import { Direction } from '../types';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import type { CreateXcmCallOpts } from './types';
 import { establishXcmPallet } from './util/establishXcmPallet';
 
 /**
@@ -31,8 +32,9 @@ export const reserveTransferAssets = (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
-	paysWithFeeDest?: string
+	opts: CreateXcmCallOpts = {}
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
+	const { paysWithFeeDest } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].reserveTransferAssets;
 	const typeCreator = createXcmTypes[direction];
