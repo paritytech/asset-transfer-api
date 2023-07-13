@@ -143,11 +143,20 @@ const main = async () => {
 	const xcmMessage = {
 		V3: [
 			{
+				unpaidExecution: {
+					weightLimit: { Unlimited: '' },
+					checkOrigin: {
+						parents: 1,
+						interior: { Here: '' },
+					},
+				},
+			},
+			{
 				transact: {
-					originType: xcmOriginType,
+					originKind: xcmOriginType,
 					requireWeightAtMost: {
 						refTime: 1000000000,
-						proofSize: 0,
+						proofSize: 900000,
 					},
 					call: xcmDoubleEncoded,
 				},

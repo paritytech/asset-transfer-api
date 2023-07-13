@@ -118,7 +118,8 @@ describe('ParaToSystem', () => {
 				2,
 				'moonriver',
 				['1', '2'],
-				{ registry }
+				{ registry },
+				false
 			);
 
 			const expectedRes = {
@@ -167,7 +168,8 @@ describe('ParaToSystem', () => {
 				3,
 				'moonriver',
 				['1', '2'],
-				{ registry }
+				{ registry },
+				false
 			);
 
 			const expectedRes = {

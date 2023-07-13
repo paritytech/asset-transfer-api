@@ -34,6 +34,7 @@ export const getSystemChainAssetId = async (
 	}
 
 	if (transferForeignAssets && systemChainId === '1000') {
+		// determine if we
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			asset,
 			newRegistry,
