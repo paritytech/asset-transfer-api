@@ -2,23 +2,23 @@
 
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { transfer } from './transfer';
-import { ForeignAssetMultiLocation } from '../../types';
 
 describe('transfer', () => {
 	it('Should construct a valid foreignAsset transfer extrinsic', () => {
-        const foreignAsset: ForeignAssetMultiLocation = { 
-            parents: '1', 
-            interior: { 
-                X2: [ 
-                    {
-                        Parachain: '2125'
-                    }, 
-                    {
-                        GeneralIndex: '0'
-                    } 
-                ] 
-            } 
-        };
+		const foreignAsset = mockSystemApi.createType('MultiLocation', {
+			parents: '1',
+			interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+				X2: [
+					{
+						Parachain: '2125',
+					},
+					{
+						GeneralIndex: '0',
+					},
+				],
+			}),
+		});
+
 		const res = transfer(
 			mockSystemApi,
 			'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',

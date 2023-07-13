@@ -1,5 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { MultiAsset } from '../../types';
 import { dedupeMultiAssets } from './dedupeMultiAssets';
 
@@ -11,12 +12,15 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '100000',
 				},
 				id: {
-					Concrete: {
-						interior: {
-							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-						},
+					Concrete: mockSystemApi.registry.createType('MultiLocation', {
+						interior: mockSystemApi.registry.createType(
+							'InteriorMultiLocation',
+							{
+								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+							}
+						),
 						parents: 0,
-					},
+					}),
 				},
 			},
 			{
@@ -24,12 +28,15 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '200000',
 				},
 				id: {
-					Concrete: {
-						interior: {
-							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-						},
+					Concrete: mockSystemApi.registry.createType('MultiLocation', {
+						interior: mockSystemApi.registry.createType(
+							'InteriorMultiLocation',
+							{
+								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+							}
+						),
 						parents: 1,
-					},
+					}),
 				},
 			},
 		];
@@ -39,12 +46,15 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '100000',
 				},
 				id: {
-					Concrete: {
-						interior: {
-							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-						},
+					Concrete: mockSystemApi.registry.createType('MultiLocation', {
+						interior: mockSystemApi.registry.createType(
+							'InteriorMultiLocation',
+							{
+								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+							}
+						),
 						parents: 0,
-					},
+					}),
 				},
 			},
 			{
@@ -52,12 +62,15 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '100000',
 				},
 				id: {
-					Concrete: {
-						interior: {
-							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-						},
+					Concrete: mockSystemApi.registry.createType('MultiLocation', {
+						interior: mockSystemApi.registry.createType(
+							'InteriorMultiLocation',
+							{
+								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+							}
+						),
 						parents: 0,
-					},
+					}),
 				},
 			},
 			{
@@ -65,12 +78,15 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '200000',
 				},
 				id: {
-					Concrete: {
-						interior: {
-							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-						},
+					Concrete: mockSystemApi.registry.createType('MultiLocation', {
+						interior: mockSystemApi.registry.createType(
+							'InteriorMultiLocation',
+							{
+								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+							}
+						),
 						parents: 1,
-					},
+					}),
 				},
 			},
 		];

@@ -1,8 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { getSystemChainTokenSymbolGeneralIndex } from '../createXcmTypes/util/getTokenSymbolGeneralIndex';
+import { ApiPromise } from '@polkadot/api';
+
+import { getSystemChainAssetId } from '../createXcmTypes/util/getSystemChainAssetId';
 import { MultiAsset } from '../types';
-import { NonRelayNativeInterior, RelayNativeInterior } from '../types';
+// import { NonRelayNativeInterior, RelayNativeInterior } from '../types';
 
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index
@@ -12,11 +14,13 @@ import { NonRelayNativeInterior, RelayNativeInterior } from '../types';
  * @param multiAssets MultiAsset[]
  * @param specName string
  */
-export const getFeeAssetItemIndex = (
+export const getFeeAssetItemIndex = async (
 	paysWithFeeDest: string,
 	multiAssets: MultiAsset[],
-	specName: string
-): number => {
+	specName: string,
+	api: ApiPromise,
+	transferForeignAssets: boolean | undefined
+): Promise<number> => {
 	let result = 0;
 
 	if (paysWithFeeDest) {
@@ -30,9 +34,7 @@ export const getFeeAssetItemIndex = (
 
 			if (isRelayFeeAsset) {
 				// if the asset id is a relay asset, match Here interior
-				if (
-					(multiAsset.id.Concrete.interior as RelayNativeInterior).Here === ''
-				) {
+				if (multiAsset.id.Concrete.interior.isHere) {
 					result = i;
 					break;
 				}
@@ -43,21 +45,25 @@ export const getFeeAssetItemIndex = (
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
 				if (isNotANumber) {
-					const paysWithFeeDestGeneralIndex =
-						getSystemChainTokenSymbolGeneralIndex(paysWithFeeDest, specName);
+					const paysWithFeeDestGeneralIndex = await getSystemChainAssetId(
+						paysWithFeeDest,
+						specName,
+						api,
+						transferForeignAssets
+					);
 					if (
-						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2 &&
-						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2[1]
-							.GeneralIndex === paysWithFeeDestGeneralIndex
+						multiAsset.id.Concrete.interior.isX2 &&
+						multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
+							paysWithFeeDestGeneralIndex
 					) {
 						result = i;
 						break;
 					}
 				} else {
 					if (
-						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2 &&
-						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2[1]
-							.GeneralIndex === paysWithFeeDest
+						multiAsset.id.Concrete.interior.isX2 &&
+						multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
+							paysWithFeeDest
 					) {
 						result = i;
 						break;

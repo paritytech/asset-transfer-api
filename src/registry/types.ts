@@ -1,14 +1,14 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { ForeignAssetMultiLocation } from "../types";
+import { ForeignAssetMultiLocation } from '../types';
 
 export interface AssetsInfo {
 	[key: string]: string;
 }
 
 export interface ForeignAssetsData {
-	symbol: string,
-	multiLocation: ForeignAssetMultiLocation[]
+	symbol: string;
+	multiLocation: ForeignAssetMultiLocation[];
 }
 
 export interface ForeignAssetsInfo {

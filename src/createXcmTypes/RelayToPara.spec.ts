@@ -140,14 +140,15 @@ describe('RelayToPara XcmVersioned Generation', () => {
 		});
 	});
 	describe('Assets', () => {
-		it('Should work for V2', () => {
-			const assets = RelayToPara.createAssets(
+		it('Should work for V2', async () => {
+			const assets = await RelayToPara.createAssets(
 				mockRelayApi,
 				['100'],
 				2,
 				'',
 				[],
-				{ registry }
+				{ registry },
+				false
 			);
 
 			const expectedRes = {
@@ -170,14 +171,15 @@ describe('RelayToPara XcmVersioned Generation', () => {
 
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
-		it('Should work for V3', () => {
-			const assets = RelayToPara.createAssets(
+		it('Should work for V3', async () => {
+			const assets = await RelayToPara.createAssets(
 				mockRelayApi,
 				['100'],
 				3,
 				'',
 				[],
-				{ registry }
+				{ registry },
+				false
 			);
 
 			const expectedRes = {

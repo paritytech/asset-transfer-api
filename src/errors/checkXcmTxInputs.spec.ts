@@ -1,6 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
+import { mockParachainApi } from '../testHelpers/mockParachainApi';
+import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
 	checkAssetIdInput,
@@ -10,21 +12,23 @@ import {
 	checkRelayAssetIdLength,
 } from './checkXcmTxInputs';
 
-const runTests = (tests: Test[]) => {
+const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
 		const [specName, testInputs, direction, errorMessage] = test;
 		const registry = new Registry(specName, {});
 		const currentRegistry = registry.currentRelayRegistry;
 
-		const err = () =>
-			checkAssetIdInput(
+		await expect(async () => {
+			await checkAssetIdInput(
 				testInputs,
 				currentRegistry,
 				specName,
 				direction,
-				registry
+				mockParachainApi,
+				registry,
+				false
 			);
-		expect(err).toThrow(errorMessage);
+		}).rejects.toThrowError(errorMessage);
 	}
 };
 
@@ -65,7 +69,7 @@ type Test = [
 ];
 
 describe('checkAssetIds', () => {
-	it('Should error when an assetId is found that is empty or a blank space', () => {
+	it('Should error when an assetId is found that is empty or a blank space', async () => {
 		const tests: Test[] = [
 			[
 				'Statemint',
@@ -81,10 +85,10 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests);
+		await runTests(tests);
 	});
 
-	it('Should error when direction is RelayToSystem and assetId does not match relay chains native token', () => {
+	it('Should error when direction is RelayToSystem and assetId does not match relay chains native token', async () => {
 		const tests: Test[] = [
 			[
 				'Polkadot',
@@ -106,10 +110,10 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests);
+		await runTests(tests);
 	});
 
-	it('Should error when direction is RelayToPara and assetId does not match relay chains native token', () => {
+	it('Should error when direction is RelayToPara and assetId does not match relay chains native token', async () => {
 		const tests: Test[] = [
 			[
 				'Polkadot',
@@ -125,10 +129,10 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests);
+		await runTests(tests);
 	});
 
-	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', () => {
+	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', async () => {
 		const tests: Test[] = [
 			[
 				'Statemint',
@@ -150,28 +154,16 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests);
+		await runTests(tests);
 	});
 
-	it('Should error when direction is SystemToPara and integer assetId is not found in system parachains assets', () => {
+	it('Should error when direction is SystemToPara and integer assetId is not found in system parachains assets', async () => {
 		const tests: Test[] = [
-			[
-				'Statemint',
-				['1337', 'DOT', '3500000'],
-				Direction.SystemToPara,
-				`SystemToPara: integer assetId 3500000 not found in Statemint`,
-			],
 			[
 				'Statemine',
 				['KSM', '8', 'stateMineDoge'],
 				Direction.SystemToPara,
 				`SystemToPara: assetId stateMineDoge not found for system parachain Statemine`,
-			],
-			[
-				'Westmint',
-				['WND', '250'],
-				Direction.SystemToPara,
-				`SystemToPara: integer assetId 250 not found in Westmint`,
 			],
 		];
 
@@ -180,19 +172,21 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					mockSystemApi,
+					registry,
+					false
 				);
-			expect(err).toThrow(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
 
-	it('Should error when direction is SystemToPara and the string assetId is not found in the system parachains tokens or assets', () => {
+	it('Should error when direction is SystemToPara and the string assetId is not found in the system parachains tokens or assets', async () => {
 		const tests: Test[] = [
 			[
 				'Statemint',
@@ -219,26 +213,22 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					mockSystemApi,
+					registry,
+					false
 				);
-			expect(err).toThrow(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
 
-	it('Should error when an asset id is provided that matches multiple asset symbols in the assets registry', () => {
+	it('Should error when an asset id is provided that matches multiple asset symbols in the assets registry', async () => {
 		const tests: Test[] = [
-			[
-				'Statemint',
-				['btc'],
-				Direction.SystemToPara,
-				`Multiple assets found with symbol btc`,
-			],
 			[
 				'Statemine',
 				['USDT'],
@@ -252,19 +242,21 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					mockParachainApi,
+					registry,
+					false
 				);
-			expect(err).toThrowError(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
 
-	it('Should error when direction is SystemToSystem and the string assetId is not found in the system parachains tokens or assets', () => {
+	it('Should error when direction is SystemToSystem and the string assetId is not found in the system parachains tokens or assets', async () => {
 		const tests: Test[] = [
 			[
 				'Statemint',
@@ -291,18 +283,48 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					mockSystemApi,
+					registry,
+					false
 				);
-			expect(err).toThrowError(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
-	it('Should error when direction is ParaToSystem and the string assetId is not found in the system parachains tokens or assets', () => {
+	it('Should error when direction is SystemToPara and the multilocation assetId is not found in the system parachains foreignAssets or chain state', async () => {
+		const tests: Test[] = [
+			[
+				'Statemine',
+				['{"parents":"2","interior":{"X1": {"Parachain":"2125000"}}}'],
+				Direction.SystemToPara,
+				`SystemToPara: assetId {"parents":"2","interior":{"X1": {"Parachain":"2125000"}}} not found for system parachain Statemine`,
+			],
+		];
+
+		for (const test of tests) {
+			const [specName, testInputs, direction, errorMessage] = test;
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
+
+			await expect(async () => {
+				await checkAssetIdInput(
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					mockSystemApi,
+					registry,
+					false
+				);
+			}).rejects.toThrowError(errorMessage);
+		}
+	});
+	it('Should error when direction is ParaToSystem and the string assetId is not found in the system parachains tokens or assets', async () => {
 		const tests: Test[] = [
 			[
 				'Statemint',
@@ -329,30 +351,34 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					mockParachainApi,
+					registry,
+					false
 				);
-			expect(err).toThrow(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
-	it('Should error for an invalid erc20 token.', () => {
+	it('Should error for an invalid erc20 token.', async () => {
 		const registry = new Registry('moonriver', {});
 		const currentRegistry = registry.currentRelayRegistry;
-		const err = () =>
-			checkAssetIdInput(
+
+		await expect(async () => {
+			await checkAssetIdInput(
 				['0x1234'],
 				currentRegistry,
 				'moonriver',
 				Direction.ParaToSystem,
-				registry
+				mockParachainApi,
+				registry,
+				false
 			);
-
-		expect(err).toThrow(
+		}).rejects.toThrowError(
 			'ParaToSystem: assetId 0x1234, is not a valid erc20 token.'
 		);
 	});

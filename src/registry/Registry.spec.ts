@@ -9,6 +9,7 @@ describe('Registry', () => {
 				{
 					tokens: ['GLMR'],
 					assetsInfo: {},
+					foreignAssetsInfo: {},
 					specName: 'moonbeam',
 					chainId: '2004',
 					assetsPalletInstance: '104',
@@ -37,7 +38,6 @@ describe('Registry', () => {
 						'11': 'web3',
 						'15': 'Meme',
 						'21': 'WBTC',
-						'31': 'DOT',
 						'77': 'TRQ',
 						'99': 'Cypress',
 						'100': 'WETH',
@@ -53,6 +53,7 @@ describe('Registry', () => {
 						'868367': 'VSC',
 						'20090103': 'BTC',
 					},
+					foreignAssetsInfo: {},
 					specName: 'statemint',
 					chainId: '1000',
 					assetsPalletInstance: '50',
@@ -77,6 +78,7 @@ describe('Registry', () => {
 				{
 					tokens: ['ACA', 'AUSD', 'DOT', 'LDOT'],
 					assetsInfo: {},
+					foreignAssetsInfo: {},
 					specName: 'acala',
 					chainId: '2000',
 					assetsPalletInstance: null,

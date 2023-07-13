@@ -1,10 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import {
-	GeneralKeyInterior,
-	MultiAsset,
-	NonRelayNativeInterior,
-} from '../../types';
+import { MultiAsset } from '../../types';
 
 /**
  * This sorts a list of multiassets in ascending order based on their id.
@@ -13,28 +9,36 @@ import {
  */
 export const sortMultiAssetsAscending = (multiAssets: MultiAsset[]) => {
 	return multiAssets.sort((a, b) => {
-		const isAHere = Object.keys(a.id.Concrete.interior).includes('Here');
-		const isBHere = Object.keys(b.id.Concrete.interior).includes('Here');
+		const isAHere = a.id.Concrete.interior.isHere;
+		const isBHere = b.id.Concrete.interior.isHere;
 		if (isAHere) {
 			return 1;
 		} else if (isBHere) {
 			return -1;
 		}
 
-		if ((a.id.Concrete.interior as GeneralKeyInterior).X2[0].GeneralKey) {
+		if (
+			a.id.Concrete.interior.isX1 &&
+			a.id.Concrete.interior.asX1.isGeneralKey
+		) {
 			return 1;
 		} else if (
-			(b.id.Concrete.interior as GeneralKeyInterior).X2[0].GeneralKey
+			b.id.Concrete.interior.isX1 &&
+			b.id.Concrete.interior.asX1.isGeneralKey
 		) {
 			return -1;
 		}
 
 		const sortOrder =
 			BigInt(
-				(a.id.Concrete.interior as NonRelayNativeInterior).X2[1].GeneralIndex
+				a.id.Concrete.interior.isX2 &&
+					a.id.Concrete.interior.asX2[1].isGeneralIndex &&
+					a.id.Concrete.interior.asX2[1].asGeneralIndex.toNumber()
 			) <
 			BigInt(
-				(b.id.Concrete.interior as NonRelayNativeInterior).X2[1].GeneralIndex
+				b.id.Concrete.interior.isX2 &&
+					b.id.Concrete.interior.asX2[1].isGeneralIndex &&
+					b.id.Concrete.interior.asX2[1].asGeneralIndex.toNumber()
 			)
 				? -1
 				: 1;

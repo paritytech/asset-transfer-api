@@ -41,10 +41,15 @@ export interface ICreateXcmType {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts
-	) => VersionedMultiAssets;
+		opts: CreateAssetsOpts,
+		transferForeignAssets?: boolean | undefined
+	) => Promise<VersionedMultiAssets>;
 	createWeightLimit: (api: ApiPromise, weightLimit?: string) => WeightLimitV2;
-	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => u32;
+	createFeeAssetItem: (
+		api: ApiPromise,
+		opts: CreateFeeAssetItemOpts,
+		transferForeignAssets: boolean | undefined
+	) => Promise<u32>;
 }
 
 interface IWeightLimitBase {

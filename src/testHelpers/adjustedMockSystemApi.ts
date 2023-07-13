@@ -2,7 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { Metadata, Option, TypeRegistry } from '@polkadot/types';
-import type { Header } from '@polkadot/types/interfaces';
+import type { Header, MultiLocation } from '@polkadot/types/interfaces';
 import { PalletAssetsAssetDetails } from '@polkadot/types/lookup';
 import { getSpecTypes } from '@polkadot/types-known';
 
@@ -149,13 +149,81 @@ const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 
 		if (maybeAsset) {
 			return new Option(
-				createStatemineRegistry(9420),
+				createStatemineRegistry(9430),
 				'PalletAssetsAssetDetails',
 				maybeAsset
 			);
 		}
 
-		return new Option(createStatemineRegistry(9420), 'undefined', undefined);
+		return mockSystemApi.registry.createType(
+			'Option<PalletAssetsAssetDetails>',
+			undefined
+		);
+	});
+
+const foreignAsset = (
+	asset: MultiLocation
+): Promise<Option<PalletAssetsAssetDetails>> =>
+	Promise.resolve().then(() => {
+		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
+
+		const multiLocationAssetInfo = {
+			owner: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockSystemApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockSystemApi.registry.createType('u128', 100),
+			deposit: mockSystemApi.registry.createType('u128', 100),
+			minBalance: mockSystemApi.registry.createType('u128', 100),
+			isSufficient: mockSystemApi.registry.createType('bool', true),
+			accounts: mockSystemApi.registry.createType('u32', 100),
+			sufficients: mockSystemApi.registry.createType('u32', 100),
+			approvals: mockSystemApi.registry.createType('u32', 100),
+			status: mockSystemApi.registry.createType(
+				'PalletAssetsAssetStatus',
+				'live'
+			),
+		};
+		const multiLocationStr =
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
+		const multiLocation = mockSystemApi.registry.createType(
+			'MultiLocation',
+			JSON.parse(multiLocationStr)
+		);
+		const multiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo
+		);
+		assets.set(multiLocation.toHex(), multiLocationAsset);
+
+		const maybeAsset = assets.has(asset.toHex())
+			? assets.get(asset.toHex())
+			: undefined;
+
+		if (maybeAsset) {
+			return new Option(
+				createStatemineRegistry(9430),
+				'PalletAssetsAssetDetails',
+				maybeAsset
+			);
+		}
+
+		return mockSystemApi.registry.createType(
+			'Option<PalletAssetsAssetDetails>',
+			undefined
+		);
 	});
 
 const mockApiAt = {
@@ -168,7 +236,7 @@ const mockApiAt = {
 
 export const adjustedMockSystemApi = {
 	createType: createType,
-	registry: createStatemineRegistry(9420),
+	registry: createStatemineRegistry(9430),
 	rpc: {
 		state: {
 			getRuntimeVersion: getSystemRuntimeVersion,
@@ -188,6 +256,9 @@ export const adjustedMockSystemApi = {
 		assets: {
 			asset: asset,
 		},
+		foreignAssets: {
+			asset: foreignAsset,
+		},
 	},
 	tx: {
 		polkadotXcm: {
@@ -202,6 +273,10 @@ export const adjustedMockSystemApi = {
 		assets: {
 			transfer: mockSystemApi.tx.assets.transfer,
 			transferKeepAlive: mockSystemApi.tx.assets.transferKeepAlive,
+		},
+		foreignAssets: {
+			transfer: mockSystemApi.tx.foreignAssets.transfer,
+			transferKeepAlive: mockSystemApi.tx.foreignAssets.transferKeepAlive,
 		},
 		balances: {
 			transfer: mockSystemApi.tx.balances.transfer,

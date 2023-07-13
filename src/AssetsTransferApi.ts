@@ -19,6 +19,7 @@ import {
 } from './consts';
 import * as assets from './createCalls/assets';
 import * as balances from './createCalls/balances';
+import * as foreignAssets from './createCalls/foreignAssets';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
@@ -26,7 +27,7 @@ import {
 	teleportAssets,
 } from './createXcmCalls';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
-import { getSystemChainTokenSymbolGeneralIndex } from './createXcmTypes/util/getTokenSymbolGeneralIndex';
+import { getSystemChainAssetId } from './createXcmTypes/util/getSystemChainAssetId';
 import {
 	BaseError,
 	checkBaseInputTypes,
@@ -97,7 +98,7 @@ export class AssetsTransferApi {
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: TransferArgsOpts<T>,
+		opts?: TransferArgsOpts<T>
 	): Promise<TxResult<T>> {
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
@@ -153,18 +154,25 @@ export class AssetsTransferApi {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
-				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, _specName, opts?.transferForeignAssets);
+				assetId = await getSystemChainAssetId(
+					assetId,
+					_specName,
+					_api,
+					opts?.transferForeignAssets
+				);
 			}
 
 			/**
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
 			 */
-			const localAssetType = checkLocalTxInput(
+			const localAssetType = await checkLocalTxInput(
 				assetIds,
 				amounts,
 				_specName,
-				registry
+				registry,
+				_api,
+				opts?.transferForeignAssets
 			); // Throws an error when any of the inputs are incorrect.
 			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
 
@@ -180,12 +188,27 @@ export class AssetsTransferApi {
 							? balances.transferKeepAlive(_api, addr, amount)
 							: balances.transfer(_api, addr, amount);
 					palletMethod = `balances::${method}`;
-				} else {
+				} else if (localAssetType === 'Assets') {
 					tx =
 						method === 'transferKeepAlive'
 							? assets.transferKeepAlive(_api, addr, assetId, amount)
 							: assets.transfer(_api, addr, assetId, amount);
 					palletMethod = `assets::${method}`;
+				} else {
+					const multiLocation = _api.registry.createType(
+						'MultiLocation',
+						JSON.parse(assetId)
+					);
+					tx =
+						method === 'transferKeepAlive'
+							? foreignAssets.transferKeepAlive(
+									_api,
+									addr,
+									multiLocation,
+									amount
+							  )
+							: foreignAssets.transfer(_api, addr, multiLocation, amount);
+					palletMethod = `foreignAssets::${method}`;
 				}
 
 				return await this.constructFormat(
@@ -223,7 +246,15 @@ export class AssetsTransferApi {
 		const xcmVersion =
 			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
-		checkXcmTxInputs(assetIds, amounts, xcmDirection, _specName, registry);
+		await checkXcmTxInputs(
+			assetIds,
+			amounts,
+			xcmDirection,
+			_specName,
+			_api,
+			registry,
+			opts?.transferForeignAssets
+		);
 
 		const assetType = this.fetchAssetType(xcmDirection);
 
@@ -234,10 +265,39 @@ export class AssetsTransferApi {
 			xcmDirection === Direction.SystemToSystem &&
 			!containsNativeRelayAsset(assetIds, nativeRelayChainAsset);
 
-		if (assetType === AssetType.Foreign || isSystemToSystemReserveTransfer) {
+		// if transfering a foreign asset, we determine if the asset is the native asset
+		// of the dest parachain, if so we construct a teleport
+		const isSystemToParaTeleport =
+			opts?.transferForeignAssets === true &&
+			assetType === AssetType.Foreign &&
+			xcmDirection === Direction.SystemToPara &&
+			assetIds.length === 1 &&
+			this.multiLocationAssetIsDestParachainsNativeAsset(
+				destChainId,
+				assetIds[0]
+			);
+
+		// if transfering a foreign asset, we determine if the asset is the native asset
+		// of the dest parachain, if not we construct a reserve transfer
+		const isSystemToParaReserveTransfer =
+			opts?.transferForeignAssets === true &&
+			assetType === AssetType.Foreign &&
+			xcmDirection === Direction.SystemToPara &&
+			assetIds.length === 1 &&
+			!this.multiLocationAssetIsDestParachainsNativeAsset(
+				destChainId,
+				assetIds[0]
+			);
+
+		if (
+			(assetType === AssetType.Foreign && !isSystemToParaTeleport) ||
+			isSystemToSystemReserveTransfer ||
+			isSystemToParaReserveTransfer ||
+			assetType === AssetType.Foreign
+		) {
 			if (opts?.isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
-				transaction = limitedReserveTransferAssets(
+				transaction = await limitedReserveTransferAssets(
 					_api,
 					xcmDirection,
 					addr,
@@ -247,12 +307,13 @@ export class AssetsTransferApi {
 					xcmVersion,
 					_specName,
 					this.registry,
+					opts?.transferForeignAssets,
 					opts?.weightLimit,
 					opts?.paysWithFeeDest
 				);
 			} else {
 				txMethod = 'reserveTransferAssets';
-				transaction = reserveTransferAssets(
+				transaction = await reserveTransferAssets(
 					_api,
 					xcmDirection,
 					addr,
@@ -262,13 +323,14 @@ export class AssetsTransferApi {
 					xcmVersion,
 					_specName,
 					this.registry,
+					opts?.transferForeignAssets,
 					opts?.paysWithFeeDest
 				);
 			}
 		} else {
 			if (opts?.isLimited) {
 				txMethod = 'limitedTeleportAssets';
-				transaction = limitedTeleportAssets(
+				transaction = await limitedTeleportAssets(
 					_api,
 					xcmDirection,
 					addr,
@@ -278,11 +340,13 @@ export class AssetsTransferApi {
 					xcmVersion,
 					_specName,
 					this.registry,
-					opts?.weightLimit
+					opts?.transferForeignAssets,
+					opts?.weightLimit,
+					opts.paysWithFeeDest
 				);
 			} else {
 				txMethod = 'teleportAssets';
-				transaction = teleportAssets(
+				transaction = await teleportAssets(
 					_api,
 					xcmDirection,
 					addr,
@@ -291,7 +355,8 @@ export class AssetsTransferApi {
 					destChainId,
 					xcmVersion,
 					_specName,
-					this.registry
+					this.registry,
+					opts?.transferForeignAssets
 				);
 			}
 		}
@@ -541,6 +606,42 @@ export class AssetsTransferApi {
 
 		return '';
 	}
+	/**
+	 * Given a multilocation assetId and destChainId, returns if the multilocation is the native asset of the destchain
+	 *
+	 * @param destChainId The destination chain Id
+	 * @param multiLocationAssetId multilocation asset id
+	 */
+	public multiLocationAssetIsDestParachainsNativeAsset(
+		destChainId: string,
+		multiLocationAssetId: string
+	): boolean {
+		const destChainNativeAssetMultiLocation = this._api.registry.createType(
+			'MultiLocation',
+			{
+				parents: 1,
+				interior: this._api.registry.createType('InteriorMultiLocation', {
+					X1: {
+						Parachain: destChainId,
+					},
+				}),
+			}
+		);
+
+		const assetMultiLocation = this._api.registry.createType(
+			'MultiLocation',
+			JSON.parse(multiLocationAssetId)
+		);
+
+		if (
+			destChainNativeAssetMultiLocation.toString() ===
+			assetMultiLocation.toString()
+		) {
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * returns an ExtrinsicPayload
@@ -597,6 +698,8 @@ export class AssetsTransferApi {
 			}
 		} else if (submittableData.method.args.dest) {
 			addr = submittableData.method.args.dest.Id;
+		} else if (submittableData.method.args.target) {
+			addr = submittableData.method.args.target.Id;
 		}
 
 		if (!addr) {

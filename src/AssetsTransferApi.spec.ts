@@ -365,6 +365,82 @@ describe('AssetTransferAPI', () => {
 				expect(decoded).toEqual(expected);
 			});
 		});
+
+		describe('SystemToPara', () => {
+			it('Should decode a foreign asset tx call extrinsic given its hash for SystemToPara', async () => {
+				const expected =
+					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
+
+				const callTxResult = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					[
+						'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+					],
+					['10000000000000'],
+					{
+						format: 'call',
+						keepAlive: false,
+						transferForeignAssets: true,
+					}
+				);
+
+				const decoded = systemAssetsApi.decodeExtrinsic(
+					callTxResult.tx,
+					'call'
+				);
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a foreign asset tx payload extrinsic given its hash for SystemToPara', async () => {
+				const expected =
+					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
+
+				const callTxResult = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					[
+						'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+					],
+					['10000000000000'],
+					{
+						format: 'payload',
+						keepAlive: false,
+						transferForeignAssets: true,
+					}
+				);
+
+				const decoded = systemAssetsApi.decodeExtrinsic(
+					callTxResult.tx,
+					'payload'
+				);
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a foreign asset tx submittable extrinsic given its hash for SystemToPara', async () => {
+				const expected =
+					'{"args":{"dest":{"V2":{"parents":"1","interior":{"X1":{"Parachain":"2,023"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
+
+				const callTxResult = await systemAssetsApi.createTransferTransaction(
+					'2023',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					[
+						'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+					],
+					['10000000000000'],
+					{
+						format: 'submittable',
+						transferForeignAssets: true,
+					}
+				);
+
+				const decoded = systemAssetsApi.decodeExtrinsic(
+					callTxResult.tx.toHex(),
+					'submittable'
+				);
+				expect(decoded).toEqual(expected);
+			});
+		});
 	});
 
 	describe('feeAssetItem', () => {
@@ -477,6 +553,40 @@ describe('AssetTransferAPI', () => {
 			}).rejects.toThrowError(
 				'asset with assetId 100 is not a sufficient asset to pay for fees'
 			);
+		});
+	});
+
+	describe('multiLocationAssetIsDestParachainsNativeAsset', () => {
+		it('Should correctly return true when a foreign assets multilocation matches its native chain of origin', () => {
+			const expected = true;
+
+			const multiLocationAssetId =
+				'{"parents":"1","interior":{"X1": {"Parachain":"2023"}}}';
+			const destChainId = '2023';
+
+			const isNativeChain =
+				systemAssetsApi.multiLocationAssetIsDestParachainsNativeAsset(
+					destChainId,
+					multiLocationAssetId
+				);
+
+			expect(isNativeChain).toEqual(expected);
+		});
+
+		it('Should correctly return false when a foreign assets multilocation does not match the destination chain', () => {
+			const expected = false;
+
+			const multiLocationAssetId =
+				'{"parents":"1","interior":{"X1": {"Parachain":"2125"}}}';
+			const destChainId = '2023';
+
+			const isNativeChain =
+				systemAssetsApi.multiLocationAssetIsDestParachainsNativeAsset(
+					destChainId,
+					multiLocationAssetId
+				);
+
+			expect(isNativeChain).toEqual(expected);
 		});
 	});
 });

@@ -32,6 +32,7 @@ describe('parseRegistry', () => {
 		expect(registry.polkadot['9876']).toStrictEqual({
 			tokens: ['TST'],
 			assetsInfo: {},
+			foreignAssetsInfo: {},
 			specName: 'testing',
 			assetsPalletInstance: '100',
 		});

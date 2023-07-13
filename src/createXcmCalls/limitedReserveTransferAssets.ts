@@ -23,7 +23,7 @@ import { establishXcmPallet } from './util/establishXcmPallet';
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
  */
-export const limitedReserveTransferAssets = (
+export const limitedReserveTransferAssets = async (
 	api: ApiPromise,
 	direction: Direction,
 	destAddr: string,
@@ -33,33 +33,39 @@ export const limitedReserveTransferAssets = (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
+	transferForeignAssets: boolean | undefined,
 	weightLimit?: string,
 	paysWithFeeDest?: string
-): SubmittableExtrinsic<'promise', ISubmittableResult> => {
+): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedReserveTransferAssets;
 	const typeCreator = createXcmTypes[direction];
 	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	const dest = typeCreator.createDest(api, destChainId, xcmVersion);
-	const assets = typeCreator.createAssets(
+	const assets = await typeCreator.createAssets(
 		api,
 		normalizeArrToStr(amounts),
 		xcmVersion,
 		specName,
 		assetIds,
-		{ registry }
+		{ registry },
+		transferForeignAssets
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 
 	const feeAssetItem: u32 = paysWithFeeDest
-		? typeCreator.createFeeAssetItem(api, {
-				registry,
-				paysWithFeeDest,
-				specName,
-				assetIds,
-				amounts,
-				xcmVersion,
-		  })
+		? await typeCreator.createFeeAssetItem(
+				api,
+				{
+					registry,
+					paysWithFeeDest,
+					specName,
+					assetIds,
+					amounts,
+					xcmVersion,
+				},
+				transferForeignAssets
+		  )
 		: api.registry.createType('u32', 0);
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);
