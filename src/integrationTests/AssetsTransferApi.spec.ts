@@ -144,7 +144,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
-			// FOREIGN ASSTS
 			it('Should construct a `foreignAssets::transfer` call on a system parachain', async () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
@@ -522,8 +521,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await nativeBaseSystemCreateTx('submittable', true, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-
-				// FOREIGN ASSETS
 				it('Should correctly build a foreign assets call for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
