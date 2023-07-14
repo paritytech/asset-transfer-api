@@ -24,7 +24,7 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'1001', // NOTE: The destination id is `1001` noting that we are sending to the collectives/encointer System parachain
+			'1001', // NOTE: The destination id is `1001` which is different from the origin chain making this an XCM tx
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			[
 				'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
