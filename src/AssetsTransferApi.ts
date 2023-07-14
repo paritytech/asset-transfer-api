@@ -158,9 +158,9 @@ export class AssetsTransferApi {
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
 				assetId = await getSystemChainAssetId(
+					_api,
 					assetId,
 					_specName,
-					_api,
 					isForeignAssetsTransfer
 				);
 			}

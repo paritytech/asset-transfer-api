@@ -14,9 +14,9 @@ describe('getSystemChainAssetId', () => {
 		const expected = '10';
 
 		const result = await getSystemChainAssetId(
+			systemAssetsApi._api,
 			'USDC',
 			'statemine',
-			systemAssetsApi._api,
 			false
 		);
 
@@ -27,9 +27,9 @@ describe('getSystemChainAssetId', () => {
 		const expected = '8';
 
 		const result = await getSystemChainAssetId(
+			systemAssetsApi._api,
 			'RMRK',
 			'statemine',
-			systemAssetsApi._api,
 			false
 		);
 
@@ -39,9 +39,9 @@ describe('getSystemChainAssetId', () => {
 	it('Should error when an asset id symbol is given that is not present in the registry or chain tate', async () => {
 		await expect(async () => {
 			await getSystemChainAssetId(
+				systemAssetsApi._api,
 				'hello',
 				'statemine',
-				systemAssetsApi._api,
 				false
 			);
 		}).rejects.toThrowError(
@@ -56,9 +56,9 @@ describe('getSystemChainAssetId', () => {
 			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
 		const result = await getSystemChainAssetId(
+			systemAssetsApi._api,
 			multiLocation,
 			'statemine',
-			systemAssetsApi._api,
 			true
 		);
 
@@ -71,9 +71,9 @@ describe('getSystemChainAssetId', () => {
 
 		await expect(async () => {
 			await getSystemChainAssetId(
+				systemAssetsApi._api,
 				multiLocation,
 				'statemine',
-				systemAssetsApi._api,
 				true
 			);
 		}).rejects.toThrowError(`MultiLocation ${multiLocation} not found`);

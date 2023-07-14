@@ -249,9 +249,9 @@ const createParaToSystemMultiAssets = async (
 
 		if (!isRelayNative && isNotANumber) {
 			assetId = await getSystemChainAssetId(
+				api,
 				assetId,
 				specName,
-				api,
 				isForeignAssetsTransfer
 			);
 		}

@@ -18,9 +18,9 @@ import { getChainIdBySpecName } from './getChainIdBySpecName';
  * @param specName string
  */
 export const getSystemChainAssetId = async (
+	_api: ApiPromise,
 	asset: string,
 	specName: string,
-	_api: ApiPromise,
 	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
 	let assetId = '';

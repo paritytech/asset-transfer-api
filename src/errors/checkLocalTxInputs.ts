@@ -88,9 +88,9 @@ export const checkLocalTxInput = async (
 			// not a number so we check the registry using the symbol
 			if (isNotANumber) {
 				assetId = await getSystemChainAssetId(
+					api,
 					assetId,
 					specName,
-					api,
 					isForeignAssetsTransfer
 				);
 			}

@@ -46,9 +46,9 @@ export const getFeeAssetItemIndex = async (
 				// to compare against the current multi asset
 				if (isNotANumber) {
 					const paysWithFeeDestGeneralIndex = await getSystemChainAssetId(
+						api,
 						paysWithFeeDest,
 						specName,
-						api,
 						isForeignAssetsTransfer
 					);
 					if (
