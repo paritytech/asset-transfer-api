@@ -51,7 +51,7 @@ export const foreignAssetMultiLocationIsInRegistry = (
 		const errorDetails = errorInfo[errorInfo.length - 2].concat(
 			errorInfo[errorInfo.length - 1]
 		);
-		throw new BaseError(`error creating MultiLocation type:${errorDetails}`);
+		throw new BaseError(`Error creating MultiLocation type:${errorDetails}`);
 	}
 
 	return false;

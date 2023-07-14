@@ -37,7 +37,7 @@ describe('foreignAssetMultiLocationIsInRegistry', () => {
 
 	it('Should throw an invalid character error when an invalid character is found in a multilocation keys value', () => {
 		const expectedError =
-			'error creating MultiLocation type: Enum(Parachain) Invalid character';
+			'Error creating MultiLocation type: Enum(Parachain) Invalid character';
 
 		const multiLocation =
 			'{"parents":"1","interior":{"X1": {"Parachain":"g2125"}}}';
@@ -55,7 +55,7 @@ describe('foreignAssetMultiLocationIsInRegistry', () => {
 
 	it('Should throw an error when an comma is found in a multilocation keys value', () => {
 		const expectedError =
-			'error creating MultiLocation type: Enum(Parachain) String should not contain decimal points or scientific notation';
+			'Error creating MultiLocation type: Enum(Parachain) String should not contain decimal points or scientific notation';
 
 		const multiLocation =
 			'{"parents":"2","interior":{"X1": {"Parachain":"2,125"}}}';

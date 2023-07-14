@@ -221,11 +221,11 @@ export const checkAllMultiLocationAssetIdsAreValid = (
 				);
 
 				throw new BaseError(
-					`error creating MultiLocation type with multilocation string value ${multilocationId}: ${errorDetails}`
+					`Error creating MultiLocation type with multilocation string value ${multilocationId}: ${errorDetails}`
 				);
 			} else {
 				throw new BaseError(
-					`error creating multilocation type: ${(error as Error).message}`
+					`Error creating multilocation type: ${(error as Error).message}`
 				);
 			}
 		}

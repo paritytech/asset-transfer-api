@@ -28,6 +28,6 @@ export const foreignAssetsMultiLocationExists = async (
 			errorInfo[errorInfo.length - 1]
 		);
 
-		throw new BaseError(`error creating MultiLocation type:${errorDetails}`);
+		throw new BaseError(`Error creating MultiLocation type:${errorDetails}`);
 	}
 };

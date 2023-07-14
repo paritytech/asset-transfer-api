@@ -476,7 +476,7 @@ describe('checkAllMultiLocationAssetIdsAreValid', () => {
 				[
 					'{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}',
 				],
-				'error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}:  Enum(Parachain) String should not contain decimal points or scientific notation',
+				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}:  Enum(Parachain) String should not contain decimal points or scientific notation',
 			],
 		];
 
