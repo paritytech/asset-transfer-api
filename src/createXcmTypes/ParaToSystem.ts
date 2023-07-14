@@ -109,7 +109,7 @@ export const ParaToSystem: ICreateXcmType = {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts,
+		opts: CreateAssetsOpts
 	): Promise<VersionedMultiAssets> => {
 		const sortedAndDedupedMultiAssets = await createParaToSystemMultiAssets(
 			api,
@@ -172,7 +172,7 @@ export const ParaToSystem: ICreateXcmType = {
 	 */
 	createFeeAssetItem: async (
 		api: ApiPromise,
-		opts: CreateFeeAssetItemOpts,
+		opts: CreateFeeAssetItemOpts
 	): Promise<u32> => {
 		const {
 			registry,

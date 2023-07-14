@@ -195,7 +195,6 @@ export interface TransferArgsOpts<T extends Format> {
 	 * to a `transfer`.
 	 */
 	keepAlive?: boolean;
-	
 }
 
 export interface ChainInfo {

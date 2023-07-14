@@ -48,26 +48,23 @@ export const limitedReserveTransferAssets = async (
 		xcmVersion,
 		specName,
 		assetIds,
-		{ 
+		{
 			registry,
-			isForeignAssetsTransfer
-		 },
+			isForeignAssetsTransfer,
+		}
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
 
 	const feeAssetItem: u32 = paysWithFeeDest
-		? await typeCreator.createFeeAssetItem(
-				api,
-				{
-					registry,
-					paysWithFeeDest,
-					specName,
-					assetIds,
-					amounts,
-					xcmVersion,
-					isForeignAssetsTransfer
-				},
-		  )
+		? await typeCreator.createFeeAssetItem(api, {
+				registry,
+				paysWithFeeDest,
+				specName,
+				assetIds,
+				amounts,
+				xcmVersion,
+				isForeignAssetsTransfer,
+		  })
 		: api.registry.createType('u32', 0);
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);

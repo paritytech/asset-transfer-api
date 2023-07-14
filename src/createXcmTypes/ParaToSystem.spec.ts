@@ -119,10 +119,10 @@ describe('ParaToSystem', () => {
 				2,
 				'moonriver',
 				['1', '2'],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
-				},
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -172,10 +172,10 @@ describe('ParaToSystem', () => {
 				3,
 				'moonriver',
 				['1', '2'],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
-				 },
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {

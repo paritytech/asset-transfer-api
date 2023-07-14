@@ -6,8 +6,8 @@ import { SYSTEM_PARACHAINS_IDS } from '../../consts';
 import { BaseError } from '../../errors';
 import { Registry } from '../../registry';
 import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
-import { getChainIdBySpecName } from './getChainIdBySpecName';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
+import { getChainIdBySpecName } from './getChainIdBySpecName';
 /**
  * Returns the correct asset id for a valid system chain token symbol
  * integer id or foreign asset multilocation

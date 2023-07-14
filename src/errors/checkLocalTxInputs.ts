@@ -3,9 +3,9 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
+import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { getSystemChainAssetId } from '../createXcmTypes/util/getSystemChainAssetId';
-import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { Registry } from '../registry';
 import { BaseError } from './BaseError';
 

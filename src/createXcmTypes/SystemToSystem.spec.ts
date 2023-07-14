@@ -102,10 +102,10 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				2,
 				'statemine',
 				['USDT'],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
-				},
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -135,9 +135,9 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				3,
 				'bridge-hub-kusama',
 				['ksm'],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
+					isForeignAssetsTransfer,
 				}
 			);
 
@@ -173,10 +173,10 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					3,
 					'bridge-hub-kusama',
 					['usdc'],
-					{ 
+					{
 						registry,
-						isForeignAssetsTransfer 
-					},
+						isForeignAssetsTransfer,
+					}
 				);
 			}).rejects.toThrowError(expectedErrorMessage);
 		});

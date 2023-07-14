@@ -149,10 +149,10 @@ describe('RelayToPara XcmVersioned Generation', () => {
 				2,
 				'',
 				[],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
-				 },
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -182,10 +182,10 @@ describe('RelayToPara XcmVersioned Generation', () => {
 				3,
 				'',
 				[],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
-				 },
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {

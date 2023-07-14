@@ -230,7 +230,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number,
+				xcmVersion: number
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -252,7 +252,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number,
+				xcmVersion: number
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2125', // Since this is not `0` we know this is to a parachain
@@ -386,7 +386,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
 						true,
-						2,
+						2
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -402,7 +402,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
 						true,
-						2,
+						2
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -418,7 +418,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
 						true,
-						2,
+						2
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -540,7 +540,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
 						true,
-						3,
+						3
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -556,7 +556,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
 						true,
-						3,
+						3
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -572,7 +572,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
 						true,
-						2,
+						2
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -580,7 +580,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'call',
 						true,
-						3,
+						3
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -596,7 +596,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'payload',
 						true,
-						3,
+						3
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -612,7 +612,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'submittable',
 						true,
-						3,
+						3
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -620,7 +620,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'call',
 						false,
-						3,
+						3
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -636,7 +636,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'payload',
 						false,
-						3,
+						3
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -652,7 +652,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'submittable',
 						false,
-						3,
+						3
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -699,7 +699,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number,
+				xcmVersion: number
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'1002', // Since this is not `0` we know this is to a parachain
@@ -833,7 +833,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
 						true,
-						2,
+						2
 					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
@@ -849,7 +849,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
 						true,
-						2,
+						2
 					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
@@ -865,7 +865,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
 						true,
-						2,
+						2
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -988,7 +988,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
 						true,
-						3,
+						3
 					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
@@ -1004,7 +1004,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
 						true,
-						3,
+						3
 					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
@@ -1020,7 +1020,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
 						true,
-						3,
+						3
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});

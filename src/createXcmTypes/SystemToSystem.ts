@@ -117,7 +117,7 @@ export const SystemToSystem: ICreateXcmType = {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts,
+		opts: CreateAssetsOpts
 	): Promise<VersionedMultiAssets> => {
 		const { registry } = opts;
 
@@ -183,7 +183,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 */
 	createFeeAssetItem: async (
 		api: ApiPromise,
-		opts: CreateFeeAssetItemOpts,
+		opts: CreateFeeAssetItemOpts
 	): Promise<u32> => {
 		const {
 			registry,

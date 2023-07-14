@@ -97,10 +97,10 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				2,
 				'',
 				[],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
-				 },
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -130,10 +130,10 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				3,
 				'',
 				[],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
-				 },
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {

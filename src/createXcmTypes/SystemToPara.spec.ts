@@ -152,10 +152,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				2,
 				'statemine',
 				['1', '2'],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
-				 },
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -198,10 +198,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				3,
 				'statemine',
 				['1', '2'],
-				{ 
+				{
 					registry,
-					isForeignAssetsTransfer
-				 },
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {

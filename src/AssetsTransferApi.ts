@@ -28,7 +28,7 @@ import {
 } from './createXcmCalls';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
 import { getSystemChainAssetId } from './createXcmTypes/util/getSystemChainAssetId';
-import { multiLocationAssetIsDestParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsDestParachainsNativeAsset'
+import { multiLocationAssetIsDestParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsDestParachainsNativeAsset';
 import {
 	BaseError,
 	checkBaseInputTypes,
@@ -132,7 +132,8 @@ export class AssetsTransferApi {
 		const nativeRelayChainAsset =
 			registry.currentRelayRegistry[relayChainID].tokens[0];
 		const xcmDirection = this.establishDirection(destChainId, _specName);
-		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
+		const isForeignAssetsTransfer: boolean =
+			this.checkIsForeignAssetTransfer(assetIds);
 		/**
 		 * Create a local asset transfer on a system parachain
 		 */
@@ -259,8 +260,17 @@ export class AssetsTransferApi {
 			isForeignAssetsTransfer
 		);
 
-		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
-	    const assetCallType = this.fetchCallType(destChainId, assetIds, xcmDirection, assetType, isForeignAssetsTransfer);
+		const assetType = this.fetchAssetType(
+			xcmDirection,
+			isForeignAssetsTransfer
+		);
+		const assetCallType = this.fetchCallType(
+			destChainId,
+			assetIds,
+			xcmDirection,
+			assetType,
+			isForeignAssetsTransfer
+		);
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
@@ -280,7 +290,7 @@ export class AssetsTransferApi {
 					this.registry,
 					opts?.weightLimit,
 					opts?.paysWithFeeDest,
-					isForeignAssetsTransfer,
+					isForeignAssetsTransfer
 				);
 			} else {
 				txMethod = 'reserveTransferAssets';
@@ -295,7 +305,7 @@ export class AssetsTransferApi {
 					_specName,
 					this.registry,
 					opts?.paysWithFeeDest,
-					isForeignAssetsTransfer,
+					isForeignAssetsTransfer
 				);
 			}
 		} else {
@@ -313,7 +323,7 @@ export class AssetsTransferApi {
 					this.registry,
 					opts?.weightLimit,
 					opts.paysWithFeeDest,
-					isForeignAssetsTransfer,
+					isForeignAssetsTransfer
 				);
 			} else {
 				txMethod = 'teleportAssets';
@@ -510,15 +520,18 @@ export class AssetsTransferApi {
 		return result;
 	}
 
-	private fetchAssetType(xcmDirection: Direction, isForeignAssetsTransfer?: boolean): AssetType {
+	private fetchAssetType(
+		xcmDirection: Direction,
+		isForeignAssetsTransfer?: boolean
+	): AssetType {
 		if (
 			xcmDirection === Direction.RelayToSystem ||
 			xcmDirection === Direction.SystemToRelay ||
-			xcmDirection === Direction.SystemToSystem && !isForeignAssetsTransfer
+			(xcmDirection === Direction.SystemToSystem && !isForeignAssetsTransfer)
 		) {
 			return AssetType.Native;
 		}
-		
+
 		/**
 		 * When MultiLocation of System parachains are stored for trusted assets across
 		 * parachains then this logic will change. But for now all assets, and native tokens
@@ -534,7 +547,13 @@ export class AssetsTransferApi {
 		return AssetType.Foreign;
 	}
 
-	private fetchCallType(destChainId: string, assetIds: string[], xcmDirection: Direction, assetType: AssetType, isForeignAssetsTransfer: boolean): AssetCallType {
+	private fetchCallType(
+		destChainId: string,
+		assetIds: string[],
+		xcmDirection: Direction,
+		assetType: AssetType,
+		isForeignAssetsTransfer: boolean
+	): AssetCallType {
 		// relay to system -> teleport
 		if (
 			xcmDirection === Direction.RelayToSystem ||
@@ -554,7 +573,9 @@ export class AssetsTransferApi {
 			// check if the assets are going to origin chain
 			// if so we return a teleport
 			for (const assetId of assetIds) {
-				if (multiLocationAssetIsDestParachainsNativeAsset(destChainId, assetId)) {
+				if (
+					multiLocationAssetIsDestParachainsNativeAsset(destChainId, assetId)
+				) {
 					isMultiLocationsNativeChain = true;
 					break;
 				}
@@ -562,7 +583,7 @@ export class AssetsTransferApi {
 		}
 
 		// system to system native asset -> teleport
-		if(
+		if (
 			assetType === AssetType.Native &&
 			xcmDirection === Direction.SystemToSystem
 		) {
@@ -577,7 +598,7 @@ export class AssetsTransferApi {
 			return AssetCallType.Reserve;
 		}
 
-		// system to para native asset -> reserve 
+		// system to para native asset -> reserve
 		if (
 			assetType === AssetType.Native &&
 			xcmDirection === Direction.SystemToPara
@@ -663,7 +684,7 @@ export class AssetsTransferApi {
 
 		return '';
 	}
-	
+
 	/**
 	 * returns an ExtrinsicPayload
 	 *
@@ -814,7 +835,6 @@ export class AssetsTransferApi {
 
 		return registry.lookupParachainInfo(destId)[0].specName;
 	}
-	
 
 	/**
 	 * Returns if assetIds contains a values for a foreign asset transfer
@@ -833,9 +853,9 @@ export class AssetsTransferApi {
 		}
 
 		if (!assetIds[0].toLowerCase().includes('parents')) {
-			return false
+			return false;
 		}
 
-		return true
+		return true;
 	}
 }

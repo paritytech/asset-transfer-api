@@ -7,18 +7,18 @@
  * @param multiLocationAssetId multilocation asset id
  */
 export const multiLocationAssetIsDestParachainsNativeAsset = (
-    destChainId: string,
-    multiLocationAssetId: string
+	destChainId: string,
+	multiLocationAssetId: string
 ): boolean => {
-    const destChainMultiLocationid = `"Parachain":"${destChainId}"`;
+	const destChainMultiLocationid = `"Parachain":"${destChainId}"`;
 
-    if (
-        multiLocationAssetId
-            .toLowerCase()
-            .includes(destChainMultiLocationid.toLowerCase())
-    ) {
-        return true;
-    }
+	if (
+		multiLocationAssetId
+			.toLowerCase()
+			.includes(destChainMultiLocationid.toLowerCase())
+	) {
+		return true;
+	}
 
-    return false;
-}
+	return false;
+};

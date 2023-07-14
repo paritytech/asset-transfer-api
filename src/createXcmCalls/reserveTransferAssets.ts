@@ -33,7 +33,7 @@ export const reserveTransferAssets = async (
 	registry: Registry,
 	paysWithFeeDest?: string,
 	isForeignAssetsTransfer?: boolean
-	): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].reserveTransferAssets;
 	const typeCreator = createXcmTypes[direction];
@@ -47,23 +47,20 @@ export const reserveTransferAssets = async (
 		assetIds,
 		{
 			registry,
-			isForeignAssetsTransfer 
-		},
+			isForeignAssetsTransfer,
+		}
 	);
 
 	const feeAssetItem = paysWithFeeDest
-		? await typeCreator.createFeeAssetItem(
-				api,
-				{
-					registry,
-					paysWithFeeDest,
-					specName,
-					assetIds,
-					amounts,
-					xcmVersion,
-					isForeignAssetsTransfer
-				},
-		  )
+		? await typeCreator.createFeeAssetItem(api, {
+				registry,
+				paysWithFeeDest,
+				specName,
+				assetIds,
+				amounts,
+				xcmVersion,
+				isForeignAssetsTransfer,
+		  })
 		: api.registry.createType('u32', 0);
 
 	return ext(dest, beneficiary, assets, feeAssetItem);

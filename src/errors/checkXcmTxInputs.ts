@@ -6,10 +6,9 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
+import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { multiLocationAssetIsDestParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsDestParachainsNativeAsset';
-
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { Direction } from '../types';
@@ -51,9 +50,7 @@ export const checkRelayAmountsLength = (amounts: string[]) => {
  */
 export const checkMultiLocationIdLength = (assetIds: string[]) => {
 	if (assetIds.length === 0) {
-		throw new BaseError(
-			"multilocation `assetIds` cannot be empty"
-		);
+		throw new BaseError('multilocation `assetIds` cannot be empty');
 	}
 };
 
@@ -64,9 +61,7 @@ export const checkMultiLocationIdLength = (assetIds: string[]) => {
  */
 export const checkMultiLocationAmountsLength = (amounts: string[]) => {
 	if (amounts.length === 0) {
-		throw new BaseError(
-			"multilocation `amounts` cannot be empty"
-		);
+		throw new BaseError('multilocation `amounts` cannot be empty');
 	}
 };
 
@@ -164,15 +159,15 @@ export const checkIfNativeRelayChainAssetPresentInMultiAssetIdList = (
  * native and foreign assets to the dest chain cannot be mixed as it is either a reserve or teleport
  * throws an error if foreign and native assets are found
  *
- * @param destChainId 
- * @param multiLocationAssetIds 
+ * @param destChainId
+ * @param multiLocationAssetIds
  * @param isForeignAssetsTransfer
  * @returns boolean
  */
 export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
 	xcmDirection: Direction,
-	destChainId: string, 
-	multiLocationAssetIds: string[], 
+	destChainId: string,
+	multiLocationAssetIds: string[]
 ) => {
 	if (multiLocationAssetIds.length > 1) {
 		let foreignMultiLocationAssetFound = false;
@@ -180,7 +175,10 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
 
 		// iterate through list and determine if each asset is native to the dest parachain
 		for (const multilocation of multiLocationAssetIds) {
-			const isNativeToDestChain = multiLocationAssetIsDestParachainsNativeAsset(destChainId, multilocation);
+			const isNativeToDestChain = multiLocationAssetIsDestParachainsNativeAsset(
+				destChainId,
+				multilocation
+			);
 
 			if (isNativeToDestChain) {
 				nativeMultiLocationAssetFound = true;
@@ -189,43 +187,50 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
 			}
 
 			if (nativeMultiLocationAssetFound && foreignMultiLocationAssetFound) {
-				throw new BaseError(`${xcmDirection}: found both foreign and native multilocations in ${multiLocationAssetIds}. multilocation XCMs must only include either native or foreign assets of the destination chain`);
+				throw new BaseError(
+					`${xcmDirection}: found both foreign and native multilocations in ${multiLocationAssetIds.toString()}. multilocation XCMs must only include either native or foreign assets of the destination chain`
+				);
 			}
 		}
 	}
-}
+};
 
 /**
  * Checks that each multilocation string provided is of the proper format to create a MultiLocation
  * throws an error if the MultiLocation is unable to be created
  *
- * @param destChainId 
- * @param multiLocationAssetIds 
+ * @param destChainId
+ * @param multiLocationAssetIds
  * @param isForeignAssetsTransfer
  * @returns boolean
  */
-export const checkAllMultiLocationAssetIdsAreValid = (api: ApiPromise, multiLocationAssetIds: string[]) => {
+export const checkAllMultiLocationAssetIdsAreValid = (
+	api: ApiPromise,
+	multiLocationAssetIds: string[]
+) => {
 	for (const multilocationId of multiLocationAssetIds) {
 		try {
 			api.registry.createType('MultiLocation', JSON.parse(multilocationId));
 		} catch (error) {
 			if ((error as Error).message.includes('Unexpected token')) {
-				throw new BaseError((error as Error).message)
-			} else if ((error as Error).message.includes("::")) {
+				throw new BaseError((error as Error).message);
+			} else if ((error as Error).message.includes('::')) {
 				const errorInfo = (error as Error).message.split('::');
 				const errorDetails = errorInfo[errorInfo.length - 2].concat(
 					errorInfo[errorInfo.length - 1]
 				);
 
-				throw new BaseError(`error creating MultiLocation type with multilocation string value ${multilocationId}: ${errorDetails}`);
+				throw new BaseError(
+					`error creating MultiLocation type with multilocation string value ${multilocationId}: ${errorDetails}`
+				);
 			} else {
-				throw new BaseError(`error creating multilocation type: ${(error as Error).message}`)
+				throw new BaseError(
+					`error creating multilocation type: ${(error as Error).message}`
+				);
 			}
-	
 		}
 	}
-}
-
+};
 
 /**
  * This will check the given assetId and ensure that it is the native token of the relay chain
@@ -676,7 +681,11 @@ export const checkXcmTxInputs = async (
 			checkAssetsAmountMatch(assetIds, amounts);
 			checkAllMultiLocationAssetIdsAreValid(api, assetIds);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds)
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(
+				xcmDirection,
+				destChainId,
+				assetIds
+			);
 		}
 		checkAssetsAmountMatch(assetIds, amounts);
 	}
@@ -687,7 +696,11 @@ export const checkXcmTxInputs = async (
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
 			checkAllMultiLocationAssetIdsAreValid(api, assetIds);
-			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds)
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(
+				xcmDirection,
+				destChainId,
+				assetIds
+			);
 		}
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 	}
