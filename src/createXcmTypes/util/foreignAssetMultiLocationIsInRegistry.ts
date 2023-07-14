@@ -5,7 +5,6 @@ import { ApiPromise } from '@polkadot/api';
 import { BaseError } from '../../errors';
 import { Registry } from '../../registry';
 import { ForeignAssetsInfo } from '../../registry/types';
-// import { ForeignAssetMultiLocation } from "src/types";
 
 export const foreignAssetMultiLocationIsInRegistry = (
 	multilocationStr: string,

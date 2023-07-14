@@ -26,15 +26,15 @@ export const getSystemChainAssetId = async (
 	let assetId = '';
 	const newRegistry = new Registry(specName, {});
 	const systemChainId = getChainIdBySpecName(newRegistry, specName);
-
+	const isAssetHubId = systemChainId === '1000';
 	if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
 		throw new BaseError(
 			`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`
 		);
 	}
 
-	if (isForeignAssetsTransfer && systemChainId === '1000') {
-		// determine if we
+	if (isForeignAssetsTransfer && isAssetHubId) {
+		// determine if we already have the multilocation in the registry
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			asset,
 			newRegistry,
