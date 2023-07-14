@@ -138,10 +138,10 @@ describe('getFeeAssetItemIndex', () => {
 
 			expect(
 				await getFeeAssetItemIndex(
+					api,
 					paysWithFeeDest,
 					multiAssets,
 					specName,
-					api,
 					false
 				)
 			).toEqual(expected);
@@ -283,10 +283,10 @@ describe('getFeeAssetItemIndex', () => {
 
 			expect(
 				await getFeeAssetItemIndex(
+					api,
 					paysWithFeeDest,
 					multiAssets,
 					specName,
-					api,
 					false
 				)
 			).toEqual(expected);
@@ -332,10 +332,10 @@ describe('getFeeAssetItemIndex', () => {
 
 		await expect(async () => {
 			await getFeeAssetItemIndex(
+				systemAssetsApi._api,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
-				systemAssetsApi._api,
 				false
 			);
 		}).rejects.toThrowError(

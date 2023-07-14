@@ -10,6 +10,8 @@ import {
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
+	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
+	checkAllMultiLocationAssetIdsAreValid
 } from './checkXcmTxInputs';
 
 const runTests = async (tests: Test[]) => {
@@ -20,11 +22,11 @@ const runTests = async (tests: Test[]) => {
 
 		await expect(async () => {
 			await checkAssetIdInput(
+				mockParachainApi,
 				testInputs,
 				currentRegistry,
 				specName,
 				direction,
-				mockParachainApi,
 				registry,
 				false
 			);
@@ -174,11 +176,11 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
+					mockSystemApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					mockSystemApi,
 					registry,
 					false
 				);
@@ -215,11 +217,11 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
+					mockSystemApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					mockSystemApi,
 					registry,
 					false
 				);
@@ -244,11 +246,11 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
+					mockParachainApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					mockParachainApi,
 					registry,
 					false
 				);
@@ -285,11 +287,11 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
+					mockSystemApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					mockSystemApi,
 					registry,
 					false
 				);
@@ -313,11 +315,11 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
+					mockSystemApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					mockSystemApi,
 					registry,
 					false
 				);
@@ -353,11 +355,11 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
+					mockParachainApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					mockParachainApi,
 					registry,
 					false
 				);
@@ -370,11 +372,11 @@ describe('checkAssetIds', () => {
 
 		await expect(async () => {
 			await checkAssetIdInput(
+				mockParachainApi,
 				['0x1234'],
 				currentRegistry,
 				'moonriver',
 				Direction.ParaToSystem,
-				mockParachainApi,
 				registry,
 				false
 			);
@@ -395,5 +397,76 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 		const err = () =>
 			checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 		expect(err).toThrowError(expectErrorMessage);
+	});
+});
+
+describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () => {
+	it('Should correctly error when isForeignAssetsTransfer and both non native and foreign multilocations are in assetIds for direction SystemToPara', () => {
+		const expectedErrorMessage = 'SystemToPara: found both foreign and native multilocations in {"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}},{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}. multilocation XCMs must only include either native or foreign assets of the destination chain';
+		const xcmDirection = Direction.SystemToPara;
+		const destChainId = '2023';
+		const multiLocationAssetIds = [
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}',
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}'
+		];
+
+		const err = () => checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, multiLocationAssetIds);
+
+		expect(err).toThrowError(expectedErrorMessage);
+	});
+
+	it('Should correctly avoid throwing an error when isForeignAssetsTransfer and only native multilocations are in assetIds for direction SystemToPara', () => {
+		const xcmDirection = Direction.SystemToPara;
+		const destChainId = '2125';
+		const multiLocationAssetIds = [
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}',
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "1"}]}}'
+		];
+
+		const err = () => checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, multiLocationAssetIds);
+
+		expect(err).not.toThrowError();
+	});
+
+	it('Should correctly avoid throwing an error when isForeignAssetsTransfer and only foreign multilocations are in assetIds for direction SystemToPara', () => {
+		const xcmDirection = Direction.SystemToPara;
+		const destChainId = '2125';
+		const multiLocationAssetIds = [
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}',
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "1"}]}}'
+		];
+
+		const err = () => checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, multiLocationAssetIds);
+
+		expect(err).not.toThrowError();
+	});
+});
+
+type CreateMultiLocationTest = [
+	multiLocationAssetIds: string[],
+	expected: string,
+];
+
+describe('checkAllMultiLocationAssetIdsAreValid', () => {
+	it('Should correctly error when an invalid multilocation is provided in assetIds', () => {
+		const tests: CreateMultiLocationTest[] = [
+			[
+				['{"parents":"1","interior":{"X2": [{"Parachain":"2125", {"GeneralIndex": "0"}]}}'],
+				'Unexpected token { in JSON at position 55'
+			],
+			[
+				['{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}'],
+				'error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}:  Enum(Parachain) String should not contain decimal points or scientific notation'
+			]
+		];
+	
+		for (const test of tests) {
+			const [multiLocationAssetIds, expected] = test;
+			const err = () => checkAllMultiLocationAssetIdsAreValid(mockSystemApi, multiLocationAssetIds);
+
+			expect(err).toThrowError(expected);
+		}
+
+
 	});
 });

@@ -5,7 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { getSystemChainAssetId } from '../createXcmTypes/util/getSystemChainAssetId';
-import { isValidForeignAssetMultiLocation } from '../createXcmTypes/util/isValidForeignAssetMultiLocation';
+import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { Registry } from '../registry';
 import { BaseError } from './BaseError';
 
@@ -23,12 +23,12 @@ enum LocalTxType {
  * @param amounts
  */
 export const checkLocalTxInput = async (
+	api: ApiPromise,
 	assetIds: string[],
 	amounts: string[],
 	specName: string,
 	registry: Registry,
-	_api: ApiPromise,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer?: boolean
 ): Promise<LocalTxType> => {
 	// Ensure the lengths in assetIds and amounts is correct
 	if (assetIds.length > 1 || amounts.length !== 1) {
@@ -37,7 +37,7 @@ export const checkLocalTxInput = async (
 		);
 	}
 
-	if (transferForeignAssets) {
+	if (isForeignAssetsTransfer) {
 		if (assetIds.length === 0) {
 			throw new BaseError(
 				'Local foreignAsset transactions must have the `assetIds` input be a length of 1'
@@ -48,15 +48,15 @@ export const checkLocalTxInput = async (
 		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			multiLocationStr,
 			registry,
-			_api
+			api
 		);
 
 		if (foreignAssetIsInRegistry) {
 			return LocalTxType.ForeignAssets;
 		} else {
-			const isValidForeignAsset = await isValidForeignAssetMultiLocation(
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
 				multiLocationStr,
-				_api
+				api
 			);
 			if (isValidForeignAsset) {
 				return LocalTxType.ForeignAssets;
@@ -90,8 +90,8 @@ export const checkLocalTxInput = async (
 				assetId = await getSystemChainAssetId(
 					assetId,
 					specName,
-					_api,
-					transferForeignAssets
+					api,
+					isForeignAssetsTransfer
 				);
 			}
 
@@ -104,7 +104,7 @@ export const checkLocalTxInput = async (
 			} else {
 				if (!isNotANumber) {
 					// if asset is not in registry, query the assets pallet to see if it has a value
-					const asset = await _api.query.assets.asset(assetId);
+					const asset = await api.query.assets.asset(assetId);
 
 					// if asset is found in the assets pallet, return LocalTxType Assets
 					if (asset.isNone) {

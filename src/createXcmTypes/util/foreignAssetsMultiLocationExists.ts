@@ -4,7 +4,7 @@ import { ApiPromise } from '@polkadot/api';
 
 import { BaseError } from '../../errors';
 
-export const isValidForeignAssetMultiLocation = async (
+export const foreignAssetsMultiLocationExists = async (
 	multilocationStr: string,
 	_api: ApiPromise
 ): Promise<boolean> => {

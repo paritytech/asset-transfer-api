@@ -7,7 +7,7 @@ import { BaseError } from '../../errors';
 import { Registry } from '../../registry';
 import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
 import { getChainIdBySpecName } from './getChainIdBySpecName';
-import { isValidForeignAssetMultiLocation } from './isValidForeignAssetMultiLocation';
+import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 /**
  * Returns the correct asset id for a valid system chain token symbol
  * integer id or foreign asset multilocation
@@ -21,7 +21,7 @@ export const getSystemChainAssetId = async (
 	asset: string,
 	specName: string,
 	_api: ApiPromise,
-	transferForeignAssets?: boolean | undefined
+	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
 	let assetId = '';
 	const newRegistry = new Registry(specName, {});
@@ -33,7 +33,7 @@ export const getSystemChainAssetId = async (
 		);
 	}
 
-	if (transferForeignAssets && systemChainId === '1000') {
+	if (isForeignAssetsTransfer && systemChainId === '1000') {
 		// determine if we
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			asset,
@@ -44,7 +44,7 @@ export const getSystemChainAssetId = async (
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
 		} else {
-			const isValidForeignAsset = await isValidForeignAssetMultiLocation(
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
 				asset,
 				_api
 			);

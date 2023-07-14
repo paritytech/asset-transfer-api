@@ -127,7 +127,6 @@ export const SystemToPara: ICreateXcmType = {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-		transferForeignAssets?: boolean | undefined
 	): Promise<VersionedMultiAssets> => {
 		const sortedAndDedupedMultiAssets = await createSystemToParaMultiAssets(
 			api,
@@ -135,7 +134,7 @@ export const SystemToPara: ICreateXcmType = {
 			specName,
 			assets,
 			opts.registry,
-			transferForeignAssets
+			opts.isForeignAssetsTransfer
 		);
 
 		if (xcmVersion === 2) {
@@ -192,7 +191,6 @@ export const SystemToPara: ICreateXcmType = {
 	createFeeAssetItem: async (
 		api: ApiPromise,
 		opts: CreateFeeAssetItemOpts,
-		transferForeignAssets: boolean | undefined
 	): Promise<u32> => {
 		const {
 			registry,
@@ -216,7 +214,7 @@ export const SystemToPara: ICreateXcmType = {
 				specName,
 				assetIds,
 				registry,
-				transferForeignAssets
+				opts.isForeignAssetsTransfer
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
@@ -227,11 +225,11 @@ export const SystemToPara: ICreateXcmType = {
 			}
 
 			const assetIndex = await getFeeAssetItemIndex(
+				api,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
-				api,
-				transferForeignAssets
+				opts.isForeignAssetsTransfer
 			);
 
 			return api.registry.createType('u32', assetIndex);
@@ -255,7 +253,7 @@ export const createSystemToParaMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer?: boolean
 ): Promise<MultiAsset[]> => {
 	const palletId = fetchPalletInstanceId(api);
 	let multiAssets = [];
@@ -283,13 +281,13 @@ export const createSystemToParaMultiAssets = async (
 				assetId,
 				specName,
 				api,
-				transferForeignAssets
+				isForeignAssetsTransfer
 			);
 		}
 
 		let concretMultiLocation: MultiLocation;
 
-		if (transferForeignAssets) {
+		if (isForeignAssetsTransfer) {
 			concretMultiLocation = api.registry.createType(
 				'MultiLocation',
 				JSON.parse(assetId)

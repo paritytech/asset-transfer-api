@@ -154,7 +154,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format: 'call',
-						transferForeignAssets: true,
 					}
 				);
 				expect(res).toEqual({
@@ -178,7 +177,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-						transferForeignAssets: true,
 					}
 				);
 				expect(res).toEqual({
@@ -233,7 +231,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				format: T,
 				isLimited: boolean,
 				xcmVersion: number,
-				transferForeignAssets: boolean
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -246,7 +243,28 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
-						transferForeignAssets,
+					}
+				);
+			};
+
+			const foreignAssetMultiLocationBaseTeleportSystemCreateTx = async <
+				T extends Format
+			>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number,
+			): Promise<TxResult<T>> => {
+				return await systemAssetsApi.createTransferTransaction(
+					'2125', // Since this is not `0` we know this is to a parachain
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[
+						`{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}`,
+					],
+					['100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
 					}
 				);
 			};
@@ -364,12 +382,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 
-				it('Should correctly build a foreign assets call for a limitedReserveTransferAsset for V2', async () => {
+				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
 						true,
 						2,
-						true
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -381,12 +398,11 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a foreign assets payload for a limitedReserveTransferAsset for V2', async () => {
+				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
 						true,
 						2,
-						true
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -398,12 +414,11 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a foreign assets submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
+				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
 						true,
 						2,
-						true
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -521,12 +536,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await nativeBaseSystemCreateTx('submittable', true, 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a foreign assets call for a limitedReserveTransferAsset for V3', async () => {
+				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
 						true,
 						3,
-						true
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -538,12 +552,11 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a foreign assets payload for a limitedReserveTransferAsset for V3', async () => {
+				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
 						true,
 						3,
-						true
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -555,12 +568,91 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a foreign assets submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
+				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
 						true,
 						2,
-						true
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a foreign asset XCM call limitedTeleportAssets for V3', async () => {
+					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
+						'call',
+						true,
+						3,
+					);
+					expect(res).toEqual({
+						dest: 'tinkernet_node',
+						origin: 'statemine',
+						direction: 'SystemToPara',
+						format: 'call',
+						method: 'limitedTeleportAssets',
+						tx: '0x1f090301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010200352105000091010000000000',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a foreign asset XCM payload limitedTeleportAssets for V3', async () => {
+					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
+						'payload',
+						true,
+						3,
+					);
+					expect(res).toEqual({
+						dest: 'tinkernet_node',
+						origin: 'statemine',
+						direction: 'SystemToPara',
+						format: 'payload',
+						method: 'limitedTeleportAssets',
+						tx: '0xfc1f090301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010200352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a foreign asset XCM submittable limitedTeleportAssets for V3', async () => {
+					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
+						'submittable',
+						true,
+						3,
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a foreign asset XCM call teleportAssets for V3', async () => {
+					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
+						'call',
+						false,
+						3,
+					);
+					expect(res).toEqual({
+						dest: 'tinkernet_node',
+						origin: 'statemine',
+						direction: 'SystemToPara',
+						format: 'call',
+						method: 'teleportAssets',
+						tx: '0x1f010301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000102003521050000910100000000',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a foreign asset XCM payload teleportAssets for V3', async () => {
+					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
+						'payload',
+						false,
+						3,
+					);
+					expect(res).toEqual({
+						dest: 'tinkernet_node',
+						origin: 'statemine',
+						direction: 'SystemToPara',
+						format: 'payload',
+						method: 'teleportAssets',
+						tx: '0xf81f010301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000102003521050000910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a foreign asset XCM submittable teleportAssets for V3', async () => {
+					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
+						'submittable',
+						false,
+						3,
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -608,7 +700,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				format: T,
 				isLimited: boolean,
 				xcmVersion: number,
-				transferForeignAssets: boolean
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'1002', // Since this is not `0` we know this is to a parachain
@@ -621,7 +712,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
-						transferForeignAssets,
 					}
 				);
 			};
@@ -633,8 +723,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'call',
-						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0801010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000',
+						method: 'limitedTeleportAssets',
+						tx: '0x1f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000',
 						xcmVersion: 2,
 					});
 				});
@@ -645,8 +735,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'payload',
-						method: 'limitedReserveTransferAssets',
-						tx: '0x21011f0801010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						method: 'limitedTeleportAssets',
+						tx: '0x21011f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -661,8 +751,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'call',
-						method: 'reserveTransferAssets',
-						tx: '0x1f0201010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205040091010000020432050800910100000000',
+						method: 'teleportAssets',
+						tx: '0x1f0101010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205040091010000020432050800910100000000',
 						xcmVersion: 2,
 					});
 				});
@@ -673,8 +763,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'payload',
-						method: 'reserveTransferAssets',
-						tx: '0x1d011f0201010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205040091010000020432050800910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						method: 'teleportAssets',
+						tx: '0x1d011f0101010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205040091010000020432050800910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -739,12 +829,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 
-				it('Should correctly build a foreign assets call for a limitedReserveTransferAsset for V2', async () => {
+				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
 						true,
 						2,
-						true
 					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
@@ -756,12 +845,11 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a foreign assets payload for a limitedReserveTransferAsset for V2', async () => {
+				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
 						true,
 						2,
-						true
 					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
@@ -773,12 +861,11 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a foreign assets submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
+				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
 						true,
 						2,
-						true
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -791,8 +878,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'call',
-						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0803010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000',
+						method: 'limitedTeleportAssets',
+						tx: '0x1f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000',
 						xcmVersion: 3,
 					});
 				});
@@ -803,8 +890,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'payload',
-						method: 'limitedReserveTransferAssets',
-						tx: '0x21011f0803010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						method: 'limitedTeleportAssets',
+						tx: '0x21011f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -819,20 +906,20 @@ describe('AssetTransferApi Integration Tests', () => {
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'call',
-						method: 'reserveTransferAssets',
-						tx: '0x1f0203010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205040091010000020432050800910100000000',
+						method: 'teleportAssets',
+						tx: '0x1f0103010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205040091010000020432050800910100000000',
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a reserveTransferAsset for V3', async () => {
+				it('Should correctly build a payload for a reserveTransferAsset for V3 FOR TEST', async () => {
 					const res = await foreignBaseSystemCreateTx('payload', false, 3);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'payload',
-						method: 'reserveTransferAssets',
-						tx: '0x1d011f0203010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205040091010000020432050800910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						method: 'teleportAssets',
+						tx: '0x1d011f0103010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205040091010000020432050800910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -897,12 +984,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 
-				it('Should correctly build a foreign assets call for a limitedReserveTransferAsset for V3', async () => {
+				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
 						true,
 						3,
-						true
 					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
@@ -914,12 +1000,11 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a foreign assets payload for a limitedReserveTransferAsset for V3', async () => {
+				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
 						true,
 						3,
-						true
 					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
@@ -931,12 +1016,11 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a foreign assets submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
+				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
 						true,
 						3,
-						true
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});

@@ -110,7 +110,6 @@ export const ParaToSystem: ICreateXcmType = {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-		transferForeignAssets: boolean | undefined
 	): Promise<VersionedMultiAssets> => {
 		const sortedAndDedupedMultiAssets = await createParaToSystemMultiAssets(
 			api,
@@ -118,7 +117,7 @@ export const ParaToSystem: ICreateXcmType = {
 			specName,
 			assets,
 			opts.registry,
-			transferForeignAssets
+			opts.isForeignAssetsTransfer
 		);
 
 		if (xcmVersion === 2) {
@@ -174,7 +173,6 @@ export const ParaToSystem: ICreateXcmType = {
 	createFeeAssetItem: async (
 		api: ApiPromise,
 		opts: CreateFeeAssetItemOpts,
-		transferForeignAssets: boolean | undefined
 	): Promise<u32> => {
 		const {
 			registry,
@@ -198,15 +196,15 @@ export const ParaToSystem: ICreateXcmType = {
 				specName,
 				assetIds,
 				registry,
-				transferForeignAssets
+				opts.isForeignAssetsTransfer
 			);
 
 			const assetIndex = getFeeAssetItemIndex(
+				api,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
-				api,
-				transferForeignAssets
+				opts.isForeignAssetsTransfer
 			);
 
 			return api.registry.createType('u32', assetIndex);
@@ -231,7 +229,7 @@ const createParaToSystemMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer?: boolean
 ): Promise<MultiAsset[]> => {
 	// This will always result in a value and will never be null because the assets-hub will always
 	// have the assets pallet present, so we type cast here to work around the type compiler.
@@ -254,7 +252,7 @@ const createParaToSystemMultiAssets = async (
 				assetId,
 				specName,
 				api,
-				transferForeignAssets
+				isForeignAssetsTransfer
 			);
 		}
 

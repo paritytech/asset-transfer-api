@@ -69,6 +69,11 @@ export enum AssetType {
 	Foreign = 'Foreign',
 }
 
+export enum AssetCallType {
+	Reserve = 'Reserve',
+	Teleport = 'Teleport',
+}
+
 /**
  * AssetTransferApi supports three formats to be returned:
  * - payload: This returns a Polkadot-js `ExtrinsicPayload` as a hex.
@@ -190,12 +195,7 @@ export interface TransferArgsOpts<T extends Format> {
 	 * to a `transfer`.
 	 */
 	keepAlive?: boolean;
-
-	/**
-	 * Boolean to declare if this will transfer foreign assets.
-	 * Default is false
-	 */
-	transferForeignAssets?: boolean;
+	
 }
 
 export interface ChainInfo {

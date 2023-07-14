@@ -15,11 +15,11 @@ import { MultiAsset } from '../types';
  * @param specName string
  */
 export const getFeeAssetItemIndex = async (
+	api: ApiPromise,
 	paysWithFeeDest: string,
 	multiAssets: MultiAsset[],
 	specName: string,
-	api: ApiPromise,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer?: boolean
 ): Promise<number> => {
 	let result = 0;
 
@@ -49,7 +49,7 @@ export const getFeeAssetItemIndex = async (
 						paysWithFeeDest,
 						specName,
 						api,
-						transferForeignAssets
+						isForeignAssetsTransfer
 					);
 					if (
 						multiAsset.id.Concrete.interior.isX2 &&

@@ -7,7 +7,9 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
-import { isValidForeignAssetMultiLocation } from '../createXcmTypes/util/isValidForeignAssetMultiLocation';
+import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
+import { multiLocationAssetIsDestParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsDestParachainsNativeAsset';
+
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { Direction } from '../types';
@@ -38,6 +40,32 @@ export const checkRelayAmountsLength = (amounts: string[]) => {
 	if (amounts.length !== 1) {
 		throw new BaseError(
 			'`amounts` should be of length 1 when sending to or from a relay chain'
+		);
+	}
+};
+
+/**
+ * Ensure when sending foreign asset tx's that the length of assetIds is not zero
+ *
+ * @param assetIds
+ */
+export const checkMultiLocationIdLength = (assetIds: string[]) => {
+	if (assetIds.length === 0) {
+		throw new BaseError(
+			"multilocation `assetIds` cannot be empty"
+		);
+	}
+};
+
+/**
+ * Ensure when sending foreign asset tx's that the length of amounts is not zero
+ *
+ * @param amounts
+ */
+export const checkMultiLocationAmountsLength = (amounts: string[]) => {
+	if (amounts.length === 0) {
+		throw new BaseError(
+			"multilocation `amounts` cannot be empty"
 		);
 	}
 };
@@ -132,6 +160,74 @@ export const checkIfNativeRelayChainAssetPresentInMultiAssetIdList = (
 };
 
 /**
+ * checks if a multilocation list contains all native or all foreign assets of the destChain
+ * native and foreign assets to the dest chain cannot be mixed as it is either a reserve or teleport
+ * throws an error if foreign and native assets are found
+ *
+ * @param destChainId 
+ * @param multiLocationAssetIds 
+ * @param isForeignAssetsTransfer
+ * @returns boolean
+ */
+export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
+	xcmDirection: Direction,
+	destChainId: string, 
+	multiLocationAssetIds: string[], 
+) => {
+	if (multiLocationAssetIds.length > 1) {
+		let foreignMultiLocationAssetFound = false;
+		let nativeMultiLocationAssetFound = false;
+
+		// iterate through list and determine if each asset is native to the dest parachain
+		for (const multilocation of multiLocationAssetIds) {
+			const isNativeToDestChain = multiLocationAssetIsDestParachainsNativeAsset(destChainId, multilocation);
+
+			if (isNativeToDestChain) {
+				nativeMultiLocationAssetFound = true;
+			} else {
+				foreignMultiLocationAssetFound = true;
+			}
+
+			if (nativeMultiLocationAssetFound && foreignMultiLocationAssetFound) {
+				throw new BaseError(`${xcmDirection}: found both foreign and native multilocations in ${multiLocationAssetIds}. multilocation XCMs must only include either native or foreign assets of the destination chain`);
+			}
+		}
+	}
+}
+
+/**
+ * Checks that each multilocation string provided is of the proper format to create a MultiLocation
+ * throws an error if the MultiLocation is unable to be created
+ *
+ * @param destChainId 
+ * @param multiLocationAssetIds 
+ * @param isForeignAssetsTransfer
+ * @returns boolean
+ */
+export const checkAllMultiLocationAssetIdsAreValid = (api: ApiPromise, multiLocationAssetIds: string[]) => {
+	for (const multilocationId of multiLocationAssetIds) {
+		try {
+			api.registry.createType('MultiLocation', JSON.parse(multilocationId));
+		} catch (error) {
+			if ((error as Error).message.includes('Unexpected token')) {
+				throw new BaseError((error as Error).message)
+			} else if ((error as Error).message.includes("::")) {
+				const errorInfo = (error as Error).message.split('::');
+				const errorDetails = errorInfo[errorInfo.length - 2].concat(
+					errorInfo[errorInfo.length - 1]
+				);
+
+				throw new BaseError(`error creating MultiLocation type with multilocation string value ${multilocationId}: ${errorDetails}`);
+			} else {
+				throw new BaseError(`error creating multilocation type: ${(error as Error).message}`)
+			}
+	
+		}
+	}
+}
+
+
+/**
  * This will check the given assetId and ensure that it is the native token of the relay chain
  *
  * @param assetId
@@ -223,15 +319,15 @@ const checkSystemToRelayAssetId = (
 };
 
 const checkSystemAssets = async (
+	api: ApiPromise,
 	assetId: string,
 	specName: string,
 	systemParachainInfo: ChainInfoKeys,
-	api: ApiPromise,
 	registry: Registry,
 	xcmDirection: string,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer: boolean
 ) => {
-	if (transferForeignAssets) {
+	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			assetId,
@@ -240,7 +336,7 @@ const checkSystemAssets = async (
 		);
 
 		if (!multiLocationIsInRegistry) {
-			const isValidForeignAsset = await isValidForeignAssetMultiLocation(
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
 				assetId,
 				api
 			);
@@ -336,46 +432,46 @@ const checkSystemAssets = async (
  * @param relayChainInfo
  */
 const checkSystemToParaAssetId = async (
+	api: ApiPromise,
 	assetId: string,
 	specName: string,
 	relayChainInfo: ChainInfo,
-	api: ApiPromise,
 	registry: Registry,
 	xcmDirection: Direction,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer: boolean
 ) => {
 	await checkIsValidSystemChainAssetId(
+		api,
 		assetId,
 		specName,
 		relayChainInfo,
-		api,
 		registry,
 		xcmDirection,
-		transferForeignAssets
+		isForeignAssetsTransfer
 	);
 };
 
 export const checkIsValidSystemChainAssetId = async (
+	api: ApiPromise,
 	assetId: string,
 	specName: string,
 	relayChainInfo: ChainInfo,
-	api: ApiPromise,
 	registry: Registry,
 	xcmDirection: Direction,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer: boolean
 ) => {
 	const systemChainId = getChainIdBySpecName(registry, specName);
 	const systemParachainInfo = relayChainInfo[systemChainId];
 
 	if (typeof assetId === 'string') {
 		await checkSystemAssets(
+			api,
 			assetId,
 			specName,
 			systemParachainInfo,
-			api,
 			registry,
 			xcmDirection,
-			transferForeignAssets
+			isForeignAssetsTransfer
 		);
 	}
 };
@@ -390,11 +486,11 @@ export const checkIsValidSystemChainAssetId = async (
  * @param relayChainInfo
  */
 const checkParaToSystemAssetId = async (
+	api: ApiPromise,
 	assetId: string,
 	relayChainInfo: ChainInfo,
-	api: ApiPromise,
 	registry: Registry,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer: boolean
 ) => {
 	const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
 	const systemParachainInfo = relayChainInfo[systemParachainId];
@@ -415,13 +511,13 @@ const checkParaToSystemAssetId = async (
 		}
 
 		await checkSystemAssets(
+			api,
 			assetId,
 			systemSpecName,
 			systemParachainInfo,
-			api,
 			registry,
 			'ParaToSystem',
-			transferForeignAssets
+			isForeignAssetsTransfer
 		);
 	}
 };
@@ -433,22 +529,22 @@ const checkParaToSystemAssetId = async (
  * @param relayChainInfo
  */
 const checkSystemToSystemAssetId = async (
+	api: ApiPromise,
 	assetId: string,
 	specName: string,
 	relayChainInfo: ChainInfo,
-	api: ApiPromise,
 	registry: Registry,
 	xcmDirection: Direction,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer: boolean
 ) => {
 	await checkIsValidSystemChainAssetId(
+		api,
 		assetId,
 		specName,
 		relayChainInfo,
-		api,
 		registry,
 		xcmDirection,
-		transferForeignAssets
+		isForeignAssetsTransfer
 	);
 };
 
@@ -463,13 +559,13 @@ const checkSystemToSystemAssetId = async (
  * @param registry
  */
 export const checkAssetIdInput = async (
+	api: ApiPromise,
 	assetIds: string[],
 	relayChainInfo: ChainInfo,
 	specName: string,
 	xcmDirection: Direction,
-	api: ApiPromise,
 	registry: Registry,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer: boolean
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
@@ -490,35 +586,35 @@ export const checkAssetIdInput = async (
 
 		if (xcmDirection === Direction.SystemToPara) {
 			await checkSystemToParaAssetId(
+				api,
 				assetId,
 				specName,
 				relayChainInfo,
-				api,
 				registry,
 				xcmDirection,
-				transferForeignAssets
+				isForeignAssetsTransfer
 			);
 		}
 
 		if (xcmDirection === Direction.SystemToSystem) {
 			await checkSystemToSystemAssetId(
+				api,
 				assetId,
 				specName,
 				relayChainInfo,
-				api,
 				registry,
 				xcmDirection,
-				transferForeignAssets
+				isForeignAssetsTransfer
 			);
 		}
 
 		if (xcmDirection === Direction.ParaToSystem) {
 			await checkParaToSystemAssetId(
+				api,
 				assetId,
 				relayChainInfo,
-				api,
 				registry,
-				transferForeignAssets
+				isForeignAssetsTransfer
 			);
 		}
 	}
@@ -535,26 +631,27 @@ export const checkAssetIdInput = async (
  * @param registry
  */
 export const checkXcmTxInputs = async (
+	api: ApiPromise,
+	destChainId: string,
 	assetIds: string[],
 	amounts: string[],
 	xcmDirection: Direction,
 	specName: string,
-	api: ApiPromise,
 	registry: Registry,
-	transferForeignAssets: boolean | undefined
+	isForeignAssetsTransfer: boolean
 ) => {
 	const relayChainInfo = registry.currentRelayRegistry;
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
 	await checkAssetIdInput(
+		api,
 		assetIds,
 		relayChainInfo,
 		specName,
 		xcmDirection,
-		api,
 		registry,
-		transferForeignAssets
+		isForeignAssetsTransfer
 	);
 
 	if (xcmDirection === Direction.RelayToSystem) {
@@ -573,10 +670,25 @@ export const checkXcmTxInputs = async (
 	}
 
 	if (xcmDirection === Direction.SystemToPara) {
+		if (isForeignAssetsTransfer) {
+			checkMultiLocationIdLength(assetIds);
+			checkMultiLocationAmountsLength(amounts);
+			checkAssetsAmountMatch(assetIds, amounts);
+			checkAllMultiLocationAssetIdsAreValid(api, assetIds);
+			checkAssetsAmountMatch(assetIds, amounts);
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds)
+		}
 		checkAssetsAmountMatch(assetIds, amounts);
 	}
 
 	if (xcmDirection === Direction.SystemToSystem) {
+		if (isForeignAssetsTransfer) {
+			checkMultiLocationIdLength(assetIds);
+			checkMultiLocationAmountsLength(amounts);
+			checkAssetsAmountMatch(assetIds, amounts);
+			checkAllMultiLocationAssetIdsAreValid(api, assetIds);
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds)
+		}
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 	}
 

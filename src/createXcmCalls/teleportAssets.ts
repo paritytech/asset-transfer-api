@@ -31,8 +31,8 @@ export const teleportAssets = async (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
-	transferForeignAssets: boolean | undefined,
-	paysWithFeeDest?: string
+	paysWithFeeDest?: string,
+	isForeignAssetsTransfer?: boolean,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].teleportAssets;
@@ -45,15 +45,19 @@ export const teleportAssets = async (
 		xcmVersion,
 		specName,
 		assetIds,
-		{ registry },
-		transferForeignAssets
+		{ 
+			registry,
+			isForeignAssetsTransfer
+		},
 	);
 
 	const feeAssetItem = paysWithFeeDest
 		? await typeCreator.createFeeAssetItem(
 				api,
-				{ registry },
-				transferForeignAssets
+				{ 
+					registry,
+					isForeignAssetsTransfer
+				},
 		  )
 		: api.registry.createType('u32', 0);
 

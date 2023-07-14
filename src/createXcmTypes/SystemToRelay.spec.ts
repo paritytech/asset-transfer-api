@@ -88,6 +88,8 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 		});
 	});
 	describe('Assets', () => {
+		const isForeignAssetsTransfer = false;
+
 		it('Should work for V2', async () => {
 			const assets = await SystemToRelay.createAssets(
 				mockSystemApi,
@@ -95,8 +97,10 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				2,
 				'',
 				[],
-				{ registry },
-				false
+				{ 
+					registry,
+					isForeignAssetsTransfer
+				 },
 			);
 
 			const expectedRes = {
@@ -126,8 +130,10 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				3,
 				'',
 				[],
-				{ registry },
-				false
+				{ 
+					registry,
+					isForeignAssetsTransfer
+				 },
 			);
 
 			const expectedRes = {

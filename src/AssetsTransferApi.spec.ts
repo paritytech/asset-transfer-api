@@ -381,7 +381,6 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'call',
 						keepAlive: false,
-						transferForeignAssets: true,
 					}
 				);
 
@@ -406,7 +405,6 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'payload',
 						keepAlive: false,
-						transferForeignAssets: true,
 					}
 				);
 
@@ -430,7 +428,6 @@ describe('AssetTransferAPI', () => {
 					['10000000000000'],
 					{
 						format: 'submittable',
-						transferForeignAssets: true,
 					}
 				);
 
@@ -553,40 +550,6 @@ describe('AssetTransferAPI', () => {
 			}).rejects.toThrowError(
 				'asset with assetId 100 is not a sufficient asset to pay for fees'
 			);
-		});
-	});
-
-	describe('multiLocationAssetIsDestParachainsNativeAsset', () => {
-		it('Should correctly return true when a foreign assets multilocation matches its native chain of origin', () => {
-			const expected = true;
-
-			const multiLocationAssetId =
-				'{"parents":"1","interior":{"X1": {"Parachain":"2023"}}}';
-			const destChainId = '2023';
-
-			const isNativeChain =
-				systemAssetsApi.multiLocationAssetIsDestParachainsNativeAsset(
-					destChainId,
-					multiLocationAssetId
-				);
-
-			expect(isNativeChain).toEqual(expected);
-		});
-
-		it('Should correctly return false when a foreign assets multilocation does not match the destination chain', () => {
-			const expected = false;
-
-			const multiLocationAssetId =
-				'{"parents":"1","interior":{"X1": {"Parachain":"2125"}}}';
-			const destChainId = '2023';
-
-			const isNativeChain =
-				systemAssetsApi.multiLocationAssetIsDestParachainsNativeAsset(
-					destChainId,
-					multiLocationAssetId
-				);
-
-			expect(isNativeChain).toEqual(expected);
 		});
 	});
 });

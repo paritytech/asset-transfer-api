@@ -11,6 +11,9 @@ describe('limitedReserveTransferAssets', () => {
 	const registry = new Registry('statemine', {});
 	describe('SystemToPara', () => {
 		it('Should correctly construct a tx for a system parachain with V2', async () => {
+			const weightLimit = '1000000000';
+			const paysWithFeeDest = undefined;
+			const isForeignAssetsTransfer = false;
 			const ext = await limitedReserveTransferAssets(
 				mockSystemApi,
 				Direction.SystemToPara,
@@ -21,14 +24,19 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				false
+				weightLimit,
+				paysWithFeeDest,
+				isForeignAssetsTransfer
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xfc041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000000'
+				'0x0501041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000020432050400910100000000010000'
 			);
 		});
 		it('Should correctly construct a tx for when a weightLimit is available', async () => {
+			const weightLimit = '1000000000';
+			const paysWithFeeDest = undefined;
+			const isForeignAssetsTransfer = false;
 			const ext = await limitedReserveTransferAssets(
 				mockSystemApi,
 				Direction.SystemToPara,
@@ -39,8 +47,9 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				false,
-				'1000000000'
+				weightLimit,
+				paysWithFeeDest,
+				isForeignAssetsTransfer
 			);
 
 			expect(ext.toHex()).toBe(
@@ -50,7 +59,9 @@ describe('limitedReserveTransferAssets', () => {
 
 		it('Should error when a api does not support the required pallets', async () => {
 			const mockApi = { tx: {} } as unknown as ApiPromise;
-
+			const weightLimit = undefined;
+			const paysWithFeeDest = undefined;
+			const isForeignAssetsTransfer = true;
 			await expect(async () => {
 				await limitedReserveTransferAssets(
 					mockApi,
@@ -62,7 +73,9 @@ describe('limitedReserveTransferAssets', () => {
 					2,
 					'statemine',
 					registry,
-					false
+					weightLimit,
+					paysWithFeeDest,
+					isForeignAssetsTransfer
 				);
 			}).rejects.toThrowError(
 				"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API"
@@ -70,6 +83,9 @@ describe('limitedReserveTransferAssets', () => {
 		});
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V2', async () => {
+			const weightLimit = undefined;
+			const paysWithFeeDest = undefined;
+			const isForeignAssetsTransfer = true;
 			const ext = await limitedReserveTransferAssets(
 				mockSystemApi,
 				Direction.SystemToPara,
@@ -82,7 +98,9 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				true
+				weightLimit,
+				paysWithFeeDest,
+				isForeignAssetsTransfer
 			);
 
 			expect(ext.toHex()).toBe(
@@ -91,6 +109,8 @@ describe('limitedReserveTransferAssets', () => {
 		});
 
 		it('Should correctly construct a foreign asset tx for when a weightLimit is available', async () => {
+			const paysWithFeeDest = undefined;
+			const isForeignAssetsTransfer = true;
 			const ext = await limitedReserveTransferAssets(
 				mockSystemApi,
 				Direction.SystemToPara,
@@ -103,8 +123,9 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				true,
-				'1000000000'
+				'1000000000',
+				paysWithFeeDest,
+				isForeignAssetsTransfer
 			);
 
 			expect(ext.toHex()).toBe(

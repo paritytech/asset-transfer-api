@@ -112,14 +112,17 @@ describe('ParaToSystem', () => {
 	});
 	describe('Assets', () => {
 		it('Should work for V2', async () => {
+			const isForeignAssetsTransfer = false;
 			const assets = await ParaToSystem.createAssets(
 				mockParachainApi,
 				['100', '200'],
 				2,
 				'moonriver',
 				['1', '2'],
-				{ registry },
-				false
+				{ 
+					registry,
+					isForeignAssetsTransfer
+				},
 			);
 
 			const expectedRes = {
@@ -162,14 +165,17 @@ describe('ParaToSystem', () => {
 			expect(assets.toJSON()?.toString()).toStrictEqual(expectedRes.toString());
 		});
 		it('Should work for V3', async () => {
+			const isForeignAssetsTransfer = false;
 			const assets = await ParaToSystem.createAssets(
 				mockParachainApi,
 				['100', '200'],
 				3,
 				'moonriver',
 				['1', '2'],
-				{ registry },
-				false
+				{ 
+					registry,
+					isForeignAssetsTransfer
+				 },
 			);
 
 			const expectedRes = {

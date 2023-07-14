@@ -143,6 +143,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 	});
 
 	describe('Assets', () => {
+		const isForeignAssetsTransfer = false;
+
 		it('Should work for V2', async () => {
 			const assets = await SystemToPara.createAssets(
 				mockSystemApi,
@@ -150,8 +152,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				2,
 				'statemine',
 				['1', '2'],
-				{ registry },
-				false
+				{ 
+					registry,
+					isForeignAssetsTransfer
+				 },
 			);
 
 			const expectedRes = {
@@ -194,8 +198,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				3,
 				'statemine',
 				['1', '2'],
-				{ registry },
-				false
+				{ 
+					registry,
+					isForeignAssetsTransfer
+				 },
 			);
 
 			const expectedRes = {

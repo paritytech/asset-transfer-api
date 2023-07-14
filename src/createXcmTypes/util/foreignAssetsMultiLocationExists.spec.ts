@@ -2,9 +2,9 @@
 
 import { AssetsTransferApi } from '../../AssetsTransferApi';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
-import { isValidForeignAssetMultiLocation } from './isValidForeignAssetMultiLocation';
+import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 
-describe('isValidForeignAssetMultiLocation', () => {
+describe('foreignMultiAssetMultiLocationExists', () => {
 	const systemAssetsApi = new AssetsTransferApi(
 		adjustedMockSystemApi,
 		'statemine',
@@ -16,7 +16,7 @@ describe('isValidForeignAssetMultiLocation', () => {
 		const multiLocation =
 			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
-		const isValid = await isValidForeignAssetMultiLocation(
+		const isValid = await foreignAssetsMultiLocationExists(
 			multiLocation,
 			systemAssetsApi._api
 		);
@@ -29,7 +29,7 @@ describe('isValidForeignAssetMultiLocation', () => {
 		const multiLocation =
 			'{"parents":"1","interior":{"X1": {"Parachain":"21252525"}}}';
 
-		const isValid = await isValidForeignAssetMultiLocation(
+		const isValid = await foreignAssetsMultiLocationExists(
 			multiLocation,
 			systemAssetsApi._api
 		);
@@ -44,7 +44,7 @@ describe('isValidForeignAssetMultiLocation', () => {
 			'{"parents":"1","interior":{"X1": {"Parachain":"g2125"}}}';
 
 		await expect(async () => {
-			await isValidForeignAssetMultiLocation(
+			await foreignAssetsMultiLocationExists(
 				multiLocation,
 				systemAssetsApi._api
 			);
@@ -58,7 +58,7 @@ describe('isValidForeignAssetMultiLocation', () => {
 			'{"parents":"2","interior":{"X1": {"Parachain":"2,125"}}}';
 
 		await expect(async () => {
-			await isValidForeignAssetMultiLocation(
+			await foreignAssetsMultiLocationExists(
 				multiLocation,
 				systemAssetsApi._api
 			);

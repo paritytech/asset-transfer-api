@@ -118,7 +118,6 @@ export const SystemToSystem: ICreateXcmType = {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-		transferForeignAssets?: boolean | undefined
 	): Promise<VersionedMultiAssets> => {
 		const { registry } = opts;
 
@@ -128,7 +127,7 @@ export const SystemToSystem: ICreateXcmType = {
 			specName,
 			assets,
 			registry,
-			transferForeignAssets
+			opts.isForeignAssetsTransfer
 		);
 
 		if (xcmVersion === 2) {
@@ -185,7 +184,6 @@ export const SystemToSystem: ICreateXcmType = {
 	createFeeAssetItem: async (
 		api: ApiPromise,
 		opts: CreateFeeAssetItemOpts,
-		transferForeignAssets: boolean | undefined
 	): Promise<u32> => {
 		const {
 			registry,
@@ -209,7 +207,7 @@ export const SystemToSystem: ICreateXcmType = {
 				specName,
 				assetIds,
 				registry,
-				transferForeignAssets
+				opts.isForeignAssetsTransfer
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
@@ -221,11 +219,11 @@ export const SystemToSystem: ICreateXcmType = {
 			}
 
 			const assetIndex = getFeeAssetItemIndex(
+				api,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
-				api,
-				transferForeignAssets
+				opts.isForeignAssetsTransfer
 			);
 
 			return api.registry.createType('u32', assetIndex);
@@ -250,7 +248,7 @@ export const createSystemToSystemMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
-	transferForeignAssets?: boolean | undefined
+	isForeignAssetsTransfer?: boolean
 ): Promise<MultiAsset[]> => {
 	let multiAssets = [];
 
@@ -278,14 +276,14 @@ export const createSystemToSystemMultiAssets = async (
 					assetId,
 					specName,
 					api,
-					transferForeignAssets
+					isForeignAssetsTransfer
 				);
 			}
 		}
 
 		let concretMultiLocation: MultiLocation;
 
-		if (transferForeignAssets) {
+		if (isForeignAssetsTransfer) {
 			concretMultiLocation = api.registry.createType(
 				'MultiLocation',
 				JSON.parse(assetId)

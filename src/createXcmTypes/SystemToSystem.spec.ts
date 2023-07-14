@@ -93,6 +93,8 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 	});
 
 	describe('Assets', () => {
+		const isForeignAssetsTransfer = false;
+
 		it('Should work for V2', async () => {
 			const assets = await SystemToSystem.createAssets(
 				mockSystemApi,
@@ -100,8 +102,10 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				2,
 				'statemine',
 				['USDT'],
-				{ registry },
-				false
+				{ 
+					registry,
+					isForeignAssetsTransfer
+				},
 			);
 
 			const expectedRes = {
@@ -131,8 +135,10 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				3,
 				'bridge-hub-kusama',
 				['ksm'],
-				{ registry },
-				false
+				{ 
+					registry,
+					isForeignAssetsTransfer
+				}
 			);
 
 			const expectedRes = {
@@ -167,8 +173,10 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					3,
 					'bridge-hub-kusama',
 					['usdc'],
-					{ registry },
-					false
+					{ 
+						registry,
+						isForeignAssetsTransfer 
+					},
 				);
 			}).rejects.toThrowError(expectedErrorMessage);
 		});

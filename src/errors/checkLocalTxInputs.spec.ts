@@ -17,33 +17,33 @@ describe('checkLocalTxInput', () => {
 
 	it('Should correctly return Balances with an empty assetIds', async () => {
 		const res = await checkLocalTxInput(
+			systemAssetsApi._api,
 			[],
 			['10000'],
 			specName,
 			registry,
-			systemAssetsApi._api,
 			false
 		);
 		expect(res).toEqual('Balances');
 	});
 	it('Should correctly return Balances with a native token', async () => {
 		const res = await checkLocalTxInput(
+			systemAssetsApi._api,
 			['KSM'],
 			['10000'],
 			specName,
 			registry,
-			systemAssetsApi._api,
 			false
 		);
 		expect(res).toEqual('Balances');
 	});
 	it('Should correctly return Assets with a valid assetId', async () => {
 		const res = await checkLocalTxInput(
+			systemAssetsApi._api,
 			['1984'],
 			['10000'],
 			specName,
 			registry,
-			systemAssetsApi._api,
 			false
 		);
 		expect(res).toEqual('Assets');
@@ -51,11 +51,11 @@ describe('checkLocalTxInput', () => {
 	it('Should correctly throw an error for incorrect length on `assetIds`', async () => {
 		await expect(async () => {
 			await checkLocalTxInput(
+				systemAssetsApi._api,
 				['1', '2'],
 				['10000'],
 				specName,
 				registry,
-				systemAssetsApi._api,
 				false
 			);
 		}).rejects.toThrowError(
@@ -65,11 +65,11 @@ describe('checkLocalTxInput', () => {
 	it('Should correctly throw an error for incorrect length on `amounts`', async () => {
 		await expect(async () => {
 			await checkLocalTxInput(
+				systemAssetsApi._api,
 				['1'],
 				['10000', '20000'],
 				specName,
 				registry,
-				systemAssetsApi._api,
 				false
 			);
 		}).rejects.toThrowError(
@@ -79,11 +79,11 @@ describe('checkLocalTxInput', () => {
 	it('Should correctly throw an error with an incorrect assetId', async () => {
 		await expect(async () => {
 			await checkLocalTxInput(
+				systemAssetsApi._api,
 				['TST'],
 				['10000'],
 				specName,
 				registry,
-				systemAssetsApi._api,
 				false
 			);
 		}).rejects.toThrowError(
@@ -93,11 +93,11 @@ describe('checkLocalTxInput', () => {
 	it("Should correctly throw an error when the integer assetId doesn't exist", async () => {
 		await expect(async () => {
 			await checkLocalTxInput(
+				systemAssetsApi._api,
 				['9876111'],
 				['10000'],
 				specName,
 				registry,
-				systemAssetsApi._api,
 				false
 			);
 		}).rejects.toThrowError('The integer assetId 9876111 was not found');
@@ -105,13 +105,13 @@ describe('checkLocalTxInput', () => {
 
 	it('Should correctly return ForeignAssets when given a valid multilocation', async () => {
 		const res = await checkLocalTxInput(
+			systemAssetsApi._api,
 			[
 				'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}',
 			],
 			['10000'],
 			specName,
 			registry,
-			systemAssetsApi._api,
 			true
 		);
 		expect(res).toEqual('ForeignAssets');
@@ -123,11 +123,11 @@ describe('checkLocalTxInput', () => {
 
 		await expect(async () => {
 			await checkLocalTxInput(
+				systemAssetsApi._api,
 				[incorrectMultiLocationStr],
 				['10000'],
 				specName,
 				registry,
-				systemAssetsApi._api,
 				true
 			);
 		}).rejects.toThrowError(expectedError);
@@ -139,11 +139,11 @@ describe('checkLocalTxInput', () => {
 
 		await expect(async () => {
 			await checkLocalTxInput(
+				systemAssetsApi._api,
 				[nonExistentMultiLocationStr],
 				['10000'],
 				specName,
 				registry,
-				systemAssetsApi._api,
 				true
 			);
 		}).rejects.toThrowError(expectedError);
@@ -155,11 +155,11 @@ describe('checkLocalTxInput', () => {
 
 		await expect(async () => {
 			await checkLocalTxInput(
+				systemAssetsApi._api,
 				[],
 				['10000'],
 				specName,
 				registry,
-				systemAssetsApi._api,
 				true
 			);
 		}).rejects.toThrowError(expectedError);
