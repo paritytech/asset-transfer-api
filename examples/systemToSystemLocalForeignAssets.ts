@@ -8,7 +8,7 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send foreign asset '{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}' 
+ * In this example we are creating a call to send foreign asset '{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'
  * from a Kusama Asset Hub (System Parachain) account
  * to a Kusama Asset Hub (System Chain) account, where the `xcmVersion` is set to 2, and the `isLimited` declaring that
  * it will be `unlimited` since there is no `weightLimit` option as well.
@@ -26,7 +26,9 @@ const main = async () => {
 		callInfo = await assetApi.createTransferTransaction(
 			'1000', // NOTE: The destination id is `1000` and matches the origin chain making this a local transfer
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
-			['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
+			[
+				'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+			],
 			['1000000000000'],
 			{
 				format: 'call',
