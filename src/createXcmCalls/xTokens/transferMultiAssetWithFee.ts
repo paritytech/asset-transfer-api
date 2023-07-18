@@ -39,7 +39,8 @@ export const transferMultiAssetWithFee = (
 	const pallet = establishXcmPallet(api, direction);
     console.log('pallet is', pallet);
 	const ext = api.tx[pallet].transferMultiassetWithFee;
-    console.log('ext to human', ext.toJSON());
+    console.log('ext call index', ext.toJSON());
+    console.log(Object.keys)
 	const typeCreator = createXcmTypes[direction];
 	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	// const dest = typeCreator.createDest(api, destChainId, xcmVersion);
