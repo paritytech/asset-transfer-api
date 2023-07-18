@@ -101,7 +101,8 @@ export type Methods =
 	| 'reserveTransferAssets'
 	| 'limitedReserveTransferAssets'
 	| 'teleportAssets'
-	| 'limitedTeleportAssets';
+	| 'limitedTeleportAssets'
+	| 'transferMultiAssetWithFee';
 
 export type AssetsTransferApiOpts = {
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;

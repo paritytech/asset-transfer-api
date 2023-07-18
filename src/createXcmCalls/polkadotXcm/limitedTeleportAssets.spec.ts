@@ -1,8 +1,8 @@
 import type { ApiPromise } from '@polkadot/api';
 
-import { Registry } from '../registry';
-import { mockSystemApi } from '../testHelpers/mockSystemApi';
-import { Direction } from '../types';
+import { Registry } from '../../registry';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi';
+import { Direction } from '../../types';
 import { limitedTeleportAssets } from './limitedTeleportAssets';
 
 describe('limitedTeleportAssets', () => {

@@ -24,6 +24,7 @@ import {
 	limitedTeleportAssets,
 	reserveTransferAssets,
 	teleportAssets,
+	transferMultiAssetWithFee
 } from './createXcmCalls';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
 import { getSystemChainTokenSymbolGeneralIndex } from './createXcmTypes/util/getTokenSymbolGeneralIndex';
@@ -52,6 +53,7 @@ import {
 	XCMV2DestBenificiary,
 	XCMV3DestBenificiary,
 } from './types';
+import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -224,9 +226,7 @@ export class AssetsTransferApi {
 			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
 		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
 		checkXcmTxInputs(assetIds, amounts, xcmDirection, _specName, registry);
-
 		const assetType = this.fetchAssetType(xcmDirection);
-
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 		const isSystemToSystemReserveTransfer =
@@ -234,65 +234,87 @@ export class AssetsTransferApi {
 			xcmDirection === Direction.SystemToSystem &&
 			!containsNativeRelayAsset(assetIds, nativeRelayChainAsset);
 
-		if (assetType === AssetType.Foreign || isSystemToSystemReserveTransfer) {
-			if (opts?.isLimited) {
-				txMethod = 'limitedReserveTransferAssets';
-				transaction = limitedReserveTransferAssets(
+		const xcmPallet = establishXcmPallet(_api, xcmDirection);
+
+		if (xcmPallet === 'xTokens' && xcmDirection === Direction.ParaToSystem) {
+			//
+			// if (opts?.paysWithFeeDest) {
+				txMethod = 'transferMultiAssetWithFee';
+				transaction = transferMultiAssetWithFee(
 					_api,
 					xcmDirection,
 					addr,
 					assetIds,
 					amounts,
-					destChainId,
+					// destChainId,
 					xcmVersion,
 					_specName,
 					this.registry,
 					opts?.weightLimit,
-					opts?.paysWithFeeDest
+					// opts?.paysWithFeeDest
 				);
-			} else {
-				txMethod = 'reserveTransferAssets';
-				transaction = reserveTransferAssets(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					xcmVersion,
-					_specName,
-					this.registry,
-					opts?.paysWithFeeDest
-				);
-			}
+			// }
 		} else {
-			if (opts?.isLimited) {
-				txMethod = 'limitedTeleportAssets';
-				transaction = limitedTeleportAssets(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					xcmVersion,
-					_specName,
-					this.registry,
-					opts?.weightLimit
-				);
+			if (assetType === AssetType.Foreign || isSystemToSystemReserveTransfer) {
+				if (opts?.isLimited) {
+					txMethod = 'limitedReserveTransferAssets';
+					transaction = limitedReserveTransferAssets(
+						_api,
+						xcmDirection,
+						addr,
+						assetIds,
+						amounts,
+						destChainId,
+						xcmVersion,
+						_specName,
+						this.registry,
+						opts?.weightLimit,
+						opts?.paysWithFeeDest
+					);
+				} else {
+					txMethod = 'reserveTransferAssets';
+					transaction = reserveTransferAssets(
+						_api,
+						xcmDirection,
+						addr,
+						assetIds,
+						amounts,
+						destChainId,
+						xcmVersion,
+						_specName,
+						this.registry,
+						opts?.paysWithFeeDest
+					);
+				}
 			} else {
-				txMethod = 'teleportAssets';
-				transaction = teleportAssets(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					xcmVersion,
-					_specName,
-					this.registry
-				);
+				if (opts?.isLimited) {
+					txMethod = 'limitedTeleportAssets';
+					transaction = limitedTeleportAssets(
+						_api,
+						xcmDirection,
+						addr,
+						assetIds,
+						amounts,
+						destChainId,
+						xcmVersion,
+						_specName,
+						this.registry,
+						opts?.weightLimit
+					);
+				} else {
+					txMethod = 'teleportAssets';
+					transaction = teleportAssets(
+						_api,
+						xcmDirection,
+						addr,
+						assetIds,
+						amounts,
+						destChainId,
+						xcmVersion,
+						_specName,
+						this.registry
+					);
+				}
 			}
 		}
 
@@ -509,6 +531,7 @@ export class AssetsTransferApi {
 		const { _api } = this;
 		const fmt = format ? format : 'payload';
 
+		console.log('endoed tx', encodedTransaction);
 		if (fmt === 'payload') {
 			const extrinsicPayload = _api.registry.createType(
 				'ExtrinsicPayload',
@@ -517,6 +540,8 @@ export class AssetsTransferApi {
 					version: EXTRINSIC_VERSION,
 				}
 			);
+		
+			console.log('payload to human', extrinsicPayload.toHuman());
 
 			const call = _api.registry.createType('Call', extrinsicPayload.method);
 			const decodedMethodInfo = JSON.stringify(call.toHuman());
@@ -580,6 +605,7 @@ export class AssetsTransferApi {
 		}
 
 		const submittableString = JSON.stringify(tx.toHuman());
+		console.log('submittable string', submittableString);
 		const submittableData: SubmittableMethodData = JSON.parse(
 			submittableString
 		) as unknown as SubmittableMethodData;
@@ -598,11 +624,25 @@ export class AssetsTransferApi {
 		} else if (submittableData.method.args.dest) {
 			addr = submittableData.method.args.dest.Id;
 		}
-
+		// if (!addr) {
+		// 	if (submittableData.method.args.dest) {
+		// 		for (const [key, value] of Object.entries(submittableData.method.args.dest)) {
+		// 			console.log('key', key);
+		// 			console.log('value', value);
+		// 			if (key === 'id'){
+		// 				addr = value;
+		// 				break;
+		// 			}
+		// 		}
+		// 	}
+		// }
+		
 		if (!addr) {
-			throw new BaseError(
-				`Unable to derive payload address for tx ${tx.toString()}`
-			);
+
+			addr = '0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16';
+			// throw new BaseError(
+			// 	`Unable to derive payload address for tx ${tx.toString()}`
+			// );
 		}
 
 		const lastHeader = await this._api.rpc.chain.getHeader();

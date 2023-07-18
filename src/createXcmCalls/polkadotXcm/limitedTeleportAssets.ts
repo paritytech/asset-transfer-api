@@ -4,11 +4,11 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../createXcmTypes';
-import type { Registry } from '../registry';
-import { Direction } from '../types';
-import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import { establishXcmPallet } from './util/establishXcmPallet';
+import { createXcmTypes } from '../../createXcmTypes';
+import type { Registry } from '../../registry';
+import { Direction } from '../../types';
+import { normalizeArrToStr } from '../../util/normalizeArrToStr';
+import { establishXcmPallet } from '../util/establishXcmPallet';
 
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `limitedTeleportAssets` call.
