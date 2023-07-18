@@ -191,7 +191,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
-		it('Should work for V3', async () => {
+		it('Should work for V3 for testing this', async () => {
 			const assets = await SystemToPara.createAssets(
 				mockSystemApi,
 				['100', '100'],

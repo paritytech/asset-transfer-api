@@ -26,6 +26,7 @@ import {
 	reserveTransferAssets,
 	teleportAssets,
 } from './createXcmCalls';
+import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
 import { getSystemChainAssetId } from './createXcmTypes/util/getSystemChainAssetId';
 import { multiLocationAssetIsDestParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsDestParachainsNativeAsset';
@@ -269,7 +270,8 @@ export class AssetsTransferApi {
 			assetIds,
 			xcmDirection,
 			assetType,
-			isForeignAssetsTransfer
+			isForeignAssetsTransfer,
+			registry
 		);
 
 		let txMethod: Methods;
@@ -552,9 +554,11 @@ export class AssetsTransferApi {
 		assetIds: string[],
 		xcmDirection: Direction,
 		assetType: AssetType,
-		isForeignAssetsTransfer: boolean
+		isForeignAssetsTransfer: boolean,
+		registry: Registry
 	): AssetCallType {
 		// relay to system -> teleport
+		// system to relay -> teleport
 		if (
 			xcmDirection === Direction.RelayToSystem ||
 			xcmDirection === Direction.SystemToRelay
@@ -624,16 +628,29 @@ export class AssetsTransferApi {
 			return AssetCallType.Teleport;
 		}
 
-		// para to para -> reserve (TODO: check assumption)
+		// para to para -> reserve
 		if (xcmDirection === Direction.ParaToPara) {
 			return AssetCallType.Reserve;
 		}
 
-		// para to system -> reserve (TODO: check assumption)
+		// para to system -> reserve !relay asset
 		if (
-			xcmDirection === Direction.ParaToSystem ||
-			xcmDirection === Direction.ParaToRelay
+			xcmDirection === Direction.ParaToSystem &&
+			!assetIdsContainRelayAsset(assetIds, registry)
 		) {
+			return AssetCallType.Teleport;
+		}
+
+		// para to system -> reserve relay asset -> reserve
+		if (
+			xcmDirection === Direction.ParaToSystem &&
+			assetIdsContainRelayAsset(assetIds, registry)
+		) {
+			return AssetCallType.Reserve;
+		}
+
+		// para to relay -> reserve
+		if (xcmDirection === Direction.ParaToRelay) {
 			return AssetCallType.Reserve;
 		}
 

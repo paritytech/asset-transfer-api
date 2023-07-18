@@ -47,11 +47,17 @@ export const foreignAssetMultiLocationIsInRegistry = (
 			}
 		}
 	} catch (error) {
-		const errorInfo = (error as Error).message.split('::');
-		const errorDetails = errorInfo[errorInfo.length - 2].concat(
-			errorInfo[errorInfo.length - 1]
-		);
-		throw new BaseError(`Error creating MultiLocation type:${errorDetails}`);
+		if ((error as Error).message.includes('::')) {
+			const errorInfo = (error as Error).message.split('::');
+			const errorDetails = errorInfo[errorInfo.length - 2].concat(
+				errorInfo[errorInfo.length - 1]
+			);
+			throw new BaseError(`Error creating MultiLocation type:${errorDetails}`);
+		} else {
+			throw new BaseError(
+				`Error creating multilocation type: ${(error as Error).message}`
+			);
+		}
 	}
 
 	return false;
