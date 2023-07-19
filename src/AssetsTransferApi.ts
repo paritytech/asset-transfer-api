@@ -637,13 +637,13 @@ export class AssetsTransferApi {
 		// 	}
 		// }
 		
-		if (!addr) {
+		// if (!addr) {
 
-			addr = '0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16';
-			// throw new BaseError(
-			// 	`Unable to derive payload address for tx ${tx.toString()}`
-			// );
-		}
+		// 	// addr = '0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16';
+		// 	// throw new BaseError(
+		// 	// 	`Unable to derive payload address for tx ${tx.toString()}`
+		// 	// );
+		// }
 
 		const lastHeader = await this._api.rpc.chain.getHeader();
 		const blockNumber = this._api.registry.createType(

@@ -25,20 +25,20 @@ const main = async () => {
 	// const specName = 'bridge-hub-kusama';
 	// const specname = 'statemine';
 	// const provider = new WsProvider(`wss://kusama-asset-hub-rpc.polkadot.io`);
-	// const provider = new WsProvider(`wss://statemine-rpc.polkadot.io`);
+	const provider = new WsProvider(`wss://statemine-rpc.polkadot.io`);
 	// const provider = new WsProvider(`wss://kusama.api.encointer.org`);
 	// const provider = new WsProvider(`wss://westend-asset-hub-rpc.polkadot.io`);
 	// const provider = new WsProvider(`wss://wss.api.moonbeam.network`);
 	// const provider = new WsProvider(`wss://sys.ibp.network/collectives-westend`);
     // 'wss://moonriver.api.onfinality.io/public-ws'
-    const provider = new WsProvider(`wss://moonriver.api.onfinality.io/public-ws`);
+    // const provider = new WsProvider(`wss://moonriver.api.onfinality.io/public-ws`);
 
 
 	const api = await ApiPromise.create({ provider });
 
 	await api.isReady;
 
-	const assetTransferApi = new AssetsTransferApi(api, 'moonriver', 2);
+	const assetTransferApi = new AssetsTransferApi(api, 'statemine', 2);
 	// const assetTransferApi = new AssetsTransferApi(api, 'collectives', 2);
 
 	// call
@@ -78,7 +78,7 @@ const main = async () => {
 	// console.log('payload is', payload);
 
 	const payload = await assetTransferApi.createTransferTransaction(
-		'1000',
+		'2023',
 		'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
 		[
 			'11',
@@ -89,7 +89,7 @@ const main = async () => {
         // ],
 		['2000000000'],
 		{
-			format: 'submittable',
+			format: 'payload',
 			isLimited: false,
 			xcmVersion: 3,
 			// paysWithFeeOrigin: '1984',
@@ -97,11 +97,11 @@ const main = async () => {
 		}
 	);
 
-    console.log('tx args', payload.tx.args[1].toHex());
+    // console.log('tx args', payload.tx.args[1].toHex());
 	console.log('payload', JSON.stringify(payload));
 
 	const decodedPayload = assetTransferApi.decodeExtrinsic(
-		payload.tx.toHex(),
+		payload.tx,
 		'payload'
 	);
 	console.log('decodedPayload', decodedPayload);
