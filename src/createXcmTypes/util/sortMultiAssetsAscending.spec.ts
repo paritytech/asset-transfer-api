@@ -255,8 +255,8 @@ describe('sortMultiAssetsAscending', () => {
 
 		const res = sortMultiAssetsAscending(multiAssets);
 
-		// expect(res[0].id).toEqual(expected[0].id);
-		// expect(res[res.length-1].fun).toEqual(expected[expected.length-1].fun);
+		expect(res[0].id).toEqual(expected[0].id);
+		expect(res[res.length-1].fun).toEqual(expected[expected.length-1].fun);
 		expect(JSON.stringify(res)).toEqual(JSON.stringify(expected));
 	});
 
@@ -373,8 +373,8 @@ describe('sortMultiAssetsAscending', () => {
 
 		const res = sortMultiAssetsAscending(multiAssets);
 
-		// expect(res[0].id).toEqual(expected[0].id);
-		// expect(res[res.length-1].fun).toEqual(expected[expected.length-1].fun);
+		expect(res[0].id).toEqual(expected[0].id);
+		expect(res[res.length-1].fun).toEqual(expected[expected.length-1].fun);
 		expect(JSON.stringify(res)).toEqual(JSON.stringify(expected));
 	});
 });
