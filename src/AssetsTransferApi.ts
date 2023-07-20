@@ -27,9 +27,9 @@ import {
 	teleportAssets,
 } from './createXcmCalls';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
+import { getChainAssetId } from './createXcmTypes/util/getChainAssetId';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
-import { getSystemChainAssetId } from './createXcmTypes/util/getSystemChainAssetId';
-import { multiLocationAssetIsDestParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsDestParachainsNativeAsset';
+import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import {
 	BaseError,
 	checkBaseInputTypes,
@@ -158,7 +158,7 @@ export class AssetsTransferApi {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
-				assetId = await getSystemChainAssetId(
+				assetId = await getChainAssetId(
 					_api,
 					assetId,
 					_specName,
@@ -266,6 +266,7 @@ export class AssetsTransferApi {
 			isForeignAssetsTransfer
 		);
 		const assetCallType = this.fetchCallType(
+			originChainId,
 			destChainId,
 			assetIds,
 			xcmDirection,
@@ -457,7 +458,7 @@ export class AssetsTransferApi {
 		/**
 		 * Check if the origin is a parachain, and the destination is a system parachain.
 		 */
-		if (_api.query.polkadotXcm && isDestIdSystemPara) {
+		if (_api.query.polkadotXcm || (_api.query.xTokens && isDestIdSystemPara)) {
 			return Direction.ParaToSystem;
 		}
 
@@ -550,6 +551,7 @@ export class AssetsTransferApi {
 	}
 
 	private fetchCallType(
+		originChainId: string,
 		destChainId: string,
 		assetIds: string[],
 		xcmDirection: Direction,
@@ -571,16 +573,26 @@ export class AssetsTransferApi {
 			return AssetCallType.Reserve;
 		}
 
-		let isMultiLocationsNativeChain = false;
+		let originIsMultiLocationsNativeChain = false;
+		let destIsMultiLocationsNativeChain = false;
 
 		if (isForeignAssetsTransfer) {
-			// check if the assets are going to origin chain
+			if (xcmDirection === Direction.ParaToSystem) {
+				// check if the asset(s) are native to the origin chain
+				for (const assetId of assetIds) {
+					if (
+						multiLocationAssetIsParachainsNativeAsset(originChainId, assetId)
+					) {
+						originIsMultiLocationsNativeChain = true;
+						break;
+					}
+				}
+			}
+			// check if the asset(s) are going to origin chain
 			// if so we return a teleport
 			for (const assetId of assetIds) {
-				if (
-					multiLocationAssetIsDestParachainsNativeAsset(destChainId, assetId)
-				) {
-					isMultiLocationsNativeChain = true;
+				if (multiLocationAssetIsParachainsNativeAsset(destChainId, assetId)) {
+					destIsMultiLocationsNativeChain = true;
 					break;
 				}
 			}
@@ -614,7 +626,7 @@ export class AssetsTransferApi {
 		if (
 			assetType === AssetType.Foreign &&
 			xcmDirection === Direction.SystemToPara &&
-			!isMultiLocationsNativeChain
+			!destIsMultiLocationsNativeChain
 		) {
 			return AssetCallType.Reserve;
 		}
@@ -623,7 +635,7 @@ export class AssetsTransferApi {
 		if (
 			assetType === AssetType.Foreign &&
 			xcmDirection === Direction.SystemToPara &&
-			isMultiLocationsNativeChain
+			destIsMultiLocationsNativeChain
 		) {
 			return AssetCallType.Teleport;
 		}
@@ -636,15 +648,17 @@ export class AssetsTransferApi {
 		// para to system -> reserve !relay asset
 		if (
 			xcmDirection === Direction.ParaToSystem &&
-			!assetIdsContainRelayAsset(assetIds, registry)
+			!assetIdsContainRelayAsset(assetIds, registry) &&
+			originIsMultiLocationsNativeChain
 		) {
 			return AssetCallType.Teleport;
 		}
 
 		// para to system -> reserve relay asset -> reserve
 		if (
-			xcmDirection === Direction.ParaToSystem &&
-			assetIdsContainRelayAsset(assetIds, registry)
+			(xcmDirection === Direction.ParaToSystem &&
+				assetIdsContainRelayAsset(assetIds, registry)) ||
+			!originIsMultiLocationsNativeChain
 		) {
 			return AssetCallType.Reserve;
 		}

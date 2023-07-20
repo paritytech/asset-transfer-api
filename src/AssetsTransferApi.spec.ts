@@ -11,6 +11,7 @@ import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { Direction, UnsignedTransaction } from './types';
+import { AssetType } from './types';
 
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',
@@ -121,12 +122,21 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		describe('SystemToSystem', () => {
-			it('Should corectly return Native', () => {
+			it('Should correctly return Native', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
 					Direction.SystemToSystem
 				);
 
 				expect(assetType).toEqual('Native');
+			});
+
+			it('Should correctly return Foreign', () => {
+				const assetType = systemAssetsApi['fetchAssetType'](
+					Direction.SystemToSystem,
+					true
+				);
+
+				expect(assetType).toEqual('Foreign');
 			});
 		});
 		describe('RelayToSystem', () => {
@@ -157,6 +167,173 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 	});
+
+	describe('fetchCallType', () => {
+		describe('RelayToSystem', () => {
+			it('Should correctly return Teleport', () => {
+				const assetCallType = relayAssetsApi['fetchCallType'](
+					'0',
+					'1000',
+					['ksm'],
+					Direction.RelayToSystem,
+					AssetType.Native,
+					false,
+					relayAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+		});
+		describe('RelayToPara', () => {
+			it('Should correctly return Reserve', () => {
+				const assetCallType = relayAssetsApi['fetchCallType'](
+					'0',
+					'2023',
+					['ksm'],
+					Direction.RelayToPara,
+					AssetType.Native,
+					false,
+					relayAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+		describe('SystemToRelay', () => {
+			it('Should correctly return Teleport', () => {
+				const assetCallType = systemAssetsApi['fetchCallType'](
+					'1000',
+					'0',
+					['ksm'],
+					Direction.SystemToRelay,
+					AssetType.Native,
+					false,
+					systemAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+		});
+		describe('SystemToSystem', () => {
+			it('Should correctly return Teleport when sending a native asset', () => {
+				const assetCallType = systemAssetsApi['fetchCallType'](
+					'1000',
+					'1001',
+					['ksm'],
+					Direction.SystemToSystem,
+					AssetType.Native,
+					false,
+					systemAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+		});
+		describe('SystemToSystem', () => {
+			it('Should correctly return Reserve when sending a foreign asset', () => {
+				const assetCallType = systemAssetsApi['fetchCallType'](
+					'1000',
+					'1001',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					Direction.SystemToSystem,
+					AssetType.Foreign,
+					true,
+					systemAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+		describe('SystemToPara', () => {
+			it('Should correctly return Teleport when sending to origin Parachain', () => {
+				const assetCallType = systemAssetsApi['fetchCallType'](
+					'1000',
+					'2023',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					Direction.SystemToPara,
+					AssetType.Foreign,
+					true,
+					systemAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+		});
+		describe('SystemToPara', () => {
+			it('Should correctly return Reserve when sending to non origin Parachain', () => {
+				const assetCallType = systemAssetsApi['fetchCallType'](
+					'1000',
+					'2125',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					Direction.SystemToPara,
+					AssetType.Foreign,
+					true,
+					systemAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+		describe('ParaToRelay', () => {
+			it('Should correctly return Reserve', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'0',
+					['ksm'],
+					Direction.ParaToRelay,
+					AssetType.Foreign,
+					false,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+		describe('ParaToSystem', () => {
+			it('Should correctly return Teleport when sending a foreign asset that is native to the origin', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'1000',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					Direction.ParaToSystem,
+					AssetType.Foreign,
+					true,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+			it('Should correctly return Reserve when sending a foreign asset that is foreign to the origin', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'1000',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2125"}}}`],
+					Direction.ParaToSystem,
+					AssetType.Foreign,
+					true,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+		describe('ParaToPara', () => {
+			it('Should correctly return Reserve', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'2125',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					Direction.ParaToPara,
+					AssetType.Foreign,
+					true,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+	});
+
 	describe('Opts', () => {
 		it('Should correctly read in the injectedRegistry option', () => {
 			const injectedRegistry = {

@@ -2,22 +2,21 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { SYSTEM_PARACHAINS_IDS } from '../../consts';
 import { BaseError } from '../../errors';
 import { Registry } from '../../registry';
 import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from './getChainIdBySpecName';
 /**
- * Returns the correct asset id for a valid system chain token symbol
- * integer id or foreign asset multilocation
+ * Returns the correct asset id for a valid token symbol integer id
+ * or foreign asset multilocation based on chain specName
  * errors if given an invalid symbol, integer id or multilocation that is
  * not registered or found in the chains state
  *
  * @param tokenSymbol string
  * @param specName string
  */
-export const getSystemChainAssetId = async (
+export const getChainAssetId = async (
 	_api: ApiPromise,
 	asset: string,
 	specName: string,
@@ -25,15 +24,9 @@ export const getSystemChainAssetId = async (
 ): Promise<string> => {
 	let assetId = '';
 	const newRegistry = new Registry(specName, {});
-	const systemChainId = getChainIdBySpecName(newRegistry, specName);
-	const isAssetHubId = systemChainId === '1000';
-	if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
-		throw new BaseError(
-			`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`
-		);
-	}
+	const chainId = getChainIdBySpecName(newRegistry, specName);
 
-	if (isForeignAssetsTransfer && isAssetHubId) {
+	if (isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the registry
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			asset,
@@ -56,7 +49,7 @@ export const getSystemChainAssetId = async (
 			}
 		}
 	} else {
-		const { assetsInfo } = newRegistry.currentRelayRegistry[systemChainId];
+		const { assetsInfo } = newRegistry.currentRelayRegistry[chainId];
 
 		if (Object.keys(assetsInfo).length === 0) {
 			throw new BaseError(

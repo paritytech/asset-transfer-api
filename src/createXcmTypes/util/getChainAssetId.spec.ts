@@ -2,9 +2,9 @@
 
 import { AssetsTransferApi } from '../../AssetsTransferApi';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
-import { getSystemChainAssetId } from './getSystemChainAssetId';
+import { getChainAssetId } from './getChainAssetId';
 
-describe('getSystemChainAssetId', () => {
+describe('getChainAssetId', () => {
 	const systemAssetsApi = new AssetsTransferApi(
 		adjustedMockSystemApi,
 		'statemine',
@@ -13,7 +13,7 @@ describe('getSystemChainAssetId', () => {
 	it('Should correctly return the integer assetId when given a valid native system chain token symbol', async () => {
 		const expected = '10';
 
-		const result = await getSystemChainAssetId(
+		const result = await getChainAssetId(
 			systemAssetsApi._api,
 			'USDC',
 			'statemine',
@@ -26,7 +26,7 @@ describe('getSystemChainAssetId', () => {
 	it('Should correctly return the integer assetId when given a valid native system chain token assetId', async () => {
 		const expected = '8';
 
-		const result = await getSystemChainAssetId(
+		const result = await getChainAssetId(
 			systemAssetsApi._api,
 			'RMRK',
 			'statemine',
@@ -38,12 +38,7 @@ describe('getSystemChainAssetId', () => {
 
 	it('Should error when an asset id symbol is given that is not present in the registry or chain tate', async () => {
 		await expect(async () => {
-			await getSystemChainAssetId(
-				systemAssetsApi._api,
-				'hello',
-				'statemine',
-				false
-			);
+			await getChainAssetId(systemAssetsApi._api, 'hello', 'statemine', false);
 		}).rejects.toThrowError(
 			'assetId hello is not a valid symbol or integer asset id'
 		);
@@ -55,7 +50,7 @@ describe('getSystemChainAssetId', () => {
 		const expected =
 			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
-		const result = await getSystemChainAssetId(
+		const result = await getChainAssetId(
 			systemAssetsApi._api,
 			multiLocation,
 			'statemine',
@@ -70,7 +65,7 @@ describe('getSystemChainAssetId', () => {
 			'{"parents":"1","interior":{"X1": {"Parachain":"212500000"}}}';
 
 		await expect(async () => {
-			await getSystemChainAssetId(
+			await getChainAssetId(
 				systemAssetsApi._api,
 				multiLocation,
 				'statemine',

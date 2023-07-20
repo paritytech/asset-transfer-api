@@ -27,7 +27,7 @@ import {
 } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getSystemChainAssetId } from './util/getSystemChainAssetId';
+import { getChainAssetId } from './util/getChainAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -272,7 +272,7 @@ export const createSystemToSystemMultiAssets = async (
 
 		if (!isRelayNative) {
 			if (isNotANumber) {
-				assetId = await getSystemChainAssetId(
+				assetId = await getChainAssetId(
 					api,
 					assetId,
 					specName,

@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { multiLocationAssetIsDestParachainsNativeAsset } from './multiLocationAssetIsDestParachainsNativeAsset';
+import { multiLocationAssetIsParachainsNativeAsset } from './multiLocationAssetIsParachainsNativeAsset';
 
-describe('multiLocationAssetIsDestParachainsNativeAsset', () => {
+describe('multiLocationAssetIsParachainsNativeAsset', () => {
 	type Test = [
 		destChainId: string,
 		multiLocationAssetId: string,
@@ -26,7 +26,7 @@ describe('multiLocationAssetIsDestParachainsNativeAsset', () => {
 
 		for (const test of tests) {
 			const [destChainId, multiLocationAssetId, expected] = test;
-			const isNativeChain = multiLocationAssetIsDestParachainsNativeAsset(
+			const isNativeChain = multiLocationAssetIsParachainsNativeAsset(
 				destChainId,
 				multiLocationAssetId
 			);
@@ -56,7 +56,7 @@ describe('multiLocationAssetIsDestParachainsNativeAsset', () => {
 
 		for (const test of tests) {
 			const [destChainId, multiLocationAssetId, expected] = test;
-			const isNativeChain = multiLocationAssetIsDestParachainsNativeAsset(
+			const isNativeChain = multiLocationAssetIsParachainsNativeAsset(
 				destChainId,
 				multiLocationAssetId
 			);

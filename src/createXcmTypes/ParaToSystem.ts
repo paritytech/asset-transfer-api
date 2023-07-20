@@ -5,6 +5,7 @@ import type { u32 } from '@polkadot/types';
 import type {
 	InteriorMultiLocation,
 	MultiAssetsV2,
+	MultiLocation,
 	VersionedMultiAssets,
 	VersionedMultiLocation,
 	WeightLimitV2,
@@ -23,7 +24,7 @@ import type {
 	IWeightLimit,
 } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
-import { getSystemChainAssetId } from './util/getSystemChainAssetId';
+import { getChainAssetId } from './util/getChainAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -248,7 +249,7 @@ const createParaToSystemMultiAssets = async (
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
 		if (!isRelayNative && isNotANumber) {
-			assetId = await getSystemChainAssetId(
+			assetId = await getChainAssetId(
 				api,
 				assetId,
 				specName,
@@ -256,23 +257,34 @@ const createParaToSystemMultiAssets = async (
 			);
 		}
 
-		const interior: InteriorMultiLocation = isHex(assetId)
-			? api.registry.createType('InteriorMultiLocation', {
-					X1: { GeneralKey: assetId },
-			  })
-			: isRelayNative
-			? api.registry.createType('InteriorMultiLocation', { Here: '' })
-			: api.registry.createType('InteriorMultiLocation', {
-					X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-			  });
-		const parents = isRelayNative ? 1 : 0;
+		let concretMultiLocation: MultiLocation;
+
+		if (isForeignAssetsTransfer) {
+			concretMultiLocation = api.registry.createType(
+				'MultiLocation',
+				JSON.parse(assetId)
+			);
+		} else {
+			const parents = isRelayNative ? 1 : 0;
+			const interior: InteriorMultiLocation = isHex(assetId)
+				? api.registry.createType('InteriorMultiLocation', {
+						X1: { GeneralKey: assetId },
+				  })
+				: isRelayNative
+				? api.registry.createType('InteriorMultiLocation', { Here: '' })
+				: api.registry.createType('InteriorMultiLocation', {
+						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
+				  });
+
+			concretMultiLocation = api.registry.createType('MultiLocation', {
+				parents,
+				interior,
+			});
+		}
 
 		const multiAsset = {
 			id: {
-				Concrete: api.registry.createType('MultiLocation', {
-					parents,
-					interior,
-				}),
+				Concrete: concretMultiLocation,
 			},
 			fun: {
 				Fungible: amount,

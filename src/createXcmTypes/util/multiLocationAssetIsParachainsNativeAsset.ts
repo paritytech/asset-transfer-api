@@ -6,7 +6,7 @@
  * @param destChainId The destination chain Id
  * @param multiLocationAssetId multilocation asset id
  */
-export const multiLocationAssetIsDestParachainsNativeAsset = (
+export const multiLocationAssetIsParachainsNativeAsset = (
 	destChainId: string,
 	multiLocationAssetId: string
 ): boolean => {
@@ -15,7 +15,9 @@ export const multiLocationAssetIsDestParachainsNativeAsset = (
 	if (
 		multiLocationAssetId
 			.toLowerCase()
-			.includes(destChainMultiLocationid.toLowerCase())
+			.trim()
+			.replace(/ /g, '') // remove all empty spaces
+			.includes(destChainMultiLocationid.toLowerCase().trim().replace(/ /g, ''))
 	) {
 		return true;
 	}

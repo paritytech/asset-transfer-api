@@ -4,8 +4,8 @@ import { ApiPromise } from '@polkadot/api';
 
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
+import { getChainAssetId } from '../createXcmTypes/util/getChainAssetId';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
-import { getSystemChainAssetId } from '../createXcmTypes/util/getSystemChainAssetId';
 import { Registry } from '../registry';
 import { BaseError } from './BaseError';
 
@@ -87,7 +87,7 @@ export const checkLocalTxInput = async (
 			const isNotANumber = Number.isNaN(parseInt(assetId));
 			// not a number so we check the registry using the symbol
 			if (isNotANumber) {
-				assetId = await getSystemChainAssetId(
+				assetId = await getChainAssetId(
 					api,
 					assetId,
 					specName,

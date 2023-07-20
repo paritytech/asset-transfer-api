@@ -8,7 +8,7 @@ import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
-import { multiLocationAssetIsDestParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsDestParachainsNativeAsset';
+import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { Direction } from '../types';
@@ -175,7 +175,7 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
 
 		// iterate through list and determine if each asset is native to the dest parachain
 		for (const multilocation of multiLocationAssetIds) {
-			const isNativeToDestChain = multiLocationAssetIsDestParachainsNativeAsset(
+			const isNativeToDestChain = multiLocationAssetIsParachainsNativeAsset(
 				destChainId,
 				multilocation
 			);
