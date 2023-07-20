@@ -2,6 +2,7 @@
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
+import { InteriorMultiLocation } from '@polkadot/types/interfaces';
 
 import type { ChainInfoRegistry } from './registry/types';
 
@@ -295,7 +296,7 @@ export interface LocalDest {
 
 export interface XCMV2DestBenificiary {
 	V2: {
-		parents: string;
+		parents: string | number;
 		interior: {
 			X1: { AccountId32: { network: string; id: string } };
 		};
@@ -304,7 +305,7 @@ export interface XCMV2DestBenificiary {
 
 export interface XCMV3DestBenificiary {
 	V3: {
-		parents: string;
+		parents: string | number;
 		interior: {
 			X1: { AccountId32: { network: string; id: string } };
 		};
@@ -312,6 +313,46 @@ export interface XCMV3DestBenificiary {
 }
 
 export type XCMDestBenificiary = XCMV3DestBenificiary | XCMV2DestBenificiary;
+
+export interface XCMV2MultiAsset {
+	V2: {
+		id: {
+			Concrete: {
+				parents: string | number;
+				interior: InteriorMultiLocation
+			}
+		},
+		fun: {
+			Fungible: { Fungible: number }
+		}
+	};
+}
+export interface XCMV3MultiAsset {
+	V3: {
+		id: {
+			Concrete: {
+				parents: string | number;
+				interior: InteriorMultiLocation
+			}
+		},
+		fun: {
+			Fungible: { Fungible: number }
+		}
+	};
+}
+
+export type XcmMultiAsset = XCMV2MultiAsset | XCMV3MultiAsset;
+
+
+export interface XcmWeightUnlimited {
+	Unlimited : null | undefined;
+}
+
+export interface XcmWeightLimited {
+	Limited : number | string;
+}
+
+export type XcmWeight = XcmWeightUnlimited | XcmWeightLimited;
 
 export interface Args {
 	dest?: LocalDest;

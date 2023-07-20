@@ -9,7 +9,7 @@ import type {
 } from '@polkadot/types/interfaces';
 
 import type { Registry } from '../registry';
-import type { RequireOnlyOne } from '../types';
+import type { RequireOnlyOne, XCMDestBenificiary, XcmMultiAsset, XcmWeight } from '../types';
 
 export interface CreateAssetsOpts {
 	registry: Registry;
@@ -29,12 +29,12 @@ export interface ICreateXcmType {
 		api: ApiPromise,
 		accountId: string,
 		xcmVersion: number
-	) => VersionedMultiLocation;
+		) => VersionedMultiLocation;
 	createDest: (
 		api: ApiPromise,
 		destId: string,
 		xcmVersion: number
-	) => VersionedMultiLocation;
+		) => VersionedMultiLocation;
 	createAssets: (
 		api: ApiPromise,
 		amounts: string[],
@@ -42,9 +42,25 @@ export interface ICreateXcmType {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts
-	) => VersionedMultiAssets;
+		) => VersionedMultiAssets;
 	createWeightLimit: (api: ApiPromise, weightLimit?: string) => WeightLimitV2;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => u32;
+	createXTokensBeneficiary?: (
+		accountId: string,
+		xcmVersion: number
+	) => XCMDestBenificiary;
+	createXTokensAsset?: (
+		api: ApiPromise,
+		amount: string,
+		xcmVersion: number,
+		specName: string,
+		asset: string,
+		opts: CreateAssetsOpts,
+	) => XcmMultiAsset;
+	createXTokensWeightLimit?: (
+		weightLimit?: string
+	) => XcmWeight;
+	createXTokensFeeAssetItem?: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => XcmMultiAsset;
 }
 
 interface IWeightLimitBase {

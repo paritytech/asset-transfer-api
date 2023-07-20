@@ -3,6 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
 import type {
+	InteriorMultiLocation,
 	MultiAssetsV2,
 	VersionedMultiAssets,
 	VersionedMultiLocation,
@@ -12,8 +13,9 @@ import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isHex } from '@polkadot/util';
 
 import type { Registry } from '../registry';
-import { MultiAsset, MultiAssetInterior } from '../types';
+import { MultiAsset, MultiAssetInterior, XCMDestBenificiary, XcmMultiAsset, XcmWeight } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
+import { getFeeAssetItemIndexForXTokens } from '../util/getFeeAssetItemIndexForXTokens';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import type {
 	CreateAssetsOpts,
@@ -37,8 +39,9 @@ export const ParaToSystem: ICreateXcmType = {
 	createBeneficiary: (
 		api: ApiPromise,
 		accountId: string,
-		xcmVersion?: number
+		xcmVersion?: number,
 	): VersionedMultiLocation => {
+
 		if (xcmVersion == 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -198,7 +201,151 @@ export const ParaToSystem: ICreateXcmType = {
 
 		return api.registry.createType('u32', 0);
 	},
+	createXTokensBeneficiary: (
+		accountId: string,
+		xcmVersion: number,
+		): XCMDestBenificiary => {
+				if (xcmVersion === 2) {
+					return {
+						V2: {
+							parents: 0,
+							interior: {
+								X1: { AccountId32: { network: 'Any', id: accountId }
+							}
+						}
+					}
+				} 
+			}
+
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1: { AccountId32: { network: 'Any', id: accountId }
+					}
+				}
+			}
+		} 
+	},
+	createXTokensAsset: (
+		api: ApiPromise,
+		amount: string,
+		xcmVersion: number,
+		specName: string,
+		asset: string,
+		opts: CreateAssetsOpts,
+	): XcmMultiAsset => {
+		
+	},
+	createXTokensWeightLimit: (
+		weightLimit?: string
+	): XcmWeight =>  {
+		const limit = weightLimit
+		? { Limited: weightLimit }
+		: { Unlimited: null };
+
+		return limit;
+	},
+	createXTokensFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts): XcmMultiAsset => {
+		const {
+			registry,
+			paysWithFeeDest,
+			specName,
+			assetIds,
+			amounts,
+			xcmVersion,
+		} = opts;
+
+		if (
+			xcmVersion &&
+			xcmVersion === 3 &&
+			specName &&
+			amounts &&
+			assetIds &&
+			paysWithFeeDest
+		) {
+			const multiAssets: XcmMultiAsset[] = [];
+
+			const multiAsset = createXTokensMultiAsset(
+				api,
+				amounts[0],
+				xcmVersion,
+				specName,
+				assetIds[0],
+				opts,
+			);
+
+			multiAssets.push(multiAsset);
+	
+			const assetIndex = getFeeAssetItemIndexForXTokens(
+				paysWithFeeDest,
+				multiAssets,
+				specName,
+				xcmVersion
+			);
+
+		}
+	}
 };
+
+const createXTokensMultiAsset = (
+	api: ApiPromise,
+	amount: string,
+	xcmVersion: number,
+	specName: string,
+	asset: string,
+	opts: CreateAssetsOpts,
+): XcmMultiAsset => {
+	let assetId = asset;
+	const { assetsPalletInstance } = opts.registry.currentRelayRegistry['1000'];
+	const palletId = assetsPalletInstance as string;
+	const { tokens } = opts.registry.currentRelayRegistry['0'];
+
+	const parsedAssetIdAsNumber = Number.parseInt(assetId);
+	const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+	const isRelayNative = isRelayNativeAsset(tokens, assetId);
+
+	if (!isRelayNative && isNotANumber) {
+		assetId = getSystemChainTokenSymbolGeneralIndex(asset, specName);
+	}
+
+	const interior: InteriorMultiLocation = isHex(assetId)
+		? api.registry.createType('InteriorMultiLocation', { X2: [{ GeneralKey: assetId }] })
+		: isRelayNative
+		? api.registry.createType('InteriorMultiLocation', { Here: '' })
+		: api.registry.createType('InteriorMultiLocation', { X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }] });
+	const parents = isRelayNative ? 1 : 0;
+
+	if (xcmVersion === 2) {
+		return {
+			V2: {
+					id: {
+					Concrete: {
+						parents,
+						interior,
+					},
+				},
+				fun: {
+					Fungible: { Fungible: parseInt(amount)},
+				},
+			}
+		};
+	}
+
+	return {
+		V3: {
+				id: {
+				Concrete: {
+					parents,
+					interior,
+				},
+			},
+			fun: {
+				Fungible: { Fungible: parseInt(amount)},
+			},
+		}
+	}
+}
 
 /**
  * Create multiassets for ParaToSystem direction.

@@ -66,19 +66,19 @@ export const transferMultiAssetWithFee = (
 	// 			xcmVersion,
 	// 	  })
 	// 	: api.registry.createType('u32', 0);
-    const feeAsset = api.registry.createType('XcmVersionedMultiLocation', {
+    const feeAsset = {
         V3: {
             parents: 1,
             interior: null,
         }
-    });
+    };
 
     const asset =  {
       V3: {
                 id: {
                 concrete:  {
                     parents: 1,
-                    interior: {
+                    interior: api.registry.createType('InteriorMultiLocation', {
                         X3: [
                             {
                                 Parachain: 1000
@@ -91,18 +91,29 @@ export const transferMultiAssetWithFee = (
                             }
                         ]
                     }
-                },
+                ),
             },
             fun: {
-               Fungible: 1000000000000 // 1 token
+               Fungible: 1000000000000
             },
+         }
         }
     }
 
     const destWeightLimit = { Unlimited: null };
 
+    const beneficiary2 =  {
+        V3: {
+            parents: 1,
+            interior: {
+              X1: {
+                AccountId32: { id: "0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16" }
+              }
+            }
+        }
+      };
 
     console.log('beneficiary', beneficiary.toString());
-
-	return ext(asset, feeAsset, beneficiary, destWeightLimit);
+    
+	return ext(asset, feeAsset, beneficiary2, destWeightLimit);
 };
