@@ -43,7 +43,7 @@ export const checkLocalTxInput = async (
 				'Local foreignAsset transactions must have the `assetIds` input be a length of 1'
 			);
 		}
-		// check the foreignAssetsInfo to see if the given foreignAssetMatches
+		// check the registrys foreignAssetsInfo to see if the provided foreign asset exists
 		const multiLocationStr = assetIds[0];
 		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			multiLocationStr,

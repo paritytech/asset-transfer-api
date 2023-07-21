@@ -4,7 +4,6 @@ import { ApiPromise } from '@polkadot/api';
 
 import { getChainAssetId } from '../createXcmTypes/util/getChainAssetId';
 import { MultiAsset } from '../types';
-// import { NonRelayNativeInterior, RelayNativeInterior } from '../types';
 
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index

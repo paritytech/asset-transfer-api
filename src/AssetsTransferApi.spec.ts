@@ -228,8 +228,6 @@ describe('AssetTransferAPI', () => {
 
 				expect(assetCallType).toEqual('Teleport');
 			});
-		});
-		describe('SystemToSystem', () => {
 			it('Should correctly return Reserve when sending a foreign asset', () => {
 				const assetCallType = systemAssetsApi['fetchCallType'](
 					'1000',

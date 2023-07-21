@@ -458,7 +458,7 @@ export class AssetsTransferApi {
 		/**
 		 * Check if the origin is a parachain, and the destination is a system parachain.
 		 */
-		if (_api.query.polkadotXcm || (_api.query.xTokens && isDestIdSystemPara)) {
+		if ((_api.query.polkadotXcm || _api.query.xTokens) && isDestIdSystemPara) {
 			return Direction.ParaToSystem;
 		}
 
@@ -645,7 +645,7 @@ export class AssetsTransferApi {
 			return AssetCallType.Reserve;
 		}
 
-		// para to system -> reserve !relay asset
+		// para to system when not the relay asset and the assets are native to origin -> teleport
 		if (
 			xcmDirection === Direction.ParaToSystem &&
 			!assetIdsContainRelayAsset(assetIds, registry) &&
@@ -654,7 +654,7 @@ export class AssetsTransferApi {
 			return AssetCallType.Teleport;
 		}
 
-		// para to system -> reserve relay asset -> reserve
+		// para to system when assets contain the relay asset or the assets arent native to the origin -> reserve
 		if (
 			(xcmDirection === Direction.ParaToSystem &&
 				assetIdsContainRelayAsset(assetIds, registry)) ||
