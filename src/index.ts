@@ -81,19 +81,19 @@ const main = async () => {
 		'1000',
 		'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
 		[
-			'11',
+			'10', '11'
 		],
         // [
         //     '1984',
         //     '1984'
         // ],
-		['2000000000'],
+		['2000000000', '20000'],
 		{
 			format: 'submittable',
 			isLimited: false,
 			xcmVersion: 3,
-			// paysWithFeeOrigin: '1984',
-			// paysWithFeeDest: 'USDC'
+            paysWithFeeDest: "0"
+			// paysWithFeeDest: '{"parents": "1", "interior": {"X2": [{"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}'
 		}
 	);
 

@@ -7,10 +7,9 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
 import type { Registry } from '../../registry';
-import { Direction } from '../../types';
-import { normalizeArrToStr } from '../../util/normalizeArrToStr';
+import { Direction, XcmMultiAsset, XcmWeight, XCMDestBenificiary } from '../../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
-
+import { BaseError } from '../../errors';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferMultiAssetWithFee`
  * call.
@@ -34,7 +33,7 @@ export const transferMultiAssetWithFee = (
 	specName: string,
 	registry: Registry,
 	weightLimit?: string,
-	// paysWithFeeDest?: string
+	paysWithFeeDest?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api, direction);
     console.log('pallet is', pallet);
@@ -42,17 +41,17 @@ export const transferMultiAssetWithFee = (
     console.log('ext call index', ext.toJSON());
     console.log(Object.keys)
 	const typeCreator = createXcmTypes[direction];
-	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
+	// const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	// const dest = typeCreator.createDest(api, destChainId, xcmVersion);
-	const assets = typeCreator.createAssets(
-		api,
-		normalizeArrToStr(amounts),
-		xcmVersion,
-		specName,
-		assetIds,
-		{ registry }
-	);
-    console.log('assets', assets.toHuman());
+	// const assets = typeCreator.createAssets(
+	// 	api,
+	// 	normalizeArrToStr(amounts),
+	// 	xcmVersion,
+	// 	specName,
+	// 	assetIds,
+	// 	{ registry }
+	// );
+    // console.log('assets', assets.toHuman());
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
     console.log('weightLimit', weightLimitType.toString());
 
@@ -66,54 +65,92 @@ export const transferMultiAssetWithFee = (
 	// 			xcmVersion,
 	// 	  })
 	// 	: api.registry.createType('u32', 0);
-    const feeAsset = {
-        V3: {
-            parents: 1,
-            interior: null,
-        }
-    };
+    // const feeAsset = {
+    //     V3: {
+    //         parents: 1,
+    //         interior: null,
+    //     }
+    // };
 
-    const asset =  {
-      V3: {
-                id: {
-                concrete:  {
-                    parents: 1,
-                    interior: api.registry.createType('InteriorMultiLocation', {
-                        X3: [
-                            {
-                                Parachain: 1000
-                            },
-                            {
-                                PalletInstance: 50
-                            },
-                            {
-                                GeneralIndex: 11
-                            }
-                        ]
-                    }
-                ),
-            },
-            fun: {
-               Fungible: 1000000000000
-            },
-         }
-        }
-    }
+    // const asset =  {
+    //   V3: {
+    //             id: {
+    //             concrete:  {
+    //                 parents: 1,
+    //                 interior: api.registry.createType('InteriorMultiLocation', {
+    //                     X3: [
+    //                         {
+    //                             Parachain: 1000
+    //                         },
+    //                         {
+    //                             PalletInstance: 50
+    //                         },
+    //                         {
+    //                             GeneralIndex: 11
+    //                         }
+    //                     ]
+    //                 }
+    //             ),
+    //         },
+    //         fun: {
+    //            Fungible: 1000000000000
+    //         },
+    //      }
+    //     }
+    // }
 
-    const destWeightLimit = { Unlimited: null };
+    // const destWeightLimit = { Unlimited: null };
 
-    const beneficiary2 =  {
-        V3: {
-            parents: 1,
-            interior: {
-              X1: {
-                AccountId32: { id: "0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16" }
-              }
-            }
-        }
-      };
+    // const beneficiary2 =  {
+    //     V3: {
+    //         parents: 1,
+    //         interior: {
+    //           X1: {
+    //             AccountId32: { id: "0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16" }
+    //           }
+    //         }
+    //     }
+    //   };
 
-    console.log('beneficiary', beneficiary.toString());
+    let assets: XcmMultiAsset[] | undefined;
+    let feeAsset: XcmMultiAsset | undefined;
+    let beneficiary: XCMDestBenificiary | undefined;
+    let destWeightLimit: XcmWeight | undefined;
     
-	return ext(asset, feeAsset, beneficiary2, destWeightLimit);
+    console.log("WHAT ARE ASSETS", assetIds);
+    if (
+        typeCreator.createXTokensAssets && 
+        typeCreator.createXTokensFeeAssetItem &&
+        typeCreator.createXTokensBeneficiary &&
+        typeCreator.createXTokensFeeAssetItem  &&
+        typeCreator.createXTokensWeightLimit
+        ) {
+        assets = typeCreator.createXTokensAssets(api, amounts, xcmVersion, specName, assetIds, { registry })
+        // console.log('beneficiary', beneficiary.toString());
+        
+            feeAsset = typeCreator.createXTokensFeeAssetItem(
+                api,
+                {
+                    registry,
+                    paysWithFeeDest,
+                    specName,
+                    assetIds,
+                    amounts,
+                    xcmVersion,
+                }
+            );
+
+            beneficiary = typeCreator.createXTokensBeneficiary(destAddr, xcmVersion);
+    
+            destWeightLimit = typeCreator.createXTokensWeightLimit(weightLimit)
+
+            console.log('ASSET IS', JSON.stringify(assets));
+            console.log('FEE ASSET IS', JSON.stringify(feeAsset));
+            console.log('BENEFICIARY IS', JSON.stringify(beneficiary));
+            console.log('WEIGHT LIMIT', destWeightLimit);
+
+        return ext(assets[0], feeAsset, beneficiary, destWeightLimit);
+    }
+    
+    throw new BaseError('Unable to create xTokens assets');
 };

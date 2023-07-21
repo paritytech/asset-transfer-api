@@ -49,14 +49,14 @@ export interface ICreateXcmType {
 		accountId: string,
 		xcmVersion: number
 	) => XCMDestBenificiary;
-	createXTokensAsset?: (
+	createXTokensAssets?: (
 		api: ApiPromise,
-		amount: string,
+		amounts: string[],
 		xcmVersion: number,
 		specName: string,
-		asset: string,
+		assets: string[],
 		opts: CreateAssetsOpts,
-	) => XcmMultiAsset;
+	) => XcmMultiAsset[];
 	createXTokensWeightLimit?: (
 		weightLimit?: string
 	) => XcmWeight;

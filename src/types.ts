@@ -103,6 +103,8 @@ export type Methods =
 	| 'limitedReserveTransferAssets'
 	| 'teleportAssets'
 	| 'limitedTeleportAssets'
+	| 'transferMultiAsset' 
+	| 'transferMultiAssets'
 	| 'transferMultiAssetWithFee';
 
 export type AssetsTransferApiOpts = {
@@ -298,7 +300,7 @@ export interface XCMV2DestBenificiary {
 	V2: {
 		parents: string | number;
 		interior: {
-			X1: { AccountId32: { network: string; id: string } };
+			X1: { AccountId32: { id: string } };
 		};
 	};
 }
@@ -307,7 +309,7 @@ export interface XCMV3DestBenificiary {
 	V3: {
 		parents: string | number;
 		interior: {
-			X1: { AccountId32: { network: string; id: string } };
+			X1: { AccountId32: { id: string } };
 		};
 	};
 }
@@ -323,7 +325,7 @@ export interface XCMV2MultiAsset {
 			}
 		},
 		fun: {
-			Fungible: { Fungible: number }
+			Fungible: { Fungible: number | string }
 		}
 	};
 }
@@ -336,7 +338,7 @@ export interface XCMV3MultiAsset {
 			}
 		},
 		fun: {
-			Fungible: { Fungible: number }
+			Fungible: { Fungible: number| string }
 		}
 	};
 }

@@ -24,7 +24,9 @@ import {
 	limitedTeleportAssets,
 	reserveTransferAssets,
 	teleportAssets,
-	transferMultiAssetWithFee
+	transferMultiAsset,
+	transferMultiAssets,
+	transferMultiAssetWithFee,
 } from './createXcmCalls';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
 import { getSystemChainTokenSymbolGeneralIndex } from './createXcmTypes/util/getTokenSymbolGeneralIndex';
@@ -237,23 +239,52 @@ export class AssetsTransferApi {
 		const xcmPallet = establishXcmPallet(_api, xcmDirection);
 
 		if (xcmPallet === 'xTokens' && xcmDirection === Direction.ParaToSystem) {
-			//
-			// if (opts?.paysWithFeeDest) {
-				txMethod = 'transferMultiAssetWithFee';
-				transaction = transferMultiAssetWithFee(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					// destChainId,
-					xcmVersion,
-					_specName,
-					this.registry,
-					opts?.weightLimit,
-					// opts?.paysWithFeeDest
-				);
-			// }
+			if (!opts?.paysWithFeeDest) {
+					txMethod = 'transferMultiAsset';
+					transaction = transferMultiAsset(
+						_api,
+						xcmDirection,
+						addr,
+						assetIds,
+						amounts,
+						// destChainId,
+						xcmVersion,
+						_specName,
+						this.registry,
+						opts?.weightLimit,
+						opts?.paysWithFeeDest
+					);
+			} else if (opts.paysWithFeeDest.includes('parents')) {
+						txMethod = 'transferMultiAssetWithFee';
+						transaction = transferMultiAssetWithFee(
+							_api,
+							xcmDirection,
+							addr,
+							assetIds,
+							amounts,
+							// destChainId,
+							xcmVersion,
+							_specName,
+							this.registry,
+							opts?.weightLimit,
+							opts?.paysWithFeeDest
+						);
+					} else {
+						txMethod = 'transferMultiAssets';
+						transaction = transferMultiAssets(
+							_api,
+							xcmDirection,
+							addr,
+							assetIds,
+							amounts,
+							// destChainId,
+							xcmVersion,
+							_specName,
+							this.registry,
+							opts?.weightLimit,
+							opts?.paysWithFeeDest
+						);
+					} 
 		} else {
 			if (assetType === AssetType.Foreign || isSystemToSystemReserveTransfer) {
 				if (opts?.isLimited) {
