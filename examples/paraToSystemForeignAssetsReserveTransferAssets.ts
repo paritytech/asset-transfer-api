@@ -27,7 +27,7 @@ const main = async () => {
 			'1000', // NOTE: The destination id is `1000` which is the Asset Hub
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			[
-				'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}', // NOTE: The multilocations Parchain ID is not Moonrivers, making this a rerserve transfer assets
+				'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}', // NOTE: The multilocations Parchain ID is not Moonrivers, making this a reserve transfer assets
 			],
 			['1000000000000'],
 			{
