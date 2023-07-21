@@ -57,10 +57,6 @@ export const getFeeAssetItemIndex = async (
 							'MultiLocation',
 							JSON.parse(paysWithFeeDestGeneralIndex)
 						);
-						console.log(
-							'PAYS WITH FEE DEST MULTI',
-							paysWithFeeDestMultiLocation.interior.toString()
-						);
 						if (
 							multiAsset.id.Concrete.interior.eq(
 								paysWithFeeDestMultiLocation.interior
