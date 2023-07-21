@@ -31,7 +31,7 @@ describe('getFeeAssetItemIndex', () => {
 	it('Should select and return the index of the correct multiassets when given their token symbols', async () => {
 		const tests: Test[] = [
 			[
-				'usdt',
+				'rmrk',
 				'statemine',
 				[
 					{
@@ -59,7 +59,7 @@ describe('getFeeAssetItemIndex', () => {
 									parents: 0,
 									interior: systemAssetsApi._api.registry.createType(
 										'InteriorMultiLocation',
-										{ X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }] }
+										{ X2: [{ PalletInstance: '50' }, { GeneralIndex: '8' }] }
 									),
 								}
 							),
@@ -70,7 +70,7 @@ describe('getFeeAssetItemIndex', () => {
 					},
 				],
 				systemAssetsApi._api,
-				0,
+				1,
 			],
 			[
 				'USDC',
@@ -288,6 +288,50 @@ describe('getFeeAssetItemIndex', () => {
 					multiAssets,
 					specName,
 					false
+				)
+			).toEqual(expected);
+		}
+	});
+
+	it('Should correctly select and return the index of the correct multiassets when given a foreign assets multilocation', async () => {
+		const tests: Test[] = [
+			[
+				`{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}`,
+				'statemine',
+				[
+					{
+						id: {
+							Concrete: systemAssetsApi._api.registry.createType(
+								'MultiLocation',
+								{
+									parents: 1,
+									interior: systemAssetsApi._api.registry.createType(
+										'InteriorMultiLocation',
+										{ X2: [{ Parachain: '2125' }, { GeneralIndex: '0' }] }
+									),
+								}
+							),
+						},
+						fun: {
+							Fungible: '2000',
+						},
+					},
+				],
+				systemAssetsApi._api,
+				0,
+			],
+		];
+
+		for (const test of tests) {
+			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
+
+			expect(
+				await getFeeAssetItemIndex(
+					api,
+					paysWithFeeDest,
+					multiAssets,
+					specName,
+					true
 				)
 			).toEqual(expected);
 		}

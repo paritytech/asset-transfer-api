@@ -21,7 +21,7 @@ export const getFeeAssetItemIndex = async (
 	specName: string,
 	isForeignAssetsTransfer?: boolean
 ): Promise<number> => {
-	let result = 0;
+	let result = -1;
 
 	if (paysWithFeeDest) {
 		const isRelayFeeAsset =
@@ -51,13 +51,39 @@ export const getFeeAssetItemIndex = async (
 						specName,
 						isForeignAssetsTransfer
 					);
-					if (
-						multiAsset.id.Concrete.interior.isX2 &&
-						multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
-							paysWithFeeDestGeneralIndex
-					) {
-						result = i;
-						break;
+					// if isForeignAssetsTransfer, compare the multiAsset interior to the the paysWithFeeDestGeneralIndex as a multilocation
+					if (isForeignAssetsTransfer) {
+						const paysWithFeeDestMultiLocation = api.registry.createType(
+							'MultiLocation',
+							JSON.parse(paysWithFeeDestGeneralIndex)
+						);
+						console.log(
+							'PAYS WITH FEE DEST MULTI',
+							paysWithFeeDestMultiLocation.interior.toString()
+						);
+						if (
+							multiAsset.id.Concrete.interior.eq(
+								paysWithFeeDestMultiLocation.interior
+							)
+						) {
+							result = i;
+							break;
+						}
+					} else {
+						// if the current multiAsset is the relay asset we skip it since the
+						// pays with fee dest item is not the relay asset
+						if (multiAsset.id.Concrete.interior.isHere) {
+							continue;
+						}
+
+						if (
+							multiAsset.id.Concrete.interior.isX2 &&
+							multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
+								paysWithFeeDestGeneralIndex
+						) {
+							result = i;
+							break;
+						}
 					}
 				} else {
 					if (
