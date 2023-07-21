@@ -879,10 +879,6 @@ export class AssetsTransferApi {
 			return false;
 		}
 
-		if (assetIds[0].length < 3) {
-			return false;
-		}
-
 		if (!assetIds[0].toLowerCase().includes('parents')) {
 			return false;
 		}
