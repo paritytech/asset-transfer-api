@@ -191,7 +191,10 @@ describe('ParaToSystem', () => {
 				proofSize
 			);
 			expect(weightLimit.toJSON()).toStrictEqual({
-				limited: 1000000000,
+				limited: {
+					proofSize: 1000,
+					refTime: 100000000,
+				},
 			});
 		});
 		it('Should work when isLimited is falsy', () => {

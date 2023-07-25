@@ -168,7 +168,10 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 				proofSize
 			);
 			expect(weightLimit.toJSON()).toStrictEqual({
-				limited: 100000000,
+				limited: {
+					refTime: 100000000,
+					proofSize: 1000,
+				},
 			});
 		});
 		it('Should work when isLimited is falsy', () => {
