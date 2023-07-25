@@ -27,6 +27,7 @@ export const transferMultiAsset = (
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[],
+	destChainId: string,
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
@@ -54,6 +55,7 @@ export const transferMultiAsset = (
 			{ registry }
 		);
 		const beneficiary = typeCreator.createXTokensBeneficiary(
+			destChainId,
 			destAddr,
 			xcmVersion
 		);

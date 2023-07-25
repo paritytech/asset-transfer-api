@@ -215,15 +215,19 @@ export const ParaToSystem: ICreateXcmType = {
 		return api.registry.createType('u32', 0);
 	},
 	createXTokensBeneficiary: (
+		destChainId: string,
 		accountId: string,
 		xcmVersion: number
 	): XCMDestBenificiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
-					parents: 0,
+					parents: 1,
 					interior: {
-						X1: { AccountId32: { id: accountId } },
+						X2: [
+							{ Parachain: destChainId },
+							{ AccountId32: { id: accountId } },
+						],
 					},
 				},
 			};
@@ -231,9 +235,9 @@ export const ParaToSystem: ICreateXcmType = {
 
 		return {
 			V3: {
-				parents: 0,
+				parents: 1,
 				interior: {
-					X1: { AccountId32: { id: accountId } },
+					X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
 				},
 			},
 		};

@@ -456,8 +456,16 @@ export const checkAssetIdInput = (
 	}
 };
 
-const checkWeightLimit = (
-	isLimited?: string,
+/**
+ * This will check isLimited and ensure that both refTime and proofSize are
+ * provided if it is true
+ *
+ * @param isLimiited
+ * @param refTime
+ * @param proofSize
+ */
+export const checkWeightLimit = (
+	isLimited?: boolean,
 	refTime?: string,
 	proofSize?: string
 ) => {
@@ -492,7 +500,7 @@ export const checkXcmTxInputs = (
 	xcmDirection: Direction,
 	specName: string,
 	registry: Registry,
-	weightLimit?: string,
+	isLimited?: boolean,
 	refTime?: string,
 	proofSize?: string
 ) => {
@@ -501,7 +509,7 @@ export const checkXcmTxInputs = (
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
 	checkAssetIdInput(assetIds, relayChainInfo, specName, xcmDirection, registry);
-	checkWeightLimit(weightLimit, refTime, proofSize);
+	checkWeightLimit(isLimited, refTime, proofSize);
 
 	if (xcmDirection === Direction.RelayToSystem) {
 		checkRelayAssetIdLength(assetIds);

@@ -56,6 +56,7 @@ export interface ICreateXcmType {
 	) => WeightLimitV2;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => u32;
 	createXTokensBeneficiary?: (
+		destChainId: string,
 		accountId: string,
 		xcmVersion: number
 	) => XCMDestBenificiary;

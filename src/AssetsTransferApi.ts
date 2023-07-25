@@ -54,7 +54,9 @@ import {
 	TxResult,
 	UnsignedTransaction,
 	XCMV2DestBenificiary,
+	XCMV2ParachainDestBenificiary,
 	XCMV3DestBenificiary,
+	XCMV3ParachainDestBenificiary,
 } from './types';
 
 /**
@@ -247,6 +249,7 @@ export class AssetsTransferApi {
 					addr,
 					assetIds,
 					amounts,
+					destChainId,
 					xcmVersion,
 					_specName,
 					this.registry,
@@ -262,7 +265,7 @@ export class AssetsTransferApi {
 					addr,
 					assetIds,
 					amounts,
-					// destChainId,
+					destChainId,
 					xcmVersion,
 					_specName,
 					this.registry,
@@ -279,7 +282,7 @@ export class AssetsTransferApi {
 					addr,
 					assetIds,
 					amounts,
-					// destChainId,
+					destChainId,
 					xcmVersion,
 					_specName,
 					this.registry,
@@ -652,9 +655,26 @@ export class AssetsTransferApi {
 			) {
 				addr = (submittableData.method.args.beneficiary as XCMV2DestBenificiary)
 					.V2.interior.X1.AccountId32.id;
-			} else {
+			} else if (
+				(submittableData.method.args.beneficiary as XCMV3DestBenificiary).V3
+			) {
 				addr = (submittableData.method.args.beneficiary as XCMV3DestBenificiary)
 					.V3.interior.X1.AccountId32.id;
+			} else if (
+				(
+					submittableData.method.args
+						.beneficiary as XCMV2ParachainDestBenificiary
+				).V2
+			) {
+				addr = (
+					submittableData.method.args
+						.beneficiary as XCMV2ParachainDestBenificiary
+				).V2.interior.X2[1].AccountId32.id;
+			} else {
+				addr = (
+					submittableData.method.args
+						.beneficiary as XCMV3ParachainDestBenificiary
+				).V3.interior.X2[1].AccountId32.id;
 			}
 		} else if (submittableData.method.args.dest) {
 			addr = submittableData.method.args.dest.Id;

@@ -325,7 +325,29 @@ export interface XCMV3DestBenificiary {
 	};
 }
 
-export type XCMDestBenificiary = XCMV3DestBenificiary | XCMV2DestBenificiary;
+export interface XCMV2ParachainDestBenificiary {
+	V2: {
+		parents: string | number;
+		interior: {
+			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
+		};
+	};
+}
+
+export interface XCMV3ParachainDestBenificiary {
+	V3: {
+		parents: string | number;
+		interior: {
+			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
+		};
+	};
+}
+
+export type XCMDestBenificiary =
+	| XCMV3DestBenificiary
+	| XCMV2DestBenificiary
+	| XCMV2ParachainDestBenificiary
+	| XCMV3ParachainDestBenificiary;
 
 export interface XCMV2MultiAsset {
 	V2: {

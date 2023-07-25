@@ -8,6 +8,7 @@ import {
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
+	checkWeightLimit,
 } from './checkXcmTxInputs';
 
 const runTests = (tests: Test[]) => {
@@ -369,5 +370,22 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 		const err = () =>
 			checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 		expect(err).toThrowError(expectErrorMessage);
+	});
+});
+
+describe('checkWeightLimit', () => {
+	it('Should correctly error when refTime is not provided and isLimited is true', () => {
+		const err = () => checkWeightLimit(true, undefined, '500');
+
+		expect(err).toThrowError(
+			'refTime value not found for weight limited transaction. Please provide refTime value'
+		);
+	});
+	it('Should correctly error when refTime is not provided and isLimited is true', () => {
+		const err = () => checkWeightLimit(true, '1000', undefined);
+
+		expect(err).toThrowError(
+			'proofSize value not found for weight limited transaction. Please provide proofSize value'
+		);
 	});
 });

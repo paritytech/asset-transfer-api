@@ -16,13 +16,14 @@ describe('transferMultiAsset', () => {
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1'],
 				['100'],
+				'1000',
 				2,
 				'moonriver',
 				registry
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xdc046a010100010300a10f043205040091010100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
+				'0xe8046a010100010300a10f0432050400910101010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V2', () => {
@@ -32,6 +33,7 @@ describe('transferMultiAsset', () => {
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1'],
 				['100'],
+				'1000',
 				2,
 				'moonriver',
 				registry,
@@ -41,7 +43,7 @@ describe('transferMultiAsset', () => {
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xec046a010100010300a10f043205040091010100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
+				'0xf8046a010100010300a10f0432050400910101010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
 			);
 		});
 
@@ -52,13 +54,14 @@ describe('transferMultiAsset', () => {
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1'],
 				['100'],
+				'1000',
 				3,
 				'moonriver',
 				registry
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xdc046a010300010300a10f043205040091010300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
+				'0xe8046a010300010300a10f0432050400910103010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V3', () => {
@@ -68,6 +71,7 @@ describe('transferMultiAsset', () => {
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1'],
 				['100'],
+				'1000',
 				3,
 				'moonriver',
 				registry,
@@ -77,7 +81,7 @@ describe('transferMultiAsset', () => {
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xec046a010300010300a10f043205040091010300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
+				'0xf8046a010300010300a10f0432050400910103010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
 			);
 		});
 	});

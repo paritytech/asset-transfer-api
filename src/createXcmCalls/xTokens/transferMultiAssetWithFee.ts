@@ -28,7 +28,7 @@ export const transferMultiAssetWithFee = (
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[],
-	// destChainId: string,
+	destChainId: string,
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
@@ -69,6 +69,7 @@ export const transferMultiAssetWithFee = (
 			xcmVersion,
 		});
 		const beneficiary = typeCreator.createXTokensBeneficiary(
+			destChainId,
 			destAddr,
 			xcmVersion
 		);

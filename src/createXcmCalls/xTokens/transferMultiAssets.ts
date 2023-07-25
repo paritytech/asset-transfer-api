@@ -28,7 +28,7 @@ export const transferMultiAssets = (
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[],
-	// destChainId: string,
+	destChainId: string,
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
@@ -168,7 +168,11 @@ export const transferMultiAssets = (
 		//     }
 		// );
 
-		beneficiary = typeCreator.createXTokensBeneficiary(destAddr, xcmVersion);
+		beneficiary = typeCreator.createXTokensBeneficiary(
+			destChainId,
+			destAddr,
+			xcmVersion
+		);
 
 		// destWeightLimit = typeCreator.createXTokensWeightLimit(isLimited, refTime, proofSize);
 
