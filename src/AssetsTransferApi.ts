@@ -247,12 +247,12 @@ export class AssetsTransferApi {
 						addr,
 						assetIds,
 						amounts,
-						// destChainId,
 						xcmVersion,
 						_specName,
 						this.registry,
-						opts?.weightLimit,
-						opts?.paysWithFeeDest
+						opts?.isLimited,
+						opts?.refTime,
+						opts?.proofSize
 					);
 			} else if (opts.paysWithFeeDest.includes('parents')) {
 						txMethod = 'transferMultiAssetWithFee';
@@ -266,7 +266,9 @@ export class AssetsTransferApi {
 							xcmVersion,
 							_specName,
 							this.registry,
-							opts?.weightLimit,
+							opts?.isLimited,
+							opts?.refTime,
+							opts?.proofSize,
 							opts?.paysWithFeeDest
 						);
 					} else {
@@ -281,7 +283,9 @@ export class AssetsTransferApi {
 							xcmVersion,
 							_specName,
 							this.registry,
-							opts?.weightLimit,
+							opts?.isLimited,
+							opts?.refTime,
+							opts?.proofSize,
 							opts?.paysWithFeeDest
 						);
 					} 
@@ -299,7 +303,9 @@ export class AssetsTransferApi {
 						xcmVersion,
 						_specName,
 						this.registry,
-						opts?.weightLimit,
+						opts?.isLimited,
+						opts?.refTime,
+						opts?.proofSize,
 						opts?.paysWithFeeDest
 					);
 				} else {
@@ -330,7 +336,9 @@ export class AssetsTransferApi {
 						xcmVersion,
 						_specName,
 						this.registry,
-						opts?.weightLimit
+						opts?.isLimited,
+						opts?.refTime,
+						opts?.proofSize
 					);
 				} else {
 					txMethod = 'teleportAssets';
@@ -562,7 +570,6 @@ export class AssetsTransferApi {
 		const { _api } = this;
 		const fmt = format ? format : 'payload';
 
-		console.log('endoed tx', encodedTransaction);
 		if (fmt === 'payload') {
 			const extrinsicPayload = _api.registry.createType(
 				'ExtrinsicPayload',
@@ -572,8 +579,6 @@ export class AssetsTransferApi {
 				}
 			);
 		
-			console.log('payload to human', extrinsicPayload.toHuman());
-
 			const call = _api.registry.createType('Call', extrinsicPayload.method);
 			const decodedMethodInfo = JSON.stringify(call.toHuman());
 
@@ -636,7 +641,6 @@ export class AssetsTransferApi {
 		}
 
 		const submittableString = JSON.stringify(tx.toHuman());
-		console.log('submittable string', submittableString);
 		const submittableData: SubmittableMethodData = JSON.parse(
 			submittableString
 		) as unknown as SubmittableMethodData;
@@ -655,26 +659,6 @@ export class AssetsTransferApi {
 		} else if (submittableData.method.args.dest) {
 			addr = submittableData.method.args.dest.Id;
 		}
-		// if (!addr) {
-		// 	if (submittableData.method.args.dest) {
-		// 		for (const [key, value] of Object.entries(submittableData.method.args.dest)) {
-		// 			console.log('key', key);
-		// 			console.log('value', value);
-		// 			if (key === 'id'){
-		// 				addr = value;
-		// 				break;
-		// 			}
-		// 		}
-		// 	}
-		// }
-		
-		// if (!addr) {
-
-		// 	// addr = '0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16';
-		// 	// throw new BaseError(
-		// 	// 	`Unable to derive payload address for tx ${tx.toString()}`
-		// 	// );
-		// }
 
 		const lastHeader = await this._api.rpc.chain.getHeader();
 		const blockNumber = this._api.registry.createType(

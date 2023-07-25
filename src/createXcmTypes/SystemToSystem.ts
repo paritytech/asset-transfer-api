@@ -153,14 +153,23 @@ export const SystemToSystem: ICreateXcmType = {
 	 * Create a WeightLimitV2 type.
 	 *
 	 * @param api ApiPromise
-	 * @param weightLimit WeightLimit passed in as an option.
+	 * @param isLimited Whether the tx is limited
+	 * @param refTime amount of computation time
+	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (api: ApiPromise, weightLimit?: string): WeightLimitV2 => {
-		const limit: IWeightLimit = weightLimit
-			? { Limited: weightLimit }
+	createWeightLimit: (
+		api: ApiPromise, 
+		isLimited?: boolean, 
+		refTime?: string,
+		proofSize?: string
+		): WeightLimitV2 => {
+			const limit: IWeightLimit = isLimited && refTime && proofSize
+			? { 
+				Limited: { refTime: refTime, proofSize: proofSize } 
+			}
 			: { Unlimited: null };
 
-		return api.registry.createType('XcmV2WeightLimit', limit);
+		return api.registry.createType('XcmV3WeightLimit', limit);
 	},
 
 	/**

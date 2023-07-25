@@ -9,6 +9,10 @@ describe('limitedTeleportAssets', () => {
 	const registry = new Registry('statemine', {});
 	describe('SystemToPara', () => {
 		it('Should correctly construct a tx for a system parachain with V2', () => {
+			const isLimited = true;
+			const refTime = '1000';
+			const proofSize = '2000';
+
 			const ext = limitedTeleportAssets(
 				mockSystemApi,
 				Direction.SystemToPara,
@@ -18,7 +22,10 @@ describe('limitedTeleportAssets', () => {
 				'1000',
 				2,
 				'statemine',
-				registry
+				registry,
+				isLimited,
+				refTime,
+				proofSize
 			);
 
 			expect(ext.toHex()).toBe(
@@ -26,6 +33,10 @@ describe('limitedTeleportAssets', () => {
 			);
 		});
 		it('Should error when a api does not support the required pallets', () => {
+			const isLimited = true;
+			const refTime = '1000';
+			const proofSize = '2000';
+
 			const mockApi = { tx: {} } as unknown as ApiPromise;
 			const err = () =>
 				limitedTeleportAssets(
@@ -37,7 +48,10 @@ describe('limitedTeleportAssets', () => {
 					'1000',
 					2,
 					'statemine',
-					registry
+					registry,
+					isLimited,
+					refTime,
+					proofSize
 				);
 
 			expect(err).toThrowError(

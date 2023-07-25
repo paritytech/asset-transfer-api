@@ -43,7 +43,7 @@ export interface ICreateXcmType {
 		assets: string[],
 		opts: CreateAssetsOpts
 		) => VersionedMultiAssets;
-	createWeightLimit: (api: ApiPromise, weightLimit?: string) => WeightLimitV2;
+	createWeightLimit: (api: ApiPromise, isLimited?: boolean, refTime?: string, proofSize?: string) => WeightLimitV2;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => u32;
 	createXTokensBeneficiary?: (
 		accountId: string,
@@ -58,14 +58,19 @@ export interface ICreateXcmType {
 		opts: CreateAssetsOpts,
 	) => XcmMultiAsset[];
 	createXTokensWeightLimit?: (
-		weightLimit?: string
+		isLimited?: boolean,
+		refTime?: string,
+		proofSize?: string
 	) => XcmWeight;
 	createXTokensFeeAssetItem?: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => XcmMultiAsset;
 }
 
 interface IWeightLimitBase {
 	Unlimited: null;
-	Limited: string;
+	Limited: {
+		refTime: string,
+		proofSize: string
+	};
 }
 
 export type IWeightLimit = RequireOnlyOne<IWeightLimitBase>;

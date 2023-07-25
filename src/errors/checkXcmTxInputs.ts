@@ -456,6 +456,22 @@ export const checkAssetIdInput = (
 	}
 };
 
+const checkWeightLimit = (
+	isLimited?: string,
+	refTime?: string,
+	proofSize?: string
+) => {
+	if (isLimited) {
+		if (!refTime) {
+			throw new BaseError('refTime value not found for weight limited transaction. Please provide refTime value')
+		}
+
+		if (!proofSize) {
+			throw new BaseError('proofSize value not found for weight limited transaction. Please provide proofSize value')
+		}
+	}
+}
+
 /**
  * This will check the given inputs and ensure there is no issues when constructing
  * the xcm transaction.
@@ -471,13 +487,18 @@ export const checkXcmTxInputs = (
 	amounts: string[],
 	xcmDirection: Direction,
 	specName: string,
-	registry: Registry
+	registry: Registry,
+	weightLimit?: string,
+	refTime?: string,
+	proofSize?: string
+
 ) => {
 	const relayChainInfo = registry.currentRelayRegistry;
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
 	checkAssetIdInput(assetIds, relayChainInfo, specName, xcmDirection, registry);
+	checkWeightLimit(weightLimit, refTime, proofSize);
 
 	if (xcmDirection === Direction.RelayToSystem) {
 		checkRelayAssetIdLength(assetIds);

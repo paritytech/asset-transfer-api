@@ -233,16 +233,22 @@ describe('SystemToPara XcmVersioned Generation', () => {
 	describe('WeightLimit', () => {
 		// NOTE: for V0, V1, and V2 Weightlimit just uses V2 so we only need to test once.
 		// No matter the version if its equal to or less than 2, it will alwyas default to V2.
-		it('Should work when given a weightLimit', () => {
+		it('Should work when isLimited is true', () => {
+			const isLimited = true;
+			const refTime = '100000000';
+			const proofSize = '1000';
+
 			const weightLimit = SystemToPara.createWeightLimit(
 				mockSystemApi,
-				'100000000'
+				isLimited,
+				refTime,
+				proofSize
 			);
 			expect(weightLimit.toJSON()).toStrictEqual({
 				limited: 100000000,
 			});
 		});
-		it('Should work when no weightLimit is present', () => {
+		it('Should work when isLimited is falsy', () => {
 			const weightLimit = SystemToPara.createWeightLimit(mockSystemApi);
 
 			expect(weightLimit.toJSON()).toStrictEqual({
