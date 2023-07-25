@@ -5,10 +5,10 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import type { Registry } from '../../registry';
-import { Direction, XcmMultiAsset, XCMDestBenificiary } from '../../types';
-import { establishXcmPallet } from '../util/establishXcmPallet';
 import { BaseError } from '../../errors';
+import type { Registry } from '../../registry';
+import { Direction } from '../../types';
+import { establishXcmPallet } from '../util/establishXcmPallet';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferMultiAssetWithFee`
  * call.
@@ -31,23 +31,35 @@ export const transferMultiAsset = (
 	specName: string,
 	registry: Registry,
 	isLimited?: boolean,
-    refTime?: string,
-    proofSize?: string
+	refTime?: string,
+	proofSize?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api, direction);
 	const ext = api.tx[pallet].transferMultiasset;
 	const typeCreator = createXcmTypes[direction];
-	const destWeightLimit = typeCreator.createWeightLimit(api, isLimited, refTime, proofSize);
-   
-    if (
-        typeCreator.createXTokensAssets && 
-        typeCreator.createXTokensBeneficiary
-        ) {
-        const assets = typeCreator.createXTokensAssets(api, amounts, xcmVersion, specName, assetIds, { registry })
-        const beneficiary = typeCreator.createXTokensBeneficiary(destAddr, xcmVersion);
+	const destWeightLimit = typeCreator.createWeightLimit(
+		api,
+		isLimited,
+		refTime,
+		proofSize
+	);
 
-        return ext(assets[0], beneficiary, destWeightLimit);
-    }
-    
-    throw new BaseError('Unable to create xTokens assets');
+	if (typeCreator.createXTokensAssets && typeCreator.createXTokensBeneficiary) {
+		const assets = typeCreator.createXTokensAssets(
+			api,
+			amounts,
+			xcmVersion,
+			specName,
+			assetIds,
+			{ registry }
+		);
+		const beneficiary = typeCreator.createXTokensBeneficiary(
+			destAddr,
+			xcmVersion
+		);
+
+		return ext(assets[0], beneficiary, destWeightLimit);
+	}
+
+	throw new BaseError('Unable to create xTokens assets');
 };

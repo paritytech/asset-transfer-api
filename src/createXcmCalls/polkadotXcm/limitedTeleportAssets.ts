@@ -49,7 +49,12 @@ export const limitedTeleportAssets = (
 		assetIds,
 		{ registry }
 	);
-	const weightLimitType = typeCreator.createWeightLimit(api, isLimited, refTime, proofSize);
+	const weightLimitType = typeCreator.createWeightLimit(
+		api,
+		isLimited,
+		refTime,
+		proofSize
+	);
 
 	const feeAssetItem = paysWithFeeDest
 		? typeCreator.createFeeAssetItem(api, { registry })

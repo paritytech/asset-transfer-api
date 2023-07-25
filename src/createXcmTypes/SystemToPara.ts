@@ -165,16 +165,17 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param proofSize amount of storage to be used
 	 */
 	createWeightLimit: (
-		api: ApiPromise, 
-		isLimited?: boolean, 
+		api: ApiPromise,
+		isLimited?: boolean,
 		refTime?: string,
 		proofSize?: string
-		): WeightLimitV2 => {
-			const limit: IWeightLimit = isLimited && refTime && proofSize
-			? { 
-				Limited: { refTime, proofSize } 
-			}
-			: { Unlimited: null };
+	): WeightLimitV2 => {
+		const limit: IWeightLimit =
+			isLimited && refTime && proofSize
+				? {
+						Limited: { refTime, proofSize },
+				  }
+				: { Unlimited: null };
 
 		return api.registry.createType('XcmV3WeightLimit', limit);
 	},

@@ -51,7 +51,12 @@ export const limitedReserveTransferAssets = (
 		assetIds,
 		{ registry }
 	);
-	const weightLimitType = typeCreator.createWeightLimit(api, isLimited, refTime, proofSize);
+	const weightLimitType = typeCreator.createWeightLimit(
+		api,
+		isLimited,
+		refTime,
+		proofSize
+	);
 
 	const feeAssetItem: u32 = paysWithFeeDest
 		? typeCreator.createFeeAssetItem(api, {

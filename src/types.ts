@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { ISubmittableResult } from '@polkadot/types/types';
 import { InteriorMultiLocation } from '@polkadot/types/interfaces';
+import type { ISubmittableResult } from '@polkadot/types/types';
 
 import type { ChainInfoRegistry } from './registry/types';
 
@@ -103,7 +103,7 @@ export type Methods =
 	| 'limitedReserveTransferAssets'
 	| 'teleportAssets'
 	| 'limitedTeleportAssets'
-	| 'transferMultiAsset' 
+	| 'transferMultiAsset'
 	| 'transferMultiAssets'
 	| 'transferMultiAssetWithFee';
 
@@ -179,7 +179,7 @@ export interface TransferArgsOpts<T extends Format> {
 	 */
 	weightLimit?: string;
 	/**
-	 * Provided when creating limited txs, represents the allowed amount of computation time 
+	 * Provided when creating limited txs, represents the allowed amount of computation time
 	 * the tx can use
 	 */
 	refTime?: string;
@@ -192,7 +192,7 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Set the xcmVersion for message construction. If this is not present a supported version
 	 * will be queried, and if there is no supported version a safe version will be queried.
 	 */
-	
+
 	xcmVersion?: number;
 	/**
 	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
@@ -332,12 +332,12 @@ export interface XCMV2MultiAsset {
 		id: {
 			Concrete: {
 				parents: string | number;
-				interior: InteriorMultiLocation
-			}
-		},
+				interior: InteriorMultiLocation;
+			};
+		};
 		fun: {
-			Fungible: { Fungible: number | string }
-		}
+			Fungible: { Fungible: number | string };
+		};
 	};
 }
 export interface XCMV3MultiAsset {
@@ -345,27 +345,26 @@ export interface XCMV3MultiAsset {
 		id: {
 			Concrete: {
 				parents: string | number;
-				interior: InteriorMultiLocation
-			}
-		},
+				interior: InteriorMultiLocation;
+			};
+		};
 		fun: {
-			Fungible: { Fungible: number| string }
-		}
+			Fungible: { Fungible: number | string };
+		};
 	};
 }
 
 export type XcmMultiAsset = XCMV2MultiAsset | XCMV3MultiAsset;
 
-
 export interface XcmWeightUnlimited {
-	Unlimited : null | undefined;
+	Unlimited: null | undefined;
 }
 
 export interface XcmWeightLimited {
-	Limited : {
-		refTime: string,
-		proofSize: string
-	}
+	Limited: {
+		refTime: string;
+		proofSize: string;
+	};
 }
 
 export type XcmWeight = XcmWeightUnlimited | XcmWeightLimited;

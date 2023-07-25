@@ -1,12 +1,13 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
+
 import { Direction } from '../../types';
 
 enum XcmPalletName {
 	xcmPallet = 'xcmPallet',
 	polkadotXcm = 'polkadotXcm',
-	xTokens = 'xTokens'
+	xTokens = 'xTokens',
 }
 
 /**
@@ -16,7 +17,10 @@ enum XcmPalletName {
  *
  * @param api ApiPromise
  */
-export const establishXcmPallet = (api: ApiPromise, direction?: Direction): XcmPalletName => {
+export const establishXcmPallet = (
+	api: ApiPromise,
+	direction?: Direction
+): XcmPalletName => {
 	// check for xtokens pallet if exists
 	if (direction && direction === Direction.ParaToSystem && api.tx.xTokens) {
 		return XcmPalletName.xTokens;

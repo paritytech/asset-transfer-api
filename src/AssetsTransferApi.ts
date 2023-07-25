@@ -28,6 +28,7 @@ import {
 	transferMultiAssets,
 	transferMultiAssetWithFee,
 } from './createXcmCalls';
+import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
 import { getSystemChainTokenSymbolGeneralIndex } from './createXcmTypes/util/getTokenSymbolGeneralIndex';
 import {
@@ -55,7 +56,6 @@ import {
 	XCMV2DestBenificiary,
 	XCMV3DestBenificiary,
 } from './types';
-import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -240,55 +240,55 @@ export class AssetsTransferApi {
 
 		if (xcmPallet === 'xTokens' && xcmDirection === Direction.ParaToSystem) {
 			if (!opts?.paysWithFeeDest) {
-					txMethod = 'transferMultiAsset';
-					transaction = transferMultiAsset(
-						_api,
-						xcmDirection,
-						addr,
-						assetIds,
-						amounts,
-						xcmVersion,
-						_specName,
-						this.registry,
-						opts?.isLimited,
-						opts?.refTime,
-						opts?.proofSize
-					);
+				txMethod = 'transferMultiAsset';
+				transaction = transferMultiAsset(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					xcmVersion,
+					_specName,
+					this.registry,
+					opts?.isLimited,
+					opts?.refTime,
+					opts?.proofSize
+				);
 			} else if (opts.paysWithFeeDest.includes('parents')) {
-						txMethod = 'transferMultiAssetWithFee';
-						transaction = transferMultiAssetWithFee(
-							_api,
-							xcmDirection,
-							addr,
-							assetIds,
-							amounts,
-							// destChainId,
-							xcmVersion,
-							_specName,
-							this.registry,
-							opts?.isLimited,
-							opts?.refTime,
-							opts?.proofSize,
-							opts?.paysWithFeeDest
-						);
-					} else {
-						txMethod = 'transferMultiAssets';
-						transaction = transferMultiAssets(
-							_api,
-							xcmDirection,
-							addr,
-							assetIds,
-							amounts,
-							// destChainId,
-							xcmVersion,
-							_specName,
-							this.registry,
-							opts?.isLimited,
-							opts?.refTime,
-							opts?.proofSize,
-							opts?.paysWithFeeDest
-						);
-					} 
+				txMethod = 'transferMultiAssetWithFee';
+				transaction = transferMultiAssetWithFee(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					// destChainId,
+					xcmVersion,
+					_specName,
+					this.registry,
+					opts?.isLimited,
+					opts?.refTime,
+					opts?.proofSize,
+					opts?.paysWithFeeDest
+				);
+			} else {
+				txMethod = 'transferMultiAssets';
+				transaction = transferMultiAssets(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					// destChainId,
+					xcmVersion,
+					_specName,
+					this.registry,
+					opts?.isLimited,
+					opts?.refTime,
+					opts?.proofSize,
+					opts?.paysWithFeeDest
+				);
+			}
 		} else {
 			if (assetType === AssetType.Foreign || isSystemToSystemReserveTransfer) {
 				if (opts?.isLimited) {
@@ -578,7 +578,7 @@ export class AssetsTransferApi {
 					version: EXTRINSIC_VERSION,
 				}
 			);
-		
+
 			const call = _api.registry.createType('Call', extrinsicPayload.method);
 			const decodedMethodInfo = JSON.stringify(call.toHuman());
 

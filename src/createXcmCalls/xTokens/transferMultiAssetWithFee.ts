@@ -6,10 +6,10 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import type { Registry } from '../../registry';
-import { Direction, XcmMultiAsset, XCMDestBenificiary } from '../../types';
-import { establishXcmPallet } from '../util/establishXcmPallet';
 import { BaseError } from '../../errors';
+import type { Registry } from '../../registry';
+import { Direction } from '../../types';
+import { establishXcmPallet } from '../util/establishXcmPallet';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferMultiAssetWithFee`
  * call.
@@ -33,36 +33,48 @@ export const transferMultiAssetWithFee = (
 	specName: string,
 	registry: Registry,
 	isLimited?: boolean,
-    refTime?: string,
-    proofSize?: string,
+	refTime?: string,
+	proofSize?: string,
 	paysWithFeeDest?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api, direction);
 	const ext = api.tx[pallet].transferMultiassetWithFee;
 	const typeCreator = createXcmTypes[direction];
-	const destWeightLimit = typeCreator.createWeightLimit(api, isLimited, refTime, proofSize);
-    
-    if (
-        typeCreator.createXTokensAssets && 
-        typeCreator.createXTokensFeeAssetItem &&
-        typeCreator.createXTokensBeneficiary 
-        ) {
-        const assets = typeCreator.createXTokensAssets(api, amounts, xcmVersion, specName, assetIds, { registry })
-        const feeAsset = typeCreator.createXTokensFeeAssetItem(
-                api,
-                {
-                    registry,
-                    paysWithFeeDest,
-                    specName,
-                    assetIds,
-                    amounts,
-                    xcmVersion,
-                }
-            );
-            const beneficiary = typeCreator.createXTokensBeneficiary(destAddr, xcmVersion);
+	const destWeightLimit = typeCreator.createWeightLimit(
+		api,
+		isLimited,
+		refTime,
+		proofSize
+	);
 
-        return ext(assets[0], feeAsset, beneficiary, destWeightLimit);
-    }
-    
-    throw new BaseError('Unable to create xTokens assets');
+	if (
+		typeCreator.createXTokensAssets &&
+		typeCreator.createXTokensFeeAssetItem &&
+		typeCreator.createXTokensBeneficiary
+	) {
+		const assets = typeCreator.createXTokensAssets(
+			api,
+			amounts,
+			xcmVersion,
+			specName,
+			assetIds,
+			{ registry }
+		);
+		const feeAsset = typeCreator.createXTokensFeeAssetItem(api, {
+			registry,
+			paysWithFeeDest,
+			specName,
+			assetIds,
+			amounts,
+			xcmVersion,
+		});
+		const beneficiary = typeCreator.createXTokensBeneficiary(
+			destAddr,
+			xcmVersion
+		);
+
+		return ext(assets[0], feeAsset, beneficiary, destWeightLimit);
+	}
+
+	throw new BaseError('Unable to create xTokens assets');
 };

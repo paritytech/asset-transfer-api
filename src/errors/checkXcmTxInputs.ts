@@ -463,14 +463,18 @@ const checkWeightLimit = (
 ) => {
 	if (isLimited) {
 		if (!refTime) {
-			throw new BaseError('refTime value not found for weight limited transaction. Please provide refTime value')
+			throw new BaseError(
+				'refTime value not found for weight limited transaction. Please provide refTime value'
+			);
 		}
 
 		if (!proofSize) {
-			throw new BaseError('proofSize value not found for weight limited transaction. Please provide proofSize value')
+			throw new BaseError(
+				'proofSize value not found for weight limited transaction. Please provide proofSize value'
+			);
 		}
 	}
-}
+};
 
 /**
  * This will check the given inputs and ensure there is no issues when constructing
@@ -491,7 +495,6 @@ export const checkXcmTxInputs = (
 	weightLimit?: string,
 	refTime?: string,
 	proofSize?: string
-
 ) => {
 	const relayChainInfo = registry.currentRelayRegistry;
 	/**

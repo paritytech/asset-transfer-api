@@ -13,7 +13,12 @@ import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isHex } from '@polkadot/util';
 
 import type { Registry } from '../registry';
-import { MultiAsset, MultiAssetInterior, XCMDestBenificiary, XcmMultiAsset } from '../types';
+import {
+	MultiAsset,
+	MultiAssetInterior,
+	XCMDestBenificiary,
+	XcmMultiAsset,
+} from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import type {
@@ -38,9 +43,8 @@ export const ParaToSystem: ICreateXcmType = {
 	createBeneficiary: (
 		api: ApiPromise,
 		accountId: string,
-		xcmVersion?: number,
+		xcmVersion?: number
 	): VersionedMultiLocation => {
-
 		if (xcmVersion == 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -150,16 +154,17 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @param proofSize amount of storage to be used
 	 */
 	createWeightLimit: (
-		api: ApiPromise, 
-		isLimited?: boolean, 
+		api: ApiPromise,
+		isLimited?: boolean,
 		refTime?: string,
 		proofSize?: string
-		): WeightLimitV2 => {
-			const limit: IWeightLimit = isLimited && refTime && proofSize
-			? { 
-				Limited: { refTime, proofSize } 
-			}
-			: { Unlimited: null };
+	): WeightLimitV2 => {
+		const limit: IWeightLimit =
+			isLimited && refTime && proofSize
+				? {
+						Limited: { refTime, proofSize },
+				  }
+				: { Unlimited: null };
 
 		return api.registry.createType('XcmV3WeightLimit', limit);
 	},
@@ -211,29 +216,27 @@ export const ParaToSystem: ICreateXcmType = {
 	},
 	createXTokensBeneficiary: (
 		accountId: string,
-		xcmVersion: number,
-		): XCMDestBenificiary => {
-				if (xcmVersion === 2) {
-					return {
-						V2: {
-							parents: 0,
-							interior: {
-								X1: { AccountId32: { id: accountId }
-							}
-						}
-					}
-				} 
-			}
-
+		xcmVersion: number
+	): XCMDestBenificiary => {
+		if (xcmVersion === 2) {
 			return {
-				V3: {
+				V2: {
 					parents: 0,
 					interior: {
-						X1: { AccountId32: { id: accountId }
-					}
-				}
-			}
-		} 
+						X1: { AccountId32: { id: accountId } },
+					},
+				},
+			};
+		}
+
+		return {
+			V3: {
+				parents: 0,
+				interior: {
+					X1: { AccountId32: { id: accountId } },
+				},
+			},
+		};
 	},
 	createXTokensAssets: (
 		api: ApiPromise,
@@ -241,7 +244,7 @@ export const ParaToSystem: ICreateXcmType = {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts,
+		opts: CreateAssetsOpts
 	): XcmMultiAsset[] => {
 		return createXTokensMultiAssets(
 			api,
@@ -253,38 +256,28 @@ export const ParaToSystem: ICreateXcmType = {
 		);
 	},
 
-	createXTokensFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts): XcmMultiAsset => {
-			const {
-				paysWithFeeDest,
-				specName,
-				assetIds,
+	createXTokensFeeAssetItem: (
+		api: ApiPromise,
+		opts: CreateFeeAssetItemOpts
+	): XcmMultiAsset => {
+		const { paysWithFeeDest, specName, assetIds, amounts, xcmVersion } = opts;
+
+		if (xcmVersion && specName && amounts && assetIds && paysWithFeeDest) {
+			const multiAssets = createXTokensMultiAssets(
+				api,
 				amounts,
 				xcmVersion,
-			} = opts;
+				specName,
+				assetIds,
+				opts
+			);
 
-			if (
-				xcmVersion &&
-				specName &&
-				amounts &&
-				assetIds &&
-				paysWithFeeDest
-			) {
-
-				const multiAssets = createXTokensMultiAssets(
-					api,
-					amounts,
-					xcmVersion,
-					specName,
-					assetIds,
-					opts,
-				);
-
-				return multiAssets[0];
-			}
+			return multiAssets[0];
+		}
 
 		return {} as XcmMultiAsset;
-	}
-}
+	},
+};
 
 const createXTokensMultiAssets = (
 	api: ApiPromise,
@@ -292,14 +285,16 @@ const createXTokensMultiAssets = (
 	xcmVersion: number,
 	specName: string,
 	assets: string[],
-	opts: CreateAssetsOpts,
+	opts: CreateAssetsOpts
 ): XcmMultiAsset[] => {
 	const assetHubChainId = 1000;
-	const { assetsPalletInstance } = opts.registry.currentRelayRegistry[assetHubChainId];
+	const { assetsPalletInstance } =
+		opts.registry.currentRelayRegistry[assetHubChainId];
 	const palletId = assetsPalletInstance as string;
 	const { tokens: relayTokens } = opts.registry.currentRelayRegistry['0'];
-	const { assetsInfo: assetHubTokens } = opts.registry.currentRelayRegistry[assetHubChainId];
-	
+	const { assetsInfo: assetHubTokens } =
+		opts.registry.currentRelayRegistry[assetHubChainId];
+
 	const multiAssets: XcmMultiAsset[] = [];
 	for (let i = 0; i < assets.length; i++) {
 		let multiAsset: XcmMultiAsset;
@@ -309,23 +304,31 @@ const createXTokensMultiAssets = (
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
-		const  isAssetHubNative = assetHubTokens[assetId] ? true: false;
+		const isAssetHubNative = assetHubTokens[assetId] ? true : false;
 
 		if (!isRelayNative && isNotANumber) {
 			assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
 		}
-	
+
 		const interior: InteriorMultiLocation = isHex(assetId)
-			? api.registry.createType('InteriorMultiLocation', { X1: { GeneralKey: assetId } })
+			? api.registry.createType('InteriorMultiLocation', {
+					X1: { GeneralKey: assetId },
+			  })
 			: isRelayNative
 			? api.registry.createType('InteriorMultiLocation', { Here: '' })
-			: api.registry.createType('InteriorMultiLocation', { X3: [{Parachain: assetHubChainId}, { PalletInstance: palletId }, { GeneralIndex: assetId }] });
+			: api.registry.createType('InteriorMultiLocation', {
+					X3: [
+						{ Parachain: assetHubChainId },
+						{ PalletInstance: palletId },
+						{ GeneralIndex: assetId },
+					],
+			  });
 		const parents = isRelayNative || isAssetHubNative ? 1 : 0;
-		
+
 		if (xcmVersion === 2) {
-			 multiAsset = {
+			multiAsset = {
 				V2: {
-						id: {
+					id: {
 						Concrete: {
 							parents,
 							interior,
@@ -334,12 +337,12 @@ const createXTokensMultiAssets = (
 					fun: {
 						Fungible: { Fungible: amount },
 					},
-				}
-			}
+				},
+			};
 		} else {
 			multiAsset = {
 				V3: {
-						id: {
+					id: {
 						Concrete: {
 							parents,
 							interior,
@@ -348,15 +351,15 @@ const createXTokensMultiAssets = (
 					fun: {
 						Fungible: { Fungible: amount },
 					},
-				}
-			}
+				},
+			};
 		}
 
 		multiAssets.push(multiAsset);
 	}
 
 	return multiAssets;
-}
+};
 
 /**
  * Create multiassets for ParaToSystem direction.
