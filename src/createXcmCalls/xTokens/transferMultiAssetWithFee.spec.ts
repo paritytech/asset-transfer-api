@@ -26,10 +26,10 @@ describe('transferMultiAssetWithFee', () => {
 				2,
 				'moonriver',
 				registry,
+				paysWithFeeDest,
 				isLimited,
 				refTime,
 				proofSize,
-				paysWithFeeDest
 			);
 
 			expect(ext.toHex()).toBe(
@@ -53,10 +53,10 @@ describe('transferMultiAssetWithFee', () => {
 				2,
 				'moonriver',
 				registry,
+				paysWithFeeDest,
 				isLimited,
 				refTime,
 				proofSize,
-				paysWithFeeDest
 			);
 
 			expect(ext.toHex()).toBe(
@@ -81,10 +81,10 @@ describe('transferMultiAssetWithFee', () => {
 				3,
 				'moonriver',
 				registry,
+				paysWithFeeDest,
 				isLimited,
 				refTime,
 				proofSize,
-				paysWithFeeDest
 			);
 
 			expect(ext.toHex()).toBe(
@@ -108,10 +108,10 @@ describe('transferMultiAssetWithFee', () => {
 				3,
 				'moonriver',
 				registry,
+				paysWithFeeDest,
 				isLimited,
 				refTime,
 				proofSize,
-				paysWithFeeDest
 			);
 
 			expect(ext.toHex()).toBe(

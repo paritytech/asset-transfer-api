@@ -18,6 +18,7 @@ import {
 	MultiAssetInterior,
 	XCMDestBenificiary,
 	XcmMultiAsset,
+	XcmMultiLocation
 } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
@@ -31,6 +32,7 @@ import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
+import { BaseError } from '../errors';
 
 export const ParaToSystem: ICreateXcmType = {
 	/**
@@ -263,23 +265,33 @@ export const ParaToSystem: ICreateXcmType = {
 	createXTokensFeeAssetItem: (
 		api: ApiPromise,
 		opts: CreateFeeAssetItemOpts
-	): XcmMultiAsset => {
-		const { paysWithFeeDest, specName, assetIds, amounts, xcmVersion } = opts;
+	): XcmMultiLocation => {
+		const { paysWithFeeDest, xcmVersion } = opts;
 
-		if (xcmVersion && specName && amounts && assetIds && paysWithFeeDest) {
-			const multiAssets = createXTokensMultiAssets(
-				api,
-				amounts,
-				xcmVersion,
-				specName,
-				assetIds,
-				opts
-			);
+		if (xcmVersion && paysWithFeeDest) {
+			const paysWithFeeMultiLocation = api.registry.createType('MultiLocation', JSON.parse(paysWithFeeDest));
 
-			return multiAssets[0];
+			if (xcmVersion === 2) {
+				return {
+						V2: {
+							id: {
+								Concrete: paysWithFeeMultiLocation
+							}
+						}
+				};
+			}
+
+	
+			return {
+					V3: {
+						id: {
+							Concrete: paysWithFeeMultiLocation
+						}
+					}
+			};
 		}
 
-		return {} as XcmMultiAsset;
+		throw new BaseError('failed to create xTokens fee multilocation')
 	},
 };
 

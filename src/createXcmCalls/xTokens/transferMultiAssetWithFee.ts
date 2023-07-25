@@ -32,10 +32,10 @@ export const transferMultiAssetWithFee = (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
+	paysWithFeeDest: string,
 	isLimited?: boolean,
 	refTime?: string,
 	proofSize?: string,
-	paysWithFeeDest?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api, direction);
 	const ext = api.tx[pallet].transferMultiassetWithFee;
@@ -60,21 +60,19 @@ export const transferMultiAssetWithFee = (
 			assetIds,
 			{ registry }
 		);
-		const feeAsset = typeCreator.createXTokensFeeAssetItem(api, {
+		const fee = typeCreator.createXTokensFeeAssetItem(api, {
 			registry,
 			paysWithFeeDest,
-			specName,
-			assetIds,
-			amounts,
 			xcmVersion,
 		});
+
 		const beneficiary = typeCreator.createXTokensBeneficiary(
 			destChainId,
 			destAddr,
 			xcmVersion
 		);
 
-		return ext(assets[0], feeAsset, beneficiary, destWeightLimit);
+		return ext(assets[0], fee, beneficiary, destWeightLimit);
 	}
 
 	throw new BaseError('Unable to create xTokens assets');

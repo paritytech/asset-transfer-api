@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import { InteriorMultiLocation } from '@polkadot/types/interfaces';
+import { MultiLocation, InteriorMultiLocation } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import type { ChainInfoRegistry } from './registry/types';
@@ -377,6 +377,23 @@ export interface XCMV3MultiAsset {
 }
 
 export type XcmMultiAsset = XCMV2MultiAsset | XCMV3MultiAsset;
+
+export interface XCMV2MultiLocation {
+	V2: {
+		id: {
+			Concrete: MultiLocation
+		};
+	}
+}
+export interface XCMV3MultiLocation {
+	V3: {
+		id: {
+			Concrete: MultiLocation;
+		};
+	};
+}
+
+export type XcmMultiLocation = XCMV2MultiLocation | XCMV3MultiLocation;
 
 export interface XcmWeightUnlimited {
 	Unlimited: null | undefined;

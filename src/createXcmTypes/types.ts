@@ -14,6 +14,7 @@ import type {
 	XCMDestBenificiary,
 	XcmMultiAsset,
 	XcmWeight,
+	XcmMultiLocation
 } from '../types';
 
 export interface CreateAssetsOpts {
@@ -76,7 +77,7 @@ export interface ICreateXcmType {
 	createXTokensFeeAssetItem?: (
 		api: ApiPromise,
 		opts: CreateFeeAssetItemOpts
-	) => XcmMultiAsset;
+	) => XcmMultiLocation;
 }
 
 interface IWeightLimitBase {

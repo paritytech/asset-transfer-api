@@ -269,10 +269,10 @@ export class AssetsTransferApi {
 					xcmVersion,
 					_specName,
 					this.registry,
+					opts?.paysWithFeeDest,
 					opts?.isLimited,
 					opts?.refTime,
 					opts?.proofSize,
-					opts?.paysWithFeeDest
 				);
 			} else {
 				txMethod = 'transferMultiAssets';
