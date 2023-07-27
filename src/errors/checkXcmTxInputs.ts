@@ -4,7 +4,11 @@ import { ApiPromise } from '@polkadot/api';
 import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { RELAY_CHAIN_IDS, SYSTEM_PARACHAINS_IDS } from '../consts';
+import {
+	MAX_ASSETS_FOR_TRANSFER,
+	RELAY_CHAIN_IDS,
+	SYSTEM_PARACHAINS_IDS,
+} from '../consts';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
@@ -569,12 +573,12 @@ const checkSystemToSystemAssetId = async (
 };
 
 /**
- * Checks to ensure that assetId's have a length no greater than 2, throws an error if greater than 2
+ * Checks to ensure that assetId's have a length no greater than MAX_ASSETS_FOR_TRANSFER, throws an error if greater than MAX_ASSETS_FOR_TRANSFER
  *
  * @param assetIds
  */
 export const checkAssetIdsLengthIsValid = (assetIds: string[]) => {
-	if (assetIds.length > 2) {
+	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER) {
 		throw new BaseError(
 			`Maximum number of assets allowed for transfer is 2. Found ${assetIds.length} assetIds`
 		);
@@ -771,7 +775,7 @@ export const checkXcmTxInputs = async (
 	checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
 
 	/**
-	 * Checks to ensure that assetId's have a length no greater than 2
+	 * Checks to ensure that assetId's have a length no greater than MAX_ASSETS_FOR_TRANSFER
 	 */
 	checkAssetIdsLengthIsValid(assetIds);
 
