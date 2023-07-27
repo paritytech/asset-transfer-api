@@ -534,7 +534,9 @@ describe('checkAssetIdsHaveNoDuplicates', () => {
 
 		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
 
-		expect(err).toThrow('AssetIds must be unique. Found duplicate assetId USDT');
+		expect(err).toThrow(
+			'AssetIds must be unique. Found duplicate assetId USDT'
+		);
 	});
 	it('Should correctly error if duplicate multilocation assetIds are found', () => {
 		const assetIds = [

@@ -603,7 +603,10 @@ export const checkAssetIdsHaveNoDuplicates = (assetIds: string[]) => {
 				}
 
 				const asset2 = assetIds[j];
-				if (asset1.trim().toLowerCase().replace(/ /g, '') === asset2.trim().toLowerCase().replace(/ /g, '')) {
+				if (
+					asset1.trim().toLowerCase().replace(/ /g, '') ===
+					asset2.trim().toLowerCase().replace(/ /g, '')
+				) {
 					duplicateAssetIds.push(asset2);
 				}
 			}
