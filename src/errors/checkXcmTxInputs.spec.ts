@@ -529,16 +529,23 @@ describe('checkAssetIdsHaveNoDuplicates', () => {
 
 		expect(err).toThrow('AssetIds must be unique. Found duplicate assetId 10');
 	});
+	it('Should correctly error if duplicate integer assetIds are found', () => {
+		const assetIds = ['usdt', 'USDT'];
+
+		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
+
+		expect(err).toThrow('AssetIds must be unique. Found duplicate assetId USDT');
+	});
 	it('Should correctly error if duplicate multilocation assetIds are found', () => {
 		const assetIds = [
-			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
-			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+			'{"parents": "1","interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+			'{"parents": "1", "interior":{"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
 		];
 
 		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
 
 		expect(err).toThrow(
-			`AssetIds must be unique. Found duplicate assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}`
+			`AssetIds must be unique. Found duplicate assetId {"parents": "1", "interior":{"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}`
 		);
 	});
 });

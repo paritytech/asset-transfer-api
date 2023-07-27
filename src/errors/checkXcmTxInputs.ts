@@ -591,11 +591,23 @@ export const checkAssetIdsLengthIsValid = (assetIds: string[]) => {
  * @param assetIds
  */
 export const checkAssetIdsHaveNoDuplicates = (assetIds: string[]) => {
+	const duplicateAssetIds: string[] = [];
+
 	if (assetIds.length > 1) {
-		const duplicateAssetIds = assetIds.filter(
-			(multiLocationString, multiLocationIndex) =>
-				assetIds.indexOf(multiLocationString) != multiLocationIndex
-		);
+		for (let i = 0; i < assetIds.length; i++) {
+			const asset1 = assetIds[i];
+
+			for (let j = 0; j < assetIds.length; j++) {
+				if (i === j) {
+					continue;
+				}
+
+				const asset2 = assetIds[j];
+				if (asset1.trim().toLowerCase().replace(/ /g, '') === asset2.trim().toLowerCase().replace(/ /g, '')) {
+					duplicateAssetIds.push(asset2);
+				}
+			}
+		}
 
 		if (duplicateAssetIds.length > 0) {
 			if (assetIds[0] === '') {
