@@ -608,7 +608,7 @@ export class AssetsTransferApi {
 			return AssetCallType.Teleport;
 		}
 
-		// system to system foreign asset -> reserve
+		// system to system foreign asset -> not allowed
 		if (
 			assetType === AssetType.Foreign &&
 			xcmDirection === Direction.SystemToSystem
