@@ -702,7 +702,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				xcmVersion: number
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
-					'1002', // Since this is not `0` we know this is to a parachain
+					'2023', // Since this is not `0` we know this is to a parachain
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					[
 						'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}',
@@ -836,12 +836,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						2
 					);
 					expect(res).toEqual({
-						dest: 'bridge-hub-kusama',
+						dest: 'moonriver',
 						origin: 'statemine',
-						direction: 'SystemToSystem',
+						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0801010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200352105000091010000000000',
+						tx: '0x1f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200352105000091010000000000',
 						xcmVersion: 2,
 					});
 				});
@@ -852,12 +852,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						2
 					);
 					expect(res).toEqual({
-						dest: 'bridge-hub-kusama',
+						dest: 'moonriver',
 						origin: 'statemine',
-						direction: 'SystemToSystem',
+						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0xfc1f0801010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xfc1f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -991,12 +991,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						3
 					);
 					expect(res).toEqual({
-						dest: 'bridge-hub-kusama',
+						dest: 'moonriver',
 						origin: 'statemine',
-						direction: 'SystemToSystem',
+						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0803010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010200352105000091010000000000',
+						tx: '0x1f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010200352105000091010000000000',
 						xcmVersion: 3,
 					});
 				});
@@ -1007,12 +1007,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						3
 					);
 					expect(res).toEqual({
-						dest: 'bridge-hub-kusama',
+						dest: 'moonriver',
 						origin: 'statemine',
-						direction: 'SystemToSystem',
+						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0xfc1f0803010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010200352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xfc1f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010200352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});

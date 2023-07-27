@@ -88,17 +88,11 @@ export const checkAssetsAmountMatch = (
  *
  * @param assetId
  */
-const checkIfAssetIdIsEmptyOrBlankSpace = (assetId: string) => {
-	// check if empty or space
-	// if assetId is an empty space or space error
-	if (assetId === '' || assetId.trim() === '') {
-		const assetIdLength = assetId.length;
-		const errorMessageDetails =
-			assetIdLength > 0 ? 'Found blank space' : 'Found empty string';
-
-		throw new BaseError(
-			`assetId cannot be blank spaces or empty. ${errorMessageDetails}`
-		);
+const checkIfAssetIdIsBlankSpace = (assetId: string) => {
+	// check if assetId is a blank space
+	// if assetId is a space throw an error
+	if (assetId.length > 0 && assetId.trim() === '') {
+		throw new BaseError(`assetId cannot be blank spaces.`);
 	}
 };
 
@@ -250,6 +244,12 @@ const checkRelayToSystemAssetId = (
 	// ensure the asset being sent is the native asset of the relay chain
 	// no need to check if id is a number, if it is, it fails the check by default
 	let assetIsRelayChainNativeAsset = false;
+
+	// if an empty string is passed, treat it as the native relay asset
+	if (assetId === '') {
+		assetIsRelayChainNativeAsset = true;
+	}
+
 	if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
 		assetIsRelayChainNativeAsset = true;
 	}
@@ -280,6 +280,12 @@ const checkRelayToParaAssetId = (
 	// ensure the asset being sent is the native asset of the relay chain
 	// no need to check if id is a number, if it is, it fails the check by default
 	let assetIsRelayChainNativeAsset = false;
+
+	// if an empty string is passed, treat it as the native relay asset
+	if (assetId === '') {
+		assetIsRelayChainNativeAsset = true;
+	}
+
 	if (typeof assetId === 'string') {
 		if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
 			assetIsRelayChainNativeAsset = true;
@@ -309,6 +315,11 @@ const checkSystemToRelayAssetId = (
 
 	// ensure assetId is relay chain's native token
 	let matchedRelayChainNativeToken = false;
+
+	// if an empty string is passed, treat it as the native relay asset
+	if (assetId === '') {
+		matchedRelayChainNativeToken = true;
+	}
 
 	if (typeof assetId === 'string') {
 		if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
@@ -416,6 +427,10 @@ const checkSystemAssets = async (
 
 				throw new BaseError(message);
 			} else if (tokenSymbolsMatched.length === 1) {
+				isValidTokenSymbol = true;
+			}
+
+			if (assetId === '') {
 				isValidTokenSymbol = true;
 			}
 
@@ -554,6 +569,110 @@ const checkSystemToSystemAssetId = async (
 };
 
 /**
+ * Checks to ensure that assetId's have a length no greater than 2, throws an error if greater than 2
+ *
+ * @param assetIds
+ */
+export const checkAssetIdsLengthIsValid = (assetIds: string[]) => {
+	if (assetIds.length > 2) {
+		throw new BaseError(
+			`Maximum number of assets allowed for transfer is 2. Found ${assetIds.length} assetIds`
+		);
+	}
+};
+
+/**
+ * Checks to ensure that assetId's have no duplicates, throws an error if duplicate is found
+ *
+ * @param assetIds
+ */
+export const checkAssetIdsHaveNoDuplicates = (assetIds: string[]) => {
+	if (assetIds.length > 1) {
+		const duplicateAssetIds = assetIds.filter(
+			(multiLocationString, multiLocationIndex) =>
+				assetIds.indexOf(multiLocationString) != multiLocationIndex
+		);
+
+		if (duplicateAssetIds.length > 0) {
+			if (assetIds[0] === '') {
+				throw new BaseError(
+					`AssetIds must be unique. Found duplicate native relay assets as empty strings`
+				);
+			}
+
+			throw new BaseError(
+				`AssetIds must be unique. Found duplicate assetId ${duplicateAssetIds[0]}`
+			);
+		}
+	}
+};
+
+/**
+ * Checks to ensure that assetId's are symbols, integers and empty string or multilocations exclusively
+ *
+ * @param assetIds
+ */
+export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
+	if (assetIds.length > 1) {
+		let relayDefaultValueFound = false;
+		let symbolAssetIdFound = '';
+		let integerAssetIdFound = '';
+		let multiLocationAssetIdFound = '';
+
+		for (const assetId of assetIds) {
+			if (assetId === '') {
+				relayDefaultValueFound = true;
+				continue;
+			}
+
+			const parsedAssetIdAsNumber = Number.parseInt(assetId);
+			const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+
+			if (!isNotANumber) {
+				integerAssetIdFound = assetId;
+			} else if (assetId.toLowerCase().includes('parents')) {
+				multiLocationAssetIdFound = assetId;
+			} else {
+				symbolAssetIdFound = assetId;
+			}
+		}
+
+		if (relayDefaultValueFound && multiLocationAssetIdFound) {
+			throw new BaseError(
+				`Found both default relay native asset and multilocation assetId: ${multiLocationAssetIdFound}. Asset Ids must be either be a combination of empty string, symbol and integer or multilocations exclusively.`
+			);
+		}
+
+		if (integerAssetIdFound && multiLocationAssetIdFound) {
+			throw new BaseError(
+				`Found both integer ${integerAssetIdFound} and multilocation assetId ${multiLocationAssetIdFound}. Asset Ids must be symbol and integer or multilocation exclusively.`
+			);
+		}
+
+		if (symbolAssetIdFound && multiLocationAssetIdFound) {
+			throw new BaseError(
+				`Found both symbol ${symbolAssetIdFound} and multilocation assetId ${multiLocationAssetIdFound}. Asset Ids must be symbol and integer or multilocation exclusively.`
+			);
+		}
+	}
+};
+
+/**
+ * Checks to ensure that the xcmVersion is at least 3 if paysWithFeeDest is provided
+ *
+ * @param xcmVersion
+ * @param paysWithFeeDest
+ */
+export const checkXcmVersionIsValidForPaysWithFeeDest = (
+	xcmVersion?: number,
+	paysWithFeeDest?: string
+) => {
+	if (paysWithFeeDest && xcmVersion && xcmVersion < 3) {
+		throw new BaseError('paysWithFeeDest requires XCM version 3');
+	}
+};
+
+/**
  * This will check the given assetIds and ensure they are either valid integers as strings
  * or known token symbols
  *
@@ -575,7 +694,7 @@ export const checkAssetIdInput = async (
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
 
-		checkIfAssetIdIsEmptyOrBlankSpace(assetId);
+		checkIfAssetIdIsBlankSpace(assetId);
 
 		if (xcmDirection === Direction.RelayToSystem) {
 			checkRelayToSystemAssetId(assetId, relayChainInfo);
@@ -643,9 +762,29 @@ export const checkXcmTxInputs = async (
 	xcmDirection: Direction,
 	specName: string,
 	registry: Registry,
-	isForeignAssetsTransfer: boolean
+	isForeignAssetsTransfer: boolean,
+	xcmVersion?: number,
+	paysWithFeeDest?: string
 ) => {
 	const relayChainInfo = registry.currentRelayRegistry;
+
+	checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+
+	/**
+	 * Checks to ensure that assetId's have a length no greater than 2
+	 */
+	checkAssetIdsLengthIsValid(assetIds);
+
+	/**
+	 * Checks to ensure that assetId's have no duplicate values
+	 */
+	checkAssetIdsHaveNoDuplicates(assetIds);
+
+	/**
+	 * Checks to ensure that assetId's are either empty string, symbol and integer values or multilocations
+	 */
+	checkAssetIdsAreOfSameAssetIdType(assetIds);
+
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */

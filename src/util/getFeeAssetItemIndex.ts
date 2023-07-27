@@ -3,8 +3,8 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { getChainAssetId } from '../createXcmTypes/util/getChainAssetId';
+import { BaseError } from '../errors';
 import { MultiAsset } from '../types';
-
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index
  * of the MultiAsset to be used for fees on the destination chain
@@ -92,6 +92,14 @@ export const getFeeAssetItemIndex = async (
 				}
 			}
 		}
+	}
+
+	if (result === -1) {
+		throw new BaseError(
+			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets
+				.map((asset) => asset.id.Concrete.interior.toString())
+				.toString()}`
+		);
 	}
 
 	return result;

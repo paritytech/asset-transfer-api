@@ -258,7 +258,9 @@ export class AssetsTransferApi {
 			xcmDirection,
 			_specName,
 			registry,
-			isForeignAssetsTransfer
+			isForeignAssetsTransfer,
+			xcmVersion,
+			opts?.paysWithFeeDest
 		);
 
 		const assetType = this.fetchAssetType(
@@ -611,7 +613,9 @@ export class AssetsTransferApi {
 			assetType === AssetType.Foreign &&
 			xcmDirection === Direction.SystemToSystem
 		) {
-			return AssetCallType.Reserve;
+			throw new BaseError(
+				`Unable to send foreign assets in direction ${xcmDirection}`
+			);
 		}
 
 		// system to para native asset -> reserve
@@ -645,7 +649,7 @@ export class AssetsTransferApi {
 			return AssetCallType.Reserve;
 		}
 
-		// para to system when not the relay asset and the assets are native to origin -> teleport
+		// para to system only when the assets are native to origin -> teleport
 		if (
 			xcmDirection === Direction.ParaToSystem &&
 			!assetIdsContainRelayAsset(assetIds, registry) &&

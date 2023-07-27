@@ -49,41 +49,48 @@ export const getChainAssetId = async (
 			}
 		}
 	} else {
-		const { assetsInfo } = newRegistry.currentRelayRegistry[chainId];
+		// if asset is an empty string we assign it the native relay assets symbol
+		if (asset === '') {
+			const { tokens } = newRegistry.currentRelayRegistry[chainId];
 
-		if (Object.keys(assetsInfo).length === 0) {
-			throw new BaseError(
-				`${specName} has no associated token symbol ${asset}`
-			);
-		}
-
-		// get the corresponding asset id index from the assets registry
-		const registryAssetId = Object.keys(assetsInfo).find(
-			(key) => assetsInfo[key].toLowerCase() === asset.toLowerCase()
-		);
-
-		if (registryAssetId) {
-			return registryAssetId;
+			assetId = tokens[0];
 		} else {
-			const parsedAssetAsNumber = Number.parseInt(asset);
-			const assetIsNumber = !Number.isNaN(parsedAssetAsNumber);
+			const { assetsInfo } = newRegistry.currentRelayRegistry[chainId];
 
-			// if the integer asset id asset is not found in the registry
-			// query the chains state for the asset
-			if (assetIsNumber) {
-				const maybeAsset = await _api.query.assets.asset(asset);
+			if (Object.keys(assetsInfo).length === 0) {
+				throw new BaseError(
+					`${specName} has no associated token symbol ${asset}`
+				);
+			}
 
-				if (maybeAsset.isSome) {
-					assetId = asset;
+			// get the corresponding asset id index from the assets registry
+			const registryAssetId = Object.keys(assetsInfo).find(
+				(key) => assetsInfo[key].toLowerCase() === asset.toLowerCase()
+			);
+
+			if (registryAssetId) {
+				return registryAssetId;
+			} else {
+				const parsedAssetAsNumber = Number.parseInt(asset);
+				const assetIsNumber = !Number.isNaN(parsedAssetAsNumber);
+
+				// if the integer asset id asset is not found in the registry
+				// query the chains state for the asset
+				if (assetIsNumber) {
+					const maybeAsset = await _api.query.assets.asset(asset);
+
+					if (maybeAsset.isSome) {
+						assetId = asset;
+					} else {
+						throw new BaseError(
+							`general index for assetId ${asset} was not found`
+						);
+					}
 				} else {
 					throw new BaseError(
-						`general index for assetId ${asset} was not found`
+						`assetId ${asset} is not a valid symbol or integer asset id for ${specName}`
 					);
 				}
-			} else {
-				throw new BaseError(
-					`assetId ${asset} is not a valid symbol or integer asset id for ${specName}`
-				);
 			}
 		}
 	}

@@ -7,11 +7,15 @@ import { Direction } from '../types';
 import {
 	checkAllMultiLocationAssetIdsAreValid,
 	checkAssetIdInput,
+	checkAssetIdsAreOfSameAssetIdType,
+	checkAssetIdsHaveNoDuplicates,
+	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
+	checkXcmVersionIsValidForPaysWithFeeDest,
 } from './checkXcmTxInputs';
 
 const runTests = async (tests: Test[]) => {
@@ -71,19 +75,13 @@ type Test = [
 ];
 
 describe('checkAssetIds', () => {
-	it('Should error when an assetId is found that is empty or a blank space', async () => {
+	it('Should error when an assetId is found that is a blank space', async () => {
 		const tests: Test[] = [
-			[
-				'Statemint',
-				['', 'DOT'],
-				Direction.RelayToSystem,
-				`assetId cannot be blank spaces or empty. Found empty string`,
-			],
 			[
 				'Statemine',
 				[' ', 'KSM'],
 				Direction.SystemToRelay,
-				`assetId cannot be blank spaces or empty. Found blank space`,
+				`assetId cannot be blank spaces.`,
 			],
 		];
 
@@ -490,5 +488,119 @@ describe('checkAllMultiLocationAssetIdsAreValid', () => {
 
 			expect(err).toThrowError(expected);
 		}
+	});
+});
+
+describe('checkAssetIdsLengthIsValid', () => {
+	it('Should correctly error when more than 2 assetIds are passed in', () => {
+		const assetIds = ['ksm', '1984', '10'];
+
+		const err = () => checkAssetIdsLengthIsValid(assetIds);
+
+		expect(err).toThrowError(
+			'Maximum number of assets allowed for transfer is 2. Found 3 assetIds'
+		);
+	});
+	it('Should correctly not error when less 2 or less assetIds are passed in', () => {
+		const assetIds = ['ksm', '1984'];
+
+		const err = () => checkAssetIdsLengthIsValid(assetIds);
+
+		expect(err).not.toThrow(
+			'Maximum number of assets allowed for transfer is 2. Found 3 assetIds'
+		);
+	});
+});
+
+describe('checkAssetIdsHaveNoDuplicates', () => {
+	it('Should correctly error if duplicate empty string relay assetIds are found', () => {
+		const assetIds = ['', ''];
+
+		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
+
+		expect(err).toThrow(
+			'AssetIds must be unique. Found duplicate native relay assets as empty strings'
+		);
+	});
+	it('Should correctly error if duplicate integer assetIds are found', () => {
+		const assetIds = ['10', '10'];
+
+		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
+
+		expect(err).toThrow('AssetIds must be unique. Found duplicate assetId 10');
+	});
+	it('Should correctly error if duplicate multilocation assetIds are found', () => {
+		const assetIds = [
+			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+		];
+
+		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
+
+		expect(err).toThrow(
+			`AssetIds must be unique. Found duplicate assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}`
+		);
+	});
+});
+
+describe('checkAssetIdsAreOfSameAssetIdType', () => {
+	it('Should correctly error when an integer assetId and multilocation assetId are passed in together', () => {
+		const assetIds = [
+			'1984',
+			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+		];
+
+		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
+
+		expect(err).toThrow(
+			'Found both integer 1984 and multilocation assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Asset Ids must be symbol and integer or multilocation exclusively.'
+		);
+	});
+
+	it('Should correctly error when a symbol assetId and multilocation assetId are passed in together', () => {
+		const assetIds = [
+			'ksm',
+			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+		];
+
+		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
+
+		expect(err).toThrow(
+			'Found both symbol ksm and multilocation assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Asset Ids must be symbol and integer or multilocation exclusively.'
+		);
+	});
+
+	it('Should correctly error when the default relay asset value and multilocation assetId are passed in together', () => {
+		const assetIds = [
+			'',
+			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+		];
+
+		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
+
+		expect(err).toThrow(
+			'Found both default relay native asset and multilocation assetId: {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Asset Ids must be either be a combination of empty string, symbol and integer or multilocations exclusively.'
+		);
+	});
+});
+
+describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
+	it('Should correctly throw an error if paysWithFeeDest is provided and xcmVersion is less than 3', () => {
+		const xcmVersion = 2;
+		const paysWithFeeDest = '1984';
+
+		const err = () =>
+			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+
+		expect(err).toThrow('paysWithFeeDest requires XCM version 3');
+	});
+	it('Should correctly not throw an error if paysWithFeeDest is provided and xcmVersion is at least 3', () => {
+		const xcmVersion = 3;
+		const paysWithFeeDest = '1984';
+
+		const err = () =>
+			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+
+		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
 	});
 });

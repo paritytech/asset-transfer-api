@@ -8,9 +8,9 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send foreign asset '{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'
+ * In this example we are creating a reserve call to send foreign asset '{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'
  * from a Kusama Asset Hub (System Parachain) account
- * to a Tinkernet (ParaChain) account, where the `xcmVersion` is set to 3, and the `isLimited` declaring that
+ * to a Moonriver (ParaChain) account, where the `xcmVersion` is set to 3, and the `isLimited` declaring that
  * it will be `unlimited` since there is no `weightLimit` option as well.
  *
  * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.

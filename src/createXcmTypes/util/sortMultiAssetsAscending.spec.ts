@@ -635,7 +635,7 @@ describe('sortMultiAssetsAscending', () => {
 		expect(JSON.stringify(res)).toEqual(JSON.stringify(expected));
 	});
 
-	it('Should correctly differnt X2 MultiLocations', () => {
+	it('Should correctly sort different X2 MultiLocations', () => {
 		const multiAssets: MultiAsset[] = [
 			{
 				fun: {

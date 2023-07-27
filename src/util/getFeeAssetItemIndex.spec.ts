@@ -338,17 +338,19 @@ describe('getFeeAssetItemIndex', () => {
 	});
 
 	it('Should throw an error indicating the general index was not found for an invalid paysWithFeeDest value', async () => {
-		const paysWithFeeDest = 'xcUSDT';
+		const paysWithFeeDest = '1984';
 		const specName = 'statemine';
 
 		const multiAssets: MultiAsset[] = [
 			{
 				id: {
 					Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
-						parents: 1,
+						parents: 0,
 						interior: systemAssetsApi._api.registry.createType(
 							'InteriorMultiLocation',
-							{ Here: '' }
+							{
+								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1337' }],
+							}
 						),
 					}),
 				},
@@ -359,12 +361,10 @@ describe('getFeeAssetItemIndex', () => {
 			{
 				id: {
 					Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
-						parents: 0,
+						parents: 1,
 						interior: systemAssetsApi._api.registry.createType(
 							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1337' }],
-							}
+							{ Here: '' }
 						),
 					}),
 				},
@@ -383,7 +383,7 @@ describe('getFeeAssetItemIndex', () => {
 				false
 			);
 		}).rejects.toThrowError(
-			'assetId xcUSDT is not a valid symbol or integer asset id for statemine'
+			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"x2":[{"palletInstance":50},{"generalIndex":1337}]},Here'
 		);
 	});
 });
