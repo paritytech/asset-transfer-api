@@ -23,6 +23,7 @@ import type {
 	ICreateXcmType,
 	IWeightLimit,
 } from './types';
+import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { getChainAssetId } from './util/getChainAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
@@ -264,13 +265,9 @@ const createParaToSystemMultiAssets = async (
 		let concretMultiLocation: MultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			// for ParaToSystem adding Parachain and PalletInstance junctions to MultiLocation
-			const numberOfAdditionalJunctions = 2;
-			concretMultiLocation = constructParachainMultiLocationFromAssetId(
+			concretMultiLocation = constructForeignAssetMultiLocationFromAssetId(
 				api,
 				assetId,
-				numberOfAdditionalJunctions,
-				assetHubChainId,
 				foreignAssetPalletInstance
 			);
 		} else {

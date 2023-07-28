@@ -2,10 +2,7 @@
 
 import { Registry } from '../registry';
 import { mockParachainApi } from '../testHelpers/mockParachainApi';
-import {
-	constructParachainMultiLocationFromAssetId,
-	ParaToSystem,
-} from './ParaToSystem';
+import { ParaToSystem } from './ParaToSystem';
 
 describe('ParaToSystem', () => {
 	const registry = new Registry('kusama', {});
@@ -238,44 +235,5 @@ describe('ParaToSystem', () => {
 				unlimited: null,
 			});
 		});
-	});
-});
-
-describe('constructParachainMultiLocationFromAssetId', () => {
-	it('Should correctly construct a multilocation for direction ParaToSystem', () => {
-		const assetHubChainId = '1000';
-		const assetId = `{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}`;
-		const numberOfAdditionalJunctions = 2;
-		const foreignAssetsPalletInstance = '53';
-
-		const expectedMultiLocation = mockParachainApi.registry.createType(
-			'MultiLocation',
-			{
-				parents: 1,
-				interior: mockParachainApi.registry.createType(
-					'InteriorMultiLocation',
-					{
-						X4: [
-							{ Parachain: 1000 },
-							{ PalletInstance: 53 },
-							{ Parachain: 2125 },
-							{ GeneralIndex: 0 },
-						],
-					}
-				),
-			}
-		);
-
-		const multiLocation = constructParachainMultiLocationFromAssetId(
-			mockParachainApi,
-			assetId,
-			numberOfAdditionalJunctions,
-			assetHubChainId,
-			foreignAssetsPalletInstance
-		);
-
-		expect(JSON.stringify(multiLocation)).toEqual(
-			JSON.stringify(expectedMultiLocation)
-		);
 	});
 });
