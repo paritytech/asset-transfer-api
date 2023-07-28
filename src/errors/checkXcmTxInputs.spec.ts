@@ -588,7 +588,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
 
 		expect(err).toThrow(
-			`Found both default relay native asset and multilocation assetId: {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Relay native asset and foreign assets can't be transferred within the same call.`
+			`Found both default relay native asset and foreign asset with assetId: {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Relay native asset and foreign assets can't be transferred within the same call.`
 		);
 	});
 });
