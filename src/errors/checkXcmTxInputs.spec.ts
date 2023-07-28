@@ -562,7 +562,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
 
 		expect(err).toThrow(
-			'Found both integer 1984 and multilocation assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Asset Ids must be symbol and integer or multilocation exclusively.'
+			`Found both native asset with assetID 1984 and foreign asset with assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Native assets and foreign assets can't be transferred within the same call.`
 		);
 	});
 
@@ -588,7 +588,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
 
 		expect(err).toThrow(
-			'Found both default relay native asset and multilocation assetId: {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Asset Ids must be either be a combination of empty string, symbol and integer or multilocations exclusively.'
+			`Found both default relay native asset and multilocation assetId: {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Relay native asset and foreign assets can't be transferred within the same call.`
 		);
 	});
 });

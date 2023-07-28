@@ -658,13 +658,13 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 
 		if (relayDefaultValueFound && multiLocationAssetIdFound) {
 			throw new BaseError(
-				`Found both default relay native asset and multilocation assetId: ${multiLocationAssetIdFound}. Asset Ids must be either be a combination of empty string, symbol and integer or multilocations exclusively.`
+				`Found both default relay native asset and foreign asset with assetId: ${multiLocationAssetIdFound}. Relay native asset and foreign assets can't be transferred within the same call.`
 			);
 		}
 
 		if (integerAssetIdFound && multiLocationAssetIdFound) {
 			throw new BaseError(
-				`Found both integer ${integerAssetIdFound} and multilocation assetId ${multiLocationAssetIdFound}. Asset Ids must be symbol and integer or multilocation exclusively.`
+				`Found both native asset with assetID ${integerAssetIdFound} and foreign asset with assetId ${multiLocationAssetIdFound}. Native assets and foreign assets can't be transferred within the same call.`
 			);
 		}
 
