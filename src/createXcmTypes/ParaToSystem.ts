@@ -234,11 +234,15 @@ const createParaToSystemMultiAssets = async (
 ): Promise<MultiAsset[]> => {
 	// This will always result in a value and will never be null because the assets-hub will always
 	// have the assets pallet present, so we type cast here to work around the type compiler.
-	const { assetsPalletInstance } = registry.currentRelayRegistry['1000'];
+	const assetHubChainId = '1000';
+	const relayChainId = '0';
+	const foreignAssetPalletInstance = '53';
+	const { assetsPalletInstance } =
+		registry.currentRelayRegistry[assetHubChainId];
 	const palletId = assetsPalletInstance as string;
 	let multiAssets = [];
 
-	const { tokens } = registry.currentRelayRegistry['0'];
+	const { tokens } = registry.currentRelayRegistry[relayChainId];
 
 	for (let i = 0; i < assets.length; i++) {
 		const amount = amounts[i];
@@ -260,9 +264,14 @@ const createParaToSystemMultiAssets = async (
 		let concretMultiLocation: MultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			concretMultiLocation = api.registry.createType(
-				'MultiLocation',
-				JSON.parse(assetId)
+			// for ParaToSystem adding Parachain and PalletInstance junctions to MultiLocation
+			const numberOfAdditionalJunctions = 2;
+			concretMultiLocation = constructParachainMultiLocationFromAssetId(
+				api,
+				assetId,
+				numberOfAdditionalJunctions,
+				assetHubChainId,
+				foreignAssetPalletInstance
 			);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
@@ -299,4 +308,43 @@ const createParaToSystemMultiAssets = async (
 	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
 
 	return sortedAndDedupedMultiAssets;
+};
+
+export const constructParachainMultiLocationFromAssetId = (
+	api: ApiPromise,
+	multiLocationAssetId: string,
+	numberOfAdditionalJunctions: number,
+	assetHubChainId: string,
+	foreignAssetsPalletInstance: string
+) => {
+	const assetIdMultiLocation = api.registry.createType(
+		'MultiLocation',
+		JSON.parse(multiLocationAssetId)
+	);
+
+	// start of the junctions values of the assetId. + 1 to ignore the '['
+	const junctionsStartIndex = multiLocationAssetId.indexOf('[');
+	// end index of the junctions values of the multiLocationAssetId
+	const junctionsEndIndex = multiLocationAssetId.indexOf(']');
+	// e.g. {"Parachain": "2125"}, {"GeneralIndex": "0"}
+	const junctions = multiLocationAssetId.slice(
+		junctionsStartIndex + 1,
+		junctionsEndIndex
+	);
+	// number of junctions found in the assetId. used to determine the number of junctions
+	// after adding the Parachain and PalletInstance junctions (e.g. 2 junctions becomes X4 for Parachain origin)
+	const junctionCount =
+		junctions.split('},').length + numberOfAdditionalJunctions;
+
+	const numberOfJunctions = `"X${junctionCount}"`;
+	const palletInstanceJunctionStr = `{"Parachain":"${assetHubChainId}"},{"PalletInstance":"${foreignAssetsPalletInstance}"},`;
+	const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
+
+	return api.registry.createType('MultiLocation', {
+		parents: assetIdMultiLocation.parents,
+		interior: api.registry.createType(
+			'InteriorMultiLocation',
+			JSON.parse(interiorMultiLocationStr)
+		),
+	});
 };

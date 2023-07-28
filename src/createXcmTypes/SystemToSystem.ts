@@ -251,7 +251,7 @@ export const createSystemToSystemMultiAssets = async (
 	isForeignAssetsTransfer?: boolean
 ): Promise<MultiAsset[]> => {
 	let multiAssets = [];
-
+	const foreignAssetPalletInstance = '53';
 	const systemChainId = getChainIdBySpecName(registry, specName);
 
 	if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
@@ -284,10 +284,35 @@ export const createSystemToSystemMultiAssets = async (
 		let concretMultiLocation: MultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			concretMultiLocation = api.registry.createType(
+			const assetIdMultiLocation = api.registry.createType(
 				'MultiLocation',
 				JSON.parse(assetId)
 			);
+
+			// start of the junctions values of the assetId. + 1 to ignore the '['
+			const junctionsStartIndex = assetId.indexOf('[') + 1;
+			// end index of the junctions values of the assetId
+			const junctionsEndIndex = assetId.indexOf(']');
+			// e.g. {"Parachain": "2125"}, {"GeneralIndex": "0"}
+			const junctions = assetId.slice(
+				junctionsStartIndex + 1,
+				junctionsEndIndex
+			);
+			// number of junctions found in the assetId. used to determine the number of junctions
+			// after adding the PalletInstance (e.g. 2 junctions becomes X3)
+			const junctionCount = junctions.split('},').length + 1;
+
+			const numberOfJunctions = `"X${junctionCount}"`;
+			const palletInstanceJunctionStr = `{"PalletInstance":"${foreignAssetPalletInstance}"},`;
+			const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
+
+			concretMultiLocation = api.registry.createType('MultiLocation', {
+				parents: assetIdMultiLocation.parents,
+				interior: api.registry.createType(
+					'InteriorMultiLocation',
+					JSON.parse(interiorMultiLocationStr)
+				),
+			});
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior: InteriorMultiLocation = isRelayNative
