@@ -241,7 +241,7 @@ export class AssetsTransferApi {
 		const xcmPallet = establishXcmPallet(_api, xcmDirection);
 
 		if (xcmPallet === 'xTokens' && xcmDirection === Direction.ParaToSystem) {
-			if (!opts?.paysWithFeeDest) {
+			if (!opts?.paysWithFeeDest && assetIds.length < 2) {
 				txMethod = 'transferMultiAsset';
 				transaction = transferMultiAsset(
 					_api,
@@ -257,7 +257,7 @@ export class AssetsTransferApi {
 					opts?.refTime,
 					opts?.proofSize
 				);
-			} else if (opts.paysWithFeeDest.includes('parents')) {
+			} else if (opts?.paysWithFeeDest && opts.paysWithFeeDest.includes('parents')) {
 				txMethod = 'transferMultiAssetWithFee';
 				transaction = transferMultiAssetWithFee(
 					_api,

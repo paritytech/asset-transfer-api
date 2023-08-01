@@ -66,73 +66,73 @@ export const transferMultiAssets = (
 	//     }
 	// };
 
-	const assets2 = [
-		{
-			V3: {
-				id: {
-					concrete: {
-						parents: 1,
-						interior: {
-							X3: [
-								{
-									Parachain: 1000,
-								},
-								{
-									PalletInstance: 50,
-								},
-								{
-									GeneralIndex: 10,
-								},
-							],
-						},
-					},
-					fun: {
-						Fungible: { Fungible: '1000000000000' },
-					},
-				},
-			},
-		},
-		{
-			V3: {
-				id: {
-					concrete: {
-						parents: 1,
-						interior: {
-							X3: [
-								{
-									Parachain: 1000,
-								},
-								{
-									PalletInstance: 50,
-								},
-								{
-									GeneralIndex: 11,
-								},
-							],
-						},
-					},
-					fun: {
-						Fungible: { Fungible: '1000000000000' },
-					},
-				},
-			},
-		},
-	];
+	// const assets2 = [
+	// 	{
+	// 		V3: {
+	// 			id: {
+	// 				concrete: {
+	// 					parents: 1,
+	// 					interior: {
+	// 						X3: [
+	// 							{
+	// 								Parachain: 1000,
+	// 							},
+	// 							{
+	// 								PalletInstance: 50,
+	// 							},
+	// 							{
+	// 								GeneralIndex: 10,
+	// 							},
+	// 						],
+	// 					},
+	// 				},
+	// 				fun: {
+	// 					Fungible: { Fungible: '1000000000000' },
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// 	{
+	// 		V3: {
+	// 			id: {
+	// 				concrete: {
+	// 					parents: 1,
+	// 					interior: {
+	// 						X3: [
+	// 							{
+	// 								Parachain: 1000,
+	// 							},
+	// 							{
+	// 								PalletInstance: 50,
+	// 							},
+	// 							{
+	// 								GeneralIndex: 11,
+	// 							},
+	// 						],
+	// 					},
+	// 				},
+	// 				fun: {
+	// 					Fungible: { Fungible: '1000000000000' },
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// ];
 
 	// const destWeightLimit2 = { Unlimited: null };
 
-	const beneficiary2 = {
-		V3: {
-			parents: 1,
-			interior: {
-				X1: {
-					AccountId32: {
-						id: '0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16',
-					},
-				},
-			},
-		},
-	};
+	// const beneficiary2 = {
+	// 	V3: {
+	// 		parents: 1,
+	// 		interior: {
+	// 			X1: {
+	// 				AccountId32: {
+	// 					id: '0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16',
+	// 				},
+	// 			},
+	// 		},
+	// 	},
+	// };
 
 	let assets: XcmMultiAsset[] | undefined;
 	// let feeAsset: XcmMultiAsset | undefined;
@@ -178,12 +178,12 @@ export const transferMultiAssets = (
 
 		console.log('ASSET IS', JSON.stringify(assets));
 		// console.log('FEE ASSET IS', JSON.stringify(feeAsset));
-		console.log('BENEFICIARY IS', JSON.stringify(beneficiary));
-		console.log('WEIGHT LIMIT', destWeightLimit);
+		// console.log('BENEFICIARY IS', JSON.stringify(beneficiary));
+		// console.log('WEIGHT LIMIT', destWeightLimit);
 
 		console.log('pays with FEE DEST', paysWithFeeDest);
 
-		return ext(assets2, paysWithFeeDest, beneficiary2, destWeightLimit);
+		return ext(assets, paysWithFeeDest, beneficiary, destWeightLimit);
 	}
 
 	throw new BaseError('Unable to create xTokens assets');

@@ -396,7 +396,7 @@ const createParaToSystemMultiAssets = (
 	// have the assets pallet present, so we type cast here to work around the type compiler.
 	const { assetsPalletInstance } = registry.currentRelayRegistry['1000'];
 	const palletId = assetsPalletInstance as string;
-	let multiAssets = [];
+	let multiAssets: MultiAsset[] = [];
 
 	const { tokens } = registry.currentRelayRegistry['0'];
 
