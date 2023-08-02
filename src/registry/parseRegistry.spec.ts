@@ -23,6 +23,8 @@ describe('parseRegistry', () => {
 						foreignAssetsInfo,
 						specName: 'testing',
 						assetsPalletInstance: '100',
+						foreignAssetsPalletInstance: '1000',
+						poolPairsInfo: {},
 					},
 				},
 			},
@@ -35,6 +37,8 @@ describe('parseRegistry', () => {
 			foreignAssetsInfo: {},
 			specName: 'testing',
 			assetsPalletInstance: '100',
+			foreignAssetsPalletInstance: '1000',
+			poolPairsInfo: {},
 		});
 		// Ensure nothing was overwritten
 		expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);

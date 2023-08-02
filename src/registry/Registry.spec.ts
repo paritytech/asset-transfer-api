@@ -13,6 +13,8 @@ describe('Registry', () => {
 					specName: 'moonbeam',
 					chainId: '2004',
 					assetsPalletInstance: '104',
+					foreignAssetsPalletInstance: null,
+					poolPairsInfo: {},
 				},
 			];
 			expect(res).toEqual(expected);
@@ -36,6 +38,7 @@ describe('Registry', () => {
 						'9': 'PINT',
 						'10': 'BEAST',
 						'11': 'web3',
+						'12': 'USDcp',
 						'15': 'Meme',
 						'21': 'WBTC',
 						'77': 'TRQ',
@@ -57,6 +60,8 @@ describe('Registry', () => {
 					specName: 'statemint',
 					chainId: '1000',
 					assetsPalletInstance: '50',
+					foreignAssetsPalletInstance: '53',
+					poolPairsInfo: {},
 				},
 			];
 			expect(res).toEqual(expected);
@@ -82,6 +87,8 @@ describe('Registry', () => {
 					specName: 'acala',
 					chainId: '2000',
 					assetsPalletInstance: null,
+					foreignAssetsPalletInstance: null,
+					poolPairsInfo: {},
 				},
 			];
 			expect(res).toEqual(expected);

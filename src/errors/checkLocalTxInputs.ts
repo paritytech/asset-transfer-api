@@ -46,9 +46,9 @@ export const checkLocalTxInput = async (
 		// check the registrys foreignAssetsInfo to see if the provided foreign asset exists
 		const multiLocationStr = assetIds[0];
 		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInRegistry(
+			api,
 			multiLocationStr,
-			registry,
-			api
+			registry
 		);
 
 		if (foreignAssetIsInRegistry) {

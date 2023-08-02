@@ -29,9 +29,9 @@ export const getChainAssetId = async (
 	if (isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the registry
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
+			_api,
 			asset,
-			newRegistry,
-			_api
+			newRegistry
 		);
 
 		if (multiLocationIsInRegistry) {

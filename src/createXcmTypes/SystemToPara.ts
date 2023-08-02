@@ -256,9 +256,12 @@ export const createSystemToParaMultiAssets = async (
 	registry: Registry,
 	isForeignAssetsTransfer?: boolean
 ): Promise<MultiAsset[]> => {
-	const foreignAssetPalletInstance = '53';
+	const assetHubChainId = '1000';
+	const { foreignAssetsPalletInstance } =
+		registry.currentRelayRegistry[assetHubChainId];
+	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	const palletId = fetchPalletInstanceId(api);
-	let multiAssets = [];
+	let multiAssets: MultiAsset[] = [];
 
 	const systemChainId = getChainIdBySpecName(registry, specName);
 
@@ -293,7 +296,7 @@ export const createSystemToParaMultiAssets = async (
 			concretMultiLocation = constructForeignAssetMultiLocationFromAssetId(
 				api,
 				assetId,
-				foreignAssetPalletInstance
+				foreignAssetsPalletId
 			);
 		} else {
 			const parents = isRelayNative ? 1 : 0;

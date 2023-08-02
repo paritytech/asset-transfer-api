@@ -12,9 +12,9 @@ describe('foreignAssetMultiLocationIsInRegistry', () => {
 		const registry = new Registry('statemine', {});
 
 		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInRegistry(
+			mockSystemApi,
 			multiLocation,
-			registry,
-			mockSystemApi
+			registry
 		);
 
 		expect(foreignAssetExistsInRegistry).toEqual(expected);
@@ -27,9 +27,9 @@ describe('foreignAssetMultiLocationIsInRegistry', () => {
 		const registry = new Registry('statemine', {});
 
 		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInRegistry(
+			mockSystemApi,
 			multiLocation,
-			registry,
-			mockSystemApi
+			registry
 		);
 
 		expect(foreignAssetExistsInRegistry).toEqual(expected);
@@ -45,9 +45,9 @@ describe('foreignAssetMultiLocationIsInRegistry', () => {
 
 		const err = () =>
 			foreignAssetMultiLocationIsInRegistry(
+				mockSystemApi,
 				multiLocation,
-				registry,
-				mockSystemApi
+				registry
 			);
 
 		expect(err).toThrow(expectedError);
@@ -63,9 +63,9 @@ describe('foreignAssetMultiLocationIsInRegistry', () => {
 
 		const err = () =>
 			foreignAssetMultiLocationIsInRegistry(
+				mockSystemApi,
 				multiLocation,
-				registry,
-				mockSystemApi
+				registry
 			);
 
 		expect(err).toThrow(expectedError);

@@ -345,6 +345,8 @@ describe('AssetTransferAPI', () => {
 						foreignAssetsInfo: {},
 						specName: 'testing',
 						assetsPalletInstance: '100',
+						foreignAssetsPalletInstance: '1000',
+						poolPairsInfo: {},
 					},
 				},
 			};

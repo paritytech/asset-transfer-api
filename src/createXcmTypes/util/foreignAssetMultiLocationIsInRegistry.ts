@@ -7,12 +7,13 @@ import { Registry } from '../../registry';
 import { ForeignAssetsInfo } from '../../registry/types';
 
 export const foreignAssetMultiLocationIsInRegistry = (
+	api: ApiPromise,
 	multilocationStr: string,
-	registry: Registry,
-	api: ApiPromise
+	registry: Registry
 ): boolean => {
 	try {
 		const assetHubChainId = 1000;
+
 		const multiLocation = api.registry.createType(
 			'MultiLocation',
 			JSON.parse(multilocationStr)
@@ -25,20 +26,13 @@ export const foreignAssetMultiLocationIsInRegistry = (
 			const foreignAssetInfo = maybeForeignAssetsInfo as ForeignAssetsInfo;
 
 			const foreignAssets = Object.entries(foreignAssetInfo).map((data) => {
-				return data[1].multiLocation[0];
+				return data[1].multiLocation;
 			});
 
 			for (const asset of foreignAssets) {
-				// regex removes commas that are found next to numbers in key values
-				// (e.g "Parachain": "2,125" -> "Parachain": "2125")
-				const foreignAssetMultiLocationStr = JSON.stringify(asset).replace(
-					/(\d),/g,
-					'$1'
-				);
-
 				const foreignAssetMultiLocation = api.registry.createType(
 					'MultiLocation',
-					JSON.parse(foreignAssetMultiLocationStr)
+					JSON.parse(asset)
 				);
 
 				if (foreignAssetMultiLocation.toString() === multiLocation.toString()) {

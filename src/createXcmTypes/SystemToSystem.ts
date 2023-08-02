@@ -250,8 +250,12 @@ export const createSystemToSystemMultiAssets = async (
 	registry: Registry,
 	isForeignAssetsTransfer?: boolean
 ): Promise<MultiAsset[]> => {
-	let multiAssets = [];
-	const foreignAssetPalletInstance = '53';
+	let multiAssets: MultiAsset[] = [];
+
+	const assetHubChainId = '1000';
+	const { foreignAssetsPalletInstance } =
+		registry.currentRelayRegistry[assetHubChainId];
+	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	const systemChainId = getChainIdBySpecName(registry, specName);
 
 	if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
@@ -303,7 +307,7 @@ export const createSystemToSystemMultiAssets = async (
 			const junctionCount = junctions.split('},').length + 1;
 
 			const numberOfJunctions = `"X${junctionCount}"`;
-			const palletInstanceJunctionStr = `{"PalletInstance":"${foreignAssetPalletInstance}"},`;
+			const palletInstanceJunctionStr = `{"PalletInstance":"${foreignAssetsPalletId}"},`;
 			const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
 
 			concretMultiLocation = api.registry.createType('MultiLocation', {

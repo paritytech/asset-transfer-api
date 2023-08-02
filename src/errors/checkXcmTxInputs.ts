@@ -350,9 +350,9 @@ const checkSystemAssets = async (
 	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
+			api,
 			assetId,
-			registry,
-			api
+			registry
 		);
 
 		if (!multiLocationIsInRegistry) {
