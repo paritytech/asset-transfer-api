@@ -163,9 +163,11 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 
 			const weightLimit = RelayToSystem.createWeightLimit(
 				mockRelayApi,
-				isLimited,
-				refTime,
-				proofSize
+				{
+					isLimited,
+					refTime,
+					proofSize
+				}
 			);
 			expect(weightLimit.toJSON()).toStrictEqual({
 				limited: {
@@ -175,7 +177,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			});
 		});
 		it('Should work when isLimited is falsy', () => {
-			const weightLimit = RelayToSystem.createWeightLimit(mockRelayApi);
+			const weightLimit = RelayToSystem.createWeightLimit(mockRelayApi, {});
 
 			expect(weightLimit.toJSON()).toStrictEqual({
 				unlimited: null,

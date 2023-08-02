@@ -179,9 +179,11 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 
 			const weightLimit = SystemToSystem.createWeightLimit(
 				mockSystemApi,
-				isLimited,
-				refTime,
-				proofSize
+				{
+					isLimited,
+					refTime,
+					proofSize
+				}
 			);
 			expect(weightLimit.toJSON()).toStrictEqual({
 				limited: {
@@ -191,7 +193,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			});
 		});
 		it('Should work when isLimited is falsy', () => {
-			const weightLimit = SystemToSystem.createWeightLimit(mockSystemApi);
+			const weightLimit = SystemToSystem.createWeightLimit(mockSystemApi, {});
 
 			expect(weightLimit.toJSON()).toStrictEqual({
 				unlimited: null,

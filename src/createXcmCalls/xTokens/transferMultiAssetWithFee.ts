@@ -10,6 +10,7 @@ import { BaseError } from '../../errors';
 import type { Registry } from '../../registry';
 import { Direction } from '../../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
+import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferMultiAssetWithFee`
  * call.
@@ -33,31 +34,33 @@ export const transferMultiAssetWithFee = (
 	specName: string,
 	registry: Registry,
 	paysWithFeeDest: string,
-	isLimited?: boolean,
-	refTime?: string,
-	proofSize?: string,
+	opts: CreateWeightLimitOpts
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api, direction);
 	const ext = api.tx[pallet].transferMultiassetWithFee;
 	const typeCreator = createXcmTypes[direction];
 	const destWeightLimit = typeCreator.createWeightLimit(
 		api,
-		isLimited,
-		refTime,
-		proofSize
+		{
+			isLimited: opts.isLimited,
+			refTime: opts.refTime,
+			proofSize: opts.proofSize
+		}
 	);
 
 	if (
-		typeCreator.createXTokensAssets &&
+		typeCreator.createXTokensAsset &&
 		typeCreator.createXTokensFeeAssetItem &&
 		typeCreator.createXTokensBeneficiary
 	) {
-		const assets = typeCreator.createXTokensAssets(
+		const amount = amounts[0];
+		const assetId = assetIds[0];
+		const asset = typeCreator.createXTokensAsset(
 			api,
-			amounts,
+			amount,
 			xcmVersion,
 			specName,
-			assetIds,
+			assetId,
 			{ registry }
 		);
 		const fee = typeCreator.createXTokensFeeAssetItem(api, {
@@ -72,7 +75,7 @@ export const transferMultiAssetWithFee = (
 			xcmVersion
 		);
 
-		return ext(assets[0], fee, beneficiary, destWeightLimit);
+		return ext(asset, fee, beneficiary, destWeightLimit);
 	}
 
 	throw new BaseError('Unable to create xTokens assets');

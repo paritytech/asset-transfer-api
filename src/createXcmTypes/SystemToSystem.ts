@@ -20,6 +20,7 @@ import { MultiAsset, MultiAssetInterior } from './../types';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
+	CreateWeightLimitOpts,
 	ICreateXcmType,
 	IWeightLimit,
 } from './types';
@@ -159,14 +160,12 @@ export const SystemToSystem: ICreateXcmType = {
 	 */
 	createWeightLimit: (
 		api: ApiPromise,
-		isLimited?: boolean,
-		refTime?: string,
-		proofSize?: string
+		opts: CreateWeightLimitOpts
 	): WeightLimitV2 => {
 		const limit: IWeightLimit =
-			isLimited && refTime && proofSize
+			opts.isLimited && opts.refTime && opts.proofSize
 				? {
-						Limited: { refTime: refTime, proofSize: proofSize },
+						Limited: { refTime: opts.refTime, proofSize: opts.proofSize },
 				  }
 				: { Unlimited: null };
 

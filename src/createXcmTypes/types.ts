@@ -12,9 +12,9 @@ import type { Registry } from '../registry';
 import type {
 	RequireOnlyOne,
 	XCMDestBenificiary,
-	XcmMultiAsset,
 	XcmWeight,
-	XcmMultiLocation
+	XcmMultiLocation,
+	XcmMultiAsset
 } from '../types';
 
 export interface CreateAssetsOpts {
@@ -28,6 +28,12 @@ export interface CreateFeeAssetItemOpts {
 	assetIds?: string[];
 	amounts?: string[];
 	xcmVersion?: number;
+}
+
+export interface CreateWeightLimitOpts {
+	isLimited?: boolean,
+	refTime?: string,
+	proofSize?: string
 }
 
 export interface ICreateXcmType {
@@ -51,9 +57,7 @@ export interface ICreateXcmType {
 	) => VersionedMultiAssets;
 	createWeightLimit: (
 		api: ApiPromise,
-		isLimited?: boolean,
-		refTime?: string,
-		proofSize?: string
+		opts: CreateWeightLimitOpts
 	) => WeightLimitV2;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => u32;
 	createXTokensBeneficiary?: (
@@ -68,11 +72,17 @@ export interface ICreateXcmType {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts
-	) => XcmMultiAsset[];
+	) => VersionedMultiAssets;
+	createXTokensAsset?: (
+		api: ApiPromise,
+		amount: string,
+		xcmVersion: number,
+		specName: string,
+		asset: string,
+		opts: CreateAssetsOpts
+	) => XcmMultiAsset;
 	createXTokensWeightLimit?: (
-		isLimited?: boolean,
-		refTime?: string,
-		proofSize?: string
+		opts: CreateWeightLimitOpts
 	) => XcmWeight;
 	createXTokensFeeAssetItem?: (
 		api: ApiPromise,

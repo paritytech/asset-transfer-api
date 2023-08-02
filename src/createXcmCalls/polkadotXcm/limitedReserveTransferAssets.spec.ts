@@ -25,9 +25,11 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isLimited,
-				refTime,
-				proofSize
+				{
+					isLimited,
+					refTime,
+					proofSize
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -49,9 +51,11 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isLimited,
-				refTime,
-				proofSize
+				{
+					isLimited,
+					refTime,
+					proofSize
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -75,9 +79,11 @@ describe('limitedReserveTransferAssets', () => {
 					2,
 					'statemine',
 					registry,
-					isLimited,
-					refTime,
-					proofSize
+					{
+						isLimited,
+						refTime,
+						proofSize
+					}
 				);
 
 			expect(err).toThrowError(

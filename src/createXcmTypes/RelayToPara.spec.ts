@@ -211,9 +211,11 @@ describe('RelayToPara XcmVersioned Generation', () => {
 
 			const weightLimit = RelayToPara.createWeightLimit(
 				mockRelayApi,
-				isLimited,
-				refTime,
-				proofSize
+				{
+					isLimited,
+					refTime,
+					proofSize
+				}
 			);
 			expect(weightLimit.toJSON()).toStrictEqual({
 				limited: {
@@ -223,7 +225,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			});
 		});
 		it('Should work when isLimited is falsy', () => {
-			const weightLimit = RelayToPara.createWeightLimit(mockRelayApi);
+			const weightLimit = RelayToPara.createWeightLimit(mockRelayApi, {});
 
 			expect(weightLimit.toJSON()).toStrictEqual({
 				unlimited: null,

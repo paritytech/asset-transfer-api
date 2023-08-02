@@ -25,6 +25,7 @@ import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
+	CreateWeightLimitOpts,
 	ICreateXcmType,
 	IWeightLimit,
 } from './types';
@@ -157,14 +158,12 @@ export const ParaToSystem: ICreateXcmType = {
 	 */
 	createWeightLimit: (
 		api: ApiPromise,
-		isLimited?: boolean,
-		refTime?: string,
-		proofSize?: string
+		opts: CreateWeightLimitOpts
 	): WeightLimitV2 => {
 		const limit: IWeightLimit =
-			isLimited && refTime && proofSize
+			opts.isLimited && opts.refTime && opts.proofSize
 				? {
-						Limited: { refTime, proofSize },
+						Limited: { refTime: opts.refTime, proofSize: opts.proofSize },
 				  }
 				: { Unlimited: null };
 
@@ -251,15 +250,77 @@ export const ParaToSystem: ICreateXcmType = {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts
-	): XcmMultiAsset[] => {
-		return createXTokensMultiAssets(
-			api,
-			amounts,
-			xcmVersion,
-			specName,
-			assets,
-			opts
-		);
+	): VersionedMultiAssets => {
+			return createXTokensMultiAssets(
+				api,
+				amounts,
+				xcmVersion,
+				specName,
+				assets,
+				opts
+			);
+	},
+	createXTokensAsset: (
+		api: ApiPromise,
+		amount: string,
+		xcmVersion: number,
+		specName: string,
+		assetId: string,
+		opts: CreateAssetsOpts
+	): XcmMultiAsset => {
+		const assetHubChainId = 1000;
+		const { assetsPalletInstance } =
+			opts.registry.currentRelayRegistry[assetHubChainId];
+		const palletId = assetsPalletInstance as string;
+		const { tokens: relayTokens } = opts.registry.currentRelayRegistry['0'];
+		const { assetsInfo: assetHubTokens } =
+			opts.registry.currentRelayRegistry[assetHubChainId];
+	
+			const parsedAssetIdAsNumber = Number.parseInt(assetId);
+			const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+			const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
+			const isAssetHubNative = assetHubTokens[assetId] ? true : false;
+	
+			if (!isRelayNative && isNotANumber) {
+				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
+			}
+	
+			const interior: InteriorMultiLocation = isHex(assetId)
+				? api.registry.createType('InteriorMultiLocation', {
+						X1: { GeneralKey: assetId },
+				  })
+				: isRelayNative
+				? api.registry.createType('InteriorMultiLocation', { Here: '' })
+				: api.registry.createType('InteriorMultiLocation', {
+						X3: [
+							{ Parachain: assetHubChainId },
+							{ PalletInstance: palletId },
+							{ GeneralIndex: assetId },
+						],
+				  });
+			const parents = isRelayNative || isAssetHubNative ? 1 : 0;
+	
+			const multiAsset = {
+				id: {
+					Concrete: {
+						parents,
+						interior,
+					},
+				},
+				fun: {
+					Fungible: { Fungible: amount },
+				},
+			};
+	
+		if (xcmVersion === 2) {
+			return {
+				V2: multiAsset
+			}
+		} else {
+			return {
+				V3: multiAsset
+			}
+		}
 	},
 
 	createXTokensFeeAssetItem: (
@@ -302,7 +363,7 @@ const createXTokensMultiAssets = (
 	specName: string,
 	assets: string[],
 	opts: CreateAssetsOpts
-): XcmMultiAsset[] => {
+): VersionedMultiAssets => {
 	const assetHubChainId = 1000;
 	const { assetsPalletInstance } =
 		opts.registry.currentRelayRegistry[assetHubChainId];
@@ -311,9 +372,8 @@ const createXTokensMultiAssets = (
 	const { assetsInfo: assetHubTokens } =
 		opts.registry.currentRelayRegistry[assetHubChainId];
 
-	const multiAssets: XcmMultiAsset[] = [];
+	const multiAssets = [];
 	for (let i = 0; i < assets.length; i++) {
-		let multiAsset: XcmMultiAsset;
 		const amount = amounts[i];
 		let assetId = assets[i];
 
@@ -341,40 +401,52 @@ const createXTokensMultiAssets = (
 			  });
 		const parents = isRelayNative || isAssetHubNative ? 1 : 0;
 
-		if (xcmVersion === 2) {
-			multiAsset = {
-				V2: {
-					id: {
-						Concrete: {
-							parents,
-							interior,
-						},
-					},
-					fun: {
-						Fungible: { Fungible: amount },
-					},
+		const multiAsset = {
+			id: {
+				Concrete: {
+					parents,
+					interior,
 				},
-			};
-		} else {
-			multiAsset = {
-				V3: {
-					id: {
-						Concrete: {
-							parents,
-							interior,
-						},
-					},
-					fun: {
-						Fungible: { Fungible: amount },
-					},
-				},
-			};
-		}
+			},
+			fun: {
+				Fungible: { Fungible: amount },
+			},
+		};
+
 
 		multiAssets.push(multiAsset);
 	}
 
-	return multiAssets;
+	if (xcmVersion === 2) {
+		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
+			'XcmV2MultiassetMultiAssets',
+			multiAssets
+		);
+
+		return api.registry.createType('XcmVersionedMultiAssets', {
+			V2: multiAssetsType,
+		});
+	} else {
+		if (xcmVersion === 2) {
+			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
+				'XcmV2MultiassetMultiAssets',
+				multiAssets
+			);
+
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V2: multiAssetsType,
+			});
+		} else {
+			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
+				'XcmV3MultiassetMultiAssets',
+				multiAssets
+			);
+
+			return api.registry.createType('XcmVersionedMultiAssets', {
+				V3: multiAssetsType,
+			});
+	}
+	}
 };
 
 /**

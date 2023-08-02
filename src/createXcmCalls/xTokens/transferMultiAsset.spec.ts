@@ -19,7 +19,10 @@ describe('transferMultiAsset', () => {
 				'1000',
 				2,
 				'moonriver',
-				registry
+				registry,
+				{
+					isLimited: false,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -37,9 +40,11 @@ describe('transferMultiAsset', () => {
 				2,
 				'moonriver',
 				registry,
-				true,
-				'1000',
-				'2000'
+				{
+					isLimited: true,
+					refTime: '1000',
+					proofSize: '2000'
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -57,7 +62,10 @@ describe('transferMultiAsset', () => {
 				'1000',
 				3,
 				'moonriver',
-				registry
+				registry,
+				{
+					isLimited: false
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -75,9 +83,11 @@ describe('transferMultiAsset', () => {
 				3,
 				'moonriver',
 				registry,
-				true,
-				'1000',
-				'2000'
+				{
+					isLimited: true,
+					refTime: '1000',
+					proofSize: '2000'
+				}
 			);
 
 			expect(ext.toHex()).toBe(

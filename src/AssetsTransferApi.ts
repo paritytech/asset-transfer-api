@@ -253,9 +253,11 @@ export class AssetsTransferApi {
 					xcmVersion,
 					_specName,
 					this.registry,
-					opts?.isLimited,
-					opts?.refTime,
-					opts?.proofSize
+					{
+						isLimited: opts?.isLimited,
+						refTime: opts?.refTime,
+						proofSize: opts?.proofSize,
+					}
 				);
 			} else if (opts?.paysWithFeeDest && opts.paysWithFeeDest.includes('parents')) {
 				txMethod = 'transferMultiAssetWithFee';
@@ -270,9 +272,12 @@ export class AssetsTransferApi {
 					_specName,
 					this.registry,
 					opts?.paysWithFeeDest,
-					opts?.isLimited,
-					opts?.refTime,
-					opts?.proofSize,
+					{
+						isLimited: opts.isLimited,
+						refTime: opts.refTime,
+						proofSize: opts.proofSize,
+					}
+
 				);
 			} else {
 				txMethod = 'transferMultiAssets';
@@ -286,9 +291,11 @@ export class AssetsTransferApi {
 					xcmVersion,
 					_specName,
 					this.registry,
-					opts?.isLimited,
-					opts?.refTime,
-					opts?.proofSize,
+					{
+						isLimited: opts?.isLimited,
+						refTime: opts?.refTime,
+						proofSize: opts?.proofSize,
+					},
 					opts?.paysWithFeeDest
 				);
 			}
@@ -306,9 +313,11 @@ export class AssetsTransferApi {
 						xcmVersion,
 						_specName,
 						this.registry,
-						opts?.isLimited,
-						opts?.refTime,
-						opts?.proofSize,
+						{
+							isLimited: opts?.isLimited,
+							refTime: opts?.refTime,
+							proofSize: opts?.proofSize,
+						},
 						opts?.paysWithFeeDest
 					);
 				} else {
@@ -339,9 +348,11 @@ export class AssetsTransferApi {
 						xcmVersion,
 						_specName,
 						this.registry,
-						opts?.isLimited,
-						opts?.refTime,
-						opts?.proofSize
+						{
+							isLimited: opts?.isLimited,
+							refTime: opts?.refTime,
+							proofSize: opts?.proofSize,
+						}
 					);
 				} else {
 					txMethod = 'teleportAssets';

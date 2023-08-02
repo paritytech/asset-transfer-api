@@ -10,7 +10,7 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
-import { ICreateXcmType, IWeightLimit } from './types';
+import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit } from './types';
 
 export const SystemToRelay: ICreateXcmType = {
 	/**
@@ -152,14 +152,12 @@ export const SystemToRelay: ICreateXcmType = {
 	 */
 	createWeightLimit: (
 		api: ApiPromise,
-		isLimited?: boolean,
-		refTime?: string,
-		proofSize?: string
+		opts: CreateWeightLimitOpts
 	): WeightLimitV2 => {
 		const limit: IWeightLimit =
-			isLimited && refTime && proofSize
+			opts.isLimited && opts.refTime && opts.proofSize
 				? {
-						Limited: { refTime, proofSize },
+						Limited: { refTime: opts.refTime, proofSize: opts.proofSize },
 				  }
 				: { Unlimited: null };
 

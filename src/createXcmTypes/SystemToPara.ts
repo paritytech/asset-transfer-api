@@ -21,6 +21,7 @@ import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
+	CreateWeightLimitOpts,
 	ICreateXcmType,
 	IWeightLimit,
 } from './types';
@@ -166,14 +167,12 @@ export const SystemToPara: ICreateXcmType = {
 	 */
 	createWeightLimit: (
 		api: ApiPromise,
-		isLimited?: boolean,
-		refTime?: string,
-		proofSize?: string
+		opts: CreateWeightLimitOpts
 	): WeightLimitV2 => {
 		const limit: IWeightLimit =
-			isLimited && refTime && proofSize
+			opts.isLimited && opts.refTime && opts.proofSize
 				? {
-						Limited: { refTime, proofSize },
+						Limited: { refTime: opts.refTime, proofSize: opts.proofSize },
 				  }
 				: { Unlimited: null };
 

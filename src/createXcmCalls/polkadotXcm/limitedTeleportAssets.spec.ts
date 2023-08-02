@@ -23,9 +23,11 @@ describe('limitedTeleportAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isLimited,
-				refTime,
-				proofSize
+				{
+					isLimited,
+					refTime,
+					proofSize
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -49,9 +51,11 @@ describe('limitedTeleportAssets', () => {
 					2,
 					'statemine',
 					registry,
-					isLimited,
-					refTime,
-					proofSize
+					{
+						isLimited,
+						refTime,
+						proofSize
+					}
 				);
 
 			expect(err).toThrowError(

@@ -11,7 +11,7 @@ import type {
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { ICreateXcmType, IWeightLimit } from './types';
+import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit } from './types';
 
 /**
  * XCM type generation for transactions from the relay chain to a parachain.
@@ -154,14 +154,12 @@ export const RelayToPara: ICreateXcmType = {
 	 */
 	createWeightLimit: (
 		api: ApiPromise,
-		isLimited?: boolean,
-		refTime?: string,
-		proofSize?: string
+		opts: CreateWeightLimitOpts
 	): WeightLimitV2 => {
 		const limit: IWeightLimit =
-			isLimited && refTime && proofSize
+			opts.isLimited && opts.refTime && opts.proofSize
 				? {
-						Limited: { refTime, proofSize },
+						Limited: { refTime: opts.refTime, proofSize: opts.proofSize },
 				  }
 				: { Unlimited: null };
 

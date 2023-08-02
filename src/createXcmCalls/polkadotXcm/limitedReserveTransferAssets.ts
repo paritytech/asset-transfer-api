@@ -10,6 +10,7 @@ import type { Registry } from '../../registry';
 import { Direction } from '../../types';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr';
 import { establishXcmPallet } from '../util/establishXcmPallet';
+import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `limitedReserveTransferAssets`
@@ -33,9 +34,7 @@ export const limitedReserveTransferAssets = (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
-	isLimited?: boolean,
-	refTime?: string,
-	proofSize?: string,
+	opts: CreateWeightLimitOpts,
 	paysWithFeeDest?: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	const pallet = establishXcmPallet(api);
@@ -53,9 +52,11 @@ export const limitedReserveTransferAssets = (
 	);
 	const weightLimitType = typeCreator.createWeightLimit(
 		api,
-		isLimited,
-		refTime,
-		proofSize
+		{
+			isLimited: opts?.isLimited,
+			refTime: opts?.refTime,
+			proofSize: opts?.proofSize,
+		}
 	);
 
 	const feeAssetItem: u32 = paysWithFeeDest
