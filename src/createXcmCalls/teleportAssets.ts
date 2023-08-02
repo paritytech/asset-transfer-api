@@ -21,7 +21,7 @@ import { establishXcmPallet } from './util/establishXcmPallet';
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
  */
-export const teleportAssets = (
+export const teleportAssets = async (
 	api: ApiPromise,
 	direction: Direction,
 	destAddr: string,
@@ -31,24 +31,31 @@ export const teleportAssets = (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
-	paysWithFeeDest?: string
-): SubmittableExtrinsic<'promise', ISubmittableResult> => {
+	paysWithFeeDest?: string,
+	isForeignAssetsTransfer?: boolean
+): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].teleportAssets;
 	const typeCreator = createXcmTypes[direction];
 	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	const dest = typeCreator.createDest(api, destChainId, xcmVersion);
-	const assets = typeCreator.createAssets(
+	const assets = await typeCreator.createAssets(
 		api,
 		normalizeArrToStr(amounts),
 		xcmVersion,
 		specName,
 		assetIds,
-		{ registry }
+		{
+			registry,
+			isForeignAssetsTransfer,
+		}
 	);
 
 	const feeAssetItem = paysWithFeeDest
-		? typeCreator.createFeeAssetItem(api, { registry })
+		? await typeCreator.createFeeAssetItem(api, {
+				registry,
+				isForeignAssetsTransfer,
+		  })
 		: api.registry.createType('u32', 0);
 
 	return ext(dest, beneficiary, assets, feeAssetItem);

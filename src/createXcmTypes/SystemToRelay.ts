@@ -98,12 +98,12 @@ export const SystemToRelay: ICreateXcmType = {
 	 * @param amounts
 	 * @param xcmVersion
 	 */
-	createAssets: (
+	createAssets: async (
 		api: ApiPromise,
 		amounts: string[],
 		xcmVersion: number,
 		_: string
-	): VersionedMultiAssets => {
+	): Promise<VersionedMultiAssets> => {
 		const multiAssets = [];
 
 		const amount = amounts[0];
@@ -129,16 +129,20 @@ export const SystemToRelay: ICreateXcmType = {
 				multiAssets
 			);
 
-			return api.registry.createType('XcmVersionedMultiAssets', {
-				V2: multiAssetsType,
-			});
+			return Promise.resolve(
+				api.registry.createType('XcmVersionedMultiAssets', {
+					V2: multiAssetsType,
+				})
+			);
 		} else {
 			const multiAssetsType: XcmV3MultiassetMultiAssets =
 				api.registry.createType('XcmV3MultiassetMultiAssets', multiAssets);
 
-			return api.registry.createType('XcmVersionedMultiAssets', {
-				V3: multiAssetsType,
-			});
+			return Promise.resolve(
+				api.registry.createType('XcmVersionedMultiAssets', {
+					V3: multiAssetsType,
+				})
+			);
 		}
 	},
 	/**
@@ -160,7 +164,7 @@ export const SystemToRelay: ICreateXcmType = {
 	 *
 	 * @param api ApiPromise
 	 */
-	createFeeAssetItem: (api: ApiPromise): u32 => {
-		return api.registry.createType('u32', 0);
+	createFeeAssetItem: async (api: ApiPromise): Promise<u32> => {
+		return Promise.resolve(api.registry.createType('u32', 0));
 	},
 };

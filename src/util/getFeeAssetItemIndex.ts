@@ -1,9 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { getSystemChainTokenSymbolGeneralIndex } from '../createXcmTypes/util/getTokenSymbolGeneralIndex';
-import { MultiAsset } from '../types';
-import { NonRelayNativeInterior, RelayNativeInterior } from '../types';
+import { ApiPromise } from '@polkadot/api';
 
+import { getChainAssetId } from '../createXcmTypes/util/getChainAssetId';
+import { BaseError } from '../errors';
+import { MultiAsset } from '../types';
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index
  * of the MultiAsset to be used for fees on the destination chain
@@ -12,12 +13,14 @@ import { NonRelayNativeInterior, RelayNativeInterior } from '../types';
  * @param multiAssets MultiAsset[]
  * @param specName string
  */
-export const getFeeAssetItemIndex = (
+export const getFeeAssetItemIndex = async (
+	api: ApiPromise,
 	paysWithFeeDest: string,
 	multiAssets: MultiAsset[],
-	specName: string
-): number => {
-	let result = 0;
+	specName: string,
+	isForeignAssetsTransfer?: boolean
+): Promise<number> => {
+	let result = -1;
 
 	if (paysWithFeeDest) {
 		const isRelayFeeAsset =
@@ -30,9 +33,7 @@ export const getFeeAssetItemIndex = (
 
 			if (isRelayFeeAsset) {
 				// if the asset id is a relay asset, match Here interior
-				if (
-					(multiAsset.id.Concrete.interior as RelayNativeInterior).Here === ''
-				) {
+				if (multiAsset.id.Concrete.interior.isHere) {
 					result = i;
 					break;
 				}
@@ -43,21 +44,47 @@ export const getFeeAssetItemIndex = (
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
 				if (isNotANumber) {
-					const paysWithFeeDestGeneralIndex =
-						getSystemChainTokenSymbolGeneralIndex(paysWithFeeDest, specName);
-					if (
-						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2 &&
-						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2[1]
-							.GeneralIndex === paysWithFeeDestGeneralIndex
-					) {
-						result = i;
-						break;
+					const paysWithFeeDestGeneralIndex = await getChainAssetId(
+						api,
+						paysWithFeeDest,
+						specName,
+						isForeignAssetsTransfer
+					);
+					// if isForeignAssetsTransfer, compare the multiAsset interior to the the paysWithFeeDestGeneralIndex as a multilocation
+					if (isForeignAssetsTransfer) {
+						const paysWithFeeDestMultiLocation = api.registry.createType(
+							'MultiLocation',
+							JSON.parse(paysWithFeeDestGeneralIndex)
+						);
+						if (
+							multiAsset.id.Concrete.interior.eq(
+								paysWithFeeDestMultiLocation.interior
+							)
+						) {
+							result = i;
+							break;
+						}
+					} else {
+						// if the current multiAsset is the relay asset we skip it since the
+						// pays with fee dest item is not the relay asset
+						if (multiAsset.id.Concrete.interior.isHere) {
+							continue;
+						}
+
+						if (
+							multiAsset.id.Concrete.interior.isX2 &&
+							multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
+								paysWithFeeDestGeneralIndex
+						) {
+							result = i;
+							break;
+						}
 					}
 				} else {
 					if (
-						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2 &&
-						(multiAsset.id.Concrete.interior as NonRelayNativeInterior).X2[1]
-							.GeneralIndex === paysWithFeeDest
+						multiAsset.id.Concrete.interior.isX2 &&
+						multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
+							paysWithFeeDest
 					) {
 						result = i;
 						break;
@@ -65,6 +92,14 @@ export const getFeeAssetItemIndex = (
 				}
 			}
 		}
+	}
+
+	if (result === -1) {
+		throw new BaseError(
+			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets
+				.map((asset) => asset.id.Concrete.interior.toString())
+				.toString()}`
+		);
 	}
 
 	return result;

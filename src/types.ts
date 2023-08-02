@@ -1,6 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import {
+	InteriorMultiLocation,
+	MultiLocation,
+} from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import type { ChainInfoRegistry } from './registry/types';
@@ -65,6 +69,11 @@ export enum AssetType {
 	Foreign = 'Foreign',
 }
 
+export enum AssetCallType {
+	Reserve = 'Reserve',
+	Teleport = 'Teleport',
+}
+
 /**
  * AssetTransferApi supports three formats to be returned:
  * - payload: This returns a Polkadot-js `ExtrinsicPayload` as a hex.
@@ -90,6 +99,8 @@ export type ConstructedFormat<T> = T extends 'payload'
 export type LocalTransferTypes =
 	| 'assets::transfer'
 	| 'assets::transferKeepAlive'
+	| 'foreignAssets::transfer'
+	| 'foreignAssets::transferKeepAlive'
 	| 'balances::transfer'
 	| 'balances::transferKeepAlive';
 
@@ -191,32 +202,12 @@ export interface ChainInfo {
 	specVersion: string;
 }
 
-export type NonRelayNativeInterior = {
-	X2: [{ PalletInstance: string }, { GeneralIndex: string }];
-};
-
-export type GeneralKeyInterior = {
-	X2: [{ GeneralKey: string }];
-};
-
-export type RelayNativeInterior = {
-	Here: string;
-};
-
-export type MultiAssetInterior =
-	| NonRelayNativeInterior
-	| RelayNativeInterior
-	| GeneralKeyInterior;
-
 export type MultiAsset = {
 	fun: {
 		Fungible: string;
 	};
 	id: {
-		Concrete: {
-			interior: MultiAssetInterior;
-			parents: number;
-		};
+		Concrete: MultiLocation;
 	};
 };
 
@@ -292,6 +283,10 @@ export interface LocalDest {
 	Id: string;
 }
 
+export interface LocalTarget {
+	Id: string;
+}
+
 export interface XCMV2DestBenificiary {
 	V2: {
 		parents: string;
@@ -315,6 +310,7 @@ export type XCMDestBenificiary = XCMV3DestBenificiary | XCMV2DestBenificiary;
 export interface Args {
 	dest?: LocalDest;
 	beneficiary?: XCMDestBenificiary;
+	target?: LocalTarget;
 }
 
 export interface Method {
@@ -330,4 +326,9 @@ export interface SubmittableMethodData {
 export type AssetInfo = {
 	id: string;
 	symbol: string;
+};
+
+export type ForeignAssetMultiLocation = {
+	parents: string;
+	interior: InteriorMultiLocation;
 };

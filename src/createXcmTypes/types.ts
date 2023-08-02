@@ -13,6 +13,7 @@ import type { RequireOnlyOne } from '../types';
 
 export interface CreateAssetsOpts {
 	registry: Registry;
+	isForeignAssetsTransfer?: boolean;
 }
 
 export interface CreateFeeAssetItemOpts {
@@ -22,6 +23,7 @@ export interface CreateFeeAssetItemOpts {
 	assetIds?: string[];
 	amounts?: string[];
 	xcmVersion?: number;
+	isForeignAssetsTransfer?: boolean;
 }
 
 export interface ICreateXcmType {
@@ -42,9 +44,12 @@ export interface ICreateXcmType {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts
-	) => VersionedMultiAssets;
+	) => Promise<VersionedMultiAssets>;
 	createWeightLimit: (api: ApiPromise, weightLimit?: string) => WeightLimitV2;
-	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => u32;
+	createFeeAssetItem: (
+		api: ApiPromise,
+		opts: CreateFeeAssetItemOpts
+	) => Promise<u32>;
 }
 
 interface IWeightLimitBase {

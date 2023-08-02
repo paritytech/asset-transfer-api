@@ -93,14 +93,19 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 	});
 
 	describe('Assets', () => {
-		it('Should work for V2', () => {
-			const assets = SystemToSystem.createAssets(
+		const isForeignAssetsTransfer = false;
+
+		it('Should work for V2', async () => {
+			const assets = await SystemToSystem.createAssets(
 				mockSystemApi,
 				['100'],
 				2,
 				'statemine',
 				['USDT'],
-				{ registry }
+				{
+					registry,
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -123,14 +128,17 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
-		it('Should work for V3', () => {
-			const assets = SystemToSystem.createAssets(
+		it('Should work for V3', async () => {
+			const assets = await SystemToSystem.createAssets(
 				mockSystemApi,
 				['100'],
 				3,
 				'bridge-hub-kusama',
 				['ksm'],
-				{ registry }
+				{
+					registry,
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -154,21 +162,23 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 
-		it('Should error when asset ID is not found for V3', () => {
+		it('Should error when asset ID is not found for V3', async () => {
 			const expectedErrorMessage =
 				'bridge-hub-kusama has no associated token symbol usdc';
 
-			const err = () =>
-				SystemToSystem.createAssets(
+			await expect(async () => {
+				await SystemToSystem.createAssets(
 					mockSystemApi,
 					['100'],
 					3,
 					'bridge-hub-kusama',
 					['usdc'],
-					{ registry }
+					{
+						registry,
+						isForeignAssetsTransfer,
+					}
 				);
-
-			expect(err).toThrowError(expectedErrorMessage);
+			}).rejects.toThrowError(expectedErrorMessage);
 		});
 	});
 	describe('WeightLimit', () => {

@@ -143,14 +143,19 @@ describe('SystemToPara XcmVersioned Generation', () => {
 	});
 
 	describe('Assets', () => {
-		it('Should work for V2', () => {
-			const assets = SystemToPara.createAssets(
+		const isForeignAssetsTransfer = false;
+
+		it('Should work for V2', async () => {
+			const assets = await SystemToPara.createAssets(
 				mockSystemApi,
 				['100', '100'],
 				2,
 				'statemine',
 				['1', '2'],
-				{ registry }
+				{
+					registry,
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -186,14 +191,17 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
-		it('Should work for V3', () => {
-			const assets = SystemToPara.createAssets(
+		it('Should work for V3 for testing this', async () => {
+			const assets = await SystemToPara.createAssets(
 				mockSystemApi,
 				['100', '100'],
 				3,
 				'statemine',
 				['1', '2'],
-				{ registry }
+				{
+					registry,
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -252,19 +260,22 @@ describe('SystemToPara XcmVersioned Generation', () => {
 	});
 
 	describe('createSystemToParaMultiAssets', () => {
-		it('Should correctly create system multi assets for SystemToPara xcm direction', () => {
+		it('Should correctly create system multi assets for SystemToPara xcm direction', async () => {
 			const expected: MultiAsset[] = [
 				{
 					fun: {
 						Fungible: '300000000000000',
 					},
 					id: {
-						Concrete: {
-							interior: {
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
-							},
+						Concrete: mockSystemApi.registry.createType('MultiLocation', {
+							interior: mockSystemApi.registry.createType(
+								'InteriorMultiLocation',
+								{
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
+								}
+							),
 							parents: 0,
-						},
+						}),
 					},
 				},
 				{
@@ -272,12 +283,15 @@ describe('SystemToPara XcmVersioned Generation', () => {
 						Fungible: '100000000000000',
 					},
 					id: {
-						Concrete: {
-							interior: {
-								Here: '',
-							},
+						Concrete: mockSystemApi.registry.createType('MultiLocation', {
+							interior: mockSystemApi.registry.createType(
+								'InteriorMultiLocation',
+								{
+									Here: '',
+								}
+							),
 							parents: 1,
-						},
+						}),
 					},
 				},
 			];
@@ -285,12 +299,13 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = createSystemToParaMultiAssets(
+			const result = await createSystemToParaMultiAssets(
 				mockSystemApi,
 				amounts,
 				specName,
 				assets,
-				registry
+				registry,
+				false
 			);
 
 			expect(result).toEqual(expected);

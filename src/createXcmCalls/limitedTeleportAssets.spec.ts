@@ -8,8 +8,12 @@ import { limitedTeleportAssets } from './limitedTeleportAssets';
 describe('limitedTeleportAssets', () => {
 	const registry = new Registry('statemine', {});
 	describe('SystemToPara', () => {
-		it('Should correctly construct a tx for a system parachain with V2', () => {
-			const ext = limitedTeleportAssets(
+		it('Should correctly construct a tx for a system parachain with V2', async () => {
+			const weightLimit = undefined;
+			const paysWithFeeDest = undefined;
+			const isForeignAssetsTransfer = false;
+
+			const ext = await limitedTeleportAssets(
 				mockSystemApi,
 				Direction.SystemToPara,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -18,17 +22,24 @@ describe('limitedTeleportAssets', () => {
 				'1000',
 				2,
 				'statemine',
-				registry
+				registry,
+				weightLimit,
+				paysWithFeeDest,
+				isForeignAssetsTransfer
 			);
 
 			expect(ext.toHex()).toBe(
 				'0xfc041f0901010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000000'
 			);
 		});
-		it('Should error when a api does not support the required pallets', () => {
+		it('Should error when a api does not support the required pallets', async () => {
 			const mockApi = { tx: {} } as unknown as ApiPromise;
-			const err = () =>
-				limitedTeleportAssets(
+			const weightLimit = undefined;
+			const paysWithFeeDest = undefined;
+			const isForeignAssetsTransfer = false;
+
+			await expect(async () => {
+				await limitedTeleportAssets(
 					mockApi,
 					Direction.SystemToPara,
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -37,10 +48,12 @@ describe('limitedTeleportAssets', () => {
 					'1000',
 					2,
 					'statemine',
-					registry
+					registry,
+					weightLimit,
+					paysWithFeeDest,
+					isForeignAssetsTransfer
 				);
-
-			expect(err).toThrowError(
+			}).rejects.toThrowError(
 				"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API"
 			);
 		});

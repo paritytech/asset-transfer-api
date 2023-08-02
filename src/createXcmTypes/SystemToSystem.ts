@@ -3,7 +3,9 @@
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
 import type {
+	InteriorMultiLocation,
 	MultiAssetsV2,
+	MultiLocation,
 	VersionedMultiAssets,
 	VersionedMultiLocation,
 	WeightLimitV2,
@@ -16,7 +18,7 @@ import { BaseError } from '../errors';
 import type { Registry } from '../registry';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import { MultiAsset, MultiAssetInterior } from './../types';
+import { MultiAsset } from './../types';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -25,7 +27,7 @@ import {
 } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getSystemChainTokenSymbolGeneralIndex } from './util/getTokenSymbolGeneralIndex';
+import { getChainAssetId } from './util/getChainAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -109,22 +111,23 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param amounts
 	 * @param xcmVersion
 	 */
-	createAssets: (
+	createAssets: async (
 		api: ApiPromise,
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts
-	): VersionedMultiAssets => {
+	): Promise<VersionedMultiAssets> => {
 		const { registry } = opts;
 
-		const sortedAndDedupedMultiAssets = createSystemToSystemMultiAssets(
+		const sortedAndDedupedMultiAssets = await createSystemToSystemMultiAssets(
 			api,
 			amounts,
 			specName,
 			assets,
-			registry
+			registry,
+			opts.isForeignAssetsTransfer
 		);
 
 		if (xcmVersion === 2) {
@@ -133,9 +136,11 @@ export const SystemToSystem: ICreateXcmType = {
 				sortedAndDedupedMultiAssets
 			);
 
-			return api.registry.createType('XcmVersionedMultiAssets', {
-				V2: multiAssetsType,
-			});
+			return Promise.resolve(
+				api.registry.createType('XcmVersionedMultiAssets', {
+					V2: multiAssetsType,
+				})
+			);
 		} else {
 			const multiAssetsType: XcmV3MultiassetMultiAssets =
 				api.registry.createType(
@@ -143,9 +148,11 @@ export const SystemToSystem: ICreateXcmType = {
 					sortedAndDedupedMultiAssets
 				);
 
-			return api.registry.createType('XcmVersionedMultiAssets', {
-				V3: multiAssetsType,
-			});
+			return Promise.resolve(
+				api.registry.createType('XcmVersionedMultiAssets', {
+					V3: multiAssetsType,
+				})
+			);
 		}
 	},
 	/**
@@ -174,7 +181,10 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts): u32 => {
+	createFeeAssetItem: async (
+		api: ApiPromise,
+		opts: CreateFeeAssetItemOpts
+	): Promise<u32> => {
 		const {
 			registry,
 			paysWithFeeDest,
@@ -191,12 +201,13 @@ export const SystemToSystem: ICreateXcmType = {
 			assetIds &&
 			paysWithFeeDest
 		) {
-			const multiAssets = createSystemToSystemMultiAssets(
+			const multiAssets = await createSystemToSystemMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
 				specName,
 				assetIds,
-				registry
+				registry,
+				opts.isForeignAssetsTransfer
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
@@ -208,9 +219,11 @@ export const SystemToSystem: ICreateXcmType = {
 			}
 
 			const assetIndex = getFeeAssetItemIndex(
+				api,
 				paysWithFeeDest,
 				multiAssets,
-				specName
+				specName,
+				opts.isForeignAssetsTransfer
 			);
 
 			return api.registry.createType('u32', assetIndex);
@@ -229,15 +242,20 @@ export const SystemToSystem: ICreateXcmType = {
  * @param assets string[]
  * @param chainId string
  */
-export const createSystemToSystemMultiAssets = (
+export const createSystemToSystemMultiAssets = async (
 	api: ApiPromise,
 	amounts: string[],
 	specName: string,
 	assets: string[],
-	registry: Registry
-): MultiAsset[] => {
-	let multiAssets = [];
+	registry: Registry,
+	isForeignAssetsTransfer?: boolean
+): Promise<MultiAsset[]> => {
+	let multiAssets: MultiAsset[] = [];
 
+	const assetHubChainId = '1000';
+	const { foreignAssetsPalletInstance } =
+		registry.currentRelayRegistry[assetHubChainId];
+	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	const systemChainId = getChainIdBySpecName(registry, specName);
 
 	if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
@@ -258,26 +276,66 @@ export const createSystemToSystemMultiAssets = (
 
 		if (!isRelayNative) {
 			if (isNotANumber) {
-				assetId = getSystemChainTokenSymbolGeneralIndex(assetId, specName);
+				assetId = await getChainAssetId(
+					api,
+					assetId,
+					specName,
+					isForeignAssetsTransfer
+				);
 			}
 		}
 
-		const interior: MultiAssetInterior = isRelayNative
-			? { Here: '' }
-			: {
-					X2: [
-						{ PalletInstance: fetchPalletInstanceId(api) },
-						{ GeneralIndex: assetId },
-					],
-			  };
-		const parents = isRelayNative ? 1 : 0;
+		let concretMultiLocation: MultiLocation;
+
+		if (isForeignAssetsTransfer) {
+			const assetIdMultiLocation = api.registry.createType(
+				'MultiLocation',
+				JSON.parse(assetId)
+			);
+
+			// start of the junctions values of the assetId. + 1 to ignore the '['
+			const junctionsStartIndex = assetId.indexOf('[') + 1;
+			// end index of the junctions values of the assetId
+			const junctionsEndIndex = assetId.indexOf(']');
+			// e.g. {"Parachain": "2125"}, {"GeneralIndex": "0"}
+			const junctions = assetId.slice(
+				junctionsStartIndex + 1,
+				junctionsEndIndex
+			);
+			// number of junctions found in the assetId. used to determine the number of junctions
+			// after adding the PalletInstance (e.g. 2 junctions becomes X3)
+			const junctionCount = junctions.split('},').length + 1;
+
+			const numberOfJunctions = `"X${junctionCount}"`;
+			const palletInstanceJunctionStr = `{"PalletInstance":"${foreignAssetsPalletId}"},`;
+			const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
+
+			concretMultiLocation = api.registry.createType('MultiLocation', {
+				parents: assetIdMultiLocation.parents,
+				interior: api.registry.createType(
+					'InteriorMultiLocation',
+					JSON.parse(interiorMultiLocationStr)
+				),
+			});
+		} else {
+			const parents = isRelayNative ? 1 : 0;
+			const interior: InteriorMultiLocation = isRelayNative
+				? api.registry.createType('InteriorMultiLocation', { Here: '' })
+				: api.registry.createType('InteriorMultiLocation', {
+						X2: [
+							{ PalletInstance: fetchPalletInstanceId(api) },
+							{ GeneralIndex: assetId },
+						],
+				  });
+			concretMultiLocation = api.registry.createType('MultiLocation', {
+				parents,
+				interior,
+			});
+		}
 
 		const multiAsset = {
 			id: {
-				Concrete: {
-					parents,
-					interior,
-				},
+				Concrete: concretMultiLocation,
 			},
 			fun: {
 				Fungible: amount,
