@@ -10,7 +10,7 @@ import { GREEN, PURPLE, RESET } from './colors';
 /**
  * In this example we are creating a call to send 1 xcRMRK from a Moonriver (Parachain) account
  * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to 3, and `isLimited` is set to true declaring that
- * it will be weight limited and provides the weight values for both `refTime` and `proofSize` respectively.
+ * it will be a weight limited tx and provides the weight values for both `refTime` and `proofSize` respectively.
  *
  * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
  */
@@ -25,7 +25,7 @@ const main = async () => {
 			'1000',
 			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
 			['8'],
-			['1000000'],
+			['10000000000'],
 			{
 				format: 'call',
 				isLimited: true,

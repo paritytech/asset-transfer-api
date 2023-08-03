@@ -19,10 +19,14 @@ enum XcmPalletName {
  */
 export const establishXcmPallet = (
 	api: ApiPromise,
-	direction?: Direction
+	direction?: Direction,
+	// isForeignAssetsTransfer?: boolean
 ): XcmPalletName => {
-	// check for xtokens pallet if exists
+	// checks for xTokens pallet
+	// for direction ParaToSystem, if it exists and tx is 
+	// not a foreign assets transfer we use the xTokens pallet
 	if (
+		// isParaToSystemAssetsPalletTx(api, direction, isForeignAssetsTransfer)
 		direction &&
 		(direction === Direction.ParaToSystem ||
 			direction === Direction.ParaToPara) &&
@@ -41,3 +45,23 @@ export const establishXcmPallet = (
 		);
 	}
 };
+
+// const isParaToSystemAssetsPalletTx = (
+// 	api: ApiPromise,
+// 	direction?: Direction,
+// 	isForeignAssetsTransfer?: boolean,
+// 	): boolean => {
+// 	if (
+// 		isForeignAssetsTransfer != undefined && 
+// 		!isForeignAssetsTransfer && 
+// 		direction && 
+// 		(direction === Direction.ParaToSystem || direction === Direction.ParaToPara) && 
+// 		api.tx.xTokens
+// 		) {
+// 			return true;
+// 		}
+
+// 		return false;
+// }
+
+
