@@ -32,7 +32,7 @@ const main = async () => {
 				refTime: '100000',
 				proofSize: '3000',
 				xcmVersion: 3,
-				// NOTE: for xToken txs, paysWithFeeDest is a multiLocation that is used to pay for fees in the dest chain
+				// NOTE: for xTokens txs, paysWithFeeDest is a multiLocation that is used to pay for fees in the dest chain
 				paysWithFeeDest:
 					'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
 			}

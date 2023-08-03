@@ -148,8 +148,7 @@ export const RelayToPara: ICreateXcmType = {
 		}
 	},
 	/**
-	 * TODO: Generalize the weight type with V3.
-	 * Create a WeightLimitV2 type.
+	 * Create an XcmV3WeightLimit type.
 	 *
 	 * @param api ApiPromise
 	 * @param isLimited Whether the tx is limited
