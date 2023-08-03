@@ -1755,12 +1755,394 @@ describe('AssetTransferApi Integration Tests', () => {
 			});
 		});
 		describe('ParaToSystem', () => {
-			const baseParachainCreateTx = async <T extends Format>(
+			const baseParachainTransferMultiAssetTx = async <T extends Format>(
 				format: T,
-				isLimited: boolean,
 				xcmVersion: number,
-				refTime?: string,
-				proofSize?: string
+				opts: CreateWeightLimitOpts
+			): Promise<TxResult<T>> => {
+				return await moonriverAssetsApi.createTransferTransaction(
+					'1000', // `1000` indicating the dest chain is a system chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['KSM'],
+					['10000000000'],
+					{
+						format,
+						xcmVersion,
+						isLimited: opts.isLimited,
+						refTime: opts.refTime,
+						proofSize: opts.proofSize,
+					}
+				);
+			};
+			describe('V2', () => {
+				it('Should correctly build a V2 transferMultiAsset call', async () => {
+					const res = await baseParachainTransferMultiAssetTx('call', 2, {
+						isLimited: true,
+						refTime: '1000',
+						proofSize: '2000',
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAsset',
+						tx: '0x6a0101000100000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 transferMultiAsset payload', async () => {
+					const res = await baseParachainTransferMultiAssetTx('payload', 2, {
+						isLimited: true,
+						refTime: '1000',
+						proofSize: '2000',
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAsset',
+						tx: '0xe86a0101000100000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 submittable transferMultiAsset', async () => {
+					const res = await baseParachainTransferMultiAssetTx(
+						'submittable',
+						2,
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a V2 transferMultiAsset call', async () => {
+					const res = await baseParachainTransferMultiAssetTx('call', 2, {});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAsset',
+						tx: '0x6a0101000100000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 transferMultiAsset payload', async () => {
+					const res = await baseParachainTransferMultiAssetTx('payload', 2, {});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAsset',
+						tx: '0xd86a0101000100000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 submittable transferMultiAsset extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetTx(
+						'submittable',
+						2,
+						{}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('V3 transfer api', () => {
+				it('Should correctly build a V3 transferMultiAsset call', async () => {
+					const res = await baseParachainTransferMultiAssetTx('call', 3, {
+						isLimited: true,
+						refTime: '1000',
+						proofSize: '2000',
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAsset',
+						tx: '0x6a0103000100000700e40b540203010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAsset payload', async () => {
+					const res = await baseParachainTransferMultiAssetTx('payload', 3, {
+						isLimited: true,
+						refTime: '1000',
+						proofSize: '2000',
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAsset',
+						tx: '0xe86a0103000100000700e40b540203010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 submittable transferMultiAsset extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetTx(
+						'submittable',
+						3,
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a V3 transferMultiAsset call', async () => {
+					const res = await baseParachainTransferMultiAssetTx('call', 3, {});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAsset',
+						tx: '0x6a0103000100000700e40b540203010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAsset payload', async () => {
+					const res = await baseParachainTransferMultiAssetTx('payload', 3, {});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAsset',
+						tx: '0xd86a0103000100000700e40b540203010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a submittable V3 transferMultiAsset extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetTx(
+						'submittable',
+						3,
+						{}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			const baseParachainTransferMultiAssetWithFeeTx = async <T extends Format>(
+				format: T,
+				xcmVersion: number,
+				opts: CreateWeightLimitOpts
+			): Promise<TxResult<T>> => {
+				return await moonriverAssetsApi.createTransferTransaction(
+					'1000', // `1000` indicating the dest chain is a system chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['1984'],
+					['10000000000'],
+					{
+						format,
+						xcmVersion,
+						isLimited: opts.isLimited,
+						refTime: opts.refTime,
+						proofSize: opts.proofSize,
+						paysWithFeeDest:
+							'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
+					}
+				);
+			};
+			describe('V2', () => {
+				it('Should correctly build a V2 transferMultiAssetWithFee call', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'call',
+						2,
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x6a030100010300a10f043205011f000700e40b54020100010300a10f043205011f000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 transferMultiAssetWithFee payload', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'payload',
+						2,
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x41016a030100010300a10f043205011f000700e40b54020100010300a10f043205011f000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 submittable transferMultiAssetWithFee', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'submittable',
+						2,
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a V2 transferMultiAssetWithFee call', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'call',
+						2,
+						{}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x6a030100010300a10f043205011f000700e40b54020100010300a10f043205011f000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 transferMultiAssetWithFee payload', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'payload',
+						2,
+						{}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x31016a030100010300a10f043205011f000700e40b54020100010300a10f043205011f000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 submittable transferMultiAssetWithFee extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'submittable',
+						2,
+						{}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('V3 transfer api', () => {
+				it('Should correctly build a V3 transferMultiAssetWithFee call', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'call',
+						3,
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x6a030300010300a10f043205011f000700e40b54020300010300a10f043205011f000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAssetWithFee payload', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'payload',
+						3,
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x41016a030300010300a10f043205011f000700e40b54020300010300a10f043205011f000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 submittable transferMultiAssetWithFee extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'submittable',
+						3,
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a V3 transferMultiAssetWithFee call', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'call',
+						3,
+						{}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x6a030300010300a10f043205011f000700e40b54020300010300a10f043205011f000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAssetWithFee payload', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'payload',
+						3,
+						{}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x31016a030300010300a10f043205011f000700e40b54020300010300a10f043205011f000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a submittable V3 transferMultiAssetWithFee extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'submittable',
+						3,
+						{}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			const baseParachainTransferMultiAssetsTx = async <T extends Format>(
+				format: T,
+				xcmVersion: number,
+				opts: CreateWeightLimitOpts
 			): Promise<TxResult<T>> => {
 				return await moonriverAssetsApi.createTransferTransaction(
 					'1000', // `1000` indicating the dest chain is a system chain.
@@ -1769,22 +2151,20 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100000', '1000000'],
 					{
 						format,
-						isLimited,
 						xcmVersion,
-						refTime,
-						proofSize,
+						isLimited: opts.isLimited,
+						refTime: opts.refTime,
+						proofSize: opts.proofSize,
 					}
 				);
 			};
 			describe('V2', () => {
-				it('Should correctly build a call for a transferMultiAssets for V2', async () => {
-					const res = await baseParachainCreateTx(
-						'call',
-						true,
-						2,
-						'1000',
-						'2000'
-					);
+				it('Should correctly build a V2 transferMultiAssets call', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('call', 2, {
+						isLimited: true,
+						refTime: '1000',
+						proofSize: '2000',
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1795,14 +2175,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a transferMultiAssets for V2', async () => {
-					const res = await baseParachainCreateTx(
-						'payload',
-						true,
-						2,
-						'1000',
-						'2000'
-					);
+				it('Should correctly build a V2 transferMultiAssets payload', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('payload', 2, {
+						isLimited: true,
+						refTime: '1000',
+						proofSize: '2000',
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1813,18 +2191,20 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseParachainCreateTx(
+				it('Should correctly build a V2 submittable transferMultiAssets extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
 						'submittable',
-						true,
 						2,
-						'1000',
-						'2000'
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a transferMultiAssets for V2', async () => {
-					const res = await baseParachainCreateTx('call', false, 2);
+				it('Should correctly build a V2 transferMultiAssets call', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('call', 2, {});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1835,8 +2215,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a transferMultiAssets for V2', async () => {
-					const res = await baseParachainCreateTx('payload', false, 2);
+				it('Should correctly build a V2 transferMultiAssets payload', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
+						'payload',
+						2,
+						{}
+					);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1847,20 +2231,22 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V2', async () => {
-					const res = await baseParachainCreateTx('submittable', false, 2);
+				it('Should correctly build a V2 transferMultiAssets submittable extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
+						'submittable',
+						2,
+						{}
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V3 transfer api', () => {
-				it('Should correctly build a call for a transferMultiAssets for V3', async () => {
-					const res = await baseParachainCreateTx(
-						'call',
-						true,
-						3,
-						'1000',
-						'2000'
-					);
+				it('Should correctly build a V3 transferMultiAssets call', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('call', 3, {
+						isLimited: true,
+						refTime: '1000',
+						proofSize: '2000',
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1871,14 +2257,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a transferMultiAssets for V3', async () => {
-					const res = await baseParachainCreateTx(
-						'payload',
-						true,
-						3,
-						'1000',
-						'2000'
-					);
+				it('Should correctly build a V3 transferMultiAssets payload', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('payload', 3, {
+						isLimited: true,
+						refTime: '1000',
+						proofSize: '2000',
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1889,18 +2273,20 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseParachainCreateTx(
+				it('Should correctly build a V3 transferMultiAssets submittable extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
 						'submittable',
-						true,
 						3,
-						'1000',
-						'2000'
+						{
+							isLimited: true,
+							refTime: '1000',
+							proofSize: '2000',
+						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a transferMultiAssets for V3', async () => {
-					const res = await baseParachainCreateTx('call', false, 3);
+				it('Should correctly build a V3 call transferMultiAssets', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('call', 3, {});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1911,8 +2297,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a transferMultiAssets for V3', async () => {
-					const res = await baseParachainCreateTx('payload', false, 3);
+				it('Should correctly build a V3 transferMultiAssets payload', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
+						'payload',
+						3,
+						{}
+					);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1923,8 +2313,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V3', async () => {
-					const res = await baseParachainCreateTx('submittable', false, 3);
+				it('Should correctly build a V3 transferMultiAssets submittable extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
+						'submittable',
+						3,
+						{}
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});

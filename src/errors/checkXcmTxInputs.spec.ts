@@ -626,7 +626,11 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 		const paysWithFeeDest = '1984';
 
 		const err = () =>
-			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+			checkXcmVersionIsValidForPaysWithFeeDest(
+				Direction.SystemToPara,
+				xcmVersion,
+				paysWithFeeDest
+			);
 
 		expect(err).toThrow('paysWithFeeDest requires XCM version 3');
 	});
@@ -635,7 +639,25 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 		const paysWithFeeDest = '1984';
 
 		const err = () =>
-			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+			checkXcmVersionIsValidForPaysWithFeeDest(
+				Direction.SystemToPara,
+				xcmVersion,
+				paysWithFeeDest
+			);
+
+		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+	});
+
+	it('Should correctly not throw an error if xcmDirection is ParaToSystem or ParaToPara', () => {
+		const xcmVersion = 3;
+		const paysWithFeeDest = '1984';
+
+		const err = () =>
+			checkXcmVersionIsValidForPaysWithFeeDest(
+				Direction.ParaToSystem,
+				xcmVersion,
+				paysWithFeeDest
+			);
 
 		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
 	});

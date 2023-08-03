@@ -684,10 +684,17 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
  * @param paysWithFeeDest
  */
 export const checkXcmVersionIsValidForPaysWithFeeDest = (
+	xcmDirection: Direction,
 	xcmVersion?: number,
 	paysWithFeeDest?: string
 ) => {
-	if (paysWithFeeDest && xcmVersion && xcmVersion < 3) {
+	if (
+		xcmDirection != Direction.ParaToSystem &&
+		xcmDirection != Direction.ParaToPara &&
+		paysWithFeeDest &&
+		xcmVersion &&
+		xcmVersion < 3
+	) {
 		throw new BaseError('paysWithFeeDest requires XCM version 3');
 	}
 };
@@ -813,7 +820,11 @@ export const checkXcmTxInputs = async (
 ) => {
 	const relayChainInfo = registry.currentRelayRegistry;
 
-	checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+	checkXcmVersionIsValidForPaysWithFeeDest(
+		xcmDirection,
+		xcmVersion,
+		paysWithFeeDest
+	);
 
 	/**
 	 * Checks to ensure that assetId's have a length no greater than MAX_ASSETS_FOR_TRANSFER
