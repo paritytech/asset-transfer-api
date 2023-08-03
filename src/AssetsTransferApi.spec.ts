@@ -11,6 +11,7 @@ import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApi';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { Direction, UnsignedTransaction } from './types';
+import { AssetType } from './types';
 
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',
@@ -121,12 +122,21 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		describe('SystemToSystem', () => {
-			it('Should corectly return Native', () => {
+			it('Should correctly return Native', () => {
 				const assetType = systemAssetsApi['fetchAssetType'](
 					Direction.SystemToSystem
 				);
 
 				expect(assetType).toEqual('Native');
+			});
+
+			it('Should correctly return Foreign', () => {
+				const assetType = systemAssetsApi['fetchAssetType'](
+					Direction.SystemToSystem,
+					true
+				);
+
+				expect(assetType).toEqual('Foreign');
 			});
 		});
 		describe('RelayToSystem', () => {
@@ -157,6 +167,174 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 	});
+
+	describe('fetchCallType', () => {
+		describe('RelayToSystem', () => {
+			it('Should correctly return Teleport', () => {
+				const assetCallType = relayAssetsApi['fetchCallType'](
+					'0',
+					'1000',
+					['ksm'],
+					Direction.RelayToSystem,
+					AssetType.Native,
+					false,
+					relayAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+		});
+		describe('RelayToPara', () => {
+			it('Should correctly return Reserve', () => {
+				const assetCallType = relayAssetsApi['fetchCallType'](
+					'0',
+					'2023',
+					['ksm'],
+					Direction.RelayToPara,
+					AssetType.Native,
+					false,
+					relayAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+		describe('SystemToRelay', () => {
+			it('Should correctly return Teleport', () => {
+				const assetCallType = systemAssetsApi['fetchCallType'](
+					'1000',
+					'0',
+					['ksm'],
+					Direction.SystemToRelay,
+					AssetType.Native,
+					false,
+					systemAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+		});
+		describe('SystemToSystem', () => {
+			it('Should correctly return Teleport when sending a native asset', () => {
+				const assetCallType = systemAssetsApi['fetchCallType'](
+					'1000',
+					'1001',
+					['ksm'],
+					Direction.SystemToSystem,
+					AssetType.Native,
+					false,
+					systemAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+			it('Should correctly throw an error when sending a foreign asset to a system chain', () => {
+				const err = () =>
+					systemAssetsApi['fetchCallType'](
+						'1000',
+						'1001',
+						[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+						Direction.SystemToSystem,
+						AssetType.Foreign,
+						true,
+						systemAssetsApi.registry
+					);
+
+				expect(err).toThrow(
+					'Unable to send foreign assets in direction SystemToSystem'
+				);
+			});
+		});
+		describe('SystemToPara', () => {
+			it('Should correctly return Teleport when sending to origin Parachain', () => {
+				const assetCallType = systemAssetsApi['fetchCallType'](
+					'1000',
+					'2023',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					Direction.SystemToPara,
+					AssetType.Foreign,
+					true,
+					systemAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+		});
+		describe('SystemToPara', () => {
+			it('Should correctly return Reserve when sending to non origin Parachain', () => {
+				const assetCallType = systemAssetsApi['fetchCallType'](
+					'1000',
+					'2125',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					Direction.SystemToPara,
+					AssetType.Foreign,
+					true,
+					systemAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+		describe('ParaToRelay', () => {
+			it('Should correctly return Reserve', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'0',
+					['ksm'],
+					Direction.ParaToRelay,
+					AssetType.Foreign,
+					false,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+		describe('ParaToSystem', () => {
+			it('Should correctly return Teleport when sending a foreign asset that is native to the origin', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'1000',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					Direction.ParaToSystem,
+					AssetType.Foreign,
+					true,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+			it('Should correctly return Reserve when sending a foreign asset that is foreign to the origin', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'1000',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2125"}}}`],
+					Direction.ParaToSystem,
+					AssetType.Foreign,
+					true,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+		describe('ParaToPara', () => {
+			it('Should correctly return Reserve', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'2125',
+					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					Direction.ParaToPara,
+					AssetType.Foreign,
+					true,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
+	});
+
 	describe('Opts', () => {
 		it('Should correctly read in the injectedRegistry option', () => {
 			const injectedRegistry = {
@@ -164,8 +342,11 @@ describe('AssetTransferAPI', () => {
 					'9876': {
 						tokens: ['TST'],
 						assetsInfo: {},
+						foreignAssetsInfo: {},
 						specName: 'testing',
 						assetsPalletInstance: '100',
+						foreignAssetsPalletInstance: '1000',
+						poolPairsInfo: {},
 					},
 				},
 			};
@@ -364,17 +545,90 @@ describe('AssetTransferAPI', () => {
 				expect(decoded).toEqual(expected);
 			});
 		});
+
+		describe('SystemToPara', () => {
+			it('Should decode a foreign asset tx call extrinsic given its hash for SystemToPara', async () => {
+				const expected =
+					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
+
+				const callTxResult = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					[
+						'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+					],
+					['10000000000000'],
+					{
+						format: 'call',
+						keepAlive: false,
+					}
+				);
+
+				const decoded = systemAssetsApi.decodeExtrinsic(
+					callTxResult.tx,
+					'call'
+				);
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a foreign asset tx payload extrinsic given its hash for SystemToPara', async () => {
+				const expected =
+					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
+
+				const callTxResult = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					[
+						'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+					],
+					['10000000000000'],
+					{
+						format: 'payload',
+						keepAlive: false,
+					}
+				);
+
+				const decoded = systemAssetsApi.decodeExtrinsic(
+					callTxResult.tx,
+					'payload'
+				);
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a foreign asset tx submittable extrinsic given its hash for SystemToPara', async () => {
+				const expected =
+					'{"args":{"dest":{"V2":{"parents":"1","interior":{"X1":{"Parachain":"2,023"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":{"X3":[{"PalletInstance":"53"},{"Parachain":"2,125"},{"GeneralIndex":"0"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
+
+				const callTxResult = await systemAssetsApi.createTransferTransaction(
+					'2023',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					[
+						'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+					],
+					['10000000000000'],
+					{
+						format: 'submittable',
+					}
+				);
+
+				const decoded = systemAssetsApi.decodeExtrinsic(
+					callTxResult.tx.toHex(),
+					'submittable'
+				);
+				expect(decoded).toEqual(expected);
+			});
+		});
 	});
 
 	describe('feeAssetItem', () => {
 		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a limitedReserveTransferAssets call', async () => {
 			const expected =
-				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"10,000,000,000,000"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"11"}]}}},"fun":{"Fungible":"20,000,000,000,000"}},{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"30,000,000,000,000"}}]},"fee_asset_item":"1","weight_limit":{"Limited":{"refTime":"1,000","proofSize":"1,000"}}},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
+				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"11"}]}}},"fun":{"Fungible":"10,000,000,000,000"}},{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"30,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":{"Limited":{"refTime":"1,000","proofSize":"1,000"}}},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
 			const callTxResult = await systemAssetsApi.createTransferTransaction(
 				'2000',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['ksm', '10', '11'],
-				['30000000000000', '10000000000000', '20000000000000'],
+				['ksm', '11'],
+				['30000000000000', '10000000000000'],
 				{
 					xcmVersion: 3,
 					weightLimit: '100000',
@@ -393,12 +647,12 @@ describe('AssetTransferAPI', () => {
 
 		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a reserveTransferAssets call', async () => {
 			const expected =
-				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"11"}]}}},"fun":{"Fungible":"500"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"12"}]}}},"fun":{"Fungible":"700"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"34"}]}}},"fun":{"Fungible":"300"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"36"}]}}},"fun":{"Fungible":"400"}},{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"100"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
+				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}},{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"100"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
 			const callTxResult = await systemAssetsApi.createTransferTransaction(
 				'2000',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['ksm', '10', '34', '36', '11', '12'],
-				['100', '2000', '300', '400', '500', '700'],
+				['ksm', '10'],
+				['100', '2000'],
 				{
 					paysWithFeeDest: '10',
 					xcmVersion: 3,

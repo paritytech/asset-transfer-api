@@ -6,11 +6,11 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
+import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 import { BaseError } from '../../errors';
 import type { Registry } from '../../registry';
 import { Direction } from '../../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
-import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferMultiAssetWithFee`
  * call.
@@ -23,7 +23,7 @@ import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
  */
-export const transferMultiAssetWithFee = (
+export const transferMultiAssetWithFee = async (
 	api: ApiPromise,
 	direction: Direction,
 	destAddr: string,
@@ -35,18 +35,15 @@ export const transferMultiAssetWithFee = (
 	registry: Registry,
 	paysWithFeeDest: string,
 	opts: CreateWeightLimitOpts
-): SubmittableExtrinsic<'promise', ISubmittableResult> => {
+): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const pallet = establishXcmPallet(api, direction);
 	const ext = api.tx[pallet].transferMultiassetWithFee;
 	const typeCreator = createXcmTypes[direction];
-	const destWeightLimit = typeCreator.createWeightLimit(
-		api,
-		{
-			isLimited: opts.isLimited,
-			refTime: opts.refTime,
-			proofSize: opts.proofSize
-		}
-	);
+	const destWeightLimit = typeCreator.createWeightLimit(api, {
+		isLimited: opts.isLimited,
+		refTime: opts.refTime,
+		proofSize: opts.proofSize,
+	});
 
 	if (
 		typeCreator.createXTokensAsset &&
@@ -55,7 +52,7 @@ export const transferMultiAssetWithFee = (
 	) {
 		const amount = amounts[0];
 		const assetId = assetIds[0];
-		const asset = typeCreator.createXTokensAsset(
+		const asset = await typeCreator.createXTokensAsset(
 			api,
 			amount,
 			xcmVersion,

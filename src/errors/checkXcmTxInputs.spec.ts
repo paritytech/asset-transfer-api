@@ -1,31 +1,41 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
+import { mockParachainApi } from '../testHelpers/mockParachainApi';
+import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
+	checkAllMultiLocationAssetIdsAreValid,
 	checkAssetIdInput,
+	checkAssetIdsAreOfSameAssetIdType,
+	checkAssetIdsHaveNoDuplicates,
+	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
+	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
 	checkWeightLimit,
+	checkXcmVersionIsValidForPaysWithFeeDest,
 } from './checkXcmTxInputs';
 
-const runTests = (tests: Test[]) => {
+const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
 		const [specName, testInputs, direction, errorMessage] = test;
 		const registry = new Registry(specName, {});
 		const currentRegistry = registry.currentRelayRegistry;
 
-		const err = () =>
-			checkAssetIdInput(
+		await expect(async () => {
+			await checkAssetIdInput(
+				mockParachainApi,
 				testInputs,
 				currentRegistry,
 				specName,
 				direction,
-				registry
+				registry,
+				false
 			);
-		expect(err).toThrow(errorMessage);
+		}).rejects.toThrowError(errorMessage);
 	}
 };
 
@@ -66,26 +76,20 @@ type Test = [
 ];
 
 describe('checkAssetIds', () => {
-	it('Should error when an assetId is found that is empty or a blank space', () => {
+	it('Should error when an assetId is found that is a blank space', async () => {
 		const tests: Test[] = [
-			[
-				'Statemint',
-				['', 'DOT'],
-				Direction.RelayToSystem,
-				`assetId cannot be blank spaces or empty. Found empty string`,
-			],
 			[
 				'Statemine',
 				[' ', 'KSM'],
 				Direction.SystemToRelay,
-				`assetId cannot be blank spaces or empty. Found blank space`,
+				`assetId cannot be blank spaces.`,
 			],
 		];
 
-		runTests(tests);
+		await runTests(tests);
 	});
 
-	it('Should error when direction is RelayToSystem and assetId does not match relay chains native token', () => {
+	it('Should error when direction is RelayToSystem and assetId does not match relay chains native token', async () => {
 		const tests: Test[] = [
 			[
 				'Polkadot',
@@ -107,10 +111,10 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests);
+		await runTests(tests);
 	});
 
-	it('Should error when direction is RelayToPara and assetId does not match relay chains native token', () => {
+	it('Should error when direction is RelayToPara and assetId does not match relay chains native token', async () => {
 		const tests: Test[] = [
 			[
 				'Polkadot',
@@ -126,10 +130,10 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests);
+		await runTests(tests);
 	});
 
-	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', () => {
+	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', async () => {
 		const tests: Test[] = [
 			[
 				'Statemint',
@@ -151,28 +155,16 @@ describe('checkAssetIds', () => {
 			],
 		];
 
-		runTests(tests);
+		await runTests(tests);
 	});
 
-	it('Should error when direction is SystemToPara and integer assetId is not found in system parachains assets', () => {
+	it('Should error when direction is SystemToPara and integer assetId is not found in system parachains assets', async () => {
 		const tests: Test[] = [
-			[
-				'Statemint',
-				['1337', 'DOT', '3500000'],
-				Direction.SystemToPara,
-				`SystemToPara: integer assetId 3500000 not found in Statemint`,
-			],
 			[
 				'Statemine',
 				['KSM', '8', 'stateMineDoge'],
 				Direction.SystemToPara,
 				`SystemToPara: assetId stateMineDoge not found for system parachain Statemine`,
-			],
-			[
-				'Westmint',
-				['WND', '250'],
-				Direction.SystemToPara,
-				`SystemToPara: integer assetId 250 not found in Westmint`,
 			],
 		];
 
@@ -181,19 +173,21 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
+					mockSystemApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					registry,
+					false
 				);
-			expect(err).toThrow(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
 
-	it('Should error when direction is SystemToPara and the string assetId is not found in the system parachains tokens or assets', () => {
+	it('Should error when direction is SystemToPara and the string assetId is not found in the system parachains tokens or assets', async () => {
 		const tests: Test[] = [
 			[
 				'Statemint',
@@ -220,26 +214,22 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
+					mockSystemApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					registry,
+					false
 				);
-			expect(err).toThrow(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
 
-	it('Should error when an asset id is provided that matches multiple asset symbols in the assets registry', () => {
+	it('Should error when an asset id is provided that matches multiple asset symbols in the assets registry', async () => {
 		const tests: Test[] = [
-			[
-				'Statemint',
-				['btc'],
-				Direction.SystemToPara,
-				`Multiple assets found with symbol btc`,
-			],
 			[
 				'Statemine',
 				['USDT'],
@@ -253,19 +243,21 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
+					mockParachainApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					registry,
+					false
 				);
-			expect(err).toThrowError(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
 
-	it('Should error when direction is SystemToSystem and the string assetId is not found in the system parachains tokens or assets', () => {
+	it('Should error when direction is SystemToSystem and the string assetId is not found in the system parachains tokens or assets', async () => {
 		const tests: Test[] = [
 			[
 				'Statemint',
@@ -292,18 +284,48 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
+					mockSystemApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					registry,
+					false
 				);
-			expect(err).toThrowError(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
-	it('Should error when direction is ParaToSystem and the string assetId is not found in the system parachains tokens or assets', () => {
+	it('Should error when direction is SystemToPara and the multilocation assetId is not found in the system parachains foreignAssets or chain state', async () => {
+		const tests: Test[] = [
+			[
+				'Statemine',
+				['{"parents":"2","interior":{"X1": {"Parachain":"2125000"}}}'],
+				Direction.SystemToPara,
+				`SystemToPara: assetId {"parents":"2","interior":{"X1": {"Parachain":"2125000"}}} not found for system parachain Statemine`,
+			],
+		];
+
+		for (const test of tests) {
+			const [specName, testInputs, direction, errorMessage] = test;
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
+
+			await expect(async () => {
+				await checkAssetIdInput(
+					mockSystemApi,
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry,
+					false
+				);
+			}).rejects.toThrowError(errorMessage);
+		}
+	});
+	it('Should error when direction is ParaToSystem and the string assetId is not found in the system parachains tokens or assets', async () => {
 		const tests: Test[] = [
 			[
 				'Statemint',
@@ -330,30 +352,34 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 
-			const err = () =>
-				checkAssetIdInput(
+			await expect(async () => {
+				await checkAssetIdInput(
+					mockParachainApi,
 					testInputs,
 					currentRegistry,
 					specName,
 					direction,
-					registry
+					registry,
+					false
 				);
-			expect(err).toThrow(errorMessage);
+			}).rejects.toThrowError(errorMessage);
 		}
 	});
-	it('Should error for an invalid erc20 token.', () => {
+	it('Should error for an invalid erc20 token.', async () => {
 		const registry = new Registry('moonriver', {});
 		const currentRegistry = registry.currentRelayRegistry;
-		const err = () =>
-			checkAssetIdInput(
+
+		await expect(async () => {
+			await checkAssetIdInput(
+				mockParachainApi,
 				['0x1234'],
 				currentRegistry,
 				'moonriver',
 				Direction.ParaToSystem,
-				registry
+				registry,
+				false
 			);
-
-		expect(err).toThrow(
+		}).rejects.toThrowError(
 			'ParaToSystem: assetId 0x1234, is not a valid erc20 token.'
 		);
 	});
@@ -375,17 +401,242 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 
 describe('checkWeightLimit', () => {
 	it('Should correctly error when refTime is not provided and isLimited is true', () => {
-		const err = () => checkWeightLimit(true, undefined, '500');
+		const err = () =>
+			checkWeightLimit({
+				isLimited: true,
+				refTime: undefined,
+				proofSize: '500',
+			});
 
 		expect(err).toThrowError(
 			'refTime value not found for weight limited transaction. Please provide refTime value'
 		);
 	});
 	it('Should correctly error when refTime is not provided and isLimited is true', () => {
-		const err = () => checkWeightLimit(true, '1000', undefined);
+		const err = () =>
+			checkWeightLimit({
+				isLimited: true,
+				refTime: '1000',
+				proofSize: undefined,
+			});
 
 		expect(err).toThrowError(
 			'proofSize value not found for weight limited transaction. Please provide proofSize value'
 		);
+	});
+});
+describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () => {
+	it('Should correctly error when isForeignAssetsTransfer and both non native and foreign multilocations are in assetIds for direction SystemToPara', () => {
+		const expectedErrorMessage =
+			'SystemToPara: found both foreign and native multilocations in {"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}},{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}. multilocation XCMs must only include either native or foreign assets of the destination chain';
+		const xcmDirection = Direction.SystemToPara;
+		const destChainId = '2023';
+		const multiLocationAssetIds = [
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}',
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}',
+		];
+
+		const err = () =>
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(
+				xcmDirection,
+				destChainId,
+				multiLocationAssetIds
+			);
+
+		expect(err).toThrowError(expectedErrorMessage);
+	});
+
+	it('Should correctly avoid throwing an error when isForeignAssetsTransfer and only native multilocations are in assetIds for direction SystemToPara', () => {
+		const xcmDirection = Direction.SystemToPara;
+		const destChainId = '2125';
+		const multiLocationAssetIds = [
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}',
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "1"}]}}',
+		];
+
+		const err = () =>
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(
+				xcmDirection,
+				destChainId,
+				multiLocationAssetIds
+			);
+
+		expect(err).not.toThrowError();
+	});
+
+	it('Should correctly avoid throwing an error when isForeignAssetsTransfer and only foreign multilocations are in assetIds for direction SystemToPara', () => {
+		const xcmDirection = Direction.SystemToPara;
+		const destChainId = '2125';
+		const multiLocationAssetIds = [
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}',
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "1"}]}}',
+		];
+
+		const err = () =>
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(
+				xcmDirection,
+				destChainId,
+				multiLocationAssetIds
+			);
+
+		expect(err).not.toThrowError();
+	});
+});
+
+type CreateMultiLocationTest = [
+	multiLocationAssetIds: string[],
+	expected: string
+];
+
+describe('checkAllMultiLocationAssetIdsAreValid', () => {
+	it('Should correctly error when an invalid multilocation is provided in assetIds', () => {
+		const tests: CreateMultiLocationTest[] = [
+			[
+				[
+					'{"parents":"1","interior":{"X2": [{"Parachain":"2125", {"GeneralIndex": "0"}]}}',
+				],
+				'Unexpected token { in JSON at position 55',
+			],
+			[
+				[
+					'{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}',
+				],
+				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}:  Enum(Parachain) String should not contain decimal points or scientific notation',
+			],
+		];
+
+		for (const test of tests) {
+			const [multiLocationAssetIds, expected] = test;
+			const err = () =>
+				checkAllMultiLocationAssetIdsAreValid(
+					mockSystemApi,
+					multiLocationAssetIds
+				);
+
+			expect(err).toThrowError(expected);
+		}
+	});
+});
+
+describe('checkAssetIdsLengthIsValid', () => {
+	it('Should correctly error when more than 2 assetIds are passed in', () => {
+		const assetIds = ['ksm', '1984', '10'];
+
+		const err = () => checkAssetIdsLengthIsValid(assetIds);
+
+		expect(err).toThrowError(
+			'Maximum number of assets allowed for transfer is 2. Found 3 assetIds'
+		);
+	});
+	it('Should correctly not error when less 2 or less assetIds are passed in', () => {
+		const assetIds = ['ksm', '1984'];
+
+		const err = () => checkAssetIdsLengthIsValid(assetIds);
+
+		expect(err).not.toThrow(
+			'Maximum number of assets allowed for transfer is 2. Found 3 assetIds'
+		);
+	});
+});
+
+describe('checkAssetIdsHaveNoDuplicates', () => {
+	it('Should correctly error if duplicate empty string relay assetIds are found', () => {
+		const assetIds = ['', ''];
+
+		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
+
+		expect(err).toThrow(
+			'AssetIds must be unique. Found duplicate native relay assets as empty strings'
+		);
+	});
+	it('Should correctly error if duplicate integer assetIds are found', () => {
+		const assetIds = ['10', '10'];
+
+		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
+
+		expect(err).toThrow('AssetIds must be unique. Found duplicate assetId 10');
+	});
+	it('Should correctly error if duplicate integer assetIds are found', () => {
+		const assetIds = ['usdt', 'USDT'];
+
+		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
+
+		expect(err).toThrow(
+			'AssetIds must be unique. Found duplicate assetId USDT'
+		);
+	});
+	it('Should correctly error if duplicate multilocation assetIds are found', () => {
+		const assetIds = [
+			'{"parents": "1","interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+			'{"parents": "1", "interior":{"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+		];
+
+		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
+
+		expect(err).toThrow(
+			`AssetIds must be unique. Found duplicate assetId {"parents": "1", "interior":{"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}`
+		);
+	});
+});
+
+describe('checkAssetIdsAreOfSameAssetIdType', () => {
+	it('Should correctly error when an integer assetId and multilocation assetId are passed in together', () => {
+		const assetIds = [
+			'1984',
+			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+		];
+
+		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
+
+		expect(err).toThrow(
+			`Found both native asset with assetID 1984 and foreign asset with assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Native assets and foreign assets can't be transferred within the same call.`
+		);
+	});
+
+	it('Should correctly error when a symbol assetId and multilocation assetId are passed in together', () => {
+		const assetIds = [
+			'ksm',
+			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+		];
+
+		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
+
+		expect(err).toThrow(
+			'Found both symbol ksm and multilocation assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Asset Ids must be symbol and integer or multilocation exclusively.'
+		);
+	});
+
+	it('Should correctly error when the default relay asset value and multilocation assetId are passed in together', () => {
+		const assetIds = [
+			'',
+			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
+		];
+
+		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
+
+		expect(err).toThrow(
+			`Found both default relay native asset and foreign asset with assetId: {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Relay native asset and foreign assets can't be transferred within the same call.`
+		);
+	});
+});
+
+describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
+	it('Should correctly throw an error if paysWithFeeDest is provided and xcmVersion is less than 3', () => {
+		const xcmVersion = 2;
+		const paysWithFeeDest = '1984';
+
+		const err = () =>
+			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+
+		expect(err).toThrow('paysWithFeeDest requires XCM version 3');
+	});
+	it('Should correctly not throw an error if paysWithFeeDest is provided and xcmVersion is at least 3', () => {
+		const xcmVersion = 3;
+		const paysWithFeeDest = '1984';
+
+		const err = () =>
+			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+
+		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
 	});
 });

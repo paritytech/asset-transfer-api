@@ -59,6 +59,12 @@ export const adjustedMockParachainApi = {
 			limitedTeleportAssets:
 				mockParachainApi.tx['polkadotXcm'].limitedTeleportAssets,
 		},
+		xTokens: {
+			transferMultiasset: mockParachainApi.tx['xTokens'].transferMultiasset,
+			transferMultiassetWithFee:
+				mockParachainApi.tx['xTokens'].transferMultiassetWithFee,
+			transferMultiassets: mockParachainApi.tx['xTokens'].transferMultiassets,
+		},
 	},
 	runtimeVersion: {
 		transactionVersion: mockParachainApi.registry.createType('u32', 4),

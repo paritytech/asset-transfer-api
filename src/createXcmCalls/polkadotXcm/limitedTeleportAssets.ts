@@ -5,11 +5,11 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
+import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 import type { Registry } from '../../registry';
 import { Direction } from '../../types';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr';
 import { establishXcmPallet } from '../util/establishXcmPallet';
-import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `limitedTeleportAssets` call.
@@ -22,7 +22,7 @@ import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
  */
-export const limitedTeleportAssets = (
+export const limitedTeleportAssets = async (
 	api: ApiPromise,
 	direction: Direction,
 	destAddr: string,
@@ -33,32 +33,36 @@ export const limitedTeleportAssets = (
 	specName: string,
 	registry: Registry,
 	opts: CreateWeightLimitOpts,
-	paysWithFeeDest?: string
-): SubmittableExtrinsic<'promise', ISubmittableResult> => {
+	paysWithFeeDest?: string,
+	isForeignAssetsTransfer?: boolean
+): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedTeleportAssets;
 	const typeCreator = createXcmTypes[direction];
 	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	const dest = typeCreator.createDest(api, destChainId, xcmVersion);
-	const assets = typeCreator.createAssets(
+	const assets = await typeCreator.createAssets(
 		api,
 		normalizeArrToStr(amounts),
 		xcmVersion,
 		specName,
 		assetIds,
-		{ registry }
-	);
-	const weightLimitType = typeCreator.createWeightLimit(
-		api,
 		{
-			isLimited: opts?.isLimited,
-			refTime: opts?.refTime,
-			proofSize: opts?.proofSize,
+			registry,
+			isForeignAssetsTransfer,
 		}
 	);
+	const weightLimitType = typeCreator.createWeightLimit(api, {
+		isLimited: opts?.isLimited,
+		refTime: opts?.refTime,
+		proofSize: opts?.proofSize,
+	});
 
 	const feeAssetItem = paysWithFeeDest
-		? typeCreator.createFeeAssetItem(api, { registry })
+		? await typeCreator.createFeeAssetItem(api, {
+				registry,
+				isForeignAssetsTransfer,
+		  })
 		: api.registry.createType('u32', 0);
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);

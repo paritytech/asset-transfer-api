@@ -5,11 +5,11 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
+import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 import { BaseError } from '../../errors';
 import type { Registry } from '../../registry';
 import { Direction } from '../../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
-import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferMultiAssetWithFee`
@@ -23,7 +23,7 @@ import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
  */
-export const transferMultiAsset = (
+export const transferMultiAsset = async (
 	api: ApiPromise,
 	direction: Direction,
 	destAddr: string,
@@ -34,25 +34,21 @@ export const transferMultiAsset = (
 	specName: string,
 	registry: Registry,
 	opts: CreateWeightLimitOpts
-): SubmittableExtrinsic<'promise', ISubmittableResult> => {
+): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const pallet = establishXcmPallet(api, direction);
 	const ext = api.tx[pallet].transferMultiasset;
 	const typeCreator = createXcmTypes[direction];
-	const destWeightLimit = typeCreator.createWeightLimit(
-		api,
-		{
-			isLimited: opts.isLimited,
-			refTime: opts.refTime,
-			proofSize: opts.proofSize
-		}
-
-	);
+	const destWeightLimit = typeCreator.createWeightLimit(api, {
+		isLimited: opts.isLimited,
+		refTime: opts.refTime,
+		proofSize: opts.proofSize,
+	});
 
 	if (typeCreator.createXTokensAsset && typeCreator.createXTokensBeneficiary) {
 		const amount = amounts[0];
 		const assetId = assetIds[0];
 
-		const asset = typeCreator.createXTokensAsset(
+		const asset = await typeCreator.createXTokensAsset(
 			api,
 			amount,
 			xcmVersion,

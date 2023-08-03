@@ -2,18 +2,16 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { VersionedMultiAssets } from '@polkadot/types/interfaces';
 // import { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
-import type {
-		VersionedMultiAssets,
-} from '@polkadot/types/interfaces';
 
 import { createXcmTypes } from '../../createXcmTypes';
+import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 import { BaseError } from '../../errors';
 import type { Registry } from '../../registry';
 import { Direction, XCMDestBenificiary } from '../../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
-import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferMultiAssetWithFee`
  * call.
@@ -26,7 +24,7 @@ import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
  */
-export const transferMultiAssets = (
+export const transferMultiAssets = async (
 	api: ApiPromise,
 	direction: Direction,
 	destAddr: string,
@@ -38,19 +36,16 @@ export const transferMultiAssets = (
 	registry: Registry,
 	opts: CreateWeightLimitOpts,
 	paysWithFeeDest?: string
-): SubmittableExtrinsic<'promise', ISubmittableResult> => {
+): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const pallet = establishXcmPallet(api, direction);
 	const ext = api.tx[pallet].transferMultiassets;
 	const typeCreator = createXcmTypes[direction];
 
-	const destWeightLimit = typeCreator.createWeightLimit(
-		api,
-		{
-			isLimited: opts?.isLimited,
-			refTime: opts?.refTime,
-			proofSize: opts?.proofSize
-		}
-	);
+	const destWeightLimit = typeCreator.createWeightLimit(api, {
+		isLimited: opts?.isLimited,
+		refTime: opts?.refTime,
+		proofSize: opts?.proofSize,
+	});
 
 	let assets: VersionedMultiAssets;
 	let beneficiary: XCMDestBenificiary;
@@ -60,7 +55,7 @@ export const transferMultiAssets = (
 		typeCreator.createXTokensFeeAssetItem &&
 		typeCreator.createXTokensBeneficiary
 	) {
-		assets = typeCreator.createXTokensAssets(
+		assets = await typeCreator.createXTokensAssets(
 			api,
 			amounts,
 			xcmVersion,

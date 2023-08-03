@@ -146,13 +146,13 @@ interface TransferArgsOpts<T extends Format> {
 	 */
 	format?: T;
 	/**
-	 * AssetId to pay fee's on the current common good parachain.
+	 * AssetId to pay fees on the current common good parachain.
 	 * Statemint: default DOT
 	 * Statemine: default KSM
 	 */
 	paysWithFeeOrigin?: string;
 	/**
-	 * AssetId to pay fee's on the destination parachain.
+	 * AssetId to pay fees on the destination parachain.
 	 */
 	paysWithFeeDest?: string;
 	/**

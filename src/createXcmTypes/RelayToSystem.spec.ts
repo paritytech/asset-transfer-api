@@ -92,14 +92,19 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 		});
 	});
 	describe('Assets', () => {
-		it('Should work for V2', () => {
-			const assets = RelayToSystem.createAssets(
+		const isForeignAssetsTransfer = false;
+
+		it('Should work for V2', async () => {
+			const assets = await RelayToSystem.createAssets(
 				mockRelayApi,
 				['100'],
 				2,
 				'',
 				[],
-				{ registry }
+				{
+					registry,
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -122,14 +127,17 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
-		it('Should work for V3', () => {
-			const assets = RelayToSystem.createAssets(
+		it('Should work for V3', async () => {
+			const assets = await RelayToSystem.createAssets(
 				mockRelayApi,
 				['100'],
 				3,
 				'',
 				[],
-				{ registry }
+				{
+					registry,
+					isForeignAssetsTransfer,
+				}
 			);
 
 			const expectedRes = {
@@ -161,14 +169,11 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
-			const weightLimit = RelayToSystem.createWeightLimit(
-				mockRelayApi,
-				{
-					isLimited,
-					refTime,
-					proofSize
-				}
-			);
+			const weightLimit = RelayToSystem.createWeightLimit(mockRelayApi, {
+				isLimited,
+				refTime,
+				proofSize,
+			});
 			expect(weightLimit.toJSON()).toStrictEqual({
 				limited: {
 					refTime: 100000000,

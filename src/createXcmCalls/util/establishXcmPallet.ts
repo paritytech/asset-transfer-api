@@ -22,7 +22,12 @@ export const establishXcmPallet = (
 	direction?: Direction
 ): XcmPalletName => {
 	// check for xtokens pallet if exists
-	if (direction && direction === Direction.ParaToSystem && api.tx.xTokens) {
+	if (
+		direction &&
+		(direction === Direction.ParaToSystem ||
+			direction === Direction.ParaToPara) &&
+		api.tx.xTokens
+	) {
 		return XcmPalletName.xTokens;
 	}
 
