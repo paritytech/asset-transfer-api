@@ -11,7 +11,7 @@ import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 import { BaseError } from '../../errors';
 import type { Registry } from '../../registry';
 import { Direction, XCMDestBenificiary } from '../../types';
-import { establishXcmPallet } from '../util/establishXcmPallet';
+import { XcmPalletName } from '../util/establishXcmPallet';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferMultiAssetWithFee`
  * call.
@@ -34,11 +34,11 @@ export const transferMultiAssets = async (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
+	xcmPallet: XcmPalletName,
 	opts: CreateWeightLimitOpts,
 	paysWithFeeDest?: string
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	const pallet = establishXcmPallet(api, direction);
-	const ext = api.tx[pallet].transferMultiassets;
+	const ext = api.tx[xcmPallet].transferMultiassets;
 	const typeCreator = createXcmTypes[direction];
 
 	const destWeightLimit = typeCreator.createWeightLimit(api, {

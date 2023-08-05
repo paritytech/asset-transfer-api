@@ -17,8 +17,8 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
 		const isValid = await foreignAssetsMultiLocationExists(
-			multiLocation,
-			systemAssetsApi._api
+			systemAssetsApi._api,
+			multiLocation
 		);
 
 		expect(isValid).toEqual(expected);
@@ -30,8 +30,8 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 			'{"parents":"1","interior":{"X1": {"Parachain":"21252525"}}}';
 
 		const isValid = await foreignAssetsMultiLocationExists(
-			multiLocation,
-			systemAssetsApi._api
+			systemAssetsApi._api,
+			multiLocation
 		);
 
 		expect(isValid).toEqual(expected);
@@ -45,8 +45,8 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 
 		await expect(async () => {
 			await foreignAssetsMultiLocationExists(
-				multiLocation,
-				systemAssetsApi._api
+				systemAssetsApi._api,
+				multiLocation
 			);
 		}).rejects.toThrowError(expectedError);
 	});
@@ -59,8 +59,8 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 
 		await expect(async () => {
 			await foreignAssetsMultiLocationExists(
-				multiLocation,
-				systemAssetsApi._api
+				systemAssetsApi._api,
+				multiLocation
 			);
 		}).rejects.toThrowError(expectedError);
 	});

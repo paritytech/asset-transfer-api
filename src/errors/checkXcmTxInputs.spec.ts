@@ -1,5 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';
 import { mockParachainApi } from '../testHelpers/mockParachainApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
@@ -13,6 +14,7 @@ import {
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
+	checkParaToSystemIsNonForeignAssetXTokensTx,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
 	checkWeightLimit,
@@ -660,5 +662,23 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 			);
 
 		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+	});
+});
+
+describe('checkParaToSystemIsNonForeignAssetXTokensTx', () => {
+	it('Should correctly throw an error when xcm pallet is xTokens and isForeignAssetsTransfer is true', () => {
+		const isForeignAssetsTransfer = true;
+		const xcmPallet = XcmPalletName.xTokens;
+
+		const err = () => {
+			checkParaToSystemIsNonForeignAssetXTokensTx(
+				xcmPallet,
+				isForeignAssetsTransfer
+			);
+		};
+
+		expect(err).toThrow(
+			'ParaToSystem: xTokens pallet does not support foreign asset transfers'
+		);
 	});
 });

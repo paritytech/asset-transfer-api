@@ -5,16 +5,18 @@ import { ApiPromise } from '@polkadot/api';
 import { BaseError } from '../../errors';
 
 export const foreignAssetsMultiLocationExists = async (
-	multilocationStr: string,
-	_api: ApiPromise
+	assetHubApi: ApiPromise,
+	multilocationStr: string
 ): Promise<boolean> => {
 	try {
-		const multiLocation = _api.registry.createType(
+		const multiLocation = assetHubApi.registry.createType(
 			'MultiLocation',
 			JSON.parse(multilocationStr)
 		);
 
-		const foreignAsset = await _api.query.foreignAssets.asset(multiLocation);
+		const foreignAsset = await assetHubApi.query.foreignAssets.asset(
+			multiLocation
+		);
 
 		// check if foreign asset exists
 		if (foreignAsset.toString().length > 0) {
@@ -23,11 +25,17 @@ export const foreignAssetsMultiLocationExists = async (
 
 		return false;
 	} catch (error) {
-		const errorInfo = (error as Error).message.split('::');
-		const errorDetails = errorInfo[errorInfo.length - 2].concat(
-			errorInfo[errorInfo.length - 1]
-		);
+		if ((error as Error).message.includes('::')) {
+			const errorInfo = (error as Error).message.split('::');
+			const errorDetails = errorInfo[errorInfo.length - 2].concat(
+				errorInfo[errorInfo.length - 1]
+			);
 
-		throw new BaseError(`Error creating MultiLocation type:${errorDetails}`);
+			throw new BaseError(`Error creating MultiLocation type:${errorDetails}`);
+		} else {
+			throw new BaseError(
+				`Error creating multilocation type: ${(error as Error).message}`
+			);
+		}
 	}
 };

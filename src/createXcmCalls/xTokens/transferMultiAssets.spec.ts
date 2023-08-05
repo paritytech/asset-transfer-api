@@ -3,6 +3,7 @@
 import { Registry } from '../../registry';
 import { mockParachainApi } from '../../testHelpers/mockParachainApi';
 import { Direction } from '../../types';
+import { XcmPalletName } from '../util/establishXcmPallet';
 import { transferMultiAssets } from './transferMultiAssets';
 
 describe('transferMultiAssets', () => {
@@ -25,6 +26,7 @@ describe('transferMultiAssets', () => {
 				2,
 				'moonriver',
 				registry,
+				XcmPalletName.xTokens,
 				{
 					isLimited,
 					refTime,
@@ -55,6 +57,7 @@ describe('transferMultiAssets', () => {
 				2,
 				'moonriver',
 				registry,
+				XcmPalletName.xTokens,
 				{
 					isLimited,
 					refTime,
@@ -84,6 +87,7 @@ describe('transferMultiAssets', () => {
 				3,
 				'moonriver',
 				registry,
+				XcmPalletName.xTokens,
 				{
 					isLimited,
 					refTime,
@@ -112,6 +116,7 @@ describe('transferMultiAssets', () => {
 				3,
 				'moonriver',
 				registry,
+				XcmPalletName.xTokens,
 				{
 					isLimited,
 					refTime,

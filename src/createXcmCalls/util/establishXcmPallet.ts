@@ -4,7 +4,7 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { Direction } from '../../types';
 
-enum XcmPalletName {
+export enum XcmPalletName {
 	xcmPallet = 'xcmPallet',
 	polkadotXcm = 'polkadotXcm',
 	xTokens = 'xTokens',
@@ -20,17 +20,17 @@ enum XcmPalletName {
 export const establishXcmPallet = (
 	api: ApiPromise,
 	direction?: Direction,
-	// isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer?: boolean
 ): XcmPalletName => {
-	// checks for xTokens pallet
-	// for direction ParaToSystem, if it exists and tx is 
-	// not a foreign assets transfer we use the xTokens pallet
+	// checks for the existence of the xTokens pallet
+	// for direction ParaToSystem, if it exists and the tx is
+	// not a foreign assets transfer we return the xTokens pallet
 	if (
-		// isParaToSystemAssetsPalletTx(api, direction, isForeignAssetsTransfer)
-		direction &&
-		(direction === Direction.ParaToSystem ||
-			direction === Direction.ParaToPara) &&
-		api.tx.xTokens
+		isXTokensParaToSystemNonForeignAssetsPalletTx(
+			api,
+			direction,
+			isForeignAssetsTransfer
+		)
 	) {
 		return XcmPalletName.xTokens;
 	}
@@ -46,22 +46,25 @@ export const establishXcmPallet = (
 	}
 };
 
-// const isParaToSystemAssetsPalletTx = (
-// 	api: ApiPromise,
-// 	direction?: Direction,
-// 	isForeignAssetsTransfer?: boolean,
-// 	): boolean => {
-// 	if (
-// 		isForeignAssetsTransfer != undefined && 
-// 		!isForeignAssetsTransfer && 
-// 		direction && 
-// 		(direction === Direction.ParaToSystem || direction === Direction.ParaToPara) && 
-// 		api.tx.xTokens
-// 		) {
-// 			return true;
-// 		}
+/**
+ * Determines if the tx is an xTokens ParaToSystem non foreign assets pallet tx
+ *
+ * @param api ApiPromise
+ */
+const isXTokensParaToSystemNonForeignAssetsPalletTx = (
+	api: ApiPromise,
+	direction?: Direction,
+	isForeignAssetsTransfer?: boolean
+): boolean => {
+	if (
+		isForeignAssetsTransfer != undefined &&
+		!isForeignAssetsTransfer &&
+		direction &&
+		direction === Direction.ParaToSystem &&
+		api.tx.xTokens
+	) {
+		return true;
+	}
 
-// 		return false;
-// }
-
-
+	return false;
+};

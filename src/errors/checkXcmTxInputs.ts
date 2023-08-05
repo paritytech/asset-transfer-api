@@ -9,7 +9,9 @@ import {
 	RELAY_CHAIN_IDS,
 	SYSTEM_PARACHAINS_IDS,
 } from '../consts';
+import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { CreateWeightLimitOpts } from '../createXcmTypes/types';
+import { constructAssetHubApiPromise } from '../createXcmTypes/util/constructAssetHubApiPromise';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
@@ -19,7 +21,6 @@ import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { Direction } from '../types';
 import { AssetInfo } from '../types';
 import { BaseError } from './BaseError';
-
 /**
  * Ensure when sending tx's to or from the relay chain that the length of the assetIds array
  * is zero or 1, and contains the correct token.
@@ -83,6 +84,24 @@ export const checkAssetsAmountMatch = (
 	if (assetIds.length !== amounts.length) {
 		throw new BaseError(
 			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
+		);
+	}
+};
+
+/**
+ * Ensures that foreign asset txs are not constructed when xcm pallet is xTokens
+ *
+ * @param xcmPallet
+ * @param xcmDirection
+ * @param isForeignAssetsTransfer
+ */
+export const checkParaToSystemIsNonForeignAssetXTokensTx = (
+	xcmPallet: XcmPalletName,
+	isForeignAssetsTransfer: boolean
+) => {
+	if (xcmPallet === XcmPalletName.xTokens && isForeignAssetsTransfer) {
+		throw new BaseError(
+			`ParaToSystem: xTokens pallet does not support foreign asset transfers`
 		);
 	}
 };
@@ -357,13 +376,18 @@ const checkSystemAssets = async (
 		);
 
 		if (!multiLocationIsInRegistry) {
+			// get AssetHub ApiPromise to query foreign assets pallet
+			const assetHubApi = await constructAssetHubApiPromise(registry);
+
 			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
-				assetId,
-				api
+				assetHubApi,
+				assetId
 			);
 
+			await assetHubApi.disconnect();
+
 			if (!isValidForeignAsset) {
-				throw new BaseError(`MultiLocation ${assetId} not found`);
+				throw new BaseError(`ForeignAssets MultiLocation ${assetId} not found`);
 			}
 		}
 	} else {
@@ -811,6 +835,7 @@ export const checkXcmTxInputs = async (
 	assetIds: string[],
 	amounts: string[],
 	xcmDirection: Direction,
+	xcmPallet: XcmPalletName,
 	specName: string,
 	registry: Registry,
 	opts: CreateWeightLimitOpts,
@@ -911,6 +936,10 @@ export const checkXcmTxInputs = async (
 	}
 
 	if (xcmDirection === Direction.ParaToSystem) {
+		checkParaToSystemIsNonForeignAssetXTokensTx(
+			xcmPallet,
+			isForeignAssetsTransfer
+		);
 		checkAssetsAmountMatch(assetIds, amounts);
 	}
 };

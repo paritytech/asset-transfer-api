@@ -3,6 +3,7 @@
 import { Registry } from '../../registry';
 import { mockParachainApi } from '../../testHelpers/mockParachainApi';
 import { Direction } from '../../types';
+import { XcmPalletName } from '../util/establishXcmPallet';
 import { transferMultiAssetWithFee } from './transferMultiAssetWithFee';
 
 describe('transferMultiAssetWithFee', () => {
@@ -26,6 +27,7 @@ describe('transferMultiAssetWithFee', () => {
 				2,
 				'moonriver',
 				registry,
+				XcmPalletName.xTokens,
 				paysWithFeeDest,
 				{
 					isLimited,
@@ -55,6 +57,7 @@ describe('transferMultiAssetWithFee', () => {
 				2,
 				'moonriver',
 				registry,
+				XcmPalletName.xTokens,
 				paysWithFeeDest,
 				{
 					isLimited,
@@ -85,6 +88,7 @@ describe('transferMultiAssetWithFee', () => {
 				3,
 				'moonriver',
 				registry,
+				XcmPalletName.xTokens,
 				paysWithFeeDest,
 				{
 					isLimited,
@@ -114,6 +118,7 @@ describe('transferMultiAssetWithFee', () => {
 				3,
 				'moonriver',
 				registry,
+				XcmPalletName.xTokens,
 				paysWithFeeDest,
 				{
 					isLimited,

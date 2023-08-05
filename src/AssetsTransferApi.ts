@@ -29,7 +29,10 @@ import {
 	transferMultiAssets,
 	transferMultiAssetWithFee,
 } from './createXcmCalls';
-import { establishXcmPallet } from './createXcmCalls/util/establishXcmPallet';
+import {
+	establishXcmPallet,
+	XcmPalletName,
+} from './createXcmCalls/util/establishXcmPallet';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getChainAssetId } from './createXcmTypes/util/getChainAssetId';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
@@ -141,6 +144,12 @@ export class AssetsTransferApi {
 		const xcmDirection = this.establishDirection(destChainId, _specName);
 		const isForeignAssetsTransfer: boolean =
 			this.checkIsForeignAssetTransfer(assetIds);
+		const xcmPallet = establishXcmPallet(
+			_api,
+			xcmDirection,
+			isForeignAssetsTransfer
+		);
+
 		/**
 		 * Create a local asset transfer on a system parachain
 		 */
@@ -262,6 +271,7 @@ export class AssetsTransferApi {
 			assetIds,
 			amounts,
 			xcmDirection,
+			xcmPallet,
 			_specName,
 			registry,
 			{
@@ -290,9 +300,11 @@ export class AssetsTransferApi {
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-		const xcmPallet = establishXcmPallet(_api, xcmDirection);
 
-		if (xcmPallet === 'xTokens' && xcmDirection === Direction.ParaToSystem) {
+		if (
+			xcmPallet === XcmPalletName.xTokens &&
+			xcmDirection === Direction.ParaToSystem
+		) {
 			if (!opts?.paysWithFeeDest && assetIds.length < 2) {
 				txMethod = 'transferMultiAsset';
 				transaction = await transferMultiAsset(
@@ -305,6 +317,7 @@ export class AssetsTransferApi {
 					xcmVersion,
 					_specName,
 					this.registry,
+					xcmPallet,
 					{
 						isLimited: opts?.isLimited,
 						refTime: opts?.refTime,
@@ -326,6 +339,7 @@ export class AssetsTransferApi {
 					xcmVersion,
 					_specName,
 					this.registry,
+					xcmPallet,
 					opts?.paysWithFeeDest,
 					{
 						isLimited: opts?.isLimited,
@@ -345,6 +359,7 @@ export class AssetsTransferApi {
 					xcmVersion,
 					_specName,
 					this.registry,
+					xcmPallet,
 					{
 						isLimited: opts?.isLimited,
 						refTime: opts?.refTime,

@@ -2,6 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
+import { constructAssetHubApiPromise } from '../createXcmTypes/util/constructAssetHubApiPromise';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainAssetId } from '../createXcmTypes/util/getChainAssetId';
@@ -54,10 +55,15 @@ export const checkLocalTxInput = async (
 		if (foreignAssetIsInRegistry) {
 			return LocalTxType.ForeignAssets;
 		} else {
+			// get AssetHub ApiPromise to query foreign assets pallet
+			const assetHubApi = await constructAssetHubApiPromise(registry);
+
 			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
-				multiLocationStr,
-				api
+				assetHubApi,
+				multiLocationStr
 			);
+			await assetHubApi.disconnect();
+
 			if (isValidForeignAsset) {
 				return LocalTxType.ForeignAssets;
 			} else {

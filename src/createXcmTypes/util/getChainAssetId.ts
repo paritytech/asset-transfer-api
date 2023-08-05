@@ -4,6 +4,7 @@ import { ApiPromise } from '@polkadot/api';
 
 import { BaseError } from '../../errors';
 import { Registry } from '../../registry';
+import { constructAssetHubApiPromise } from './constructAssetHubApiPromise';
 import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from './getChainIdBySpecName';
@@ -37,10 +38,15 @@ export const getChainAssetId = async (
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
 		} else {
+			// get AssetHub ApiPromise to query foreign assets pallet
+			const assetHubApi = await constructAssetHubApiPromise(newRegistry);
+
 			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
-				asset,
-				_api
+				assetHubApi,
+				asset
 			);
+
+			await assetHubApi.disconnect();
 
 			if (isValidForeignAsset) {
 				assetId = asset;
