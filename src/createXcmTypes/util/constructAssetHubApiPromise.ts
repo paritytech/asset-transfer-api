@@ -12,6 +12,7 @@ type AssetHubRpc =
 	| 'wss://kusama-asset-hub-rpc.polkadot.io'
 	| 'wss://westend-asset-hub-rpc.polkadot.io';
 
+// TODO: consider more dynamic way of getting assethub endpoints
 // short list of relay chain asset hub endpoints
 const assetHubEndpoints: AssetHubEndPoints = {
 	polkadot: 'wss://polkadot-asset-hub-rpc.polkadot.io',
