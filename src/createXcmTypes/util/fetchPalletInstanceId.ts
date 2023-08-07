@@ -14,7 +14,7 @@ export const fetchPalletInstanceId = (
 ): string => {
 	const palletName = isLiquidToken ? 'PoolAssets' : 'Assets';
 	const pallet = api.registry.metadata.pallets.filter(
-		(pallet) => pallet.name.toString() === 'Assets'
+		(pallet) => pallet.name.toString() === palletName
 	);
 
 	if (pallet.length === 0) {
