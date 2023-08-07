@@ -132,22 +132,6 @@ describe('checkLocalTxInput', () => {
 			);
 		}).rejects.toThrowError(expectedError);
 	});
-	it("Should correctly throw an error when the given multilocation doesn't exist", async () => {
-		const nonExistentMultiLocationStr =
-			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "1000000"}]}}';
-		const expectedError = `MultiLocation ${nonExistentMultiLocationStr} not found`;
-
-		await expect(async () => {
-			await checkLocalTxInput(
-				systemAssetsApi._api,
-				[nonExistentMultiLocationStr],
-				['10000'],
-				specName,
-				registry,
-				true
-			);
-		}).rejects.toThrowError(expectedError);
-	});
 
 	it('Should correctly throw an error when the given multilocation assetIds is empty', async () => {
 		const expectedError =

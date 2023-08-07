@@ -11,9 +11,7 @@ import {
 } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { CreateWeightLimitOpts } from '../createXcmTypes/types';
-import { constructAssetHubApiPromise } from '../createXcmTypes/util/constructAssetHubApiPromise';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
-import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
@@ -376,19 +374,7 @@ const checkSystemAssets = async (
 		);
 
 		if (!multiLocationIsInRegistry) {
-			// get AssetHub ApiPromise to query foreign assets pallet
-			const assetHubApi = await constructAssetHubApiPromise(registry);
-
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
-				assetHubApi,
-				assetId
-			);
-
-			await assetHubApi.disconnect();
-
-			if (!isValidForeignAsset) {
-				throw new BaseError(`ForeignAssets MultiLocation ${assetId} not found`);
-			}
+			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
 		}
 	} else {
 		// check if assetId is a number

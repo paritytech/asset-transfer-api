@@ -81,7 +81,7 @@ describe('reserveTransferAssets', () => {
 			);
 		});
 
-		it('Should correctly construct a foreign asset tx for a system parachain with V3', async () => {
+		it('Should correctly construct a foreign asset tx for a system parachain with V3 TEST', async () => {
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = true;
 

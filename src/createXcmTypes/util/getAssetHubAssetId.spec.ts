@@ -2,9 +2,9 @@
 
 import { AssetsTransferApi } from '../../AssetsTransferApi';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
-import { getChainAssetId } from './getChainAssetId';
+import { getAssetHubAssetId } from './getAssetHubAssetId';
 
-describe('getChainAssetId', () => {
+describe('getAssetHubAssetId', () => {
 	const systemAssetsApi = new AssetsTransferApi(
 		adjustedMockSystemApi,
 		'statemine',
@@ -13,7 +13,7 @@ describe('getChainAssetId', () => {
 	it('Should correctly return the integer assetId when given a valid native system chain token symbol', async () => {
 		const expected = '10';
 
-		const result = await getChainAssetId(
+		const result = await getAssetHubAssetId(
 			systemAssetsApi._api,
 			'USDC',
 			'statemine',
@@ -26,7 +26,7 @@ describe('getChainAssetId', () => {
 	it('Should correctly return the integer assetId when given a valid native system chain token assetId', async () => {
 		const expected = '8';
 
-		const result = await getChainAssetId(
+		const result = await getAssetHubAssetId(
 			systemAssetsApi._api,
 			'RMRK',
 			'statemine',
@@ -38,7 +38,12 @@ describe('getChainAssetId', () => {
 
 	it('Should error when an asset id symbol is given that is not present in the registry or chain tate', async () => {
 		await expect(async () => {
-			await getChainAssetId(systemAssetsApi._api, 'hello', 'statemine', false);
+			await getAssetHubAssetId(
+				systemAssetsApi._api,
+				'hello',
+				'statemine',
+				false
+			);
 		}).rejects.toThrowError(
 			'assetId hello is not a valid symbol or integer asset id'
 		);
@@ -50,7 +55,7 @@ describe('getChainAssetId', () => {
 		const expected =
 			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
-		const result = await getChainAssetId(
+		const result = await getAssetHubAssetId(
 			systemAssetsApi._api,
 			multiLocation,
 			'statemine',
@@ -58,19 +63,5 @@ describe('getChainAssetId', () => {
 		);
 
 		expect(result).toEqual(expected);
-	});
-
-	it('Should correctly error when a foreign asset multilocation is given that is not present in the registry or chain state', async () => {
-		const multiLocation =
-			'{"parents":"1","interior":{"X1": {"Parachain":"212500000"}}}';
-
-		await expect(async () => {
-			await getChainAssetId(
-				systemAssetsApi._api,
-				multiLocation,
-				'statemine',
-				true
-			);
-		}).rejects.toThrowError(`MultiLocation ${multiLocation} not found`);
 	});
 });

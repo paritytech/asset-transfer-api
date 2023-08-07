@@ -32,7 +32,7 @@ import type {
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
-import { getChainAssetId } from './util/getChainAssetId';
+import { getAssetHubAssetId } from './util/getAssetHubAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -295,7 +295,7 @@ export const ParaToSystem: ICreateXcmType = {
 		const isAssetHubNative = assetHubTokens[assetId] ? true : false;
 
 		if (!isRelayNative && isNotANumber) {
-			assetId = await getChainAssetId(api, assetId, specName);
+			assetId = await getAssetHubAssetId(api, assetId, specName);
 		}
 
 		const interior: InteriorMultiLocation = isHex(assetId)
@@ -398,7 +398,7 @@ const createXTokensMultiAssets = async (
 		const isAssetHubNative = assetHubTokens[assetId] ? true : false;
 
 		if (!isRelayNative && isNotANumber) {
-			assetId = await getChainAssetId(api, assetId, specName);
+			assetId = await getAssetHubAssetId(api, assetId, specName);
 		}
 
 		const interior: InteriorMultiLocation = isHex(assetId)
@@ -507,7 +507,7 @@ const createParaToSystemMultiAssets = async (
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
 		if (!isRelayNative && isNotANumber) {
-			assetId = await getChainAssetId(
+			assetId = await getAssetHubAssetId(
 				api,
 				assetId,
 				specName,

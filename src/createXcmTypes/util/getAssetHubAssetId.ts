@@ -4,64 +4,48 @@ import { ApiPromise } from '@polkadot/api';
 
 import { BaseError } from '../../errors';
 import { Registry } from '../../registry';
-import { constructAssetHubApiPromise } from './constructAssetHubApiPromise';
 import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
-import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
-import { getChainIdBySpecName } from './getChainIdBySpecName';
+
 /**
- * Returns the correct asset id for a valid token symbol integer id
+ * Returns the correct asset id for a valid AssetHub token symbol integer id
  * or foreign asset multilocation based on chain specName
  * errors if given an invalid symbol, integer id or multilocation that is
- * not registered or found in the chains state
+ * not registered or found in the AssetHub chain state
  *
  * @param tokenSymbol string
  * @param specName string
  */
-export const getChainAssetId = async (
+export const getAssetHubAssetId = async (
 	_api: ApiPromise,
 	asset: string,
 	specName: string,
 	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
 	let assetId = '';
-	const newRegistry = new Registry(specName, {});
-	const chainId = getChainIdBySpecName(newRegistry, specName);
+	const registry = new Registry(specName, {});
+	const assetHubChainId = '1000';
 
 	if (isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the registry
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			_api,
 			asset,
-			newRegistry
+			registry
 		);
 
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
 		} else {
-			// get AssetHub ApiPromise to query foreign assets pallet
-			const assetHubApi = await constructAssetHubApiPromise(newRegistry);
-
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
-				assetHubApi,
-				asset
-			);
-
-			await assetHubApi.disconnect();
-
-			if (isValidForeignAsset) {
-				assetId = asset;
-			} else {
-				throw new BaseError(`MultiLocation ${asset} not found`);
-			}
+			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
 		}
 	} else {
 		// if asset is an empty string we assign it the native relay assets symbol
 		if (asset === '') {
-			const { tokens } = newRegistry.currentRelayRegistry[chainId];
+			const { tokens } = registry.currentRelayRegistry[assetHubChainId];
 
 			assetId = tokens[0];
 		} else {
-			const { assetsInfo } = newRegistry.currentRelayRegistry[chainId];
+			const { assetsInfo } = registry.currentRelayRegistry[assetHubChainId];
 
 			if (Object.keys(assetsInfo).length === 0) {
 				throw new BaseError(

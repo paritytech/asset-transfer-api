@@ -1,5 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import {
 	InteriorMultiLocation,
@@ -119,6 +120,7 @@ export type Methods =
 
 export type AssetsTransferApiOpts = {
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
+	assetHubApi?: ApiPromise;
 };
 
 /**

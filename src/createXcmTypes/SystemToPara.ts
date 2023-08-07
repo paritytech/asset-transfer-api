@@ -30,7 +30,7 @@ import {
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getChainAssetId } from './util/getChainAssetId';
+import { getAssetHubAssetId } from './util/getAssetHubAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -290,7 +290,7 @@ export const createSystemToParaMultiAssets = async (
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
 		if (!isRelayNative && isNotANumber) {
-			assetId = await getChainAssetId(
+			assetId = await getAssetHubAssetId(
 				api,
 				assetId,
 				specName,
