@@ -195,6 +195,11 @@ export interface TransferArgsOpts<T extends Format> {
 	 * to a `transfer`.
 	 */
 	keepAlive?: boolean;
+	/**
+	 * Boolean to declare if this will transfer liquidity tokens.
+	 * Default is false.
+	 */
+	transferLiquidToken?: boolean;
 }
 
 export interface ChainInfo {
