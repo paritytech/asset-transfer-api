@@ -12,7 +12,7 @@ import type { Registry } from '../../registry';
 import { Direction } from '../../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 /**
- * Build a Polkadot-js SubmittableExtrinsic for a `transferMultiAssetWithFee`
+ * Build a Polkadot-js `transferMultiAssetWithFee` SubmittableExtrinsic
  * call.
  *
  * @param api ApiPromise
@@ -22,6 +22,11 @@ import { XcmPalletName } from '../util/establishXcmPallet';
  * @param amounts An array of amounts. Note, this should be the same size and order as assetIds.
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
+ * @param specName The specName for the current chain
+ * @param registry Registry
+ * @param xcmPallet The pallet being used to construct xcm calls.
+ * @param paysWithFeeDest The multilocation of assetId used to pay fees in the destination chain.
+ * @param opts createWeightLimitOptions
  */
 export const transferMultiAssetWithFee = async (
 	api: ApiPromise,

@@ -20,6 +20,10 @@ import { establishXcmPallet } from '../util/establishXcmPallet';
  * @param amounts An array of amounts. Note, this should be the same size and order as assetIds.
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
+ * @param specName The specName for the current chain
+ * @param registry Registry
+ * @param paysWithFeeDest The assetId used to pay fees in the destination chain.
+ * @param isForeignAssetsTransfer Denotes whether the tx is a foreign assets pallet tx.
  */
 export const teleportAssets = async (
 	api: ApiPromise,
