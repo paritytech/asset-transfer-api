@@ -8,7 +8,7 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send 0.1 USDt from a Statemine (System Parachain) account
+ * In this example we are creating a call to send 0.1 USDt from a Kusama AssetHub (System Parachain) account
  * to a Moonriver (Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` declaring that
  * it will be `unlimited` since there is no `weightLimit` option as well.
  *
@@ -16,7 +16,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise(
-		'wss://statemine-rpc.polkadot.io'
+		'wss://kusama-asset-hub-rpc.polkadot.io'
 	);
 	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 

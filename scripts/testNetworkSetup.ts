@@ -14,7 +14,7 @@ import chalk from 'chalk';
  * It uses the hard coded values given in `zombienet.toml`.
  */
 
-const STATEMINE_WS_URL = 'ws://127.0.0.1:9911';
+const KUSAMA_ASSET_HUB_WS_URL = 'ws://127.0.0.1:9911';
 const ROCOCO_ALICE_WS_URL = 'ws://127.0.0.1:9900';
 
 /**
@@ -37,26 +37,26 @@ const logWithDate = (log: string, remove?: boolean) => {
 };
 
 /**
- * Will block the main script from running until there is blocks in statemint being produced.
+ * Will block the main script from running until there is blocks in Polkadot AssetHub being produced.
  */
 const awaitBlockProduction = async () => {
 	logWithDate(
 		chalk.yellow(
-			`Initializing polkadot-js: Polling until ${STATEMINE_WS_URL} is available`
+			`Initializing polkadot-js: Polling until ${KUSAMA_ASSET_HUB_WS_URL} is available`
 		)
 	);
-	const statemineApi = await ApiPromise.create({
-		provider: new WsProvider(STATEMINE_WS_URL),
+	const kusamaAssetHubApi = await ApiPromise.create({
+		provider: new WsProvider(KUSAMA_ASSET_HUB_WS_URL),
 		noInitWarn: true,
 	});
 	logWithDate(chalk.yellow('Polkadot-js is connected'));
 
-	await statemineApi.isReady;
+	await kusamaAssetHubApi.isReady;
 
 	let counter = 3;
 	let blocksProducing = false;
 	while (!blocksProducing) {
-		const { number } = await statemineApi.rpc.chain.getHeader();
+		const { number } = await kusamaAssetHubApi.rpc.chain.getHeader();
 
 		if (number.toNumber() > 0) {
 			blocksProducing = true;
@@ -66,7 +66,7 @@ const awaitBlockProduction = async () => {
 		counter += 1;
 		process.stdout.clearLine(0);
 		process.stdout.write(
-			`\rWaiting for Block production on statemine${'.'.repeat(
+			`\rWaiting for Block production on Kusama AssetHub${'.'.repeat(
 				(counter % 3) + 1
 			)}`
 		);
@@ -74,7 +74,7 @@ const awaitBlockProduction = async () => {
 
 	process.stdout.clearLine(0);
 	logWithDate(chalk.magenta('Blocks are producing'), true);
-	await statemineApi.disconnect().then(() => {
+	await kusamaAssetHubApi.disconnect().then(() => {
 		logWithDate(chalk.blue('Polkadot-js successfully disconnected'));
 	});
 };
@@ -93,13 +93,13 @@ const main = async () => {
 		assetDecimals: 12,
 	};
 
-	const statemineApi = await ApiPromise.create({
-		provider: new WsProvider(STATEMINE_WS_URL),
+	const kusamaAssetHubApi = await ApiPromise.create({
+		provider: new WsProvider(KUSAMA_ASSET_HUB_WS_URL),
 		noInitWarn: true,
 	});
 
-	await statemineApi.isReady;
-	logWithDate(chalk.green('Created a connection to statemine'));
+	await kusamaAssetHubApi.isReady;
+	logWithDate(chalk.green('Created a connection to Kusama AssetHub'));
 
 	const rococoApi = await ApiPromise.create({
 		provider: new WsProvider(ROCOCO_ALICE_WS_URL),
@@ -112,13 +112,13 @@ const main = async () => {
 	/**
 	 * Create this call via the parachain api, since this is the chain in which it will be called.
 	 */
-	const forceCreate = statemineApi.tx.assets.forceCreate(
+	const forceCreate = kusamaAssetHubApi.tx.assets.forceCreate(
 		assetInfo.assetId,
 		alice.address,
 		true,
 		1000
 	);
-	const forceCreateCall = statemineApi.createType('Call', {
+	const forceCreateCall = kusamaAssetHubApi.createType('Call', {
 		callIndex: forceCreate.callIndex,
 		args: forceCreate.args,
 	});
@@ -175,7 +175,7 @@ const main = async () => {
 	});
 
 	logWithDate(
-		'Sending Sudo XCM message from relay chain to execute forceCreate call on statemine'
+		'Sending Sudo XCM message from relay chain to execute forceCreate call on Kusama AssetHub'
 	);
 	await rococoApi.tx.sudo.sudo(xcmCall).signAndSend(alice);
 
@@ -188,29 +188,29 @@ const main = async () => {
 	/**
 	 * Mint the asset after its forceCreated by Alice.
 	 */
-	const { nonce } = await statemineApi.query.system.account(alice.address);
+	const { nonce } = await kusamaAssetHubApi.query.system.account(alice.address);
 	const txs = [
-		statemineApi.tx.assets.setMetadata(
+		kusamaAssetHubApi.tx.assets.setMetadata(
 			assetInfo.assetId,
 			assetInfo.assetName,
 			assetInfo.assetSymbol,
 			assetInfo.assetDecimals
 		),
-		statemineApi.tx.assets.mint(
+		kusamaAssetHubApi.tx.assets.mint(
 			assetInfo.assetId,
 			alice.address,
 			1000 * 120000000
 		),
 	];
-	const batch = statemineApi.tx.utility.batchAll(txs);
+	const batch = kusamaAssetHubApi.tx.utility.batchAll(txs);
 
-	logWithDate('Sending batch call in order to mint a test asset on statemine');
+	logWithDate('Sending batch call in order to mint a test asset on Kusama AssetHub');
 	await batch.signAndSend(alice, { nonce }, ({ status, events }) => {
 		if (status.isInBlock || status.isFinalized) {
 			events
 				// find/filter for failed events
 				.filter(({ event }) =>
-					statemineApi.events.system.ExtrinsicFailed.is(event)
+					kusamaAssetHubApi.events.system.ExtrinsicFailed.is(event)
 				)
 				// we know that data for system.ExtrinsicFailed is
 				// (DispatchError, DispatchInfo)
@@ -222,7 +222,7 @@ const main = async () => {
 					}) => {
 						if ((error as DispatchError).isModule) {
 							// for module errors, we have the section indexed, lookup
-							const decoded = statemineApi.registry.findMetaError(
+							const decoded = kusamaAssetHubApi.registry.findMetaError(
 								(error as DispatchError).asModule
 							);
 							const { docs, method, section } = decoded;
