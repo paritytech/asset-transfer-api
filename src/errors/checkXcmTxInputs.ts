@@ -516,7 +516,6 @@ const checkParaToSystemAssetId = async (
 	registry: Registry,
 	isForeignAssetsTransfer: boolean
 ) => {
-	
 	const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
 	const systemParachainInfo = relayChainInfo[systemParachainId];
 	const systemSpecName = systemParachainInfo.specName;

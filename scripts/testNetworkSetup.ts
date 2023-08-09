@@ -204,7 +204,9 @@ const main = async () => {
 	];
 	const batch = kusamaAssetHubApi.tx.utility.batchAll(txs);
 
-	logWithDate('Sending batch call in order to mint a test asset on Kusama AssetHub');
+	logWithDate(
+		'Sending batch call in order to mint a test asset on Kusama AssetHub'
+	);
 	await batch.signAndSend(alice, { nonce }, ({ status, events }) => {
 		if (status.isInBlock || status.isFinalized) {
 			events

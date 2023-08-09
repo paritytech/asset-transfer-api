@@ -1,10 +1,10 @@
+import {
+	KUSAMA_ASSET_HUB_SPEC_NAMES,
+	POLKADOT_ASSET_HUB_SPEC_NAMES,
+	WESTEND_ASSET_HUB_SPEC_NAMES,
+} from '../consts';
 import { BaseError } from '../errors';
 import type { ChainInfoRegistry, RelayChains } from './types';
-import { 
-	POLKADOT_ASSET_HUB_SPEC_NAMES, 
-	KUSAMA_ASSET_HUB_SPEC_NAMES, 
-	WESTEND_ASSET_HUB_SPEC_NAMES 
-} from '../consts';
 /**
  * Finds the name of the relay chain of a given specName. If the chain does not exist within the registry
  * an error will be thrown.
@@ -22,7 +22,8 @@ export const findRelayChain = (
 	if (
 		polkadotChains.includes(specName.toLowerCase()) ||
 		POLKADOT_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase())
-	) return 'polkadot';
+	)
+		return 'polkadot';
 
 	const kusamaChains = Object.keys(registry.kusama).map(
 		(val) => registry.kusama[val].specName
@@ -30,7 +31,8 @@ export const findRelayChain = (
 	if (
 		kusamaChains.includes(specName.toLowerCase()) ||
 		KUSAMA_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase())
-	) return 'kusama';
+	)
+		return 'kusama';
 
 	const westendChains = Object.keys(registry.westend).map(
 		(val) => registry.westend[val].specName
@@ -38,7 +40,8 @@ export const findRelayChain = (
 	if (
 		westendChains.includes(specName.toLowerCase()) ||
 		WESTEND_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase())
-	) return 'westend';
+	)
+		return 'westend';
 
 	throw new BaseError(`Cannot find the relay chain for specName: ${specName}`);
 };

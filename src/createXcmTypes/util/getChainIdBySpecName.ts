@@ -1,11 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { 
-	POLKADOT_ASSET_HUB_SPEC_NAMES, 
-	KUSAMA_ASSET_HUB_SPEC_NAMES, 
-	WESTEND_ASSET_HUB_SPEC_NAMES 
+import {
+	KUSAMA_ASSET_HUB_SPEC_NAMES,
+	POLKADOT_ASSET_HUB_SPEC_NAMES,
+	WESTEND_ASSET_HUB_SPEC_NAMES,
 } from '../../consts';
+import { Registry } from '../../registry';
 /**
  * returns a chains ID based on its relay chain and specName
  *
