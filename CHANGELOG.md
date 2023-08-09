@@ -14,7 +14,7 @@
 
 ## Chore
 
-- chore: celanup tech debt
+- chore: cleanup tech debt
 - chore(yarn): bump yarn
 - chore: remove grocers' apostrophe
 
