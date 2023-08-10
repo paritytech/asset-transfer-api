@@ -14,6 +14,7 @@ import type { RequireOnlyOne } from '../types';
 export interface CreateAssetsOpts {
 	registry: Registry;
 	isForeignAssetsTransfer?: boolean;
+	isLiquidTokenTransfer?: boolean;
 }
 
 export interface CreateFeeAssetItemOpts {
@@ -24,6 +25,7 @@ export interface CreateFeeAssetItemOpts {
 	amounts?: string[];
 	xcmVersion?: number;
 	isForeignAssetsTransfer?: boolean;
+	isLiquidTokenTransfer?: boolean;
 }
 
 export interface ICreateXcmType {

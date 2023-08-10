@@ -305,6 +305,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				specName,
 				assets,
 				registry,
+				false,
 				false
 			);
 

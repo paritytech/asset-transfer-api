@@ -119,7 +119,9 @@ export const SystemToSystem: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): Promise<VersionedMultiAssets> => {
-		const { registry } = opts;
+		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
+		const isLiquidToken = isLiquidTokenTransfer === true;
+		const isForeignAsset = isForeignAssetsTransfer === true;
 
 		const sortedAndDedupedMultiAssets = await createSystemToSystemMultiAssets(
 			api,
@@ -127,7 +129,8 @@ export const SystemToSystem: ICreateXcmType = {
 			specName,
 			assets,
 			registry,
-			opts.isForeignAssetsTransfer
+			isForeignAsset,
+			isLiquidToken
 		);
 
 		if (xcmVersion === 2) {
@@ -192,6 +195,8 @@ export const SystemToSystem: ICreateXcmType = {
 			assetIds,
 			amounts,
 			xcmVersion,
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
 		} = opts;
 		if (
 			xcmVersion &&
@@ -201,13 +206,17 @@ export const SystemToSystem: ICreateXcmType = {
 			assetIds &&
 			paysWithFeeDest
 		) {
+			const isLiquidToken = isLiquidTokenTransfer === true;
+			const isForeignAsset = isForeignAssetsTransfer === true;
+
 			const multiAssets = await createSystemToSystemMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
 				specName,
 				assetIds,
 				registry,
-				opts.isForeignAssetsTransfer
+				isForeignAsset,
+				isLiquidToken
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
@@ -248,7 +257,8 @@ export const createSystemToSystemMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean
 ): Promise<MultiAsset[]> => {
 	let multiAssets: MultiAsset[] = [];
 
@@ -323,7 +333,12 @@ export const createSystemToSystemMultiAssets = async (
 				? api.registry.createType('InteriorMultiLocation', { Here: '' })
 				: api.registry.createType('InteriorMultiLocation', {
 						X2: [
-							{ PalletInstance: fetchPalletInstanceId(api) },
+							{
+								PalletInstance: fetchPalletInstanceId(
+									api,
+									isLiquidTokenTransfer
+								),
+							},
 							{ GeneralIndex: assetId },
 						],
 				  });

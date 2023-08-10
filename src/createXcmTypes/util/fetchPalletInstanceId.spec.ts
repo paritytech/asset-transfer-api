@@ -5,7 +5,7 @@ import type { ApiPromise } from '@polkadot/api';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId';
 
-describe('fetchPalletInstandId', () => {
+describe('fetchPalletInstanceId', () => {
 	it('Should return the correct string when the api has the assets pallet', () => {
 		const res = fetchPalletInstanceId(mockSystemApi, false);
 

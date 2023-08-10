@@ -129,13 +129,17 @@ export const SystemToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): Promise<VersionedMultiAssets> => {
+		const { registry, isLiquidTokenTransfer, isForeignAssetsTransfer } = opts;
+		const isLiquidToken = isLiquidTokenTransfer === true;
+		const isForeignAsset = isForeignAssetsTransfer === true;
 		const sortedAndDedupedMultiAssets = await createSystemToParaMultiAssets(
 			api,
 			amounts,
 			specName,
 			assets,
-			opts.registry,
-			opts.isForeignAssetsTransfer
+			registry,
+			isForeignAsset,
+			isLiquidToken
 		);
 
 		if (xcmVersion === 2) {
@@ -200,6 +204,8 @@ export const SystemToPara: ICreateXcmType = {
 			assetIds,
 			amounts,
 			xcmVersion,
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
 		} = opts;
 		if (
 			xcmVersion &&
@@ -209,13 +215,16 @@ export const SystemToPara: ICreateXcmType = {
 			assetIds &&
 			paysWithFeeDest
 		) {
+			const isLiquidToken = isLiquidTokenTransfer === true;
+			const isForeignAsset = isForeignAssetsTransfer === true;
 			const multiAssets = await createSystemToParaMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
 				specName,
 				assetIds,
 				registry,
-				opts.isForeignAssetsTransfer
+				isForeignAsset,
+				isLiquidToken
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
@@ -254,13 +263,14 @@ export const createSystemToParaMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean
 ): Promise<MultiAsset[]> => {
 	const assetHubChainId = '1000';
 	const { foreignAssetsPalletInstance } =
 		registry.currentRelayRegistry[assetHubChainId];
 	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
-	const palletId = fetchPalletInstanceId(api);
+	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer);
 	let multiAssets: MultiAsset[] = [];
 
 	const systemChainId = getChainIdBySpecName(registry, specName);
