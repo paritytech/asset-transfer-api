@@ -100,7 +100,7 @@ export class AssetsTransferApi {
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: TransferArgsOpts<T>
+		opts: TransferArgsOpts<T> = {}
 	): Promise<TxResult<T>> {
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
