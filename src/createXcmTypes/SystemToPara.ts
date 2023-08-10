@@ -129,17 +129,15 @@ export const SystemToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): Promise<VersionedMultiAssets> => {
-		const { registry, isLiquidTokenTransfer, isForeignAssetsTransfer } = opts;
-		const isLiquidToken = isLiquidTokenTransfer === true;
-		const isForeignAsset = isForeignAssetsTransfer === true;
+		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
 		const sortedAndDedupedMultiAssets = await createSystemToParaMultiAssets(
 			api,
 			amounts,
 			specName,
 			assets,
 			registry,
-			isForeignAsset,
-			isLiquidToken
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer
 		);
 
 		if (xcmVersion === 2) {
@@ -215,16 +213,14 @@ export const SystemToPara: ICreateXcmType = {
 			assetIds &&
 			paysWithFeeDest
 		) {
-			const isLiquidToken = isLiquidTokenTransfer === true;
-			const isForeignAsset = isForeignAssetsTransfer === true;
 			const multiAssets = await createSystemToParaMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
 				specName,
 				assetIds,
 				registry,
-				isForeignAsset,
-				isLiquidToken
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
@@ -239,7 +235,7 @@ export const SystemToPara: ICreateXcmType = {
 				paysWithFeeDest,
 				multiAssets,
 				specName,
-				opts.isForeignAssetsTransfer
+				isForeignAssetsTransfer
 			);
 
 			return api.registry.createType('u32', assetIndex);

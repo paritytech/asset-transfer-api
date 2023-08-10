@@ -9,6 +9,7 @@ import { createXcmTypes } from '../createXcmTypes';
 import type { Registry } from '../registry';
 import { Direction } from '../types';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import type { CreateXcmCallOpts } from './types';
 import { establishXcmPallet } from './util/establishXcmPallet';
 
 /**
@@ -33,10 +34,10 @@ export const limitedReserveTransferAssets = async (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
-	weightLimit?: string,
-	paysWithFeeDest?: string,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer: boolean,
+	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+	const { weightLimit, paysWithFeeDest, isLiquidTokenTransfer } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedReserveTransferAssets;
 	const typeCreator = createXcmTypes[direction];
@@ -51,6 +52,7 @@ export const limitedReserveTransferAssets = async (
 		{
 			registry,
 			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
 		}
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, weightLimit);
@@ -64,6 +66,7 @@ export const limitedReserveTransferAssets = async (
 				amounts,
 				xcmVersion,
 				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
 		  })
 		: api.registry.createType('u32', 0);
 

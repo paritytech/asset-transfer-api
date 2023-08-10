@@ -10,6 +10,7 @@ import { reserveTransferAssets } from './reserveTransferAssets';
 describe('reserveTransferAssets', () => {
 	const registry = new Registry('statemine', {});
 	describe('SystemToPara', () => {
+		const isLiquidTokenTransfer = false;
 		it('Should correctly construct a tx for a system parachain with V2', async () => {
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
@@ -24,8 +25,11 @@ describe('reserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				paysWithFeeDest,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				{
+					paysWithFeeDest,
+					isLiquidTokenTransfer,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -48,8 +52,11 @@ describe('reserveTransferAssets', () => {
 					2,
 					'statemine',
 					registry,
-					paysWithFeeDest,
-					isForeignAssetsTransfer
+					isForeignAssetsTransfer,
+					{
+						paysWithFeeDest,
+						isLiquidTokenTransfer,
+					}
 				);
 			}).rejects.toThrowError(
 				"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API"
@@ -72,8 +79,11 @@ describe('reserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				paysWithFeeDest,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				{
+					paysWithFeeDest,
+					isLiquidTokenTransfer,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -97,8 +107,11 @@ describe('reserveTransferAssets', () => {
 				3,
 				'statemine',
 				registry,
-				paysWithFeeDest,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				{
+					paysWithFeeDest,
+					isLiquidTokenTransfer,
+				}
 			);
 
 			expect(ext.toHex()).toBe(

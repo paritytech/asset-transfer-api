@@ -144,6 +144,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 	describe('Assets', () => {
 		const isForeignAssetsTransfer = false;
+		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
 			const assets = await SystemToPara.createAssets(
@@ -155,6 +156,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 
@@ -201,6 +203,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 

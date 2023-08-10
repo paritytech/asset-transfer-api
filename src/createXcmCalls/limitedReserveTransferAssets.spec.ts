@@ -10,6 +10,7 @@ import { limitedReserveTransferAssets } from './limitedReserveTransferAssets';
 describe('limitedReserveTransferAssets', () => {
 	const registry = new Registry('statemine', {});
 	describe('SystemToPara', () => {
+		const isLiquidTokenTransfer = false;
 		it('Should correctly construct a tx for a system parachain with V2', async () => {
 			const weightLimit = '1000000000';
 			const paysWithFeeDest = undefined;
@@ -24,9 +25,12 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				weightLimit,
-				paysWithFeeDest,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				{
+					weightLimit,
+					paysWithFeeDest,
+					isLiquidTokenTransfer,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -47,9 +51,12 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				weightLimit,
-				paysWithFeeDest,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				{
+					weightLimit,
+					paysWithFeeDest,
+					isLiquidTokenTransfer,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -73,9 +80,12 @@ describe('limitedReserveTransferAssets', () => {
 					2,
 					'statemine',
 					registry,
-					weightLimit,
-					paysWithFeeDest,
-					isForeignAssetsTransfer
+					isForeignAssetsTransfer,
+					{
+						weightLimit,
+						paysWithFeeDest,
+						isLiquidTokenTransfer,
+					}
 				);
 			}).rejects.toThrowError(
 				"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API"
@@ -98,9 +108,12 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				weightLimit,
-				paysWithFeeDest,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				{
+					weightLimit,
+					paysWithFeeDest,
+					isLiquidTokenTransfer,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -123,9 +136,12 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				'1000000000',
-				paysWithFeeDest,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				{
+					weightLimit: '1000000000',
+					paysWithFeeDest,
+					isLiquidTokenTransfer,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
