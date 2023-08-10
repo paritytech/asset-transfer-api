@@ -4,4 +4,5 @@ export interface CreateXcmCallOpts {
 	weightLimit?: string;
 	paysWithFeeDest?: string;
 	isLiquidTokenTransfer: boolean;
+	isForeignAssetsTransfer: boolean;
 }

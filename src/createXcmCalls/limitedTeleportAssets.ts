@@ -32,10 +32,9 @@ export const limitedTeleportAssets = async (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
-	isForeignAssetsTransfer: boolean,
 	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	const { weightLimit, paysWithFeeDest } = opts;
+	const { weightLimit, paysWithFeeDest, isForeignAssetsTransfer } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedTeleportAssets;
 	const typeCreator = createXcmTypes[direction];

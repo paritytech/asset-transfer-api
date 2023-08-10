@@ -25,11 +25,11 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isForeignAssetsTransfer,
 				{
 					weightLimit,
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
 				}
 			);
 
@@ -51,11 +51,11 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isForeignAssetsTransfer,
 				{
 					weightLimit,
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
 				}
 			);
 
@@ -80,11 +80,11 @@ describe('limitedReserveTransferAssets', () => {
 					2,
 					'statemine',
 					registry,
-					isForeignAssetsTransfer,
 					{
 						weightLimit,
 						paysWithFeeDest,
 						isLiquidTokenTransfer,
+						isForeignAssetsTransfer,
 					}
 				);
 			}).rejects.toThrowError(
@@ -108,11 +108,11 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isForeignAssetsTransfer,
 				{
 					weightLimit,
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
 				}
 			);
 
@@ -136,11 +136,11 @@ describe('limitedReserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isForeignAssetsTransfer,
 				{
 					weightLimit: '1000000000',
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
 				}
 			);
 

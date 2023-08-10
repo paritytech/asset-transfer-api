@@ -303,11 +303,11 @@ export class AssetsTransferApi {
 					declaredXcmVersion,
 					_specName,
 					this.registry,
-					isForeignAssetsTransfer,
 					{
 						weightLimit,
 						paysWithFeeDest,
 						isLiquidTokenTransfer,
+						isForeignAssetsTransfer,
 					}
 				);
 			} else {
@@ -322,10 +322,10 @@ export class AssetsTransferApi {
 					declaredXcmVersion,
 					_specName,
 					this.registry,
-					isForeignAssetsTransfer,
 					{
 						paysWithFeeDest,
 						isLiquidTokenTransfer,
+						isForeignAssetsTransfer,
 					}
 				);
 			}
@@ -342,10 +342,10 @@ export class AssetsTransferApi {
 					declaredXcmVersion,
 					_specName,
 					this.registry,
-					isForeignAssetsTransfer,
 					{
 						weightLimit,
 						paysWithFeeDest,
+						isForeignAssetsTransfer,
 						isLiquidTokenTransfer: false,
 					}
 				);
@@ -361,9 +361,9 @@ export class AssetsTransferApi {
 					declaredXcmVersion,
 					_specName,
 					this.registry,
-					isForeignAssetsTransfer,
 					{
 						paysWithFeeDest,
+						isForeignAssetsTransfer,
 						isLiquidTokenTransfer: false,
 					}
 				);

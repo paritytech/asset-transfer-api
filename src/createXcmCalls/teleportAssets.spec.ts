@@ -23,10 +23,10 @@ describe('teleportAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isForeignAssetsTransfer,
 				{
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
 				}
 			);
 
@@ -50,10 +50,10 @@ describe('teleportAssets', () => {
 					2,
 					'statemine',
 					registry,
-					isForeignAssetsTransfer,
 					{
 						paysWithFeeDest,
 						isLiquidTokenTransfer,
+						isForeignAssetsTransfer,
 					}
 				);
 			}).rejects.toThrowError(

@@ -25,10 +25,10 @@ describe('reserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isForeignAssetsTransfer,
 				{
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
 				}
 			);
 
@@ -52,10 +52,10 @@ describe('reserveTransferAssets', () => {
 					2,
 					'statemine',
 					registry,
-					isForeignAssetsTransfer,
 					{
 						paysWithFeeDest,
 						isLiquidTokenTransfer,
+						isForeignAssetsTransfer,
 					}
 				);
 			}).rejects.toThrowError(
@@ -79,10 +79,10 @@ describe('reserveTransferAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isForeignAssetsTransfer,
 				{
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
 				}
 			);
 
@@ -107,10 +107,10 @@ describe('reserveTransferAssets', () => {
 				3,
 				'statemine',
 				registry,
-				isForeignAssetsTransfer,
 				{
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
 				}
 			);
 

@@ -34,10 +34,14 @@ export const limitedReserveTransferAssets = async (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
-	isForeignAssetsTransfer: boolean,
 	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	const { weightLimit, paysWithFeeDest, isLiquidTokenTransfer } = opts;
+	const {
+		weightLimit,
+		paysWithFeeDest,
+		isLiquidTokenTransfer,
+		isForeignAssetsTransfer,
+	} = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedReserveTransferAssets;
 	const typeCreator = createXcmTypes[direction];

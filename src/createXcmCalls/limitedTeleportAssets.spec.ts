@@ -24,11 +24,11 @@ describe('limitedTeleportAssets', () => {
 				2,
 				'statemine',
 				registry,
-				isForeignAssetsTransfer,
 				{
 					weightLimit,
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
 				}
 			);
 
@@ -53,11 +53,11 @@ describe('limitedTeleportAssets', () => {
 					2,
 					'statemine',
 					registry,
-					isForeignAssetsTransfer,
 					{
 						weightLimit,
 						paysWithFeeDest,
 						isLiquidTokenTransfer,
+						isForeignAssetsTransfer,
 					}
 				);
 			}).rejects.toThrowError(
