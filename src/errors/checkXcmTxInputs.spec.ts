@@ -12,6 +12,7 @@ import {
 	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
+	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
@@ -390,6 +391,26 @@ describe('checkAssetIds', () => {
 			'ParaToSystem: assetId 0x1234, is not a valid erc20 token.'
 		);
 	});
+	it('Should error when an invalid token is passed into a liquidTokenTransfer', async () => {
+		const registry = new Registry('westmint', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const isLiquidTokenTransfer = true;
+
+		await expect(async () => {
+			await checkAssetIdInput(
+				mockParachainApi,
+				['TEST'],
+				currentRegistry,
+				'westmint',
+				Direction.SystemToPara,
+				registry,
+				false,
+				isLiquidTokenTransfer
+			);
+		}).rejects.toThrowError(
+			'Liquid Tokens must be valid Integers'
+		);
+	})
 });
 
 describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
@@ -619,5 +640,16 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
 
 		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+	});
+});
+
+describe('checkLiquidTokenTransferDirectionValidity', () => {
+	it('Should correctly throw an error when inputs dont match the specification', () => {
+		const err = () =>
+			checkLiquidTokenTransferDirectionValidity(Direction.ParaToSystem, true);
+
+		expect(err).toThrow(
+			'isLiquidTokenTransfer may not be true for the xcmDirection: ParaToSystem.'
+		);
 	});
 });
