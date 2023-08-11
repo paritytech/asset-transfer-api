@@ -184,6 +184,40 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				);
 			}).rejects.toThrowError(expectedErrorMessage);
 		});
+		it('Should work for a liquid token transfer', async () => {
+			const assets = await SystemToSystem.createAssets(
+				mockSystemApi,
+				['100'],
+				2,
+				'statemine',
+				['USDT'],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer: true,
+				}
+			);
+
+			const expectedRes = {
+				v2: [
+					{
+						id: {
+							concrete: {
+								parents: 0,
+								interior: {
+									x2: [{ palletInstance: 55 }, { generalIndex: 11 }],
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
 	});
 	describe('WeightLimit', () => {
 		it('Should work when given a weightLimit', () => {

@@ -240,6 +240,53 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
+		it('Should correctly construct a liquid token transfer', async () => {
+			const assets = await SystemToPara.createAssets(
+				mockSystemApi,
+				['100', '100'],
+				3,
+				'statemine',
+				['1', '2'],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer: true,
+				}
+			);
+
+			const expectedRes = {
+				v3: [
+					{
+						id: {
+							concrete: {
+								parents: 0,
+								interior: {
+									x2: [{ palletInstance: 55 }, { generalIndex: 1 }],
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+					{
+						id: {
+							concrete: {
+								parents: 0,
+								interior: {
+									x2: [{ palletInstance: 55 }, { generalIndex: 2 }],
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
 	});
 	describe('WeightLimit', () => {
 		// NOTE: for V0, V1, and V2 Weightlimit just uses V2 so we only need to test once.
