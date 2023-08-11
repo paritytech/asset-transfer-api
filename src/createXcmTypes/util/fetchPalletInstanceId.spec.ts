@@ -25,4 +25,9 @@ describe('fetchPalletInstanceId', () => {
 			"No Assets pallet available, can't find a valid PalletInstance."
 		);
 	});
+	it('Should correctly grab the poolAssets pallet instance', () => {
+		const res = fetchPalletInstanceId(mockSystemApi, true);
+
+		expect(res).toEqual('55');
+	});
 });

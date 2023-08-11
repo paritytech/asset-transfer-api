@@ -6,7 +6,7 @@ import type { Header, MultiLocation } from '@polkadot/types/interfaces';
 import { PalletAssetsAssetDetails } from '@polkadot/types/lookup';
 import { getSpecTypes } from '@polkadot/types-known';
 
-import { statemineV9430 } from './metadata/statemineV9430';
+import { assetHubWestendV9435 } from './metadata/assetHubWestendV9435';
 import { mockSystemApi } from './mockSystemApi';
 import { mockWeightInfo } from './mockWeightInfo';
 /**
@@ -30,15 +30,15 @@ function createStatemineRegistry(specVersion: number): TypeRegistry {
 		getSpecTypes(registry, 'Statemine', 'statemine', specVersion)
 	);
 
-	registry.setMetadata(new Metadata(registry, statemineV9430));
+	registry.setMetadata(new Metadata(registry, assetHubWestendV9435));
 
 	return registry;
 }
 const getSystemRuntimeVersion = () =>
 	Promise.resolve().then(() => {
 		return {
-			specName: mockSystemApi.registry.createType('Text', 'statemine'),
-			specVersion: mockSystemApi.registry.createType('u32', 9420),
+			specName: mockSystemApi.registry.createType('Text', 'asset-hub-westend'),
+			specVersion: mockSystemApi.registry.createType('u32', 9435),
 		};
 	});
 
@@ -54,7 +54,7 @@ const queryInfoCallAt = () =>
 
 const getMetadata = () =>
 	Promise.resolve().then(() =>
-		mockSystemApi.registry.createType('Metadata', statemineV9430)
+		mockSystemApi.registry.createType('Metadata', assetHubWestendV9435)
 	);
 
 const getHeader = (): Promise<Header> =>

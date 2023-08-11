@@ -549,7 +549,7 @@ describe('AssetTransferAPI', () => {
 		describe('SystemToPara', () => {
 			it('Should decode a foreign asset tx call extrinsic given its hash for SystemToPara', async () => {
 				const expected =
-					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
+					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"5GTG3EQ159PpSh4kkF5TBrW6jkmc88HdYcsU8bsN83bndWh2"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
 
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'1000',
@@ -573,7 +573,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a foreign asset tx payload extrinsic given its hash for SystemToPara', async () => {
 				const expected =
-					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
+					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"5GTG3EQ159PpSh4kkF5TBrW6jkmc88HdYcsU8bsN83bndWh2"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
 
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'1000',

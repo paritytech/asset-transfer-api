@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { createApiWithAugmentations } from './createApiWithAugmentations';
-import { statemineV9430 } from './metadata/statemineV9430';
+import { assetHubWestendV9435 } from './metadata/assetHubWestendV9435';
 
-export const mockSystemApi = createApiWithAugmentations(statemineV9430);
+export const mockSystemApi = createApiWithAugmentations(assetHubWestendV9435);
