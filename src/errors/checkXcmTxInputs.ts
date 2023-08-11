@@ -367,6 +367,14 @@ const checkSystemAssets = async (
 			}
 		}
 	} else if (isLiquidTokenTransfer) {
+		// check if assetId is a number
+		const parsedAssetIdAsNumber = Number.parseInt(assetId);
+		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+
+		if (invalidNumber) {
+			throw new BaseError(`Liquid Tokens must be valid Integers`);
+		}
+
 		const poolPairIds = Object.keys(systemParachainInfo.poolPairsInfo);
 
 		let liquidTokenIncluded = false;
