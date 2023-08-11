@@ -268,6 +268,24 @@ describe('AssetTransferApi Integration Tests', () => {
 					}
 				);
 			};
+			const liquidTokenTransferCreateTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await systemAssetsApi.createTransferTransaction(
+					'2000', // Since this is not `0` we know this is to a parachain
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['0'],
+					['100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
+						transferLiquidToken: true,
+					}
+				);
+			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignBaseSystemCreateTx('call', true, 2);
@@ -421,6 +439,18 @@ describe('AssetTransferApi Integration Tests', () => {
 						2
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a liquid token transfer call for a limitedReserveTransferAsset for V2', async () => {
+					const res = await liquidTokenTransferCreateTx('call', true, 2);
+					expect(res).toStrictEqual({
+						dest: 'karura',
+						direction: 'SystemToPara',
+						format: 'call',
+						method: 'limitedReserveTransferAssets',
+						origin: 'statemine',
+						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043705000091010000000000',
+						xcmVersion: 2,
+					});
 				});
 			});
 			describe('V3', () => {
@@ -655,6 +685,18 @@ describe('AssetTransferApi Integration Tests', () => {
 						3
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a liquid token transfer call for a limitedReserveTransferAsset for V3', async () => {
+					const res = await liquidTokenTransferCreateTx('call', true, 3);
+					expect(res).toStrictEqual({
+						dest: 'karura',
+						direction: 'SystemToPara',
+						format: 'call',
+						method: 'limitedReserveTransferAssets',
+						origin: 'statemine',
+						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043705000091010000000000',
+						xcmVersion: 3,
+					});
 				});
 			});
 		});
