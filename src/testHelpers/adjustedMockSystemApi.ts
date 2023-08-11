@@ -1,10 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { Metadata, Option, TypeRegistry, u32 } from '@polkadot/types';
+import { Metadata, Option, TypeRegistry } from '@polkadot/types';
 import type { Header, MultiLocation } from '@polkadot/types/interfaces';
 import type { PalletAssetsAssetDetails } from '@polkadot/types/lookup';
-import type { AnyNumber } from '@polkadot/types-codec/types/helpers';
 import { getSpecTypes } from '@polkadot/types-known';
 
 import { assetHubWestendV9435 } from './metadata/assetHubWestendV9435';
@@ -195,18 +194,29 @@ const foreignAsset = (
 		);
 	});
 
-const poolAsset = (
-	_asset: u32 | AnyNumber
-): Promise<Option<PalletAssetsAssetDetails>> =>
+const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
+		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
 		const multiLocationAsset = mockSystemApi.registry.createType(
 			'PalletAssetsAssetDetails',
 			multiLocationAssetInfo
 		);
 
+		assets.set('0', multiLocationAsset);
+
+		const maybeAsset = assets.has(asset) ? assets.get(asset) : undefined;
+
+		if (maybeAsset) {
+			return new Option(
+				createStatemineRegistry(9435),
+				'PalletAssetsAssetDetails',
+				maybeAsset
+			);
+		}
+
 		return mockSystemApi.registry.createType(
 			'Option<PalletAssetsAssetDetails>',
-			multiLocationAsset
+			undefined
 		);
 	});
 

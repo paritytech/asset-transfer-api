@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
+import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { mockParachainApi } from '../testHelpers/mockParachainApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
@@ -398,7 +399,7 @@ describe('checkAssetIds', () => {
 
 		await expect(async () => {
 			await checkAssetIdInput(
-				mockParachainApi,
+				adjustedMockSystemApi,
 				['TEST'],
 				currentRegistry,
 				'westmint',
@@ -408,6 +409,45 @@ describe('checkAssetIds', () => {
 				isLiquidTokenTransfer
 			);
 		}).rejects.toThrowError('Liquid Tokens must be valid Integers');
+	});
+	it('Should error when a token does not exist in the registry or node', async () => {
+		const registry = new Registry('westmint', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const isLiquidTokenTransfer = true;
+
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['999111'],
+				currentRegistry,
+				'westmint',
+				Direction.SystemToPara,
+				registry,
+				false,
+				isLiquidTokenTransfer
+			);
+		}).rejects.toThrowError(
+			'No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.'
+		);
+	});
+	it('Should not error when a valid liquid token exists', async () => {
+		const registry = new Registry('westmint', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const isLiquidTokenTransfer = true;
+
+		// eslint-disable-next-line @typescript-eslint/await-thenable
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['0'],
+				currentRegistry,
+				'westmint',
+				Direction.SystemToPara,
+				registry,
+				false,
+				isLiquidTokenTransfer
+			);
+		}).not.toThrow();
 	});
 });
 
