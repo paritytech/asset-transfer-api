@@ -407,10 +407,8 @@ describe('checkAssetIds', () => {
 				false,
 				isLiquidTokenTransfer
 			);
-		}).rejects.toThrowError(
-			'Liquid Tokens must be valid Integers'
-		);
-	})
+		}).rejects.toThrowError('Liquid Tokens must be valid Integers');
+	});
 });
 
 describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
