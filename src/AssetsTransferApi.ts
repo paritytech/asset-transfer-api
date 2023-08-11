@@ -269,6 +269,7 @@ export class AssetsTransferApi {
 			_specName,
 			registry,
 			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
 			xcmVersion,
 			paysWithFeeDest
 		);

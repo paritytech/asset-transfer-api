@@ -32,6 +32,7 @@ const runTests = async (tests: Test[]) => {
 				specName,
 				direction,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError(errorMessage);
@@ -180,6 +181,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -221,6 +223,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -250,6 +253,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -291,6 +295,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -319,6 +324,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -359,6 +365,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -376,6 +383,7 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				Direction.ParaToSystem,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError(
