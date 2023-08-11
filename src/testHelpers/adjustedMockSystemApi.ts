@@ -204,9 +204,8 @@ const poolAsset = (
 			multiLocationAssetInfo
 		);
 
-		return new Option(
-			createStatemineRegistry(9435),
-			'PalletAssetsAssetDetails',
+		return mockSystemApi.registry.createType(
+			'Option<PalletAssetsAssetDetails>',
 			multiLocationAsset
 		);
 	});
