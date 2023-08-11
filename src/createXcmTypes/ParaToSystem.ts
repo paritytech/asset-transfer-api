@@ -515,6 +515,29 @@ const createParaToSystemMultiAssets = async (
 			);
 		}
 
+		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
+		const xcmAssetData: XCMAssetsInfo = xcmAssets;
+		const { kusama } = xcmAssetData.xcAssets;
+		
+		let xcAsset: XCMChainInfoDataKeys | string = ''; 
+		for (let i = 0; i < kusama.length; i++) {
+			const chainInfo = kusama[i];
+	
+			for (let j = 0; j < chainInfo.data.length; j++) {
+				const xcAssetData = chainInfo.data[j];
+				console.log('xcAssetData asset', xcAssetData.asset)
+				if (
+					typeof xcAssetData.asset === 'string' &&
+					xcAssetData.asset === assetId 
+				) {
+					console.log('IT MATCHED');
+					xcAsset = xcAssetData;
+					break;
+				}
+			}
+		}
+	
+
 		let concretMultiLocation: MultiLocation;
 
 		if (isForeignAssetsTransfer) {
