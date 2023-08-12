@@ -167,8 +167,8 @@ export interface TransferArgsOpts<T extends Format> {
 	format?: T;
 	/**
 	 * AssetId to pay fee's on the current common good parachain.
-	 * Statemint: default DOT
-	 * Statemine: default KSM
+	 * Polkadot AssetHub: default DOT
+	 * Kusama AssetHub: default KSM
 	 */
 	paysWithFeeOrigin?: string;
 	/**

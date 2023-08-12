@@ -21,7 +21,7 @@ describe('assetIdsContainsRelayAsset', () => {
 		expect(result).toEqual(true);
 	});
 	it('Should return true when assetIds contains the relay assets multilocation', () => {
-		const registry = new Registry('statemint', {});
+		const registry = new Registry('asset-hub-polkadot', {});
 		const assetIds = [
 			`{"parents": 1, "interior": {"Here": ''}}`,
 			`{"parents": 1, interior: {"X1": {"Parachain": "2023"}}}`,

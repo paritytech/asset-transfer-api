@@ -41,7 +41,10 @@ describe('AssetTransferAPI', () => {
 			expect(res).toEqual('SystemToPara');
 		});
 		it('Should correctly determine direction for SystemToRelay', () => {
-			const res = systemAssetsApi['establishDirection']('0', 'statemint');
+			const res = systemAssetsApi['establishDirection'](
+				'0',
+				'asset-hub-polkadot'
+			);
 			expect(res).toEqual('SystemToRelay');
 		});
 		it('Should correctly determine direction for RelayToPara', () => {
