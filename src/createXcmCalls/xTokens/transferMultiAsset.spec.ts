@@ -15,8 +15,8 @@ describe('transferMultiAsset', () => {
 				mockParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['1'],
-				['100'],
+				['311091173110107856861649819128533077277'],
+				['1000000'],
 				'1000',
 				2,
 				'moonriver',
@@ -28,7 +28,7 @@ describe('transferMultiAsset', () => {
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xe8046a010100010300a10f0432050400910101010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
+				'0xf4046a010100010300a10f043205011f0002093d0001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V2', async () => {
@@ -36,8 +36,8 @@ describe('transferMultiAsset', () => {
 				mockParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['1'],
-				['100'],
+				['311091173110107856861649819128533077277'],
+				['1000000'],
 				'1000',
 				2,
 				'moonriver',
@@ -51,7 +51,7 @@ describe('transferMultiAsset', () => {
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xf8046a010100010300a10f0432050400910101010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
+				'0x0501046a010100010300a10f043205011f0002093d0001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
 			);
 		});
 
@@ -60,7 +60,7 @@ describe('transferMultiAsset', () => {
 				mockParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['1'],
+				['311091173110107856861649819128533077277'],
 				['100'],
 				'1000',
 				3,
@@ -73,7 +73,7 @@ describe('transferMultiAsset', () => {
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xe8046a010300010300a10f0432050400910103010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
+				'0xec046a010300010300a10f043205011f00910103010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V3', async () => {
@@ -81,8 +81,8 @@ describe('transferMultiAsset', () => {
 				mockParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['1'],
-				['100'],
+				['42259045809535163221576417993425387648'],
+				['1000000'],
 				'1000',
 				3,
 				'moonriver',
@@ -96,7 +96,7 @@ describe('transferMultiAsset', () => {
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xf8046a010300010300a10f0432050400910103010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
+				'0xe4046a01030001000002093d0003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
 			);
 		});
 	});

@@ -5,7 +5,6 @@ import { ApiPromise } from '@polkadot/api';
 import { BaseError } from '../../errors';
 import { Registry } from '../../registry';
 import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
-import { specNameIsAssetHub } from './specNameIsAssetHub';
 import { getChainIdBySpecName } from './getChainIdBySpecName';
 
 /**
@@ -60,12 +59,12 @@ export const getAssetHubAssetId = async (
 						`${specName} has no associated token symbol ${asset}`
 					);
 				}
-	
+
 				// get the corresponding asset id index from the assets registry
 				const registryAssetId = Object.keys(assetsInfo).find(
 					(key) => assetsInfo[key].toLowerCase() === asset.toLowerCase()
 				);
-	
+
 				if (registryAssetId) {
 					return registryAssetId;
 				} else {
@@ -73,7 +72,7 @@ export const getAssetHubAssetId = async (
 					// query the chains state for the asset
 					if (assetIsNumber) {
 						const maybeAsset = await _api.query.assets.asset(asset);
-	
+
 						if (maybeAsset.isSome) {
 							assetId = asset;
 						} else {
@@ -87,7 +86,7 @@ export const getAssetHubAssetId = async (
 						);
 					}
 				}
-			} else if(parseInt(currentChainId) >= 2000) {
+			} else if (parseInt(currentChainId) >= 2000) {
 				if (!assetIsNumber) {
 					// if not assetHub and assetId isnt a number, query the parachain chain for the asset symbol
 					const parachainAssets = await _api.query.assets.asset.entries();
@@ -95,23 +94,30 @@ export const getAssetHubAssetId = async (
 					for (let i = 0; i < parachainAssets.length; i++) {
 						const parachainAsset = parachainAssets[i];
 						const id = parachainAsset[0].args[0];
-						
+
 						const metadata = await _api.query.assets.metadata(id);
-						if (metadata.symbol.toHuman()?.toString().toLowerCase() === asset.toLowerCase()){
+						if (
+							metadata.symbol.toHuman()?.toString().toLowerCase() ===
+							asset.toLowerCase()
+						) {
 							assetId = id.toString();
 							break;
 						}
 					}
 					if (assetId.length === 0) {
-						throw new BaseError(`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`)
+						throw new BaseError(
+							`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`
+						);
 					}
 				} else {
 					// if not assetHub and assetId is a number, query the parachain chain for the asset
 					const parachainAsset = await _api.query.assets.asset(asset);
-					if(parachainAsset.isSome) {
+					if (parachainAsset.isSome) {
 						assetId = asset;
 					} else {
-						throw new BaseError(`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`)
+						throw new BaseError(
+							`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`
+						);
 					}
 				}
 			}

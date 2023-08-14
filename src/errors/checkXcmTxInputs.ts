@@ -4,11 +4,7 @@ import { ApiPromise } from '@polkadot/api';
 import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import {
-	MAX_ASSETS_FOR_TRANSFER,
-	RELAY_CHAIN_IDS,
-	SYSTEM_PARACHAINS_IDS,
-} from '../consts';
+import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { CreateWeightLimitOpts } from '../createXcmTypes/types';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
@@ -459,6 +455,70 @@ const checkSystemAssets = async (
 	}
 };
 
+const checkParaXcAssets = async (
+	api: ApiPromise,
+	assetId: string,
+	specName: string,
+	registry: Registry,
+	xcmDirection: string,
+	isForeignAssetsTransfer: boolean
+) => {
+	if (isForeignAssetsTransfer) {
+		// check that the asset id is a valid multilocation
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
+			api,
+			assetId,
+			registry
+		);
+
+		if (!multiLocationIsInRegistry) {
+			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
+		}
+	} else {
+		// check if assetId is a number
+		const parsedAssetIdAsNumber = Number.parseInt(assetId);
+		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+
+		if (!invalidNumber) {
+			// query the parachains assets pallet to see if it has a value
+			const asset = await api.query.assets.asset(parsedAssetIdAsNumber);
+
+			if (asset.isNone) {
+				throw new BaseError(
+					`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`
+				);
+			}
+		} else {
+			// not a valid number
+			// check if id is a valid token symbol of the system parachain chain
+			let isValidTokenSymbol = false;
+
+			const parachainAssets = await api.query.assets.asset.entries();
+
+			for (let i = 0; i < parachainAssets.length; i++) {
+				const parachainAsset = parachainAssets[i];
+				const id = parachainAsset[0].args[0].toNumber();
+
+				const metadata = await api.query.assets.metadata(id);
+				
+				if (
+					metadata.symbol.toHuman()?.toString().toLowerCase() ===
+					assetId.toLowerCase()
+				) {
+					isValidTokenSymbol = true;
+				}
+			}
+
+			// if no native token for the parachain was matched, throw an error
+			if (!isValidTokenSymbol) {
+				throw new BaseError(
+					`${xcmDirection}: assetId ${assetId} not found for parachain ${specName}`
+				);
+			}
+		}
+	}
+};
+
 /**
  * This will check the given assetId and validate it in either string integer, or string symbol format
  *
@@ -523,14 +583,10 @@ export const checkIsValidSystemChainAssetId = async (
 const checkParaToSystemAssetId = async (
 	api: ApiPromise,
 	assetId: string,
-	relayChainInfo: ChainInfo,
+	specName: string,
 	registry: Registry,
 	isForeignAssetsTransfer: boolean
 ) => {
-	const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
-	const systemParachainInfo = relayChainInfo[systemParachainId];
-	const systemSpecName = systemParachainInfo.specName;
-
 	if (typeof assetId === 'string') {
 		// An assetId may be a hex value to represent a GeneralKey for erc20 tokens.
 		// These will be represented as Foreign Assets in regard to its MultiLocation
@@ -545,11 +601,10 @@ const checkParaToSystemAssetId = async (
 			return;
 		}
 
-		await checkSystemAssets(
+		await checkParaXcAssets(
 			api,
 			assetId,
-			systemSpecName,
-			systemParachainInfo,
+			specName,
 			registry,
 			'ParaToSystem',
 			isForeignAssetsTransfer
@@ -773,7 +828,7 @@ export const checkAssetIdInput = async (
 			await checkParaToSystemAssetId(
 				api,
 				assetId,
-				relayChainInfo,
+				specName,
 				registry,
 				isForeignAssetsTransfer
 			);

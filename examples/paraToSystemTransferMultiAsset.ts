@@ -24,7 +24,7 @@ const main = async () => {
 		callInfo = await assetApi.createTransferTransaction(
 			'1000',
 			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
-			['1984'],
+			['xcUSDT'],
 			['1000000'],
 			{
 				format: 'call',

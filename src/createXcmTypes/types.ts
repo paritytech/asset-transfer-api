@@ -12,8 +12,8 @@ import type { Registry } from '../registry';
 import type {
 	RequireOnlyOne,
 	XCMDestBenificiary,
-	XcmMultiAsset,
 	XcmMultiLocation,
+	XcmVersionedMultiAsset,
 	XcmWeight,
 } from '../types';
 
@@ -85,7 +85,7 @@ export interface ICreateXcmType {
 		specName: string,
 		asset: string,
 		opts: CreateAssetsOpts
-	) => Promise<XcmMultiAsset>;
+	) => Promise<XcmVersionedMultiAsset>;
 	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createXTokensFeeAssetItem?: (
 		api: ApiPromise,

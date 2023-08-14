@@ -3,7 +3,6 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
 import type {
-	InteriorMultiLocation,
 	MultiAssetsV2,
 	MultiLocation,
 	VersionedMultiAssets,
@@ -11,15 +10,22 @@ import type {
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
-import { isHex } from '@polkadot/util';
 
+import { ASSET_HUB_IDS } from '../consts'
+import xcAssets from '../../xcmAssets.json';
 import { BaseError } from '../errors';
 import type { Registry } from '../registry';
+import {
+	XCMAssetsInfo,
+	XCMChainInfoDataKeys,
+	XCMChainInfoKeys,
+} from '../registry/types';
 import {
 	MultiAsset,
 	XCMDestBenificiary,
 	XcmMultiAsset,
 	XcmMultiLocation,
+	XcmVersionedMultiAsset,
 } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
@@ -280,45 +286,67 @@ export const ParaToSystem: ICreateXcmType = {
 		specName: string,
 		assetId: string,
 		opts: CreateAssetsOpts
-	): Promise<XcmMultiAsset> => {
-		const assetHubChainId = 1000;
-		const { assetsPalletInstance } =
-			opts.registry.currentRelayRegistry[assetHubChainId];
-		const palletId = assetsPalletInstance as string;
+	): Promise<XcmVersionedMultiAsset> => {
+		// const assetHubChainId = 1000;
+		// const { assetsPalletInstance } =
+		// 	opts.registry.currentRelayRegistry[assetHubChainId];
+		// const palletId = assetsPalletInstance as string;
 		const { tokens: relayTokens } = opts.registry.currentRelayRegistry['0'];
-		const { assetsInfo: assetHubTokens } =
-			opts.registry.currentRelayRegistry[assetHubChainId];
+		// const { assetsInfo: assetHubTokens } =
+		// 	opts.registry.currentRelayRegistry[assetHubChainId];
 
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
-		const isAssetHubNative = assetHubTokens[assetId] ? true : false;
+		// const isAssetHubNative = assetHubTokens[assetId] ? true : false;
+		const currentRelayChainSpecName = opts.registry.relayChain;
 
 		if (!isRelayNative && isNotANumber) {
 			assetId = await getAssetHubAssetId(api, assetId, specName);
 		}
 
-		const interior: InteriorMultiLocation = isHex(assetId)
-			? api.registry.createType('InteriorMultiLocation', {
-					X1: { GeneralKey: assetId },
-			  })
-			: isRelayNative
-			? api.registry.createType('InteriorMultiLocation', { Here: '' })
-			: api.registry.createType('InteriorMultiLocation', {
-					X3: [
-						{ Parachain: assetHubChainId },
-						{ PalletInstance: palletId },
-						{ GeneralIndex: assetId },
-					],
-			  });
-		const parents = isRelayNative || isAssetHubNative ? 1 : 0;
+		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
+		const xcAssetsData: XCMAssetsInfo = xcAssets;
+		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
+		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
+			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.kusama;
+		}
+		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
+			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.polkadot;
+		}
+
+		if (relayChainXcAssetInfoKeys.length === 0) {
+			throw new BaseError(
+				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
+			);
+		}
+
+		let xcAsset: XCMChainInfoDataKeys | string = '';
+		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
+			const chainInfo = relayChainXcAssetInfoKeys[i];
+
+			for (let j = 0; j < chainInfo.data.length; j++) {
+				const xcAssetData = chainInfo.data[j];
+				if (
+					typeof xcAssetData.asset === 'string' &&
+					xcAssetData.asset === assetId
+				) {
+					xcAsset = xcAssetData;
+					break;
+				}
+			}
+		}
+		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
+			.xcmV1MultiLocation.v1;
+
+		const concretMultiLocation = api.registry.createType(
+			'MultiLocation',
+			xcAssetMultiLocation
+		);
 
 		const multiAsset = {
 			id: {
-				Concrete: {
-					parents,
-					interior,
-				},
+				Concrete: concretMultiLocation,
 			},
 			fun: {
 				Fungible: { Fungible: amount },
@@ -379,49 +407,63 @@ const createXTokensMultiAssets = async (
 	assets: string[],
 	opts: CreateAssetsOpts
 ): Promise<VersionedMultiAssets> => {
-	const assetHubChainId = 1000;
-	const { assetsPalletInstance } =
-		opts.registry.currentRelayRegistry[assetHubChainId];
-	const palletId = assetsPalletInstance as string;
-	const { tokens: relayTokens } = opts.registry.currentRelayRegistry['0'];
-	const { assetsInfo: assetHubTokens } =
-		opts.registry.currentRelayRegistry[assetHubChainId];
+	const currentRelayChainSpecName = opts.registry.relayChain;
 
-	const multiAssets = [];
+	let multiAssets: XcmMultiAsset[] = [];
+
 	for (let i = 0; i < assets.length; i++) {
 		const amount = amounts[i];
 		let assetId = assets[i];
 
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
-		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
-		const isAssetHubNative = assetHubTokens[assetId] ? true : false;
 
-		if (!isRelayNative && isNotANumber) {
+		if (isNotANumber) {
 			assetId = await getAssetHubAssetId(api, assetId, specName);
 		}
 
-		const interior: InteriorMultiLocation = isHex(assetId)
-			? api.registry.createType('InteriorMultiLocation', {
-					X1: { GeneralKey: assetId },
-			  })
-			: isRelayNative
-			? api.registry.createType('InteriorMultiLocation', { Here: '' })
-			: api.registry.createType('InteriorMultiLocation', {
-					X3: [
-						{ Parachain: assetHubChainId },
-						{ PalletInstance: palletId },
-						{ GeneralIndex: assetId },
-					],
-			  });
-		const parents = isRelayNative || isAssetHubNative ? 1 : 0;
+		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
+		const xcAssetsData: XCMAssetsInfo = xcAssets;
+		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
+		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
+			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.kusama;
+		}
+		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
+			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.polkadot;
+		}
+
+		if (relayChainXcAssetInfoKeys.length === 0) {
+			throw new BaseError(
+				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
+			);
+		}
+
+		let xcAsset: XCMChainInfoDataKeys | string = '';
+		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
+			const chainInfo = relayChainXcAssetInfoKeys[i];
+
+			for (let j = 0; j < chainInfo.data.length; j++) {
+				const xcAssetData = chainInfo.data[j];
+				if (
+					typeof xcAssetData.asset === 'string' &&
+					xcAssetData.asset === assetId
+				) {
+					xcAsset = xcAssetData;
+					break;
+				}
+			}
+		}
+		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
+			.xcmV1MultiLocation.v1;
+
+		const concretMultiLocation = api.registry.createType(
+			'MultiLocation',
+			xcAssetMultiLocation
+		);
 
 		const multiAsset = {
 			id: {
-				Concrete: {
-					parents,
-					interior,
-				},
+				Concrete: concretMultiLocation,
 			},
 			fun: {
 				Fungible: { Fungible: amount },
@@ -431,10 +473,14 @@ const createXTokensMultiAssets = async (
 		multiAssets.push(multiAsset);
 	}
 
+	multiAssets = sortMultiAssetsAscending(multiAssets) as XcmMultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
+		multiAssets
+	) as XcmMultiAsset[];
 	if (xcmVersion === 2) {
 		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
 			'XcmV2MultiassetMultiAssets',
-			multiAssets
+			sortedAndDedupedMultiAssets
 		);
 
 		return Promise.resolve(
@@ -443,32 +489,18 @@ const createXTokensMultiAssets = async (
 			})
 		);
 	} else {
-		if (xcmVersion === 2) {
-			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
-				'XcmV2MultiassetMultiAssets',
-				multiAssets
-			);
+		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
+			'XcmV3MultiassetMultiAssets',
+			sortedAndDedupedMultiAssets
+		);
 
-			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V2: multiAssetsType,
-				})
-			);
-		} else {
-			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
-				'XcmV3MultiassetMultiAssets',
-				multiAssets
-			);
-
-			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V3: multiAssetsType,
-				})
-			);
-		}
+		return Promise.resolve(
+			api.registry.createType('XcmVersionedMultiAssets', {
+				V3: multiAssetsType,
+			})
+		);
 	}
 };
-
 /**
  * Create multiassets for ParaToSystem direction.
  *
@@ -486,17 +518,13 @@ const createParaToSystemMultiAssets = async (
 	registry: Registry,
 	isForeignAssetsTransfer?: boolean
 ): Promise<MultiAsset[]> => {
-	// This will always result in a value and will never be null because the assets-hub will always
-	// have the assets pallet present, so we type cast here to work around the type compiler.
-	const assetHubChainId = '1000';
-	const relayChainId = '0';
-	const { assetsPalletInstance, foreignAssetsPalletInstance } =
-		registry.currentRelayRegistry[assetHubChainId];
-	const assetsPalletId = assetsPalletInstance as string;
+	const assetHubChainId = ASSET_HUB_IDS[0];
+	const currentRelayChainSpecName = registry.relayChain;
+	const { foreignAssetsPalletInstance } = registry.currentRelayRegistry[assetHubChainId];
+	// This will always result in a value and will never be null because the AssetHub will always
+	// have the foreign assets pallet present, so we type cast here to work around the type compiler.
 	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	let multiAssets: MultiAsset[] = [];
-
-	const { tokens } = registry.currentRelayRegistry[relayChainId];
 
 	for (let i = 0; i < assets.length; i++) {
 		const amount = amounts[i];
@@ -504,9 +532,8 @@ const createParaToSystemMultiAssets = async (
 
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
-		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
-		if (!isRelayNative && isNotANumber) {
+		if (isNotANumber) {
 			assetId = await getAssetHubAssetId(
 				api,
 				assetId,
@@ -516,28 +543,40 @@ const createParaToSystemMultiAssets = async (
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-		const xcmAssetData: XCMAssetsInfo = xcmAssets;
-		const { kusama } = xcmAssetData.xcAssets;
-		
-		let xcAsset: XCMChainInfoDataKeys | string = ''; 
-		for (let i = 0; i < kusama.length; i++) {
-			const chainInfo = kusama[i];
-	
+		const xcAssetsData: XCMAssetsInfo = xcAssets;
+		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
+		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
+			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.kusama;
+		}
+		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
+			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.polkadot;
+		}
+
+		if (relayChainXcAssetInfoKeys.length === 0) {
+			throw new BaseError(
+				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
+			);
+		}
+
+		let xcAsset: XCMChainInfoDataKeys | string = '';
+		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
+			const chainInfo = relayChainXcAssetInfoKeys[i];
+
 			for (let j = 0; j < chainInfo.data.length; j++) {
 				const xcAssetData = chainInfo.data[j];
-				console.log('xcAssetData asset', xcAssetData.asset)
 				if (
 					typeof xcAssetData.asset === 'string' &&
-					xcAssetData.asset === assetId 
+					xcAssetData.asset === assetId
 				) {
-					console.log('IT MATCHED');
 					xcAsset = xcAssetData;
 					break;
 				}
 			}
 		}
-	
+		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
+			.xcmV1MultiLocation.v1;
 
+		console.log('xcAsset MultiLocation', JSON.stringify(xcAssetMultiLocation));
 		let concretMultiLocation: MultiLocation;
 
 		if (isForeignAssetsTransfer) {
@@ -547,21 +586,10 @@ const createParaToSystemMultiAssets = async (
 				foreignAssetsPalletId
 			);
 		} else {
-			const parents = isRelayNative ? 1 : 0;
-			const interior: InteriorMultiLocation = isHex(assetId)
-				? api.registry.createType('InteriorMultiLocation', {
-						X1: { GeneralKey: assetId },
-				  })
-				: isRelayNative
-				? api.registry.createType('InteriorMultiLocation', { Here: '' })
-				: api.registry.createType('InteriorMultiLocation', {
-						X2: [{ PalletInstance: assetsPalletId }, { GeneralIndex: assetId }],
-				  });
-
-			concretMultiLocation = api.registry.createType('MultiLocation', {
-				parents,
-				interior,
-			});
+			concretMultiLocation = api.registry.createType(
+				'MultiLocation',
+				xcAssetMultiLocation
+			);
 		}
 
 		const multiAsset = {
@@ -576,9 +604,11 @@ const createParaToSystemMultiAssets = async (
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets);
+	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
+		multiAssets
+	) as MultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

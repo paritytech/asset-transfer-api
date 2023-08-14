@@ -332,9 +332,11 @@ export const createSystemToParaMultiAssets = async (
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets);
+	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
+		multiAssets
+	) as MultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

@@ -2147,7 +2147,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				return await moonriverAssetsApi.createTransferTransaction(
 					'1000', // `1000` indicating the dest chain is a system chain.
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1984', '8'],
+					['311091173110107856861649819128533077277', '182365888117048807484804376330534607370'],
 					['100000', '1000000'],
 					{
 						format,

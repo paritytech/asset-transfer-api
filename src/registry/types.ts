@@ -44,3 +44,77 @@ export type ChainInfoRegistry = {
 };
 
 export type RelayChains = 'polkadot' | 'kusama' | 'westend';
+
+export type InterMultiLocationJunctionType =
+	| 'here'
+	| 'x1'
+	| 'x2'
+	| 'x3'
+	| 'x4'
+	| 'x5'
+	| 'x6'
+	| 'x7'
+	| 'x8';
+type XCMRegistryInteriorMultiLocation = Partial<
+	Record<
+		InterMultiLocationJunctionType,
+		null | XCMRegistryJunction | XCMRegistryJunctions
+	>
+>;
+
+export type XCMRegistryJunction = {
+	[x: string]:
+		| string
+		| number
+		| undefined
+		| null
+		| Partial<Record<string, string | number | undefined | null>>;
+};
+export type XCMRegistryJunctions = {
+	[x: string]:
+		| string
+		| number
+		| undefined
+		| null
+		| Partial<Record<string, string | number | undefined | null>>;
+}[];
+
+export interface XCMRegistryMultiLocation {
+	parents: number;
+	interior: XCMRegistryInteriorMultiLocation;
+}
+
+export interface XCMAssetRegistryMultiLocation {
+	v1: XCMRegistryMultiLocation;
+}
+
+export interface XCMChainInfoDataKeys {
+	paraID?: number;
+	relayChain: string;
+	nativeChainID: string | null;
+	symbol: string;
+	decimals: number;
+	interiorType: string;
+	xcmV1Standardized: Array<XCMRegistryJunction | string>;
+	xcmV1MultiLocationByte: boolean | string;
+	xcmV1MultiLocation: XCMAssetRegistryMultiLocation;
+	asset: string | { [x: string]: string | undefined };
+	source: string[];
+}
+
+export interface XCMChainInfoKeys {
+	relayChain: string;
+	paraID: number;
+	id: string;
+	xcAssetCnt: string;
+	data: XCMChainInfoDataKeys[];
+}
+
+export type XCMChainInfoRegistry = {
+	polkadot: XCMChainInfoKeys[];
+	kusama: XCMChainInfoKeys[];
+};
+
+export type XCMAssetsInfo = {
+	xcAssets: XCMChainInfoRegistry;
+};

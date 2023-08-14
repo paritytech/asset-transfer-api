@@ -2,7 +2,6 @@
 
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';
-import { mockParachainApi } from '../testHelpers/mockParachainApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
@@ -20,7 +19,14 @@ import {
 	checkWeightLimit,
 	checkXcmVersionIsValidForPaysWithFeeDest,
 } from './checkXcmTxInputs';
+import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
+import { AssetsTransferApi } from '../AssetsTransferApi';
 
+const parachainAssetsApi = new AssetsTransferApi(
+	adjustedMockParachainApi,
+	'moonriver',
+	2
+);
 const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
 		const [specName, testInputs, direction, errorMessage] = test;
@@ -29,7 +35,7 @@ const runTests = async (tests: Test[]) => {
 
 		await expect(async () => {
 			await checkAssetIdInput(
-				mockParachainApi,
+				parachainAssetsApi._api,
 				testInputs,
 				currentRegistry,
 				specName,
@@ -247,7 +253,7 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
-					mockParachainApi,
+					parachainAssetsApi._api,
 					testInputs,
 					currentRegistry,
 					specName,
@@ -327,25 +333,13 @@ describe('checkAssetIds', () => {
 			}).rejects.toThrowError(errorMessage);
 		}
 	});
-	it('Should error when direction is ParaToSystem and the string assetId is not found in the system parachains tokens or assets', async () => {
+	it('Should correctly error when direction is ParaToSystem and the integer assetId is not found in the system parachains assetIds', async () => {
 		const tests: Test[] = [
 			[
-				'Statemint',
-				['1337', 'xcDOT'],
+				'moonriver',
+				['10', '200'],
 				Direction.ParaToSystem,
-				`ParaToSystem: assetId xcDOT not found for system parachain statemint`,
-			],
-			[
-				'Statemine',
-				['KSM', 'xcMOVR'],
-				Direction.ParaToSystem,
-				`ParaToSystem: assetId xcMOVR not found for system parachain statemine`,
-			],
-			[
-				'Westmint',
-				['WND', 'Test Westend'],
-				Direction.ParaToSystem,
-				`ParaToSystem: assetId Test Westend not found for system parachain westmint`,
+				`ParaToSystem: integer assetId 200 not found in moonriver`,
 			],
 		];
 
@@ -356,7 +350,41 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
-					mockParachainApi,
+					parachainAssetsApi._api,
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry,
+					false
+				);
+			}).rejects.toThrowError(errorMessage);
+		}
+	});
+	it('Should correctly error when direction is ParaToSystem and the string assetId has no match in the parachains asset symbols', async () => {
+		const tests: Test[] = [
+			[
+				'moonriver',
+				['xcKSM', 'USDT'],
+				Direction.ParaToSystem,
+				`ParaToSystem: assetId USDT not found for parachain moonriver`,
+			],
+			[
+				'moonriver',
+				['xcUSDT', 'ASTR'],
+				Direction.ParaToSystem,
+				`ParaToSystem: assetId ASTR not found for parachain moonriver`,
+			],
+		];
+
+		for (const test of tests) {
+			const [specName, testInputs, direction, errorMessage] = test;
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
+
+			await expect(async () => {
+				await checkAssetIdInput(
+					parachainAssetsApi._api,
 					testInputs,
 					currentRegistry,
 					specName,
@@ -373,7 +401,7 @@ describe('checkAssetIds', () => {
 
 		await expect(async () => {
 			await checkAssetIdInput(
-				mockParachainApi,
+				parachainAssetsApi._api,
 				['0x1234'],
 				currentRegistry,
 				'moonriver',

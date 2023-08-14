@@ -3,19 +3,35 @@
 import { JunctionV1 } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types-codec/types';
 
-import { MultiAsset } from '../../types';
+import { MultiAsset, XcmMultiAsset } from '../../types';
 
 /**
  * This sorts a list of multiassets in ascending order based on their id.
  *
  * @param multiAssets MultiAsset[]
  */
-export const sortMultiAssetsAscending = (multiAssets: MultiAsset[]) => {
+export const sortMultiAssetsAscending = (
+	multiAssets: MultiAsset[] | XcmMultiAsset[]
+) => {
 	return multiAssets.sort((a, b) => {
 		let parentSortOrder = 0; // sort order based on parents value
 		let interiorMultiLocationTypeSortOrder = 0; // sort order based on interior multilocation type value (e.g. X1 < X2)
 		let interiorMultiLocationSortOrder = 0; // sort order based on multilocation junction values
-		const fungibleSortOrder = a.fun.Fungible.localeCompare(b.fun.Fungible); // sort order based on fungible value
+		let fungibleSortOrder = 0; // sort order based on fungible value
+		if (
+			typeof a.fun.Fungible === 'string' &&
+			typeof b.fun.Fungible === 'string'
+		) {
+			fungibleSortOrder = (a as MultiAsset).fun.Fungible.localeCompare(
+				(b as MultiAsset).fun.Fungible
+			);
+		} else {
+			fungibleSortOrder = (
+				a as XcmMultiAsset
+			).fun.Fungible.Fungible.localeCompare(
+				(b as XcmMultiAsset).fun.Fungible.Fungible
+			);
+		}
 
 		if (a.id.Concrete.parents < b.id.Concrete.parents) {
 			parentSortOrder = -1;
@@ -46,8 +62,8 @@ export const sortMultiAssetsAscending = (multiAssets: MultiAsset[]) => {
 };
 
 const getSameJunctionMultiLocationSortOrder = (
-	a: MultiAsset,
-	b: MultiAsset
+	a: MultiAsset | XcmMultiAsset,
+	b: MultiAsset | XcmMultiAsset
 ): number => {
 	let sortOrder = 0;
 
@@ -176,10 +192,30 @@ const getSortOrderForX2ThroughX8 = (
 		// if the junctions are the same type but not equal
 		// we compare the inner values in order to determine sort order
 		if (junctionA.type === junctionB.type && !junctionA.eq(junctionB)) {
-			if (junctionA.value < junctionB.value) {
-				return -1;
-			} else if (junctionA.value > junctionB.value) {
-				return 1;
+			const junctionAValueAsNumber = Number.parseInt(
+				junctionA.value.toString()
+			);
+			const junctionAIsNotANumber = Number.isNaN(junctionAValueAsNumber);
+
+			const junctionBValueAsNumber = Number.parseInt(
+				junctionB.value.toString()
+			);
+			const junctionBIsNotANumber = Number.isNaN(junctionBValueAsNumber);
+
+			// compare number values if both junction values are valid integers
+			// otherwise compare the lexicographical values
+			if (!junctionAIsNotANumber && !junctionBIsNotANumber) {
+				if (junctionAValueAsNumber < junctionBValueAsNumber) {
+					return -1;
+				} else if (junctionAValueAsNumber > junctionBValueAsNumber) {
+					return 1;
+				}
+			} else {
+				if (junctionA.value < junctionB.value) {
+					return -1;
+				} else if (junctionA.value > junctionB.value) {
+					return 1;
+				}
 			}
 		} else if (!junctionA.eq(junctionB)) {
 			// for junctions of different types we compare the junction values themselves

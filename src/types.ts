@@ -2,6 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import { u8 } from '@polkadot/types';
 import {
 	InteriorMultiLocation,
 	MultiLocation,
@@ -227,6 +228,15 @@ export type MultiAsset = {
 	};
 };
 
+export type XcmMultiAsset = {
+	fun: {
+		Fungible: { Fungible: string };
+	};
+	id: {
+		Concrete: MultiLocation;
+	};
+};
+
 /**
  * @hidden
  */
@@ -349,7 +359,7 @@ export interface XCMV2MultiAsset {
 	V2: {
 		id: {
 			Concrete: {
-				parents: string | number;
+				parents: u8 | string | number;
 				interior: InteriorMultiLocation;
 			};
 		};
@@ -362,7 +372,7 @@ export interface XCMV3MultiAsset {
 	V3: {
 		id: {
 			Concrete: {
-				parents: string | number;
+				parents: u8 | string | number;
 				interior: InteriorMultiLocation;
 			};
 		};
@@ -372,7 +382,7 @@ export interface XCMV3MultiAsset {
 	};
 }
 
-export type XcmMultiAsset = XCMV2MultiAsset | XCMV3MultiAsset;
+export type XcmVersionedMultiAsset = XCMV2MultiAsset | XCMV3MultiAsset;
 
 export interface XCMV2MultiLocation {
 	V2: {
