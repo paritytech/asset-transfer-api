@@ -347,7 +347,6 @@ describe('checkAssetIds', () => {
 			const [specName, testInputs, direction, errorMessage] = test;
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
-
 			await expect(async () => {
 				await checkAssetIdInput(
 					parachainAssetsApi._api,
