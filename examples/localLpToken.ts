@@ -8,11 +8,7 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send LiquidPool Asset '0' from a Westmint (System Parachain) account
- * to a Injected (Parachain) called 'testing', where the `xcmVersion` is set to 2, and the `isLimited` declaring that
- * it will be `unlimited` since there is no `weightLimit` option as well.
- *
- * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
+ * In this example we are creating a call to send LiquidPool Asset '0' locally on westmint, using the `keepAlive` option.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise(
