@@ -730,13 +730,7 @@ export const checkLiquidTokenTransferDirectionValidity = (
 	xcmDirection: Direction,
 	isLiquidTokenTransfer: boolean
 ) => {
-	if (
-		(xcmDirection === Direction.RelayToSystem ||
-			xcmDirection === Direction.RelayToPara ||
-			xcmDirection === Direction.SystemToRelay ||
-			xcmDirection === Direction.ParaToSystem) &&
-		isLiquidTokenTransfer
-	) {
+	if (xcmDirection !== 'SystemToPara' && isLiquidTokenTransfer) {
 		throw new BaseError(
 			`isLiquidTokenTransfer may not be true for the xcmDirection: ${xcmDirection}.`
 		);
