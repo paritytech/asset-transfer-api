@@ -333,7 +333,7 @@ describe('checkAssetIds', () => {
 			}).rejects.toThrowError(errorMessage);
 		}
 	});
-	it('Should correctly error when direction is ParaToSystem and the integer assetId is not found in the system parachains assetIds', async () => {
+	it('Should correctly error when direction is ParaToSystem and the provided integer assetId is not found in the system parachains assetIds', async () => {
 		const tests: Test[] = [
 			[
 				'moonriver',
