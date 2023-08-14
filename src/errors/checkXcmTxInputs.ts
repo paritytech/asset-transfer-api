@@ -338,6 +338,34 @@ const checkSystemToRelayAssetId = (
 	}
 };
 
+export const checkLiquidTokenValidity = async (
+	api: ApiPromise,
+	systemParachainInfo: ChainInfoKeys,
+	assetId: string
+) => {
+	// check if assetId is a number
+	const parsedAssetIdAsNumber = Number.parseInt(assetId);
+	const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+
+	if (invalidNumber) {
+		throw new BaseError(`Liquid Tokens must be valid Integers`);
+	}
+
+	const poolPairIds = Object.keys(systemParachainInfo.poolPairsInfo);
+
+	let liquidTokenIncluded = false;
+	if (poolPairIds.includes(assetId)) liquidTokenIncluded = true;
+
+	const poolAsset = await api.query.poolAssets.asset(assetId);
+	if (poolAsset.isSome) liquidTokenIncluded = true;
+
+	if (!liquidTokenIncluded) {
+		throw new BaseError(
+			`No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.`
+		);
+	}
+};
+
 const checkSystemAssets = async (
 	api: ApiPromise,
 	assetId: string,
@@ -367,27 +395,7 @@ const checkSystemAssets = async (
 			}
 		}
 	} else if (isLiquidTokenTransfer) {
-		// check if assetId is a number
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
-
-		if (invalidNumber) {
-			throw new BaseError(`Liquid Tokens must be valid Integers`);
-		}
-
-		const poolPairIds = Object.keys(systemParachainInfo.poolPairsInfo);
-
-		let liquidTokenIncluded = false;
-		if (poolPairIds.includes(assetId)) liquidTokenIncluded = true;
-
-		const poolAsset = await api.query.poolAssets.asset(assetId);
-		if (poolAsset.isSome) liquidTokenIncluded = true;
-
-		if (!liquidTokenIncluded) {
-			throw new BaseError(
-				`No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.`
-			);
-		}
+		await checkLiquidTokenValidity(api, systemParachainInfo, assetId);
 	} else {
 		// check if assetId is a number
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);

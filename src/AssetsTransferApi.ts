@@ -20,6 +20,7 @@ import {
 import * as assets from './createCalls/assets';
 import * as balances from './createCalls/balances';
 import * as foreignAssets from './createCalls/foreignAssets';
+import * as poolAssets from './createCalls/poolAssets';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
@@ -186,7 +187,8 @@ export class AssetsTransferApi {
 				amounts,
 				_specName,
 				registry,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer
 			); // Throws an error when any of the inputs are incorrect.
 			const method = keepAlive ? 'transferKeepAlive' : 'transfer';
 
@@ -208,6 +210,12 @@ export class AssetsTransferApi {
 							? assets.transferKeepAlive(_api, addr, assetId, amount)
 							: assets.transfer(_api, addr, assetId, amount);
 					palletMethod = `assets::${method}`;
+				} else if (localAssetType === 'PoolAssets') {
+					tx = 
+						method === 'transferKeepAlive'
+							? poolAssets.transferKeepAlive(_api, addr, assetId, amount)
+							: poolAssets.transfer(_api, addr, assetId, amount);
+					palletMethod = `poolAssets::${method}`;
 				} else {
 					const multiLocation = _api.registry.createType(
 						'MultiLocation',
