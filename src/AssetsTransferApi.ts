@@ -211,7 +211,7 @@ export class AssetsTransferApi {
 							: assets.transfer(_api, addr, assetId, amount);
 					palletMethod = `assets::${method}`;
 				} else if (localAssetType === 'PoolAssets') {
-					tx = 
+					tx =
 						method === 'transferKeepAlive'
 							? poolAssets.transferKeepAlive(_api, addr, assetId, amount)
 							: poolAssets.transfer(_api, addr, assetId, amount);
