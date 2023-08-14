@@ -5,7 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { AssetsTransferApi } from '../AssetsTransferApi';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
-import { MultiAsset} from '../types';
+import { MultiAsset } from '../types';
 import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
 
 type Test = [

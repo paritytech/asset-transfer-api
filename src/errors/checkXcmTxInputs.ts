@@ -480,8 +480,8 @@ const checkParaXcAssets = async (
 		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
 
 		if (!invalidNumber) {
-			// query the parachains assets pallet to see if it has a value
-			const asset = await api.query.assets.asset(parsedAssetIdAsNumber);
+			// query the parachains assets pallet to see if it has a value matching the assetId
+			const asset = await api.query.assets.asset(assetId);
 
 			if (asset.isNone) {
 				throw new BaseError(
@@ -497,10 +497,10 @@ const checkParaXcAssets = async (
 
 			for (let i = 0; i < parachainAssets.length; i++) {
 				const parachainAsset = parachainAssets[i];
-				const id = parachainAsset[0].args[0].toNumber();
+				const id = parachainAsset[0].args[0];
 
 				const metadata = await api.query.assets.metadata(id);
-				
+
 				if (
 					metadata.symbol.toHuman()?.toString().toLowerCase() ===
 					assetId.toLowerCase()

@@ -1,14 +1,22 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { ApiPromise } from '@polkadot/api';
-import { StorageKey, u32, Option, Metadata, TypeRegistry } from '@polkadot/types';
+import {
+	Metadata,
+	Option,
+	StorageKey,
+	TypeRegistry,
+	u128,
+} from '@polkadot/types';
 import type { Header } from '@polkadot/types/interfaces';
+import {
+	PalletAssetsAssetDetails,
+	PalletAssetsAssetMetadata,
+} from '@polkadot/types/lookup';
 import { getSpecTypes } from '@polkadot/types-known';
-import { PalletAssetsAssetDetails, PalletAssetsAssetMetadata } from '@polkadot/types/lookup';
 
-import { mockParachainApi } from './mockParachainApi';
 import { moonriverV2302 } from './metadata/moonriverV2302';
-
+import { mockParachainApi } from './mockParachainApi';
 
 const getSystemSafeXcmVersion = () =>
 	Promise.resolve().then(() => {
@@ -59,11 +67,11 @@ function createMoonriverRegistry(specVersion: number): TypeRegistry {
 	return registry;
 }
 const accountNextIndex = () => mockParachainApi.registry.createType('u32', 10);
-const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
+const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
-		const assets: Map<number, PalletAssetsAssetDetails> = new Map();
+		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
 
-		const assetInfo = {
+		const xcUsdtAssetInfo = {
 			owner: mockParachainApi.registry.createType(
 				'AccountId32',
 				'0x0987654309876543098765430987654309876543098765430987654309876543'
@@ -92,11 +100,81 @@ const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 				'live'
 			),
 		};
-		const asset = mockParachainApi.registry.createType(
+		const xcUsdt = mockParachainApi.registry.createType(
 			'PalletAssetsAssetDetails',
-			assetInfo
+			xcUsdtAssetInfo
 		);
-		assets.set(10, asset);
+		assets.set('311091173110107856861649819128533077277', xcUsdt);
+
+		const xcKsmAssetInfo = {
+			owner: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockParachainApi.registry.createType('u128', 100),
+			deposit: mockParachainApi.registry.createType('u128', 100),
+			minBalance: mockParachainApi.registry.createType('u128', 100),
+			isSufficient: mockParachainApi.registry.createType('bool', true),
+			accounts: mockParachainApi.registry.createType('u32', 100),
+			sufficients: mockParachainApi.registry.createType('u32', 100),
+			approvals: mockParachainApi.registry.createType('u32', 100),
+			status: mockParachainApi.registry.createType(
+				'PalletAssetsAssetStatus',
+				'live'
+			),
+		};
+		const xcKsm = mockParachainApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			xcKsmAssetInfo
+		);
+		assets.set('42259045809535163221576417993425387648', xcKsm);
+
+		const xcRmrkAssetInfo = {
+			owner: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockParachainApi.registry.createType('u128', 100),
+			deposit: mockParachainApi.registry.createType('u128', 100),
+			minBalance: mockParachainApi.registry.createType('u128', 100),
+			isSufficient: mockParachainApi.registry.createType('bool', true),
+			accounts: mockParachainApi.registry.createType('u32', 100),
+			sufficients: mockParachainApi.registry.createType('u32', 100),
+			approvals: mockParachainApi.registry.createType('u32', 100),
+			status: mockParachainApi.registry.createType(
+				'PalletAssetsAssetStatus',
+				'live'
+			),
+		};
+		const xcRmrk = mockParachainApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			xcRmrkAssetInfo
+		);
+		assets.set('182365888117048807484804376330534607370', xcRmrk);
 
 		const maybeAsset = assets.has(assetId) ? assets.get(assetId) : undefined;
 
@@ -114,42 +192,71 @@ const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 		);
 	});
 
-	const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
+const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 	Promise.resolve().then(() => {
-		const metadata: Map<number, PalletAssetsAssetMetadata> = new Map();
+		const metadata: Map<string, PalletAssetsAssetMetadata> = new Map();
 
 		const rawXcKsmMetadata = {
 			deposit: mockParachainApi.registry.createType('u128', 0),
-			name: mockParachainApi.registry.createType('Bytes', "0x78634b534d"),
-			symbol: Object.assign(mockParachainApi.registry.createType('Bytes', "0x78634b534d"), {
-				toHuman: () => 'xcKSM'
-			}),
+			name: mockParachainApi.registry.createType('Bytes', '0x78634b534d'),
+			symbol: Object.assign(
+				mockParachainApi.registry.createType('Bytes', '0x78634b534d'),
+				{
+					toHuman: () => 'xcKSM',
+				}
+			),
 			decimals: mockParachainApi.registry.createType('u8', 12),
-			isFrozen: mockParachainApi.registry.createType('bool', false)
+			isFrozen: mockParachainApi.registry.createType('bool', false),
 		};
 		const xcKsmMetadata = mockParachainApi.registry.createType(
 			'PalletAssetsAssetMetadata',
 			rawXcKsmMetadata
 		);
-		metadata.set(10, xcKsmMetadata);
-		
+		metadata.set('42259045809535163221576417993425387648', xcKsmMetadata);
+
 		const rawXcUsdtMetadata = {
 			deposit: mockParachainApi.registry.createType('u128', 0),
-			name: mockParachainApi.registry.createType('Bytes', "0x54657468657220555344"),
-			symbol: Object.assign(mockParachainApi.registry.createType('Bytes', "0x786355534454"), {
-				toHuman: () => 'xcUSDT'
-			}),
+			name: mockParachainApi.registry.createType(
+				'Bytes',
+				'0x54657468657220555344'
+			),
+			symbol: Object.assign(
+				mockParachainApi.registry.createType('Bytes', '0x786355534454'),
+				{
+					toHuman: () => 'xcUSDT',
+				}
+			),
 			decimals: mockParachainApi.registry.createType('u8', 6),
-			isFrozen: mockParachainApi.registry.createType('bool', false)
-		}
+			isFrozen: mockParachainApi.registry.createType('bool', false),
+		};
 		const xcUsdtMetadata = mockParachainApi.registry.createType(
 			'PalletAssetsAssetMetadata',
 			rawXcUsdtMetadata
 		);
-		metadata.set(20, xcUsdtMetadata);
+		metadata.set('311091173110107856861649819128533077277', xcUsdtMetadata);
 
-		const maybeMetadata = metadata.has(assetId) ? metadata.get(assetId) : undefined;
-		
+		const rawXcRmrkMetadata = {
+			deposit: mockParachainApi.registry.createType('u128', 0),
+			name: mockParachainApi.registry.createType('Bytes', '0x7863524d524b'),
+			symbol: Object.assign(
+				mockParachainApi.registry.createType('Bytes', '0x7863524d524b'),
+				{
+					toHuman: () => 'xcUSDT',
+				}
+			),
+			decimals: mockParachainApi.registry.createType('u8', 6),
+			isFrozen: mockParachainApi.registry.createType('bool', false),
+		};
+		const xcRmrkMetadata = mockParachainApi.registry.createType(
+			'PalletAssetsAssetMetadata',
+			rawXcRmrkMetadata
+		);
+		metadata.set('182365888117048807484804376330534607370', xcRmrkMetadata);
+
+		const maybeMetadata = metadata.has(assetId.toString())
+			? metadata.get(assetId.toString())
+			: undefined;
+
 		if (maybeMetadata) {
 			return maybeMetadata;
 		}
@@ -178,53 +285,92 @@ export const adjustedMockParachainApi = {
 			safeXcmVersion: getSystemSafeXcmVersion,
 		},
 		assets: {
-			asset: Object.assign(asset,{
-				entries: async () => {
-					const metadata: Map<number, PalletAssetsAssetMetadata> = new Map();
+			asset: Object.assign(asset, {
+				entries: () => {
+					const metadata: Map<string, PalletAssetsAssetMetadata> = new Map();
 
 					const rawXcKsmMetadata = {
 						deposit: mockParachainApi.registry.createType('u128', 0),
-						name: mockParachainApi.registry.createType('Bytes', "0x78634b534d"),
-						symbol: Object.assign(mockParachainApi.registry.createType('Bytes', "0x78634b534d"), {
-							toHuman: () => 'xcKSM'
-						}),
+						name: mockParachainApi.registry.createType('Bytes', '0x78634b534d'),
+						symbol: Object.assign(
+							mockParachainApi.registry.createType('Bytes', '0x78634b534d'),
+							{
+								toHuman: () => 'xcKSM',
+							}
+						),
 						decimals: mockParachainApi.registry.createType('u8', 12),
-						isFrozen: mockParachainApi.registry.createType('bool', false)
+						isFrozen: mockParachainApi.registry.createType('bool', false),
 					};
 					const xcKsmMetadata = mockParachainApi.registry.createType(
 						'PalletAssetsAssetMetadata',
 						rawXcKsmMetadata
 					);
-					metadata.set(10, xcKsmMetadata);
-					
+					metadata.set('42259045809535163221576417993425387648', xcKsmMetadata);
+
 					const rawXcUsdtMetadata = {
 						deposit: mockParachainApi.registry.createType('u128', 0),
-						name: mockParachainApi.registry.createType('Bytes', "0x54657468657220555344"),
-						symbol: Object.assign(mockParachainApi.registry.createType('Bytes', "0x786355534454"), {
-							toHuman: () => 'xcUSDT'
-						}),
+						name: mockParachainApi.registry.createType(
+							'Bytes',
+							'0x54657468657220555344'
+						),
+						symbol: Object.assign(
+							mockParachainApi.registry.createType('Bytes', '0x786355534454'),
+							{
+								toHuman: () => 'xcUSDT',
+							}
+						),
 						decimals: mockParachainApi.registry.createType('u8', 6),
-						isFrozen: mockParachainApi.registry.createType('bool', false)
-					}
+						isFrozen: mockParachainApi.registry.createType('bool', false),
+					};
 					const xcUsdtMetadata = mockParachainApi.registry.createType(
 						'PalletAssetsAssetMetadata',
 						rawXcUsdtMetadata
 					);
-					metadata.set(20, xcUsdtMetadata);
-					
-					const result: [StorageKey<[u32]>, PalletAssetsAssetMetadata][] = [];
+					metadata.set(
+						'311091173110107856861649819128533077277',
+						xcUsdtMetadata
+					);
+
+					const rawXcRmrkMetadata = {
+						deposit: mockParachainApi.registry.createType('u128', 0),
+						name: mockParachainApi.registry.createType(
+							'Bytes',
+							'0x7863524d524b'
+						),
+						symbol: Object.assign(
+							mockParachainApi.registry.createType('Bytes', '0x7863524d524b'),
+							{
+								toHuman: () => 'xcUSDT',
+							}
+						),
+						decimals: mockParachainApi.registry.createType('u8', 6),
+						isFrozen: mockParachainApi.registry.createType('bool', false),
+					};
+					const xcRmrkMetadata = mockParachainApi.registry.createType(
+						'PalletAssetsAssetMetadata',
+						rawXcRmrkMetadata
+					);
+					metadata.set(
+						'182365888117048807484804376330534607370',
+						xcRmrkMetadata
+					);
+
+					const result: [StorageKey<[u128]>, PalletAssetsAssetMetadata][] = [];
 					metadata.forEach((val, key) => {
-						const assetIdU32 = mockParachainApi.registry.createType('u32', key);
-						const storageKey = {args: [assetIdU32]} as StorageKey<[u32]>;
+						const assetIdU32 = mockParachainApi.registry.createType(
+							'u128',
+							key
+						);
+						const storageKey = { args: [assetIdU32] } as StorageKey<[u128]>;
 
 						result.push([storageKey, val]);
-					})
+					});
 
 					return result;
-				}
+				},
 			}),
-			metadata: metadata
-		}
+			metadata: metadata,
+		},
 	},
 	tx: {
 		polkadotXcm: {

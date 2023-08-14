@@ -118,7 +118,10 @@ describe('ParaToSystem', () => {
 				['1000000000000', '2000000000'],
 				2,
 				'moonriver',
-				['42259045809535163221576417993425387648', '182365888117048807484804376330534607370'],
+				[
+					'42259045809535163221576417993425387648',
+					'182365888117048807484804376330534607370',
+				],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -134,7 +137,7 @@ describe('ParaToSystem', () => {
 								interior: mockParachainApi.registry.createType(
 									'InteriorMultiLocation',
 									{
-										'Here': null
+										Here: null,
 									}
 								),
 							},
@@ -150,7 +153,11 @@ describe('ParaToSystem', () => {
 								interior: mockParachainApi.registry.createType(
 									'InteriorMultiLocation',
 									{
-										X3: [{Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
+										X3: [
+											{ Parachain: 1000 },
+											{ PalletInstance: 50 },
+											{ GeneralIndex: 8 },
+										],
 									}
 								),
 							},
@@ -171,7 +178,10 @@ describe('ParaToSystem', () => {
 				['1000000', '20000000000'],
 				3,
 				'moonriver',
-				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
+				[
+					'182365888117048807484804376330534607370',
+					'311091173110107856861649819128533077277',
+				],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -187,7 +197,11 @@ describe('ParaToSystem', () => {
 								interior: mockParachainApi.registry.createType(
 									'InteriorMultiLocation',
 									{
-										X3: [{Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
+										X3: [
+											{ Parachain: 1000 },
+											{ PalletInstance: 50 },
+											{ GeneralIndex: 8 },
+										],
 									}
 								),
 							},
@@ -203,7 +217,11 @@ describe('ParaToSystem', () => {
 								interior: mockParachainApi.registry.createType(
 									'InteriorMultiLocation',
 									{
-										X3: [{Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 1984 }],
+										X3: [
+											{ Parachain: 1000 },
+											{ PalletInstance: 50 },
+											{ GeneralIndex: 1984 },
+										],
 									}
 								),
 							},

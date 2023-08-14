@@ -1,7 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { AssetsTransferApi } from '../AssetsTransferApi';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';
+import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
@@ -19,8 +21,6 @@ import {
 	checkWeightLimit,
 	checkXcmVersionIsValidForPaysWithFeeDest,
 } from './checkXcmTxInputs';
-import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
-import { AssetsTransferApi } from '../AssetsTransferApi';
 
 const parachainAssetsApi = new AssetsTransferApi(
 	adjustedMockParachainApi,
@@ -337,7 +337,7 @@ describe('checkAssetIds', () => {
 		const tests: Test[] = [
 			[
 				'moonriver',
-				['10', '200'],
+				['311091173110107856861649819128533077277', '200'],
 				Direction.ParaToSystem,
 				`ParaToSystem: integer assetId 200 not found in moonriver`,
 			],
