@@ -52,10 +52,3 @@ export const SUPPORTED_XCM_VERSIONS: [number, number] = [2, 3];
  * https://github.com/paritytech/polkadot/blob/e0ed7e862c8c8b6c75eda1731c449543642176ef/xcm/pallet-xcm/src/lib.rs#L1131
  */
 export const MAX_ASSETS_FOR_TRANSFER = 2;
-
-export const POLKADOT_ASSET_HUB_SPEC_NAMES = [
-	'statemint',
-	'asset-hub-polkadot',
-];
-export const KUSAMA_ASSET_HUB_SPEC_NAMES = ['statemine', 'asset-hub-kusama'];
-export const WESTEND_ASSET_HUB_SPEC_NAMES = ['westmint', 'asset-hub-westend'];
