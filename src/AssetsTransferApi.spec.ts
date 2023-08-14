@@ -617,6 +617,29 @@ describe('AssetTransferAPI', () => {
 				);
 				expect(decoded).toEqual(expected);
 			});
+
+			it('Should decode a liquid token tx call given its hash for SystemToPara', async () => {
+				const expected =
+					'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,023"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"55"},{"GeneralIndex":"0"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
+
+				const callTxResult = await systemAssetsApi.createTransferTransaction(
+					'2023',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					['0'],
+					['10000000000000'],
+					{
+						format: 'call',
+						xcmVersion: 3,
+						transferLiquidToken: true,
+					}
+				);
+
+				const decoded = systemAssetsApi.decodeExtrinsic(
+					callTxResult.tx,
+					'call'
+				);
+				expect(decoded).toEqual(expected);
+			});
 		});
 	});
 
