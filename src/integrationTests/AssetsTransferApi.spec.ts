@@ -189,6 +189,49 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
+			it('Should construct a `poolAssets::transfer` call on a system parachain', async () => {
+				const res = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
+					['0'],
+					['100'],
+					{
+						format: 'call',
+						transferLiquidToken: true,
+					}
+				);
+				expect(res).toEqual({
+					dest: 'statemine',
+					origin: 'statemine',
+					direction: 'local',
+					format: 'call',
+					method: 'poolAssets::transfer',
+					xcmVersion: null,
+					tx: '0x3708000000000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+				});
+			});
+			it('Should construct a `poolAssets::transferKeepAlive` call on a system parachain', async () => {
+				const res = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
+					['0'],
+					['100'],
+					{
+						format: 'call',
+						keepAlive: true,
+						transferLiquidToken: true,
+					}
+				);
+				expect(res).toEqual({
+					dest: 'statemine',
+					origin: 'statemine',
+					direction: 'local',
+					format: 'call',
+					method: 'poolAssets::transferKeepAlive',
+					xcmVersion: null,
+					tx: '0x3709000000000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+				});
+			});
 		});
 		describe('SystemToPara', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(
