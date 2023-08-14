@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.0-beta.2](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.1..v0.1.0-beta.2)(2023-08-09)
+
+## Fix
+
+- fix: added unpaidExecution for testnet XCM message
+
+## Features
+
+- feat: ParaToSystem
+- feat: SystemToSystem
+- feat: add support for foreign asset multilocations
+
+## Chore
+
+- chore: cleanup tech debt
+- chore(yarn): bump yarn
+- chore: remove grocers' apostrophe
+
 ## [0.1.0-beta.1](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.0..v0.1.0-beta.1)(2023-06-21)
 
 ## Chore

@@ -28,7 +28,7 @@ WARNING: This package is in stable beta, and does not support sending assets in 
 
 **BETA**: This package is in stable beta.
 
-**Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Statemine and Statemint. It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
+**Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Kusama AssetHub and Polkadot AssetHub. It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
 
 ### Current Cross-chain Support
 
@@ -42,10 +42,10 @@ The below chart is focusing on what directions are supported for constructing as
 | Relay to System        | :white_check_mark: | :white_check_mark: |
 | Parachain to Parachain | :x:                | :x:                |
 | Parachain to Relay     | :x:                | :x:                |
-| Parachain to System    | :x:                | :x:                |
-| System to System       | :x:                | :x:                |
+| Parachain to System    | :white_check_mark: | :white_check_mark: |
+| System to System       | :white_check_mark: | :white_check_mark: |
 
-Note: System refers to System Parachains like `Statemine` and `Statemint`.
+Note: System refers to System Parachains like `Kusama AssetHub` and `Polkadot AssetHub`.
 
 ## Usage
 
@@ -147,8 +147,8 @@ interface TransferArgsOpts<T extends Format> {
 	format?: T;
 	/**
 	 * AssetId to pay fees on the current common good parachain.
-	 * Statemint: default DOT
-	 * Statemine: default KSM
+	 * Polkadot AssetHub: default DOT
+	 * Kusama AssetHub: default KSM
 	 */
 	paysWithFeeOrigin?: string;
 	/**
@@ -185,7 +185,7 @@ interface TransferArgsOpts<T extends Format> {
 
 #### **Local Transactions**
 
-Sending an Asset or Native token locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Statemine`, `Statemint`, `Westmint` and as a side affect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
+Sending an Asset or Native token locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Kusama AssetHub`, `Polkadot AssetHub`, `Westend AssetHub` and as a side affect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
 
 An example would look like:
 ```typescript
