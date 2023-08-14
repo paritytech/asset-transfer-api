@@ -891,7 +891,14 @@ export class AssetsTransferApi {
 			return registry.relayChain;
 		}
 
-		return registry.lookupParachainInfo(destId)[0].specName;
+		const lookup = registry.lookupParachainInfo(destId);
+		if (lookup.length === 0) {
+			throw new BaseError(
+				`Could not find any parachain information given the destId: ${destId}`
+			);
+		}
+
+		return lookup[0].specName;
 	}
 
 	/**
