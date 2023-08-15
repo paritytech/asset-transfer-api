@@ -6,6 +6,7 @@ import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/fo
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainAssetId } from '../createXcmTypes/util/getChainAssetId';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
+import { checkLiquidTokenValidity } from '../errors/checkXcmTxInputs';
 import { Registry } from '../registry';
 import { BaseError } from './BaseError';
 
@@ -13,6 +14,7 @@ enum LocalTxType {
 	Assets = 'Assets',
 	Balances = 'Balances',
 	ForeignAssets = 'ForeignAssets',
+	PoolAssets = 'PoolAssets',
 }
 
 /**
@@ -28,7 +30,8 @@ export const checkLocalTxInput = async (
 	amounts: string[],
 	specName: string,
 	registry: Registry,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean
 ): Promise<LocalTxType> => {
 	// Ensure the lengths in assetIds and amounts is correct
 	if (assetIds.length > 1 || amounts.length !== 1) {
@@ -64,6 +67,15 @@ export const checkLocalTxInput = async (
 				throw new BaseError(`MultiLocation ${assetIds[0]} not found`);
 			}
 		}
+	} else if (isLiquidTokenTransfer) {
+		const relayChainInfo = registry.currentRelayRegistry;
+		const systemChainId = getChainIdBySpecName(registry, specName);
+		const systemParachainInfo = relayChainInfo[systemChainId];
+
+		// If anything is incorrect this will throw an error.
+		await checkLiquidTokenValidity(api, systemParachainInfo, assetIds[0]);
+
+		return LocalTxType.PoolAssets;
 	} else {
 		const relayChainInfo = registry.currentRelayRegistry;
 		const systemChainId = getChainIdBySpecName(registry, specName);

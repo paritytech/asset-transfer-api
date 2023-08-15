@@ -8,6 +8,7 @@ import { limitedTeleportAssets } from './limitedTeleportAssets';
 describe('limitedTeleportAssets', () => {
 	const registry = new Registry('statemine', {});
 	describe('SystemToPara', () => {
+		const isLiquidTokenTransfer = false;
 		it('Should correctly construct a tx for a system parachain with V2', async () => {
 			const weightLimit = undefined;
 			const paysWithFeeDest = undefined;
@@ -23,9 +24,12 @@ describe('limitedTeleportAssets', () => {
 				2,
 				'statemine',
 				registry,
-				weightLimit,
-				paysWithFeeDest,
-				isForeignAssetsTransfer
+				{
+					weightLimit,
+					paysWithFeeDest,
+					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -49,9 +53,12 @@ describe('limitedTeleportAssets', () => {
 					2,
 					'statemine',
 					registry,
-					weightLimit,
-					paysWithFeeDest,
-					isForeignAssetsTransfer
+					{
+						weightLimit,
+						paysWithFeeDest,
+						isLiquidTokenTransfer,
+						isForeignAssetsTransfer,
+					}
 				);
 			}).rejects.toThrowError(
 				"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API"

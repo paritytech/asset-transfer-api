@@ -111,8 +111,9 @@ describe('ParaToSystem', () => {
 		});
 	});
 	describe('Assets', () => {
+		const isLiquidTokenTransfer = false;
+		const isForeignAssetsTransfer = false;
 		it('Should work for V2', async () => {
-			const isForeignAssetsTransfer = false;
 			const assets = await ParaToSystem.createAssets(
 				mockParachainApi,
 				['100', '200'],
@@ -122,6 +123,7 @@ describe('ParaToSystem', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 
@@ -165,7 +167,6 @@ describe('ParaToSystem', () => {
 			expect(assets.toJSON()?.toString()).toStrictEqual(expectedRes.toString());
 		});
 		it('Should work for V3', async () => {
-			const isForeignAssetsTransfer = false;
 			const assets = await ParaToSystem.createAssets(
 				mockParachainApi,
 				['100', '200'],
@@ -175,6 +176,7 @@ describe('ParaToSystem', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 

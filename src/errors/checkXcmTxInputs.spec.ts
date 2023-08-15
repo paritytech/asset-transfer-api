@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
+import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { mockParachainApi } from '../testHelpers/mockParachainApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
@@ -12,6 +13,7 @@ import {
 	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
+	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
@@ -32,6 +34,7 @@ const runTests = async (tests: Test[]) => {
 				specName,
 				direction,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError(errorMessage);
@@ -180,6 +183,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -221,6 +225,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -250,6 +255,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -291,6 +297,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -319,6 +326,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -358,6 +366,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -375,11 +384,69 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				Direction.ParaToSystem,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError(
 			'ParaToSystem: assetId 0x1234, is not a valid erc20 token.'
 		);
+	});
+	it('Should error when an invalid token is passed into a liquidTokenTransfer', async () => {
+		const registry = new Registry('westmint', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const isLiquidTokenTransfer = true;
+
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['TEST'],
+				currentRegistry,
+				'westmint',
+				Direction.SystemToPara,
+				registry,
+				false,
+				isLiquidTokenTransfer
+			);
+		}).rejects.toThrowError('Liquid Tokens must be valid Integers');
+	});
+	it('Should error when a token does not exist in the registry or node', async () => {
+		const registry = new Registry('westmint', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const isLiquidTokenTransfer = true;
+
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['999111'],
+				currentRegistry,
+				'westmint',
+				Direction.SystemToPara,
+				registry,
+				false,
+				isLiquidTokenTransfer
+			);
+		}).rejects.toThrowError(
+			'No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.'
+		);
+	});
+	it('Should not error when a valid liquid token exists', async () => {
+		const registry = new Registry('westmint', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const isLiquidTokenTransfer = true;
+
+		// eslint-disable-next-line @typescript-eslint/await-thenable
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['0'],
+				currentRegistry,
+				'westmint',
+				Direction.SystemToPara,
+				registry,
+				false,
+				isLiquidTokenTransfer
+			);
+		}).not.toThrow();
 	});
 });
 
@@ -610,5 +677,16 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
 
 		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+	});
+});
+
+describe('checkLiquidTokenTransferDirectionValidity', () => {
+	it('Should correctly throw an error when inputs dont match the specification', () => {
+		const err = () =>
+			checkLiquidTokenTransferDirectionValidity(Direction.ParaToSystem, true);
+
+		expect(err).toThrow(
+			'isLiquidTokenTransfer may not be true for the xcmDirection: ParaToSystem.'
+		);
 	});
 });

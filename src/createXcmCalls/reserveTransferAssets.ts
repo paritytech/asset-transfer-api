@@ -8,6 +8,7 @@ import { createXcmTypes } from '../createXcmTypes';
 import type { Registry } from '../registry';
 import { Direction } from '../types';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import type { CreateXcmCallOpts } from './types';
 import { establishXcmPallet } from './util/establishXcmPallet';
 
 /**
@@ -31,9 +32,10 @@ export const reserveTransferAssets = async (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
-	paysWithFeeDest?: string,
-	isForeignAssetsTransfer?: boolean
+	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+	const { paysWithFeeDest, isLiquidTokenTransfer, isForeignAssetsTransfer } =
+		opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].reserveTransferAssets;
 	const typeCreator = createXcmTypes[direction];
@@ -48,6 +50,7 @@ export const reserveTransferAssets = async (
 		{
 			registry,
 			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
 		}
 	);
 
@@ -60,6 +63,7 @@ export const reserveTransferAssets = async (
 				amounts,
 				xcmVersion,
 				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
 		  })
 		: api.registry.createType('u32', 0);
 
