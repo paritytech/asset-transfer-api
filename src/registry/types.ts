@@ -41,6 +41,7 @@ export type ChainInfoRegistry = {
 	polkadot: ChainInfo;
 	kusama: ChainInfo;
 	westend: ChainInfo;
+	xcAssets: XCMChainInfoRegistry;
 };
 
 export type RelayChains = 'polkadot' | 'kusama' | 'westend';
@@ -113,8 +114,4 @@ export interface XCMChainInfoKeys {
 export type XCMChainInfoRegistry = {
 	polkadot: XCMChainInfoKeys[];
 	kusama: XCMChainInfoKeys[];
-};
-
-export type XCMAssetsInfo = {
-	xcAssets: XCMChainInfoRegistry;
 };

@@ -337,52 +337,6 @@ describe('getFeeAssetItemIndex', () => {
 		}
 	});
 
-	// it('Should correctly select and return the index of the correct multiassets when given xcAssets', async () => {
-	// 	const tests: Test[] = [
-	// 		[
-	// 			`xcUSDT`,
-	// 			'moonriver',
-	// 			[
-	// 				{
-	// 				V2: {
-	// 					id: {
-	// 						Concrete: systemAssetsApi._api.registry.createType(
-	// 							'MultiLocation',
-	// 							{
-	// 								parents: 1,
-	// 								interior: systemAssetsApi._api.registry.createType(
-	// 									'InteriorMultiLocation',
-	// 									{ X3: [{ Parachain: '1000' }, {PalletInstance: 50}, { GeneralIndex: '1984' }] }
-	// 								),
-	// 							}
-	// 						),
-	// 					},
-	// 					fun: {
-	// 						Fungible: { Fungible: '2000'},
-	// 					},
-	// 				},
-	// 				}
-	// 			],
-	// 			systemAssetsApi._api,
-	// 			0,
-	// 		],
-	// 	];
-
-	// 	for (const test of tests) {
-	// 		const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
-
-	// 		expect(
-	// 			await getFeeAssetItemIndex(
-	// 				api,
-	// 				paysWithFeeDest,
-	// 				multiAssets,
-	// 				specName,
-	// 				true
-	// 			)
-	// 		).toEqual(expected);
-	// 	}
-	// });
-
 	it('Should throw an error indicating the general index was not found for an invalid paysWithFeeDest value', async () => {
 		const paysWithFeeDest = '1984';
 		const specName = 'statemine';

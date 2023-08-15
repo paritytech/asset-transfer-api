@@ -13,10 +13,12 @@ export const parseRegistry = (
 		const polkadot = injectedRegistry.polkadot;
 		const kusama = injectedRegistry.kusama;
 		const westend = injectedRegistry.westend;
+		const xcAssets = injectedRegistry.xcAssets;
 
 		if (polkadot) Object.assign(registry.polkadot, polkadot);
 		if (kusama) Object.assign(registry.kusama, kusama);
 		if (westend) Object.assign(registry.westend, westend);
+		if (xcAssets) Object.assign(registry.xcAssets, xcAssets);
 	}
 
 	return registry;

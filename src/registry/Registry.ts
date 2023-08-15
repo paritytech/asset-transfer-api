@@ -5,6 +5,7 @@ import type {
 	ChainInfoRegistry,
 	ExpandedChainInfoKeys,
 	RelayChains,
+	XCMChainInfoRegistry,
 } from './types';
 
 export class Registry {
@@ -12,12 +13,14 @@ export class Registry {
 	readonly registry: ChainInfoRegistry;
 	readonly relayChain: RelayChains;
 	readonly currentRelayRegistry: ChainInfo;
+	readonly xcAssets: XCMChainInfoRegistry;
 
 	constructor(specName: string, opts: AssetsTransferApiOpts) {
 		this.specName = specName;
 		this.registry = parseRegistry(opts);
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
+		this.xcAssets = this.registry.xcAssets;
 	}
 
 	/**

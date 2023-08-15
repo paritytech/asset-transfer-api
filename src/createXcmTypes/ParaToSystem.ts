@@ -11,15 +11,10 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
-import xcAssets from '../../xcmAssets.json';
 import { ASSET_HUB_IDS } from '../consts';
 import { BaseError } from '../errors';
 import type { Registry } from '../registry';
-import {
-	XCMAssetsInfo,
-	XCMChainInfoDataKeys,
-	XCMChainInfoKeys,
-} from '../registry/types';
+import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
 import {
 	MultiAsset,
 	XCMDestBenificiary,
@@ -287,18 +282,11 @@ export const ParaToSystem: ICreateXcmType = {
 		assetId: string,
 		opts: CreateAssetsOpts
 	): Promise<XcmVersionedMultiAsset> => {
-		// const assetHubChainId = 1000;
-		// const { assetsPalletInstance } =
-		// 	opts.registry.currentRelayRegistry[assetHubChainId];
-		// const palletId = assetsPalletInstance as string;
+		const { xcAssets } = opts.registry;
 		const { tokens: relayTokens } = opts.registry.currentRelayRegistry['0'];
-		// const { assetsInfo: assetHubTokens } =
-		// 	opts.registry.currentRelayRegistry[assetHubChainId];
-
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
-		// const isAssetHubNative = assetHubTokens[assetId] ? true : false;
 		const currentRelayChainSpecName = opts.registry.relayChain;
 
 		if (!isRelayNative && isNotANumber) {
@@ -306,13 +294,12 @@ export const ParaToSystem: ICreateXcmType = {
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-		const xcAssetsData: XCMAssetsInfo = xcAssets;
 		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
 		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.kusama;
+			relayChainXcAssetInfoKeys = xcAssets.kusama;
 		}
 		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.polkadot;
+			relayChainXcAssetInfoKeys = xcAssets.polkadot;
 		}
 
 		if (relayChainXcAssetInfoKeys.length === 0) {
@@ -407,6 +394,7 @@ const createXTokensMultiAssets = async (
 	assets: string[],
 	opts: CreateAssetsOpts
 ): Promise<VersionedMultiAssets> => {
+	const { xcAssets } = opts.registry;
 	const currentRelayChainSpecName = opts.registry.relayChain;
 
 	let multiAssets: XcmMultiAsset[] = [];
@@ -423,13 +411,12 @@ const createXTokensMultiAssets = async (
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-		const xcAssetsData: XCMAssetsInfo = xcAssets;
 		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
 		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.kusama;
+			relayChainXcAssetInfoKeys = xcAssets.kusama;
 		}
 		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.polkadot;
+			relayChainXcAssetInfoKeys = xcAssets.polkadot;
 		}
 
 		if (relayChainXcAssetInfoKeys.length === 0) {
@@ -518,6 +505,7 @@ const createParaToSystemMultiAssets = async (
 	registry: Registry,
 	isForeignAssetsTransfer: boolean
 ): Promise<MultiAsset[]> => {
+	const { xcAssets } = registry;
 	const assetHubChainId = ASSET_HUB_IDS[0];
 	const currentRelayChainSpecName = registry.relayChain;
 	const { foreignAssetsPalletInstance } =
@@ -544,13 +532,12 @@ const createParaToSystemMultiAssets = async (
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-		const xcAssetsData: XCMAssetsInfo = xcAssets;
 		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
 		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.kusama;
+			relayChainXcAssetInfoKeys = xcAssets.kusama;
 		}
 		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-			relayChainXcAssetInfoKeys = xcAssetsData.xcAssets.polkadot;
+			relayChainXcAssetInfoKeys = xcAssets.polkadot;
 		}
 
 		if (relayChainXcAssetInfoKeys.length === 0) {
