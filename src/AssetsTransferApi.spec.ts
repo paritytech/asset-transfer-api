@@ -41,7 +41,10 @@ describe('AssetTransferAPI', () => {
 			expect(res).toEqual('SystemToPara');
 		});
 		it('Should correctly determine direction for SystemToRelay', () => {
-			const res = systemAssetsApi['establishDirection']('0', 'statemint');
+			const res = systemAssetsApi['establishDirection'](
+				'0',
+				'asset-hub-polkadot'
+			);
 			expect(res).toEqual('SystemToRelay');
 		});
 		it('Should correctly determine direction for RelayToPara', () => {
@@ -549,7 +552,7 @@ describe('AssetTransferAPI', () => {
 		describe('SystemToPara', () => {
 			it('Should decode a foreign asset tx call extrinsic given its hash for SystemToPara', async () => {
 				const expected =
-					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
+					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"5GTG3EQ159PpSh4kkF5TBrW6jkmc88HdYcsU8bsN83bndWh2"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
 
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'1000',
@@ -573,7 +576,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a foreign asset tx payload extrinsic given its hash for SystemToPara', async () => {
 				const expected =
-					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
+					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"5GTG3EQ159PpSh4kkF5TBrW6jkmc88HdYcsU8bsN83bndWh2"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
 
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'1000',
@@ -614,6 +617,29 @@ describe('AssetTransferAPI', () => {
 				const decoded = systemAssetsApi.decodeExtrinsic(
 					callTxResult.tx.toHex(),
 					'submittable'
+				);
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a liquid token tx call given its hash for SystemToPara', async () => {
+				const expected =
+					'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,023"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"55"},{"GeneralIndex":"0"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
+
+				const callTxResult = await systemAssetsApi.createTransferTransaction(
+					'2023',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					['0'],
+					['10000000000000'],
+					{
+						format: 'call',
+						xcmVersion: 3,
+						transferLiquidToken: true,
+					}
+				);
+
+				const decoded = systemAssetsApi.decodeExtrinsic(
+					callTxResult.tx,
+					'call'
 				);
 				expect(decoded).toEqual(expected);
 			});

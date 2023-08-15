@@ -8,9 +8,11 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send 0.1 USDt from a Kusama AssetHub (System Parachain) account
- * to a Moonriver (Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` declaring that
- * it will be `unlimited` since there is no `weightLimit` option as well.
+ * In this example we are creating a reserve payload to send 1 USDt (assetId: 1984)
+ * from a Kusama Asset Hub (System Parachain) account
+ * to a Moonriver (ParaChain) account, where the `xcmVersion` is set to 3, `isLimited` is false declaring that
+ * the allowable weight will be `unlimited` and `paysWithFeeOrigin` is `1984`
+ * declaring that asset with ID `1984` (USDt) should be used to pay for tx fees in the origin.
  *
  * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
  */
@@ -20,27 +22,22 @@ const main = async () => {
 	);
 	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 
-	let callInfo: TxResult<'call'>;
+	let callInfo: TxResult<'payload'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
 			'2023',
-			'0xF977814e90dA44bFA03b6295A0616a897441aceC',
+			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			['1984'],
-			['100000'],
+			['1000000'],
 			{
-				format: 'call',
-				isLimited: true,
-				xcmVersion: 2,
+				format: 'payload',
+				isLimited: false,
+				xcmVersion: 3,
+				paysWithFeeOrigin: '1984',
 			}
 		);
 
-		console.log(
-			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(
-				callInfo,
-				null,
-				4
-			)}`
-		);
+		console.log(callInfo);
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);

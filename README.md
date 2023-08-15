@@ -147,8 +147,8 @@ interface TransferArgsOpts<T extends Format> {
 	format?: T;
 	/**
 	 * AssetId to pay fees on the current common good parachain.
-	 * Statemint: default DOT
-	 * Statemine: default KSM
+	 * Polkadot AssetHub: default DOT
+	 * Kusama AssetHub: default KSM
 	 */
 	paysWithFeeOrigin?: string;
 	/**
@@ -170,17 +170,22 @@ interface TransferArgsOpts<T extends Format> {
 	 * will be queried, and if there is no supported version a safe version will be queried.
 	 */
 	xcmVersion?: number;
-        /**
+    /**
 	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
 	 * to a `transfer`.
 	 */
 	keepAlive?: boolean;
+	/**
+	 * Boolean to declare if this will transfer liquidity tokens.
+	 * Default is false.
+	 */
+	transferLiquidToken?: boolean;
 }
 ```
 
 #### **Local Transactions**
 
-Sending an Asset or Native token locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Statemine`, `Statemint`, `Westmint` and as a side affect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
+Sending an Asset or Native token locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Kusama AssetHub`, `Polkadot AssetHub`, `Westend AssetHub` and as a side affect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
 
 An example would look like:
 ```typescript

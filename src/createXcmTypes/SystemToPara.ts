@@ -129,13 +129,15 @@ export const SystemToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): Promise<VersionedMultiAssets> => {
+		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
 		const sortedAndDedupedMultiAssets = await createSystemToParaMultiAssets(
 			api,
 			amounts,
 			specName,
 			assets,
-			opts.registry,
-			opts.isForeignAssetsTransfer
+			registry,
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer
 		);
 
 		if (xcmVersion === 2) {
@@ -200,6 +202,8 @@ export const SystemToPara: ICreateXcmType = {
 			assetIds,
 			amounts,
 			xcmVersion,
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
 		} = opts;
 		if (
 			xcmVersion &&
@@ -215,7 +219,8 @@ export const SystemToPara: ICreateXcmType = {
 				specName,
 				assetIds,
 				registry,
-				opts.isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer
 			);
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
@@ -230,7 +235,7 @@ export const SystemToPara: ICreateXcmType = {
 				paysWithFeeDest,
 				multiAssets,
 				specName,
-				opts.isForeignAssetsTransfer
+				isForeignAssetsTransfer
 			);
 
 			return api.registry.createType('u32', assetIndex);
@@ -254,13 +259,14 @@ export const createSystemToParaMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean
 ): Promise<MultiAsset[]> => {
 	const assetHubChainId = '1000';
 	const { foreignAssetsPalletInstance } =
 		registry.currentRelayRegistry[assetHubChainId];
 	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
-	const palletId = fetchPalletInstanceId(api);
+	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer);
 	let multiAssets: MultiAsset[] = [];
 
 	const systemChainId = getChainIdBySpecName(registry, specName);

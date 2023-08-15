@@ -8,29 +8,25 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send 0.1 USDt from a Kusama AssetHub (System Parachain) account
- * to a Moonriver (Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` declaring that
- * it will be `unlimited` since there is no `weightLimit` option as well.
- *
- * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
+ * In this example we are creating a call to send LiquidPool Asset '0' locally on westmint, using the `keepAlive` option.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise(
-		'wss://kusama-asset-hub-rpc.polkadot.io'
+		'wss://westmint-rpc.polkadot.io'
 	);
 	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'2023',
+			'1000',
 			'0xF977814e90dA44bFA03b6295A0616a897441aceC',
-			['1984'],
+			['0'],
 			['100000'],
 			{
 				format: 'call',
-				isLimited: true,
-				xcmVersion: 2,
+				keepAlive: true,
+				transferLiquidToken: true,
 			}
 		);
 

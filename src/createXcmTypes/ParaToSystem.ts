@@ -231,7 +231,7 @@ const createParaToSystemMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer: boolean
 ): Promise<MultiAsset[]> => {
 	// This will always result in a value and will never be null because the assets-hub will always
 	// have the assets pallet present, so we type cast here to work around the type compiler.
