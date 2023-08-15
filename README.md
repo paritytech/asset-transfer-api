@@ -28,7 +28,7 @@ WARNING: This package is in stable beta, and does not support sending assets in 
 
 **BETA**: This package is in stable beta.
 
-**Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Kusama AssetHub and Polkadot AssetHub. It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
+**Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Asset Hub (Polkadot and Kusama). It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
 
 ### Current Cross-chain Support
 
@@ -45,7 +45,7 @@ The below chart is focusing on what directions are supported for constructing as
 | Parachain to System    | :white_check_mark: | :white_check_mark: |
 | System to System       | :white_check_mark: | :white_check_mark: |
 
-Note: System refers to System Parachains like `Kusama AssetHub` and `Polkadot AssetHub`.
+Note: System refers to System Parachains like Asset Hub.
 
 ## Usage
 
