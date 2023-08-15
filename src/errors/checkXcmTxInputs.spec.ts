@@ -4,6 +4,7 @@ import { AssetsTransferApi } from '../AssetsTransferApi';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';
 import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
+import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
@@ -14,6 +15,7 @@ import {
 	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
+	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkParaToSystemIsNonForeignAssetXTokensTx,
 	checkRelayAmountsLength,
@@ -41,6 +43,7 @@ const runTests = async (tests: Test[]) => {
 				specName,
 				direction,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError(errorMessage);
@@ -189,6 +192,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -230,6 +234,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -259,6 +264,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -300,6 +306,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -328,6 +335,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -355,6 +363,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -389,6 +398,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					false,
 					false
 				);
 			}).rejects.toThrowError(errorMessage);
@@ -406,11 +416,69 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				Direction.ParaToSystem,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError(
 			'ParaToSystem: assetId 0x1234, is not a valid erc20 token.'
 		);
+	});
+	it('Should error when an invalid token is passed into a liquidTokenTransfer', async () => {
+		const registry = new Registry('westmint', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const isLiquidTokenTransfer = true;
+
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['TEST'],
+				currentRegistry,
+				'westmint',
+				Direction.SystemToPara,
+				registry,
+				false,
+				isLiquidTokenTransfer
+			);
+		}).rejects.toThrowError('Liquid Tokens must be valid Integers');
+	});
+	it('Should error when a token does not exist in the registry or node', async () => {
+		const registry = new Registry('westmint', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const isLiquidTokenTransfer = true;
+
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['999111'],
+				currentRegistry,
+				'westmint',
+				Direction.SystemToPara,
+				registry,
+				false,
+				isLiquidTokenTransfer
+			);
+		}).rejects.toThrowError(
+			'No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.'
+		);
+	});
+	it('Should not error when a valid liquid token exists', async () => {
+		const registry = new Registry('westmint', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		const isLiquidTokenTransfer = true;
+
+		// eslint-disable-next-line @typescript-eslint/await-thenable
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['0'],
+				currentRegistry,
+				'westmint',
+				Direction.SystemToPara,
+				registry,
+				false,
+				isLiquidTokenTransfer
+			);
+		}).not.toThrow();
 	});
 });
 
@@ -706,6 +774,17 @@ describe('checkParaToSystemIsNonForeignAssetXTokensTx', () => {
 
 		expect(err).toThrow(
 			'ParaToSystem: xTokens pallet does not support foreign asset transfers'
+		);
+	});
+});
+
+describe('checkLiquidTokenTransferDirectionValidity', () => {
+	it('Should correctly throw an error when inputs dont match the specification', () => {
+		const err = () =>
+			checkLiquidTokenTransferDirectionValidity(Direction.ParaToSystem, true);
+
+		expect(err).toThrow(
+			'isLiquidTokenTransfer may not be true for the xcmDirection: ParaToSystem.'
 		);
 	});
 });

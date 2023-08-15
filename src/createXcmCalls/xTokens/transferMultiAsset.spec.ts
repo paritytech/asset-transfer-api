@@ -24,6 +24,8 @@ describe('transferMultiAsset', () => {
 				XcmPalletName.xTokens,
 				{
 					isLimited: false,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
 				}
 			);
 
@@ -47,6 +49,8 @@ describe('transferMultiAsset', () => {
 					isLimited: true,
 					refTime: '1000',
 					proofSize: '2000',
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
 				}
 			);
 
@@ -69,6 +73,8 @@ describe('transferMultiAsset', () => {
 				XcmPalletName.xTokens,
 				{
 					isLimited: false,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
 				}
 			);
 
@@ -92,6 +98,8 @@ describe('transferMultiAsset', () => {
 					isLimited: true,
 					refTime: '1000',
 					proofSize: '2000',
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
 				}
 			);
 

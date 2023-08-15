@@ -5,10 +5,10 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 import { BaseError } from '../../errors';
 import type { Registry } from '../../registry';
 import { Direction } from '../../types';
+import type { CreateXcmCallOpts } from '../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 
 /**
@@ -38,14 +38,21 @@ export const transferMultiAsset = async (
 	specName: string,
 	registry: Registry,
 	xcmPallet: XcmPalletName,
-	opts: CreateWeightLimitOpts
+	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+	const {
+		isLimited,
+		refTime,
+		proofSize,
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer,
+	} = opts;
 	const ext = api.tx[xcmPallet].transferMultiasset;
 	const typeCreator = createXcmTypes[direction];
 	const destWeightLimit = typeCreator.createWeightLimit(api, {
-		isLimited: opts.isLimited,
-		refTime: opts.refTime,
-		proofSize: opts.proofSize,
+		isLimited,
+		refTime,
+		proofSize,
 	});
 
 	if (typeCreator.createXTokensAsset && typeCreator.createXTokensBeneficiary) {
@@ -58,7 +65,7 @@ export const transferMultiAsset = async (
 			xcmVersion,
 			specName,
 			assetId,
-			{ registry }
+			{ registry, isForeignAssetsTransfer, isLiquidTokenTransfer }
 		);
 		const beneficiary = typeCreator.createXTokensBeneficiary(
 			destChainId,

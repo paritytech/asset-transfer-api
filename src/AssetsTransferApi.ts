@@ -20,6 +20,7 @@ import {
 import * as assets from './createCalls/assets';
 import * as balances from './createCalls/balances';
 import * as foreignAssets from './createCalls/foreignAssets';
+import * as poolAssets from './createCalls/poolAssets';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
@@ -109,8 +110,19 @@ export class AssetsTransferApi {
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts?: TransferArgsOpts<T>
+		opts: TransferArgsOpts<T> = {}
 	): Promise<TxResult<T>> {
+		const {
+			format,
+			paysWithFeeDest,
+			paysWithFeeOrigin,
+			isLimited,
+			refTime,
+			proofSize,
+			xcmVersion,
+			keepAlive,
+			transferLiquidToken,
+		} = opts;
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
@@ -122,6 +134,7 @@ export class AssetsTransferApi {
 			_specName.toLowerCase()
 		);
 		const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
+		const isLiquidTokenTransfer = transferLiquidToken === true;
 
 		/**
 		 * Sanitize the address to a hex, and ensure that the passed in SS58, or publickey
@@ -191,9 +204,10 @@ export class AssetsTransferApi {
 				amounts,
 				_specName,
 				registry,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer
 			); // Throws an error when any of the inputs are incorrect.
-			const method = opts?.keepAlive ? 'transferKeepAlive' : 'transfer';
+			const method = keepAlive ? 'transferKeepAlive' : 'transfer';
 
 			if (isLocalSystemTx) {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
@@ -213,6 +227,12 @@ export class AssetsTransferApi {
 							? assets.transferKeepAlive(_api, addr, assetId, amount)
 							: assets.transfer(_api, addr, assetId, amount);
 					palletMethod = `assets::${method}`;
+				} else if (localAssetType === 'PoolAssets') {
+					tx =
+						method === 'transferKeepAlive'
+							? poolAssets.transferKeepAlive(_api, addr, assetId, amount)
+							: poolAssets.transfer(_api, addr, assetId, amount);
+					palletMethod = `poolAssets::${method}`;
 				} else {
 					const multiLocation = _api.registry.createType(
 						'MultiLocation',
@@ -237,8 +257,8 @@ export class AssetsTransferApi {
 					palletMethod,
 					destChainId,
 					_specName,
-					opts?.format,
-					opts?.paysWithFeeOrigin
+					format,
+					paysWithFeeOrigin
 				);
 			} else {
 				/**
@@ -256,15 +276,15 @@ export class AssetsTransferApi {
 					palletMethod,
 					destChainId,
 					_specName,
-					opts?.format,
-					opts?.paysWithFeeOrigin
+					format,
+					paysWithFeeOrigin
 				);
 			}
 		}
 
-		const xcmVersion =
-			opts?.xcmVersion === undefined ? _safeXcmVersion : opts.xcmVersion;
-		checkXcmVersion(xcmVersion); // Throws an error when the xcmVersion is not supported.
+		const declaredXcmVersion =
+			xcmVersion === undefined ? _safeXcmVersion : xcmVersion;
+		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 		await checkXcmTxInputs(
 			_api,
 			destChainId,
@@ -275,13 +295,14 @@ export class AssetsTransferApi {
 			_specName,
 			registry,
 			{
-				isLimited: opts?.isLimited,
-				refTime: opts?.refTime,
-				proofSize: opts?.proofSize,
+				isLimited,
+				refTime,
+				proofSize,
 			},
 			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
 			xcmVersion,
-			opts?.paysWithFeeDest
+			paysWithFeeDest
 		);
 
 		const assetType = this.fetchAssetType(
@@ -305,7 +326,11 @@ export class AssetsTransferApi {
 			xcmPallet === XcmPalletName.xTokens &&
 			xcmDirection === Direction.ParaToSystem
 		) {
-			if (!opts?.paysWithFeeDest && assetIds.length < 2) {
+			if (
+				paysWithFeeDest &&
+				!paysWithFeeDest.includes('parents') &&
+				assetIds.length < 2
+			) {
 				txMethod = 'transferMultiAsset';
 				transaction = await transferMultiAsset(
 					_api,
@@ -314,20 +339,20 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
 					xcmPallet,
 					{
-						isLimited: opts?.isLimited,
-						refTime: opts?.refTime,
-						proofSize: opts?.proofSize,
+						isLimited,
+						refTime,
+						proofSize,
+						paysWithFeeDest,
+						isForeignAssetsTransfer,
+						isLiquidTokenTransfer,
 					}
 				);
-			} else if (
-				opts?.paysWithFeeDest &&
-				opts.paysWithFeeDest.includes('parents')
-			) {
+			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
 				txMethod = 'transferMultiAssetWithFee';
 				transaction = await transferMultiAssetWithFee(
 					_api,
@@ -336,15 +361,17 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
 					xcmPallet,
-					opts?.paysWithFeeDest,
 					{
-						isLimited: opts?.isLimited,
-						refTime: opts?.refTime,
-						proofSize: opts?.proofSize,
+						isLimited,
+						refTime,
+						proofSize,
+						paysWithFeeDest,
+						isForeignAssetsTransfer,
+						isLiquidTokenTransfer,
 					}
 				);
 			} else {
@@ -356,20 +383,22 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
 					xcmPallet,
 					{
-						isLimited: opts?.isLimited,
-						refTime: opts?.refTime,
-						proofSize: opts?.proofSize,
-					},
-					opts?.paysWithFeeDest
+						isLimited,
+						refTime,
+						proofSize,
+						paysWithFeeDest,
+						isForeignAssetsTransfer,
+						isLiquidTokenTransfer,
+					}
 				);
 			}
 		} else if (assetCallType === AssetCallType.Reserve) {
-			if (opts?.isLimited) {
+			if (isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
 				transaction = await limitedReserveTransferAssets(
 					_api,
@@ -378,16 +407,17 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
 					{
-						isLimited: opts?.isLimited,
-						refTime: opts?.refTime,
-						proofSize: opts?.proofSize,
-					},
-					opts?.paysWithFeeDest,
-					isForeignAssetsTransfer
+						isLimited,
+						refTime,
+						proofSize,
+						paysWithFeeDest,
+						isLiquidTokenTransfer,
+						isForeignAssetsTransfer,
+					}
 				);
 			} else {
 				txMethod = 'reserveTransferAssets';
@@ -398,15 +428,18 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
-					opts?.paysWithFeeDest,
-					isForeignAssetsTransfer
+					{
+						paysWithFeeDest,
+						isLiquidTokenTransfer,
+						isForeignAssetsTransfer,
+					}
 				);
 			}
 		} else {
-			if (opts?.isLimited) {
+			if (isLimited) {
 				txMethod = 'limitedTeleportAssets';
 				transaction = await limitedTeleportAssets(
 					_api,
@@ -415,16 +448,17 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
 					{
-						isLimited: opts?.isLimited,
-						refTime: opts?.refTime,
-						proofSize: opts?.proofSize,
-					},
-					opts.paysWithFeeDest,
-					isForeignAssetsTransfer
+						isLimited,
+						refTime,
+						proofSize,
+						paysWithFeeDest,
+						isForeignAssetsTransfer,
+						isLiquidTokenTransfer: false,
+					}
 				);
 			} else {
 				txMethod = 'teleportAssets';
@@ -435,11 +469,14 @@ export class AssetsTransferApi {
 					assetIds,
 					amounts,
 					destChainId,
-					xcmVersion,
+					declaredXcmVersion,
 					_specName,
 					this.registry,
-					opts?.paysWithFeeDest,
-					isForeignAssetsTransfer
+					{
+						paysWithFeeDest,
+						isForeignAssetsTransfer,
+						isLiquidTokenTransfer: false,
+					}
 				);
 			}
 		}
@@ -451,8 +488,8 @@ export class AssetsTransferApi {
 			txMethod,
 			destChainId,
 			_specName,
-			opts?.format,
-			opts?.paysWithFeeOrigin
+			format,
+			paysWithFeeOrigin
 		);
 	}
 	/**
@@ -975,7 +1012,14 @@ export class AssetsTransferApi {
 			return registry.relayChain;
 		}
 
-		return registry.lookupParachainInfo(destId)[0].specName;
+		const lookup = registry.lookupParachainInfo(destId);
+		if (lookup.length === 0) {
+			throw new BaseError(
+				`Could not find any parachain information given the destId: ${destId}`
+			);
+		}
+
+		return lookup[0].specName;
 	}
 
 	/**

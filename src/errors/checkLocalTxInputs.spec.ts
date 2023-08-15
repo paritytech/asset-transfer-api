@@ -22,6 +22,7 @@ describe('checkLocalTxInput', () => {
 			['10000'],
 			specName,
 			registry,
+			false,
 			false
 		);
 		expect(res).toEqual('Balances');
@@ -33,6 +34,7 @@ describe('checkLocalTxInput', () => {
 			['10000'],
 			specName,
 			registry,
+			false,
 			false
 		);
 		expect(res).toEqual('Balances');
@@ -44,6 +46,7 @@ describe('checkLocalTxInput', () => {
 			['10000'],
 			specName,
 			registry,
+			false,
 			false
 		);
 		expect(res).toEqual('Assets');
@@ -56,6 +59,7 @@ describe('checkLocalTxInput', () => {
 				['10000'],
 				specName,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError(
@@ -70,6 +74,7 @@ describe('checkLocalTxInput', () => {
 				['10000', '20000'],
 				specName,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError(
@@ -84,6 +89,7 @@ describe('checkLocalTxInput', () => {
 				['10000'],
 				specName,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError(
@@ -98,6 +104,7 @@ describe('checkLocalTxInput', () => {
 				['10000'],
 				specName,
 				registry,
+				false,
 				false
 			);
 		}).rejects.toThrowError('The integer assetId 9876111 was not found');
@@ -112,7 +119,8 @@ describe('checkLocalTxInput', () => {
 			['10000'],
 			specName,
 			registry,
-			true
+			true,
+			false
 		);
 		expect(res).toEqual('ForeignAssets');
 	});
@@ -128,7 +136,25 @@ describe('checkLocalTxInput', () => {
 				['10000'],
 				specName,
 				registry,
-				true
+				true,
+				false
+			);
+		}).rejects.toThrowError(expectedError);
+	});
+	it("Should correctly throw an error when the given multilocation doesn't exist", async () => {
+		const nonExistentMultiLocationStr =
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "1000000"}]}}';
+		const expectedError = `MultiLocation ${nonExistentMultiLocationStr} not found`;
+
+		await expect(async () => {
+			await checkLocalTxInput(
+				systemAssetsApi._api,
+				[nonExistentMultiLocationStr],
+				['10000'],
+				specName,
+				registry,
+				true,
+				false
 			);
 		}).rejects.toThrowError(expectedError);
 	});
@@ -144,7 +170,8 @@ describe('checkLocalTxInput', () => {
 				['10000'],
 				specName,
 				registry,
-				true
+				true,
+				false
 			);
 		}).rejects.toThrowError(expectedError);
 	});

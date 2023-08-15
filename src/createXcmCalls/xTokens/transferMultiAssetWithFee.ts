@@ -2,15 +2,15 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-// import { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 import { BaseError } from '../../errors';
 import type { Registry } from '../../registry';
 import { Direction } from '../../types';
+import type { CreateXcmCallOpts } from '../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
+
 /**
  * Build a Polkadot-js `transferMultiAssetWithFee` SubmittableExtrinsic
  * call.
@@ -25,7 +25,6 @@ import { XcmPalletName } from '../util/establishXcmPallet';
  * @param specName The specName for the current chain
  * @param registry Registry
  * @param xcmPallet The pallet being used to construct xcm calls.
- * @param paysWithFeeDest The multilocation of assetId used to pay fees in the destination chain.
  * @param opts createWeightLimitOptions
  */
 export const transferMultiAssetWithFee = async (
@@ -39,15 +38,22 @@ export const transferMultiAssetWithFee = async (
 	specName: string,
 	registry: Registry,
 	xcmPallet: XcmPalletName,
-	paysWithFeeDest: string,
-	opts: CreateWeightLimitOpts
+	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+	const {
+		isLimited,
+		refTime,
+		proofSize,
+		paysWithFeeDest,
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer,
+	} = opts;
 	const ext = api.tx[xcmPallet].transferMultiassetWithFee;
 	const typeCreator = createXcmTypes[direction];
 	const destWeightLimit = typeCreator.createWeightLimit(api, {
-		isLimited: opts.isLimited,
-		refTime: opts.refTime,
-		proofSize: opts.proofSize,
+		isLimited,
+		refTime,
+		proofSize,
 	});
 
 	if (
@@ -63,12 +69,14 @@ export const transferMultiAssetWithFee = async (
 			xcmVersion,
 			specName,
 			assetId,
-			{ registry }
+			{ registry, isForeignAssetsTransfer, isLiquidTokenTransfer }
 		);
 		const fee = typeCreator.createXTokensFeeAssetItem(api, {
 			registry,
 			paysWithFeeDest,
 			xcmVersion,
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
 		});
 
 		const beneficiary = typeCreator.createXTokensBeneficiary(

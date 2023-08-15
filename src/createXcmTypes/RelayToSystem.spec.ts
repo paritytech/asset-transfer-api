@@ -93,7 +93,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 	});
 	describe('Assets', () => {
 		const isForeignAssetsTransfer = false;
-
+		const isLiquidTokenTransfer = false;
 		it('Should work for V2', async () => {
 			const assets = await RelayToSystem.createAssets(
 				mockRelayApi,
@@ -104,6 +104,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 
@@ -137,6 +138,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 

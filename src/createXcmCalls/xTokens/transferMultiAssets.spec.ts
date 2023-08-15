@@ -34,8 +34,10 @@ describe('transferMultiAssets', () => {
 					isLimited,
 					refTime,
 					proofSize,
-				},
-				paysWithFeeDest
+					paysWithFeeDest,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -68,8 +70,10 @@ describe('transferMultiAssets', () => {
 					isLimited,
 					refTime,
 					proofSize,
-				},
-				paysWithFeeDest
+					paysWithFeeDest,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -101,8 +105,10 @@ describe('transferMultiAssets', () => {
 					isLimited,
 					refTime,
 					proofSize,
-				},
-				paysWithFeeDest
+					paysWithFeeDest,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				}
 			);
 
 			expect(ext.toHex()).toBe(
@@ -130,8 +136,10 @@ describe('transferMultiAssets', () => {
 					isLimited,
 					refTime,
 					proofSize,
-				},
-				paysWithFeeDest
+					paysWithFeeDest,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				}
 			);
 
 			expect(ext.toHex()).toBe(

@@ -141,6 +141,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 	});
 	describe('Assets', () => {
 		const isForeignAssetsTransfer = false;
+		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
 			const assets = await RelayToPara.createAssets(
@@ -152,6 +153,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 
@@ -185,6 +187,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 

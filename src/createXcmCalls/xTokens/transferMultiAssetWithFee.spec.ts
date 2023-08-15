@@ -28,11 +28,13 @@ describe('transferMultiAssetWithFee', () => {
 				'moonriver',
 				registry,
 				XcmPalletName.xTokens,
-				paysWithFeeDest,
 				{
 					isLimited,
 					refTime,
 					proofSize,
+					paysWithFeeDest,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
 				}
 			);
 
@@ -58,11 +60,13 @@ describe('transferMultiAssetWithFee', () => {
 				'moonriver',
 				registry,
 				XcmPalletName.xTokens,
-				paysWithFeeDest,
 				{
 					isLimited,
 					refTime,
 					proofSize,
+					paysWithFeeDest,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
 				}
 			);
 
@@ -89,11 +93,13 @@ describe('transferMultiAssetWithFee', () => {
 				'moonriver',
 				registry,
 				XcmPalletName.xTokens,
-				paysWithFeeDest,
 				{
 					isLimited,
 					refTime,
 					proofSize,
+					paysWithFeeDest,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
 				}
 			);
 
@@ -119,11 +125,13 @@ describe('transferMultiAssetWithFee', () => {
 				'moonriver',
 				registry,
 				XcmPalletName.xTokens,
-				paysWithFeeDest,
 				{
 					isLimited,
 					refTime,
 					proofSize,
+					paysWithFeeDest,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
 				}
 			);
 

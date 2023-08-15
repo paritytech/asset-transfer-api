@@ -516,7 +516,7 @@ const createParaToSystemMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer: boolean
 ): Promise<MultiAsset[]> => {
 	const assetHubChainId = ASSET_HUB_IDS[0];
 	const currentRelayChainSpecName = registry.relayChain;

@@ -5,10 +5,10 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 import type { Registry } from '../../registry';
 import { Direction } from '../../types';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr';
+import type { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
 
 /**
@@ -37,10 +37,15 @@ export const limitedTeleportAssets = async (
 	xcmVersion: number,
 	specName: string,
 	registry: Registry,
-	opts: CreateWeightLimitOpts,
-	paysWithFeeDest?: string,
-	isForeignAssetsTransfer?: boolean
+	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+	const {
+		isLimited,
+		refTime,
+		proofSize,
+		paysWithFeeDest,
+		isForeignAssetsTransfer,
+	} = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedTeleportAssets;
 	const typeCreator = createXcmTypes[direction];
@@ -55,18 +60,20 @@ export const limitedTeleportAssets = async (
 		{
 			registry,
 			isForeignAssetsTransfer,
+			isLiquidTokenTransfer: false,
 		}
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, {
-		isLimited: opts?.isLimited,
-		refTime: opts?.refTime,
-		proofSize: opts?.proofSize,
+		isLimited: isLimited,
+		refTime: refTime,
+		proofSize: proofSize,
 	});
 
 	const feeAssetItem = paysWithFeeDest
 		? await typeCreator.createFeeAssetItem(api, {
 				registry,
 				isForeignAssetsTransfer,
+				isLiquidTokenTransfer: false,
 		  })
 		: api.registry.createType('u32', 0);
 

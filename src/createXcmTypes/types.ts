@@ -19,7 +19,8 @@ import type {
 
 export interface CreateAssetsOpts {
 	registry: Registry;
-	isForeignAssetsTransfer?: boolean;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
 }
 
 export interface CreateFeeAssetItemOpts {
@@ -29,7 +30,8 @@ export interface CreateFeeAssetItemOpts {
 	assetIds?: string[];
 	amounts?: string[];
 	xcmVersion?: number;
-	isForeignAssetsTransfer?: boolean;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
 }
 
 export interface CreateWeightLimitOpts {

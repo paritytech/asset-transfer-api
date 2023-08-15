@@ -352,6 +352,34 @@ const checkSystemToRelayAssetId = (
 	}
 };
 
+export const checkLiquidTokenValidity = async (
+	api: ApiPromise,
+	systemParachainInfo: ChainInfoKeys,
+	assetId: string
+) => {
+	// check if assetId is a number
+	const parsedAssetIdAsNumber = Number.parseInt(assetId);
+	const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+
+	if (invalidNumber) {
+		throw new BaseError(`Liquid Tokens must be valid Integers`);
+	}
+
+	const poolPairIds = Object.keys(systemParachainInfo.poolPairsInfo);
+
+	let liquidTokenIncluded = false;
+	if (poolPairIds.includes(assetId)) liquidTokenIncluded = true;
+
+	const poolAsset = await api.query.poolAssets.asset(assetId);
+	if (poolAsset.isSome) liquidTokenIncluded = true;
+
+	if (!liquidTokenIncluded) {
+		throw new BaseError(
+			`No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.`
+		);
+	}
+};
+
 const checkSystemAssets = async (
 	api: ApiPromise,
 	assetId: string,
@@ -359,7 +387,8 @@ const checkSystemAssets = async (
 	systemParachainInfo: ChainInfoKeys,
 	registry: Registry,
 	xcmDirection: string,
-	isForeignAssetsTransfer: boolean
+	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer?: boolean
 ) => {
 	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
@@ -372,6 +401,8 @@ const checkSystemAssets = async (
 		if (!multiLocationIsInRegistry) {
 			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
 		}
+	} else if (isLiquidTokenTransfer) {
+		await checkLiquidTokenValidity(api, systemParachainInfo, assetId);
 	} else {
 		// check if assetId is a number
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
@@ -533,7 +564,8 @@ const checkSystemToParaAssetId = async (
 	relayChainInfo: ChainInfo,
 	registry: Registry,
 	xcmDirection: Direction,
-	isForeignAssetsTransfer: boolean
+	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean
 ) => {
 	await checkIsValidSystemChainAssetId(
 		api,
@@ -542,7 +574,8 @@ const checkSystemToParaAssetId = async (
 		relayChainInfo,
 		registry,
 		xcmDirection,
-		isForeignAssetsTransfer
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer
 	);
 };
 
@@ -553,7 +586,8 @@ export const checkIsValidSystemChainAssetId = async (
 	relayChainInfo: ChainInfo,
 	registry: Registry,
 	xcmDirection: Direction,
-	isForeignAssetsTransfer: boolean
+	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean
 ) => {
 	const systemChainId = getChainIdBySpecName(registry, specName);
 	const systemParachainInfo = relayChainInfo[systemChainId];
@@ -566,7 +600,8 @@ export const checkIsValidSystemChainAssetId = async (
 			systemParachainInfo,
 			registry,
 			xcmDirection,
-			isForeignAssetsTransfer
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer
 		);
 	}
 };
@@ -625,7 +660,8 @@ const checkSystemToSystemAssetId = async (
 	relayChainInfo: ChainInfo,
 	registry: Registry,
 	xcmDirection: Direction,
-	isForeignAssetsTransfer: boolean
+	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean
 ) => {
 	await checkIsValidSystemChainAssetId(
 		api,
@@ -634,7 +670,8 @@ const checkSystemToSystemAssetId = async (
 		relayChainInfo,
 		registry,
 		xcmDirection,
-		isForeignAssetsTransfer
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer
 	);
 };
 
@@ -765,6 +802,23 @@ export const checkXcmVersionIsValidForPaysWithFeeDest = (
 };
 
 /**
+ * Ensures that the direction given for a liquid token transfer is correct.
+ *
+ * @param xcmDirection
+ * @param isLiquidTokenTransfer
+ */
+export const checkLiquidTokenTransferDirectionValidity = (
+	xcmDirection: Direction,
+	isLiquidTokenTransfer: boolean
+) => {
+	if (xcmDirection !== 'SystemToPara' && isLiquidTokenTransfer) {
+		throw new BaseError(
+			`isLiquidTokenTransfer may not be true for the xcmDirection: ${xcmDirection}.`
+		);
+	}
+};
+
+/**
  * This will check the given assetIds and ensure they are either valid integers as strings
  * or known token symbols
  *
@@ -781,7 +835,8 @@ export const checkAssetIdInput = async (
 	specName: string,
 	xcmDirection: Direction,
 	registry: Registry,
-	isForeignAssetsTransfer: boolean
+	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
@@ -808,7 +863,8 @@ export const checkAssetIdInput = async (
 				relayChainInfo,
 				registry,
 				xcmDirection,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer
 			);
 		}
 
@@ -820,7 +876,8 @@ export const checkAssetIdInput = async (
 				relayChainInfo,
 				registry,
 				xcmDirection,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer
 			);
 		}
 
@@ -881,15 +938,27 @@ export const checkXcmTxInputs = async (
 	registry: Registry,
 	opts: CreateWeightLimitOpts,
 	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean,
 	xcmVersion?: number,
 	paysWithFeeDest?: string
 ) => {
 	const relayChainInfo = registry.currentRelayRegistry;
 
+	/**
+	 * Checks that the XcmVersion works with `PaysWithFeeDest` option
+	 */
 	checkXcmVersionIsValidForPaysWithFeeDest(
 		xcmDirection,
 		xcmVersion,
 		paysWithFeeDest
+	);
+
+	/**
+	 * Checks that the direction of the `transferLiquidToken` option is correct.
+	 */
+	checkLiquidTokenTransferDirectionValidity(
+		xcmDirection,
+		isLiquidTokenTransfer
 	);
 
 	/**
@@ -917,9 +986,11 @@ export const checkXcmTxInputs = async (
 		specName,
 		xcmDirection,
 		registry,
-		isForeignAssetsTransfer
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer
 	);
 	checkWeightLimit(opts);
+
 	await checkAssetIdInput(
 		api,
 		assetIds,
@@ -927,7 +998,8 @@ export const checkXcmTxInputs = async (
 		specName,
 		xcmDirection,
 		registry,
-		isForeignAssetsTransfer
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer
 	);
 
 	if (xcmDirection === Direction.RelayToSystem) {

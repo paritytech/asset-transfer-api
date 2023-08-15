@@ -94,6 +94,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 
 	describe('Assets', () => {
 		const isForeignAssetsTransfer = false;
+		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
 			const assets = await SystemToSystem.createAssets(
@@ -105,6 +106,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 
@@ -138,6 +140,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 
@@ -149,6 +152,60 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 								parents: 1,
 								interior: {
 									here: null,
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
+
+		it('Should error when asset ID is not found for V3', async () => {
+			const expectedErrorMessage =
+				'bridge-hub-kusama has no associated token symbol usdc';
+
+			await expect(async () => {
+				await SystemToSystem.createAssets(
+					mockSystemApi,
+					['100'],
+					3,
+					'bridge-hub-kusama',
+					['usdc'],
+					{
+						registry,
+						isForeignAssetsTransfer,
+						isLiquidTokenTransfer,
+					}
+				);
+			}).rejects.toThrowError(expectedErrorMessage);
+		});
+		it('Should work for a liquid token transfer', async () => {
+			const assets = await SystemToSystem.createAssets(
+				mockSystemApi,
+				['100'],
+				2,
+				'statemine',
+				['USDT'],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer: true,
+				}
+			);
+
+			const expectedRes = {
+				v2: [
+					{
+						id: {
+							concrete: {
+								parents: 0,
+								interior: {
+									x2: [{ palletInstance: 55 }, { generalIndex: 11 }],
 								},
 							},
 						},

@@ -170,11 +170,16 @@ interface TransferArgsOpts<T extends Format> {
 	 * will be queried, and if there is no supported version a safe version will be queried.
 	 */
 	xcmVersion?: number;
-        /**
+    /**
 	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
 	 * to a `transfer`.
 	 */
 	keepAlive?: boolean;
+	/**
+	 * Boolean to declare if this will transfer liquidity tokens.
+	 * Default is false.
+	 */
+	transferLiquidToken?: boolean;
 }
 ```
 

@@ -3,15 +3,15 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { VersionedMultiAssets } from '@polkadot/types/interfaces';
-// import { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import { CreateWeightLimitOpts } from '../../createXcmTypes/types';
 import { BaseError } from '../../errors';
 import type { Registry } from '../../registry';
 import { Direction, XCMDestBenificiary } from '../../types';
+import type { CreateXcmCallOpts } from '../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
+
 /**
  * Build a Polkadot-js `transferMultiAssets` SubmittableExtrinsic
  * call.
@@ -40,16 +40,23 @@ export const transferMultiAssets = async (
 	specName: string,
 	registry: Registry,
 	xcmPallet: XcmPalletName,
-	opts: CreateWeightLimitOpts,
-	paysWithFeeDest?: string
+	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+	const {
+		isLimited,
+		refTime,
+		proofSize,
+		paysWithFeeDest,
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer,
+	} = opts;
 	const ext = api.tx[xcmPallet].transferMultiassets;
 	const typeCreator = createXcmTypes[direction];
 
 	const destWeightLimit = typeCreator.createWeightLimit(api, {
-		isLimited: opts?.isLimited,
-		refTime: opts?.refTime,
-		proofSize: opts?.proofSize,
+		isLimited,
+		refTime,
+		proofSize,
 	});
 
 	let assets: VersionedMultiAssets;
@@ -66,7 +73,7 @@ export const transferMultiAssets = async (
 			xcmVersion,
 			specName,
 			assetIds,
-			{ registry }
+			{ registry, isForeignAssetsTransfer, isLiquidTokenTransfer }
 		);
 
 		beneficiary = typeCreator.createXTokensBeneficiary(

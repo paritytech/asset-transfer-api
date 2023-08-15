@@ -144,6 +144,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 	describe('Assets', () => {
 		const isForeignAssetsTransfer = false;
+		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
 			const assets = await SystemToPara.createAssets(
@@ -155,6 +156,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 
@@ -201,6 +203,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				{
 					registry,
 					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
 				}
 			);
 
@@ -225,6 +228,53 @@ describe('SystemToPara XcmVersioned Generation', () => {
 								parents: 0,
 								interior: {
 									x2: [{ palletInstance: 50 }, { generalIndex: 2 }],
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+				],
+			};
+
+			expect(assets.toJSON()).toStrictEqual(expectedRes);
+		});
+		it('Should correctly construct a liquid token transfer', async () => {
+			const assets = await SystemToPara.createAssets(
+				mockSystemApi,
+				['100', '100'],
+				3,
+				'statemine',
+				['1', '2'],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer: true,
+				}
+			);
+
+			const expectedRes = {
+				v3: [
+					{
+						id: {
+							concrete: {
+								parents: 0,
+								interior: {
+									x2: [{ palletInstance: 55 }, { generalIndex: 1 }],
+								},
+							},
+						},
+						fun: {
+							fungible: 100,
+						},
+					},
+					{
+						id: {
+							concrete: {
+								parents: 0,
+								interior: {
+									x2: [{ palletInstance: 55 }, { generalIndex: 2 }],
 								},
 							},
 						},
@@ -313,6 +363,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				specName,
 				assets,
 				registry,
+				false,
 				false
 			);
 

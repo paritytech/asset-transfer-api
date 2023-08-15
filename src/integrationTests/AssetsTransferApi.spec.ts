@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { AssetsTransferApi } from '../AssetsTransferApi';
-import { CreateWeightLimitOpts } from '../createXcmTypes/types';
+import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
@@ -190,6 +190,49 @@ describe('AssetTransferApi Integration Tests', () => {
 					xcmVersion: null,
 				});
 			});
+			it('Should construct a `poolAssets::transfer` call on a system parachain', async () => {
+				const res = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
+					['0'],
+					['100'],
+					{
+						format: 'call',
+						transferLiquidToken: true,
+					}
+				);
+				expect(res).toEqual({
+					dest: 'statemine',
+					origin: 'statemine',
+					direction: 'local',
+					format: 'call',
+					method: 'poolAssets::transfer',
+					xcmVersion: null,
+					tx: '0x3708000000000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+				});
+			});
+			it('Should construct a `poolAssets::transferKeepAlive` call on a system parachain', async () => {
+				const res = await systemAssetsApi.createTransferTransaction(
+					'1000',
+					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
+					['0'],
+					['100'],
+					{
+						format: 'call',
+						keepAlive: true,
+						transferLiquidToken: true,
+					}
+				);
+				expect(res).toEqual({
+					dest: 'statemine',
+					origin: 'statemine',
+					direction: 'local',
+					format: 'call',
+					method: 'poolAssets::transferKeepAlive',
+					xcmVersion: null,
+					tx: '0x3709000000000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+				});
+			});
 		});
 		describe('SystemToPara', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(
@@ -216,7 +259,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			const nativeBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateWeightLimitOpts
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -237,7 +280,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateWeightLimitOpts
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -261,7 +304,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateWeightLimitOpts
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2125', // Since this is not `0` we know this is to a parachain
@@ -277,6 +320,26 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts?.isLimited,
 						refTime: opts?.refTime,
 						proofSize: opts?.proofSize,
+					}
+				);
+			};
+			const liquidTokenTransferCreateTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await systemAssetsApi.createTransferTransaction(
+					'2000', // Since this is not `0` we know this is to a parachain
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['0'],
+					['100'],
+					{
+						format,
+						isLimited,
+						refTime: '1000',
+						proofSize: '1000',
+						xcmVersion,
+						transferLiquidToken: true,
 					}
 				);
 			};
@@ -356,7 +419,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('call', 2, {});
+					const res = await nativeBaseSystemCreateTx('call', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -368,7 +434,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a reserveTransferAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', 2, {});
+					const res = await nativeBaseSystemCreateTx('payload', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -380,7 +449,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a reserveTransferAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', 2, {});
+					const res = await nativeBaseSystemCreateTx('submittable', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for limitedReserveTransferAssets for V2 when its a native token', async () => {
@@ -388,6 +460,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'karura',
@@ -404,7 +478,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
+
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -420,6 +497,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -432,6 +511,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '5000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -452,6 +533,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '5000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -472,9 +555,23 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '5000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a liquid token transfer call for a limitedReserveTransferAsset for V2', async () => {
+					const res = await liquidTokenTransferCreateTx('call', true, 2);
+					expect(res).toStrictEqual({
+						dest: 'karura',
+						direction: 'SystemToPara',
+						format: 'call',
+						method: 'limitedReserveTransferAssets',
+						origin: 'statemine',
+						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043705000091010000000001a10fa10f',
+						xcmVersion: 2,
+					});
 				});
 			});
 			describe('V3', () => {
@@ -553,7 +650,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('call', 3, {});
+					const res = await nativeBaseSystemCreateTx('call', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -565,7 +665,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a reserveTransferAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', 3, {});
+					const res = await nativeBaseSystemCreateTx('payload', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -577,7 +680,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a reserveTransferAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', 3, {});
+					const res = await nativeBaseSystemCreateTx('submittable', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for limitedReserveTransferAssets for V3 when the token is native', async () => {
@@ -585,6 +691,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '5000',
 						proofSize: '3000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'karura',
@@ -601,6 +709,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '5000',
 						proofSize: '3000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'karura',
@@ -617,6 +727,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '5000',
 						proofSize: '3000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -628,6 +740,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '5000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -648,6 +762,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '5000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -668,6 +784,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '5000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -680,6 +798,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '2000',
 							proofSize: '5000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -700,6 +820,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '2000',
 							proofSize: '5000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -720,6 +842,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '2000',
 							proofSize: '5000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -728,7 +852,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'call',
 						3,
-						{}
+						{ isForeignAssetsTransfer: true, isLiquidTokenTransfer: false }
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -744,7 +868,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'payload',
 						3,
-						{}
+						{ isForeignAssetsTransfer: true, isLiquidTokenTransfer: false }
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -760,9 +884,21 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'submittable',
 						3,
-						{}
+						{ isForeignAssetsTransfer: true, isLiquidTokenTransfer: false }
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a liquid token transfer call for a limitedReserveTransferAsset for V3', async () => {
+					const res = await liquidTokenTransferCreateTx('call', true, 3);
+					expect(res).toStrictEqual({
+						dest: 'karura',
+						direction: 'SystemToPara',
+						format: 'call',
+						method: 'limitedReserveTransferAssets',
+						origin: 'statemine',
+						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043705000091010000000001a10fa10f',
+						xcmVersion: 3,
+					});
 				});
 			});
 		});
@@ -815,7 +951,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateWeightLimitOpts
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -991,6 +1127,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -1011,6 +1149,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -1031,6 +1171,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -1194,6 +1336,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -1214,6 +1358,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -1234,6 +1380,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -1758,7 +1906,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			const baseParachainTransferMultiAssetTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateWeightLimitOpts
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await moonriverAssetsApi.createTransferTransaction(
 					'1000', // `1000` indicating the dest chain is a system chain.
@@ -1771,6 +1919,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts.isLimited,
 						refTime: opts.refTime,
 						proofSize: opts.proofSize,
+						paysWithFeeDest: '0',
 					}
 				);
 			};
@@ -1780,6 +1929,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -1796,6 +1947,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -1815,12 +1968,17 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a V2 transferMultiAsset call', async () => {
-					const res = await baseParachainTransferMultiAssetTx('call', 2, {});
+					const res = await baseParachainTransferMultiAssetTx('call', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1832,7 +1990,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a V2 transferMultiAsset payload', async () => {
-					const res = await baseParachainTransferMultiAssetTx('payload', 2, {});
+					const res = await baseParachainTransferMultiAssetTx('payload', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1847,7 +2008,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetTx(
 						'submittable',
 						2,
-						{}
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -1858,6 +2019,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -1874,6 +2037,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -1893,12 +2058,17 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a V3 transferMultiAsset call', async () => {
-					const res = await baseParachainTransferMultiAssetTx('call', 3, {});
+					const res = await baseParachainTransferMultiAssetTx('call', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1910,7 +2080,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a V3 transferMultiAsset payload', async () => {
-					const res = await baseParachainTransferMultiAssetTx('payload', 3, {});
+					const res = await baseParachainTransferMultiAssetTx('payload', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -1925,7 +2098,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetTx(
 						'submittable',
 						3,
-						{}
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -1933,7 +2106,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			const baseParachainTransferMultiAssetWithFeeTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateWeightLimitOpts
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await moonriverAssetsApi.createTransferTransaction(
 					'1000', // `1000` indicating the dest chain is a system chain.
@@ -1960,6 +2133,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -1980,6 +2155,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -2000,6 +2177,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -2008,7 +2187,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetWithFeeTx(
 						'call',
 						2,
-						{}
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
 					);
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2024,7 +2203,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetWithFeeTx(
 						'payload',
 						2,
-						{}
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
 					);
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2040,7 +2219,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetWithFeeTx(
 						'submittable',
 						2,
-						{}
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -2054,6 +2233,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -2074,6 +2255,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res).toEqual({
@@ -2094,6 +2277,8 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -2102,7 +2287,12 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetWithFeeTx(
 						'call',
 						3,
-						{}
+						{
+							paysWithFeeDest:
+								'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2118,7 +2308,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetWithFeeTx(
 						'payload',
 						3,
-						{}
+						{
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2134,7 +2327,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetWithFeeTx(
 						'submittable',
 						3,
-						{}
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -2142,7 +2335,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			const baseParachainTransferMultiAssetsTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateWeightLimitOpts
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await moonriverAssetsApi.createTransferTransaction(
 					'1000', // `1000` indicating the dest chain is a system chain.
@@ -2167,6 +2360,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2183,6 +2378,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2202,12 +2399,17 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a V2 transferMultiAssets call', async () => {
-					const res = await baseParachainTransferMultiAssetsTx('call', 2, {});
+					const res = await baseParachainTransferMultiAssetsTx('call', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -2219,11 +2421,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a V2 transferMultiAssets payload', async () => {
-					const res = await baseParachainTransferMultiAssetsTx(
-						'payload',
-						2,
-						{}
-					);
+					const res = await baseParachainTransferMultiAssetsTx('payload', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -2238,7 +2439,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetsTx(
 						'submittable',
 						2,
-						{}
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -2249,6 +2450,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2265,6 +2468,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						refTime: '1000',
 						proofSize: '2000',
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2284,12 +2489,17 @@ describe('AssetTransferApi Integration Tests', () => {
 							isLimited: true,
 							refTime: '1000',
 							proofSize: '2000',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
 						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a V3 call transferMultiAssets', async () => {
-					const res = await baseParachainTransferMultiAssetsTx('call', 3, {});
+					const res = await baseParachainTransferMultiAssetsTx('call', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -2301,11 +2511,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a V3 transferMultiAssets payload', async () => {
-					const res = await baseParachainTransferMultiAssetsTx(
-						'payload',
-						3,
-						{}
-					);
+					const res = await baseParachainTransferMultiAssetsTx('payload', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
@@ -2320,7 +2529,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseParachainTransferMultiAssetsTx(
 						'submittable',
 						3,
-						{}
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});

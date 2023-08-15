@@ -104,7 +104,9 @@ export type LocalTransferTypes =
 	| 'foreignAssets::transfer'
 	| 'foreignAssets::transferKeepAlive'
 	| 'balances::transfer'
-	| 'balances::transferKeepAlive';
+	| 'balances::transferKeepAlive'
+	| 'poolAssets::transfer'
+	| 'poolAssets::transferKeepAlive';
 
 /**
  * The Methods are the collections of methods the API will use to construct a transaction.
@@ -212,6 +214,11 @@ export interface TransferArgsOpts<T extends Format> {
 	 * to a `transfer`.
 	 */
 	keepAlive?: boolean;
+	/**
+	 * Boolean to declare if this will transfer liquidity tokens.
+	 * Default is false.
+	 */
+	transferLiquidToken?: boolean;
 }
 
 export interface ChainInfo {
