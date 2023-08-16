@@ -551,8 +551,7 @@ const checkParaToAssetHubAssetId = async (
 	registry: Registry,
 	isForeignAssetsTransfer: boolean
 ) => {
-	const assetHubChainId = ASSET_HUB_CHAIN_ID;
-	const assetHubChainInfo = relayChainInfo[assetHubChainId];
+	const assetHubChainInfo = relayChainInfo[ASSET_HUB_CHAIN_ID];
 	const assetHubSpecName = assetHubChainInfo.specName;
 
 	if (typeof assetId === 'string') {
