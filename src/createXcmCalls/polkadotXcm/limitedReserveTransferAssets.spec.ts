@@ -30,8 +30,10 @@ describe('limitedReserveTransferAssets', () => {
 				registry,
 				{
 					isLimited,
-					refTime,
-					proofSize,
+					weightLimit: {
+						refTime,
+						proofSize,
+					},
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
@@ -61,8 +63,10 @@ describe('limitedReserveTransferAssets', () => {
 				registry,
 				{
 					isLimited,
-					refTime,
-					proofSize,
+					weightLimit: {
+						refTime,
+						proofSize,
+					},
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
@@ -95,8 +99,10 @@ describe('limitedReserveTransferAssets', () => {
 					registry,
 					{
 						isLimited,
-						refTime,
-						proofSize,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 						paysWithFeeDest,
 						isLiquidTokenTransfer,
 						isForeignAssetsTransfer,
@@ -155,8 +161,10 @@ describe('limitedReserveTransferAssets', () => {
 				registry,
 				{
 					isLimited,
-					refTime,
-					proofSize,
+					weightLimit: {
+						refTime,
+						proofSize,
+					},
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,

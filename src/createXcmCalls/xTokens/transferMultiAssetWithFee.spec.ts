@@ -30,8 +30,10 @@ describe('transferMultiAssetWithFee', () => {
 				XcmPalletName.xTokens,
 				{
 					isLimited,
-					refTime,
-					proofSize,
+					weightLimit: {
+						refTime,
+						proofSize,
+					},
 					paysWithFeeDest,
 					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
@@ -62,8 +64,10 @@ describe('transferMultiAssetWithFee', () => {
 				XcmPalletName.xTokens,
 				{
 					isLimited,
-					refTime,
-					proofSize,
+					weightLimit: {
+						refTime,
+						proofSize,
+					},
 					paysWithFeeDest,
 					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
@@ -95,8 +99,10 @@ describe('transferMultiAssetWithFee', () => {
 				XcmPalletName.xTokens,
 				{
 					isLimited,
-					refTime,
-					proofSize,
+					weightLimit: {
+						refTime,
+						proofSize,
+					},
 					paysWithFeeDest,
 					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
@@ -127,8 +133,10 @@ describe('transferMultiAssetWithFee', () => {
 				XcmPalletName.xTokens,
 				{
 					isLimited,
-					refTime,
-					proofSize,
+					weightLimit: {
+						refTime,
+						proofSize,
+					},
 					paysWithFeeDest,
 					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,

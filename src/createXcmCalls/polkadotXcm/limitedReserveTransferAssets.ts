@@ -43,8 +43,7 @@ export const limitedReserveTransferAssets = async (
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const {
 		isLimited,
-		refTime,
-		proofSize,
+		weightLimit,
 		paysWithFeeDest,
 		isLiquidTokenTransfer,
 		isForeignAssetsTransfer,
@@ -67,9 +66,8 @@ export const limitedReserveTransferAssets = async (
 		}
 	);
 	const weightLimitType = typeCreator.createWeightLimit(api, {
-		isLimited: isLimited,
-		refTime: refTime,
-		proofSize: proofSize,
+		isLimited,
+		weightLimit,
 	});
 
 	const feeAssetItem: u32 = paysWithFeeDest

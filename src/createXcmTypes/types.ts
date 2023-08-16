@@ -36,8 +36,7 @@ export interface CreateFeeAssetItemOpts {
 
 export interface CreateWeightLimitOpts {
 	isLimited?: boolean;
-	refTime?: string;
-	proofSize?: string;
+	weightLimit?: { refTime?: string; proofSize?: string };
 }
 
 export interface ICreateXcmType {

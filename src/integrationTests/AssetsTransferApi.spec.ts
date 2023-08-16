@@ -250,8 +250,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format,
 						isLimited,
-						refTime,
-						proofSize,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 						xcmVersion,
 					}
 				);
@@ -269,9 +271,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format,
 						xcmVersion,
+						weightLimit: opts.weightLimit,
 						isLimited: opts.isLimited,
-						refTime: opts.refTime,
-						proofSize: opts.proofSize,
 					}
 				);
 			};
@@ -292,8 +293,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format,
 						isLimited: opts.isLimited,
-						refTime: opts.refTime,
-						proofSize: opts.proofSize,
+						weightLimit: opts.weightLimit,
 						xcmVersion,
 					}
 				);
@@ -318,8 +318,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						xcmVersion,
 						isLimited: opts?.isLimited,
-						refTime: opts?.refTime,
-						proofSize: opts?.proofSize,
+						weightLimit: opts.weightLimit,
 					}
 				);
 			};
@@ -336,8 +335,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format,
 						isLimited,
-						refTime: '1000',
-						proofSize: '1000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '1000',
+						},
 						xcmVersion,
 						transferLiquidToken: true,
 					}
@@ -458,8 +459,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx('call', 2, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -476,8 +479,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', 2, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -495,8 +500,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx('submittable', 2, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -509,8 +516,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '5000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -531,8 +540,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '5000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -553,8 +564,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '5000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -689,8 +702,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a call for limitedReserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx('call', 3, {
 						isLimited: true,
-						refTime: '5000',
-						proofSize: '3000',
+						weightLimit: {
+							refTime: '5000',
+							proofSize: '3000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -707,8 +722,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for limitedReserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx('payload', 3, {
 						isLimited: true,
-						refTime: '5000',
-						proofSize: '3000',
+						weightLimit: {
+							refTime: '5000',
+							proofSize: '3000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -725,8 +742,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3', async () => {
 					const res = await nativeBaseSystemCreateTx('submittable', 3, {
 						isLimited: true,
-						refTime: '5000',
-						proofSize: '3000',
+						weightLimit: {
+							refTime: '5000',
+							proofSize: '3000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -738,8 +757,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '5000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -760,8 +781,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '5000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -782,8 +805,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '5000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -796,8 +821,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '2000',
-							proofSize: '5000',
+							weightLimit: {
+								refTime: '2000',
+								proofSize: '5000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -818,8 +845,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '2000',
-							proofSize: '5000',
+							weightLimit: {
+								refTime: '2000',
+								proofSize: '5000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -840,8 +869,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '2000',
-							proofSize: '5000',
+							weightLimit: {
+								refTime: '2000',
+								proofSize: '5000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -920,8 +951,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
-						refTime,
-						proofSize,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
@@ -941,8 +974,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
-						refTime,
-						proofSize,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
@@ -964,8 +999,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						xcmVersion,
 						isLimited: opts?.isLimited,
-						refTime: opts?.refTime,
-						proofSize: opts?.proofSize,
+						weightLimit: opts.weightLimit,
 					}
 				);
 			};
@@ -1125,8 +1159,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -1147,8 +1183,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -1169,8 +1207,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -1334,8 +1374,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -1356,8 +1398,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -1378,8 +1422,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						}
@@ -1406,8 +1452,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
-						refTime,
-						proofSize,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
@@ -1569,8 +1617,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
-						refTime,
-						proofSize,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
@@ -1744,8 +1794,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
-						refTime,
-						proofSize,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
@@ -1917,8 +1969,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						xcmVersion,
 						isLimited: opts.isLimited,
-						refTime: opts.refTime,
-						proofSize: opts.proofSize,
+						weightLimit: opts.weightLimit,
 						paysWithFeeDest: '0',
 					}
 				);
@@ -1927,8 +1978,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a V2 transferMultiAsset call', async () => {
 					const res = await baseParachainTransferMultiAssetTx('call', 2, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -1945,8 +1998,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a V2 transferMultiAsset payload', async () => {
 					const res = await baseParachainTransferMultiAssetTx('payload', 2, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -1966,8 +2021,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -2017,8 +2074,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a V3 transferMultiAsset call', async () => {
 					const res = await baseParachainTransferMultiAssetTx('call', 3, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -2035,8 +2094,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a V3 transferMultiAsset payload', async () => {
 					const res = await baseParachainTransferMultiAssetTx('payload', 3, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -2056,8 +2117,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -2117,8 +2180,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						xcmVersion,
 						isLimited: opts.isLimited,
-						refTime: opts.refTime,
-						proofSize: opts.proofSize,
+						weightLimit: opts.weightLimit,
 						paysWithFeeDest:
 							'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
 					}
@@ -2131,8 +2193,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -2153,8 +2217,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -2175,8 +2241,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -2231,8 +2299,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -2253,8 +2323,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -2275,8 +2347,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -2349,8 +2423,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						xcmVersion,
 						isLimited: opts.isLimited,
-						refTime: opts.refTime,
-						proofSize: opts.proofSize,
+						weightLimit: opts.weightLimit,
 					}
 				);
 			};
@@ -2358,8 +2431,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a V2 transferMultiAssets call', async () => {
 					const res = await baseParachainTransferMultiAssetsTx('call', 2, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -2376,8 +2451,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a V2 transferMultiAssets payload', async () => {
 					const res = await baseParachainTransferMultiAssetsTx('payload', 2, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -2397,8 +2474,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						2,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}
@@ -2448,8 +2527,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a V3 transferMultiAssets call', async () => {
 					const res = await baseParachainTransferMultiAssetsTx('call', 3, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -2466,8 +2547,10 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a V3 transferMultiAssets payload', async () => {
 					const res = await baseParachainTransferMultiAssetsTx('payload', 3, {
 						isLimited: true,
-						refTime: '1000',
-						proofSize: '2000',
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -2487,8 +2570,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{
 							isLimited: true,
-							refTime: '1000',
-							proofSize: '2000',
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						}

@@ -47,8 +47,10 @@ describe('transferMultiAsset', () => {
 				XcmPalletName.xTokens,
 				{
 					isLimited: true,
-					refTime: '1000',
-					proofSize: '2000',
+					weightLimit: {
+						refTime: '1000',
+						proofSize: '2000',
+					},
 					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
 				}
@@ -96,8 +98,10 @@ describe('transferMultiAsset', () => {
 				XcmPalletName.xTokens,
 				{
 					isLimited: true,
-					refTime: '1000',
-					proofSize: '2000',
+					weightLimit: {
+						refTime: '1000',
+						proofSize: '2000',
+					},
 					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
 				}

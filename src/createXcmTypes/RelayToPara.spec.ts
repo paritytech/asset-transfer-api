@@ -222,8 +222,10 @@ describe('RelayToPara XcmVersioned Generation', () => {
 
 			const weightLimit = RelayToPara.createWeightLimit(mockRelayApi, {
 				isLimited,
-				refTime,
-				proofSize,
+				weightLimit: {
+					refTime,
+					proofSize,
+				},
 			});
 			expect(weightLimit.toJSON()).toStrictEqual({
 				limited: {

@@ -2,8 +2,7 @@
 
 export interface CreateXcmCallOpts {
 	isLimited?: boolean;
-	refTime?: string;
-	proofSize?: string;
+	weightLimit?: { refTime?: string; proofSize?: string };
 	paysWithFeeDest?: string;
 	isLiquidTokenTransfer: boolean;
 	isForeignAssetsTransfer: boolean;

@@ -44,8 +44,7 @@ export const transferMultiAssets = async (
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const {
 		isLimited,
-		refTime,
-		proofSize,
+		weightLimit,
 		paysWithFeeDest,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
@@ -55,8 +54,7 @@ export const transferMultiAssets = async (
 
 	const destWeightLimit = typeCreator.createWeightLimit(api, {
 		isLimited,
-		refTime,
-		proofSize,
+		weightLimit,
 	});
 
 	let assets: VersionedMultiAssets;

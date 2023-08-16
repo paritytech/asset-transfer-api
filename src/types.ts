@@ -192,17 +192,19 @@ export interface TransferArgsOpts<T extends Format> {
 	 * When isLimited is true, the option for applying a weightLimit is possible.
 	 * If not inputted it will default to `Unlimited`.
 	 */
-	weightLimit?: string;
-	/**
-	 * Provided when creating limited txs, represents the allowed amount of computation time
-	 * the tx can use
-	 */
-	refTime?: string;
-	/**
-	 * Provided when creating limited txs, represents the amount of storage in bytes that can be used
-	 * by the tx
-	 */
-	proofSize?: string;
+	weightLimit?: {
+		/**
+		 * Provided when creating limited txs, represents the allowed amount of computation time
+		 * the tx can use
+		 */
+		refTime?: string;
+
+		/**
+		 * Provided when creating limited txs, represents the amount of storage in bytes that can be used
+		 * by the tx
+		 */
+		proofSize?: string;
+	};
 	/**
 	 * Set the xcmVersion for message construction. If this is not present a supported version
 	 * will be queried, and if there is no supported version a safe version will be queried.

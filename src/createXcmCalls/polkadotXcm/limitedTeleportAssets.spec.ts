@@ -29,8 +29,10 @@ describe('limitedTeleportAssets', () => {
 				registry,
 				{
 					isLimited,
-					refTime,
-					proofSize,
+					weightLimit: {
+						refTime,
+						proofSize,
+					},
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,

@@ -502,8 +502,7 @@ describe('checkWeightLimit', () => {
 		const err = () =>
 			checkWeightLimit({
 				isLimited: true,
-				refTime: undefined,
-				proofSize: '500',
+				weightLimit: { refTime: undefined, proofSize: '500' },
 			});
 
 		expect(err).toThrowError(
@@ -514,8 +513,7 @@ describe('checkWeightLimit', () => {
 		const err = () =>
 			checkWeightLimit({
 				isLimited: true,
-				refTime: '1000',
-				proofSize: undefined,
+				weightLimit: { refTime: '1000', proofSize: undefined },
 			});
 
 		expect(err).toThrowError(

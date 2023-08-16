@@ -657,10 +657,8 @@ describe('AssetTransferAPI', () => {
 				['30000000000000', '10000000000000'],
 				{
 					xcmVersion: 3,
-					weightLimit: '100000',
+					weightLimit: { refTime: '1000', proofSize: '1000' },
 					isLimited: true,
-					refTime: '1000',
-					proofSize: '1000',
 					format: 'call',
 					keepAlive: true,
 					paysWithFeeDest: 'usdt',

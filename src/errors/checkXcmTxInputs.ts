@@ -942,13 +942,13 @@ export const checkAssetIdInput = async (
  */
 export const checkWeightLimit = (opts: CreateWeightLimitOpts) => {
 	if (opts.isLimited) {
-		if (!opts.refTime) {
+		if (!opts.weightLimit?.refTime) {
 			throw new BaseError(
 				'refTime value not found for weight limited transaction. Please provide refTime value'
 			);
 		}
 
-		if (!opts.proofSize) {
+		if (!opts.weightLimit?.proofSize) {
 			throw new BaseError(
 				'proofSize value not found for weight limited transaction. Please provide proofSize value'
 			);

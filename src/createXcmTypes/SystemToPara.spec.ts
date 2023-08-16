@@ -298,8 +298,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 			const weightLimit = SystemToPara.createWeightLimit(mockSystemApi, {
 				isLimited,
-				refTime,
-				proofSize,
+				weightLimit: {
+					refTime,
+					proofSize,
+				},
 			});
 			expect(weightLimit.toJSON()).toStrictEqual({
 				limited: {

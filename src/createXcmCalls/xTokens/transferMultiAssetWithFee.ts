@@ -42,8 +42,7 @@ export const transferMultiAssetWithFee = async (
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const {
 		isLimited,
-		refTime,
-		proofSize,
+		weightLimit,
 		paysWithFeeDest,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
@@ -52,8 +51,7 @@ export const transferMultiAssetWithFee = async (
 	const typeCreator = createXcmTypes[direction];
 	const destWeightLimit = typeCreator.createWeightLimit(api, {
 		isLimited,
-		refTime,
-		proofSize,
+		weightLimit,
 	});
 
 	if (

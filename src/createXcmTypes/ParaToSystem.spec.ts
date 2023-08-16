@@ -246,8 +246,10 @@ describe('ParaToSystem', () => {
 
 			const weightLimit = ParaToSystem.createWeightLimit(mockParachainApi, {
 				isLimited,
-				refTime,
-				proofSize,
+				weightLimit: {
+					refTime,
+					proofSize,
+				},
 			});
 			expect(weightLimit.toJSON()).toStrictEqual({
 				limited: {

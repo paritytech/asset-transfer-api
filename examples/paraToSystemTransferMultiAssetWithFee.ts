@@ -10,7 +10,7 @@ import { GREEN, PURPLE, RESET } from './colors';
 /**
  * In this example we are creating a call to send 1 xcRMRK from a Moonriver (Parachain) account
  * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to 3, and `isLimited` is set to true declaring that
- * it will be a weight limited tx and provides the weight values for both `refTime` and `proofSize` respectively.
+ * it will be a weight limited tx and provides the `weightLimit` with both `refTime` and `proofSize` respectively.
  *
  * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
  */
@@ -29,8 +29,10 @@ const main = async () => {
 			{
 				format: 'call',
 				isLimited: true,
-				refTime: '100000',
-				proofSize: '3000',
+				weightLimit: {
+					refTime: '10000',
+					proofSize: '3000',
+				},
 				xcmVersion: 3,
 				// NOTE: for xTokens txs, paysWithFeeDest is a multiLocation that is used to pay for fees in the dest chain
 				paysWithFeeDest:

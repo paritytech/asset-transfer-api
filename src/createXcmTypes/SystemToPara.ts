@@ -179,9 +179,12 @@ export const SystemToPara: ICreateXcmType = {
 		opts: CreateWeightLimitOpts
 	): WeightLimitV2 => {
 		const limit: IWeightLimit =
-			opts.isLimited && opts.refTime && opts.proofSize
+			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 				? {
-						Limited: { refTime: opts.refTime, proofSize: opts.proofSize },
+						Limited: {
+							refTime: opts.weightLimit?.refTime,
+							proofSize: opts.weightLimit?.proofSize,
+						},
 				  }
 				: { Unlimited: null };
 
