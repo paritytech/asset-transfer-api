@@ -2,6 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
+import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError } from '../../errors';
 import { Registry } from '../../registry';
 import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
@@ -25,7 +26,6 @@ export const getAssetHubAssetId = async (
 	let assetId = '';
 	const registry = new Registry(specName, {});
 	const currentChainId = getChainIdBySpecName(registry, specName);
-	const assetHubChainId = '1000';
 
 	if (isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the registry
@@ -43,7 +43,7 @@ export const getAssetHubAssetId = async (
 	} else {
 		// if asset is an empty string we assign it the native relay assets symbol
 		if (asset === '') {
-			const { tokens } = registry.currentRelayRegistry[assetHubChainId];
+			const { tokens } = registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
 
 			assetId = tokens[0];
 		} else {

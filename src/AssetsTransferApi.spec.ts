@@ -33,30 +33,51 @@ const moonriverAssetsApi = new AssetsTransferApi(
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
 		it('Should correctly determine direction for SystemToSystem', () => {
-			const res = systemAssetsApi['establishDirection']('1000', 'statemint');
+			const res = systemAssetsApi['establishDirection'](
+				'1000',
+				'statemint',
+				true
+			);
 			expect(res).toEqual('SystemToSystem');
 		});
 		it('Should correctly determine direction for SystemToPara', () => {
-			const res = systemAssetsApi['establishDirection']('2000', 'statemint');
+			const res = systemAssetsApi['establishDirection'](
+				'2000',
+				'statemint',
+				false
+			);
 			expect(res).toEqual('SystemToPara');
 		});
 		it('Should correctly determine direction for SystemToRelay', () => {
 			const res = systemAssetsApi['establishDirection'](
 				'0',
-				'asset-hub-polkadot'
+				'asset-hub-polkadot',
+				false
 			);
 			expect(res).toEqual('SystemToRelay');
 		});
 		it('Should correctly determine direction for RelayToPara', () => {
-			const res = relayAssetsApi['establishDirection']('2000', 'polkadot');
+			const res = relayAssetsApi['establishDirection'](
+				'2000',
+				'polkadot',
+				false
+			);
 			expect(res).toEqual('RelayToPara');
 		});
 		it('Should correctly determine direction for RelayToSystem', () => {
-			const res = relayAssetsApi['establishDirection']('1000', 'polkadot');
+			const res = relayAssetsApi['establishDirection'](
+				'1000',
+				'polkadot',
+				true
+			);
 			expect(res).toEqual('RelayToSystem');
 		});
 		it('Should correctly determine direction for ParaToSystem', () => {
-			const res = moonriverAssetsApi['establishDirection']('1000', 'moonriver');
+			const res = moonriverAssetsApi['establishDirection'](
+				'1000',
+				'moonriver',
+				true
+			);
 			expect(res).toEqual('ParaToSystem');
 		});
 	});

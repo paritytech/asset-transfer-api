@@ -12,7 +12,7 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
-import { SYSTEM_PARACHAINS_IDS } from '../consts';
+import { ASSET_HUB_CHAIN_ID } from '../consts';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { BaseError } from '../errors';
 import type { Registry } from '../registry';
@@ -30,6 +30,7 @@ import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetHubAssetId } from './util/getAssetHubAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
+import { isSystemChain } from './util/isSystemChain';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const SystemToSystem: ICreateXcmType = {
@@ -227,7 +228,7 @@ export const SystemToSystem: ICreateXcmType = {
 
 			const systemChainId = getChainIdBySpecName(registry, specName);
 
-			if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
+			if (!isSystemChain(systemChainId)) {
 				throw new BaseError(
 					`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`
 				);
@@ -268,13 +269,12 @@ export const createSystemToSystemMultiAssets = async (
 ): Promise<MultiAsset[]> => {
 	let multiAssets: MultiAsset[] = [];
 
-	const assetHubChainId = '1000';
 	const { foreignAssetsPalletInstance } =
-		registry.currentRelayRegistry[assetHubChainId];
+		registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
 	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	const systemChainId = getChainIdBySpecName(registry, specName);
 
-	if (!SYSTEM_PARACHAINS_IDS.includes(systemChainId)) {
+	if (!isSystemChain(systemChainId)) {
 		throw new BaseError(
 			`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`
 		);

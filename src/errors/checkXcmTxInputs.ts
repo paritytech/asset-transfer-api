@@ -651,7 +651,7 @@ export const checkIsValidSystemChainAssetId = async (
  * @param specName
  * @param relayChainInfo
  */
-const checkParaToSystemAssetId = async (
+const checkParaToAssetHubAssetId = async (
 	api: ApiPromise,
 	assetId: string,
 	specName: string,
@@ -918,7 +918,7 @@ export const checkAssetIdInput = async (
 		}
 
 		if (xcmDirection === Direction.ParaToSystem) {
-			await checkParaToSystemAssetId(
+			await checkParaToAssetHubAssetId(
 				api,
 				assetId,
 				specName,

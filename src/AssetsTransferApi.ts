@@ -14,7 +14,6 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import {
 	RELAY_CHAIN_IDS,
 	RELAY_CHAIN_NAMES,
-	SYSTEM_PARACHAINS_IDS,
 	SYSTEM_PARACHAINS_NAMES,
 } from './consts';
 import * as assets from './createCalls/assets';
@@ -37,6 +36,7 @@ import {
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getAssetHubAssetId } from './createXcmTypes/util/getAssetHubAssetId';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
+import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import {
 	BaseError,
@@ -132,7 +132,7 @@ export class AssetsTransferApi {
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			_specName.toLowerCase()
 		);
-		const isDestSystemParachain = SYSTEM_PARACHAINS_IDS.includes(destChainId);
+		const isDestSystemParachain = isSystemChain(destChainId);
 		const isLiquidTokenTransfer = transferLiquidToken === true;
 
 		/**
@@ -153,7 +153,11 @@ export class AssetsTransferApi {
 		const relayChainID = RELAY_CHAIN_IDS[0];
 		const nativeRelayChainAsset =
 			registry.currentRelayRegistry[relayChainID].tokens[0];
-		const xcmDirection = this.establishDirection(destChainId, _specName);
+		const xcmDirection = this.establishDirection(
+			destChainId,
+			_specName,
+			isDestSystemParachain
+		);
 		const isForeignAssetsTransfer: boolean =
 			this.checkIsForeignAssetTransfer(assetIds);
 		const xcmPallet = establishXcmPallet(
@@ -541,12 +545,15 @@ export class AssetsTransferApi {
 	 * @param destChainId
 	 * @param specName
 	 */
-	private establishDirection(destChainId: string, specName: string): Direction {
+	private establishDirection(
+		destChainId: string,
+		specName: string,
+		destIsSystemParachain: boolean
+	): Direction {
 		const { _api } = this;
 		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
 			specName.toLowerCase()
 		);
-		const isDestIdSystemPara = SYSTEM_PARACHAINS_IDS.includes(destChainId);
 
 		/**
 		 * Check if the origin is a System Parachain
@@ -555,7 +562,7 @@ export class AssetsTransferApi {
 			return Direction.SystemToRelay;
 		}
 
-		if (isSystemParachain && SYSTEM_PARACHAINS_IDS.includes(destChainId)) {
+		if (isSystemParachain && destIsSystemParachain) {
 			return Direction.SystemToSystem;
 		}
 
@@ -566,18 +573,18 @@ export class AssetsTransferApi {
 		/**
 		 * Check if the origin is a Relay Chain
 		 */
-		if (_api.query.paras && isDestIdSystemPara) {
+		if (_api.query.paras && destIsSystemParachain) {
 			return Direction.RelayToSystem;
 		}
 
-		if (_api.query.paras && !isDestIdSystemPara) {
+		if (_api.query.paras && !destIsSystemParachain) {
 			return Direction.RelayToPara;
 		}
 
 		/**
 		 * Check if the origin is a Parachain or Parathread
 		 */
-		if (_api.query.polkadotXcm && !isDestIdSystemPara) {
+		if (_api.query.polkadotXcm && !destIsSystemParachain) {
 			throw Error('ParaToRelay is not yet implemented');
 
 			return Direction.ParaToRelay;
@@ -586,7 +593,10 @@ export class AssetsTransferApi {
 		/**
 		 * Check if the origin is a parachain, and the destination is a system parachain.
 		 */
-		if ((_api.query.polkadotXcm || _api.query.xTokens) && isDestIdSystemPara) {
+		if (
+			(_api.query.polkadotXcm || _api.query.xTokens) &&
+			destIsSystemParachain
+		) {
 			return Direction.ParaToSystem;
 		}
 
