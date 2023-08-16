@@ -9,5 +9,5 @@ export const isSystemChain = (chainId: string | number): boolean => {
 	const chainIdAsNumber =
 		typeof chainId === 'string' ? parseInt(chainId) : chainId;
 
-	return chainIdAsNumber < 2000;
+	return chainIdAsNumber  > 0 && chainIdAsNumber < 2000;
 };
