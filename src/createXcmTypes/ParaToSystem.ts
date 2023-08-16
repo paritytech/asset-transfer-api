@@ -302,12 +302,6 @@ export const ParaToSystem: ICreateXcmType = {
 			relayChainXcAssetInfoKeys = xcAssets.polkadot;
 		}
 
-		if (relayChainXcAssetInfoKeys.length === 0) {
-			throw new BaseError(
-				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
-			);
-		}
-
 		let xcAsset: XCMChainInfoDataKeys | string = '';
 		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
 			const chainInfo = relayChainXcAssetInfoKeys[i];
@@ -323,6 +317,7 @@ export const ParaToSystem: ICreateXcmType = {
 				}
 			}
 		}
+
 		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
 			.xcmV1MultiLocation.v1;
 
@@ -417,12 +412,6 @@ const createXTokensMultiAssets = async (
 		}
 		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
 			relayChainXcAssetInfoKeys = xcAssets.polkadot;
-		}
-
-		if (relayChainXcAssetInfoKeys.length === 0) {
-			throw new BaseError(
-				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
-			);
 		}
 
 		let xcAsset: XCMChainInfoDataKeys | string = '';
@@ -538,12 +527,6 @@ const createParaToSystemMultiAssets = async (
 		}
 		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
 			relayChainXcAssetInfoKeys = xcAssets.polkadot;
-		}
-
-		if (relayChainXcAssetInfoKeys.length === 0) {
-			throw new BaseError(
-				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
-			);
 		}
 
 		let xcAsset: XCMChainInfoDataKeys | string = '';

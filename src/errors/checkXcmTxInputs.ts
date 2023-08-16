@@ -12,9 +12,10 @@ import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecNam
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
-import { Direction } from '../types';
-import { AssetInfo } from '../types';
+import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
+import { AssetInfo, Direction } from '../types';
 import { BaseError } from './BaseError';
+
 /**
  * Ensure when sending tx's to or from the relay chain that the length of the assetIds array
  * is zero or 1, and contains the correct token.
@@ -486,7 +487,7 @@ const checkSystemAssets = async (
 	}
 };
 
-const checkParaXcAssets = async (
+export const checkParaAssets = async (
 	api: ApiPromise,
 	assetId: string,
 	specName: string,
@@ -494,6 +495,9 @@ const checkParaXcAssets = async (
 	xcmDirection: string,
 	isForeignAssetsTransfer: boolean
 ) => {
+	const { xcAssets } = registry;
+	const currentRelayChainSpecName = registry.relayChain;
+
 	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
@@ -519,6 +523,41 @@ const checkParaXcAssets = async (
 					`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`
 				);
 			}
+
+			// check that xcAsset exists in the xcAsset registry
+			let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
+			if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
+				relayChainXcAssetInfoKeys = xcAssets.kusama;
+			}
+			if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
+				relayChainXcAssetInfoKeys = xcAssets.polkadot;
+			}
+
+			if (relayChainXcAssetInfoKeys.length === 0) {
+				throw new BaseError(
+					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
+				);
+			}
+
+			let xcAsset: XCMChainInfoDataKeys | string = '';
+			for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
+				const chainInfo = relayChainXcAssetInfoKeys[i];
+
+				for (let j = 0; j < chainInfo.data.length; j++) {
+					const xcAssetData = chainInfo.data[j];
+					if (
+						typeof xcAssetData.asset === 'string' &&
+						xcAssetData.asset === assetId
+					) {
+						xcAsset = xcAssetData;
+						break;
+					}
+				}
+			}
+
+			if (typeof xcAsset === 'string') {
+				throw new BaseError(`unable to identify xcAsset with ID ${assetId}`);
+			}
 		} else {
 			// not a valid number
 			// check if id is a valid token symbol of the system parachain chain
@@ -543,7 +582,7 @@ const checkParaXcAssets = async (
 			// if no native token for the parachain was matched, throw an error
 			if (!isValidTokenSymbol) {
 				throw new BaseError(
-					`${xcmDirection}: assetId ${assetId} not found for parachain ${specName}`
+					`${xcmDirection}: symbol assetId ${assetId} not found for parachain ${specName}`
 				);
 			}
 		}
@@ -636,7 +675,7 @@ const checkParaToSystemAssetId = async (
 			return;
 		}
 
-		await checkParaXcAssets(
+		await checkParaAssets(
 			api,
 			assetId,
 			specName,
