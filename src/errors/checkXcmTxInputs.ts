@@ -5,9 +5,9 @@ import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import {
+	ASSET_HUB_CHAIN_ID,
 	MAX_ASSETS_FOR_TRANSFER,
 	RELAY_CHAIN_IDS,
-	SYSTEM_PARACHAINS_IDS,
 } from '../consts';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
@@ -544,16 +544,16 @@ export const checkIsValidSystemChainAssetId = async (
  * @param specName
  * @param relayChainInfo
  */
-const checkParaToSystemAssetId = async (
+const checkParaToAssetHubAssetId = async (
 	api: ApiPromise,
 	assetId: string,
 	relayChainInfo: ChainInfo,
 	registry: Registry,
 	isForeignAssetsTransfer: boolean
 ) => {
-	const systemParachainId = SYSTEM_PARACHAINS_IDS[0];
-	const systemParachainInfo = relayChainInfo[systemParachainId];
-	const systemSpecName = systemParachainInfo.specName;
+	const assetHubChainId = ASSET_HUB_CHAIN_ID;
+	const assetHubChainInfo = relayChainInfo[assetHubChainId];
+	const assetHubSpecName = assetHubChainInfo.specName;
 
 	if (typeof assetId === 'string') {
 		// An assetId may be a hex value to represent a GeneralKey for erc20 tokens.
@@ -572,8 +572,8 @@ const checkParaToSystemAssetId = async (
 		await checkSystemAssets(
 			api,
 			assetId,
-			systemSpecName,
-			systemParachainInfo,
+			assetHubSpecName,
+			assetHubChainInfo,
 			registry,
 			'ParaToSystem',
 			isForeignAssetsTransfer
@@ -809,7 +809,7 @@ export const checkAssetIdInput = async (
 		}
 
 		if (xcmDirection === Direction.ParaToSystem) {
-			await checkParaToSystemAssetId(
+			await checkParaToAssetHubAssetId(
 				api,
 				assetId,
 				relayChainInfo,
