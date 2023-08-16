@@ -13,7 +13,7 @@ describe('isSystemChain', () => {
 
 		expect(result).toEqual(false);
 	});
-    it('Should correctly return false for a chainId of 0', () => {
+	it('Should correctly return false for a chainId of 0', () => {
 		const result = isSystemChain('0');
 
 		expect(result).toEqual(false);
