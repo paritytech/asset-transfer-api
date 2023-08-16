@@ -25,7 +25,7 @@ import { XcmPalletName } from '../util/establishXcmPallet';
  * @param specName The specName for the current chain
  * @param registry Registry
  * @param xcmPallet The pallet being used to construct xcm calls.
- * @param opts createWeightLimitOptions
+ * @param opts CreateXcmCallOpts
  */
 export const transferMultiAsset = async (
 	api: ApiPromise,
