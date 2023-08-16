@@ -23,8 +23,7 @@ import { establishXcmPallet } from '../util/establishXcmPallet';
  * @param xcmVersion Supported XCM version.
  * @param specName The specName for the current chain
  * @param registry Registry
- * @param paysWithFeeDest The assetId used to pay fees in the destination chain.
- * @param isForeignAssetsTransfer Denotes whether the tx is a foreign assets pallet tx.
+ * @param opts CreateXcmCallOpts
  */
 export const reserveTransferAssets = async (
 	api: ApiPromise,

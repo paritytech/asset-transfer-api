@@ -87,7 +87,6 @@ export const checkAssetsAmountMatch = (
  * Ensures that foreign asset txs are not constructed when xcm pallet is xTokens
  *
  * @param xcmPallet
- * @param xcmDirection
  * @param isForeignAssetsTransfer
  */
 export const checkParaToSystemIsNonForeignAssetXTokensTx = (
@@ -172,9 +171,9 @@ export const checkIfNativeRelayChainAssetPresentInMultiAssetIdList = (
  * native and foreign assets to the dest chain cannot be mixed as it is either a reserve or teleport
  * throws an error if foreign and native assets are found
  *
+ * @param xcmDirection
  * @param destChainId
  * @param multiLocationAssetIds
- * @param isForeignAssetsTransfer
  * @returns boolean
  */
 export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
@@ -212,10 +211,8 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
  * Checks that each multilocation string provided is of the proper format to create a MultiLocation
  * throws an error if the MultiLocation is unable to be created
  *
- * @param destChainId
+ * @param api
  * @param multiLocationAssetIds
- * @param isForeignAssetsTransfer
- * @returns boolean
  */
 export const checkAllMultiLocationAssetIdsAreValid = (
 	api: ApiPromise,
