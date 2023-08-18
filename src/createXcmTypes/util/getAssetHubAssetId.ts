@@ -9,13 +9,13 @@ import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocati
 import { getChainIdBySpecName } from './getChainIdBySpecName';
 
 /**
- * Returns the correct asset id for a valid AssetHub token symbol integer id
- * or foreign asset multilocation based on chain specName
- * errors if given an invalid symbol, integer id or multilocation that is
- * not registered or found in the AssetHub chain state
+ * Given a valid AssetHub token symbol or ForeignAsset MultiLocation, returns it's corresponding integer assetId.
+ * Errors if given an input that is not in the registry or found in the AssetHub chain state.
  *
+ * @param api
  * @param tokenSymbol string
  * @param specName string
+ * @param isForeignAssetsTransfer boolean
  */
 export const getAssetHubAssetId = async (
 	_api: ApiPromise,
@@ -68,7 +68,7 @@ export const getAssetHubAssetId = async (
 				if (registryAssetId) {
 					return registryAssetId;
 				} else {
-					// if the integer asset id asset is not found in the registry
+					// if the integer assetId is not found in the registry
 					// query the chains state for the asset
 					if (assetIsNumber) {
 						const maybeAsset = await _api.query.assets.asset(asset);
