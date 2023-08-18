@@ -24,7 +24,7 @@ const main = async () => {
 		callInfo = await assetApi.createTransferTransaction(
 			'1000',
 			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
-			['182365888117048807484804376330534607370'], // note: we are passing in the assetId or xcRMRK on Moonriver
+			['182365888117048807484804376330534607370'], // note: we are passing in the assetId for xcRMRK on Moonriver
 			['10000000000'],
 			{
 				format: 'call',
