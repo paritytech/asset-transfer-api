@@ -164,7 +164,7 @@ interface TransferArgsOpts<T extends Format> {
 	 * When isLimited is true, the option for applying a weightLimit is possible.
 	 * If not inputted it will default to `Unlimited`.
 	 */
-	weightLimit?: string;
+	weightLimit?: { refTime?: string, proofSize?: string };
 	/**
 	 * Set the xcmVersion for message construction. If this is not present a supported version
 	 * will be queried, and if there is no supported version a safe version will be queried.

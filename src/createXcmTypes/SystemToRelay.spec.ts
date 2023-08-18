@@ -160,17 +160,27 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 		});
 	});
 	describe('WeightLimit', () => {
-		it('Should work when given a weightLimit', () => {
-			const weightLimit = SystemToRelay.createWeightLimit(
-				mockSystemApi,
-				'100000000'
-			);
+		it('Should work when isLimited is true', () => {
+			const isLimited = true;
+			const refTime = '100000000';
+			const proofSize = '1000';
+
+			const weightLimit = SystemToRelay.createWeightLimit(mockSystemApi, {
+				isLimited,
+				weightLimit: {
+					refTime,
+					proofSize,
+				},
+			});
 			expect(weightLimit.toJSON()).toStrictEqual({
-				limited: 100000000,
+				limited: {
+					refTime: 100000000,
+					proofSize: 1000,
+				},
 			});
 		});
-		it('Should work when no weightLimit is present', () => {
-			const weightLimit = SystemToRelay.createWeightLimit(mockSystemApi);
+		it('Should work when isLimited is falsy', () => {
+			const weightLimit = SystemToRelay.createWeightLimit(mockSystemApi, {});
 
 			expect(weightLimit.toJSON()).toStrictEqual({
 				unlimited: null,

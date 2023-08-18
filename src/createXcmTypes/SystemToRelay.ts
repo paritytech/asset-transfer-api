@@ -10,7 +10,7 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
-import { ICreateXcmType, IWeightLimit } from './types';
+import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit } from './types';
 
 export const SystemToRelay: ICreateXcmType = {
 	/**
@@ -146,17 +146,28 @@ export const SystemToRelay: ICreateXcmType = {
 		}
 	},
 	/**
-	 * Create a WeightLimitV2 type.
+	 * Create an XcmV3WeightLimit type.
 	 *
 	 * @param api ApiPromise
-	 * @param weightLimit WeightLimit passed in as an option.
+	 * @param isLimited Whether the tx is limited
+	 * @param refTime amount of computation time
+	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (api: ApiPromise, weightLimit?: string): WeightLimitV2 => {
-		const limit: IWeightLimit = weightLimit
-			? { Limited: weightLimit }
-			: { Unlimited: null };
+	createWeightLimit: (
+		api: ApiPromise,
+		opts: CreateWeightLimitOpts
+	): WeightLimitV2 => {
+		const limit: IWeightLimit =
+			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
+				? {
+						Limited: {
+							refTime: opts.weightLimit?.refTime,
+							proofSize: opts.weightLimit?.proofSize,
+						},
+				  }
+				: { Unlimited: null };
 
-		return api.registry.createType('XcmV2WeightLimit', limit);
+		return api.registry.createType('XcmV3WeightLimit', limit);
 	},
 
 	/**

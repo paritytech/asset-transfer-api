@@ -12,6 +12,7 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
+import { ASSET_HUB_CHAIN_ID } from '../consts';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { BaseError } from '../errors';
 import type { Registry } from '../registry';
@@ -21,12 +22,13 @@ import { MultiAsset } from './../types';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
+	CreateWeightLimitOpts,
 	ICreateXcmType,
 	IWeightLimit,
 } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getChainAssetId } from './util/getChainAssetId';
+import { getAssetHubAssetId } from './util/getAssetHubAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
@@ -157,18 +159,28 @@ export const SystemToSystem: ICreateXcmType = {
 		}
 	},
 	/**
-	 * TODO: Generalize the weight type with V3.
-	 * Create a WeightLimitV2 type.
+	 * Create an XcmV3WeightLimit type.
 	 *
 	 * @param api ApiPromise
-	 * @param weightLimit WeightLimit passed in as an option.
+	 * @param isLimited Whether the tx is limited
+	 * @param refTime amount of computation time
+	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (api: ApiPromise, weightLimit?: string): WeightLimitV2 => {
-		const limit: IWeightLimit = weightLimit
-			? { Limited: weightLimit }
-			: { Unlimited: null };
+	createWeightLimit: (
+		api: ApiPromise,
+		opts: CreateWeightLimitOpts
+	): WeightLimitV2 => {
+		const limit: IWeightLimit =
+			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
+				? {
+						Limited: {
+							refTime: opts.weightLimit?.refTime,
+							proofSize: opts.weightLimit?.proofSize,
+						},
+				  }
+				: { Unlimited: null };
 
-		return api.registry.createType('XcmV2WeightLimit', limit);
+		return api.registry.createType('XcmV3WeightLimit', limit);
 	},
 
 	/**
@@ -257,9 +269,8 @@ export const createSystemToSystemMultiAssets = async (
 ): Promise<MultiAsset[]> => {
 	let multiAssets: MultiAsset[] = [];
 
-	const assetHubChainId = '1000';
 	const { foreignAssetsPalletInstance } =
-		registry.currentRelayRegistry[assetHubChainId];
+		registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
 	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	const systemChainId = getChainIdBySpecName(registry, specName);
 
@@ -281,7 +292,7 @@ export const createSystemToSystemMultiAssets = async (
 
 		if (!isRelayNative) {
 			if (isNotANumber) {
-				assetId = await getChainAssetId(
+				assetId = await getAssetHubAssetId(
 					api,
 					assetId,
 					specName,
@@ -355,9 +366,11 @@ export const createSystemToSystemMultiAssets = async (
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets);
+	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets);
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
+		multiAssets
+	) as MultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

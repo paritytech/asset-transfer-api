@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { AssetsTransferApi } from '../AssetsTransferApi';
+import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
@@ -237,7 +238,9 @@ describe('AssetTransferApi Integration Tests', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				refTime?: string,
+				proofSize?: string
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -247,14 +250,18 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format,
 						isLimited,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 						xcmVersion,
 					}
 				);
 			};
 			const nativeBaseSystemCreateTx = async <T extends Format>(
 				format: T,
-				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -263,8 +270,9 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format,
-						isLimited,
 						xcmVersion,
+						weightLimit: opts.weightLimit,
+						isLimited: opts.isLimited,
 					}
 				);
 			};
@@ -272,8 +280,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				T extends Format
 			>(
 				format: T,
-				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -284,7 +292,8 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format,
-						isLimited,
+						isLimited: opts.isLimited,
+						weightLimit: opts.weightLimit,
 						xcmVersion,
 					}
 				);
@@ -294,8 +303,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				T extends Format
 			>(
 				format: T,
-				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2125', // Since this is not `0` we know this is to a parachain
@@ -304,10 +313,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						`{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}`,
 					],
 					['100'],
+
 					{
 						format,
-						isLimited,
 						xcmVersion,
+						isLimited: opts?.isLimited,
+						weightLimit: opts.weightLimit,
 					}
 				);
 			};
@@ -324,6 +335,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format,
 						isLimited,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '1000',
+						},
 						xcmVersion,
 						transferLiquidToken: true,
 					}
@@ -331,31 +346,49 @@ describe('AssetTransferApi Integration Tests', () => {
 			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('call', true, 2);
+					const res = await foreignBaseSystemCreateTx(
+						'call',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000',
+						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('payload', true, 2);
+					const res = await foreignBaseSystemCreateTx(
+						'payload',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x21011f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x31011f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('submittable', true, 2);
+					const res = await foreignBaseSystemCreateTx(
+						'submittable',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
@@ -387,7 +420,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('call', false, 2);
+					const res = await nativeBaseSystemCreateTx('call', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -399,7 +435,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a reserveTransferAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', false, 2);
+					const res = await nativeBaseSystemCreateTx('payload', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -411,43 +450,79 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a reserveTransferAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', false, 2);
+					const res = await nativeBaseSystemCreateTx('submittable', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for limitedReserveTransferAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 2);
+					const res = await nativeBaseSystemCreateTx('call', 2, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000000',
+						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a payload for limitedReserveTransferAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 2);
+					const res = await nativeBaseSystemCreateTx('payload', 2, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0xe81f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf81f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', true, 2);
+					const res = await nativeBaseSystemCreateTx('submittable', 2, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 
 				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
-						true,
-						2
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -455,15 +530,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000000',
+						tx: '0x1f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000001214e411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
-						true,
-						2
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -471,15 +554,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x05011f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000001214e411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
-						true,
-						2
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -491,38 +582,56 @@ describe('AssetTransferApi Integration Tests', () => {
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
 						origin: 'statemine',
-						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043705000091010000000000',
+						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043705000091010000000001a10fa10f',
 						xcmVersion: 2,
 					});
 				});
 			});
 			describe('V3', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('call', true, 3);
+					const res = await foreignBaseSystemCreateTx(
+						'call',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000',
+						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('payload', true, 3);
+					const res = await foreignBaseSystemCreateTx(
+						'payload',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x21011f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x31011f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('submittable', true, 3);
+					const res = await foreignBaseSystemCreateTx(
+						'submittable',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
@@ -554,7 +663,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('call', false, 3);
+					const res = await nativeBaseSystemCreateTx('call', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -566,7 +678,10 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a reserveTransferAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', false, 3);
+					const res = await nativeBaseSystemCreateTx('payload', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -578,42 +693,77 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a reserveTransferAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', false, 3);
+					const res = await nativeBaseSystemCreateTx('submittable', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for limitedReserveTransferAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 3);
+					const res = await nativeBaseSystemCreateTx('call', 3, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '5000',
+							proofSize: '3000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000000',
+						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001214ee12e',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a payload for limitedReserveTransferAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 3);
+					const res = await nativeBaseSystemCreateTx('payload', 3, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '5000',
+							proofSize: '3000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0xe81f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf81f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001214ee12e450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', true, 3);
+					const res = await nativeBaseSystemCreateTx('submittable', 3, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '5000',
+							proofSize: '3000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
-						true,
-						3
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -621,15 +771,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000000',
+						tx: '0x1f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001214e411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
-						true,
-						3
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -637,23 +795,39 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x05011f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001214e411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
-						true,
-						2
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '5000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a foreign asset XCM call limitedTeleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'call',
-						true,
-						3
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '2000',
+								proofSize: '5000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -661,15 +835,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f090301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000000',
+						tx: '0x1f090301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001411f214e',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a foreign asset XCM payload limitedTeleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'payload',
-						true,
-						3
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '2000',
+								proofSize: '5000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -677,23 +859,31 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0x05011f090301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f090301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001411f214e450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a foreign asset XCM submittable limitedTeleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'submittable',
-						true,
-						3
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '2000',
+								proofSize: '5000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a foreign asset XCM call teleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'call',
-						false,
-						3
+						3,
+						{ isForeignAssetsTransfer: true, isLiquidTokenTransfer: false }
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -708,8 +898,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a foreign asset XCM payload teleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'payload',
-						false,
-						3
+						3,
+						{ isForeignAssetsTransfer: true, isLiquidTokenTransfer: false }
 					);
 					expect(res).toEqual({
 						dest: 'tinkernet_node',
@@ -724,8 +914,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a foreign asset XCM submittable teleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(
 						'submittable',
-						false,
-						3
+						3,
+						{ isForeignAssetsTransfer: true, isLiquidTokenTransfer: false }
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -737,7 +927,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
 						origin: 'statemine',
-						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043705000091010000000000',
+						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043705000091010000000001a10fa10f',
 						xcmVersion: 3,
 					});
 				});
@@ -748,7 +938,9 @@ describe('AssetTransferApi Integration Tests', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				refTime?: string,
+				proofSize?: string
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'1001', // collectives system parachain
@@ -759,13 +951,19 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
 			const nativeBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				refTime?: string,
+				proofSize?: string
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'1002', // bridge-hub system parachain
@@ -776,6 +974,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
@@ -783,8 +985,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				T extends Format
 			>(
 				format: T,
-				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -795,38 +997,57 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format,
-						isLimited,
 						xcmVersion,
+						isLimited: opts?.isLimited,
+						weightLimit: opts.weightLimit,
 					}
 				);
 			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('call', true, 2);
+					const res = await foreignBaseSystemCreateTx(
+						'call',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000',
+						tx: '0x1f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('payload', true, 2);
+					const res = await foreignBaseSystemCreateTx(
+						'payload',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0x21011f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x31011f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx('submittable', true, 2);
+					const res = await foreignBaseSystemCreateTx(
+						'submittable',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
@@ -858,31 +1079,49 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedTeleportAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 2);
+					const res = await nativeBaseSystemCreateTx(
+						'call',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f0901010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000000',
+						tx: '0x1f0901010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a payload for a limitedTeleportAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 2);
+					const res = await nativeBaseSystemCreateTx(
+						'payload',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xe81f0901010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf81f0901010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', true, 2);
+					const res = await nativeBaseSystemCreateTx(
+						'submittable',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for teleportAssets for V2 when its a native token', async () => {
@@ -917,8 +1156,16 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
-						true,
-						2
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -926,15 +1173,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000000',
+						tx: '0x1f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
-						true,
-						2
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -942,46 +1197,72 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x05011f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
-						true,
-						2
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V3', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('call', true, 3);
+					const res = await foreignBaseSystemCreateTx(
+						'call',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000',
+						tx: '0x1f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('payload', true, 3);
+					const res = await foreignBaseSystemCreateTx(
+						'payload',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0x21011f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x31011f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx('submittable', true, 3);
+					const res = await foreignBaseSystemCreateTx(
+						'submittable',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
@@ -1041,39 +1322,65 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for limitedTeleportAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 3);
+					const res = await nativeBaseSystemCreateTx(
+						'call',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f0903010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000000',
+						tx: '0x1f0903010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001a10f411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a payload for limitedTeleportAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 3);
+					const res = await nativeBaseSystemCreateTx(
+						'payload',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
 						origin: 'statemine',
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xe81f0903010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf81f0903010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', true, 3);
+					const res = await nativeBaseSystemCreateTx(
+						'submittable',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 
 				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'call',
-						true,
-						3
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -1081,15 +1388,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000000',
+						tx: '0x1f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001a10f411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'payload',
-						true,
-						3
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res).toEqual({
 						dest: 'moonriver',
@@ -1097,15 +1412,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x05011f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(
 						'submittable',
-						true,
-						3
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: true,
+							isLiquidTokenTransfer: false,
+						}
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -1116,7 +1439,9 @@ describe('AssetTransferApi Integration Tests', () => {
 			const baseRelayCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				refTime?: string,
+				proofSize?: string
 			): Promise<TxResult<T>> => {
 				return await relayAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -1127,36 +1452,52 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('call', true, 2);
+					const res = await baseRelayCreateTx('call', true, 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x630801000100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000000091010000000000',
+						tx: '0x630801000100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000000091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('payload', true, 2);
+					const res = await baseRelayCreateTx(
+						'payload',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0xe8630801000100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000000009101000000000045022800cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf8630801000100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000000091010000000001a10f411f45022800cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('submittable', true, 2);
+					const res = await baseRelayCreateTx(
+						'submittable',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
@@ -1190,31 +1531,43 @@ describe('AssetTransferApi Integration Tests', () => {
 			});
 			describe('V3', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('call', true, 3);
+					const res = await baseRelayCreateTx('call', true, 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x630803000100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040000000091010000000000',
+						tx: '0x630803000100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040000000091010000000001a10f411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('payload', true, 3);
+					const res = await baseRelayCreateTx(
+						'payload',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
 						direction: 'RelayToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0xe8630803000100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000000009101000000000045022800cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf8630803000100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040000000091010000000001a10f411f45022800cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('submittable', true, 3);
+					const res = await baseRelayCreateTx(
+						'submittable',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
@@ -1251,7 +1604,9 @@ describe('AssetTransferApi Integration Tests', () => {
 			const nativeBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				refTime?: string,
+				proofSize?: string
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'0', // `0` indicating the dest chain is a relay chain.
@@ -1262,6 +1617,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
@@ -1295,31 +1654,49 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 2);
+					const res = await nativeBaseSystemCreateTx(
+						'call',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f090101000100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000000',
+						tx: '0x1f090101000100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets payload for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 2);
+					const res = await nativeBaseSystemCreateTx(
+						'payload',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xdc1f090101000100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xec1f090101000100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', true, 2);
+					const res = await nativeBaseSystemCreateTx(
+						'submittable',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
@@ -1353,31 +1730,49 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 3);
+					const res = await nativeBaseSystemCreateTx(
+						'call',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f090301000300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000000',
+						tx: '0x1f090301000300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001a10f411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets payload for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 3);
+					const res = await nativeBaseSystemCreateTx(
+						'payload',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xdc1f090301000300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xec1f090301000300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', true, 3);
+					const res = await nativeBaseSystemCreateTx(
+						'submittable',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
@@ -1386,7 +1781,9 @@ describe('AssetTransferApi Integration Tests', () => {
 			const nativeBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				refTime?: string,
+				proofSize?: string
 			): Promise<TxResult<T>> => {
 				return await relayAssetsApi.createTransferTransaction(
 					'1000', // `0` indicating the dest chain is a relay chain.
@@ -1397,6 +1794,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						isLimited,
 						xcmVersion,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
 					}
 				);
 			};
@@ -1430,31 +1831,49 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 2);
+					const res = await nativeBaseSystemCreateTx(
+						'call',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x630901000100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000000091010000000000',
+						tx: '0x630901000100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000000091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 2);
+					const res = await nativeBaseSystemCreateTx(
+						'payload',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xe8630901000100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000000009101000000000045022800cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf8630901000100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040000000091010000000001a10f411f45022800cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', true, 2);
+					const res = await nativeBaseSystemCreateTx(
+						'submittable',
+						true,
+						2,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
@@ -1488,166 +1907,715 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('call', true, 3);
+					const res = await nativeBaseSystemCreateTx(
+						'call',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x630903000100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040000000091010000000000',
+						tx: '0x630903000100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040000000091010000000001a10f411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('payload', true, 3);
+					const res = await nativeBaseSystemCreateTx(
+						'payload',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
 						direction: 'RelayToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xe8630903000100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000000009101000000000045022800cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf8630903000100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040000000091010000000001a10f411f45022800cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx('submittable', true, 3);
+					const res = await nativeBaseSystemCreateTx(
+						'submittable',
+						true,
+						3,
+						'1000',
+						'2000'
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 		});
 		describe('ParaToSystem', () => {
-			const baseParachainCreateTx = async <T extends Format>(
+			const baseParachainTransferMultiAssetTx = async <T extends Format>(
 				format: T,
-				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
+				opts: CreateXcmCallOpts
 			): Promise<TxResult<T>> => {
 				return await moonriverAssetsApi.createTransferTransaction(
 					'1000', // `1000` indicating the dest chain is a system chain.
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1984', '8'],
-					['100000', '1000000'],
+					['xcKSM'],
+					['10000000000'],
 					{
 						format,
-						isLimited,
 						xcmVersion,
+						isLimited: opts.isLimited,
+						weightLimit: opts.weightLimit,
+						paysWithFeeDest: '0',
 					}
 				);
 			};
 			describe('V2', () => {
-				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseParachainCreateTx('call', true, 2);
+				it('Should correctly build a V2 transferMultiAsset call', async () => {
+					const res = await baseParachainTransferMultiAssetTx('call', 2, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
 						direction: 'ParaToSystem',
 						format: 'call',
-						method: 'limitedReserveTransferAssets',
-						tx: '0x670801010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205011f00821a0600000002043205200002093d000000000000',
+						method: 'transferMultiAsset',
+						tx: '0x6a0101000100000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseParachainCreateTx('payload', true, 2);
+				it('Should correctly build a V2 transferMultiAsset payload', async () => {
+					const res = await baseParachainTransferMultiAssetTx('payload', 2, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
 						direction: 'ParaToSystem',
 						format: 'payload',
-						method: 'limitedReserveTransferAssets',
-						tx: '0x3501670801010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205011f00821a0600000002043205200002093d00000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						method: 'transferMultiAsset',
+						tx: '0xe86a0101000100000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseParachainCreateTx('submittable', true, 2);
+				it('Should correctly build a V2 submittable transferMultiAsset', async () => {
+					const res = await baseParachainTransferMultiAssetTx(
+						'submittable',
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
-					const res = await baseParachainCreateTx('call', false, 2);
+				it('Should correctly build a V2 transferMultiAsset call', async () => {
+					const res = await baseParachainTransferMultiAssetTx('call', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
 						direction: 'ParaToSystem',
 						format: 'call',
-						method: 'reserveTransferAssets',
-						tx: '0x670201010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205011f00821a0600000002043205200002093d0000000000',
+						method: 'transferMultiAsset',
+						tx: '0x6a0101000100000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a reserveTransferAsset for V2', async () => {
-					const res = await baseParachainCreateTx('payload', false, 2);
+				it('Should correctly build a V2 transferMultiAsset payload', async () => {
+					const res = await baseParachainTransferMultiAssetTx('payload', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
 						direction: 'ParaToSystem',
 						format: 'payload',
-						method: 'reserveTransferAssets',
-						tx: '0x3101670201010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205011f00821a0600000002043205200002093d000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						method: 'transferMultiAsset',
+						tx: '0xd86a0101000100000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V2', async () => {
-					const res = await baseParachainCreateTx('submittable', false, 2);
+				it('Should correctly build a V2 submittable transferMultiAsset extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetTx(
+						'submittable',
+						2,
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V3 transfer api', () => {
-				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseParachainCreateTx('call', true, 3);
+				it('Should correctly build a V3 transferMultiAsset call', async () => {
+					const res = await baseParachainTransferMultiAssetTx('call', 3, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
 						direction: 'ParaToSystem',
 						format: 'call',
-						method: 'limitedReserveTransferAssets',
-						tx: '0x670803010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205011f00821a0600000002043205200002093d000000000000',
+						method: 'transferMultiAsset',
+						tx: '0x6a0103000100000700e40b540203010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseParachainCreateTx('payload', true, 3);
+				it('Should correctly build a V3 transferMultiAsset payload', async () => {
+					const res = await baseParachainTransferMultiAssetTx('payload', 3, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
 						direction: 'ParaToSystem',
 						format: 'payload',
-						method: 'limitedReserveTransferAssets',
-						tx: '0x3501670803010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205011f00821a0600000002043205200002093d00000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						method: 'transferMultiAsset',
+						tx: '0xe86a0103000100000700e40b540203010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseParachainCreateTx('submittable', true, 3);
+				it('Should correctly build a V3 submittable transferMultiAsset extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetTx(
+						'submittable',
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a reserveTransferAsset for V3', async () => {
-					const res = await baseParachainCreateTx('call', false, 3);
+				it('Should correctly build a V3 transferMultiAsset call', async () => {
+					const res = await baseParachainTransferMultiAssetTx('call', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
 						direction: 'ParaToSystem',
 						format: 'call',
-						method: 'reserveTransferAssets',
-						tx: '0x670203010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205011f00821a0600000002043205200002093d0000000000',
+						method: 'transferMultiAsset',
+						tx: '0x6a0103000100000700e40b540203010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a payload for a reserveTransferAsset for V3', async () => {
-					const res = await baseParachainCreateTx('payload', false, 3);
+				it('Should correctly build a V3 transferMultiAsset payload', async () => {
+					const res = await baseParachainTransferMultiAssetTx('payload', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'moonriver',
 						direction: 'ParaToSystem',
 						format: 'payload',
-						method: 'reserveTransferAssets',
-						tx: '0x3101670203010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205011f00821a0600000002043205200002093d000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						method: 'transferMultiAsset',
+						tx: '0xd86a0103000100000700e40b540203010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
-				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V3', async () => {
-					const res = await baseParachainCreateTx('submittable', false, 3);
+				it('Should correctly build a submittable V3 transferMultiAsset extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetTx(
+						'submittable',
+						3,
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			const baseParachainTransferMultiAssetWithFeeTx = async <T extends Format>(
+				format: T,
+				xcmVersion: number,
+				opts: CreateXcmCallOpts
+			): Promise<TxResult<T>> => {
+				return await moonriverAssetsApi.createTransferTransaction(
+					'1000', // `1000` indicating the dest chain is a system chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['xcUSDT'],
+					['10000000000'],
+					{
+						format,
+						xcmVersion,
+						isLimited: opts.isLimited,
+						weightLimit: opts.weightLimit,
+						paysWithFeeDest:
+							'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
+					}
+				);
+			};
+			describe('V2', () => {
+				it('Should correctly build a V2 transferMultiAssetWithFee call', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'call',
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x6a030100010300a10f043205011f000700e40b54020100010300a10f043205011f000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 transferMultiAssetWithFee payload', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'payload',
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x41016a030100010300a10f043205011f000700e40b54020100010300a10f043205011f000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 submittable transferMultiAssetWithFee', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'submittable',
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a V2 transferMultiAssetWithFee call', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'call',
+						2,
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x6a030100010300a10f043205011f000700e40b54020100010300a10f043205011f000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 transferMultiAssetWithFee payload', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'payload',
+						2,
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x31016a030100010300a10f043205011f000700e40b54020100010300a10f043205011f000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 submittable transferMultiAssetWithFee extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'submittable',
+						2,
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('V3 transfer api', () => {
+				it('Should correctly build a V3 transferMultiAssetWithFee call', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'call',
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x6a030300010300a10f043205011f000700e40b54020300010300a10f043205011f000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAssetWithFee payload', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'payload',
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x41016a030300010300a10f043205011f000700e40b54020300010300a10f043205011f000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 submittable transferMultiAssetWithFee extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'submittable',
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a V3 transferMultiAssetWithFee call', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'call',
+						3,
+						{
+							paysWithFeeDest:
+								'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x6a030300010300a10f043205011f000700e40b54020300010300a10f043205011f000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAssetWithFee payload', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'payload',
+						3,
+						{
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssetWithFee',
+						tx: '0x31016a030300010300a10f043205011f000700e40b54020300010300a10f043205011f000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a submittable V3 transferMultiAssetWithFee extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetWithFeeTx(
+						'submittable',
+						3,
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			const baseParachainTransferMultiAssetsTx = async <T extends Format>(
+				format: T,
+				xcmVersion: number,
+				opts: CreateXcmCallOpts
+			): Promise<TxResult<T>> => {
+				return await moonriverAssetsApi.createTransferTransaction(
+					'1000', // `1000` indicating the dest chain is a system chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[
+						'311091173110107856861649819128533077277',
+						'182365888117048807484804376330534607370',
+					],
+					['100000', '1000000'],
+					{
+						format,
+						xcmVersion,
+						isLimited: opts.isLimited,
+						weightLimit: opts.weightLimit,
+					}
+				);
+			};
+			describe('V2', () => {
+				it('Should correctly build a V2 transferMultiAssets call', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('call', 2, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssets',
+						tx: '0x6a05010800010300a10f043205200002093d0000010300a10f043205011f00821a06000000000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 transferMultiAssets payload', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('payload', 2, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssets',
+						tx: '0x51016a05010800010300a10f043205200002093d0000010300a10f043205011f00821a06000000000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 submittable transferMultiAssets extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
+						'submittable',
+						2,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a V2 transferMultiAssets call', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('call', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssets',
+						tx: '0x6a05010800010300a10f043205200002093d0000010300a10f043205011f00821a06000000000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 transferMultiAssets payload', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('payload', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssets',
+						tx: '0x41016a05010800010300a10f043205200002093d0000010300a10f043205011f00821a06000000000001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 2,
+					});
+				});
+				it('Should correctly build a V2 transferMultiAssets submittable extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
+						'submittable',
+						2,
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('V3 transfer api', () => {
+				it('Should correctly build a V3 transferMultiAssets call', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('call', 3, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssets',
+						tx: '0x6a05030800010300a10f043205200002093d0000010300a10f043205011f00821a06000000000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAssets payload', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('payload', 3, {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssets',
+						tx: '0x51016a05030800010300a10f043205200002093d0000010300a10f043205011f00821a06000000000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAssets submittable extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
+						'submittable',
+						3,
+						{
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						}
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+				it('Should correctly build a V3 call transferMultiAssets', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('call', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'transferMultiAssets',
+						tx: '0x6a05030800010300a10f043205200002093d0000010300a10f043205011f00821a06000000000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAssets payload', async () => {
+					const res = await baseParachainTransferMultiAssetsTx('payload', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'transferMultiAssets',
+						tx: '0x41016a05030800010300a10f043205200002093d0000010300a10f043205011f00821a06000000000003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 transferMultiAssets submittable extrinsic', async () => {
+					const res = await baseParachainTransferMultiAssetsTx(
+						'submittable',
+						3,
+						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
+					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});

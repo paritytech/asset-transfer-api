@@ -25,9 +25,16 @@ import {
 	limitedTeleportAssets,
 	reserveTransferAssets,
 	teleportAssets,
+	transferMultiAsset,
+	transferMultiAssets,
+	transferMultiAssetWithFee,
 } from './createXcmCalls';
+import {
+	establishXcmPallet,
+	XcmPalletName,
+} from './createXcmCalls/util/establishXcmPallet';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
-import { getChainAssetId } from './createXcmTypes/util/getChainAssetId';
+import { getAssetHubAssetId } from './createXcmTypes/util/getAssetHubAssetId';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
@@ -54,7 +61,9 @@ import {
 	TxResult,
 	UnsignedTransaction,
 	XCMV2DestBenificiary,
+	XCMV2ParachainDestBenificiary,
 	XCMV3DestBenificiary,
+	XCMV3ParachainDestBenificiary,
 } from './types';
 
 /**
@@ -149,7 +158,14 @@ export class AssetsTransferApi {
 			_specName,
 			isDestSystemParachain
 		);
-		const isForeignAssetsTransfer = this.checkIsForeignAssetTransfer(assetIds);
+		const isForeignAssetsTransfer: boolean =
+			this.checkIsForeignAssetTransfer(assetIds);
+		const xcmPallet = establishXcmPallet(
+			_api,
+			xcmDirection,
+			isForeignAssetsTransfer
+		);
+
 		/**
 		 * Create a local asset transfer on a system parachain
 		 */
@@ -173,7 +189,7 @@ export class AssetsTransferApi {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
-				assetId = await getChainAssetId(
+				assetId = await getAssetHubAssetId(
 					_api,
 					assetId,
 					_specName,
@@ -278,12 +294,17 @@ export class AssetsTransferApi {
 			assetIds,
 			amounts,
 			xcmDirection,
+			xcmPallet,
 			_specName,
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
-			xcmVersion,
-			paysWithFeeDest
+			{
+				xcmVersion,
+				paysWithFeeDest,
+				isLimited,
+				weightLimit,
+			}
 		);
 
 		const assetType = this.fetchAssetType(
@@ -303,7 +324,79 @@ export class AssetsTransferApi {
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-		if (assetCallType === AssetCallType.Reserve) {
+		if (
+			xcmPallet === XcmPalletName.xTokens &&
+			xcmDirection === Direction.ParaToSystem
+		) {
+			if (
+				paysWithFeeDest &&
+				!paysWithFeeDest.includes('parents') &&
+				assetIds.length < 2
+			) {
+				txMethod = 'transferMultiAsset';
+				transaction = await transferMultiAsset(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					destChainId,
+					declaredXcmVersion,
+					_specName,
+					this.registry,
+					xcmPallet,
+					{
+						isLimited,
+						weightLimit,
+						paysWithFeeDest,
+						isForeignAssetsTransfer,
+						isLiquidTokenTransfer,
+					}
+				);
+			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
+				txMethod = 'transferMultiAssetWithFee';
+				transaction = await transferMultiAssetWithFee(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					destChainId,
+					declaredXcmVersion,
+					_specName,
+					this.registry,
+					xcmPallet,
+					{
+						isLimited,
+						weightLimit,
+						paysWithFeeDest,
+						isForeignAssetsTransfer,
+						isLiquidTokenTransfer,
+					}
+				);
+			} else {
+				txMethod = 'transferMultiAssets';
+				transaction = await transferMultiAssets(
+					_api,
+					xcmDirection,
+					addr,
+					assetIds,
+					amounts,
+					destChainId,
+					declaredXcmVersion,
+					_specName,
+					this.registry,
+					xcmPallet,
+					{
+						isLimited,
+						weightLimit,
+						paysWithFeeDest,
+						isForeignAssetsTransfer,
+						isLiquidTokenTransfer,
+					}
+				);
+			}
+		} else if (assetCallType === AssetCallType.Reserve) {
 			if (isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
 				transaction = await limitedReserveTransferAssets(
@@ -317,6 +410,7 @@ export class AssetsTransferApi {
 					_specName,
 					this.registry,
 					{
+						isLimited,
 						weightLimit,
 						paysWithFeeDest,
 						isLiquidTokenTransfer,
@@ -356,6 +450,7 @@ export class AssetsTransferApi {
 					_specName,
 					this.registry,
 					{
+						isLimited,
 						weightLimit,
 						paysWithFeeDest,
 						isForeignAssetsTransfer,
@@ -810,20 +905,31 @@ export class AssetsTransferApi {
 			) {
 				addr = (submittableData.method.args.beneficiary as XCMV2DestBenificiary)
 					.V2.interior.X1.AccountId32.id;
-			} else {
+			} else if (
+				(submittableData.method.args.beneficiary as XCMV3DestBenificiary).V3
+			) {
 				addr = (submittableData.method.args.beneficiary as XCMV3DestBenificiary)
 					.V3.interior.X1.AccountId32.id;
+			} else if (
+				(
+					submittableData.method.args
+						.beneficiary as XCMV2ParachainDestBenificiary
+				).V2
+			) {
+				addr = (
+					submittableData.method.args
+						.beneficiary as XCMV2ParachainDestBenificiary
+				).V2.interior.X2[1].AccountId32.id;
+			} else {
+				addr = (
+					submittableData.method.args
+						.beneficiary as XCMV3ParachainDestBenificiary
+				).V3.interior.X2[1].AccountId32.id;
 			}
 		} else if (submittableData.method.args.dest) {
 			addr = submittableData.method.args.dest.Id;
 		} else if (submittableData.method.args.target) {
 			addr = submittableData.method.args.target.Id;
-		}
-
-		if (!addr) {
-			throw new BaseError(
-				`Unable to derive payload address for tx ${tx.toString()}`
-			);
 		}
 
 		const lastHeader = await this._api.rpc.chain.getHeader();

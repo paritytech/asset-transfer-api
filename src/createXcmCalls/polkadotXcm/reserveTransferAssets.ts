@@ -4,12 +4,12 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../createXcmTypes';
-import type { Registry } from '../registry';
-import { Direction } from '../types';
-import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import type { CreateXcmCallOpts } from './types';
-import { establishXcmPallet } from './util/establishXcmPallet';
+import { createXcmTypes } from '../../createXcmTypes';
+import type { Registry } from '../../registry';
+import { Direction } from '../../types';
+import { normalizeArrToStr } from '../../util/normalizeArrToStr';
+import type { CreateXcmCallOpts } from '../types';
+import { establishXcmPallet } from '../util/establishXcmPallet';
 
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `reserveTransferAssets` call.
@@ -21,6 +21,9 @@ import { establishXcmPallet } from './util/establishXcmPallet';
  * @param amounts An array of amounts. Note, this should be the same size and order as assetIds.
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
+ * @param specName The specName for the current chain
+ * @param registry Registry
+ * @param opts CreateXcmCallOpts
  */
 export const reserveTransferAssets = async (
 	api: ApiPromise,

@@ -1,6 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import { u8 } from '@polkadot/types';
 import {
 	InteriorMultiLocation,
 	MultiLocation,
@@ -114,10 +116,14 @@ export type Methods =
 	| 'reserveTransferAssets'
 	| 'limitedReserveTransferAssets'
 	| 'teleportAssets'
-	| 'limitedTeleportAssets';
+	| 'limitedTeleportAssets'
+	| 'transferMultiAsset'
+	| 'transferMultiAssets'
+	| 'transferMultiAssetWithFee';
 
 export type AssetsTransferApiOpts = {
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
+	assetHubApi?: ApiPromise;
 };
 
 /**
@@ -186,11 +192,24 @@ export interface TransferArgsOpts<T extends Format> {
 	 * When isLimited is true, the option for applying a weightLimit is possible.
 	 * If not inputted it will default to `Unlimited`.
 	 */
-	weightLimit?: string;
+	weightLimit?: {
+		/**
+		 * Provided when creating limited txs, represents the allowed amount of computation time
+		 * the tx can use
+		 */
+		refTime?: string;
+
+		/**
+		 * Provided when creating limited txs, represents the amount of storage in bytes that can be used
+		 * by the tx
+		 */
+		proofSize?: string;
+	};
 	/**
 	 * Set the xcmVersion for message construction. If this is not present a supported version
 	 * will be queried, and if there is no supported version a safe version will be queried.
 	 */
+
 	xcmVersion?: number;
 	/**
 	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
@@ -212,6 +231,15 @@ export interface ChainInfo {
 export type MultiAsset = {
 	fun: {
 		Fungible: string;
+	};
+	id: {
+		Concrete: MultiLocation;
+	};
+};
+
+export type XcmMultiAsset = {
+	fun: {
+		Fungible: { Fungible: string };
 	};
 	id: {
 		Concrete: MultiLocation;
@@ -296,23 +324,104 @@ export interface LocalTarget {
 
 export interface XCMV2DestBenificiary {
 	V2: {
-		parents: string;
+		parents: string | number;
 		interior: {
-			X1: { AccountId32: { network: string; id: string } };
+			X1: { AccountId32: { id: string } };
 		};
 	};
 }
 
 export interface XCMV3DestBenificiary {
 	V3: {
-		parents: string;
+		parents: string | number;
 		interior: {
-			X1: { AccountId32: { network: string; id: string } };
+			X1: { AccountId32: { id: string } };
 		};
 	};
 }
 
-export type XCMDestBenificiary = XCMV3DestBenificiary | XCMV2DestBenificiary;
+export interface XCMV2ParachainDestBenificiary {
+	V2: {
+		parents: string | number;
+		interior: {
+			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
+		};
+	};
+}
+
+export interface XCMV3ParachainDestBenificiary {
+	V3: {
+		parents: string | number;
+		interior: {
+			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
+		};
+	};
+}
+
+export type XCMDestBenificiary =
+	| XCMV3DestBenificiary
+	| XCMV2DestBenificiary
+	| XCMV2ParachainDestBenificiary
+	| XCMV3ParachainDestBenificiary;
+
+export interface XCMV2MultiAsset {
+	V2: {
+		id: {
+			Concrete: {
+				parents: u8 | string | number;
+				interior: InteriorMultiLocation;
+			};
+		};
+		fun: {
+			Fungible: { Fungible: number | string };
+		};
+	};
+}
+export interface XCMV3MultiAsset {
+	V3: {
+		id: {
+			Concrete: {
+				parents: u8 | string | number;
+				interior: InteriorMultiLocation;
+			};
+		};
+		fun: {
+			Fungible: { Fungible: number | string };
+		};
+	};
+}
+
+export type XcmVersionedMultiAsset = XCMV2MultiAsset | XCMV3MultiAsset;
+
+export interface XCMV2MultiLocation {
+	V2: {
+		id: {
+			Concrete: MultiLocation;
+		};
+	};
+}
+export interface XCMV3MultiLocation {
+	V3: {
+		id: {
+			Concrete: MultiLocation;
+		};
+	};
+}
+
+export type XcmMultiLocation = XCMV2MultiLocation | XCMV3MultiLocation;
+
+export interface XcmWeightUnlimited {
+	Unlimited: null | undefined;
+}
+
+export interface XcmWeightLimited {
+	Limited: {
+		refTime: string;
+		proofSize: string;
+	};
+}
+
+export type XcmWeight = XcmWeightUnlimited | XcmWeightLimited;
 
 export interface Args {
 	dest?: LocalDest;

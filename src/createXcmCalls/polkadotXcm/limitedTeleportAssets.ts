@@ -4,15 +4,15 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../createXcmTypes';
-import { Registry } from '../registry';
-import { Direction } from '../types';
-import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import { CreateXcmCallOpts } from './types';
-import { establishXcmPallet } from './util/establishXcmPallet';
+import { createXcmTypes } from '../../createXcmTypes';
+import type { Registry } from '../../registry';
+import { Direction } from '../../types';
+import { normalizeArrToStr } from '../../util/normalizeArrToStr';
+import type { CreateXcmCallOpts } from '../types';
+import { establishXcmPallet } from '../util/establishXcmPallet';
 
 /**
- * Build a Polkadot-js SubmittableExtrinsic for a `teleportAssets` call.
+ * Build a Polkadot-js SubmittableExtrinsic for a `limitedTeleportAssets` call.
  *
  * @param api ApiPromise
  * @param direction Denotes the xcm direction of the call.
@@ -21,8 +21,11 @@ import { establishXcmPallet } from './util/establishXcmPallet';
  * @param amounts An array of amounts. Note, this should be the same size and order as assetIds.
  * @param destChainId The id of the destination chain. This will be zero for a relay chain.
  * @param xcmVersion Supported XCM version.
+ * @param specName The specName for the current chain
+ * @param registry Registry
+ * @param opts CreateXcmCallOpts
  */
-export const teleportAssets = async (
+export const limitedTeleportAssets = async (
 	api: ApiPromise,
 	direction: Direction,
 	destAddr: string,
@@ -34,9 +37,10 @@ export const teleportAssets = async (
 	registry: Registry,
 	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	const { paysWithFeeDest, isForeignAssetsTransfer } = opts;
+	const { isLimited, weightLimit, paysWithFeeDest, isForeignAssetsTransfer } =
+		opts;
 	const pallet = establishXcmPallet(api);
-	const ext = api.tx[pallet].teleportAssets;
+	const ext = api.tx[pallet].limitedTeleportAssets;
 	const typeCreator = createXcmTypes[direction];
 	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	const dest = typeCreator.createDest(api, destChainId, xcmVersion);
@@ -52,6 +56,10 @@ export const teleportAssets = async (
 			isLiquidTokenTransfer: false,
 		}
 	);
+	const weightLimitType = typeCreator.createWeightLimit(api, {
+		isLimited,
+		weightLimit,
+	});
 
 	const feeAssetItem = paysWithFeeDest
 		? await typeCreator.createFeeAssetItem(api, {
@@ -61,5 +69,5 @@ export const teleportAssets = async (
 		  })
 		: api.registry.createType('u32', 0);
 
-	return ext(dest, beneficiary, assets, feeAssetItem);
+	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);
 };

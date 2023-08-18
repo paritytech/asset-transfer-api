@@ -3,8 +3,7 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
-import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
-import { getChainAssetId } from '../createXcmTypes/util/getChainAssetId';
+import { getAssetHubAssetId } from '../createXcmTypes/util/getAssetHubAssetId';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { checkLiquidTokenValidity } from '../errors/checkXcmTxInputs';
 import { Registry } from '../registry';
@@ -57,15 +56,8 @@ export const checkLocalTxInput = async (
 		if (foreignAssetIsInRegistry) {
 			return LocalTxType.ForeignAssets;
 		} else {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
-				multiLocationStr,
-				api
-			);
-			if (isValidForeignAsset) {
-				return LocalTxType.ForeignAssets;
-			} else {
-				throw new BaseError(`MultiLocation ${assetIds[0]} not found`);
-			}
+			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
+			throw new BaseError(`MultiLocation ${multiLocationStr} not found`);
 		}
 	} else if (isLiquidTokenTransfer) {
 		const relayChainInfo = registry.currentRelayRegistry;
@@ -99,7 +91,7 @@ export const checkLocalTxInput = async (
 			const isNotANumber = Number.isNaN(parseInt(assetId));
 			// not a number so we check the registry using the symbol
 			if (isNotANumber) {
-				assetId = await getChainAssetId(
+				assetId = await getAssetHubAssetId(
 					api,
 					assetId,
 					specName,

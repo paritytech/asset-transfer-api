@@ -4,19 +4,19 @@ import { ApiPromise } from '@polkadot/api';
 import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
+import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
+import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import {
-	ASSET_HUB_CHAIN_ID,
-	MAX_ASSETS_FOR_TRANSFER,
-	RELAY_CHAIN_IDS,
-} from '../consts';
+	CheckXcmTxInputsOpts,
+	CreateWeightLimitOpts,
+} from '../createXcmTypes/types';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
-import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
-import { Direction } from '../types';
-import { AssetInfo } from '../types';
+import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
+import { AssetInfo, Direction } from '../types';
 import { BaseError } from './BaseError';
 
 /**
@@ -82,6 +82,23 @@ export const checkAssetsAmountMatch = (
 	if (assetIds.length !== amounts.length) {
 		throw new BaseError(
 			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
+		);
+	}
+};
+
+/**
+ * Ensures that foreign asset txs are not constructed when xcm pallet is xTokens
+ *
+ * @param xcmPallet
+ * @param isForeignAssetsTransfer
+ */
+export const checkParaToSystemIsNonForeignAssetXTokensTx = (
+	xcmPallet: XcmPalletName,
+	isForeignAssetsTransfer: boolean
+) => {
+	if (xcmPallet === XcmPalletName.xTokens && isForeignAssetsTransfer) {
+		throw new BaseError(
+			`ParaToSystem: xTokens pallet does not support foreign asset transfers`
 		);
 	}
 };
@@ -157,9 +174,9 @@ export const checkIfNativeRelayChainAssetPresentInMultiAssetIdList = (
  * native and foreign assets to the dest chain cannot be mixed as it is either a reserve or teleport
  * throws an error if foreign and native assets are found
  *
+ * @param xcmDirection
  * @param destChainId
  * @param multiLocationAssetIds
- * @param isForeignAssetsTransfer
  * @returns boolean
  */
 export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
@@ -197,10 +214,8 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
  * Checks that each multilocation string provided is of the proper format to create a MultiLocation
  * throws an error if the MultiLocation is unable to be created
  *
- * @param destChainId
+ * @param api
  * @param multiLocationAssetIds
- * @param isForeignAssetsTransfer
- * @returns boolean
  */
 export const checkAllMultiLocationAssetIdsAreValid = (
 	api: ApiPromise,
@@ -385,14 +400,7 @@ const checkSystemAssets = async (
 		);
 
 		if (!multiLocationIsInRegistry) {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
-				assetId,
-				api
-			);
-
-			if (!isValidForeignAsset) {
-				throw new BaseError(`MultiLocation ${assetId} not found`);
-			}
+			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
 		}
 	} else if (isLiquidTokenTransfer) {
 		await checkLiquidTokenValidity(api, systemParachainInfo, assetId);
@@ -479,6 +487,108 @@ const checkSystemAssets = async (
 	}
 };
 
+export const checkParaAssets = async (
+	api: ApiPromise,
+	assetId: string,
+	specName: string,
+	registry: Registry,
+	xcmDirection: string,
+	isForeignAssetsTransfer: boolean
+) => {
+	const { xcAssets } = registry;
+	const currentRelayChainSpecName = registry.relayChain;
+
+	if (isForeignAssetsTransfer) {
+		// check that the asset id is a valid multilocation
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
+			api,
+			assetId,
+			registry
+		);
+
+		if (!multiLocationIsInRegistry) {
+			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
+		}
+	} else {
+		// check if assetId is a number
+		const parsedAssetIdAsNumber = Number.parseInt(assetId);
+		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+
+		if (!invalidNumber) {
+			// query the parachains assets pallet to see if it has a value matching the assetId
+			const asset = await api.query.assets.asset(assetId);
+
+			if (asset.isNone) {
+				throw new BaseError(
+					`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`
+				);
+			}
+
+			// check that xcAsset exists in the xcAsset registry
+			let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
+			if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
+				relayChainXcAssetInfoKeys = xcAssets.kusama;
+			}
+			if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
+				relayChainXcAssetInfoKeys = xcAssets.polkadot;
+			}
+
+			if (relayChainXcAssetInfoKeys.length === 0) {
+				throw new BaseError(
+					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
+				);
+			}
+
+			let xcAsset: XCMChainInfoDataKeys | string = '';
+			for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
+				const chainInfo = relayChainXcAssetInfoKeys[i];
+
+				for (let j = 0; j < chainInfo.data.length; j++) {
+					const xcAssetData = chainInfo.data[j];
+					if (
+						typeof xcAssetData.asset === 'string' &&
+						xcAssetData.asset === assetId
+					) {
+						xcAsset = xcAssetData;
+						break;
+					}
+				}
+			}
+
+			if (typeof xcAsset === 'string') {
+				throw new BaseError(`unable to identify xcAsset with ID ${assetId}`);
+			}
+		} else {
+			// not a valid number
+			// check if id is a valid token symbol of the system parachain chain
+			let isValidTokenSymbol = false;
+
+			const parachainAssets = await api.query.assets.asset.entries();
+
+			for (let i = 0; i < parachainAssets.length; i++) {
+				const parachainAsset = parachainAssets[i];
+				const id = parachainAsset[0].args[0];
+
+				const metadata = await api.query.assets.metadata(id);
+
+				if (
+					metadata.symbol.toHuman()?.toString().toLowerCase() ===
+					assetId.toLowerCase()
+				) {
+					isValidTokenSymbol = true;
+				}
+			}
+
+			// if no native token for the parachain was matched, throw an error
+			if (!isValidTokenSymbol) {
+				throw new BaseError(
+					`${xcmDirection}: symbol assetId ${assetId} not found for parachain ${specName}`
+				);
+			}
+		}
+	}
+};
+
 /**
  * This will check the given assetId and validate it in either string integer, or string symbol format
  *
@@ -547,13 +657,10 @@ export const checkIsValidSystemChainAssetId = async (
 const checkParaToAssetHubAssetId = async (
 	api: ApiPromise,
 	assetId: string,
-	relayChainInfo: ChainInfo,
+	specName: string,
 	registry: Registry,
 	isForeignAssetsTransfer: boolean
 ) => {
-	const assetHubChainInfo = relayChainInfo[ASSET_HUB_CHAIN_ID];
-	const assetHubSpecName = assetHubChainInfo.specName;
-
 	if (typeof assetId === 'string') {
 		// An assetId may be a hex value to represent a GeneralKey for erc20 tokens.
 		// These will be represented as Foreign Assets in regard to its MultiLocation
@@ -568,11 +675,10 @@ const checkParaToAssetHubAssetId = async (
 			return;
 		}
 
-		await checkSystemAssets(
+		await checkParaAssets(
 			api,
 			assetId,
-			assetHubSpecName,
-			assetHubChainInfo,
+			specName,
 			registry,
 			'ParaToSystem',
 			isForeignAssetsTransfer
@@ -719,10 +825,17 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
  * @param paysWithFeeDest
  */
 export const checkXcmVersionIsValidForPaysWithFeeDest = (
+	xcmDirection: Direction,
 	xcmVersion?: number,
 	paysWithFeeDest?: string
 ) => {
-	if (paysWithFeeDest && xcmVersion && xcmVersion < 3) {
+	if (
+		xcmDirection != Direction.ParaToSystem &&
+		xcmDirection != Direction.ParaToPara &&
+		paysWithFeeDest &&
+		xcmVersion &&
+		xcmVersion < 3
+	) {
 		throw new BaseError('paysWithFeeDest requires XCM version 3');
 	}
 };
@@ -811,9 +924,33 @@ export const checkAssetIdInput = async (
 			await checkParaToAssetHubAssetId(
 				api,
 				assetId,
-				relayChainInfo,
+				specName,
 				registry,
 				isForeignAssetsTransfer
+			);
+		}
+	}
+};
+
+/**
+ * This will check isLimited and ensure that both refTime and proofSize are
+ * provided if it is true
+ *
+ * @param isLimiited
+ * @param refTime
+ * @param proofSize
+ */
+export const checkWeightLimit = (opts: CreateWeightLimitOpts) => {
+	if (opts.isLimited) {
+		if (!opts.weightLimit?.refTime) {
+			throw new BaseError(
+				'refTime value not found for weight limited transaction. Please provide refTime value'
+			);
+		}
+
+		if (!opts.weightLimit?.proofSize) {
+			throw new BaseError(
+				'proofSize value not found for weight limited transaction. Please provide proofSize value'
 			);
 		}
 	}
@@ -835,14 +972,24 @@ export const checkXcmTxInputs = async (
 	assetIds: string[],
 	amounts: string[],
 	xcmDirection: Direction,
+	xcmPallet: XcmPalletName,
 	specName: string,
 	registry: Registry,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
-	xcmVersion?: number,
-	paysWithFeeDest?: string
+	opts: CheckXcmTxInputsOpts
 ) => {
+	const { xcmVersion, paysWithFeeDest, isLimited, weightLimit } = opts;
 	const relayChainInfo = registry.currentRelayRegistry;
+
+	/**
+	 * Checks that the XcmVersion works with `PaysWithFeeDest` option
+	 */
+	checkXcmVersionIsValidForPaysWithFeeDest(
+		xcmDirection,
+		xcmVersion,
+		paysWithFeeDest
+	);
 
 	/**
 	 * Checks that the direction of the `transferLiquidToken` option is correct.
@@ -851,11 +998,6 @@ export const checkXcmTxInputs = async (
 		xcmDirection,
 		isLiquidTokenTransfer
 	);
-
-	/**
-	 * Checks that the XcmVersion works with `PaysWithFeeDest` option
-	 */
-	checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
 
 	/**
 	 * Checks to ensure that assetId's have a length no greater than MAX_ASSETS_FOR_TRANSFER
@@ -875,6 +1017,18 @@ export const checkXcmTxInputs = async (
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
+	await checkAssetIdInput(
+		api,
+		assetIds,
+		relayChainInfo,
+		specName,
+		xcmDirection,
+		registry,
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer
+	);
+	checkWeightLimit({ isLimited, weightLimit });
+
 	await checkAssetIdInput(
 		api,
 		assetIds,
@@ -933,6 +1087,10 @@ export const checkXcmTxInputs = async (
 	}
 
 	if (xcmDirection === Direction.ParaToSystem) {
+		checkParaToSystemIsNonForeignAssetXTokensTx(
+			xcmPallet,
+			isForeignAssetsTransfer
+		);
 		checkAssetsAmountMatch(assetIds, amounts);
 	}
 };

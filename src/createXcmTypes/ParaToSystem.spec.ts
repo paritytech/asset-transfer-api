@@ -116,10 +116,13 @@ describe('ParaToSystem', () => {
 		it('Should work for V2', async () => {
 			const assets = await ParaToSystem.createAssets(
 				mockParachainApi,
-				['100', '200'],
+				['1000000000000', '2000000000'],
 				2,
 				'moonriver',
-				['1', '2'],
+				[
+					'42259045809535163221576417993425387648',
+					'182365888117048807484804376330534607370',
+				],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -132,47 +135,54 @@ describe('ParaToSystem', () => {
 					{
 						id: {
 							concrete: {
-								parents: 0,
+								parents: 1,
 								interior: mockParachainApi.registry.createType(
 									'InteriorMultiLocation',
 									{
-										X2: [{ PalletInstance: 50 }, { GeneralIndex: 1 }],
+										Here: null,
 									}
 								),
 							},
 						},
 						fun: {
-							fungible: 100,
+							fungible: 1000000000000,
 						},
 					},
 					{
 						id: {
 							concrete: {
-								parents: 0,
+								parents: 1,
 								interior: mockParachainApi.registry.createType(
 									'InteriorMultiLocation',
 									{
-										X2: [{ PalletInstance: 50 }, { GeneralIndex: 2 }],
+										X3: [
+											{ Parachain: 1000 },
+											{ PalletInstance: 50 },
+											{ GeneralIndex: 8 },
+										],
 									}
 								),
 							},
 						},
 						fun: {
-							fungible: 200,
+							fungible: 2000000000,
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()?.toString()).toStrictEqual(expectedRes.toString());
+			expect(assets.toString()).toEqual(JSON.stringify(expectedRes));
 		});
 		it('Should work for V3', async () => {
 			const assets = await ParaToSystem.createAssets(
 				mockParachainApi,
-				['100', '200'],
+				['1000000', '20000000000'],
 				3,
 				'moonriver',
-				['1', '2'],
+				[
+					'182365888117048807484804376330534607370',
+					'311091173110107856861649819128533077277',
+				],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -185,53 +195,71 @@ describe('ParaToSystem', () => {
 					{
 						id: {
 							concrete: {
-								parents: 0,
+								parents: 1,
 								interior: mockParachainApi.registry.createType(
 									'InteriorMultiLocation',
 									{
-										X2: [{ PalletInstance: 50 }, { GeneralIndex: 1 }],
+										X3: [
+											{ Parachain: 1000 },
+											{ PalletInstance: 50 },
+											{ GeneralIndex: 8 },
+										],
 									}
 								),
 							},
 						},
 						fun: {
-							fungible: 100,
+							fungible: 1000000,
 						},
 					},
 					{
 						id: {
 							concrete: {
-								parents: 0,
+								parents: 1,
 								interior: mockParachainApi.registry.createType(
 									'InteriorMultiLocation',
 									{
-										X2: [{ PalletInstance: 50 }, { GeneralIndex: 2 }],
+										X3: [
+											{ Parachain: 1000 },
+											{ PalletInstance: 50 },
+											{ GeneralIndex: 1984 },
+										],
 									}
 								),
 							},
 						},
 						fun: {
-							fungible: 200,
+							fungible: 20000000000,
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()?.toString()).toStrictEqual(expectedRes.toString());
+			expect(assets.toString()).toEqual(JSON.stringify(expectedRes));
 		});
 	});
 	describe('WeightLimit', () => {
-		it('Should work when given a weightLimit', () => {
-			const weightLimit = ParaToSystem.createWeightLimit(
-				mockParachainApi,
-				'1000000000'
-			);
+		it('Should work when isLimited is true', () => {
+			const isLimited = true;
+			const refTime = '100000000';
+			const proofSize = '1000';
+
+			const weightLimit = ParaToSystem.createWeightLimit(mockParachainApi, {
+				isLimited,
+				weightLimit: {
+					refTime,
+					proofSize,
+				},
+			});
 			expect(weightLimit.toJSON()).toStrictEqual({
-				limited: 1000000000,
+				limited: {
+					proofSize: 1000,
+					refTime: 100000000,
+				},
 			});
 		});
-		it('Should work when no weightLimit is present', () => {
-			const weightLimit = ParaToSystem.createWeightLimit(mockParachainApi);
+		it('Should work when isLimited is falsy', () => {
+			const weightLimit = ParaToSystem.createWeightLimit(mockParachainApi, {});
 
 			expect(weightLimit.toJSON()).toStrictEqual({
 				unlimited: null,

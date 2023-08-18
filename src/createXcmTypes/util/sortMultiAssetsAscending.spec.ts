@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { MultiAsset } from '../../types';
+import { MultiAsset, XcmMultiAsset } from '../../types';
 import { sortMultiAssetsAscending } from './sortMultiAssetsAscending';
 
 describe('sortMultiAssetsAscending', () => {
@@ -745,6 +745,101 @@ describe('sortMultiAssetsAscending', () => {
 		];
 
 		const res = sortMultiAssetsAscending(multiAssets);
+
+		expect(res.length).toEqual(expected.length);
+		expect(res[0].id).toEqual(expected[0].id);
+		expect(res[res.length - 1].fun).toEqual(expected[expected.length - 1].fun);
+		expect(JSON.stringify(res)).toEqual(JSON.stringify(expected));
+	});
+
+	it('Should correctly sort based on differing GeneralIndex values for X3s when all other fields are the same', () => {
+		const multiAssets: XcmMultiAsset[] = [
+			{
+				fun: {
+					Fungible: { Fungible: '200000000' },
+				},
+				id: {
+					Concrete: mockSystemApi.registry.createType('MultiLocation', {
+						parents: 1,
+						interior: mockSystemApi.registry.createType(
+							'InteriorMultiLocation',
+							{
+								X3: [
+									{ Parachain: '1000' },
+									{ PalletInstance: '50' },
+									{ GeneralIndex: '1984' },
+								],
+							}
+						),
+					}),
+				},
+			},
+			{
+				fun: {
+					Fungible: { Fungible: '200000000' },
+				},
+				id: {
+					Concrete: mockSystemApi.registry.createType('MultiLocation', {
+						parents: 1,
+						interior: mockSystemApi.registry.createType(
+							'InteriorMultiLocation',
+							{
+								X3: [
+									{ Parachain: '1000' },
+									{ PalletInstance: '50' },
+									{ GeneralIndex: '8' },
+								],
+							}
+						),
+					}),
+				},
+			},
+		];
+
+		const expected: XcmMultiAsset[] = [
+			{
+				fun: {
+					Fungible: { Fungible: '200000000' },
+				},
+				id: {
+					Concrete: mockSystemApi.registry.createType('MultiLocation', {
+						parents: 1,
+						interior: mockSystemApi.registry.createType(
+							'InteriorMultiLocation',
+							{
+								X3: [
+									{ Parachain: '1000' },
+									{ PalletInstance: '50' },
+									{ GeneralIndex: '8' },
+								],
+							}
+						),
+					}),
+				},
+			},
+			{
+				fun: {
+					Fungible: { Fungible: '200000000' },
+				},
+				id: {
+					Concrete: mockSystemApi.registry.createType('MultiLocation', {
+						parents: 1,
+						interior: mockSystemApi.registry.createType(
+							'InteriorMultiLocation',
+							{
+								X3: [
+									{ Parachain: '1000' },
+									{ PalletInstance: '50' },
+									{ GeneralIndex: '1984' },
+								],
+							}
+						),
+					}),
+				},
+			},
+		];
+
+		const res = sortMultiAssetsAscending(multiAssets) as XcmMultiAsset[];
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);

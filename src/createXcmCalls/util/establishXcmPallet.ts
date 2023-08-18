@@ -2,9 +2,12 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-enum XcmPalletName {
+import { Direction } from '../../types';
+
+export enum XcmPalletName {
 	xcmPallet = 'xcmPallet',
 	polkadotXcm = 'polkadotXcm',
+	xTokens = 'xTokens',
 }
 
 /**
@@ -14,7 +17,24 @@ enum XcmPalletName {
  *
  * @param api ApiPromise
  */
-export const establishXcmPallet = (api: ApiPromise): XcmPalletName => {
+export const establishXcmPallet = (
+	api: ApiPromise,
+	direction?: Direction,
+	isForeignAssetsTransfer?: boolean
+): XcmPalletName => {
+	// checks for the existence of the xTokens pallet
+	// for direction ParaToSystem, if it exists and the tx is
+	// not a foreign assets transfer we return the xTokens pallet
+	if (
+		isXTokensParaToSystemNonForeignAssetsPalletTx(
+			api,
+			direction,
+			isForeignAssetsTransfer
+		)
+	) {
+		return XcmPalletName.xTokens;
+	}
+
 	if (api.tx.polkadotXcm) {
 		return XcmPalletName.polkadotXcm;
 	} else if (api.tx.xcmPallet) {
@@ -24,4 +44,27 @@ export const establishXcmPallet = (api: ApiPromise): XcmPalletName => {
 			"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API"
 		);
 	}
+};
+
+/**
+ * Determines if the tx is an xTokens ParaToSystem non foreign assets pallet tx
+ *
+ * @param api ApiPromise
+ */
+const isXTokensParaToSystemNonForeignAssetsPalletTx = (
+	api: ApiPromise,
+	direction?: Direction,
+	isForeignAssetsTransfer?: boolean
+): boolean => {
+	if (
+		isForeignAssetsTransfer != undefined &&
+		!isForeignAssetsTransfer &&
+		direction &&
+		direction === Direction.ParaToSystem &&
+		api.tx.xTokens
+	) {
+		return true;
+	}
+
+	return false;
 };

@@ -9,7 +9,13 @@ import type {
 } from '@polkadot/types/interfaces';
 
 import type { Registry } from '../registry';
-import type { RequireOnlyOne } from '../types';
+import type {
+	RequireOnlyOne,
+	XCMDestBenificiary,
+	XcmMultiLocation,
+	XcmVersionedMultiAsset,
+	XcmWeight,
+} from '../types';
 
 export interface CreateAssetsOpts {
 	registry: Registry;
@@ -26,6 +32,18 @@ export interface CreateFeeAssetItemOpts {
 	xcmVersion?: number;
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
+}
+
+export interface CreateWeightLimitOpts {
+	isLimited?: boolean;
+	weightLimit?: { refTime?: string; proofSize?: string };
+}
+
+export interface CheckXcmTxInputsOpts {
+	xcmVersion?: number;
+	paysWithFeeDest?: string;
+	isLimited?: boolean;
+	weightLimit?: { refTime?: string; proofSize?: string };
 }
 
 export interface ICreateXcmType {
@@ -47,16 +65,48 @@ export interface ICreateXcmType {
 		assets: string[],
 		opts: CreateAssetsOpts
 	) => Promise<VersionedMultiAssets>;
-	createWeightLimit: (api: ApiPromise, weightLimit?: string) => WeightLimitV2;
+	createWeightLimit: (
+		api: ApiPromise,
+		opts: CreateWeightLimitOpts
+	) => WeightLimitV2;
 	createFeeAssetItem: (
 		api: ApiPromise,
 		opts: CreateFeeAssetItemOpts
 	) => Promise<u32>;
+	createXTokensBeneficiary?: (
+		destChainId: string,
+		accountId: string,
+		xcmVersion: number
+	) => XCMDestBenificiary;
+	createXTokensAssets?: (
+		api: ApiPromise,
+		amounts: string[],
+		xcmVersion: number,
+		specName: string,
+		assets: string[],
+		opts: CreateAssetsOpts
+	) => Promise<VersionedMultiAssets>;
+	createXTokensAsset?: (
+		api: ApiPromise,
+		amount: string,
+		xcmVersion: number,
+		specName: string,
+		asset: string,
+		opts: CreateAssetsOpts
+	) => Promise<XcmVersionedMultiAsset>;
+	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
+	createXTokensFeeAssetItem?: (
+		api: ApiPromise,
+		opts: CreateFeeAssetItemOpts
+	) => XcmMultiLocation;
 }
 
 interface IWeightLimitBase {
 	Unlimited: null;
-	Limited: string;
+	Limited: {
+		refTime: string;
+		proofSize: string;
+	};
 }
 
 export type IWeightLimit = RequireOnlyOne<IWeightLimitBase>;

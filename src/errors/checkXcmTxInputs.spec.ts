@@ -1,8 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { AssetsTransferApi } from '../AssetsTransferApi';
+import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';
+import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
-import { mockParachainApi } from '../testHelpers/mockParachainApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
@@ -15,11 +17,19 @@ import {
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
+	checkParaAssets,
+	checkParaToSystemIsNonForeignAssetXTokensTx,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
+	checkWeightLimit,
 	checkXcmVersionIsValidForPaysWithFeeDest,
 } from './checkXcmTxInputs';
 
+const parachainAssetsApi = new AssetsTransferApi(
+	adjustedMockParachainApi,
+	'moonriver',
+	2
+);
 const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
 		const [specName, testInputs, direction, errorMessage] = test;
@@ -28,7 +38,7 @@ const runTests = async (tests: Test[]) => {
 
 		await expect(async () => {
 			await checkAssetIdInput(
-				mockParachainApi,
+				parachainAssetsApi._api,
 				testInputs,
 				currentRegistry,
 				specName,
@@ -249,7 +259,7 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
-					mockParachainApi,
+					parachainAssetsApi._api,
 					testInputs,
 					currentRegistry,
 					specName,
@@ -332,25 +342,13 @@ describe('checkAssetIds', () => {
 			}).rejects.toThrowError(errorMessage);
 		}
 	});
-	it('Should error when direction is ParaToSystem and the string assetId is not found in the system parachains tokens or assets', async () => {
+	it('Should correctly error when direction is ParaToSystem and the provided integer assetId is not found in the system parachains assetIds', async () => {
 		const tests: Test[] = [
 			[
-				'Statemint',
-				['1337', 'xcDOT'],
+				'moonriver',
+				['311091173110107856861649819128533077277', '200'],
 				Direction.ParaToSystem,
-				`ParaToSystem: assetId xcDOT not found for system parachain statemint`,
-			],
-			[
-				'Statemine',
-				['KSM', 'xcMOVR'],
-				Direction.ParaToSystem,
-				`ParaToSystem: assetId xcMOVR not found for system parachain statemine`,
-			],
-			[
-				'Westmint',
-				['WND', 'Test Westend'],
-				Direction.ParaToSystem,
-				`ParaToSystem: assetId Test Westend not found for system parachain westmint`,
+				`ParaToSystem: integer assetId 200 not found in moonriver`,
 			],
 		];
 
@@ -360,7 +358,42 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 			await expect(async () => {
 				await checkAssetIdInput(
-					mockParachainApi,
+					parachainAssetsApi._api,
+					testInputs,
+					currentRegistry,
+					specName,
+					direction,
+					registry,
+					false,
+					false
+				);
+			}).rejects.toThrowError(errorMessage);
+		}
+	});
+	it('Should correctly error when direction is ParaToSystem and the string assetId has no match in the parachains asset symbols', async () => {
+		const tests: Test[] = [
+			[
+				'moonriver',
+				['xcKSM', 'USDT'],
+				Direction.ParaToSystem,
+				`ParaToSystem: symbol assetId USDT not found for parachain moonriver`,
+			],
+			[
+				'moonriver',
+				['xcUSDT', 'ASTR'],
+				Direction.ParaToSystem,
+				`ParaToSystem: symbol assetId ASTR not found for parachain moonriver`,
+			],
+		];
+
+		for (const test of tests) {
+			const [specName, testInputs, direction, errorMessage] = test;
+			const registry = new Registry(specName, {});
+			const currentRegistry = registry.currentRelayRegistry;
+
+			await expect(async () => {
+				await checkAssetIdInput(
+					parachainAssetsApi._api,
 					testInputs,
 					currentRegistry,
 					specName,
@@ -378,7 +411,7 @@ describe('checkAssetIds', () => {
 
 		await expect(async () => {
 			await checkAssetIdInput(
-				mockParachainApi,
+				parachainAssetsApi._api,
 				['0x1234'],
 				currentRegistry,
 				'moonriver',
@@ -464,6 +497,30 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 	});
 });
 
+describe('checkWeightLimit', () => {
+	it('Should correctly error when refTime is not provided and isLimited is true', () => {
+		const err = () =>
+			checkWeightLimit({
+				isLimited: true,
+				weightLimit: { refTime: undefined, proofSize: '500' },
+			});
+
+		expect(err).toThrowError(
+			'refTime value not found for weight limited transaction. Please provide refTime value'
+		);
+	});
+	it('Should correctly error when refTime is not provided and isLimited is true', () => {
+		const err = () =>
+			checkWeightLimit({
+				isLimited: true,
+				weightLimit: { refTime: '1000', proofSize: undefined },
+			});
+
+		expect(err).toThrowError(
+			'proofSize value not found for weight limited transaction. Please provide proofSize value'
+		);
+	});
+});
 describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () => {
 	it('Should correctly error when isForeignAssetsTransfer and both non native and foreign multilocations are in assetIds for direction SystemToPara', () => {
 		const expectedErrorMessage =
@@ -665,7 +722,11 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 		const paysWithFeeDest = '1984';
 
 		const err = () =>
-			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+			checkXcmVersionIsValidForPaysWithFeeDest(
+				Direction.SystemToPara,
+				xcmVersion,
+				paysWithFeeDest
+			);
 
 		expect(err).toThrow('paysWithFeeDest requires XCM version 3');
 	});
@@ -674,9 +735,45 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 		const paysWithFeeDest = '1984';
 
 		const err = () =>
-			checkXcmVersionIsValidForPaysWithFeeDest(xcmVersion, paysWithFeeDest);
+			checkXcmVersionIsValidForPaysWithFeeDest(
+				Direction.SystemToPara,
+				xcmVersion,
+				paysWithFeeDest
+			);
 
 		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+	});
+
+	it('Should correctly not throw an error if xcmDirection is ParaToSystem or ParaToPara', () => {
+		const xcmVersion = 3;
+		const paysWithFeeDest = '1984';
+
+		const err = () =>
+			checkXcmVersionIsValidForPaysWithFeeDest(
+				Direction.ParaToSystem,
+				xcmVersion,
+				paysWithFeeDest
+			);
+
+		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+	});
+});
+
+describe('checkParaToSystemIsNonForeignAssetXTokensTx', () => {
+	it('Should correctly throw an error when xcm pallet is xTokens and isForeignAssetsTransfer is true', () => {
+		const isForeignAssetsTransfer = true;
+		const xcmPallet = XcmPalletName.xTokens;
+
+		const err = () => {
+			checkParaToSystemIsNonForeignAssetXTokensTx(
+				xcmPallet,
+				isForeignAssetsTransfer
+			);
+		};
+
+		expect(err).toThrow(
+			'ParaToSystem: xTokens pallet does not support foreign asset transfers'
+		);
 	});
 });
 
@@ -687,6 +784,166 @@ describe('checkLiquidTokenTransferDirectionValidity', () => {
 
 		expect(err).toThrow(
 			'isLiquidTokenTransfer may not be true for the xcmDirection: ParaToSystem.'
+		);
+	});
+});
+
+describe('checkParaAssets', () => {
+	it('Should correctly resolve when a valid symbol assetId is provided', async () => {
+		const assetId = 'xcUSDt';
+		const specName = 'moonriver';
+		const registry = new Registry(specName, {});
+		let didNotError = true;
+
+		try {
+			await checkParaAssets(
+				adjustedMockParachainApi,
+				assetId,
+				specName,
+				registry,
+				Direction.ParaToSystem,
+				false
+			);
+		} catch (err) {
+			didNotError = false;
+		}
+
+		expect(didNotError).toBeTruthy();
+	});
+	it('Should correctly resolve when a valid integer assetId is provided', async () => {
+		const assetId = '311091173110107856861649819128533077277';
+		const specName = 'moonriver';
+		const registry = new Registry(specName, {});
+		let didNotError = true;
+
+		try {
+			await checkParaAssets(
+				adjustedMockParachainApi,
+				assetId,
+				specName,
+				registry,
+				Direction.ParaToSystem,
+				false
+			);
+		} catch (err) {
+			didNotError = false;
+		}
+
+		expect(didNotError).toBeTruthy();
+	});
+	it('Should correctly error when an invalid symbol assetId is provided', async () => {
+		const assetId = 'xcUSDfake';
+		const specName = 'moonriver';
+		const registry = new Registry(specName, {});
+
+		await expect(async () => {
+			await checkParaAssets(
+				adjustedMockParachainApi,
+				assetId,
+				specName,
+				registry,
+				Direction.ParaToSystem,
+				false
+			);
+		}).rejects.toThrowError(
+			'ParaToSystem: symbol assetId xcUSDfake not found for parachain moonriver'
+		);
+	});
+	it('Should correctly error when an invalid integer assetId is provided', async () => {
+		const assetId = '2096586909097964981698161';
+		const specName = 'moonriver';
+		const registry = new Registry(specName, {});
+
+		await expect(async () => {
+			await checkParaAssets(
+				adjustedMockParachainApi,
+				assetId,
+				specName,
+				registry,
+				Direction.ParaToSystem,
+				false
+			);
+		}).rejects.toThrowError(
+			'ParaToSystem: integer assetId 2096586909097964981698161 not found in moonriver'
+		);
+	});
+	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {
+		const assetId = '311091173110107856861649819128533077277';
+		const specName = 'moonriver';
+		const registry = new Registry(specName, {
+			injectedRegistry: {
+				xcAssets: {
+					polkadot: [],
+					kusama: [
+						{
+							relayChain: 'kusama',
+							paraID: 2000,
+							id: 'karura',
+							xcAssetCnt: '21',
+							data: [
+								{
+									paraID: 1000,
+									relayChain: 'kusama',
+									nativeChainID: 'statemine',
+									symbol: 'RMRK',
+									decimals: 10,
+									interiorType: 'x3',
+									xcmV1Standardized: [
+										{
+											network: 'kusama',
+										},
+										{
+											parachain: 1000,
+										},
+										{
+											palletInstance: 50,
+										},
+										{
+											generalIndex: 8,
+										},
+									],
+									xcmV1MultiLocationByte: false,
+									xcmV1MultiLocation: {
+										v1: {
+											parents: 1,
+											interior: {
+												x3: [
+													{
+														parachain: 1000,
+													},
+													{
+														palletInstance: 50,
+													},
+													{
+														generalIndex: 8,
+													},
+												],
+											},
+										},
+									},
+									asset: {
+										ForeignAsset: '0',
+									},
+									source: ['2000'],
+								},
+							],
+						},
+					],
+				},
+			},
+		});
+
+		await expect(async () => {
+			await checkParaAssets(
+				adjustedMockParachainApi,
+				assetId,
+				specName,
+				registry,
+				Direction.ParaToSystem,
+				false
+			);
+		}).rejects.toThrowError(
+			'unable to identify xcAsset with ID 311091173110107856861649819128533077277'
 		);
 	});
 });
