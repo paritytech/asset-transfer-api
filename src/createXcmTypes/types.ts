@@ -39,6 +39,13 @@ export interface CreateWeightLimitOpts {
 	weightLimit?: { refTime?: string; proofSize?: string };
 }
 
+export interface CheckXcmTxInputsOpts {
+	xcmVersion?: number;
+	paysWithFeeDest?: string;
+	isLimited?: boolean;
+	weightLimit?: { refTime?: string; proofSize?: string };
+}
+
 export interface ICreateXcmType {
 	createBeneficiary: (
 		api: ApiPromise,

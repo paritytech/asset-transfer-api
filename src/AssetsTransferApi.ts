@@ -297,14 +297,14 @@ export class AssetsTransferApi {
 			xcmPallet,
 			_specName,
 			registry,
-			{
-				isLimited,
-				weightLimit,
-			},
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
-			xcmVersion,
-			paysWithFeeDest
+			{
+				xcmVersion,
+				paysWithFeeDest,
+				isLimited,
+				weightLimit,
+			}
 		);
 
 		const assetType = this.fetchAssetType(

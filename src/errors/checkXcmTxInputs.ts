@@ -6,7 +6,10 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
-import { CreateWeightLimitOpts } from '../createXcmTypes/types';
+import {
+	CheckXcmTxInputsOpts,
+	CreateWeightLimitOpts,
+} from '../createXcmTypes/types';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
@@ -972,12 +975,11 @@ export const checkXcmTxInputs = async (
 	xcmPallet: XcmPalletName,
 	specName: string,
 	registry: Registry,
-	opts: CreateWeightLimitOpts,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
-	xcmVersion?: number,
-	paysWithFeeDest?: string
+	opts: CheckXcmTxInputsOpts
 ) => {
+	const { xcmVersion, paysWithFeeDest, isLimited, weightLimit } = opts;
 	const relayChainInfo = registry.currentRelayRegistry;
 
 	/**
@@ -1025,7 +1027,7 @@ export const checkXcmTxInputs = async (
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer
 	);
-	checkWeightLimit(opts);
+	checkWeightLimit({ isLimited, weightLimit });
 
 	await checkAssetIdInput(
 		api,
