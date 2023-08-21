@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.1.0-beta.3](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.2..v0.1.0-beta.3)(2023-08-21)
+
+## Fix
+
+- fix: Update System Parachain Id check based on chainId 
+- fix: remove incorrect reference to '0' for Native Relay Token
+
+## Features
+
+- feat: add poolAssets support
+- feat: add support for xTokens pallet
+
+## Docs
+
+- docs: update README.md 
+
+## Chore
+
+- chore(deps): bump word-wrap from 1.2.3 to 1.2.5
+- chore(examples): add payload paysWithFeeOrigin example
+- chore(deps): bump semver from 6.3.0 to 6.3.1
+- chore: update naming to support AssetHub specnames 
+
 ## [0.1.0-beta.2](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.1..v0.1.0-beta.2)(2023-08-09)
 
 ## Fix
