@@ -21,7 +21,6 @@ import {
 	checkParaToSystemIsNonForeignAssetXTokensTx,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
-	checkWeightLimit,
 	checkXcmVersionIsValidForPaysWithFeeDest,
 } from './checkXcmTxInputs';
 
@@ -497,30 +496,6 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 	});
 });
 
-describe('checkWeightLimit', () => {
-	it('Should correctly error when refTime is not provided and isLimited is true', () => {
-		const err = () =>
-			checkWeightLimit({
-				isLimited: true,
-				weightLimit: { refTime: undefined, proofSize: '500' },
-			});
-
-		expect(err).toThrowError(
-			'refTime value not found for weight limited transaction. Please provide refTime value'
-		);
-	});
-	it('Should correctly error when refTime is not provided and isLimited is true', () => {
-		const err = () =>
-			checkWeightLimit({
-				isLimited: true,
-				weightLimit: { refTime: '1000', proofSize: undefined },
-			});
-
-		expect(err).toThrowError(
-			'proofSize value not found for weight limited transaction. Please provide proofSize value'
-		);
-	});
-});
 describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () => {
 	it('Should correctly error when isForeignAssetsTransfer and both non native and foreign multilocations are in assetIds for direction SystemToPara', () => {
 		const expectedErrorMessage =

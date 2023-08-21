@@ -8,7 +8,6 @@ import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import {
 	CheckXcmTxInputsOpts,
-	CreateWeightLimitOpts,
 } from '../createXcmTypes/types';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
@@ -933,30 +932,6 @@ export const checkAssetIdInput = async (
 };
 
 /**
- * This will check isLimited and ensure that both refTime and proofSize are
- * provided if it is true
- *
- * @param isLimiited
- * @param refTime
- * @param proofSize
- */
-export const checkWeightLimit = (opts: CreateWeightLimitOpts) => {
-	if (opts.isLimited) {
-		if (!opts.weightLimit?.refTime) {
-			throw new BaseError(
-				'refTime value not found for weight limited transaction. Please provide refTime value'
-			);
-		}
-
-		if (!opts.weightLimit?.proofSize) {
-			throw new BaseError(
-				'proofSize value not found for weight limited transaction. Please provide proofSize value'
-			);
-		}
-	}
-};
-
-/**
  * This will check the given inputs and ensure there is no issues when constructing
  * the xcm transaction.
  *
@@ -979,7 +954,7 @@ export const checkXcmTxInputs = async (
 	isLiquidTokenTransfer: boolean,
 	opts: CheckXcmTxInputsOpts
 ) => {
-	const { xcmVersion, paysWithFeeDest, isLimited, weightLimit } = opts;
+	const { xcmVersion, paysWithFeeDest } = opts;
 	const relayChainInfo = registry.currentRelayRegistry;
 
 	/**
@@ -1027,7 +1002,6 @@ export const checkXcmTxInputs = async (
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer
 	);
-	checkWeightLimit({ isLimited, weightLimit });
 
 	await checkAssetIdInput(
 		api,
