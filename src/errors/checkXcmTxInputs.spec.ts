@@ -106,19 +106,19 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToSystem,
-				`RelayToSystem: asset 1 is not polkadot's native asset. Expected DOT`,
+				`(RelayToSystem) asset 1 is not polkadot's native asset. Expected DOT`,
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToSystem,
-				`RelayToSystem: asset DOT is not kusama's native asset. Expected KSM`,
+				`(RelayToSystem) asset DOT is not kusama's native asset. Expected KSM`,
 			],
 			[
 				'Westend',
 				['WND', '100000'],
 				Direction.RelayToSystem,
-				`RelayToSystem: asset 100000 is not westend's native asset. Expected WND`,
+				`(RelayToSystem) asset 100000 is not westend's native asset. Expected WND`,
 			],
 		];
 
@@ -131,13 +131,13 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToPara,
-				`RelayToPara: asset 1 is not polkadot's native asset. Expected DOT`,
+				`(RelayToPara) asset 1 is not polkadot's native asset. Expected DOT`,
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToPara,
-				`RelayToPara: asset DOT is not kusama's native asset. Expected KSM`,
+				`(RelayToPara) asset DOT is not kusama's native asset. Expected KSM`,
 			],
 		];
 
@@ -485,7 +485,7 @@ describe('checkAssetIds', () => {
 describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 	it('Should error when the relay native asset and system assets are in the same assetIds list when direction is SystemToSystem', () => {
 		const expectErrorMessage =
-			'Found the relay chains native asset in list ksm,usdc. assetIds list must be empty or only contain the relay chain asset for direction SystemToSystem';
+			'Found the relay chains native asset in list [ksm,usdc]. `assetIds` list must be empty or only contain the relay chain asset for direction SystemToSystem when sending the relay chains native asset.';
 		const assetIds = ['ksm', 'usdc'];
 		const specName = 'statemine';
 		const registry = new Registry(specName, {});
@@ -499,7 +499,7 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () => {
 	it('Should correctly error when isForeignAssetsTransfer and both non native and foreign multilocations are in assetIds for direction SystemToPara', () => {
 		const expectedErrorMessage =
-			'SystemToPara: found both foreign and native multilocations in {"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}},{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}. multilocation XCMs must only include either native or foreign assets of the destination chain';
+			'(SystemToPara) found both foreign and native multilocations in {"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}},{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}. multilocation XCMs must only include either native or foreign assets of the destination chain.';
 		const xcmDirection = Direction.SystemToPara;
 		const destChainId = '2023';
 		const multiLocationAssetIds = [
@@ -572,7 +572,7 @@ describe('checkAllMultiLocationAssetIdsAreValid', () => {
 				[
 					'{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}',
 				],
-				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}:  Enum(Parachain) String should not contain decimal points or scientific notation',
+				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}} -  Enum(Parachain) String should not contain decimal points or scientific notation',
 			],
 		];
 
@@ -747,7 +747,7 @@ describe('checkParaToSystemIsNonForeignAssetXTokensTx', () => {
 		};
 
 		expect(err).toThrow(
-			'ParaToSystem: xTokens pallet does not support foreign asset transfers'
+			'(ParaToSystem) xTokens pallet does not support foreign asset transfers'
 		);
 	});
 });
