@@ -243,6 +243,7 @@ export const SystemToPara: ICreateXcmType = {
 
 			const assetIndex = await getFeeAssetItemIndex(
 				api,
+				registry,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
@@ -301,6 +302,7 @@ export const createSystemToParaMultiAssets = async (
 		if (!isRelayNative && isNotANumber) {
 			assetId = await getAssetHubAssetId(
 				api,
+				registry,
 				assetId,
 				specName,
 				isForeignAssetsTransfer

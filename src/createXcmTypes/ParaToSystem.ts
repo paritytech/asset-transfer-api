@@ -221,6 +221,7 @@ export const ParaToSystem: ICreateXcmType = {
 
 			const assetIndex = getFeeAssetItemIndex(
 				api,
+				registry,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
@@ -285,15 +286,16 @@ export const ParaToSystem: ICreateXcmType = {
 		assetId: string,
 		opts: CreateAssetsOpts
 	): Promise<XcmVersionedMultiAsset> => {
-		const { xcAssets } = opts.registry;
-		const { tokens: relayTokens } = opts.registry.currentRelayRegistry['0'];
+		const { registry } = opts;
+		const { xcAssets } = registry;
+		const { tokens: relayTokens } = registry.currentRelayRegistry['0'];
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
-		const currentRelayChainSpecName = opts.registry.relayChain;
+		const currentRelayChainSpecName = registry.relayChain;
 
 		if (!isRelayNative && isNotANumber) {
-			assetId = await getAssetHubAssetId(api, assetId, specName);
+			assetId = await getAssetHubAssetId(api, registry, assetId, specName);
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
@@ -392,8 +394,9 @@ const createXTokensMultiAssets = async (
 	assets: string[],
 	opts: CreateAssetsOpts
 ): Promise<VersionedMultiAssets> => {
-	const { xcAssets } = opts.registry;
-	const currentRelayChainSpecName = opts.registry.relayChain;
+	const { registry }  = opts;
+	const { xcAssets } = registry;
+	const currentRelayChainSpecName = registry.relayChain;
 
 	let multiAssets: XcmMultiAsset[] = [];
 
@@ -405,7 +408,7 @@ const createXTokensMultiAssets = async (
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 
 		if (isNotANumber) {
-			assetId = await getAssetHubAssetId(api, assetId, specName);
+			assetId = await getAssetHubAssetId(api, registry, assetId, specName);
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
@@ -516,6 +519,7 @@ const createParaToSystemMultiAssets = async (
 		if (isNotANumber) {
 			assetId = await getAssetHubAssetId(
 				api,
+				registry,
 				assetId,
 				specName,
 				isForeignAssetsTransfer

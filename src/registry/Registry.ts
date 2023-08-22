@@ -14,6 +14,7 @@ export class Registry {
 	readonly relayChain: RelayChains;
 	readonly currentRelayRegistry: ChainInfo;
 	readonly xcAssets: XCMChainInfoRegistry;
+	assetsCache: ChainInfoRegistry;
 
 	constructor(specName: string, opts: AssetsTransferApiOpts) {
 		this.specName = specName;
@@ -21,6 +22,15 @@ export class Registry {
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.xcAssets = this.registry.xcAssets;
+		this.assetsCache = {
+			polkadot: {},
+			kusama: {},
+			westend: {},
+			xcAssets: {
+				polkadot: [],
+				kusama: []
+			}
+		};
 	}
 
 	/**

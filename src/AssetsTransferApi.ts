@@ -191,6 +191,7 @@ export class AssetsTransferApi {
 				// throws an error if the general index is not found
 				assetId = await getAssetHubAssetId(
 					_api,
+					registry,
 					assetId,
 					_specName,
 					isForeignAssetsTransfer

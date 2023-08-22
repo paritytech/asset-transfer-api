@@ -3,8 +3,10 @@
 import { AssetsTransferApi } from '../../AssetsTransferApi';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
 import { getAssetHubAssetId } from './getAssetHubAssetId';
+import { Registry } from '../../registry';
 
 describe('getAssetHubAssetId', () => {
+	const registry = new Registry('statemine', {});
 	const systemAssetsApi = new AssetsTransferApi(
 		adjustedMockSystemApi,
 		'statemine',
@@ -15,6 +17,7 @@ describe('getAssetHubAssetId', () => {
 
 		const result = await getAssetHubAssetId(
 			systemAssetsApi._api,
+			registry,
 			'USDC',
 			'statemine',
 			false
@@ -28,6 +31,7 @@ describe('getAssetHubAssetId', () => {
 
 		const result = await getAssetHubAssetId(
 			systemAssetsApi._api,
+			registry,
 			'RMRK',
 			'statemine',
 			false
@@ -40,6 +44,7 @@ describe('getAssetHubAssetId', () => {
 		await expect(async () => {
 			await getAssetHubAssetId(
 				systemAssetsApi._api,
+				registry,
 				'hello',
 				'statemine',
 				false
@@ -57,6 +62,7 @@ describe('getAssetHubAssetId', () => {
 
 		const result = await getAssetHubAssetId(
 			systemAssetsApi._api,
+			registry,
 			multiLocation,
 			'statemine',
 			true

@@ -236,6 +236,7 @@ export const SystemToSystem: ICreateXcmType = {
 
 			const assetIndex = getFeeAssetItemIndex(
 				api,
+				registry,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
@@ -294,6 +295,7 @@ export const createSystemToSystemMultiAssets = async (
 			if (isNotANumber) {
 				assetId = await getAssetHubAssetId(
 					api,
+					registry,
 					assetId,
 					specName,
 					isForeignAssetsTransfer

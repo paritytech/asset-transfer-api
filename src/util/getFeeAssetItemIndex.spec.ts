@@ -7,6 +7,7 @@ import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { MultiAsset } from '../types';
 import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
+import { Registry } from '../registry';
 
 type Test = [
 	paysWithFeeDest: string,
@@ -27,6 +28,7 @@ describe('getFeeAssetItemIndex', () => {
 		'kusama',
 		2
 	);
+	const registry = new Registry('statemine', {});
 
 	it('Should select and return the index of the correct multiassets when given their token symbols', async () => {
 		const tests: Test[] = [
@@ -139,6 +141,7 @@ describe('getFeeAssetItemIndex', () => {
 			expect(
 				await getFeeAssetItemIndex(
 					api,
+					registry,
 					paysWithFeeDest,
 					multiAssets,
 					specName,
@@ -284,6 +287,7 @@ describe('getFeeAssetItemIndex', () => {
 			expect(
 				await getFeeAssetItemIndex(
 					api,
+					registry,
 					paysWithFeeDest,
 					multiAssets,
 					specName,
@@ -328,6 +332,7 @@ describe('getFeeAssetItemIndex', () => {
 			expect(
 				await getFeeAssetItemIndex(
 					api,
+					registry,
 					paysWithFeeDest,
 					multiAssets,
 					specName,
@@ -377,6 +382,7 @@ describe('getFeeAssetItemIndex', () => {
 		await expect(async () => {
 			await getFeeAssetItemIndex(
 				systemAssetsApi._api,
+				registry,
 				paysWithFeeDest,
 				multiAssets,
 				specName,

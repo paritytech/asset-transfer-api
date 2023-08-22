@@ -65,7 +65,7 @@ export const checkLocalTxInput = async (
 		const systemParachainInfo = relayChainInfo[systemChainId];
 
 		// If anything is incorrect this will throw an error.
-		await checkLiquidTokenValidity(api, systemParachainInfo, assetIds[0]);
+		await checkLiquidTokenValidity(api, registry, specName, systemParachainInfo, assetIds[0]);
 
 		return LocalTxType.PoolAssets;
 	} else {
@@ -87,39 +87,26 @@ export const checkLocalTxInput = async (
 		);
 		if (isNativeToken !== undefined) {
 			return LocalTxType.Balances;
-		} else {
-			const isNotANumber = Number.isNaN(parseInt(assetId));
-			// not a number so we check the registry using the symbol
-			if (isNotANumber) {
-				assetId = await getAssetHubAssetId(
-					api,
-					assetId,
-					specName,
-					isForeignAssetsTransfer
-				);
-			}
+		} 
 
-			const isAssetAvailableInRegistry = Object.keys(
-				systemParachainInfo.assetsInfo
-			).find((asset) => asset.toLowerCase() === assetId.toLowerCase());
+		// const assetIsNumber = !Number.isNaN(assetId);
 
-			if (isAssetAvailableInRegistry) {
+		// not a number so we check the registry using the symbol
+		// if (!assetIsNumber) {
+			assetId = await getAssetHubAssetId(
+				api,
+				registry,
+				assetId,
+				specName,
+				isForeignAssetsTransfer
+			);
+
+			if (assetId.length > 0) {
 				return LocalTxType.Assets;
 			} else {
-				if (!isNotANumber) {
-					// if asset is not in registry, query the assets pallet to see if it has a value
-					const asset = await api.query.assets.asset(assetId);
-
-					// if asset is found in the assets pallet, return LocalTxType Assets
-					if (asset.isNone) {
-						throw new BaseError(
-							`The integer assetId ${assetId} was not found.`
-						);
-					}
-				}
+				throw new BaseError(
+					`The integer assetId ${assetId} was not found.`
+				);
 			}
 		}
-	}
-
-	return LocalTxType.Assets;
 };
