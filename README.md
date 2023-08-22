@@ -20,7 +20,7 @@
 
 ## Docs
 
-Find full documentation [here](https://paritytech.github.io/asset-transfer-api/), for quick start guide read below. All examples can be found [here](./examples/).
+Find full documentation [here](https://paritytech.github.io/asset-transfer-api/), for quick start guide read below. All examples can be found [here](https://github.com/paritytech/asset-transfer-api/tree/main/examples/).
 
 ## About
 
@@ -36,14 +36,14 @@ The below chart is focusing on what directions are supported for constructing as
 
 | Direction              | V2                 | V3                 |
 | ---------------------  | ------------------ | ------------------ |
-| System to Parachain    | :white_check_mark: | :white_check_mark: |
-| System to Relay        | :white_check_mark: | :white_check_mark: |
-| Relay to Parachain     | :white_check_mark: | :white_check_mark: |
-| Relay to System        | :white_check_mark: | :white_check_mark: |
-| Parachain to Parachain | :x:                | :x:                |
-| Parachain to Relay     | :x:                | :x:                |
-| Parachain to System    | :white_check_mark: | :white_check_mark: |
-| System to System       | :white_check_mark: | :white_check_mark: |
+| System to Parachain    |         ✅         |      ✅            |
+| System to Relay        |         ✅         |      ✅            |
+| Relay to Parachain     |         ✅         |      ✅            |
+| Relay to System        |         ✅         |      ✅            |
+| Parachain to Parachain |         ❌         |      ❌            |
+| Parachain to Relay     |         ❌         |      ❌            |
+| Parachain to System    |         ✅         |      ✅            |
+| System to System       |         ✅         |      ✅            |
 
 Note: System refers to System Parachains like Asset Hub.
 
