@@ -150,19 +150,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['0'],
 				Direction.SystemToRelay,
-				`SystemToRelay: assetId 0 not native to polkadot`,
+				`(SystemToRelay) assetId 0 not native to polkadot`,
 			],
 			[
 				'Statemine',
 				['MOVR', 'KSM'],
 				Direction.SystemToRelay,
-				`SystemToRelay: assetId MOVR not native to kusama`,
+				`(SystemToRelay) assetId MOVR not native to kusama`,
 			],
 			[
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToRelay,
-				`SystemToRelay: assetId 250 not native to westend`,
+				`(SystemToRelay) assetId 250 not native to westend`,
 			],
 		];
 

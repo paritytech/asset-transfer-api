@@ -338,7 +338,6 @@ const checkRelayToParaAssetId = (
 /**
  * This will check the given assetId and ensure that it is the native token of the relay chain
  *
- *
  * @param assetId
  * @param relayChainInfo
  */
@@ -366,7 +365,8 @@ const checkSystemToRelayAssetId = (
 
 	if (!matchedRelayChainNativeToken) {
 		throw new BaseError(
-			`SystemToRelay: assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`
+			`(SystemToRelay) assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`,
+			BaseErrorsEnum.InvalidAsset
 		);
 	}
 };
