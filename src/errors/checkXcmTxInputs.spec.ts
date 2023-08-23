@@ -175,7 +175,7 @@ describe('checkAssetIds', () => {
 				'Statemine',
 				['KSM', '8', 'stateMineDoge'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId stateMineDoge not found for system parachain Statemine`,
+				`(SystemToPara) assetId stateMineDoge not found for system parachain Statemine`,
 			],
 		];
 
@@ -205,19 +205,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId xcDOT not found for system parachain Statemint`,
+				`(SystemToPara) assetId xcDOT not found for system parachain Statemint`,
 			],
 			[
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId xcMOVR not found for system parachain Statemine`,
+				`(SystemToPara) assetId xcMOVR not found for system parachain Statemine`,
 			],
 			[
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId Test Westend not found for system parachain Westmint`,
+				`(SystemToPara) assetId Test Westend not found for system parachain Westmint`,
 			],
 		];
 
@@ -277,19 +277,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToSystem,
-				`SystemToSystem: assetId xcDOT not found for system parachain Statemint`,
+				`(SystemToSystem) assetId xcDOT not found for system parachain Statemint`,
 			],
 			[
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToSystem,
-				`SystemToSystem: assetId xcMOVR not found for system parachain Statemine`,
+				`(SystemToSystem) assetId xcMOVR not found for system parachain Statemine`,
 			],
 			[
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToSystem,
-				`SystemToSystem: assetId Test Westend not found for system parachain Westmint`,
+				`(SystemToSystem) assetId Test Westend not found for system parachain Westmint`,
 			],
 		];
 
@@ -318,7 +318,7 @@ describe('checkAssetIds', () => {
 				'Statemine',
 				['{"parents":"2","interior":{"X1": {"Parachain":"2125000"}}}'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId {"parents":"2","interior":{"X1": {"Parachain":"2125000"}}} not found for system parachain Statemine`,
+				`(SystemToPara) assetId {"parents":"2","interior":{"X1": {"Parachain":"2125000"}}} not found for system parachain Statemine`,
 			],
 		];
 
@@ -347,7 +347,7 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				['311091173110107856861649819128533077277', '200'],
 				Direction.ParaToSystem,
-				`ParaToSystem: integer assetId 200 not found in moonriver`,
+				`(ParaToSystem) integer assetId 200 not found in moonriver`,
 			],
 		];
 
@@ -375,13 +375,13 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				['xcKSM', 'USDT'],
 				Direction.ParaToSystem,
-				`ParaToSystem: symbol assetId USDT not found for parachain moonriver`,
+				`(ParaToSystem) symbol assetId USDT not found for parachain moonriver`,
 			],
 			[
 				'moonriver',
 				['xcUSDT', 'ASTR'],
 				Direction.ParaToSystem,
-				`ParaToSystem: symbol assetId ASTR not found for parachain moonriver`,
+				`(ParaToSystem) symbol assetId ASTR not found for parachain moonriver`,
 			],
 		];
 
@@ -420,7 +420,7 @@ describe('checkAssetIds', () => {
 				false
 			);
 		}).rejects.toThrowError(
-			'ParaToSystem: assetId 0x1234, is not a valid erc20 token.'
+			'(ParaToSystem) assetId 0x1234, is not a valid erc20 token.'
 		);
 	});
 	it('Should error when an invalid token is passed into a liquidTokenTransfer', async () => {
@@ -821,7 +821,7 @@ describe('checkParaAssets', () => {
 				false
 			);
 		}).rejects.toThrowError(
-			'ParaToSystem: symbol assetId xcUSDfake not found for parachain moonriver'
+			'(ParaToSystem) symbol assetId xcUSDfake not found for parachain moonriver'
 		);
 	});
 	it('Should correctly error when an invalid integer assetId is provided', async () => {
@@ -839,7 +839,7 @@ describe('checkParaAssets', () => {
 				false
 			);
 		}).rejects.toThrowError(
-			'ParaToSystem: integer assetId 2096586909097964981698161 not found in moonriver'
+			'(ParaToSystem) integer assetId 2096586909097964981698161 not found in moonriver'
 		);
 	});
 	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {
