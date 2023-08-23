@@ -981,17 +981,6 @@ export const checkXcmTxInputs = async (
 		isLiquidTokenTransfer
 	);
 
-	await checkAssetIdInput(
-		api,
-		assetIds,
-		relayChainInfo,
-		specName,
-		xcmDirection,
-		registry,
-		isForeignAssetsTransfer,
-		isLiquidTokenTransfer
-	);
-
 	if (xcmDirection === Direction.RelayToSystem) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
