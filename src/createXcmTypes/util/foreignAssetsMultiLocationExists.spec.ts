@@ -64,4 +64,39 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 			);
 		}).rejects.toThrowError(expectedError);
 	});
+
+	it('Should correctly cache a valid foreign asset not found in the cache or registry', async () => {
+		const emptyRegistry = new Registry('statemine', {
+			injectedRegistry: {
+				kusama: {
+					'1000': {
+						assetsInfo: {},
+						poolPairsInfo: {},
+						foreignAssetsPalletInstance: null,
+						assetsPalletInstance: null,
+						specName: '',
+						tokens: [],
+						foreignAssetsInfo: {},
+					},
+				},
+			},
+		});
+		const multiLocation =
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
+
+		await foreignAssetsMultiLocationExists(
+			adjustedMockSystemApi,
+			emptyRegistry,
+			multiLocation
+		);
+
+		expect(
+			emptyRegistry.assetsCache.kusama['1000']['foreignAssetsInfo']['TNKR']
+		).toEqual({
+			multiLocation:
+				'{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+			name: 'Tinkernet',
+			symbol: 'TNKR',
+		});
+	});
 });

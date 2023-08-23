@@ -978,5 +978,104 @@ describe('checkParaAssets', () => {
 				]
 			).toEqual('xcUSDT');
 		});
+
+		it('Should correctly cache a foreign asset that is not found in the registry after being queried', async () => {
+			const registry = new Registry('statemine', {
+				injectedRegistry: {
+					kusama: {
+						'1000': {
+							assetsInfo: {},
+							poolPairsInfo: {},
+							foreignAssetsPalletInstance: null,
+							assetsPalletInstance: null,
+							specName: '',
+							tokens: [],
+							foreignAssetsInfo: {},
+						},
+					},
+				},
+			});
+			const chainInfo = {
+				'1000': {
+					assetsInfo: {},
+					poolPairsInfo: {},
+					foreignAssetsPalletInstance: null,
+					assetsPalletInstance: null,
+					specName: '',
+					tokens: [],
+					foreignAssetsInfo: {},
+				},
+			};
+
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				[
+					'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+				],
+				chainInfo,
+				'statemine',
+				Direction.SystemToPara,
+				registry,
+				true,
+				false
+			);
+
+			expect(
+				registry.assetsCache.kusama['1000']['foreignAssetsInfo']['TNKR']
+			).toEqual({
+				multiLocation:
+					'{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+				name: 'Tinkernet',
+				symbol: 'TNKR',
+			});
+		});
+
+		it('Should correctly cache a liquid asset that is not found in the registry after being queried', async () => {
+			const registry = new Registry('statemine', {
+				injectedRegistry: {
+					kusama: {
+						'1000': {
+							assetsInfo: {},
+							poolPairsInfo: {},
+							foreignAssetsPalletInstance: null,
+							assetsPalletInstance: null,
+							specName: '',
+							tokens: [],
+							foreignAssetsInfo: {},
+						},
+					},
+				},
+			});
+			const chainInfo = {
+				'1000': {
+					assetsInfo: {},
+					poolPairsInfo: {},
+					foreignAssetsPalletInstance: null,
+					assetsPalletInstance: null,
+					specName: '',
+					tokens: [],
+					foreignAssetsInfo: {},
+				},
+			};
+
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['0'],
+				chainInfo,
+				'statemine',
+				Direction.SystemToPara,
+				registry,
+				false,
+				true
+			);
+
+			expect(registry.assetsCache.kusama['1000']['poolPairsInfo']['0']).toEqual(
+				{
+					lpToken: '0',
+					pairInfo:
+						'[[{"parents":0,"interior":{"here":null}},{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":100}]}}]]',
+				}
+			);
+		});
 	});
 });

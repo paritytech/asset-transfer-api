@@ -234,16 +234,16 @@ const foreignAsset = (
 	});
 
 const foreignAssetsMetadata = (
-	assetId: number
+	assetId: MultiLocation
 ): Promise<PalletAssetsAssetMetadata> =>
 	Promise.resolve().then(() => {
 		const metadata: Map<string, PalletAssetsAssetMetadata> = new Map();
 
 		const rawTnkrMultiLocationMetadata = {
-			deposit: mockSystemApi.registry.createType('u128', 0),
-			name: mockSystemApi.registry.createType('Bytes', '0x78634b534d'),
+			deposit: mockSystemApi.registry.createType('u128', 6693666633),
+			name: mockSystemApi.registry.createType('Bytes', '0x54696e6b65726e6574'),
 			symbol: Object.assign(
-				mockSystemApi.registry.createType('Bytes', '0x78634b534d'),
+				mockSystemApi.registry.createType('Bytes', '0x544e4b52'),
 				{
 					toHuman: () => 'TNKR',
 				}
@@ -255,13 +255,14 @@ const foreignAssetsMetadata = (
 			'PalletAssetsAssetMetadata',
 			rawTnkrMultiLocationMetadata
 		);
-		metadata.set(
-			'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
-			tnkrForeignAssetMetadata
-		);
+		const multiLocation = mockSystemApi.registry.createType('MultiLocation', {
+			parents: '1',
+			interior: { X2: [{ Parachain: '2125' }, { GeneralIndex: '0' }] },
+		});
+		metadata.set(multiLocation.toHex(), tnkrForeignAssetMetadata);
 
-		const maybeMetadata = metadata.has(assetId.toString())
-			? metadata.get(assetId.toString())
+		const maybeMetadata = metadata.has(assetId.toHex())
+			? metadata.get(assetId.toHex())
 			: undefined;
 
 		if (maybeMetadata) {
@@ -380,10 +381,17 @@ export const adjustedMockSystemApi = {
 						],
 						{
 							toHuman: () => {
-								return `
-							[{ parents: 0, interior: { 'Here': ''}},
-							{ parents: 0, interior: { X2: [{'PalletInstance': 50}, {'GeneralIndex': 100}]}}]
-							`;
+								return [
+									[
+										{ parents: '0', interior: { Here: '' } },
+										{
+											parents: '0',
+											interior: {
+												X2: [{ PalletInstance: '50' }, { GeneralIndex: '100' }],
+											},
+										},
+									],
+								];
 							},
 						}
 					);

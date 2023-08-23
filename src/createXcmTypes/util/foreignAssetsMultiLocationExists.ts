@@ -2,10 +2,10 @@
 
 import { ApiPromise } from '@polkadot/api';
 
+import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
 import { AssetMetadata } from '../../types';
-import { getChainIdBySpecName } from './getChainIdBySpecName';
 
 export const foreignAssetsMultiLocationExists = async (
 	assetHubApi: ApiPromise,
@@ -13,9 +13,8 @@ export const foreignAssetsMultiLocationExists = async (
 	multilocationStr: string
 ): Promise<boolean> => {
 	try {
-		const currentChainId = getChainIdBySpecName(registry, registry.specName);
-		if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-			registry.assetsCache[registry.relayChain][currentChainId] = {
+		if (!registry.assetsCache[registry.relayChain][ASSET_HUB_CHAIN_ID]) {
+			registry.assetsCache[registry.relayChain][ASSET_HUB_CHAIN_ID] = {
 				assetsInfo: {},
 				poolPairsInfo: {},
 				foreignAssetsPalletInstance: null,
@@ -38,7 +37,7 @@ export const foreignAssetsMultiLocationExists = async (
 		// check if foreign asset exists
 		if (foreignAsset.toString().length > 0) {
 			const foreignAssetMetadata = (
-				await assetHubApi.query.foreignAssets.metadata(multilocationStr)
+				await assetHubApi.query.foreignAssets.metadata(multiLocation)
 			).toHuman();
 
 			if (foreignAssetMetadata) {
@@ -47,7 +46,7 @@ export const foreignAssetsMultiLocationExists = async (
 				const assetName = metadata.name;
 
 				// cache the foreign asset
-				registry.assetsCache[registry.relayChain][currentChainId][
+				registry.assetsCache[registry.relayChain][ASSET_HUB_CHAIN_ID][
 					'foreignAssetsInfo'
 				][assetSymbol] = {
 					symbol: assetSymbol,

@@ -380,7 +380,17 @@ export const checkLiquidTokenValidity = async (
 	assetId: string
 ) => {
 	const currentChainId = getChainIdBySpecName(registry, specName);
-
+	if (!registry.assetsCache[registry.relayChain][currentChainId]) {
+		registry.assetsCache[registry.relayChain][currentChainId] = {
+			assetsInfo: {},
+			poolPairsInfo: {},
+			foreignAssetsPalletInstance: null,
+			assetsPalletInstance: null,
+			specName: '',
+			tokens: [],
+			foreignAssetsInfo: {},
+		};
+	}
 	// check if assetId is a number
 	const parsedAssetIdAsNumber = Number.parseInt(assetId);
 	const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
@@ -422,23 +432,22 @@ export const checkLiquidTokenValidity = async (
 				/(\d),/g,
 				'$1'
 			);
+			const palletAssetConversionNativeOrAssetIdData = api.registry.createType(
+				'Vec<Vec<MultiLocation>>',
+				JSON.parse(poolAssetData)
+			);
+
 			const poolAssetInfo = poolAsset[1].unwrap();
 			if (poolAssetInfo.lpToken.toNumber() === parseInt(assetId)) {
 				// cache the queried liquidToken asset
-				if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-					registry.assetsCache[registry.relayChain][currentChainId] = {
-						assetsInfo: {},
-						poolPairsInfo: {},
-						foreignAssetsPalletInstance: null,
-						assetsPalletInstance: null,
-						specName: '',
-						tokens: [],
-						foreignAssetsInfo: {},
-					};
-				}
 				registry.assetsCache[registry.relayChain][currentChainId][
 					'poolPairsInfo'
-				][assetId] = poolAssetData;
+				][assetId] = {
+					lpToken: assetId,
+					pairInfo: JSON.stringify(
+						palletAssetConversionNativeOrAssetIdData.toJSON()
+					),
+				};
 			}
 		}
 		return;
