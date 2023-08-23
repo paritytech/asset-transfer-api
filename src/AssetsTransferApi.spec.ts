@@ -779,4 +779,10 @@ describe('AssetTransferAPI', () => {
 			);
 		});
 	});
+	
+	describe('assetsCache', () => {
+		it ('Should correctly cache an asset after being queried', () => {
+
+		});
+	})
 });
