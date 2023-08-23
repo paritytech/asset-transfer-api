@@ -3,6 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { Direction } from '../../types';
+import { BaseError, BaseErrorsEnum } from '../../errors';
 
 export enum XcmPalletName {
 	xcmPallet = 'xcmPallet',
@@ -40,8 +41,9 @@ export const establishXcmPallet = (
 	} else if (api.tx.xcmPallet) {
 		return XcmPalletName.xcmPallet;
 	} else {
-		throw Error(
-			"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API"
+		throw new BaseError(
+			"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API",
+			BaseErrorsEnum.PalletNotFound
 		);
 	}
 };

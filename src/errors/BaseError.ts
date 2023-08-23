@@ -20,6 +20,10 @@ export enum BaseErrorsEnum {
 	 */
 	InvalidPallet = 'InvalidPallet',
 	/**
+	 * The following pallet is not found.
+	 */
+	PalletNotFound = 'PalletNotFound',
+	/**
 	 * The direction in which these assets are going to be sent is incorrect.
 	 */
 	InvalidDirection = 'InvalidDirection',
@@ -43,6 +47,10 @@ export enum BaseErrorsEnum {
 	 * Not Implemented yet.
 	 */
 	NotImplemented = 'NotImplemented',
+	/**
+	 * An issue has happened internally.
+	 */
+	InternalError = 'InternalError'
 }
 
 export class BaseError extends Error {
