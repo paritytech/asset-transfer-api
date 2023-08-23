@@ -2,7 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { BaseError } from '../../errors';
+import { BaseError, BaseErrorsEnum } from '../../errors';
 
 export const foreignAssetsMultiLocationExists = async (
 	assetHubApi: ApiPromise,
@@ -31,10 +31,14 @@ export const foreignAssetsMultiLocationExists = async (
 				errorInfo[errorInfo.length - 1]
 			);
 
-			throw new BaseError(`Error creating MultiLocation type:${errorDetails}`);
+			throw new BaseError(
+				`Error creating MultiLocation type:${errorDetails}`,
+				BaseErrorsEnum.InvalidMultiLocationAsset
+			);
 		} else {
 			throw new BaseError(
-				`Error creating multilocation type: ${(error as Error).message}`
+				`Error creating multilocation type: ${(error as Error).message}`,
+				BaseErrorsEnum.InvalidMultiLocationAsset
 			);
 		}
 	}

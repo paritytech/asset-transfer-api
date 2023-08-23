@@ -2,6 +2,8 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
+import { BaseError, BaseErrorsEnum } from '../../errors';
+
 /**
  * This fetches the metadata for the chain we are connected to and searches for the appropriate pallet and returns its index.
  *
@@ -18,8 +20,9 @@ export const fetchPalletInstanceId = (
 	);
 
 	if (pallet.length === 0) {
-		throw Error(
-			`No ${palletName} pallet available, can't find a valid PalletInstance.`
+		throw new BaseError(
+			`No ${palletName} pallet available, can't find a valid PalletInstance.`,
+			BaseErrorsEnum.PalletNotFound
 		);
 	}
 
