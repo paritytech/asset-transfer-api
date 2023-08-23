@@ -20,6 +20,10 @@ export enum BaseErrorsEnum {
 	 */
 	InvalidPallet = 'InvalidPallet',
 	/**
+	 * The direction in which these assets are going to be sent is incorrect.
+	 */
+	InvalidDirection = 'InvalidDirection',
+	/**
 	 * The inputted multilocation is incorrect.
 	 */
 	InvalidMultiLocationAsset = 'InvalidMultiLocationAsset',
@@ -35,6 +39,10 @@ export enum BaseErrorsEnum {
 	 * The xcm version is invalid.
 	 */
 	InvalidXcmVersion = 'InvalidXcmVersion',
+	/**
+	 * Not Implemented yet.
+	 */
+	NotImplemented = 'NotImplemented',
 }
 
 export class BaseError extends Error {
