@@ -3,7 +3,7 @@ import {
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
 	WESTEND_ASSET_HUB_SPEC_NAMES,
 } from '../consts';
-import { BaseError } from '../errors';
+import { BaseError, BaseErrorsEnum } from '../errors';
 import type { ChainInfoRegistry, RelayChains } from './types';
 /**
  * Finds the name of the relay chain of a given specName. If the chain does not exist within the registry
@@ -43,5 +43,8 @@ export const findRelayChain = (
 	)
 		return 'westend';
 
-	throw new BaseError(`Cannot find the relay chain for specName: ${specName}`);
+	throw new BaseError(
+		`Cannot find the relay chain for specName: ${specName}`,
+		BaseErrorsEnum.InternalError
+	);
 };

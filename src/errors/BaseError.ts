@@ -51,6 +51,10 @@ export enum BaseErrorsEnum {
 	 * An issue has happened internally.
 	 */
 	InternalError = 'InternalError',
+	/**
+	 * The inputted address is invalid.
+	 */
+	InvalidAddress = 'InvalidAddress',
 }
 
 export class BaseError extends Error {

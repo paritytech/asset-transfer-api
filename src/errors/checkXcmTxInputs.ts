@@ -429,7 +429,10 @@ const checkSystemAssets = async (
 			);
 
 			if (!isValidForeignAsset) {
-				throw new BaseError(`MultiLocation ${assetId} not found`);
+				throw new BaseError(
+					`MultiLocation ${assetId} not found`,
+					BaseErrorsEnum.AssetNotFound
+				);
 			}
 		}
 	} else if (isLiquidTokenTransfer) {
