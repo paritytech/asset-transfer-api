@@ -8,6 +8,7 @@ import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { CheckXcmTxInputsOpts } from '../createXcmTypes/types';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
+import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
@@ -397,7 +398,14 @@ const checkSystemAssets = async (
 		);
 
 		if (!multiLocationIsInRegistry) {
-			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
+				api,
+				assetId
+			);
+
+			if (!isValidForeignAsset) {
+				throw new BaseError(`MultiLocation ${assetId} not found`);
+			}
 		}
 	} else if (isLiquidTokenTransfer) {
 		await checkLiquidTokenValidity(api, systemParachainInfo, assetId);
@@ -504,7 +512,7 @@ export const checkParaAssets = async (
 		);
 
 		if (!multiLocationIsInRegistry) {
-			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
+			// TODO: remove foreignAssets check from ParaToSystem
 		}
 	} else {
 		// check if assetId is a number
