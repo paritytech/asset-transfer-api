@@ -7,6 +7,7 @@ import type {
 	PalletAssetConversionNativeOrAssetId,
 	PalletAssetConversionPoolInfo,
 	PalletAssetsAssetDetails,
+	PalletAssetsAssetMetadata,
 } from '@polkadot/types/lookup';
 import { ITuple } from '@polkadot/types-codec/types';
 import { getSpecTypes } from '@polkadot/types-known';
@@ -105,6 +106,7 @@ const multiLocationAssetInfo = {
 
 const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
+		console.log('ASSET ID ENTERED IS', assetId);
 		const assets: Map<number, PalletAssetsAssetDetails> = new Map();
 
 		const insufficientAssetInfo = {
@@ -148,7 +150,11 @@ const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 		);
 		assets.set(1984, sufficientAsset);
 
+		console.log('ASSET ID', assetId);
+		console.log('TYPE', typeof assetId);
 		const maybeAsset = assets.has(assetId) ? assets.get(assetId) : undefined;
+		console.log('IS THE ASSET PRESENT', assets.has(1984));
+		console.log('ASSET IS FOUND', JSON.stringify(maybeAsset));
 
 		if (maybeAsset) {
 			return new Option(
@@ -162,6 +168,39 @@ const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 			'Option<PalletAssetsAssetDetails>',
 			undefined
 		);
+	});
+
+const assetsMetadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
+	Promise.resolve().then(() => {
+		const metadata: Map<number, PalletAssetsAssetMetadata> = new Map();
+
+		const rawUSDtMetadata = {
+			deposit: mockSystemApi.registry.createType('u128', 0),
+			name: mockSystemApi.registry.createType('Bytes', '0x78634b534d'),
+			symbol: Object.assign(
+				mockSystemApi.registry.createType('Bytes', '0x78634b534d'),
+				{
+					toHuman: () => 'USDt',
+				}
+			),
+			decimals: mockSystemApi.registry.createType('u8', 12),
+			isFrozen: mockSystemApi.registry.createType('bool', false),
+		};
+		const usdtMetadata = mockSystemApi.registry.createType(
+			'PalletAssetsAssetMetadata',
+			rawUSDtMetadata
+		);
+		metadata.set(1984, usdtMetadata);
+
+		const maybeMetadata = metadata.has(assetId)
+			? metadata.get(assetId)
+			: undefined;
+
+		if (maybeMetadata) {
+			return maybeMetadata;
+		}
+
+		return mockSystemApi.registry.createType('PalletAssetsAssetMetadata', {});
 	});
 
 const foreignAsset = (
@@ -284,6 +323,7 @@ export const adjustedMockSystemApi = {
 		},
 		assets: {
 			asset: asset,
+			metadata: assetsMetadata,
 		},
 		foreignAssets: {
 			asset: foreignAsset,

@@ -439,6 +439,17 @@ const checkSystemAssets = async (
 	isLiquidTokenTransfer?: boolean
 ) => {
 	const currentChainId = getChainIdBySpecName(registry, specName);
+	if (!registry.assetsCache[registry.relayChain][currentChainId]) {
+		registry.assetsCache[registry.relayChain][currentChainId] = {
+			assetsInfo: {},
+			poolPairsInfo: {},
+			foreignAssetsPalletInstance: null,
+			assetsPalletInstance: null,
+			specName: '',
+			tokens: [],
+			foreignAssetsInfo: {},
+		};
+	}
 
 	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
@@ -485,7 +496,7 @@ const checkSystemAssets = async (
 
 			if (assetSymbol === undefined) {
 				// if asset is not in cache or registry, query the assets pallet to see if it has a value
-				const asset = await api.query.assets.asset(assetId);
+				const asset = await api.query.assets.asset(parsedAssetIdAsNumber);
 
 				// if asset is found in the assets pallet, return LocalTxType Assets
 				if (asset.isNone) {
@@ -493,20 +504,12 @@ const checkSystemAssets = async (
 						`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`
 					);
 				} else {
-					const assetSymbol = (await api.query.assets.metadata(assetId)).symbol
+					const assetSymbol = (
+						await api.query.assets.metadata(parsedAssetIdAsNumber)
+					).symbol
 						.toHuman()
 						?.toString();
-					if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-						registry.assetsCache[registry.relayChain][currentChainId] = {
-							assetsInfo: {},
-							poolPairsInfo: {},
-							foreignAssetsPalletInstance: null,
-							assetsPalletInstance: null,
-							specName: '',
-							tokens: [],
-							foreignAssetsInfo: {},
-						};
-					}
+
 					// add the asset to the cache
 					registry.assetsCache[registry.relayChain][currentChainId][
 						'assetsInfo'
@@ -516,8 +519,6 @@ const checkSystemAssets = async (
 		} else {
 			// not a valid number
 			// check if id is a valid token symbol of the system parachain chain
-			// let isValidTokenSymbol = false;
-
 			if (assetId === '') {
 				return;
 			}
@@ -525,8 +526,6 @@ const checkSystemAssets = async (
 			// ensure character string is valid symbol for the system chain
 			for (const token of systemParachainInfo.tokens) {
 				if (token.toLowerCase() === assetId.toLowerCase()) {
-					// isValidTokenSymbol = true;
-					// break;
 					return;
 				}
 			}
@@ -596,11 +595,9 @@ const checkSystemAssets = async (
 			}
 
 			// if no native token for the system parachain was matched, throw an error
-			// if (!isValidTokenSymbol) {
 			throw new BaseError(
 				`${xcmDirection}: assetId ${assetId} not found for system parachain ${specName}`
 			);
-			// }
 		}
 	}
 };
@@ -616,6 +613,18 @@ export const checkParaAssets = async (
 	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
 	const currentChainId = getChainIdBySpecName(registry, specName);
+
+	if (!registry.assetsCache[registry.relayChain][currentChainId]) {
+		registry.assetsCache[registry.relayChain][currentChainId] = {
+			assetsInfo: {},
+			poolPairsInfo: {},
+			foreignAssetsPalletInstance: null,
+			assetsPalletInstance: null,
+			specName: '',
+			tokens: [],
+			foreignAssetsInfo: {},
+		};
+	}
 
 	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
@@ -649,19 +658,6 @@ export const checkParaAssets = async (
 						`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`
 					);
 				} else {
-					if (
-						!registry.assetsCache[currentRelayChainSpecName][currentChainId]
-					) {
-						registry.assetsCache[currentRelayChainSpecName][currentChainId] = {
-							assetsInfo: {},
-							poolPairsInfo: {},
-							foreignAssetsPalletInstance: null,
-							assetsPalletInstance: null,
-							specName: '',
-							tokens: [],
-							foreignAssetsInfo: {},
-						};
-					}
 					const assetSymbol = (await api.query.assets.metadata(assetId)).symbol
 						.toHuman()
 						?.toString();
@@ -687,7 +683,6 @@ export const checkParaAssets = async (
 				);
 			}
 
-			// let xcAsset: XCMChainInfoDataKeys | string = '';
 			for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
 				const chainInfo = relayChainXcAssetInfoKeys[i];
 
@@ -702,16 +697,12 @@ export const checkParaAssets = async (
 				}
 			}
 
-			// if (typeof xcAsset === 'string') {
 			throw new BaseError(
 				`ParaToSystem: unable to identify xcAsset with ID ${assetId}`
 			);
-			// }
 		} else {
 			// not a valid number
 			// check if id is a valid token symbol of the system parachain chain
-			// let isValidTokenSymbol = false;
-
 			const parachainAssets = await api.query.assets.asset.entries();
 
 			for (let i = 0; i < parachainAssets.length; i++) {
@@ -721,19 +712,6 @@ export const checkParaAssets = async (
 				const metadata = await api.query.assets.metadata(id);
 				const symbol = metadata.symbol.toHuman()?.toString();
 				if (symbol && symbol.toLowerCase() === assetId.toLowerCase()) {
-					console.log('ASSET ID', assetId.toLowerCase());
-					console.log('SYMBOL', symbol.toLowerCase());
-					if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-						registry.assetsCache[registry.relayChain][currentChainId] = {
-							assetsInfo: {},
-							poolPairsInfo: {},
-							foreignAssetsPalletInstance: null,
-							assetsPalletInstance: null,
-							specName: '',
-							tokens: [],
-							foreignAssetsInfo: {},
-						};
-					}
 					// store in registry cache
 					registry.assetsCache[registry.relayChain][currentChainId].assetsInfo[
 						id.toString()
@@ -743,11 +721,9 @@ export const checkParaAssets = async (
 			}
 
 			// if no native token for the parachain was matched, throw an error
-			// if (!isValidTokenSymbol) {
 			throw new BaseError(
 				`${xcmDirection}: symbol assetId ${assetId} not found for parachain ${specName}`
 			);
-			// }
 		}
 	}
 };

@@ -946,4 +946,67 @@ describe('checkParaAssets', () => {
 			'unable to identify xcAsset with ID 311091173110107856861649819128533077277'
 		);
 	});
+
+	describe('assetsCache', () => {
+		it('Should correctly cache an asset that is not found in the registry after being queried for origin System', async () => {
+			const registry = new Registry('statemine', {});
+			const chainInfo = {
+				'1000': {
+					assetsInfo: {},
+					poolPairsInfo: {},
+					foreignAssetsPalletInstance: null,
+					assetsPalletInstance: null,
+					specName: '',
+					tokens: [],
+					foreignAssetsInfo: {},
+				},
+			};
+
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['1984'],
+				chainInfo,
+				'statemine',
+				Direction.SystemToPara,
+				registry,
+				false,
+				false
+			);
+
+			expect(registry.assetsCache.kusama['1000']['assetsInfo']['1984']).toEqual(
+				'USDt'
+			);
+		});
+		it('Should correctly cache an asset that is not found in the registry after being queried for origin Para', async () => {
+			const registry = new Registry('moonriver', {});
+			const chainInfo = {
+				'2023': {
+					assetsInfo: {},
+					poolPairsInfo: {},
+					foreignAssetsPalletInstance: null,
+					assetsPalletInstance: null,
+					specName: '',
+					tokens: [],
+					foreignAssetsInfo: {},
+				},
+			};
+
+			await checkAssetIdInput(
+				adjustedMockParachainApi,
+				['xcUSDT'],
+				chainInfo,
+				'moonriver',
+				Direction.ParaToSystem,
+				registry,
+				false,
+				false
+			);
+
+			expect(
+				registry.assetsCache.kusama['2023']['assetsInfo'][
+					'311091173110107856861649819128533077277'
+				]
+			).toEqual('xcUSDT');
+		});
+	});
 });

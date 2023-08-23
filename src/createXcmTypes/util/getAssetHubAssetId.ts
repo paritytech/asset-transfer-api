@@ -32,12 +32,8 @@ export const getAssetHubAssetId = async (
 	const isParachain = parseInt(currentChainId) >= 2000;
 
 	// check the cache and return the cached assetId if found
-	if (! registry.assetsCache[registry.relayChain][
-		currentChainId
-	]) {
-		registry.assetsCache[registry.relayChain][
-			currentChainId
-		] = {							
+	if (!registry.assetsCache[registry.relayChain][currentChainId]) {
+		registry.assetsCache[registry.relayChain][currentChainId] = {
 			assetsInfo: {},
 			poolPairsInfo: {},
 			foreignAssetsPalletInstance: null,
@@ -47,7 +43,7 @@ export const getAssetHubAssetId = async (
 			foreignAssetsInfo: {},
 		};
 	}
-	
+
 	const cachedAssetId = registry.assetsCache[registry.relayChain][
 		currentChainId
 	]
@@ -118,17 +114,6 @@ export const getAssetHubAssetId = async (
 				const assetSymbol = assetMetadata.symbol.toHuman()?.toString();
 
 				if (assetSymbol) {
-					if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-						registry.assetsCache[registry.relayChain][currentChainId] = {
-							assetsInfo: {},
-							poolPairsInfo: {},
-							foreignAssetsPalletInstance: null,
-							assetsPalletInstance: null,
-							specName: '',
-							tokens: [],
-							foreignAssetsInfo: {},
-						};
-					}
 					// add queried asset to registry
 					registry.assetsCache[registry.relayChain][currentChainId][
 						'assetsInfo'
@@ -157,17 +142,6 @@ export const getAssetHubAssetId = async (
 					asset.toLowerCase()
 				) {
 					assetId = id.toString();
-					if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-						registry.assetsCache[registry.relayChain][currentChainId] = {
-							assetsInfo: {},
-							poolPairsInfo: {},
-							foreignAssetsPalletInstance: null,
-							assetsPalletInstance: null,
-							specName: '',
-							tokens: [],
-							foreignAssetsInfo: {},
-						};
-					}
 					// add queried asset to registry
 					registry.assetsCache[registry.relayChain][currentChainId][
 						'assetsInfo'
@@ -185,17 +159,6 @@ export const getAssetHubAssetId = async (
 			const parachainAsset = await _api.query.assets.asset(asset);
 			if (parachainAsset.isSome) {
 				assetId = asset;
-				if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-					registry.assetsCache[registry.relayChain][currentChainId] = {
-						assetsInfo: {},
-						poolPairsInfo: {},
-						foreignAssetsPalletInstance: null,
-						assetsPalletInstance: null,
-						specName: '',
-						tokens: [],
-						foreignAssetsInfo: {},
-					};
-				}
 				// add queried asset to registry
 				registry.assetsCache[registry.relayChain][currentChainId]['assetsInfo'][
 					assetId
