@@ -776,8 +776,7 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		} catch (err) {
 			didNotError = false;
@@ -797,8 +796,7 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		} catch (err) {
 			didNotError = false;
@@ -817,8 +815,7 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		}).rejects.toThrowError(
 			'ParaToSystem: symbol assetId xcUSDfake not found for parachain moonriver'
@@ -835,8 +832,7 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		}).rejects.toThrowError(
 			'ParaToSystem: integer assetId 2096586909097964981698161 not found in moonriver'
@@ -914,8 +910,7 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		}).rejects.toThrowError(
 			'unable to identify xcAsset with ID 311091173110107856861649819128533077277'

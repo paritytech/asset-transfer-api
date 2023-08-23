@@ -8,6 +8,7 @@ import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { CheckXcmTxInputsOpts } from '../createXcmTypes/types';
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
+import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
@@ -397,7 +398,14 @@ const checkSystemAssets = async (
 		);
 
 		if (!multiLocationIsInRegistry) {
-			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
+				api,
+				assetId
+			);
+
+			if (!isValidForeignAsset) {
+				throw new BaseError(`MultiLocation ${assetId} not found`);
+			}
 		}
 	} else if (isLiquidTokenTransfer) {
 		await checkLiquidTokenValidity(api, systemParachainInfo, assetId);
@@ -489,99 +497,85 @@ export const checkParaAssets = async (
 	assetId: string,
 	specName: string,
 	registry: Registry,
-	xcmDirection: string,
-	isForeignAssetsTransfer: boolean
+	xcmDirection: string
 ) => {
 	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
 
-	if (isForeignAssetsTransfer) {
-		// check that the asset id is a valid multilocation
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
-			api,
-			assetId,
-			registry
-		);
+	// check if assetId is a number
+	const parsedAssetIdAsNumber = Number.parseInt(assetId);
+	const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
 
-		if (!multiLocationIsInRegistry) {
-			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
+	if (!invalidNumber) {
+		// query the parachains assets pallet to see if it has a value matching the assetId
+		const asset = await api.query.assets.asset(assetId);
+
+		if (asset.isNone) {
+			throw new BaseError(
+				`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`
+			);
+		}
+
+		// check that xcAsset exists in the xcAsset registry
+		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
+		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
+			relayChainXcAssetInfoKeys = xcAssets.kusama;
+		}
+		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
+			relayChainXcAssetInfoKeys = xcAssets.polkadot;
+		}
+
+		if (relayChainXcAssetInfoKeys.length === 0) {
+			throw new BaseError(
+				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
+			);
+		}
+
+		let xcAsset: XCMChainInfoDataKeys | string = '';
+		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
+			const chainInfo = relayChainXcAssetInfoKeys[i];
+
+			for (let j = 0; j < chainInfo.data.length; j++) {
+				const xcAssetData = chainInfo.data[j];
+				if (
+					typeof xcAssetData.asset === 'string' &&
+					xcAssetData.asset === assetId
+				) {
+					xcAsset = xcAssetData;
+					break;
+				}
+			}
+		}
+
+		if (typeof xcAsset === 'string') {
+			throw new BaseError(`unable to identify xcAsset with ID ${assetId}`);
 		}
 	} else {
-		// check if assetId is a number
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+		// not a valid number
+		// check if id is a valid token symbol of the system parachain chain
+		let isValidTokenSymbol = false;
 
-		if (!invalidNumber) {
-			// query the parachains assets pallet to see if it has a value matching the assetId
-			const asset = await api.query.assets.asset(assetId);
+		const parachainAssets = await api.query.assets.asset.entries();
 
-			if (asset.isNone) {
-				throw new BaseError(
-					`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`
-				);
+		for (let i = 0; i < parachainAssets.length; i++) {
+			const parachainAsset = parachainAssets[i];
+			const id = parachainAsset[0].args[0];
+
+			const metadata = await api.query.assets.metadata(id);
+
+			if (
+				metadata.symbol.toHuman()?.toString().toLowerCase() ===
+				assetId.toLowerCase()
+			) {
+				isValidTokenSymbol = true;
 			}
+		}
 
-			// check that xcAsset exists in the xcAsset registry
-			let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
-			if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-				relayChainXcAssetInfoKeys = xcAssets.kusama;
-			}
-			if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-				relayChainXcAssetInfoKeys = xcAssets.polkadot;
-			}
-
-			if (relayChainXcAssetInfoKeys.length === 0) {
-				throw new BaseError(
-					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
-				);
-			}
-
-			let xcAsset: XCMChainInfoDataKeys | string = '';
-			for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
-				const chainInfo = relayChainXcAssetInfoKeys[i];
-
-				for (let j = 0; j < chainInfo.data.length; j++) {
-					const xcAssetData = chainInfo.data[j];
-					if (
-						typeof xcAssetData.asset === 'string' &&
-						xcAssetData.asset === assetId
-					) {
-						xcAsset = xcAssetData;
-						break;
-					}
-				}
-			}
-
-			if (typeof xcAsset === 'string') {
-				throw new BaseError(`unable to identify xcAsset with ID ${assetId}`);
-			}
-		} else {
-			// not a valid number
-			// check if id is a valid token symbol of the system parachain chain
-			let isValidTokenSymbol = false;
-
-			const parachainAssets = await api.query.assets.asset.entries();
-
-			for (let i = 0; i < parachainAssets.length; i++) {
-				const parachainAsset = parachainAssets[i];
-				const id = parachainAsset[0].args[0];
-
-				const metadata = await api.query.assets.metadata(id);
-
-				if (
-					metadata.symbol.toHuman()?.toString().toLowerCase() ===
-					assetId.toLowerCase()
-				) {
-					isValidTokenSymbol = true;
-				}
-			}
-
-			// if no native token for the parachain was matched, throw an error
-			if (!isValidTokenSymbol) {
-				throw new BaseError(
-					`${xcmDirection}: symbol assetId ${assetId} not found for parachain ${specName}`
-				);
-			}
+		// if no native token for the parachain was matched, throw an error
+		if (!isValidTokenSymbol) {
+			throw new BaseError(
+				`${xcmDirection}: symbol assetId ${assetId} not found for parachain ${specName}`
+			);
 		}
 	}
 };
@@ -655,8 +649,7 @@ const checkParaToAssetHubAssetId = async (
 	api: ApiPromise,
 	assetId: string,
 	specName: string,
-	registry: Registry,
-	isForeignAssetsTransfer: boolean
+	registry: Registry
 ) => {
 	if (typeof assetId === 'string') {
 		// An assetId may be a hex value to represent a GeneralKey for erc20 tokens.
@@ -672,14 +665,7 @@ const checkParaToAssetHubAssetId = async (
 			return;
 		}
 
-		await checkParaAssets(
-			api,
-			assetId,
-			specName,
-			registry,
-			'ParaToSystem',
-			isForeignAssetsTransfer
-		);
+		await checkParaAssets(api, assetId, specName, registry, 'ParaToSystem');
 	}
 };
 
@@ -918,13 +904,7 @@ export const checkAssetIdInput = async (
 		}
 
 		if (xcmDirection === Direction.ParaToSystem) {
-			await checkParaToAssetHubAssetId(
-				api,
-				assetId,
-				specName,
-				registry,
-				isForeignAssetsTransfer
-			);
+			await checkParaToAssetHubAssetId(api, assetId, specName, registry);
 		}
 	}
 };
@@ -990,17 +970,6 @@ export const checkXcmTxInputs = async (
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
-	await checkAssetIdInput(
-		api,
-		assetIds,
-		relayChainInfo,
-		specName,
-		xcmDirection,
-		registry,
-		isForeignAssetsTransfer,
-		isLiquidTokenTransfer
-	);
-
 	await checkAssetIdInput(
 		api,
 		assetIds,
