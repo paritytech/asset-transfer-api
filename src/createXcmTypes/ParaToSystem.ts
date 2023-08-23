@@ -394,7 +394,7 @@ const createXTokensMultiAssets = async (
 	assets: string[],
 	opts: CreateAssetsOpts
 ): Promise<VersionedMultiAssets> => {
-	const { registry }  = opts;
+	const { registry } = opts;
 	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
 

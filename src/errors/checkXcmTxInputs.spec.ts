@@ -348,7 +348,7 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				['311091173110107856861649819128533077277', '200'],
 				Direction.ParaToSystem,
-				`ParaToSystem: integer assetId 200 not found in moonriver`,
+				`ParaToSystem: unable to identify xcAsset with ID 200`,
 			],
 		];
 
@@ -864,7 +864,7 @@ describe('checkParaAssets', () => {
 				false
 			);
 		}).rejects.toThrowError(
-			'ParaToSystem: integer assetId 2096586909097964981698161 not found in moonriver'
+			'unable to identify xcAsset with ID 2096586909097964981698161'
 		);
 	});
 	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {

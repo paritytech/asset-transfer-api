@@ -3,11 +3,11 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { AssetsTransferApi } from '../AssetsTransferApi';
+import { Registry } from '../registry';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { MultiAsset } from '../types';
 import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
-import { Registry } from '../registry';
 
 type Test = [
 	paysWithFeeDest: string,

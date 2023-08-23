@@ -1,9 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { AssetsTransferApi } from '../../AssetsTransferApi';
+import { Registry } from '../../registry';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
 import { getAssetHubAssetId } from './getAssetHubAssetId';
-import { Registry } from '../../registry';
 
 describe('getAssetHubAssetId', () => {
 	const registry = new Registry('statemine', {});

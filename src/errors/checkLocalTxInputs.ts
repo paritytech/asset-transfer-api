@@ -65,7 +65,13 @@ export const checkLocalTxInput = async (
 		const systemParachainInfo = relayChainInfo[systemChainId];
 
 		// If anything is incorrect this will throw an error.
-		await checkLiquidTokenValidity(api, registry, specName, systemParachainInfo, assetIds[0]);
+		await checkLiquidTokenValidity(
+			api,
+			registry,
+			specName,
+			systemParachainInfo,
+			assetIds[0]
+		);
 
 		return LocalTxType.PoolAssets;
 	} else {
@@ -87,26 +93,24 @@ export const checkLocalTxInput = async (
 		);
 		if (isNativeToken !== undefined) {
 			return LocalTxType.Balances;
-		} 
+		}
 
 		// const assetIsNumber = !Number.isNaN(assetId);
 
 		// not a number so we check the registry using the symbol
 		// if (!assetIsNumber) {
-			assetId = await getAssetHubAssetId(
-				api,
-				registry,
-				assetId,
-				specName,
-				isForeignAssetsTransfer
-			);
+		assetId = await getAssetHubAssetId(
+			api,
+			registry,
+			assetId,
+			specName,
+			isForeignAssetsTransfer
+		);
 
-			if (assetId.length > 0) {
-				return LocalTxType.Assets;
-			} else {
-				throw new BaseError(
-					`The integer assetId ${assetId} was not found.`
-				);
-			}
+		if (assetId.length > 0) {
+			return LocalTxType.Assets;
+		} else {
+			throw new BaseError(`The integer assetId ${assetId} was not found.`);
 		}
+	}
 };

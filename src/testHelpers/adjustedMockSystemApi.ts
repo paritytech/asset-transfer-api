@@ -1,10 +1,14 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { ITuple } from '@polkadot/types-codec/types';
 import { Metadata, Option, TypeRegistry } from '@polkadot/types';
 import type { Header, MultiLocation } from '@polkadot/types/interfaces';
-import type { PalletAssetsAssetDetails, PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo } from '@polkadot/types/lookup';
+import type {
+	PalletAssetConversionNativeOrAssetId,
+	PalletAssetConversionPoolInfo,
+	PalletAssetsAssetDetails,
+} from '@polkadot/types/lookup';
+import { ITuple } from '@polkadot/types-codec/types';
 import { getSpecTypes } from '@polkadot/types-known';
 
 import { assetHubWestendV9435 } from './metadata/assetHubWestendV9435';
@@ -221,21 +225,34 @@ const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		);
 	});
 
-const pools = (_arg: ITuple<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionNativeOrAssetId]>): Promise<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo]> =>
+const pools = (
+	_arg: ITuple<
+		[PalletAssetConversionNativeOrAssetId, PalletAssetConversionNativeOrAssetId]
+	>
+): Promise<
+	[PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo]
+> =>
 	Promise.resolve().then(() => {
-		const palletAssetConversionNativeOrAssetId = mockSystemApi.registry.createType('PalletAssetConversionNativeOrAssetId', [
-			{ parents: 0, interior: { 'Here': ''}},
-			{ parents: 0, interior: { X2: [{'PalletInstance': 50}, {'GeneralIndex': 100}]}}
-		]);
+		const palletAssetConversionNativeOrAssetId =
+			mockSystemApi.registry.createType(
+				'PalletAssetConversionNativeOrAssetId',
+				[
+					{ parents: 0, interior: { Here: '' } },
+					{
+						parents: 0,
+						interior: { X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }] },
+					},
+				]
+			);
 
-		const poolInfo = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo',{
-			lpToken: 0
-		});
+		const poolInfo = mockSystemApi.registry.createType(
+			'PalletAssetConversionPoolInfo',
+			{
+				lpToken: 0,
+			}
+		);
 
-		return [
-			palletAssetConversionNativeOrAssetId,
-			poolInfo
-		]
+		return [palletAssetConversionNativeOrAssetId, poolInfo];
 	});
 
 const mockApiAt = {
@@ -276,22 +293,44 @@ export const adjustedMockSystemApi = {
 		},
 		assetConversion: {
 			pools: Object.assign(pools, {
-				entries: (): [PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo][] => {
-					const palletAssetConversionNativeOrAssetId = mockSystemApi.registry.createType('PalletAssetConversionNativeOrAssetId', [
-						{ parents: 0, interior: { 'Here': ''}},
-						{ parents: 0, interior: { X2: [{'PalletInstance': 50}, {'GeneralIndex': 100}]}}
-					]);
-			
-					const poolInfo = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo',{
-						lpToken: 0
-					});
+				entries: () => {
+					const palletAssetConversionNativeOrAssetId = Object.assign(
+						[
+							{ parents: 0, interior: { Here: '' } },
+							{
+								parents: 0,
+								interior: {
+									X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }],
+								},
+							},
+						],
+						{
+							toHuman: () => {
+								return `
+							[{ parents: 0, interior: { 'Here': ''}},
+							{ parents: 0, interior: { X2: [{'PalletInstance': 50}, {'GeneralIndex': 100}]}}]
+							`;
+							},
+						}
+					);
 
-					return [
-						[palletAssetConversionNativeOrAssetId, poolInfo]
-					]
-				}
-			})
-		}
+					const poolInfo = Object.assign(
+						{
+							lpToken: mockSystemApi.registry.createType('u32', 0),
+						},
+						{
+							unwrap: () => {
+								return {
+									lpToken: mockSystemApi.registry.createType('u32', 0),
+								};
+							},
+						}
+					);
+
+					return [[palletAssetConversionNativeOrAssetId, poolInfo]];
+				},
+			}),
+		},
 	},
 	tx: {
 		polkadotXcm: {

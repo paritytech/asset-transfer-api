@@ -28,8 +28,8 @@ export class Registry {
 			westend: {},
 			xcAssets: {
 				polkadot: [],
-				kusama: []
-			}
+				kusama: [],
+			},
 		};
 	}
 

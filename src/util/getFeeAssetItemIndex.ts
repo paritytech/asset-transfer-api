@@ -4,8 +4,8 @@ import { ApiPromise } from '@polkadot/api';
 
 import { getAssetHubAssetId } from '../createXcmTypes/util/getAssetHubAssetId';
 import { BaseError } from '../errors';
-import { MultiAsset } from '../types';
 import { Registry } from '../registry';
+import { MultiAsset } from '../types';
 
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index
