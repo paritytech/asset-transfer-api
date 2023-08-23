@@ -781,8 +781,31 @@ describe('AssetTransferAPI', () => {
 	});
 	
 	describe('assetsCache', () => {
-		it ('Should correctly cache an asset after being queried', () => {
+		it ('Should correctly cache an asset after being queried', async () => {
+			const emptyRegistryAssetsApi = new AssetsTransferApi(
+				adjustedMockSystemApi,
+				'statemine',
+				2,
+				{
+					injectedRegistry: {
+						kusama: {}
+					}
+				}
+			);
 
+			await emptyRegistryAssetsApi.createTransferTransaction(
+				'2023',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				['1984'],
+				['5000000'],
+				{
+					format: 'payload',
+					keepAlive: true,
+					xcmVersion: 3,
+				}
+			);
+
+			expect(emptyRegistryAssetsApi.registry.assetsCache.kusama['1000']['assetsInfo']['1984']).toEqual('USDT');
 		});
 	})
 });

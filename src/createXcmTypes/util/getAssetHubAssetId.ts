@@ -32,6 +32,22 @@ export const getAssetHubAssetId = async (
 	const isParachain = parseInt(currentChainId) >= 2000;
 
 	// check the cache and return the cached assetId if found
+	if (! registry.assetsCache[registry.relayChain][
+		currentChainId
+	]) {
+		registry.assetsCache[registry.relayChain][
+			currentChainId
+		] = {							
+			assetsInfo: {},
+			poolPairsInfo: {},
+			foreignAssetsPalletInstance: null,
+			assetsPalletInstance: null,
+			specName: '',
+			tokens: [],
+			foreignAssetsInfo: {},
+		};
+	}
+	
 	const cachedAssetId = registry.assetsCache[registry.relayChain][
 		currentChainId
 	]
