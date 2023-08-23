@@ -33,7 +33,7 @@ import type {
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
-import { getAssetHubAssetId } from './util/getAssetHubAssetId';
+import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -295,7 +295,7 @@ export const ParaToSystem: ICreateXcmType = {
 		const currentRelayChainSpecName = registry.relayChain;
 
 		if (!isRelayNative && isNotANumber) {
-			assetId = await getAssetHubAssetId(api, registry, assetId, specName);
+			assetId = await getAssetId(api, registry, assetId, specName);
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
@@ -411,7 +411,7 @@ const createXTokensMultiAssets = async (
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 
 		if (isNotANumber) {
-			assetId = await getAssetHubAssetId(api, registry, assetId, specName);
+			assetId = await getAssetId(api, registry, assetId, specName);
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
@@ -520,7 +520,7 @@ const createParaToSystemMultiAssets = async (
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 
 		if (isNotANumber) {
-			assetId = await getAssetHubAssetId(
+			assetId = await getAssetId(
 				api,
 				registry,
 				assetId,

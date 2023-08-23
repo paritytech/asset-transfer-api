@@ -2,7 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { getAssetHubAssetId } from '../createXcmTypes/util/getAssetHubAssetId';
+import { getAssetId } from '../createXcmTypes/util/getAssetId';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
 import { MultiAsset } from '../types';
@@ -47,7 +47,7 @@ export const getFeeAssetItemIndex = async (
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
 				if (isNotANumber) {
-					const paysWithFeeDestGeneralIndex = await getAssetHubAssetId(
+					const paysWithFeeDestGeneralIndex = await getAssetId(
 						api,
 						registry,
 						paysWithFeeDest,

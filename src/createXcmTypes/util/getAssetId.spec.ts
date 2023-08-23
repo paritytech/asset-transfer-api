@@ -3,9 +3,9 @@
 import { AssetsTransferApi } from '../../AssetsTransferApi';
 import { Registry } from '../../registry';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
-import { getAssetHubAssetId } from './getAssetHubAssetId';
+import { getAssetId } from './getAssetId';
 
-describe('getAssetHubAssetId', () => {
+describe('getAssetId', () => {
 	const registry = new Registry('statemine', {});
 	const systemAssetsApi = new AssetsTransferApi(
 		adjustedMockSystemApi,
@@ -15,7 +15,7 @@ describe('getAssetHubAssetId', () => {
 	it('Should correctly return the integer assetId when given a valid native system chain token symbol', async () => {
 		const expected = '10';
 
-		const result = await getAssetHubAssetId(
+		const result = await getAssetId(
 			systemAssetsApi._api,
 			registry,
 			'USDC',
@@ -29,7 +29,7 @@ describe('getAssetHubAssetId', () => {
 	it('Should correctly return the integer assetId when given a valid native system chain token assetId', async () => {
 		const expected = '8';
 
-		const result = await getAssetHubAssetId(
+		const result = await getAssetId(
 			systemAssetsApi._api,
 			registry,
 			'RMRK',
@@ -42,7 +42,7 @@ describe('getAssetHubAssetId', () => {
 
 	it('Should error when an asset id symbol is given that is not present in the registry or chain tate', async () => {
 		await expect(async () => {
-			await getAssetHubAssetId(
+			await getAssetId(
 				systemAssetsApi._api,
 				registry,
 				'hello',
@@ -60,7 +60,7 @@ describe('getAssetHubAssetId', () => {
 		const expected =
 			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
-		const result = await getAssetHubAssetId(
+		const result = await getAssetId(
 			systemAssetsApi._api,
 			registry,
 			multiLocation,
@@ -76,7 +76,7 @@ describe('getAssetHubAssetId', () => {
 			'{"parents":"1","interior":{"X1":{"Parachain":"212500000"}}}';
 
 		await expect(async () => {
-			await getAssetHubAssetId(
+			await getAssetId(
 				systemAssetsApi._api,
 				registry,
 				multiLocation,

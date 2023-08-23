@@ -10,15 +10,18 @@ import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationEx
 import { getChainIdBySpecName } from './getChainIdBySpecName';
 
 /**
- * Given a valid AssetHub token symbol or ForeignAsset MultiLocation, returns it's corresponding integer assetId.
- * Errors if given an input that is not in the registry or found in the AssetHub chain state.
  *
- * @param api
- * @param tokenSymbol string
+ * Given a valid token symbol or MultiLocation, returns it's corresponding integer or MultiLocation assetId
+ * Errors if given an input that is not in the asset registry or not found in either
+ * AssetHub's or the current Parachain's chain state.
+ *
+ * @param api ApiPromise
+ * @param registry Registry
+ * @param asset string
  * @param specName string
  * @param isForeignAssetsTransfer boolean
  */
-export const getAssetHubAssetId = async (
+export const getAssetId = async (
 	_api: ApiPromise,
 	registry: Registry,
 	asset: string,
@@ -28,8 +31,6 @@ export const getAssetHubAssetId = async (
 	const currentChainId = getChainIdBySpecName(registry, specName);
 	const parsedAssetAsNumber = Number.parseInt(asset);
 	const assetIsNumber = !Number.isNaN(parsedAssetAsNumber);
-	const isSystemChain =
-		parseInt(currentChainId) < 2000 && parseInt(currentChainId) > 0;
 	const isParachain = parseInt(currentChainId) >= 2000;
 
 	// check the cache and return the cached assetId if found
@@ -59,8 +60,10 @@ export const getAssetHubAssetId = async (
 	}
 
 	// check the registry and return the assetId if found
+	// currently the registry does not contain assetsInfo for parachains
+	// so we skip checking them
 	const { assetsInfo } = registry.currentRelayRegistry[currentChainId];
-	if (isSystemChain) {
+	if (!isParachain) {
 		if (Object.keys(assetsInfo).length === 0) {
 			throw new BaseError(
 				`${specName} has no associated token symbol ${asset}`
@@ -114,7 +117,7 @@ export const getAssetHubAssetId = async (
 
 			assetId = asset;
 		}
-	} else if (isSystemChain) {
+	} else if (!isParachain) {
 		// if asset is an empty string we assign it the native relay assets symbol
 		if (asset === '') {
 			const { tokens } = registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
