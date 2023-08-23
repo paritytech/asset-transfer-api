@@ -26,7 +26,7 @@ export enum BaseErrorsEnum {
 	/**
 	 * Multiple assets have been found for a single token symbol.
 	 */
-	MultipleAssetsFound = 'MultipleAssetsFound',
+	MultipleNonUniqueAssetsFound = 'MultipleNonUniqueAssetsFound',
 	/**
 	 * Not able to find the pertinent registry to gather certain information. This can refer to xcAssets.
 	 */

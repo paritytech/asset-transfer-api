@@ -490,7 +490,10 @@ const checkSystemAssets = async (
 						.trim()
 						.replace(',', '\n');
 
-				throw new BaseError(message, BaseErrorsEnum.MultipleAssetsFound);
+				throw new BaseError(
+					message,
+					BaseErrorsEnum.MultipleNonUniqueAssetsFound
+				);
 			} else if (tokenSymbolsMatched.length === 1) {
 				isValidTokenSymbol = true;
 			}
