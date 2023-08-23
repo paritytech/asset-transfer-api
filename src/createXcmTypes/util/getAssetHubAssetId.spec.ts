@@ -64,4 +64,18 @@ describe('getAssetHubAssetId', () => {
 
 		expect(result).toEqual(expected);
 	});
+
+	it('Should correctly error when a foreign asset multilocation is given that is not present in the registry or chain state', async () => {
+		const multiLocation =
+			'{"parents":"1","interior":{"X1":{"Parachain":"212500000"}}}';
+
+		await expect(async () => {
+			await getAssetHubAssetId(
+				systemAssetsApi._api,
+				multiLocation,
+				'statemine',
+				true
+			);
+		}).rejects.toThrowError(`MultiLocation ${multiLocation} not found`);
+	});
 });

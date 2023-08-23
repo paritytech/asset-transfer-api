@@ -3,6 +3,7 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
+import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getAssetHubAssetId } from '../createXcmTypes/util/getAssetHubAssetId';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { checkLiquidTokenValidity } from '../errors/checkXcmTxInputs';
@@ -58,11 +59,18 @@ export const checkLocalTxInput = async (
 		if (foreignAssetIsInRegistry) {
 			return LocalTxType.ForeignAssets;
 		} else {
-			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
-			throw new BaseError(
-				`MultiLocation ${multiLocationStr} not found`,
-				BaseErrorsEnum.AssetNotFound
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
+				api,
+				multiLocationStr
 			);
+			if (isValidForeignAsset) {
+				return LocalTxType.ForeignAssets;
+			} else {
+				throw new BaseError(
+					`MultiLocation ${multiLocationStr} not found`,
+					BaseErrorsEnum.AssetNotFound
+				);
+			}
 		}
 	} else if (isLiquidTokenTransfer) {
 		const relayChainInfo = registry.currentRelayRegistry;
