@@ -2,8 +2,8 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { Direction } from '../../types';
 import { BaseError, BaseErrorsEnum } from '../../errors';
+import { Direction } from '../../types';
 
 export enum XcmPalletName {
 	xcmPallet = 'xcmPallet',

@@ -82,5 +82,8 @@ export const transferMultiAssets = async (
 		return ext(assets, paysWithFeeDest, beneficiary, destWeightLimit);
 	}
 
-	throw new BaseError('Unable to create xTokens assets', BaseErrorsEnum.InternalError);
+	throw new BaseError(
+		'Unable to create xTokens assets',
+		BaseErrorsEnum.InternalError
+	);
 };

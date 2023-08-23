@@ -50,7 +50,7 @@ export enum BaseErrorsEnum {
 	/**
 	 * An issue has happened internally.
 	 */
-	InternalError = 'InternalError'
+	InternalError = 'InternalError',
 }
 
 export class BaseError extends Error {

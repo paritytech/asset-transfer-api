@@ -541,7 +541,7 @@ export const checkParaAssets = async (
 
 		if (asset.isNone) {
 			throw new BaseError(
-				`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`,
+				`(${xcmDirection}) integer assetId ${assetId} not found in ${specName}`,
 				BaseErrorsEnum.AssetNotFound
 			);
 		}
@@ -608,7 +608,7 @@ export const checkParaAssets = async (
 		// if no native token for the parachain was matched, throw an error
 		if (!isValidTokenSymbol) {
 			throw new BaseError(
-				`${xcmDirection}: symbol assetId ${assetId} not found for parachain ${specName}`,
+				`(${xcmDirection}) symbol assetId ${assetId} not found for parachain ${specName}`,
 				BaseErrorsEnum.AssetNotFound
 			);
 		}
