@@ -12,7 +12,7 @@ import type {
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { ASSET_HUB_CHAIN_ID } from '../consts';
-import { BaseError } from '../errors';
+import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
 import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
 import {
@@ -168,7 +168,7 @@ export const ParaToSystem: ICreateXcmType = {
 		opts: CreateWeightLimitOpts
 	): WeightLimitV2 => {
 		const limit: IWeightLimit =
-			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit.proofSize
+			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 				? {
 						Limited: {
 							refTime: opts.weightLimit.refTime,
@@ -382,7 +382,10 @@ export const ParaToSystem: ICreateXcmType = {
 			};
 		}
 
-		throw new BaseError('failed to create xTokens fee multilocation');
+		throw new BaseError(
+			'failed to create xTokens fee multilocation',
+			BaseErrorsEnum.InternalError
+		);
 	},
 };
 

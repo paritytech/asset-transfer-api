@@ -106,7 +106,6 @@ const multiLocationAssetInfo = {
 
 const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
-		console.log('ASSET ID ENTERED IS', assetId);
 		const assets: Map<number, PalletAssetsAssetDetails> = new Map();
 
 		const insufficientAssetInfo = {
@@ -150,11 +149,7 @@ const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 		);
 		assets.set(1984, sufficientAsset);
 
-		console.log('ASSET ID', assetId);
-		console.log('TYPE', typeof assetId);
 		const maybeAsset = assets.has(assetId) ? assets.get(assetId) : undefined;
-		console.log('IS THE ASSET PRESENT', assets.has(1984));
-		console.log('ASSET IS FOUND', JSON.stringify(maybeAsset));
 
 		if (maybeAsset) {
 			return new Option(
@@ -236,6 +231,44 @@ const foreignAsset = (
 			'Option<PalletAssetsAssetDetails>',
 			undefined
 		);
+	});
+
+const foreignAssetsMetadata = (
+	assetId: number
+): Promise<PalletAssetsAssetMetadata> =>
+	Promise.resolve().then(() => {
+		const metadata: Map<string, PalletAssetsAssetMetadata> = new Map();
+
+		const rawTnkrMultiLocationMetadata = {
+			deposit: mockSystemApi.registry.createType('u128', 0),
+			name: mockSystemApi.registry.createType('Bytes', '0x78634b534d'),
+			symbol: Object.assign(
+				mockSystemApi.registry.createType('Bytes', '0x78634b534d'),
+				{
+					toHuman: () => 'TNKR',
+				}
+			),
+			decimals: mockSystemApi.registry.createType('u8', 12),
+			isFrozen: mockSystemApi.registry.createType('bool', false),
+		};
+		const tnkrForeignAssetMetadata = mockSystemApi.registry.createType(
+			'PalletAssetsAssetMetadata',
+			rawTnkrMultiLocationMetadata
+		);
+		metadata.set(
+			'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+			tnkrForeignAssetMetadata
+		);
+
+		const maybeMetadata = metadata.has(assetId.toString())
+			? metadata.get(assetId.toString())
+			: undefined;
+
+		if (maybeMetadata) {
+			return maybeMetadata;
+		}
+
+		return mockSystemApi.registry.createType('PalletAssetsAssetMetadata', {});
 	});
 
 const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
@@ -327,6 +360,7 @@ export const adjustedMockSystemApi = {
 		},
 		foreignAssets: {
 			asset: foreignAsset,
+			metadata: foreignAssetsMetadata,
 		},
 		poolAssets: {
 			asset: poolAsset,

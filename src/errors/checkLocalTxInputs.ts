@@ -3,11 +3,12 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
+import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getAssetHubAssetId } from '../createXcmTypes/util/getAssetHubAssetId';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { checkLiquidTokenValidity } from '../errors/checkXcmTxInputs';
 import { Registry } from '../registry';
-import { BaseError } from './BaseError';
+import { BaseError, BaseErrorsEnum } from './BaseError';
 
 enum LocalTxType {
 	Assets = 'Assets',
@@ -35,17 +36,20 @@ export const checkLocalTxInput = async (
 	// Ensure the lengths in assetIds and amounts is correct
 	if (assetIds.length > 1 || amounts.length !== 1) {
 		throw new BaseError(
-			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1'
+			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
+			BaseErrorsEnum.InvalidInput
 		);
 	}
 
 	if (isForeignAssetsTransfer) {
 		if (assetIds.length === 0) {
 			throw new BaseError(
-				'Local foreignAsset transactions must have the `assetIds` input be a length of 1'
+				'Local foreignAsset transactions must have the `assetIds` input be a length of 1',
+				BaseErrorsEnum.InvalidInput
 			);
 		}
-		// check the registrys foreignAssetsInfo to see if the provided foreign asset exists
+
+		// check the cache and registrys foreignAssetsInfo to see if the provided foreign asset exists
 		const multiLocationStr = assetIds[0];
 		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			api,
@@ -56,8 +60,19 @@ export const checkLocalTxInput = async (
 		if (foreignAssetIsInRegistry) {
 			return LocalTxType.ForeignAssets;
 		} else {
-			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
-			throw new BaseError(`MultiLocation ${multiLocationStr} not found`);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
+				api,
+				registry,
+				multiLocationStr
+			);
+			if (isValidForeignAsset) {
+				return LocalTxType.ForeignAssets;
+			} else {
+				throw new BaseError(
+					`MultiLocation ${multiLocationStr} not found`,
+					BaseErrorsEnum.AssetNotFound
+				);
+			}
 		}
 	} else if (isLiquidTokenTransfer) {
 		const relayChainInfo = registry.currentRelayRegistry;
@@ -98,7 +113,6 @@ export const checkLocalTxInput = async (
 		// const assetIsNumber = !Number.isNaN(assetId);
 
 		// not a number so we check the registry using the symbol
-		// if (!assetIsNumber) {
 		assetId = await getAssetHubAssetId(
 			api,
 			registry,

@@ -3,7 +3,7 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { getAssetHubAssetId } from '../createXcmTypes/util/getAssetHubAssetId';
-import { BaseError } from '../errors';
+import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
 import { MultiAsset } from '../types';
 
@@ -102,7 +102,8 @@ export const getFeeAssetItemIndex = async (
 		throw new BaseError(
 			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets
 				.map((asset) => asset.id.Concrete.interior.toString())
-				.toString()}`
+				.toString()}`,
+			BaseErrorsEnum.InvalidInput
 		);
 	}
 

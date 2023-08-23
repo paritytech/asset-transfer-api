@@ -21,7 +21,6 @@ import {
 	checkParaToSystemIsNonForeignAssetXTokensTx,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
-	checkWeightLimit,
 	checkXcmVersionIsValidForPaysWithFeeDest,
 } from './checkXcmTxInputs';
 
@@ -107,19 +106,19 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToSystem,
-				`RelayToSystem: asset 1 is not polkadot's native asset. Expected DOT`,
+				`(RelayToSystem) asset 1 is not polkadot's native asset. Expected DOT`,
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToSystem,
-				`RelayToSystem: asset DOT is not kusama's native asset. Expected KSM`,
+				`(RelayToSystem) asset DOT is not kusama's native asset. Expected KSM`,
 			],
 			[
 				'Westend',
 				['WND', '100000'],
 				Direction.RelayToSystem,
-				`RelayToSystem: asset 100000 is not westend's native asset. Expected WND`,
+				`(RelayToSystem) asset 100000 is not westend's native asset. Expected WND`,
 			],
 		];
 
@@ -132,13 +131,13 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToPara,
-				`RelayToPara: asset 1 is not polkadot's native asset. Expected DOT`,
+				`(RelayToPara) asset 1 is not polkadot's native asset. Expected DOT`,
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToPara,
-				`RelayToPara: asset DOT is not kusama's native asset. Expected KSM`,
+				`(RelayToPara) asset DOT is not kusama's native asset. Expected KSM`,
 			],
 		];
 
@@ -151,19 +150,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['0'],
 				Direction.SystemToRelay,
-				`SystemToRelay: assetId 0 not native to polkadot`,
+				`(SystemToRelay) assetId 0 not native to polkadot`,
 			],
 			[
 				'Statemine',
 				['MOVR', 'KSM'],
 				Direction.SystemToRelay,
-				`SystemToRelay: assetId MOVR not native to kusama`,
+				`(SystemToRelay) assetId MOVR not native to kusama`,
 			],
 			[
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToRelay,
-				`SystemToRelay: assetId 250 not native to westend`,
+				`(SystemToRelay) assetId 250 not native to westend`,
 			],
 		];
 
@@ -176,7 +175,7 @@ describe('checkAssetIds', () => {
 				'Statemine',
 				['KSM', '8', 'stateMineDoge'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId stateMineDoge not found for system parachain Statemine`,
+				`(SystemToPara) assetId stateMineDoge not found for system parachain Statemine`,
 			],
 		];
 
@@ -206,19 +205,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId xcDOT not found for system parachain Statemint`,
+				`(SystemToPara) assetId xcDOT not found for system parachain Statemint`,
 			],
 			[
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId xcMOVR not found for system parachain Statemine`,
+				`(SystemToPara) assetId xcMOVR not found for system parachain Statemine`,
 			],
 			[
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId Test Westend not found for system parachain Westmint`,
+				`(SystemToPara) assetId Test Westend not found for system parachain Westmint`,
 			],
 		];
 
@@ -278,19 +277,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToSystem,
-				`SystemToSystem: assetId xcDOT not found for system parachain Statemint`,
+				`(SystemToSystem) assetId xcDOT not found for system parachain Statemint`,
 			],
 			[
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToSystem,
-				`SystemToSystem: assetId xcMOVR not found for system parachain Statemine`,
+				`(SystemToSystem) assetId xcMOVR not found for system parachain Statemine`,
 			],
 			[
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToSystem,
-				`SystemToSystem: assetId Test Westend not found for system parachain Westmint`,
+				`(SystemToSystem) assetId Test Westend not found for system parachain Westmint`,
 			],
 		];
 
@@ -319,7 +318,7 @@ describe('checkAssetIds', () => {
 				'Statemine',
 				['{"parents":"2","interior":{"X1": {"Parachain":"2125000"}}}'],
 				Direction.SystemToPara,
-				`SystemToPara: assetId {"parents":"2","interior":{"X1": {"Parachain":"2125000"}}} not found for system parachain Statemine`,
+				`(SystemToPara) assetId {"parents":"2","interior":{"X1": {"Parachain":"2125000"}}} not found for system parachain Statemine`,
 			],
 		];
 
@@ -348,7 +347,7 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				['311091173110107856861649819128533077277', '200'],
 				Direction.ParaToSystem,
-				`ParaToSystem: unable to identify xcAsset with ID 200`,
+				`(ParaToSystem) integer assetId 200 not found in moonriver`,
 			],
 		];
 
@@ -376,13 +375,13 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				['xcKSM', 'USDT'],
 				Direction.ParaToSystem,
-				`ParaToSystem: symbol assetId USDT not found for parachain moonriver`,
+				`(ParaToSystem) symbol assetId USDT not found for parachain moonriver`,
 			],
 			[
 				'moonriver',
 				['xcUSDT', 'ASTR'],
 				Direction.ParaToSystem,
-				`ParaToSystem: symbol assetId ASTR not found for parachain moonriver`,
+				`(ParaToSystem) symbol assetId ASTR not found for parachain moonriver`,
 			],
 		];
 
@@ -421,7 +420,7 @@ describe('checkAssetIds', () => {
 				false
 			);
 		}).rejects.toThrowError(
-			'ParaToSystem: assetId 0x1234, is not a valid erc20 token.'
+			'(ParaToSystem) assetId 0x1234, is not a valid erc20 token.'
 		);
 	});
 	it('Should error when an invalid token is passed into a liquidTokenTransfer', async () => {
@@ -486,7 +485,7 @@ describe('checkAssetIds', () => {
 describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 	it('Should error when the relay native asset and system assets are in the same assetIds list when direction is SystemToSystem', () => {
 		const expectErrorMessage =
-			'Found the relay chains native asset in list ksm,usdc. assetIds list must be empty or only contain the relay chain asset for direction SystemToSystem';
+			'Found the relay chains native asset in list [ksm,usdc]. `assetIds` list must be empty or only contain the relay chain asset for direction SystemToSystem when sending the relay chains native asset.';
 		const assetIds = ['ksm', 'usdc'];
 		const specName = 'statemine';
 		const registry = new Registry(specName, {});
@@ -497,34 +496,10 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 	});
 });
 
-describe('checkWeightLimit', () => {
-	it('Should correctly error when refTime is not provided and isLimited is true', () => {
-		const err = () =>
-			checkWeightLimit({
-				isLimited: true,
-				weightLimit: { refTime: undefined, proofSize: '500' },
-			});
-
-		expect(err).toThrowError(
-			'refTime value not found for weight limited transaction. Please provide refTime value'
-		);
-	});
-	it('Should correctly error when refTime is not provided and isLimited is true', () => {
-		const err = () =>
-			checkWeightLimit({
-				isLimited: true,
-				weightLimit: { refTime: '1000', proofSize: undefined },
-			});
-
-		expect(err).toThrowError(
-			'proofSize value not found for weight limited transaction. Please provide proofSize value'
-		);
-	});
-});
 describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () => {
 	it('Should correctly error when isForeignAssetsTransfer and both non native and foreign multilocations are in assetIds for direction SystemToPara', () => {
 		const expectedErrorMessage =
-			'SystemToPara: found both foreign and native multilocations in {"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}},{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}. multilocation XCMs must only include either native or foreign assets of the destination chain';
+			'(SystemToPara) found both foreign and native multilocations in {"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}},{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}. multilocation XCMs must only include either native or foreign assets of the destination chain.';
 		const xcmDirection = Direction.SystemToPara;
 		const destChainId = '2023';
 		const multiLocationAssetIds = [
@@ -597,7 +572,7 @@ describe('checkAllMultiLocationAssetIdsAreValid', () => {
 				[
 					'{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}',
 				],
-				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}:  Enum(Parachain) String should not contain decimal points or scientific notation',
+				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}} -  Enum(Parachain) String should not contain decimal points or scientific notation',
 			],
 		];
 
@@ -772,7 +747,7 @@ describe('checkParaToSystemIsNonForeignAssetXTokensTx', () => {
 		};
 
 		expect(err).toThrow(
-			'ParaToSystem: xTokens pallet does not support foreign asset transfers'
+			'(ParaToSystem) xTokens pallet does not support foreign asset transfers'
 		);
 	});
 });
@@ -801,8 +776,7 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		} catch (err) {
 			didNotError = false;
@@ -822,8 +796,7 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		} catch (err) {
 			didNotError = false;
@@ -842,11 +815,10 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		}).rejects.toThrowError(
-			'ParaToSystem: symbol assetId xcUSDfake not found for parachain moonriver'
+			'(ParaToSystem) symbol assetId xcUSDfake not found for parachain moonriver'
 		);
 	});
 	it('Should correctly error when an invalid integer assetId is provided', async () => {
@@ -860,11 +832,10 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		}).rejects.toThrowError(
-			'unable to identify xcAsset with ID 2096586909097964981698161'
+			'(ParaToSystem) integer assetId 2096586909097964981698161 not found in moonriver'
 		);
 	});
 	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {
@@ -939,8 +910,7 @@ describe('checkParaAssets', () => {
 				assetId,
 				specName,
 				registry,
-				Direction.ParaToSystem,
-				false
+				Direction.ParaToSystem
 			);
 		}).rejects.toThrowError(
 			'unable to identify xcAsset with ID 311091173110107856861649819128533077277'

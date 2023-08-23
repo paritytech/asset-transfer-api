@@ -5,7 +5,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import { BaseError } from '../../errors';
+import { BaseError, BaseErrorsEnum } from '../../errors';
 import type { Registry } from '../../registry';
 import { Direction } from '../../types';
 import type { CreateXcmCallOpts } from '../types';
@@ -74,5 +74,8 @@ export const transferMultiAsset = async (
 		return ext(asset, beneficiary, destWeightLimit);
 	}
 
-	throw new BaseError('Unable to create xTokens assets');
+	throw new BaseError(
+		'Unable to create xTokens assets',
+		BaseErrorsEnum.InternalError
+	);
 };

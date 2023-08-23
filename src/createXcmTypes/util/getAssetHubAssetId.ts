@@ -3,9 +3,10 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { ASSET_HUB_CHAIN_ID } from '../../consts';
-import { BaseError } from '../../errors';
+import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
 import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
+import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from './getChainIdBySpecName';
 
 /**
@@ -85,8 +86,9 @@ export const getAssetHubAssetId = async (
 	}
 
 	let assetId = '';
+	const isAssetHub = currentChainId === ASSET_HUB_CHAIN_ID;
 
-	if (isForeignAssetsTransfer) {
+	if (isAssetHub && isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the registry
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
 			_api,
@@ -97,7 +99,20 @@ export const getAssetHubAssetId = async (
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
 		} else {
-			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
+				_api,
+				registry,
+				asset
+			);
+
+			if (!isValidForeignAsset) {
+				throw new BaseError(
+					`MultiLocation ${asset} not found`,
+					BaseErrorsEnum.AssetNotFound
+				);
+			}
+
+			assetId = asset;
 		}
 	} else if (isSystemChain) {
 		// if asset is an empty string we assign it the native relay assets symbol

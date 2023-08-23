@@ -3,7 +3,7 @@
 import { isHex, u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 
-import { BaseError } from '../errors';
+import { BaseError, BaseErrorsEnum } from '../errors';
 import { validateAddress } from '../validate/validateAddress';
 
 /**
@@ -15,7 +15,7 @@ import { validateAddress } from '../validate/validateAddress';
 export const sanitizeAddress = (addr: string): `0x${string}` => {
 	const [isValid, msg] = validateAddress(addr);
 	if (!isValid) {
-		throw new BaseError(msg as string);
+		throw new BaseError(msg as string, BaseErrorsEnum.InvalidAddress);
 	}
 	// Verify that it is a valid hex public key
 	if (isHex(addr)) return addr;
