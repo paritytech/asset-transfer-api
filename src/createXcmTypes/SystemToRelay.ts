@@ -10,7 +10,6 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
-import { BaseError, BaseErrorsEnum } from '../errors';
 import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit } from './types';
 
 export const SystemToRelay: ICreateXcmType = {
@@ -64,17 +63,9 @@ export const SystemToRelay: ICreateXcmType = {
 	 */
 	createDest: (
 		api: ApiPromise,
-		destId: string,
+		_: string,
 		xcmVersion: number
 	): VersionedMultiLocation => {
-		// TODO: This line will never be hit, and we should consider adding the destination ID
-		// to an options param as it is not needed for Chain -> Relay transfers.
-		if (destId !== '0') {
-			throw new BaseError(
-				'SystemToRelay must have a destination Id of 0',
-				BaseErrorsEnum.InvalidInput
-			);
-		}
 		if (xcmVersion === 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
