@@ -7,7 +7,7 @@ import { getAssetHubAssetId } from '../createXcmTypes/util/getAssetHubAssetId';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { checkLiquidTokenValidity } from '../errors/checkXcmTxInputs';
 import { Registry } from '../registry';
-import { BaseError } from './BaseError';
+import { BaseError, BaseErrorsEnum } from './BaseError';
 
 enum LocalTxType {
 	Assets = 'Assets',
@@ -35,14 +35,16 @@ export const checkLocalTxInput = async (
 	// Ensure the lengths in assetIds and amounts is correct
 	if (assetIds.length > 1 || amounts.length !== 1) {
 		throw new BaseError(
-			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1'
+			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
+			BaseErrorsEnum.InvalidInput
 		);
 	}
 
 	if (isForeignAssetsTransfer) {
 		if (assetIds.length === 0) {
 			throw new BaseError(
-				'Local foreignAsset transactions must have the `assetIds` input be a length of 1'
+				'Local foreignAsset transactions must have the `assetIds` input be a length of 1',
+				BaseErrorsEnum.InvalidInput
 			);
 		}
 		// check the registrys foreignAssetsInfo to see if the provided foreign asset exists
@@ -57,7 +59,10 @@ export const checkLocalTxInput = async (
 			return LocalTxType.ForeignAssets;
 		} else {
 			// TODO: create AssetHub ApiPromise to query chain state for foreign assets
-			throw new BaseError(`MultiLocation ${multiLocationStr} not found`);
+			throw new BaseError(
+				`MultiLocation ${multiLocationStr} not found`,
+				BaseErrorsEnum.AssetNotFound
+			);
 		}
 	} else if (isLiquidTokenTransfer) {
 		const relayChainInfo = registry.currentRelayRegistry;
@@ -113,7 +118,8 @@ export const checkLocalTxInput = async (
 					// if asset is found in the assets pallet, return LocalTxType Assets
 					if (asset.isNone) {
 						throw new BaseError(
-							`The integer assetId ${assetId} was not found.`
+							`The integer assetId ${assetId} was not found.`,
+							BaseErrorsEnum.AssetNotFound
 						);
 					}
 				}
