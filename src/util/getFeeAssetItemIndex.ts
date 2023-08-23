@@ -3,7 +3,7 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { getAssetHubAssetId } from '../createXcmTypes/util/getAssetHubAssetId';
-import { BaseError } from '../errors';
+import { BaseError, BaseErrorsEnum } from '../errors';
 import { MultiAsset } from '../types';
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index
@@ -98,7 +98,8 @@ export const getFeeAssetItemIndex = async (
 		throw new BaseError(
 			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets
 				.map((asset) => asset.id.Concrete.interior.toString())
-				.toString()}`
+				.toString()}`,
+			BaseErrorsEnum.InvalidInput
 		);
 	}
 

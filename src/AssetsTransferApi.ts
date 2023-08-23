@@ -40,6 +40,7 @@ import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import {
 	BaseError,
+	BaseErrorsEnum,
 	checkBaseInputTypes,
 	checkLocalTxInput,
 	checkXcmTxInputs,
@@ -585,7 +586,10 @@ export class AssetsTransferApi {
 		 * Check if the origin is a Parachain or Parathread
 		 */
 		if (_api.query.polkadotXcm && !destIsSystemParachain) {
-			throw Error('ParaToRelay is not yet implemented');
+			throw new BaseError(
+				'ParaToRelay is not yet implemented',
+				BaseErrorsEnum.NotImplemented
+			);
 
 			return Direction.ParaToRelay;
 		}
@@ -601,7 +605,10 @@ export class AssetsTransferApi {
 		}
 
 		if (_api.query.polkadotXcm) {
-			throw Error('ParaToPara is not yet implemented');
+			throw new BaseError(
+				'ParaToPara is not yet implemented',
+				BaseErrorsEnum.NotImplemented
+			);
 
 			return Direction.ParaToPara;
 		}
@@ -750,7 +757,8 @@ export class AssetsTransferApi {
 			xcmDirection === Direction.SystemToSystem
 		) {
 			throw new BaseError(
-				`Unable to send foreign assets in direction ${xcmDirection}`
+				`Unable to send foreign assets in direction ${xcmDirection}`,
+				BaseErrorsEnum.InvalidDirection
 			);
 		}
 
@@ -880,7 +888,8 @@ export class AssetsTransferApi {
 
 			if (isNotANumber) {
 				throw new BaseError(
-					`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`
+					`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`,
+					BaseErrorsEnum.InvalidInput
 				);
 			}
 
@@ -888,7 +897,8 @@ export class AssetsTransferApi {
 
 			if (!isSufficient) {
 				throw new BaseError(
-					`asset with assetId ${assetId} is not a sufficient asset to pay for fees`
+					`asset with assetId ${assetId} is not a sufficient asset to pay for fees`,
+					BaseErrorsEnum.InvalidAsset
 				);
 			}
 		}
@@ -999,7 +1009,10 @@ export class AssetsTransferApi {
 
 			return false;
 		} catch (err: unknown) {
-			throw new BaseError(`assetId ${assetId} does not match a valid asset`);
+			throw new BaseError(
+				`assetId ${assetId} does not match a valid asset`,
+				BaseErrorsEnum.InvalidAsset
+			);
 		}
 	};
 
@@ -1018,7 +1031,8 @@ export class AssetsTransferApi {
 		const lookup = registry.lookupParachainInfo(destId);
 		if (lookup.length === 0) {
 			throw new BaseError(
-				`Could not find any parachain information given the destId: ${destId}`
+				`Could not find any parachain information given the destId: ${destId}`,
+				BaseErrorsEnum.InvalidInput
 			);
 		}
 

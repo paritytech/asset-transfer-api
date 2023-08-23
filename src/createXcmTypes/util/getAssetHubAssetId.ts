@@ -3,7 +3,7 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { ASSET_HUB_CHAIN_ID } from '../../consts';
-import { BaseError } from '../../errors';
+import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
 import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
@@ -46,7 +46,10 @@ export const getAssetHubAssetId = async (
 			);
 
 			if (!isValidForeignAsset) {
-				throw new BaseError(`MultiLocation ${asset} not found`);
+				throw new BaseError(
+					`MultiLocation ${asset} not found`,
+					BaseErrorsEnum.AssetNotFound
+				);
 			}
 
 			assetId = asset;
@@ -67,7 +70,8 @@ export const getAssetHubAssetId = async (
 
 				if (Object.keys(assetsInfo).length === 0) {
 					throw new BaseError(
-						`${specName} has no associated token symbol ${asset}`
+						`${specName} has no associated token symbol ${asset}`,
+						BaseErrorsEnum.AssetNotFound
 					);
 				}
 
@@ -88,12 +92,14 @@ export const getAssetHubAssetId = async (
 							assetId = asset;
 						} else {
 							throw new BaseError(
-								`general index for assetId ${asset} was not found`
+								`general index for assetId ${asset} was not found`,
+								BaseErrorsEnum.AssetNotFound
 							);
 						}
 					} else {
 						throw new BaseError(
-							`assetId ${asset} is not a valid symbol or integer asset id for ${specName}`
+							`assetId ${asset} is not a valid symbol or integer asset id for ${specName}`,
+							BaseErrorsEnum.InvalidAsset
 						);
 					}
 				}
@@ -117,7 +123,8 @@ export const getAssetHubAssetId = async (
 					}
 					if (assetId.length === 0) {
 						throw new BaseError(
-							`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`
+							`parachain assetId ${asset} is not a valid symbol assetId in ${specName}`,
+							BaseErrorsEnum.InvalidAsset
 						);
 					}
 				} else {
@@ -127,7 +134,8 @@ export const getAssetHubAssetId = async (
 						assetId = asset;
 					} else {
 						throw new BaseError(
-							`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`
+							`parachain assetId ${asset} is not a valid integer assetId in ${specName}`,
+							BaseErrorsEnum.InvalidAsset
 						);
 					}
 				}
