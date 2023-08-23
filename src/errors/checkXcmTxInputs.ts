@@ -406,7 +406,6 @@ export const checkLiquidTokenValidity = async (
 
 	// check cache for pool asset
 	if (
-		registry.assetsCache[registry.relayChain][currentChainId] &&
 		registry.assetsCache[registry.relayChain][currentChainId]['poolPairsInfo'][
 			assetId
 		]
@@ -420,10 +419,9 @@ export const checkLiquidTokenValidity = async (
 		return;
 	}
 
+	// query chain state
 	const poolAsset = await api.query.poolAssets.asset(assetId);
 	if (poolAsset.isSome) {
-		// liquidTokenIncluded = true;
-
 		const poolAssets = await api.query.assetConversion.pools.entries();
 
 		for (let i = 0; i < poolAssets.length; i++) {
@@ -524,7 +522,6 @@ const checkSystemAssets = async (
 			// check the cache for the asset
 			// if not in cache, check the registry
 			if (
-				registry.assetsCache[registry.relayChain][currentChainId] &&
 				registry.assetsCache[registry.relayChain][currentChainId]['assetsInfo'][
 					assetId
 				]
