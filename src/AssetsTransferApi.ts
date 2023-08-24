@@ -41,6 +41,7 @@ import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util
 import {
 	BaseError,
 	BaseErrorsEnum,
+	checkBaseInputOptions,
 	checkBaseInputTypes,
 	checkLocalTxInput,
 	checkXcmTxInputs,
@@ -123,6 +124,11 @@ export class AssetsTransferApi {
 			keepAlive,
 			transferLiquidToken,
 		} = opts;
+		/**
+		 * Ensure that the options passed in are compatible with eachother.
+		 * It will throw an error if any are incorrect.
+		 */
+		checkBaseInputOptions(opts);
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
