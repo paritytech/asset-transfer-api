@@ -1,4 +1,5 @@
 import { Format, TransferArgsOpts } from '../types';
+import { validateAddress } from '../validate';
 import { BaseError, BaseErrorsEnum } from './BaseError';
 
 /**
@@ -23,5 +24,16 @@ export const checkBaseInputOptions = (opts: TransferArgsOpts<Format>) => {
 			`The 'sendersAddr' option must be present when constructing a 'payload' format.`,
 			BaseErrorsEnum.InvalidInput
 		);
+	}
+
+	if (sendersAddr) {
+		const [bool, errMsg] = validateAddress(sendersAddr);
+
+		if (!bool) {
+			throw new BaseError(
+				`The inputted sendersAddr is not valid. ${errMsg as string}`,
+				BaseErrorsEnum.InvalidInput
+			);
+		}
 	}
 };
