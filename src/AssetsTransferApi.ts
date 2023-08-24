@@ -893,14 +893,14 @@ export class AssetsTransferApi {
 				);
 			}
 
-			const isSufficient = await this.checkAssetIsSufficient(assetId);
+			// const isSufficient = await this.checkAssetIsSufficient(assetId);
 
-			if (!isSufficient) {
-				throw new BaseError(
-					`asset with assetId ${assetId} is not a sufficient asset to pay for fees`,
-					BaseErrorsEnum.InvalidAsset
-				);
-			}
+			// if (!isSufficient) {
+			// 	throw new BaseError(
+			// 		`asset with assetId ${assetId} is not a sufficient asset to pay for fees`,
+			// 		BaseErrorsEnum.InvalidAsset
+			// 	);
+			// }
 		}
 
 		const submittableString = JSON.stringify(tx.toHuman());
@@ -974,6 +974,7 @@ export class AssetsTransferApi {
 				'CheckNonce',
 				'CheckWeight',
 				'ChargeTransactionPayment',
+				'ChargeAssetTxPayment'
 			],
 			tip: this._api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,
@@ -990,31 +991,31 @@ export class AssetsTransferApi {
 		return extrinsicPayload.toHex();
 	};
 
-	/**
-	 * checks the chains state to determine whether an asset is valid
-	 * if it is valid, it returns whether it is marked as sufficient for paying fees
-	 *
-	 * @param assetId number
-	 * @returns Promise<boolean>
-	 */
-	private checkAssetIsSufficient = async (
-		assetId: number
-	): Promise<boolean> => {
-		try {
-			const asset = (await this._api.query.assets.asset(assetId)).unwrap();
+	// /**
+	//  * checks the chains state to determine whether an asset is valid
+	//  * if it is valid, it returns whether it is marked as sufficient for paying fees
+	//  *
+	//  * @param assetId number
+	//  * @returns Promise<boolean>
+	//  */
+	// private checkAssetIsSufficient = async (
+	// 	assetId: number
+	// ): Promise<boolean> => {
+	// 	try {
+	// 		const asset = (await this._api.query.assets.asset(assetId)).unwrap();
 
-			if (asset.isSufficient.toString().toLowerCase() === 'true') {
-				return true;
-			}
+	// 		if (asset.isSufficient.toString().toLowerCase() === 'true') {
+	// 			return true;
+	// 		}
 
-			return false;
-		} catch (err: unknown) {
-			throw new BaseError(
-				`assetId ${assetId} does not match a valid asset`,
-				BaseErrorsEnum.InvalidAsset
-			);
-		}
-	};
+	// 		return false;
+	// 	} catch (err: unknown) {
+	// 		throw new BaseError(
+	// 			`assetId ${assetId} does not match a valid asset`,
+	// 			BaseErrorsEnum.InvalidAsset
+	// 		);
+	// 	}
+	// };
 
 	/**
 	 * Return the specName of the destination chainId

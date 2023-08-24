@@ -739,6 +739,34 @@ describe('AssetTransferAPI', () => {
 			expect(unsigned.assetId).toEqual(expected);
 		});
 
+		it('Should correctly assign the assedId field to an unsigned transaction when a valid sufficient paysWithFeeOrigin option is provided testing', async () => {
+			const expected = '4';
+			const payload = await systemAssetsApi.createTransferTransaction(
+				'2023',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				['1984'],
+				['5000000'],
+				{
+					paysWithFeeOrigin: '4',
+					format: 'payload',
+					keepAlive: true,
+					xcmVersion: 3,
+				}
+			);
+
+			const result = mockSystemApi.registry.createType(
+				'ExtrinsicPayload',
+				payload.tx,
+				{
+					version: 4,
+				}
+			);
+			const unsigned = result.toHuman() as unknown as UnsignedTransaction;
+			
+			console.log('UNSIGNED IS', unsigned);
+			expect(unsigned.assetId).toEqual(expected);
+		});
+
 		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not a number', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(
