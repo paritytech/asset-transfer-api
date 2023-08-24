@@ -7,7 +7,7 @@ import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
 import { ForeignAssetsInfo } from '../../registry/types';
 
-export const foreignAssetMultiLocationIsInRegistry = (
+export const foreignAssetMultiLocationIsInCacheOrRegistry = (
 	api: ApiPromise,
 	multilocationStr: string,
 	registry: Registry

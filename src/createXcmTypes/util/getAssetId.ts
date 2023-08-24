@@ -5,7 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
-import { foreignAssetMultiLocationIsInRegistry } from './foreignAssetMultiLocationIsInRegistry';
+import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from './getChainIdBySpecName';
 
@@ -33,30 +33,14 @@ export const getAssetId = async (
 	const assetIsNumber = !Number.isNaN(parsedAssetAsNumber);
 	const isParachain = parseInt(currentChainId) >= 2000;
 
-	// check the cache and return the cached assetId if found
-	if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-		registry.assetsCache[registry.relayChain][currentChainId] = {
-			assetsInfo: {},
-			poolPairsInfo: {},
-			foreignAssetsPalletInstance: null,
-			assetsPalletInstance: null,
-			specName: '',
-			tokens: [],
-			foreignAssetsInfo: {},
-		};
-	}
+	// if assets pallet, check the cache and return the cached assetId if found
+	if (!isForeignAssetsTransfer) {
+		const cachedAssetId = registry.cacheLookupAsset(asset);
 
-	const cachedAssetId = registry.assetsCache[registry.relayChain][
-		currentChainId
-	]
-		? registry.assetsCache[registry.relayChain][currentChainId]['assetsInfo'][
-				asset
-		  ]
-		: undefined;
-
-	if (cachedAssetId) {
-		// if asset is in the registry cache, return the assetId
-		return cachedAssetId;
+		if (cachedAssetId) {
+			// if asset is in the registry cache, return the assetId
+			return cachedAssetId;
+		}
 	}
 
 	// check the registry and return the assetId if found
@@ -92,12 +76,9 @@ export const getAssetId = async (
 	const isAssetHub = currentChainId === ASSET_HUB_CHAIN_ID;
 
 	if (isAssetHub && isForeignAssetsTransfer) {
-		// determine if we already have the multilocation in the registry
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
-			_api,
-			asset,
-			registry
-		);
+		// determine if we already have the multilocation in the cache or registry
+		const multiLocationIsInRegistry =
+			foreignAssetMultiLocationIsInCacheOrRegistry(_api, asset, registry);
 
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
@@ -133,9 +114,7 @@ export const getAssetId = async (
 
 				if (assetSymbol) {
 					// add queried asset to registry
-					registry.assetsCache[registry.relayChain][currentChainId][
-						'assetsInfo'
-					][asset] = assetSymbol;
+					registry.setAssetInCache(asset, assetSymbol);
 				}
 			} else {
 				throw new BaseError(`general index for assetId ${asset} was not found`);
@@ -161,9 +140,7 @@ export const getAssetId = async (
 				) {
 					assetId = id.toString();
 					// add queried asset to registry
-					registry.assetsCache[registry.relayChain][currentChainId][
-						'assetsInfo'
-					][assetId] = asset;
+					registry.setAssetInCache(assetId, asset);
 					break;
 				}
 			}
@@ -178,9 +155,7 @@ export const getAssetId = async (
 			if (parachainAsset.isSome) {
 				assetId = asset;
 				// add queried asset to registry
-				registry.assetsCache[registry.relayChain][currentChainId]['assetsInfo'][
-					assetId
-				] = asset;
+				registry.setAssetInCache(assetId, asset);
 			} else {
 				throw new BaseError(
 					`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`

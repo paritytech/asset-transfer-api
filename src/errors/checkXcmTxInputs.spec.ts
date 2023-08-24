@@ -943,9 +943,7 @@ describe('checkParaAssets', () => {
 				false
 			);
 
-			expect(registry.assetsCache.kusama['1000']['assetsInfo']['1984']).toEqual(
-				'USDt'
-			);
+			expect(registry.cacheLookupAsset('1984')).toEqual('USDt');
 		});
 		it('Should correctly cache an asset that is not found in the registry after being queried for origin Para', async () => {
 			const registry = new Registry('moonriver', {});
@@ -973,9 +971,7 @@ describe('checkParaAssets', () => {
 			);
 
 			expect(
-				registry.assetsCache.kusama['2023']['assetsInfo'][
-					'311091173110107856861649819128533077277'
-				]
+				registry.cacheLookupAsset('311091173110107856861649819128533077277')
 			).toEqual('xcUSDT');
 		});
 
@@ -1020,9 +1016,7 @@ describe('checkParaAssets', () => {
 				false
 			);
 
-			expect(
-				registry.assetsCache.kusama['1000']['foreignAssetsInfo']['TNKR']
-			).toEqual({
+			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual({
 				multiLocation:
 					'{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
 				name: 'Tinkernet',
@@ -1069,13 +1063,11 @@ describe('checkParaAssets', () => {
 				true
 			);
 
-			expect(registry.assetsCache.kusama['1000']['poolPairsInfo']['0']).toEqual(
-				{
-					lpToken: '0',
-					pairInfo:
-						'[[{"parents":0,"interior":{"here":null}},{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":100}]}}]]',
-				}
-			);
+			expect(registry.cacheLookupPoolAsset('0')).toEqual({
+				lpToken: '0',
+				pairInfo:
+					'[[{"parents":0,"interior":{"here":null}},{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":100}]}}]]',
+			});
 		});
 	});
 });

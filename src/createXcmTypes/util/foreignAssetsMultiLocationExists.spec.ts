@@ -90,9 +90,9 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 			multiLocation
 		);
 
-		expect(
-			emptyRegistry.assetsCache.kusama['1000']['foreignAssetsInfo']['TNKR']
-		).toEqual({
+		const result = emptyRegistry.cacheLookupForeignAsset('TNKR');
+
+		expect(result).toEqual({
 			multiLocation:
 				'{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
 			name: 'Tinkernet',

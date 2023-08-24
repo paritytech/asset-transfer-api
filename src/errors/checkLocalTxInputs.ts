@@ -2,7 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
+import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getAssetId } from '../createXcmTypes/util/getAssetId';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
@@ -51,11 +51,12 @@ export const checkLocalTxInput = async (
 
 		// check the cache and registrys foreignAssetsInfo to see if the provided foreign asset exists
 		const multiLocationStr = assetIds[0];
-		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInRegistry(
-			api,
-			multiLocationStr,
-			registry
-		);
+		const foreignAssetIsInRegistry =
+			foreignAssetMultiLocationIsInCacheOrRegistry(
+				api,
+				multiLocationStr,
+				registry
+			);
 
 		if (foreignAssetIsInRegistry) {
 			return LocalTxType.ForeignAssets;
@@ -83,7 +84,6 @@ export const checkLocalTxInput = async (
 		await checkLiquidTokenValidity(
 			api,
 			registry,
-			specName,
 			systemParachainInfo,
 			assetIds[0]
 		);

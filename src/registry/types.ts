@@ -115,3 +115,8 @@ export type XCMChainInfoRegistry = {
 	polkadot: XCMChainInfoKeys[];
 	kusama: XCMChainInfoKeys[];
 };
+
+export type AssetsInfoType =
+	| 'assetsInfo'
+	| 'foreignAssetsInfo'
+	| 'poolPairsInfo';

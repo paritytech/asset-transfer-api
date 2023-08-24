@@ -1,9 +1,11 @@
+import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import type { AssetsTransferApiOpts } from '../types';
 import { findRelayChain, parseRegistry } from './';
 import type {
 	ChainInfo,
 	ChainInfoRegistry,
 	ExpandedChainInfoKeys,
+	ForeignAssetsData,
 	RelayChains,
 	XCMChainInfoRegistry,
 } from './types';
@@ -31,6 +33,136 @@ export class Registry {
 				kusama: [],
 			},
 		};
+	}
+
+	private initializeCurrentChainIdCache() {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+		if (!this.assetsCache[this.relayChain][currentChainId]) {
+			this.assetsCache[this.relayChain][currentChainId] = {
+				assetsInfo: {},
+				poolPairsInfo: {},
+				foreignAssetsPalletInstance: null,
+				assetsPalletInstance: null,
+				specName: '',
+				tokens: [],
+				foreignAssetsInfo: {},
+			};
+		}
+	}
+
+	/**
+	 * Getter for the foreignAssetsInfo assetsCache.
+	 *
+	 * @param assetId string
+	 */
+	public cacheLookupForeignAsset(
+		assetId: string
+	): ForeignAssetsData | undefined {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+		this.initializeCurrentChainIdCache();
+
+		if (
+			this.assetsCache[this.relayChain][currentChainId]['foreignAssetsInfo'][
+				assetId
+			]
+		) {
+			return this.assetsCache[this.relayChain][currentChainId][
+				'foreignAssetsInfo'
+			][assetId] as ForeignAssetsData;
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Setter for the foreignAssetsInfo assetsCache.
+	 *
+	 * @param assetId string
+	 * @param asset ForeignAssetData
+	 */
+	public setForeignAssetInCache(assetId: string, asset: ForeignAssetsData) {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+		this.initializeCurrentChainIdCache();
+
+		this.assetsCache[this.relayChain][currentChainId]['foreignAssetsInfo'][
+			assetId
+		] = asset;
+	}
+
+	/**
+	 * Getter for the poolPairsInfo assetsCache.
+	 *
+	 * @param assetId string
+	 */
+	public cacheLookupPoolAsset(
+		assetId: string
+	): { lpToken: string; pairInfo: string } | undefined {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+		this.initializeCurrentChainIdCache();
+
+		if (
+			this.assetsCache[this.relayChain][currentChainId]['poolPairsInfo'][
+				assetId
+			]
+		) {
+			return this.assetsCache[this.relayChain][currentChainId]['poolPairsInfo'][
+				assetId
+			] as { lpToken: string; pairInfo: string };
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Setter for the poolPairsInfo assetsCache.
+	 *
+	 * @param assetId string
+	 * @param asset ForeignAssetData
+	 */
+	public setPoolAssetInCache(
+		assetId: string,
+		asset: { lpToken: string; pairInfo: string }
+	) {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+		this.initializeCurrentChainIdCache();
+
+		this.assetsCache[this.relayChain][currentChainId]['poolPairsInfo'][
+			assetId
+		] = asset;
+	}
+
+	/**
+	 * Getter for the assets assetsCache.
+	 *
+	 * @param assetId string
+	 */
+	public cacheLookupAsset(assetId: string): string | undefined {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+		this.initializeCurrentChainIdCache();
+
+		if (
+			this.assetsCache[this.relayChain][currentChainId]['assetsInfo'][assetId]
+		) {
+			return this.assetsCache[this.relayChain][currentChainId]['assetsInfo'][
+				assetId
+			];
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Setter for the assets assetsCache.
+	 *
+	 * @param assetId string
+	 * @param asset string
+	 */
+	public setAssetInCache(assetId: string, asset: string) {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+		this.initializeCurrentChainIdCache();
+
+		this.assetsCache[this.relayChain][currentChainId]['assetsInfo'][assetId] =
+			asset;
 	}
 
 	/**

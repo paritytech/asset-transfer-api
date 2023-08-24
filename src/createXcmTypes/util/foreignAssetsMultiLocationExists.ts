@@ -2,29 +2,16 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
+import { ForeignAssetsData } from '../../registry/types';
 import { AssetMetadata } from '../../types';
-
 export const foreignAssetsMultiLocationExists = async (
 	assetHubApi: ApiPromise,
 	registry: Registry,
 	multilocationStr: string
 ): Promise<boolean> => {
 	try {
-		if (!registry.assetsCache[registry.relayChain][ASSET_HUB_CHAIN_ID]) {
-			registry.assetsCache[registry.relayChain][ASSET_HUB_CHAIN_ID] = {
-				assetsInfo: {},
-				poolPairsInfo: {},
-				foreignAssetsPalletInstance: null,
-				assetsPalletInstance: null,
-				specName: '',
-				tokens: [],
-				foreignAssetsInfo: {},
-			};
-		}
-
 		const multiLocation = assetHubApi.registry.createType(
 			'MultiLocation',
 			JSON.parse(multilocationStr)
@@ -44,15 +31,14 @@ export const foreignAssetsMultiLocationExists = async (
 				const metadata = foreignAssetMetadata as AssetMetadata;
 				const assetSymbol = metadata.symbol;
 				const assetName = metadata.name;
-
-				// cache the foreign asset
-				registry.assetsCache[registry.relayChain][ASSET_HUB_CHAIN_ID][
-					'foreignAssetsInfo'
-				][assetSymbol] = {
+				const asset: ForeignAssetsData = {
 					symbol: assetSymbol,
 					name: assetName,
 					multiLocation: JSON.stringify(multiLocation.toJSON()),
 				};
+
+				// cache the foreign asset
+				registry.setForeignAssetInCache(assetSymbol, asset);
 			}
 
 			return true;

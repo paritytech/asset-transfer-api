@@ -7,7 +7,7 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { CheckXcmTxInputsOpts } from '../createXcmTypes/types';
-import { foreignAssetMultiLocationIsInRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInRegistry';
+import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
@@ -375,22 +375,9 @@ const checkSystemToRelayAssetId = (
 export const checkLiquidTokenValidity = async (
 	api: ApiPromise,
 	registry: Registry,
-	specName: string,
 	systemParachainInfo: ChainInfoKeys,
 	assetId: string
 ) => {
-	const currentChainId = getChainIdBySpecName(registry, specName);
-	if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-		registry.assetsCache[registry.relayChain][currentChainId] = {
-			assetsInfo: {},
-			poolPairsInfo: {},
-			foreignAssetsPalletInstance: null,
-			assetsPalletInstance: null,
-			specName: '',
-			tokens: [],
-			foreignAssetsInfo: {},
-		};
-	}
 	// check if assetId is a number
 	const parsedAssetIdAsNumber = Number.parseInt(assetId);
 	const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
@@ -402,14 +389,8 @@ export const checkLiquidTokenValidity = async (
 		);
 	}
 
-	// let liquidTokenIncluded = false;
-
 	// check cache for pool asset
-	if (
-		registry.assetsCache[registry.relayChain][currentChainId]['poolPairsInfo'][
-			assetId
-		]
-	) {
+	if (registry.cacheLookupPoolAsset(assetId)) {
 		return;
 	}
 
@@ -437,15 +418,18 @@ export const checkLiquidTokenValidity = async (
 
 			const poolAssetInfo = poolAsset[1].unwrap();
 			if (poolAssetInfo.lpToken.toNumber() === parseInt(assetId)) {
-				// cache the queried liquidToken asset
-				registry.assetsCache[registry.relayChain][currentChainId][
-					'poolPairsInfo'
-				][assetId] = {
+				const asset: {
+					lpToken: string;
+					pairInfo: string;
+				} = {
 					lpToken: assetId,
 					pairInfo: JSON.stringify(
 						palletAssetConversionNativeOrAssetIdData.toJSON()
 					),
 				};
+
+				// cache the queried liquidToken asset
+				registry.setPoolAssetInCache(assetId, asset);
 			}
 		}
 		return;
@@ -469,25 +453,11 @@ const checkSystemAssets = async (
 	isLiquidTokenTransfer?: boolean
 ) => {
 	const currentChainId = getChainIdBySpecName(registry, specName);
-	if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-		registry.assetsCache[registry.relayChain][currentChainId] = {
-			assetsInfo: {},
-			poolPairsInfo: {},
-			foreignAssetsPalletInstance: null,
-			assetsPalletInstance: null,
-			specName: '',
-			tokens: [],
-			foreignAssetsInfo: {},
-		};
-	}
 
 	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInRegistry(
-			api,
-			assetId,
-			registry
-		);
+		const multiLocationIsInRegistry =
+			foreignAssetMultiLocationIsInCacheOrRegistry(api, assetId, registry);
 
 		if (!multiLocationIsInRegistry) {
 			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
@@ -504,13 +474,7 @@ const checkSystemAssets = async (
 			}
 		}
 	} else if (isLiquidTokenTransfer) {
-		await checkLiquidTokenValidity(
-			api,
-			registry,
-			specName,
-			systemParachainInfo,
-			assetId
-		);
+		await checkLiquidTokenValidity(api, registry, systemParachainInfo, assetId);
 	} else {
 		// check if assetId is a number
 		const parsedAssetIdAsNumber = Number.parseInt(assetId);
@@ -521,15 +485,8 @@ const checkSystemAssets = async (
 
 			// check the cache for the asset
 			// if not in cache, check the registry
-			if (
-				registry.assetsCache[registry.relayChain][currentChainId]['assetsInfo'][
-					assetId
-				]
-			) {
-				assetSymbol =
-					registry.assetsCache[registry.relayChain][currentChainId][
-						'assetsInfo'
-					][assetId];
+			if (registry.cacheLookupAsset(assetId)) {
+				assetSymbol = registry.cacheLookupAsset(assetId);
 			} else if (systemParachainInfo.assetsInfo[assetId]) {
 				assetSymbol = systemParachainInfo.assetsInfo[assetId];
 			}
@@ -551,10 +508,9 @@ const checkSystemAssets = async (
 						.toHuman()
 						?.toString();
 
+					const assetStr = assetSymbol as string;
 					// add the asset to the cache
-					registry.assetsCache[registry.relayChain][currentChainId][
-						'assetsInfo'
-					][assetId] = assetSymbol as string;
+					registry.setAssetInCache(assetId, assetStr);
 				}
 			}
 		} else {
@@ -658,19 +614,6 @@ export const checkParaAssets = async (
 ) => {
 	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
-	const currentChainId = getChainIdBySpecName(registry, specName);
-
-	if (!registry.assetsCache[registry.relayChain][currentChainId]) {
-		registry.assetsCache[registry.relayChain][currentChainId] = {
-			assetsInfo: {},
-			poolPairsInfo: {},
-			foreignAssetsPalletInstance: null,
-			assetsPalletInstance: null,
-			specName: '',
-			tokens: [],
-			foreignAssetsInfo: {},
-		};
-	}
 
 	// check if assetId is a number
 	const parsedAssetIdAsNumber = Number.parseInt(assetId);
@@ -726,12 +669,7 @@ export const checkParaAssets = async (
 		// check if id is a valid token symbol of the system parachain chain
 		if (!invalidNumber) {
 			// if assetId is not in registry cache, query for the asset
-			if (
-				registry.assetsCache[currentRelayChainSpecName][currentChainId] &&
-				!registry.assetsCache[currentRelayChainSpecName][currentChainId][
-					'assetsInfo'
-				][assetId]
-			) {
+			if (!registry.cacheLookupAsset(assetId)) {
 				// query the parachains assets pallet to see if it has a value matching the assetId
 				const asset = await api.query.assets.asset(parsedAssetIdAsNumber);
 
@@ -743,10 +681,9 @@ export const checkParaAssets = async (
 					const assetSymbol = (await api.query.assets.metadata(assetId)).symbol
 						.toHuman()
 						?.toString();
+					const assetStr = assetSymbol as string;
 					// store xcAsset in registry cache
-					registry.assetsCache[currentRelayChainSpecName][currentChainId][
-						'assetsInfo'
-					][assetId] = assetSymbol as string;
+					registry.setAssetInCache(assetId, assetStr);
 				}
 			}
 
@@ -796,9 +733,7 @@ export const checkParaAssets = async (
 				const symbol = metadata.symbol.toHuman()?.toString();
 				if (symbol && symbol.toLowerCase() === assetId.toLowerCase()) {
 					// store in registry cache
-					registry.assetsCache[registry.relayChain][currentChainId].assetsInfo[
-						id.toString()
-					] = symbol;
+					registry.setAssetInCache(id.toString(), symbol);
 					return;
 				}
 			}
