@@ -481,7 +481,7 @@ const checkSystemAssets = async (
 		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
 
 		if (!invalidNumber) {
-			let assetSymbol: string | undefined = undefined;
+			let assetSymbol: string | undefined;
 
 			// check the cache for the asset
 			// if not in cache, check the registry
@@ -491,7 +491,7 @@ const checkSystemAssets = async (
 				assetSymbol = systemParachainInfo.assetsInfo[assetId];
 			}
 
-			if (assetSymbol === undefined) {
+			if (!assetSymbol) {
 				// if asset is not in cache or registry, query the assets pallet to see if it has a value
 				const asset = await api.query.assets.asset(parsedAssetIdAsNumber);
 

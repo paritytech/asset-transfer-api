@@ -12,18 +12,6 @@ export const foreignAssetMultiLocationIsInCacheOrRegistry = (
 	multilocationStr: string,
 	registry: Registry
 ): boolean => {
-	if (!registry.cache[registry.relayChain][ASSET_HUB_CHAIN_ID]) {
-		registry.cache[registry.relayChain][ASSET_HUB_CHAIN_ID] = {
-			assetsInfo: {},
-			poolPairsInfo: {},
-			foreignAssetsPalletInstance: null,
-			assetsPalletInstance: null,
-			specName: '',
-			tokens: [],
-			foreignAssetsInfo: {},
-		};
-	}
-
 	// check if foreign asset exists in assets cache
 	const foreignAssetsCache =
 		registry.cache[registry.relayChain][ASSET_HUB_CHAIN_ID].foreignAssetsInfo;

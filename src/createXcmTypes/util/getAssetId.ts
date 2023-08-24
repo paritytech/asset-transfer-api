@@ -50,7 +50,8 @@ export const getAssetId = async (
 	if (!isParachain) {
 		if (Object.keys(assetsInfo).length === 0) {
 			throw new BaseError(
-				`${specName} has no associated token symbol ${asset}`
+				`${specName} has no associated token symbol ${asset}`,
+				BaseErrorsEnum.InvalidAsset
 			);
 		}
 	}
@@ -117,11 +118,15 @@ export const getAssetId = async (
 					registry.setAssetInCache(asset, assetSymbol);
 				}
 			} else {
-				throw new BaseError(`general index for assetId ${asset} was not found`);
+				throw new BaseError(
+					`general index for assetId ${asset} was not found`,
+					BaseErrorsEnum.AssetNotFound
+				);
 			}
 		} else {
 			throw new BaseError(
-				`assetId ${asset} is not a valid symbol or integer asset id for ${specName}`
+				`assetId ${asset} is not a valid symbol or integer asset id for ${specName}`,
+				BaseErrorsEnum.InvalidAsset
 			);
 		}
 	} else if (isParachain) {
@@ -146,7 +151,8 @@ export const getAssetId = async (
 			}
 			if (assetId.length === 0) {
 				throw new BaseError(
-					`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`
+					`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`,
+					BaseErrorsEnum.InvalidAsset
 				);
 			}
 		} else {
@@ -158,7 +164,8 @@ export const getAssetId = async (
 				registry.setAssetInCache(assetId, asset);
 			} else {
 				throw new BaseError(
-					`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`
+					`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`,
+					BaseErrorsEnum.InvalidAsset
 				);
 			}
 		}
