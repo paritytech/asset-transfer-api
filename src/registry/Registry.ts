@@ -69,18 +69,18 @@ export class Registry {
 	/**
 	 * Getter for the foreignAssetsInfo cache.
 	 *
-	 * @param assetId string
+	 * @param assetKey string
 	 */
 	public cacheLookupForeignAsset(
-		assetId: string
+		assetKey: string
 	): ForeignAssetsData | undefined {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 
 		if (
-			this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetId]
+			this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetKey]
 		) {
 			return this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][
-				assetId
+				assetKey
 			] as ForeignAssetsData;
 		}
 
@@ -90,20 +90,20 @@ export class Registry {
 	/**
 	 * Setter for the foreignAssetsInfo cache.
 	 *
-	 * @param assetId string
-	 * @param asset ForeignAssetData
+	 * @param assetKey string
+	 * @param assetValue ForeignAssetData
 	 */
-	public setForeignAssetInCache(assetId: string, asset: ForeignAssetsData) {
+	public setForeignAssetInCache(assetKey: string, assetValue: ForeignAssetsData) {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 
-		this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetId] =
-			asset;
+		this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetKey] =
+			assetValue;
 	}
 
 	/**
 	 * Getter for the poolPairsInfo cache.
 	 *
-	 * @param assetId string
+	 * @param assetKey string
 	 */
 	public cacheLookupPoolAsset(
 		assetKey: string
