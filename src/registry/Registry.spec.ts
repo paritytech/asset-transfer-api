@@ -120,7 +120,9 @@ describe('Registry', () => {
 			};
 			registry.setForeignAssetInCache('TNKR', foreignAssetData);
 
-			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual(foreignAssetData);
+			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual(
+				foreignAssetData
+			);
 		});
 	});
 });
