@@ -107,7 +107,7 @@ describe('Registry', () => {
 				lpToken: '0',
 				pairInfo: 'testPoolAssetData',
 			};
-			registry.setPoolAssetInCache('0', poolAssetData);
+			registry.setLiquidPoolTokenInCache('0', poolAssetData);
 
 			expect(registry.cacheLookupPoolAsset('0')).toEqual(poolAssetData);
 		});

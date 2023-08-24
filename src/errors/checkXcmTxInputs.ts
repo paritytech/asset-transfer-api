@@ -429,7 +429,7 @@ export const checkLiquidTokenValidity = async (
 				};
 
 				// cache the queried liquidToken asset
-				registry.setPoolAssetInCache(assetId, asset);
+				registry.setLiquidPoolTokenInCache(assetId, asset);
 			}
 		}
 		return;

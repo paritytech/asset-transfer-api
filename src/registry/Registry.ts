@@ -112,7 +112,7 @@ export class Registry {
 	 * @param assetId string
 	 * @param asset ForeignAssetData
 	 */
-	public setPoolAssetInCache(
+	public setLiquidPoolTokenInCache(
 		assetId: string,
 		asset: { lpToken: string; pairInfo: string }
 	) {
