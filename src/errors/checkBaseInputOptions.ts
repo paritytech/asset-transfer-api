@@ -1,8 +1,13 @@
 import { Format, TransferArgsOpts } from '../types';
 import { BaseError, BaseErrorsEnum } from './BaseError';
 
+/**
+ * Ensure that options that require certain inputs are validated.
+ *
+ * @param opts
+ */
 export const checkBaseInputOptions = (opts: TransferArgsOpts<Format>) => {
-	const { paysWithFeeOrigin, format } = opts;
+	const { paysWithFeeOrigin, format, sendersAddr } = opts;
 
 	if (paysWithFeeOrigin) {
 		if (format === 'call' || format === 'submittable') {
@@ -11,5 +16,12 @@ export const checkBaseInputOptions = (opts: TransferArgsOpts<Format>) => {
 				BaseErrorsEnum.InvalidInput
 			);
 		}
+	}
+
+	if (format === 'payload' && !sendersAddr) {
+		throw new BaseError(
+			`The 'sendersAddr' option must be present when constructing a 'payload' format.`,
+			BaseErrorsEnum.InvalidInput
+		);
 	}
 };
