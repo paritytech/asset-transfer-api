@@ -209,7 +209,6 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Set the xcmVersion for message construction. If this is not present a supported version
 	 * will be queried, and if there is no supported version a safe version will be queried.
 	 */
-
 	xcmVersion?: number;
 	/**
 	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
