@@ -184,7 +184,7 @@ export interface TransferArgsOpts<T extends Format> {
 	 */
 	paysWithFeeDest?: string;
 	/**
-	 * The Address the tx will be sent from. This is specifically used for the format `payload`.
+	 * The SS58 Address the tx will be sent from. This is specifically used for the format `payload`.
 	 * It is necessary because the `payload` will need information such as the `nonce`.
 	 */
 	sendersAddr?: string;

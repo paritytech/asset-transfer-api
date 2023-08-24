@@ -90,7 +90,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2023',
 				'statemine',
-				'call'
+				{ format: 'call' }
 			);
 			expect(res).toEqual({
 				dest: 'moonriver',
@@ -110,7 +110,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2023',
 				'statemine',
-				'payload'
+				{ format: 'payload' }
 			);
 			expect(res).toEqual({
 				dest: 'moonriver',
@@ -130,7 +130,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2023',
 				'Statmine',
-				'submittable'
+				{ format: 'submittable' }
 			);
 			expect(res.tx.toRawType()).toEqual('Extrinsic');
 		});
@@ -408,7 +408,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2000',
 				'statemine',
-				'payload'
+				{ format: 'payload' }
 			);
 
 			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(
@@ -428,7 +428,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2000',
 				'statmine',
-				'call'
+				{ format: 'call' }
 			);
 			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
 				callTxResult.tx,
@@ -471,6 +471,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'payload',
 						keepAlive: true,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 
@@ -537,6 +538,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'payload',
 						keepAlive: true,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 
@@ -609,6 +611,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'payload',
 						keepAlive: false,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 
@@ -724,6 +727,7 @@ describe('AssetTransferAPI', () => {
 					keepAlive: true,
 					paysWithFeeDest: 'USDC',
 					xcmVersion: 3,
+					sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 				}
 			);
 
@@ -752,6 +756,7 @@ describe('AssetTransferAPI', () => {
 						keepAlive: true,
 						paysWithFeeDest: 'USDC',
 						xcmVersion: 3,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			}).rejects.toThrowError(
@@ -772,6 +777,7 @@ describe('AssetTransferAPI', () => {
 						keepAlive: true,
 						paysWithFeeDest: 'USDC',
 						xcmVersion: 3,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			}).rejects.toThrowError(
