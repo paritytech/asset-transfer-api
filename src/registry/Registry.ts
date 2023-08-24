@@ -93,7 +93,10 @@ export class Registry {
 	 * @param assetKey string
 	 * @param assetValue ForeignAssetData
 	 */
-	public setForeignAssetInCache(assetKey: string, assetValue: ForeignAssetsData) {
+	public setForeignAssetInCache(
+		assetKey: string,
+		assetValue: ForeignAssetsData
+	) {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 
 		this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetKey] =
