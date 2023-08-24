@@ -38,6 +38,9 @@ export class Registry {
 		this.initializeCurrentChainIdCache();
 	}
 
+	/**
+	 * Initialize the cache for the current chain that is connected
+	 */
 	private initializeCurrentChainIdCache() {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 		if (!this.cache[this.relayChain][currentChainId]) {
@@ -52,6 +55,9 @@ export class Registry {
 			};
 		}
 	}
+	/**
+	 * Initialize the cache for AssetHub
+	 */
 	private initializeAssetHubCache() {
 		if (!this.cache[this.relayChain][ASSET_HUB_CHAIN_ID]) {
 			this.cache[this.relayChain][ASSET_HUB_CHAIN_ID] = {
@@ -165,7 +171,6 @@ export class Registry {
 	 */
 	public setAssetInCache(assetKey: string, assetValue: string) {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
-		this.initializeCurrentChainIdCache();
 
 		this.cache[this.relayChain][currentChainId]['assetsInfo'][assetKey] =
 			assetValue;
