@@ -25,9 +25,9 @@ export const foreignAssetMultiLocationIsInCacheOrRegistry = (
 	}
 
 	// check if foreign asset exists in assets cache
-	const foreigncache =
+	const foreignAssetsCache =
 		registry.cache[registry.relayChain][ASSET_HUB_CHAIN_ID].foreignAssetsInfo;
-	if (checkForeignAssetExists(api, foreigncache, multilocationStr)) {
+	if (checkForeignAssetExists(api, foreignAssetsCache, multilocationStr)) {
 		return true;
 	}
 
