@@ -528,9 +528,9 @@ const checkSystemAssets = async (
 			}
 			const cacheTokensMatched: AssetInfo[] = [];
 			// not found in tokens, check the cache
-			if (registry.assetsCache[registry.relayChain][currentChainId]) {
+			if (registry.cache[registry.relayChain][currentChainId]) {
 				for (const [id, symbol] of Object.entries(
-					registry.assetsCache[registry.relayChain][currentChainId].assetsInfo
+					registry.cache[registry.relayChain][currentChainId].assetsInfo
 				)) {
 					if (symbol.toLowerCase() === assetId.toLowerCase()) {
 						// match found in cache

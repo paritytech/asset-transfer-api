@@ -917,7 +917,7 @@ describe('checkParaAssets', () => {
 		);
 	});
 
-	describe('assetsCache', () => {
+	describe('cache', () => {
 		it('Should correctly cache an asset that is not found in the registry after being queried for origin System', async () => {
 			const registry = new Registry('statemine', {});
 			const chainInfo = {

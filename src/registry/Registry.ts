@@ -16,7 +16,7 @@ export class Registry {
 	readonly relayChain: RelayChains;
 	readonly currentRelayRegistry: ChainInfo;
 	readonly xcAssets: XCMChainInfoRegistry;
-	assetsCache: ChainInfoRegistry;
+	cache: ChainInfoRegistry;
 
 	constructor(specName: string, opts: AssetsTransferApiOpts) {
 		this.specName = specName;
@@ -24,7 +24,7 @@ export class Registry {
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.xcAssets = this.registry.xcAssets;
-		this.assetsCache = {
+		this.cache = {
 			polkadot: {},
 			kusama: {},
 			westend: {},
@@ -37,8 +37,8 @@ export class Registry {
 
 	private initializeCurrentChainIdCache() {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
-		if (!this.assetsCache[this.relayChain][currentChainId]) {
-			this.assetsCache[this.relayChain][currentChainId] = {
+		if (!this.cache[this.relayChain][currentChainId]) {
+			this.cache[this.relayChain][currentChainId] = {
 				assetsInfo: {},
 				poolPairsInfo: {},
 				foreignAssetsPalletInstance: null,
@@ -51,7 +51,7 @@ export class Registry {
 	}
 
 	/**
-	 * Getter for the foreignAssetsInfo assetsCache.
+	 * Getter for the foreignAssetsInfo cache.
 	 *
 	 * @param assetId string
 	 */
@@ -62,11 +62,11 @@ export class Registry {
 		this.initializeCurrentChainIdCache();
 
 		if (
-			this.assetsCache[this.relayChain][currentChainId]['foreignAssetsInfo'][
+			this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][
 				assetId
 			]
 		) {
-			return this.assetsCache[this.relayChain][currentChainId][
+			return this.cache[this.relayChain][currentChainId][
 				'foreignAssetsInfo'
 			][assetId] as ForeignAssetsData;
 		}
@@ -75,7 +75,7 @@ export class Registry {
 	}
 
 	/**
-	 * Setter for the foreignAssetsInfo assetsCache.
+	 * Setter for the foreignAssetsInfo cache.
 	 *
 	 * @param assetId string
 	 * @param asset ForeignAssetData
@@ -84,13 +84,13 @@ export class Registry {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 		this.initializeCurrentChainIdCache();
 
-		this.assetsCache[this.relayChain][currentChainId]['foreignAssetsInfo'][
+		this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][
 			assetId
 		] = asset;
 	}
 
 	/**
-	 * Getter for the poolPairsInfo assetsCache.
+	 * Getter for the poolPairsInfo cache.
 	 *
 	 * @param assetId string
 	 */
@@ -101,11 +101,11 @@ export class Registry {
 		this.initializeCurrentChainIdCache();
 
 		if (
-			this.assetsCache[this.relayChain][currentChainId]['poolPairsInfo'][
+			this.cache[this.relayChain][currentChainId]['poolPairsInfo'][
 				assetId
 			]
 		) {
-			return this.assetsCache[this.relayChain][currentChainId]['poolPairsInfo'][
+			return this.cache[this.relayChain][currentChainId]['poolPairsInfo'][
 				assetId
 			] as { lpToken: string; pairInfo: string };
 		}
@@ -114,7 +114,7 @@ export class Registry {
 	}
 
 	/**
-	 * Setter for the poolPairsInfo assetsCache.
+	 * Setter for the poolPairsInfo cache.
 	 *
 	 * @param assetId string
 	 * @param asset ForeignAssetData
@@ -126,13 +126,13 @@ export class Registry {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 		this.initializeCurrentChainIdCache();
 
-		this.assetsCache[this.relayChain][currentChainId]['poolPairsInfo'][
+		this.cache[this.relayChain][currentChainId]['poolPairsInfo'][
 			assetId
 		] = asset;
 	}
 
 	/**
-	 * Getter for the assets assetsCache.
+	 * Getter for the assets cache.
 	 *
 	 * @param assetId string
 	 */
@@ -141,9 +141,9 @@ export class Registry {
 		this.initializeCurrentChainIdCache();
 
 		if (
-			this.assetsCache[this.relayChain][currentChainId]['assetsInfo'][assetId]
+			this.cache[this.relayChain][currentChainId]['assetsInfo'][assetId]
 		) {
-			return this.assetsCache[this.relayChain][currentChainId]['assetsInfo'][
+			return this.cache[this.relayChain][currentChainId]['assetsInfo'][
 				assetId
 			];
 		}
@@ -152,7 +152,7 @@ export class Registry {
 	}
 
 	/**
-	 * Setter for the assets assetsCache.
+	 * Setter for the assets cache.
 	 *
 	 * @param assetId string
 	 * @param asset string
@@ -161,7 +161,7 @@ export class Registry {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 		this.initializeCurrentChainIdCache();
 
-		this.assetsCache[this.relayChain][currentChainId]['assetsInfo'][assetId] =
+		this.cache[this.relayChain][currentChainId]['assetsInfo'][assetId] =
 			asset;
 	}
 
