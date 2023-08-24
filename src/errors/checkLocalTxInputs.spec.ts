@@ -39,6 +39,18 @@ describe('checkLocalTxInput', () => {
 		);
 		expect(res).toEqual('Balances');
 	});
+	it('Should correctly return Balances with an empty string assetId', async () => {
+		const res = await checkLocalTxInput(
+			systemAssetsApi._api,
+			[''],
+			['10000'],
+			specName,
+			registry,
+			false,
+			false
+		);
+		expect(res).toEqual('Balances');
+	});
 	it('Should correctly return Assets with a valid assetId', async () => {
 		const res = await checkLocalTxInput(
 			systemAssetsApi._api,
