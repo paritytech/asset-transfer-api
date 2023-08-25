@@ -118,8 +118,7 @@ export const checkParaToSystemIsNonForeignAssetXTokensTx = (
  * @param assetId
  */
 const checkIfAssetIdIsBlankSpace = (assetId: string) => {
-	// check if assetId is a blank space
-	// if assetId is a space throw an error
+	// check if assetId is a blank space, if it is, throw an error
 	if (assetId.length > 0 && assetId.trim() === '') {
 		throw new BaseError(
 			`assetId cannot be blank spaces.`,
