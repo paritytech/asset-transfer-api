@@ -115,8 +115,6 @@ export const checkLocalTxInput = async (
 			return LocalTxType.Balances;
 		}
 
-		// const assetIsNumber = !Number.isNaN(assetId);
-
 		// not a number so we check the registry using the symbol
 		assetId = await getAssetId(
 			api,
