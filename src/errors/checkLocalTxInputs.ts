@@ -103,6 +103,11 @@ export const checkLocalTxInput = async (
 
 		let assetId = assetIds[0];
 
+		// in the case the asset is an empty string, we consider it the relay asset
+		if (assetId === '') {
+			return LocalTxType.Balances;
+		}
+
 		const isNativeToken = systemParachainInfo.tokens.find(
 			(token) => token.toLowerCase() === assetId.toLowerCase()
 		);
