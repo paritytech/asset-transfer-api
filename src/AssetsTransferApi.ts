@@ -41,6 +41,7 @@ import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util
 import {
 	BaseError,
 	BaseErrorsEnum,
+	checkBaseInputOptions,
 	checkBaseInputTypes,
 	checkLocalTxInput,
 	checkXcmTxInputs,
@@ -57,14 +58,9 @@ import {
 	Format,
 	LocalTransferTypes,
 	Methods,
-	SubmittableMethodData,
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
-	XCMV2DestBenificiary,
-	XCMV2ParachainDestBenificiary,
-	XCMV3DestBenificiary,
-	XCMV3ParachainDestBenificiary,
 } from './types';
 
 /**
@@ -122,7 +118,13 @@ export class AssetsTransferApi {
 			xcmVersion,
 			keepAlive,
 			transferLiquidToken,
+			sendersAddr,
 		} = opts;
+		/**
+		 * Ensure that the options passed in are compatible with eachother.
+		 * It will throw an error if any are incorrect.
+		 */
+		checkBaseInputOptions(opts);
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
@@ -261,8 +263,10 @@ export class AssetsTransferApi {
 					palletMethod,
 					destChainId,
 					_specName,
-					format,
-					paysWithFeeOrigin
+					{
+						format,
+						paysWithFeeOrigin,
+					}
 				);
 			} else {
 				/**
@@ -280,8 +284,10 @@ export class AssetsTransferApi {
 					palletMethod,
 					destChainId,
 					_specName,
-					format,
-					paysWithFeeOrigin
+					{
+						format,
+						paysWithFeeOrigin,
+					}
 				);
 			}
 		}
@@ -486,8 +492,11 @@ export class AssetsTransferApi {
 			txMethod,
 			destChainId,
 			_specName,
-			format,
-			paysWithFeeOrigin
+			{
+				format,
+				paysWithFeeOrigin,
+				sendersAddr,
+			}
 		);
 	}
 	/**
@@ -630,10 +639,10 @@ export class AssetsTransferApi {
 		method: Methods,
 		dest: string,
 		origin: string,
-		format?: T,
-		paysWithFeeOrigin?: string
+		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string }
 	): Promise<TxResult<T>> {
 		const { _api } = this;
+		const { format, paysWithFeeOrigin, sendersAddr } = opts;
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			origin,
@@ -659,10 +668,13 @@ export class AssetsTransferApi {
 		}
 
 		if (fmt === 'payload') {
-			result.tx = (await this.createPayload(
-				tx,
-				paysWithFeeOrigin
-			)) as ConstructedFormat<T>;
+			// We can type cast here since the api will ensure if the format is a paylaod that the
+			// sendersAddr must be present.
+			const addr = sendersAddr as string;
+			result.tx = (await this.createPayload(tx, {
+				paysWithFeeOrigin,
+				sendersAddr: addr,
+			})) as ConstructedFormat<T>;
 		}
 
 		return result;
@@ -872,8 +884,9 @@ export class AssetsTransferApi {
 	 */
 	private createPayload = async (
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		paysWithFeeOrigin?: string
+		opts: { paysWithFeeOrigin?: string; sendersAddr: string }
 	): Promise<`0x${string}`> => {
+		const { paysWithFeeOrigin, sendersAddr } = opts;
 		let assetId = 0;
 
 		// if a paysWithFeeOrigin is provided and the chain is of system origin
@@ -903,45 +916,6 @@ export class AssetsTransferApi {
 			}
 		}
 
-		const submittableString = JSON.stringify(tx.toHuman());
-		const submittableData: SubmittableMethodData = JSON.parse(
-			submittableString
-		) as unknown as SubmittableMethodData;
-
-		let addr = '';
-		if (submittableData.method.args.beneficiary) {
-			if (
-				(submittableData.method.args.beneficiary as XCMV2DestBenificiary).V2
-			) {
-				addr = (submittableData.method.args.beneficiary as XCMV2DestBenificiary)
-					.V2.interior.X1.AccountId32.id;
-			} else if (
-				(submittableData.method.args.beneficiary as XCMV3DestBenificiary).V3
-			) {
-				addr = (submittableData.method.args.beneficiary as XCMV3DestBenificiary)
-					.V3.interior.X1.AccountId32.id;
-			} else if (
-				(
-					submittableData.method.args
-						.beneficiary as XCMV2ParachainDestBenificiary
-				).V2
-			) {
-				addr = (
-					submittableData.method.args
-						.beneficiary as XCMV2ParachainDestBenificiary
-				).V2.interior.X2[1].AccountId32.id;
-			} else {
-				addr = (
-					submittableData.method.args
-						.beneficiary as XCMV3ParachainDestBenificiary
-				).V3.interior.X2[1].AccountId32.id;
-			}
-		} else if (submittableData.method.args.dest) {
-			addr = submittableData.method.args.dest.Id;
-		} else if (submittableData.method.args.target) {
-			addr = submittableData.method.args.target.Id;
-		}
-
 		const lastHeader = await this._api.rpc.chain.getHeader();
 		const blockNumber = this._api.registry.createType(
 			'BlockNumber',
@@ -953,12 +927,12 @@ export class AssetsTransferApi {
 			period: 64,
 		});
 
-		const nonce = await this._api.rpc.system.accountNextIndex(addr);
+		const nonce = await this._api.rpc.system.accountNextIndex(sendersAddr);
 		const unsignedPayload: UnsignedTransaction = {
 			specVersion: this._api.runtimeVersion.specVersion.toHex(),
 			transactionVersion: this._api.runtimeVersion.transactionVersion.toHex(),
 			assetId,
-			address: addr,
+			address: sendersAddr,
 			blockHash: lastHeader.hash.toHex(),
 			blockNumber: blockNumber.toHex(),
 			era: era.toHex(),

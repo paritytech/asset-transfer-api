@@ -255,6 +255,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						xcmVersion,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -273,6 +274,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion,
 						weightLimit: opts.weightLimit,
 						isLimited: opts.isLimited,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -295,6 +297,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts.isLimited,
 						weightLimit: opts.weightLimit,
 						xcmVersion,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -319,6 +322,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion,
 						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -955,6 +959,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -978,6 +983,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1000,6 +1006,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion,
 						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1456,6 +1463,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1621,6 +1629,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1798,6 +1807,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1971,6 +1981,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts.isLimited,
 						weightLimit: opts.weightLimit,
 						paysWithFeeDest: '0',
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -2183,6 +2194,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						weightLimit: opts.weightLimit,
 						paysWithFeeDest:
 							'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -2424,6 +2436,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion,
 						isLimited: opts.isLimited,
 						weightLimit: opts.weightLimit,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
