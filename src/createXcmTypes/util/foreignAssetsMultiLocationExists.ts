@@ -4,8 +4,8 @@ import { ApiPromise } from '@polkadot/api';
 
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
-import { ForeignAssetsData } from '../../registry/types';
-import { AssetMetadata } from '../../types';
+import type { ForeignAssetsData } from '../../registry/types';
+import type { AssetMetadata } from '../../types';
 export const foreignAssetsMultiLocationExists = async (
 	assetHubApi: ApiPromise,
 	registry: Registry,

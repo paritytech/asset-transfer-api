@@ -5,7 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
-import { ForeignAssetsInfo } from '../../registry/types';
+import type { ForeignAssetsInfo } from '../../registry/types';
 
 export const foreignAssetMultiLocationIsInCacheOrRegistry = (
 	api: ApiPromise,
