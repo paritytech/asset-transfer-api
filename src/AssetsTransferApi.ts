@@ -62,6 +62,7 @@ import {
 	TxResult,
 	UnsignedTransaction,
 } from './types';
+import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -163,10 +164,12 @@ export class AssetsTransferApi {
 		);
 		const isForeignAssetsTransfer: boolean =
 			this.checkIsForeignAssetTransfer(assetIds);
+		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(assetIds[0], registry, _specName);
 		const xcmPallet = establishXcmPallet(
 			_api,
 			xcmDirection,
-			isForeignAssetsTransfer
+			isForeignAssetsTransfer,
+			isPrimaryParachainNativeAsset
 		);
 
 		/**
@@ -306,6 +309,7 @@ export class AssetsTransferApi {
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
+			isPrimaryParachainNativeAsset,
 			{
 				xcmVersion,
 				paysWithFeeDest,
@@ -325,6 +329,7 @@ export class AssetsTransferApi {
 			xcmDirection,
 			assetType,
 			isForeignAssetsTransfer,
+			isPrimaryParachainNativeAsset,
 			registry
 		);
 
@@ -714,6 +719,7 @@ export class AssetsTransferApi {
 		xcmDirection: Direction,
 		assetType: AssetType,
 		isForeignAssetsTransfer: boolean,
+		isParachainPrimaryNativeAsset: boolean,
 		registry: Registry
 	): AssetCallType {
 		// relay to system -> teleport
@@ -809,7 +815,8 @@ export class AssetsTransferApi {
 		if (
 			xcmDirection === Direction.ParaToSystem &&
 			!assetIdsContainRelayAsset(assetIds, registry) &&
-			originIsMultiLocationsNativeChain
+			originIsMultiLocationsNativeChain ||
+			isParachainPrimaryNativeAsset
 		) {
 			return AssetCallType.Teleport;
 		}

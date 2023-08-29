@@ -55,9 +55,9 @@ export const getAssetHubAssetId = async (
 			assetId = asset;
 		}
 	} else {
-		// if asset is an empty string we assign it the native relay assets symbol
+		// if asset is an empty string we assign it the primary native assets symbol
 		if (asset === '') {
-			const { tokens } = registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
+			const { tokens } = registry.currentRelayRegistry[currentChainId];
 
 			assetId = tokens[0];
 		} else {

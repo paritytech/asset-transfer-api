@@ -13,7 +13,7 @@ import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { ASSET_HUB_CHAIN_ID } from '../consts';
 import { BaseError, BaseErrorsEnum } from '../errors';
-import type { Registry } from '../registry';
+import { Registry } from '../registry';
 import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
 import {
 	MultiAsset,
@@ -35,6 +35,7 @@ import { constructForeignAssetMultiLocationFromAssetId } from './util/constructF
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { getAssetHubAssetId } from './util/getAssetHubAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
+import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const ParaToSystem: ICreateXcmType = {
@@ -291,43 +292,44 @@ export const ParaToSystem: ICreateXcmType = {
 		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
 		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
 		const currentRelayChainSpecName = opts.registry.relayChain;
+		let concretMultiLocation: MultiLocation;
 
-		if (!isRelayNative && isNotANumber) {
-			assetId = await getAssetHubAssetId(api, assetId, specName);
-		}
+			if (!isRelayNative && isNotANumber) {
+				assetId = await getAssetHubAssetId(api, assetId, specName);
+			}
 
-		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
-		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-			relayChainXcAssetInfoKeys = xcAssets.kusama;
-		}
-		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-			relayChainXcAssetInfoKeys = xcAssets.polkadot;
-		}
-
-		let xcAsset: XCMChainInfoDataKeys | string = '';
-		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
-			const chainInfo = relayChainXcAssetInfoKeys[i];
-
-			for (let j = 0; j < chainInfo.data.length; j++) {
-				const xcAssetData = chainInfo.data[j];
-				if (
-					typeof xcAssetData.asset === 'string' &&
-					xcAssetData.asset === assetId
-				) {
-					xcAsset = xcAssetData;
-					break;
+			// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
+			let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
+			if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
+				relayChainXcAssetInfoKeys = xcAssets.kusama;
+			}
+			if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
+				relayChainXcAssetInfoKeys = xcAssets.polkadot;
+			}
+	
+			let xcAsset: XCMChainInfoDataKeys | string = '';
+			for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
+				const chainInfo = relayChainXcAssetInfoKeys[i];
+	
+				for (let j = 0; j < chainInfo.data.length; j++) {
+					const xcAssetData = chainInfo.data[j];
+					if (
+						typeof xcAssetData.asset === 'string' &&
+						xcAssetData.asset === assetId
+					) {
+						xcAsset = xcAssetData;
+						break;
+					}
 				}
 			}
-		}
-
-		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
-			.xcmV1MultiLocation.v1;
-
-		const concretMultiLocation = api.registry.createType(
-			'MultiLocation',
-			xcAssetMultiLocation
-		);
+	
+			const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
+				.xcmV1MultiLocation.v1;
+	
+			concretMultiLocation = api.registry.createType(
+				'MultiLocation',
+				xcAssetMultiLocation
+			);
 
 		const multiAsset = {
 			id: {
@@ -508,75 +510,92 @@ const createParaToSystemMultiAssets = async (
 	// have the foreign assets pallet present, so we type cast here to work around the type compiler.
 	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	let multiAssets: MultiAsset[] = [];
+	let concretMultiLocation: MultiLocation;
+	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(assets[0], registry, specName);
 
-	for (let i = 0; i < assets.length; i++) {
-		const amount = amounts[i];
-		let assetId = assets[i];
-
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
-
-		if (isNotANumber) {
-			assetId = await getAssetHubAssetId(
-				api,
-				assetId,
-				specName,
-				isForeignAssetsTransfer
-			);
-		}
-
-		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
-		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-			relayChainXcAssetInfoKeys = xcAssets.kusama;
-		}
-		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-			relayChainXcAssetInfoKeys = xcAssets.polkadot;
-		}
-
-		let xcAsset: XCMChainInfoDataKeys | string = '';
-		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
-			const chainInfo = relayChainXcAssetInfoKeys[i];
-
-			for (let j = 0; j < chainInfo.data.length; j++) {
-				const xcAssetData = chainInfo.data[j];
-				if (
-					typeof xcAssetData.asset === 'string' &&
-					xcAssetData.asset === assetId
-				) {
-					xcAsset = xcAssetData;
-					break;
-				}
-			}
-		}
-		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
-			.xcmV1MultiLocation.v1;
-
-		let concretMultiLocation: MultiLocation;
-
-		if (isForeignAssetsTransfer) {
-			concretMultiLocation = constructForeignAssetMultiLocationFromAssetId(
-				api,
-				assetId,
-				foreignAssetsPalletId
-			);
-		} else {
-			concretMultiLocation = api.registry.createType(
-				'MultiLocation',
-				xcAssetMultiLocation
-			);
-		}
+	if (isPrimaryParachainNativeAsset) {
+		concretMultiLocation = api.registry.createType('MultiLocation', {
+			parents: 0,
+			interior: { Here: ''},
+		});
 
 		const multiAsset = {
 			id: {
 				Concrete: concretMultiLocation,
 			},
 			fun: {
-				Fungible: amount,
+				Fungible: amounts[0],
 			},
 		};
 
 		multiAssets.push(multiAsset);
+	} else {
+		for (let i = 0; i < assets.length; i++) {
+			const amount = amounts[i];
+			let assetId = assets[i];
+	
+				const parsedAssetIdAsNumber = Number.parseInt(assetId);
+				const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+		
+				if (isNotANumber && !isPrimaryParachainNativeAsset) {
+					assetId = await getAssetHubAssetId(
+						api,
+						assetId,
+						specName,
+						isForeignAssetsTransfer,
+					);
+				}
+		
+				// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
+				let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
+				if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
+					relayChainXcAssetInfoKeys = xcAssets.kusama;
+				}
+				if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
+					relayChainXcAssetInfoKeys = xcAssets.polkadot;
+				}
+		
+				let xcAsset: XCMChainInfoDataKeys | string = '';
+				for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
+					const chainInfo = relayChainXcAssetInfoKeys[i];
+		
+					for (let j = 0; j < chainInfo.data.length; j++) {
+						const xcAssetData = chainInfo.data[j];
+						if (
+							typeof xcAssetData.asset === 'string' &&
+							xcAssetData.asset === assetId
+						) {
+							xcAsset = xcAssetData;
+							break;
+						}
+					}
+				}
+				const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
+					.xcmV1MultiLocation.v1;
+		
+				if (isForeignAssetsTransfer) {
+					concretMultiLocation = constructForeignAssetMultiLocationFromAssetId(
+						api,
+						assetId,
+						foreignAssetsPalletId
+					);
+				} else {
+					concretMultiLocation = api.registry.createType(
+						'MultiLocation',
+						xcAssetMultiLocation
+					);
+				}
+	
+				const multiAsset = {
+					id: {
+						Concrete: concretMultiLocation,
+					},
+					fun: {
+						Fungible: amount,
+					},
+				};
+				multiAssets.push(multiAsset);
+		}
 	}
 
 	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];

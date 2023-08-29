@@ -16,6 +16,7 @@ import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
 import { AssetInfo, Direction } from '../types';
 import { BaseError, BaseErrorsEnum } from './BaseError';
+import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
 
 /**
  * Ensure when sending tx's to or from the relay chain that the length of the assetIds array
@@ -83,9 +84,10 @@ export const checkMultiLocationAmountsLength = (amounts: string[]) => {
  */
 export const checkAssetsAmountMatch = (
 	assetIds: string[],
-	amounts: string[]
+	amounts: string[],
+	isParachainPrimaryNativeAsset?: boolean
 ) => {
-	if (assetIds.length !== amounts.length) {
+	if (!isParachainPrimaryNativeAsset && assetIds.length !== amounts.length) {
 		throw new BaseError(
 			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.',
 			BaseErrorsEnum.InvalidInput
@@ -531,6 +533,10 @@ export const checkParaAssets = async (
 	registry: Registry,
 	xcmDirection: string
 ) => {
+	if (isParachainPrimaryNativeAsset(assetId, registry, specName)) {
+		return;
+	}
+
 	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
 
@@ -979,6 +985,7 @@ export const checkXcmTxInputs = async (
 	registry: Registry,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
+	isParachainPrimaryNativeAsset: boolean,
 	opts: CheckXcmTxInputsOpts
 ) => {
 	const { xcmVersion, paysWithFeeDest } = opts;
@@ -1081,6 +1088,6 @@ export const checkXcmTxInputs = async (
 			xcmPallet,
 			isForeignAssetsTransfer
 		);
-		checkAssetsAmountMatch(assetIds, amounts);
+		checkAssetsAmountMatch(assetIds, amounts, isParachainPrimaryNativeAsset);
 	}
 };
