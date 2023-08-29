@@ -119,7 +119,7 @@ describe('checkLocalTxInput', () => {
 				false,
 				false
 			);
-		}).rejects.toThrowError('The integer assetId 9876111 was not found');
+		}).rejects.toThrowError('general index for assetId 9876111 was not found');
 	});
 
 	it('Should correctly return ForeignAssets when given a valid multilocation', async () => {

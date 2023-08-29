@@ -28,7 +28,7 @@ import {
 } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getAssetHubAssetId } from './util/getAssetHubAssetId';
+import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
@@ -237,6 +237,7 @@ export const SystemToSystem: ICreateXcmType = {
 
 			const assetIndex = getFeeAssetItemIndex(
 				api,
+				registry,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
@@ -294,8 +295,9 @@ export const createSystemToSystemMultiAssets = async (
 
 		if (!isRelayNative) {
 			if (isNotANumber) {
-				assetId = await getAssetHubAssetId(
+				assetId = await getAssetId(
 					api,
+					registry,
 					assetId,
 					specName,
 					isForeignAssetsTransfer

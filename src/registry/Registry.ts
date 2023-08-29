@@ -1,9 +1,12 @@
+import { ASSET_HUB_CHAIN_ID } from '../consts';
+import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import type { AssetsTransferApiOpts } from '../types';
 import { findRelayChain, parseRegistry } from './';
 import type {
 	ChainInfo,
 	ChainInfoRegistry,
 	ExpandedChainInfoKeys,
+	ForeignAssetsData,
 	RelayChains,
 	XCMChainInfoRegistry,
 } from './types';
@@ -14,6 +17,7 @@ export class Registry {
 	readonly relayChain: RelayChains;
 	readonly currentRelayRegistry: ChainInfo;
 	readonly xcAssets: XCMChainInfoRegistry;
+	cache: ChainInfoRegistry;
 
 	constructor(specName: string, opts: AssetsTransferApiOpts) {
 		this.specName = specName;
@@ -21,6 +25,155 @@ export class Registry {
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.xcAssets = this.registry.xcAssets;
+		this.cache = {
+			polkadot: {},
+			kusama: {},
+			westend: {},
+			xcAssets: {
+				polkadot: [],
+				kusama: [],
+			},
+		};
+		this.initializeAssetHubCache();
+		this.initializeCurrentChainIdCache();
+	}
+
+	/**
+	 * Initialize the cache for the current chain that is connected
+	 */
+	private initializeCurrentChainIdCache() {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+		if (!this.cache[this.relayChain][currentChainId]) {
+			this.cache[this.relayChain][currentChainId] = {
+				assetsInfo: {},
+				poolPairsInfo: {},
+				foreignAssetsPalletInstance: null,
+				assetsPalletInstance: null,
+				specName: '',
+				tokens: [],
+				foreignAssetsInfo: {},
+			};
+		}
+	}
+	/**
+	 * Initialize the cache for AssetHub
+	 */
+	private initializeAssetHubCache() {
+		if (!this.cache[this.relayChain][ASSET_HUB_CHAIN_ID]) {
+			this.cache[this.relayChain][ASSET_HUB_CHAIN_ID] = {
+				assetsInfo: {},
+				poolPairsInfo: {},
+				foreignAssetsPalletInstance: null,
+				assetsPalletInstance: null,
+				specName: '',
+				tokens: [],
+				foreignAssetsInfo: {},
+			};
+		}
+	}
+
+	/**
+	 * Getter for the foreignAssetsInfo cache.
+	 *
+	 * @param assetKey string
+	 */
+	public cacheLookupForeignAsset(
+		assetKey: string
+	): ForeignAssetsData | undefined {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+
+		if (
+			this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetKey]
+		) {
+			return this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][
+				assetKey
+			] as ForeignAssetsData;
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Setter for the foreignAssetsInfo cache.
+	 *
+	 * @param assetKey string
+	 * @param assetValue ForeignAssetData
+	 */
+	public setForeignAssetInCache(
+		assetKey: string,
+		assetValue: ForeignAssetsData
+	) {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+
+		this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetKey] =
+			assetValue;
+	}
+
+	/**
+	 * Getter for the poolPairsInfo cache.
+	 *
+	 * @param assetKey string
+	 */
+	public cacheLookupPoolAsset(
+		assetKey: string
+	): { lpToken: string; pairInfo: string } | undefined {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+
+		if (
+			this.cache[this.relayChain][currentChainId]['poolPairsInfo'][assetKey]
+		) {
+			return this.cache[this.relayChain][currentChainId]['poolPairsInfo'][
+				assetKey
+			] as { lpToken: string; pairInfo: string };
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Setter for the poolPairsInfo cache.
+	 *
+	 * @param assetKey string
+	 * @param assetValue { lpToken: string; pairInfo: string }
+	 */
+	public setLiquidPoolTokenInCache(
+		assetKey: string,
+		assetValue: { lpToken: string; pairInfo: string }
+	) {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+
+		this.cache[this.relayChain][currentChainId]['poolPairsInfo'][assetKey] =
+			assetValue;
+	}
+
+	/**
+	 * Getter for the assets cache.
+	 *
+	 * @param assetKey string
+	 */
+	public cacheLookupAsset(assetKey: string): string | undefined {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+
+		if (this.cache[this.relayChain][currentChainId]['assetsInfo'][assetKey]) {
+			return this.cache[this.relayChain][currentChainId]['assetsInfo'][
+				assetKey
+			];
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Setter for the assets cache.
+	 *
+	 * @param assetKey string
+	 * @param assetValue string
+	 */
+	public setAssetInCache(assetKey: string, assetValue: string) {
+		const currentChainId = getChainIdBySpecName(this, this.specName);
+
+		this.cache[this.relayChain][currentChainId]['assetsInfo'][assetKey] =
+			assetValue;
 	}
 
 	/**

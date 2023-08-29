@@ -1,15 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetsTransferApi } from '../../AssetsTransferApi';
+import { Registry } from '../../registry';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 
 describe('foreignMultiAssetMultiLocationExists', () => {
-	const systemAssetsApi = new AssetsTransferApi(
-		adjustedMockSystemApi,
-		'statemine',
-		2
-	);
+	const registry = new Registry('statemine', {});
 
 	it('Should return true for an existing foreign asset multilocation', async () => {
 		const expected = true;
@@ -17,7 +13,8 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
 		const isValid = await foreignAssetsMultiLocationExists(
-			systemAssetsApi._api,
+			adjustedMockSystemApi,
+			registry,
 			multiLocation
 		);
 
@@ -30,7 +27,8 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 			'{"parents":"1","interior":{"X1": {"Parachain":"21252525"}}}';
 
 		const isValid = await foreignAssetsMultiLocationExists(
-			systemAssetsApi._api,
+			adjustedMockSystemApi,
+			registry,
 			multiLocation
 		);
 
@@ -45,13 +43,14 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 
 		await expect(async () => {
 			await foreignAssetsMultiLocationExists(
-				systemAssetsApi._api,
+				adjustedMockSystemApi,
+				registry,
 				multiLocation
 			);
 		}).rejects.toThrowError(expectedError);
 	});
 
-	it('Should throw an error when an comma is found in a multilocation keys value', async () => {
+	it('Should throw an error when a comma is found in a multilocation keys value', async () => {
 		const expectedError =
 			'Error creating MultiLocation type: Enum(Parachain) String should not contain decimal points or scientific notation';
 		const multiLocation =
@@ -59,9 +58,45 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 
 		await expect(async () => {
 			await foreignAssetsMultiLocationExists(
-				systemAssetsApi._api,
+				adjustedMockSystemApi,
+				registry,
 				multiLocation
 			);
 		}).rejects.toThrowError(expectedError);
+	});
+
+	it('Should correctly cache a valid foreign asset not found in the cache or registry', async () => {
+		const emptyRegistry = new Registry('statemine', {
+			injectedRegistry: {
+				kusama: {
+					'1000': {
+						assetsInfo: {},
+						poolPairsInfo: {},
+						foreignAssetsPalletInstance: null,
+						assetsPalletInstance: null,
+						specName: '',
+						tokens: [],
+						foreignAssetsInfo: {},
+					},
+				},
+			},
+		});
+		const multiLocation =
+			'{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
+
+		await foreignAssetsMultiLocationExists(
+			adjustedMockSystemApi,
+			emptyRegistry,
+			multiLocation
+		);
+
+		const result = emptyRegistry.cacheLookupForeignAsset('TNKR');
+
+		expect(result).toEqual({
+			multiLocation:
+				'{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+			name: 'Tinkernet',
+			symbol: 'TNKR',
+		});
 	});
 });

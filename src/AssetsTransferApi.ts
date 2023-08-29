@@ -34,7 +34,7 @@ import {
 	XcmPalletName,
 } from './createXcmCalls/util/establishXcmPallet';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
-import { getAssetHubAssetId } from './createXcmTypes/util/getAssetHubAssetId';
+import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
@@ -192,8 +192,9 @@ export class AssetsTransferApi {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
-				assetId = await getAssetHubAssetId(
+				assetId = await getAssetId(
 					_api,
+					registry,
 					assetId,
 					_specName,
 					isForeignAssetsTransfer

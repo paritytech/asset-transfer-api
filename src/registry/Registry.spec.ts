@@ -1,4 +1,5 @@
 import { Registry } from './Registry';
+import type { ForeignAssetsData } from './types';
 
 describe('Registry', () => {
 	const registry = new Registry('polkadot', {});
@@ -92,6 +93,36 @@ describe('Registry', () => {
 				},
 			];
 			expect(res).toEqual(expected);
+		});
+	});
+
+	describe('Registry cache', () => {
+		it('Should correctly add an asset to the assetsInfo cache ', () => {
+			registry.setAssetInCache('1984', 'USDt');
+
+			expect(registry.cacheLookupAsset('1984') as string).toEqual('USDt');
+		});
+		it('Should correctly add an asset to the poolPairsInfo cache', () => {
+			const poolAssetData = {
+				lpToken: '0',
+				pairInfo: 'testPoolAssetData',
+			};
+			registry.setLiquidPoolTokenInCache('0', poolAssetData);
+
+			expect(registry.cacheLookupPoolAsset('0')).toEqual(poolAssetData);
+		});
+		it('Should correctly add an asset to the foreignAssetsInfo cache', () => {
+			const foreignAssetData: ForeignAssetsData = {
+				symbol: 'TNKR',
+				name: 'Tinkernet',
+				multiLocation:
+					'{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+			};
+			registry.setForeignAssetInCache('TNKR', foreignAssetData);
+
+			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual(
+				foreignAssetData
+			);
 		});
 	});
 });
