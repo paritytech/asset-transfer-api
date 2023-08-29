@@ -219,9 +219,7 @@ export class AssetsTransferApi {
 			if (isLocalSystemTx) {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 				let palletMethod: LocalTransferTypes;
-				/**
-				 *
-				 */
+
 				if (localAssetType === 'Balances') {
 					tx =
 						method === 'transferKeepAlive'
