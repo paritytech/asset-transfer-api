@@ -37,6 +37,7 @@ import {
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
+import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import {
@@ -165,10 +166,17 @@ export class AssetsTransferApi {
 		);
 		const isForeignAssetsTransfer: boolean =
 			this.checkIsForeignAssetTransfer(assetIds);
+		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
+			registry,
+			_specName,
+			xcmDirection,
+			assetIds[0]
+		);
 		const xcmPallet = establishXcmPallet(
 			_api,
 			xcmDirection,
-			isForeignAssetsTransfer
+			isForeignAssetsTransfer,
+			isPrimaryParachainNativeAsset
 		);
 
 		/**
@@ -307,6 +315,7 @@ export class AssetsTransferApi {
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
+			isPrimaryParachainNativeAsset,
 			{
 				xcmVersion,
 				paysWithFeeDest,
@@ -326,6 +335,7 @@ export class AssetsTransferApi {
 			xcmDirection,
 			assetType,
 			isForeignAssetsTransfer,
+			isPrimaryParachainNativeAsset,
 			registry
 		);
 
@@ -715,6 +725,7 @@ export class AssetsTransferApi {
 		xcmDirection: Direction,
 		assetType: AssetType,
 		isForeignAssetsTransfer: boolean,
+		isParachainPrimaryNativeAsset: boolean,
 		registry: Registry
 	): AssetCallType {
 		// relay to system -> teleport
@@ -808,9 +819,10 @@ export class AssetsTransferApi {
 
 		// para to system only when the assets are native to origin -> teleport
 		if (
-			xcmDirection === Direction.ParaToSystem &&
-			!assetIdsContainRelayAsset(assetIds, registry) &&
-			originIsMultiLocationsNativeChain
+			(xcmDirection === Direction.ParaToSystem &&
+				!assetIdsContainRelayAsset(assetIds, registry) &&
+				originIsMultiLocationsNativeChain) ||
+			isParachainPrimaryNativeAsset
 		) {
 			return AssetCallType.Teleport;
 		}

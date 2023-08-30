@@ -87,7 +87,7 @@ export class Registry {
 		) {
 			return this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][
 				assetKey
-			] as ForeignAssetsData;
+			];
 		}
 
 		return undefined;
