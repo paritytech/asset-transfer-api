@@ -15,6 +15,7 @@ import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { XCMChainInfoKeys } from '../registry/types';
 import { AssetInfo, Direction } from '../types';
+import { validateNumber } from '../validate';
 import { BaseError, BaseErrorsEnum } from './BaseError';
 
 /**
@@ -377,11 +378,8 @@ export const checkLiquidTokenValidity = async (
 	systemParachainInfo: ChainInfoKeys,
 	assetId: string
 ) => {
-	// check if assetId is a number
-	const parsedAssetIdAsNumber = Number.parseInt(assetId);
-	const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
-
-	if (invalidNumber) {
+	const isValidInt = validateNumber(assetId);
+	if (!isValidInt) {
 		throw new BaseError(
 			`Liquid Tokens must be valid Integers`,
 			BaseErrorsEnum.InvalidAsset
@@ -475,11 +473,9 @@ const checkSystemAssets = async (
 	} else if (isLiquidTokenTransfer) {
 		await checkLiquidTokenValidity(api, registry, systemParachainInfo, assetId);
 	} else {
-		// check if assetId is a number
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+		const isValidInt = validateNumber(assetId);
 
-		if (!invalidNumber) {
+		if (isValidInt) {
 			let assetSymbol: string | undefined;
 
 			// check the cache for the asset
@@ -492,7 +488,7 @@ const checkSystemAssets = async (
 
 			if (!assetSymbol) {
 				// if asset is not in cache or registry, query the assets pallet to see if it has a value
-				const asset = await api.query.assets.asset(parsedAssetIdAsNumber);
+				const asset = await api.query.assets.asset(assetId);
 
 				// if asset is found in the assets pallet, return LocalTxType Assets
 				if (asset.isNone) {
@@ -501,9 +497,7 @@ const checkSystemAssets = async (
 						BaseErrorsEnum.AssetNotFound
 					);
 				} else {
-					const assetSymbol = (
-						await api.query.assets.metadata(parsedAssetIdAsNumber)
-					).symbol
+					const assetSymbol = (await api.query.assets.metadata(assetId)).symbol
 						.toHuman()
 						?.toString();
 
@@ -614,11 +608,9 @@ export const checkParaAssets = async (
 	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
 
-	// check if assetId is a number
-	const parsedAssetIdAsNumber = Number.parseInt(assetId);
-	const invalidNumber = Number.isNaN(parsedAssetIdAsNumber);
+	const isValidInt = validateNumber(assetId);
 
-	if (!invalidNumber) {
+	if (isValidInt) {
 		// query the parachains assets pallet to see if it has a value matching the assetId
 		const asset = await api.query.assets.asset(assetId);
 
@@ -666,11 +658,12 @@ export const checkParaAssets = async (
 	} else {
 		// not a valid number
 		// check if id is a valid token symbol of the system parachain chain
-		if (!invalidNumber) {
+		// TODO: Im confused about this, clarify this logic.
+		if (isValidInt) {
 			// if assetId is not in registry cache, query for the asset
 			if (!registry.cacheLookupAsset(assetId)) {
 				// query the parachains assets pallet to see if it has a value matching the assetId
-				const asset = await api.query.assets.asset(parsedAssetIdAsNumber);
+				const asset = await api.query.assets.asset(assetId);
 
 				if (asset.isNone) {
 					throw new BaseError(
@@ -939,10 +932,8 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 				continue;
 			}
 
-			const parsedAssetIdAsNumber = Number.parseInt(assetId);
-			const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
-
-			if (!isNotANumber) {
+			const isValidInt = validateNumber(assetId);
+			if (isValidInt) {
 				integerAssetIdFound = assetId;
 			} else if (assetId.toLowerCase().includes('parents')) {
 				multiLocationAssetIdFound = assetId;
