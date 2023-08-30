@@ -611,14 +611,23 @@ export const checkParaAssets = async (
 	const isValidInt = validateNumber(assetId);
 
 	if (isValidInt) {
-		// query the parachains assets pallet to see if it has a value matching the assetId
-		const asset = await api.query.assets.asset(assetId);
+		if (!registry.cacheLookupAsset(assetId)) {
+			// query the parachains assets pallet to see if it has a value matching the assetId
+			const asset = await api.query.assets.asset(assetId);
 
-		if (asset.isNone) {
-			throw new BaseError(
-				`(${xcmDirection}) integer assetId ${assetId} not found in ${specName}`,
-				BaseErrorsEnum.AssetNotFound
-			);
+			if (asset.isNone) {
+				throw new BaseError(
+					`(${xcmDirection}) integer assetId ${assetId} not found in ${specName}`,
+					BaseErrorsEnum.AssetNotFound
+				);
+			} else {
+				const assetSymbol = (await api.query.assets.metadata(assetId)).symbol
+					.toHuman()
+					?.toString();
+				const assetStr = assetSymbol as string;
+				// store xcAsset in registry cache
+				registry.setAssetInCache(assetId, assetStr);
+			}
 		}
 
 		// check that xcAsset exists in the xcAsset registry
@@ -658,84 +667,26 @@ export const checkParaAssets = async (
 	} else {
 		// not a valid number
 		// check if id is a valid token symbol of the system parachain chain
-		// TODO: Im confused about this, clarify this logic.
-		if (isValidInt) {
-			// if assetId is not in registry cache, query for the asset
-			if (!registry.cacheLookupAsset(assetId)) {
-				// query the parachains assets pallet to see if it has a value matching the assetId
-				const asset = await api.query.assets.asset(assetId);
+		const parachainAssets = await api.query.assets.asset.entries();
 
-				if (asset.isNone) {
-					throw new BaseError(
-						`${xcmDirection}: integer assetId ${assetId} not found in ${specName}`
-					);
-				} else {
-					const assetSymbol = (await api.query.assets.metadata(assetId)).symbol
-						.toHuman()
-						?.toString();
-					const assetStr = assetSymbol as string;
-					// store xcAsset in registry cache
-					registry.setAssetInCache(assetId, assetStr);
-				}
+		for (let i = 0; i < parachainAssets.length; i++) {
+			const parachainAsset = parachainAssets[i];
+			const id = parachainAsset[0].args[0];
+
+			const metadata = await api.query.assets.metadata(id);
+			const symbol = metadata.symbol.toHuman()?.toString();
+			if (symbol && symbol.toLowerCase() === assetId.toLowerCase()) {
+				// store in registry cache
+				registry.setAssetInCache(id.toString(), symbol);
+				return;
 			}
-
-			// check that xcAsset exists in the xcAsset registry
-			let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
-			if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-				relayChainXcAssetInfoKeys = xcAssets.kusama;
-			}
-			if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-				relayChainXcAssetInfoKeys = xcAssets.polkadot;
-			}
-
-			if (relayChainXcAssetInfoKeys.length === 0) {
-				throw new BaseError(
-					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`
-				);
-			}
-
-			for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
-				const chainInfo = relayChainXcAssetInfoKeys[i];
-
-				for (let j = 0; j < chainInfo.data.length; j++) {
-					const xcAssetData = chainInfo.data[j];
-					if (
-						typeof xcAssetData.asset === 'string' &&
-						xcAssetData.asset === assetId
-					) {
-						return;
-					}
-				}
-			}
-
-			throw new BaseError(
-				`(${xcmDirection}) symbol assetId ${assetId} not found for parachain ${specName}`,
-				BaseErrorsEnum.AssetNotFound
-			);
-		} else {
-			// not a valid number
-			// check if id is a valid token symbol of the system parachain chain
-			const parachainAssets = await api.query.assets.asset.entries();
-
-			for (let i = 0; i < parachainAssets.length; i++) {
-				const parachainAsset = parachainAssets[i];
-				const id = parachainAsset[0].args[0];
-
-				const metadata = await api.query.assets.metadata(id);
-				const symbol = metadata.symbol.toHuman()?.toString();
-				if (symbol && symbol.toLowerCase() === assetId.toLowerCase()) {
-					// store in registry cache
-					registry.setAssetInCache(id.toString(), symbol);
-					return;
-				}
-			}
-
-			// if no native token for the parachain was matched, throw an error
-			throw new BaseError(
-				`(${xcmDirection}) symbol assetId ${assetId} not found for parachain ${specName}`,
-				BaseErrorsEnum.AssetNotFound
-			);
 		}
+
+		// if no native token for the parachain was matched, throw an error
+		throw new BaseError(
+			`(${xcmDirection}) symbol assetId ${assetId} not found for parachain ${specName}`,
+			BaseErrorsEnum.AssetNotFound
+		);
 	}
 };
 
