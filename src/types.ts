@@ -452,3 +452,11 @@ export type ForeignAssetMultiLocation = {
 	parents: string;
 	interior: InteriorMultiLocation;
 };
+
+export type AssetMetadata = {
+	deposit: string;
+	name: string;
+	symbol: string;
+	decimals: string;
+	isFrozen: boolean;
+};

@@ -2,30 +2,42 @@
 
 import { ApiPromise } from '@polkadot/api';
 
+import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
-import { ForeignAssetsInfo } from '../../registry/types';
+import type { ForeignAssetsInfo } from '../../registry/types';
 
-export const foreignAssetMultiLocationIsInRegistry = (
+export const foreignAssetMultiLocationIsInCacheOrRegistry = (
 	api: ApiPromise,
 	multilocationStr: string,
 	registry: Registry
 ): boolean => {
-	try {
-		const assetHubChainId = 1000;
+	// check if foreign asset exists in assets cache
+	const foreignAssetsCache =
+		registry.cache[registry.relayChain][ASSET_HUB_CHAIN_ID].foreignAssetsInfo;
+	if (checkForeignAssetExists(api, foreignAssetsCache, multilocationStr)) {
+		return true;
+	}
 
+	// check if foreign asset exists in registry
+	const foreignAssetsRegistry =
+		registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID].foreignAssetsInfo;
+	return checkForeignAssetExists(api, foreignAssetsRegistry, multilocationStr);
+};
+
+const checkForeignAssetExists = (
+	api: ApiPromise,
+	foreignAssetsInfo: ForeignAssetsInfo,
+	multiLocationStr: string
+): boolean => {
+	try {
 		const multiLocation = api.registry.createType(
 			'MultiLocation',
-			JSON.parse(multilocationStr)
+			JSON.parse(multiLocationStr)
 		);
 
-		const { foreignAssetsInfo: maybeForeignAssetsInfo } =
-			registry.currentRelayRegistry[assetHubChainId];
-
-		if (Object.keys(maybeForeignAssetsInfo).length > 0) {
-			const foreignAssetInfo = maybeForeignAssetsInfo as ForeignAssetsInfo;
-
-			const foreignAssets = Object.entries(foreignAssetInfo).map((data) => {
+		if (Object.keys(foreignAssetsInfo).length > 0) {
+			const foreignAssets = Object.entries(foreignAssetsInfo).map((data) => {
 				return data[1].multiLocation;
 			});
 

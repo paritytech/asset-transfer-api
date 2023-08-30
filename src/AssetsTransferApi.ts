@@ -34,8 +34,9 @@ import {
 	XcmPalletName,
 } from './createXcmCalls/util/establishXcmPallet';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
-import { getAssetHubAssetId } from './createXcmTypes/util/getAssetHubAssetId';
+import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
+import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import {
@@ -62,7 +63,6 @@ import {
 	TxResult,
 	UnsignedTransaction,
 } from './types';
-import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -164,7 +164,13 @@ export class AssetsTransferApi {
 		);
 		const isForeignAssetsTransfer: boolean =
 			this.checkIsForeignAssetTransfer(assetIds);
-		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(assetIds[0], registry, _specName);
+		const isPrimaryParachainNativeAsset =
+			isParachainPrimaryNativeAsset(
+				registry,
+				_specName,
+				xcmDirection,
+				assetIds[0],
+			);
 		const xcmPallet = establishXcmPallet(
 			_api,
 			xcmDirection,
@@ -195,8 +201,9 @@ export class AssetsTransferApi {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
-				assetId = await getAssetHubAssetId(
+				assetId = await getAssetId(
 					_api,
+					registry,
 					assetId,
 					_specName,
 					isForeignAssetsTransfer
@@ -813,9 +820,9 @@ export class AssetsTransferApi {
 
 		// para to system only when the assets are native to origin -> teleport
 		if (
-			xcmDirection === Direction.ParaToSystem &&
-			!assetIdsContainRelayAsset(assetIds, registry) &&
-			originIsMultiLocationsNativeChain ||
+			(xcmDirection === Direction.ParaToSystem &&
+				!assetIdsContainRelayAsset(assetIds, registry) &&
+				originIsMultiLocationsNativeChain) ||
 			isParachainPrimaryNativeAsset
 		) {
 			return AssetCallType.Teleport;

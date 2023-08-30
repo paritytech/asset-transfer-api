@@ -2640,9 +2640,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				return await moonriverAssetsApi.createTransferTransaction(
 					'1000', // `1000` indicating the dest chain is a system chain.
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					[
-						'MOVR'
-					],
+					['MOVR'],
 					['10000000000'],
 					{
 						format,
@@ -2661,8 +2659,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						weightLimit: {
 							refTime: '1000000',
-							proofSize: '10000'
-						}
+							proofSize: '10000',
+						},
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2681,8 +2679,8 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						weightLimit: {
 							refTime: '1000000',
-							proofSize: '10000'
-						}
+							proofSize: '10000',
+						},
 					});
 					expect(res).toEqual({
 						dest: 'statemine',
@@ -2701,12 +2699,12 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: true,
 						weightLimit: {
 							refTime: '1000000',
-							proofSize: '10000'
-						}
+							proofSize: '10000',
+						},
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-			})
+			});
 			describe('V3', () => {
 				it('Should correctly build a V3 teleportAssets payload containing the native parachain asset', async () => {
 					const res = await baseParachainTransferPolkadotXCM('payload', 3, {
@@ -2748,7 +2746,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-			})
+			});
 		});
 		describe('checkLocalTxInput', () => {
 			it('Should error when the assetIds or amounts is the incorrect length', async () => {
