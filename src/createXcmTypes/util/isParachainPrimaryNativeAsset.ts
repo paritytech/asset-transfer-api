@@ -19,8 +19,9 @@ export const isParachainPrimaryNativeAsset = (
 	if (!assetId) {
 		return true;
 	}
+
 	// if assetId is an empty string
-	// treat is as the parachains primary native asset
+	// treat it as the parachains primary native asset
 	if (assetId === '') {
 		return true;
 	}
