@@ -18,12 +18,12 @@ import {
 	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkParaAssets,
+	checkParaPrimaryAssetAmountsLength,
+	checkParaPrimaryAssetAssetIdsLength,
 	checkParaToSystemIsNonForeignAssetXTokensTx,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
 	checkXcmVersionIsValidForPaysWithFeeDest,
-	checkParaPrimaryAssetAssetIdsLength,
-	checkParaPrimaryAssetAmountsLength
 } from './checkXcmTxInputs';
 
 const parachainAssetsApi = new AssetsTransferApi(
@@ -86,20 +86,20 @@ describe('checkParaPrimaryAssetAssetIdsLength', () => {
 		const err = () => checkParaPrimaryAssetAssetIdsLength(['movr', 'usdt']);
 
 		expect(err).toThrow(
-			"`assetIds` should be of length 1 when sending a primary native parachain asset"
+			'`assetIds` should be of length 1 when sending a primary native parachain asset'
 		);
 	});
-})
+});
 
 describe('checkParaPrimaryAssetAmountsLength', () => {
 	it('Should error with an incorrect amounts length when sending a primary parachain native asset', () => {
 		const err = () => checkParaPrimaryAssetAmountsLength(['1000000', '200000']);
 
 		expect(err).toThrow(
-			"`amounts` should be of length 1 when sending a primary native parachain asset"
+			'`amounts` should be of length 1 when sending a primary native parachain asset'
 		);
 	});
-})
+});
 
 type Test = [
 	specName: string,

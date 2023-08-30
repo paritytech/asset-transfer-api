@@ -10,6 +10,7 @@ import type {
 	RuntimeDispatchInfoV1,
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
+import BN from 'bn.js';
 
 import {
 	RELAY_CHAIN_IDS,
@@ -63,6 +64,7 @@ import {
 	TxResult,
 	UnsignedTransaction,
 } from './types';
+import { validateNumber } from './validate';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -164,13 +166,12 @@ export class AssetsTransferApi {
 		);
 		const isForeignAssetsTransfer: boolean =
 			this.checkIsForeignAssetTransfer(assetIds);
-		const isPrimaryParachainNativeAsset =
-			isParachainPrimaryNativeAsset(
-				registry,
-				_specName,
-				xcmDirection,
-				assetIds[0],
-			);
+		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
+			registry,
+			_specName,
+			xcmDirection,
+			assetIds[0]
+		);
 		const xcmPallet = establishXcmPallet(
 			_api,
 			xcmDirection,
@@ -228,9 +229,7 @@ export class AssetsTransferApi {
 			if (isLocalSystemTx) {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 				let palletMethod: LocalTransferTypes;
-				/**
-				 *
-				 */
+
 				if (localAssetType === 'Balances') {
 					tx =
 						method === 'transferKeepAlive'
@@ -901,7 +900,7 @@ export class AssetsTransferApi {
 		opts: { paysWithFeeOrigin?: string; sendersAddr: string }
 	): Promise<`0x${string}`> => {
 		const { paysWithFeeOrigin, sendersAddr } = opts;
-		let assetId = 0;
+		let assetId = new BN(0);
 
 		// if a paysWithFeeOrigin is provided and the chain is of system origin
 		// we assign the assetId to the value of paysWithFeeOrigin
@@ -910,21 +909,21 @@ export class AssetsTransferApi {
 		);
 
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
-			assetId = Number.parseInt(paysWithFeeOrigin);
-			const isNotANumber = Number.isNaN(assetId);
+			const isValidInt = validateNumber(paysWithFeeOrigin);
 
-			if (isNotANumber) {
+			if (!isValidInt) {
 				throw new BaseError(
 					`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`,
 					BaseErrorsEnum.InvalidInput
 				);
 			}
 
+			assetId = new BN(paysWithFeeOrigin);
 			const isSufficient = await this.checkAssetIsSufficient(assetId);
 
 			if (!isSufficient) {
 				throw new BaseError(
-					`asset with assetId ${assetId} is not a sufficient asset to pay for fees`,
+					`asset with assetId ${assetId.toString()} is not a sufficient asset to pay for fees`,
 					BaseErrorsEnum.InvalidAsset
 				);
 			}
@@ -985,9 +984,7 @@ export class AssetsTransferApi {
 	 * @param assetId number
 	 * @returns Promise<boolean>
 	 */
-	private checkAssetIsSufficient = async (
-		assetId: number
-	): Promise<boolean> => {
+	private checkAssetIsSufficient = async (assetId: BN): Promise<boolean> => {
 		try {
 			const asset = (await this._api.query.assets.asset(assetId)).unwrap();
 
@@ -998,7 +995,7 @@ export class AssetsTransferApi {
 			return false;
 		} catch (err: unknown) {
 			throw new BaseError(
-				`assetId ${assetId} does not match a valid asset`,
+				`assetId ${assetId.toString()} does not match a valid asset`,
 				BaseErrorsEnum.InvalidAsset
 			);
 		}

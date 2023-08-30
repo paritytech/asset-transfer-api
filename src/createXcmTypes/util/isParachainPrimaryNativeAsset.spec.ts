@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../../registry';
-import { isParachainPrimaryNativeAsset } from './isParachainPrimaryNativeAsset';
 import { Direction } from '../../types';
+import { isParachainPrimaryNativeAsset } from './isParachainPrimaryNativeAsset';
 
 describe('isParachainPrimaryNativeAsset', () => {
 	type Test = [
@@ -17,8 +17,8 @@ describe('isParachainPrimaryNativeAsset', () => {
 		const hydraDXRegistry = new Registry('hydradx', {});
 
 		const tests: Test[] = [
-            [, 'moonriver', moonriverRegistry, true],
-            ['', 'moonriver', moonriverRegistry, true],
+			[undefined, 'moonriver', moonriverRegistry, true],
+			['', 'moonriver', moonriverRegistry, true],
 			['MOVR', 'moonriver', moonriverRegistry, true],
 			['HDX', 'hydradx', hydraDXRegistry, true],
 		];
@@ -26,10 +26,10 @@ describe('isParachainPrimaryNativeAsset', () => {
 		for (const test of tests) {
 			const [primaryNativeAssetSymbol, specName, registry, expected] = test;
 			const result = isParachainPrimaryNativeAsset(
-                registry,
+				registry,
 				specName,
-                Direction.ParaToSystem,
-				primaryNativeAssetSymbol,
+				Direction.ParaToSystem,
+				primaryNativeAssetSymbol
 			);
 
 			expect(result).toEqual(expected);
@@ -41,7 +41,7 @@ describe('isParachainPrimaryNativeAsset', () => {
 		const bifrostRegistry = new Registry('bifrost_polkadot', {});
 
 		const tests: Test[] = [
-            ['1', 'moonriver', moonriverRegistry, false],
+			['1', 'moonriver', moonriverRegistry, false],
 			['0x9082099149', 'bifrost_polkadot', bifrostRegistry, false],
 			['xcUSDT', 'moonriver', moonriverRegistry, false],
 			['WETH', 'bifrost_polkadot', bifrostRegistry, false],
@@ -51,17 +51,17 @@ describe('isParachainPrimaryNativeAsset', () => {
 			const [primaryNativeAssetSymbol, specName, registry, expected] = test;
 
 			const result = isParachainPrimaryNativeAsset(
-                registry,
+				registry,
 				specName,
-                Direction.ParaToSystem,
-				primaryNativeAssetSymbol,
+				Direction.ParaToSystem,
+				primaryNativeAssetSymbol
 			);
 
 			expect(result).toEqual(expected);
 		}
 	});
 
-    it('Should correctly return false when direction is not ParaToSystem', () => {
+	it('Should correctly return false when direction is not ParaToSystem', () => {
 		const moonriverRegistry = new Registry('moonriver', {});
 		const hydraDXRegistry = new Registry('hydradx', {});
 
@@ -74,10 +74,10 @@ describe('isParachainPrimaryNativeAsset', () => {
 			const [primaryNativeAssetSymbol, specName, registry, expected] = test;
 
 			const result = isParachainPrimaryNativeAsset(
-                registry,
+				registry,
 				specName,
-                Direction.SystemToPara,
-				primaryNativeAssetSymbol,
+				Direction.SystemToPara,
+				primaryNativeAssetSymbol
 			);
 
 			expect(result).toEqual(expected);
