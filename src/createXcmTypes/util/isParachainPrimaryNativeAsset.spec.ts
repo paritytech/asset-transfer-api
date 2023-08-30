@@ -17,9 +17,9 @@ describe('isParachainPrimaryNativeAsset', () => {
 		const hydraDXRegistry = new Registry('hydradx', {});
 
 		const tests: Test[] = [
-			[undefined, 'moonriver', moonriverRegistry, true],
-			['', 'moonriver', moonriverRegistry, true],
+            ['', 'moonriver', moonriverRegistry, true],
 			['MOVR', 'moonriver', moonriverRegistry, true],
+			[undefined, 'hydradx', hydraDXRegistry, true],
 			['HDX', 'hydradx', hydraDXRegistry, true],
 		];
 
