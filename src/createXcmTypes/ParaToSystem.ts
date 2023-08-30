@@ -328,14 +328,14 @@ export const ParaToSystem: ICreateXcmType = {
 		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
 			.xcmV1MultiLocation.v1;
 
-		const concretMultiLocation = api.registry.createType(
+		const concreteMultiLocation = api.registry.createType(
 			'MultiLocation',
 			xcAssetMultiLocation
 		);
 
 		const multiAsset = {
 			id: {
-				Concrete: concretMultiLocation,
+				Concrete: concreteMultiLocation,
 			},
 			fun: {
 				Fungible: { Fungible: amount },
@@ -442,14 +442,14 @@ const createXTokensMultiAssets = async (
 		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
 			.xcmV1MultiLocation.v1;
 
-		const concretMultiLocation = api.registry.createType(
+		const concreteMultiLocation = api.registry.createType(
 			'MultiLocation',
 			xcAssetMultiLocation
 		);
 
 		const multiAsset = {
 			id: {
-				Concrete: concretMultiLocation,
+				Concrete: concreteMultiLocation,
 			},
 			fun: {
 				Fungible: { Fungible: amount },
@@ -512,7 +512,7 @@ const createParaToSystemMultiAssets = async (
 	// have the foreign assets pallet present, so we type cast here to work around the type compiler.
 	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	let multiAssets: MultiAsset[] = [];
-	let concretMultiLocation: MultiLocation;
+	let concreteMultiLocation: MultiLocation;
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 		registry,
 		specName,
@@ -521,14 +521,14 @@ const createParaToSystemMultiAssets = async (
 	);
 
 	if (isPrimaryParachainNativeAsset) {
-		concretMultiLocation = api.registry.createType('MultiLocation', {
+		concreteMultiLocation = api.registry.createType('MultiLocation', {
 			parents: 0,
 			interior: { Here: '' },
 		});
 
 		const multiAsset = {
 			id: {
-				Concrete: concretMultiLocation,
+				Concrete: concreteMultiLocation,
 			},
 			fun: {
 				Fungible: amounts[0],
@@ -582,13 +582,13 @@ const createParaToSystemMultiAssets = async (
 				.xcmV1MultiLocation.v1;
 
 			if (isForeignAssetsTransfer) {
-				concretMultiLocation = constructForeignAssetMultiLocationFromAssetId(
+				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(
 					api,
 					assetId,
 					foreignAssetsPalletId
 				);
 			} else {
-				concretMultiLocation = api.registry.createType(
+				concreteMultiLocation = api.registry.createType(
 					'MultiLocation',
 					xcAssetMultiLocation
 				);
@@ -596,7 +596,7 @@ const createParaToSystemMultiAssets = async (
 
 			const multiAsset = {
 				id: {
-					Concrete: concretMultiLocation,
+					Concrete: concreteMultiLocation,
 				},
 				fun: {
 					Fungible: amount,

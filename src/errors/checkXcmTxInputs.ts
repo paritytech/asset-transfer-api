@@ -55,7 +55,6 @@ export const checkRelayAmountsLength = (amounts: string[]) => {
  * @param assetIds
  */
 export const checkParaPrimaryAssetAssetIdsLength = (assetIds: string[]) => {
-	console.log('ASSET IDS', assetIds);
 	if (assetIds.length > 1) {
 		throw new BaseError(
 			'`assetIds` should be of length 1 when sending a primary native parachain asset',
