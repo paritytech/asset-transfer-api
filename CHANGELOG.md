@@ -1,5 +1,34 @@
 # Changelog
 
+## [0.1.0-beta.4](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.3..v0.1.0-beta.4)(2023-08-30)
+
+## Features
+
+- feat: sendersAddr, add options validation, and fix payload format
+- feat: add cache to registry
+
+## Fix
+
+- fix: weight limit check issue
+- fix: Re-implement AssetHub ForeignAsset queries
+- fix: add ENUM for organizing error, and apply to stack
+- fix: resolve TODO for destId for relay chains
+- fix: empty string assetId Balances bug for local tx
+- fix: replace all unsafe instances of parseInt
+- fix: unused conditional, and DRY cache logic in checkParaAssets
+
+## Docs
+
+- docs: update README & docs
+
+## Chore
+
+- chore(yarn): bump yarn
+
+## CI
+
+- ci: semantic title check
+
 ## [0.1.0-beta.3](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.2..v0.1.0-beta.3)(2023-08-21)
 
 ## Fix
