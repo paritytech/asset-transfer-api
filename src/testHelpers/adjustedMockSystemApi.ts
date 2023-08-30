@@ -11,6 +11,7 @@ import type {
 } from '@polkadot/types/lookup';
 import { ITuple } from '@polkadot/types-codec/types';
 import { getSpecTypes } from '@polkadot/types-known';
+import BN from 'bn.js';
 
 import { assetHubWestendV9435 } from './metadata/assetHubWestendV9435';
 import { mockSystemApi } from './mockSystemApi';
@@ -104,7 +105,9 @@ const multiLocationAssetInfo = {
 	status: mockSystemApi.registry.createType('PalletAssetsAssetStatus', 'live'),
 };
 
-const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
+const asset = (
+	assetId: number | string | BN
+): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
 		const assets: Map<number, PalletAssetsAssetDetails> = new Map();
 
@@ -149,7 +152,12 @@ const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 		);
 		assets.set(1984, sufficientAsset);
 
-		const maybeAsset = assets.has(assetId) ? assets.get(assetId) : undefined;
+		const adjAsset = BN.isBN(assetId)
+			? assetId.toNumber()
+			: typeof assetId === 'string'
+			? Number.parseInt(assetId)
+			: assetId;
+		const maybeAsset = assets.has(adjAsset) ? assets.get(adjAsset) : undefined;
 
 		if (maybeAsset) {
 			return new Option(
@@ -165,7 +173,9 @@ const asset = (assetId: number): Promise<Option<PalletAssetsAssetDetails>> =>
 		);
 	});
 
-const assetsMetadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
+const assetsMetadata = (
+	assetId: number | string | BN
+): Promise<PalletAssetsAssetMetadata> =>
 	Promise.resolve().then(() => {
 		const metadata: Map<number, PalletAssetsAssetMetadata> = new Map();
 
@@ -187,8 +197,13 @@ const assetsMetadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 		);
 		metadata.set(1984, usdtMetadata);
 
-		const maybeMetadata = metadata.has(assetId)
-			? metadata.get(assetId)
+		const adjAsset = BN.isBN(assetId)
+			? assetId.toNumber()
+			: typeof assetId === 'string'
+			? Number.parseInt(assetId)
+			: assetId;
+		const maybeMetadata = metadata.has(adjAsset)
+			? metadata.get(adjAsset)
 			: undefined;
 
 		if (maybeMetadata) {

@@ -18,6 +18,7 @@ import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import { validateNumber } from '../validate';
 import { MultiAsset } from './../types';
 import {
 	CreateAssetsOpts,
@@ -289,20 +290,17 @@ export const createSystemToSystemMultiAssets = async (
 		let assetId: string = assets[i];
 		const amount = amounts[i];
 
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
-		if (!isRelayNative) {
-			if (isNotANumber) {
-				assetId = await getAssetId(
-					api,
-					registry,
-					assetId,
-					specName,
-					isForeignAssetsTransfer
-				);
-			}
+		if (!isRelayNative && !isValidInt) {
+			assetId = await getAssetId(
+				api,
+				registry,
+				assetId,
+				specName,
+				isForeignAssetsTransfer
+			);
 		}
 
 		let concretMultiLocation: MultiLocation;

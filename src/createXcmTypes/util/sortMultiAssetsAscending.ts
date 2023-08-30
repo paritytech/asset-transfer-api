@@ -2,8 +2,10 @@
 
 import { JunctionV1 } from '@polkadot/types/interfaces';
 import { ITuple } from '@polkadot/types-codec/types';
+import { BN } from 'bn.js';
 
 import { MultiAsset, XcmMultiAsset } from '../../types';
+import { validateNumber } from '../../validate';
 
 /**
  * This sorts a list of multiassets in ascending order based on their id.
@@ -192,22 +194,17 @@ const getSortOrderForX2ThroughX8 = (
 		// if the junctions are the same type but not equal
 		// we compare the inner values in order to determine sort order
 		if (junctionA.type === junctionB.type && !junctionA.eq(junctionB)) {
-			const junctionAValueAsNumber = Number.parseInt(
-				junctionA.value.toString()
-			);
-			const junctionAIsNotANumber = Number.isNaN(junctionAValueAsNumber);
-
-			const junctionBValueAsNumber = Number.parseInt(
-				junctionB.value.toString()
-			);
-			const junctionBIsNotANumber = Number.isNaN(junctionBValueAsNumber);
+			const junctionAIsValidInt = validateNumber(junctionA.value.toString());
+			const junctionBIsValidInt = validateNumber(junctionB.value.toString());
 
 			// compare number values if both junction values are valid integers
 			// otherwise compare the lexicographical values
-			if (!junctionAIsNotANumber && !junctionBIsNotANumber) {
-				if (junctionAValueAsNumber < junctionBValueAsNumber) {
+			if (junctionAIsValidInt && junctionBIsValidInt) {
+				const junctionAValueAsBN = new BN(junctionA.value.toString());
+				const junctionBValueAsBN = new BN(junctionB.value.toString());
+				if (junctionAValueAsBN.lt(junctionBValueAsBN)) {
 					return -1;
-				} else if (junctionAValueAsNumber > junctionBValueAsNumber) {
+				} else if (junctionAValueAsBN.gt(junctionBValueAsBN)) {
 					return 1;
 				}
 			} else {

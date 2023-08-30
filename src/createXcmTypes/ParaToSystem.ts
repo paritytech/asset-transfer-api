@@ -24,6 +24,7 @@ import {
 } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import { validateNumber } from '../validate';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -289,12 +290,11 @@ export const ParaToSystem: ICreateXcmType = {
 		const { registry } = opts;
 		const { xcAssets } = registry;
 		const { tokens: relayTokens } = registry.currentRelayRegistry['0'];
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
 		const currentRelayChainSpecName = registry.relayChain;
 
-		if (!isRelayNative && isNotANumber) {
+		if (!isRelayNative && !isValidInt) {
 			assetId = await getAssetId(api, registry, assetId, specName);
 		}
 
@@ -407,10 +407,9 @@ const createXTokensMultiAssets = async (
 		const amount = amounts[i];
 		let assetId = assets[i];
 
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+		const isValidInt = validateNumber(assetId);
 
-		if (isNotANumber) {
+		if (!isValidInt) {
 			assetId = await getAssetId(api, registry, assetId, specName);
 		}
 
@@ -516,10 +515,9 @@ const createParaToSystemMultiAssets = async (
 		const amount = amounts[i];
 		let assetId = assets[i];
 
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+		const isValidInt = validateNumber(assetId);
 
-		if (isNotANumber) {
+		if (!isValidInt) {
 			assetId = await getAssetId(
 				api,
 				registry,

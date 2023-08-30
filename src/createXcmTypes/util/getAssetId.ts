@@ -5,6 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
+import { validateNumber } from '../../validate';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 import { getChainIdBySpecName } from './getChainIdBySpecName';
@@ -29,8 +30,7 @@ export const getAssetId = async (
 	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
 	const currentChainId = getChainIdBySpecName(registry, specName);
-	const parsedAssetAsNumber = Number.parseInt(asset);
-	const assetIsNumber = !Number.isNaN(parsedAssetAsNumber);
+	const assetIsValidInt = validateNumber(asset);
 	const isParachain = parseInt(currentChainId) >= 2000;
 
 	// if assets pallet, check the cache and return the cached assetId if found
@@ -56,7 +56,7 @@ export const getAssetId = async (
 		}
 	}
 	// check number assetId in registry
-	if (assetIsNumber) {
+	if (assetIsValidInt) {
 		// if assetId index is valid, return the assetId
 		if (assetsInfo[asset] && assetsInfo[asset].length > 0) {
 			return asset;
@@ -105,7 +105,7 @@ export const getAssetId = async (
 			const { tokens } = registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
 
 			assetId = tokens[0];
-		} else if (assetIsNumber) {
+		} else if (assetIsValidInt) {
 			const maybeAsset = await _api.query.assets.asset(asset);
 
 			if (maybeAsset.isSome) {
@@ -130,7 +130,7 @@ export const getAssetId = async (
 			);
 		}
 	} else if (isParachain) {
-		if (!assetIsNumber) {
+		if (!assetIsValidInt) {
 			// if not assetHub and assetId isnt a number, query the parachain chain for the asset symbol
 			const parachainAssets = await _api.query.assets.asset.entries();
 

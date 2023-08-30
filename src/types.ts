@@ -8,6 +8,7 @@ import {
 	MultiLocation,
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
+import BN from 'bn.js';
 
 import type { ChainInfoRegistry } from './registry/types';
 
@@ -315,7 +316,7 @@ export interface UnsignedTransaction extends SignerPayloadJSON {
 	 *
 	 * @default 0
 	 */
-	assetId?: number;
+	assetId: BN;
 }
 
 export interface LocalDest {
