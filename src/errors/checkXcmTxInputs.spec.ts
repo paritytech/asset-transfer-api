@@ -18,6 +18,8 @@ import {
 	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkParaAssets,
+	checkParaPrimaryAssetAmountsLength,
+	checkParaPrimaryAssetAssetIdsLength,
 	checkParaToSystemIsNonForeignAssetXTokensTx,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
@@ -75,6 +77,26 @@ describe('checkAssetsAmountMatch', () => {
 
 		expect(err).toThrow(
 			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
+		);
+	});
+});
+
+describe('checkParaPrimaryAssetAssetIdsLength', () => {
+	it('Should error with an incorrect assetId length when sending a primary parachain native asset', () => {
+		const err = () => checkParaPrimaryAssetAssetIdsLength(['movr', 'usdt']);
+
+		expect(err).toThrow(
+			'`assetIds` should be of length 1 when sending a primary native parachain asset'
+		);
+	});
+});
+
+describe('checkParaPrimaryAssetAmountsLength', () => {
+	it('Should error with an incorrect amounts length when sending a primary parachain native asset', () => {
+		const err = () => checkParaPrimaryAssetAmountsLength(['1000000', '200000']);
+
+		expect(err).toThrow(
+			'`amounts` should be of length 1 when sending a primary native parachain asset'
 		);
 	});
 });

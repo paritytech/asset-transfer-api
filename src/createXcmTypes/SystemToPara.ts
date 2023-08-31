@@ -310,10 +310,10 @@ export const createSystemToParaMultiAssets = async (
 			);
 		}
 
-		let concretMultiLocation: MultiLocation;
+		let concreteMultiLocation: MultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			concretMultiLocation = constructForeignAssetMultiLocationFromAssetId(
+			concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(
 				api,
 				assetId,
 				palletId
@@ -326,7 +326,7 @@ export const createSystemToParaMultiAssets = async (
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 				  });
 
-			concretMultiLocation = api.registry.createType('MultiLocation', {
+			concreteMultiLocation = api.registry.createType('MultiLocation', {
 				parents,
 				interior,
 			});
@@ -334,7 +334,7 @@ export const createSystemToParaMultiAssets = async (
 
 		const multiAsset = {
 			id: {
-				Concrete: concretMultiLocation,
+				Concrete: concreteMultiLocation,
 			},
 			fun: {
 				Fungible: amount,

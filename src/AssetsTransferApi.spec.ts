@@ -202,6 +202,7 @@ describe('AssetTransferAPI', () => {
 					Direction.RelayToSystem,
 					AssetType.Native,
 					false,
+					false,
 					relayAssetsApi.registry
 				);
 
@@ -216,6 +217,7 @@ describe('AssetTransferAPI', () => {
 					['ksm'],
 					Direction.RelayToPara,
 					AssetType.Native,
+					false,
 					false,
 					relayAssetsApi.registry
 				);
@@ -232,6 +234,7 @@ describe('AssetTransferAPI', () => {
 					Direction.SystemToRelay,
 					AssetType.Native,
 					false,
+					false,
 					systemAssetsApi.registry
 				);
 
@@ -247,6 +250,7 @@ describe('AssetTransferAPI', () => {
 					Direction.SystemToSystem,
 					AssetType.Native,
 					false,
+					false,
 					systemAssetsApi.registry
 				);
 
@@ -261,6 +265,7 @@ describe('AssetTransferAPI', () => {
 						Direction.SystemToSystem,
 						AssetType.Foreign,
 						true,
+						false,
 						systemAssetsApi.registry
 					);
 
@@ -278,6 +283,7 @@ describe('AssetTransferAPI', () => {
 					Direction.SystemToPara,
 					AssetType.Foreign,
 					true,
+					false,
 					systemAssetsApi.registry
 				);
 
@@ -293,6 +299,7 @@ describe('AssetTransferAPI', () => {
 					Direction.SystemToPara,
 					AssetType.Foreign,
 					true,
+					false,
 					systemAssetsApi.registry
 				);
 
@@ -307,6 +314,7 @@ describe('AssetTransferAPI', () => {
 					['ksm'],
 					Direction.ParaToRelay,
 					AssetType.Foreign,
+					false,
 					false,
 					moonriverAssetsApi.registry
 				);
@@ -323,6 +331,21 @@ describe('AssetTransferAPI', () => {
 					Direction.ParaToSystem,
 					AssetType.Foreign,
 					true,
+					false,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+			it('Should correctly return Teleport when sending the parachains native asset', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'1000',
+					['movr'],
+					Direction.ParaToSystem,
+					AssetType.Foreign,
+					true,
+					true,
 					moonriverAssetsApi.registry
 				);
 
@@ -336,6 +359,7 @@ describe('AssetTransferAPI', () => {
 					Direction.ParaToSystem,
 					AssetType.Foreign,
 					true,
+					false,
 					moonriverAssetsApi.registry
 				);
 
@@ -351,6 +375,7 @@ describe('AssetTransferAPI', () => {
 					Direction.ParaToPara,
 					AssetType.Foreign,
 					true,
+					false,
 					moonriverAssetsApi.registry
 				);
 
