@@ -924,8 +924,6 @@ describe('checkParaAssets', () => {
 				'1000': {
 					assetsInfo: {},
 					poolPairsInfo: {},
-					foreignAssetsPalletInstance: null,
-					assetsPalletInstance: null,
 					specName: '',
 					tokens: [],
 					foreignAssetsInfo: {},
@@ -951,8 +949,6 @@ describe('checkParaAssets', () => {
 				'2023': {
 					assetsInfo: {},
 					poolPairsInfo: {},
-					foreignAssetsPalletInstance: null,
-					assetsPalletInstance: null,
 					specName: '',
 					tokens: [],
 					foreignAssetsInfo: {},
@@ -982,8 +978,6 @@ describe('checkParaAssets', () => {
 						'1000': {
 							assetsInfo: {},
 							poolPairsInfo: {},
-							foreignAssetsPalletInstance: null,
-							assetsPalletInstance: null,
 							specName: '',
 							tokens: [],
 							foreignAssetsInfo: {},
@@ -995,8 +989,6 @@ describe('checkParaAssets', () => {
 				'1000': {
 					assetsInfo: {},
 					poolPairsInfo: {},
-					foreignAssetsPalletInstance: null,
-					assetsPalletInstance: null,
 					specName: '',
 					tokens: [],
 					foreignAssetsInfo: {},
@@ -1031,8 +1023,6 @@ describe('checkParaAssets', () => {
 						'1000': {
 							assetsInfo: {},
 							poolPairsInfo: {},
-							foreignAssetsPalletInstance: null,
-							assetsPalletInstance: null,
 							specName: '',
 							tokens: [],
 							foreignAssetsInfo: {},
@@ -1044,8 +1034,6 @@ describe('checkParaAssets', () => {
 				'1000': {
 					assetsInfo: {},
 					poolPairsInfo: {},
-					foreignAssetsPalletInstance: null,
-					assetsPalletInstance: null,
 					specName: '',
 					tokens: [],
 					foreignAssetsInfo: {},

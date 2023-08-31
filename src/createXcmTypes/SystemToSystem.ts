@@ -12,7 +12,6 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
-import { ASSET_HUB_CHAIN_ID } from '../consts';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
@@ -271,11 +270,12 @@ export const createSystemToSystemMultiAssets = async (
 	isLiquidTokenTransfer: boolean
 ): Promise<MultiAsset[]> => {
 	let multiAssets: MultiAsset[] = [];
-
-	const { foreignAssetsPalletInstance } =
-		registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
-	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	const systemChainId = getChainIdBySpecName(registry, specName);
+	const palletId = fetchPalletInstanceId(
+		api,
+		isLiquidTokenTransfer,
+		isForeignAssetsTransfer
+	);
 
 	if (!isSystemChain(systemChainId)) {
 		throw new BaseError(
@@ -325,7 +325,7 @@ export const createSystemToSystemMultiAssets = async (
 			const junctionCount = junctions.split('},').length + 1;
 
 			const numberOfJunctions = `"X${junctionCount}"`;
-			const palletInstanceJunctionStr = `{"PalletInstance":"${foreignAssetsPalletId}"},`;
+			const palletInstanceJunctionStr = `{"PalletInstance":"${palletId}"},`;
 			const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
 
 			concretMultiLocation = api.registry.createType('MultiLocation', {
@@ -340,15 +340,7 @@ export const createSystemToSystemMultiAssets = async (
 			const interior: InteriorMultiLocation = isRelayNative
 				? api.registry.createType('InteriorMultiLocation', { Here: '' })
 				: api.registry.createType('InteriorMultiLocation', {
-						X2: [
-							{
-								PalletInstance: fetchPalletInstanceId(
-									api,
-									isLiquidTokenTransfer
-								),
-							},
-							{ GeneralIndex: assetId },
-						],
+						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 				  });
 			concretMultiLocation = api.registry.createType('MultiLocation', {
 				parents,

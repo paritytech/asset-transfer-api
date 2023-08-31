@@ -47,8 +47,6 @@ export class Registry {
 			this.cache[this.relayChain][currentChainId] = {
 				assetsInfo: {},
 				poolPairsInfo: {},
-				foreignAssetsPalletInstance: null,
-				assetsPalletInstance: null,
 				specName: '',
 				tokens: [],
 				foreignAssetsInfo: {},
@@ -63,8 +61,6 @@ export class Registry {
 			this.cache[this.relayChain][ASSET_HUB_CHAIN_ID] = {
 				assetsInfo: {},
 				poolPairsInfo: {},
-				foreignAssetsPalletInstance: null,
-				assetsPalletInstance: null,
 				specName: '',
 				tokens: [],
 				foreignAssetsInfo: {},

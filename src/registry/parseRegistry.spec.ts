@@ -22,8 +22,6 @@ describe('parseRegistry', () => {
 						assetsInfo,
 						foreignAssetsInfo,
 						specName: 'testing',
-						assetsPalletInstance: '100',
-						foreignAssetsPalletInstance: '1000',
 						poolPairsInfo: {},
 					},
 				},
@@ -36,8 +34,6 @@ describe('parseRegistry', () => {
 			assetsInfo: {},
 			foreignAssetsInfo: {},
 			specName: 'testing',
-			assetsPalletInstance: '100',
-			foreignAssetsPalletInstance: '1000',
 			poolPairsInfo: {},
 		});
 		// Ensure nothing was overwritten

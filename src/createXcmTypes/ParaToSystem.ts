@@ -11,7 +11,6 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
-import { ASSET_HUB_CHAIN_ID } from '../consts';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
 import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
@@ -34,6 +33,7 @@ import type {
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
+import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
@@ -504,11 +504,7 @@ const createParaToSystemMultiAssets = async (
 ): Promise<MultiAsset[]> => {
 	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
-	const { foreignAssetsPalletInstance } =
-		registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
-	// This will always result in a value and will never be null because the AssetHub will always
-	// have the foreign assets pallet present, so we type cast here to work around the type compiler.
-	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
+	const palletId = fetchPalletInstanceId(api, false, isForeignAssetsTransfer);
 	let multiAssets: MultiAsset[] = [];
 
 	for (let i = 0; i < assets.length; i++) {
@@ -560,7 +556,7 @@ const createParaToSystemMultiAssets = async (
 			concretMultiLocation = constructForeignAssetMultiLocationFromAssetId(
 				api,
 				assetId,
-				foreignAssetsPalletId
+				palletId
 			);
 		} else {
 			concretMultiLocation = api.registry.createType(
