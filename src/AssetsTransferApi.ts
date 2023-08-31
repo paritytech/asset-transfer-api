@@ -6,10 +6,12 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 import type {
+	MultiLocation,
 	RuntimeDispatchInfo,
 	RuntimeDispatchInfoV1,
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
+import BN from 'bn.js';
 
 import {
 	RELAY_CHAIN_IDS,
@@ -34,13 +36,15 @@ import {
 	XcmPalletName,
 } from './createXcmCalls/util/establishXcmPallet';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
-import { getAssetHubAssetId } from './createXcmTypes/util/getAssetHubAssetId';
+import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
+import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import {
 	BaseError,
 	BaseErrorsEnum,
+	checkBaseInputOptions,
 	checkBaseInputTypes,
 	checkLocalTxInput,
 	checkXcmTxInputs,
@@ -57,14 +61,9 @@ import {
 	Format,
 	LocalTransferTypes,
 	Methods,
-	SubmittableMethodData,
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
-	XCMV2DestBenificiary,
-	XCMV2ParachainDestBenificiary,
-	XCMV3DestBenificiary,
-	XCMV3ParachainDestBenificiary,
 } from './types';
 
 /**
@@ -122,7 +121,13 @@ export class AssetsTransferApi {
 			xcmVersion,
 			keepAlive,
 			transferLiquidToken,
+			sendersAddr,
 		} = opts;
+		/**
+		 * Ensure that the options passed in are compatible with eachother.
+		 * It will throw an error if any are incorrect.
+		 */
+		checkBaseInputOptions(opts);
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
@@ -161,10 +166,17 @@ export class AssetsTransferApi {
 		);
 		const isForeignAssetsTransfer: boolean =
 			this.checkIsForeignAssetTransfer(assetIds);
+		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
+			registry,
+			_specName,
+			xcmDirection,
+			assetIds[0]
+		);
 		const xcmPallet = establishXcmPallet(
 			_api,
 			xcmDirection,
-			isForeignAssetsTransfer
+			isForeignAssetsTransfer,
+			isPrimaryParachainNativeAsset
 		);
 
 		/**
@@ -190,8 +202,9 @@ export class AssetsTransferApi {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
-				assetId = await getAssetHubAssetId(
+				assetId = await getAssetId(
 					_api,
+					registry,
 					assetId,
 					_specName,
 					isForeignAssetsTransfer
@@ -216,9 +229,7 @@ export class AssetsTransferApi {
 			if (isLocalSystemTx) {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 				let palletMethod: LocalTransferTypes;
-				/**
-				 *
-				 */
+
 				if (localAssetType === 'Balances') {
 					tx =
 						method === 'transferKeepAlive'
@@ -261,8 +272,10 @@ export class AssetsTransferApi {
 					palletMethod,
 					destChainId,
 					_specName,
-					format,
-					paysWithFeeOrigin
+					{
+						format,
+						paysWithFeeOrigin,
+					}
 				);
 			} else {
 				/**
@@ -280,8 +293,10 @@ export class AssetsTransferApi {
 					palletMethod,
 					destChainId,
 					_specName,
-					format,
-					paysWithFeeOrigin
+					{
+						format,
+						paysWithFeeOrigin,
+					}
 				);
 			}
 		}
@@ -300,6 +315,7 @@ export class AssetsTransferApi {
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
+			isPrimaryParachainNativeAsset,
 			{
 				xcmVersion,
 				paysWithFeeDest,
@@ -319,6 +335,7 @@ export class AssetsTransferApi {
 			xcmDirection,
 			assetType,
 			isForeignAssetsTransfer,
+			isPrimaryParachainNativeAsset,
 			registry
 		);
 
@@ -486,8 +503,11 @@ export class AssetsTransferApi {
 			txMethod,
 			destChainId,
 			_specName,
-			format,
-			paysWithFeeOrigin
+			{
+				format,
+				paysWithFeeOrigin,
+				sendersAddr,
+			}
 		);
 	}
 	/**
@@ -630,10 +650,10 @@ export class AssetsTransferApi {
 		method: Methods,
 		dest: string,
 		origin: string,
-		format?: T,
-		paysWithFeeOrigin?: string
+		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string }
 	): Promise<TxResult<T>> {
 		const { _api } = this;
+		const { format, paysWithFeeOrigin, sendersAddr } = opts;
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			origin,
@@ -659,10 +679,13 @@ export class AssetsTransferApi {
 		}
 
 		if (fmt === 'payload') {
-			result.tx = (await this.createPayload(
-				tx,
-				paysWithFeeOrigin
-			)) as ConstructedFormat<T>;
+			// We can type cast here since the api will ensure if the format is a paylaod that the
+			// sendersAddr must be present.
+			const addr = sendersAddr as string;
+			result.tx = (await this.createPayload(tx, {
+				paysWithFeeOrigin,
+				sendersAddr: addr,
+			})) as ConstructedFormat<T>;
 		}
 
 		return result;
@@ -702,6 +725,7 @@ export class AssetsTransferApi {
 		xcmDirection: Direction,
 		assetType: AssetType,
 		isForeignAssetsTransfer: boolean,
+		isParachainPrimaryNativeAsset: boolean,
 		registry: Registry
 	): AssetCallType {
 		// relay to system -> teleport
@@ -795,9 +819,10 @@ export class AssetsTransferApi {
 
 		// para to system only when the assets are native to origin -> teleport
 		if (
-			xcmDirection === Direction.ParaToSystem &&
-			!assetIdsContainRelayAsset(assetIds, registry) &&
-			originIsMultiLocationsNativeChain
+			(xcmDirection === Direction.ParaToSystem &&
+				!assetIdsContainRelayAsset(assetIds, registry) &&
+				originIsMultiLocationsNativeChain) ||
+			isParachainPrimaryNativeAsset
 		) {
 			return AssetCallType.Teleport;
 		}
@@ -872,9 +897,11 @@ export class AssetsTransferApi {
 	 */
 	private createPayload = async (
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		paysWithFeeOrigin?: string
+		opts: { paysWithFeeOrigin?: string; sendersAddr: string }
 	): Promise<`0x${string}`> => {
-		let assetId = 0;
+		const { paysWithFeeOrigin, sendersAddr } = opts;
+		let assetId: BN = new BN(0);
+		let feeOrigin: MultiLocation;
 
 		// if a paysWithFeeOrigin is provided and the chain is of system origin
 		// we assign the assetId to the value of paysWithFeeOrigin
@@ -883,63 +910,31 @@ export class AssetsTransferApi {
 		);
 
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
-			assetId = Number.parseInt(paysWithFeeOrigin);
-			const isNotANumber = Number.isNaN(assetId);
-
-			if (isNotANumber) {
+			try {
+				feeOrigin = this._api.registry.createType(
+					'MultiLocation',
+					JSON.parse(paysWithFeeOrigin)
+				);
+			} catch (err: unknown) {
 				throw new BaseError(
-					`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`,
+					`paysWithFeeOrigin value must be a valid MultiLocation. Received: ${paysWithFeeOrigin}`,
 					BaseErrorsEnum.InvalidInput
 				);
 			}
+			const [isValidLpToken, lpToken] = await this.checkAssetLpTokenPairExists(
+				feeOrigin
+			);
 
-			// const isSufficient = await this.checkAssetIsSufficient(assetId);
-
-			// if (!isSufficient) {
-			// 	throw new BaseError(
-			// 		`asset with assetId ${assetId} is not a sufficient asset to pay for fees`,
-			// 		BaseErrorsEnum.InvalidAsset
-			// 	);
-			// }
-		}
-
-		const submittableString = JSON.stringify(tx.toHuman());
-		const submittableData: SubmittableMethodData = JSON.parse(
-			submittableString
-		) as unknown as SubmittableMethodData;
-
-		let addr = '';
-		if (submittableData.method.args.beneficiary) {
-			if (
-				(submittableData.method.args.beneficiary as XCMV2DestBenificiary).V2
-			) {
-				addr = (submittableData.method.args.beneficiary as XCMV2DestBenificiary)
-					.V2.interior.X1.AccountId32.id;
-			} else if (
-				(submittableData.method.args.beneficiary as XCMV3DestBenificiary).V3
-			) {
-				addr = (submittableData.method.args.beneficiary as XCMV3DestBenificiary)
-					.V3.interior.X1.AccountId32.id;
-			} else if (
-				(
-					submittableData.method.args
-						.beneficiary as XCMV2ParachainDestBenificiary
-				).V2
-			) {
-				addr = (
-					submittableData.method.args
-						.beneficiary as XCMV2ParachainDestBenificiary
-				).V2.interior.X2[1].AccountId32.id;
-			} else {
-				addr = (
-					submittableData.method.args
-						.beneficiary as XCMV3ParachainDestBenificiary
-				).V3.interior.X2[1].AccountId32.id;
+			if (!isValidLpToken) {
+				throw new BaseError(
+					`assetId ${assetId.toString()} is not a valid liquidity pool token for ${
+						this._specName
+					}`,
+					BaseErrorsEnum.InvalidAsset
+				);
 			}
-		} else if (submittableData.method.args.dest) {
-			addr = submittableData.method.args.dest.Id;
-		} else if (submittableData.method.args.target) {
-			addr = submittableData.method.args.target.Id;
+
+			assetId = lpToken;
 		}
 
 		const lastHeader = await this._api.rpc.chain.getHeader();
@@ -953,12 +948,12 @@ export class AssetsTransferApi {
 			period: 64,
 		});
 
-		const nonce = await this._api.rpc.system.accountNextIndex(addr);
+		const nonce = await this._api.rpc.system.accountNextIndex(sendersAddr);
 		const unsignedPayload: UnsignedTransaction = {
 			specVersion: this._api.runtimeVersion.specVersion.toHex(),
 			transactionVersion: this._api.runtimeVersion.transactionVersion.toHex(),
 			assetId,
-			address: addr,
+			address: sendersAddr,
 			blockHash: lastHeader.hash.toHex(),
 			blockNumber: blockNumber.toHex(),
 			era: era.toHex(),
@@ -974,7 +969,7 @@ export class AssetsTransferApi {
 				'CheckNonce',
 				'CheckWeight',
 				'ChargeTransactionPayment',
-				'ChargeAssetTxPayment'
+				'ChargeAssetTxPayment',
 			],
 			tip: this._api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,
@@ -991,31 +986,55 @@ export class AssetsTransferApi {
 		return extrinsicPayload.toHex();
 	};
 
-	// /**
-	//  * checks the chains state to determine whether an asset is valid
-	//  * if it is valid, it returns whether it is marked as sufficient for paying fees
-	//  *
-	//  * @param assetId number
-	//  * @returns Promise<boolean>
-	//  */
-	// private checkAssetIsSufficient = async (
-	// 	assetId: number
-	// ): Promise<boolean> => {
-	// 	try {
-	// 		const asset = (await this._api.query.assets.asset(assetId)).unwrap();
+	/**
+	 * checks the chains state and determines whether a MultiLocation assetId is part of a lp token pair
+	 *
+	 * @param assetId MultiLocation
+	 * @returns Promise<boolean>
+	 */
+	private checkAssetLpTokenPairExists = async (
+		paysWithFeeOrigin: MultiLocation
+	): Promise<[boolean, BN]> => {
+		try {
+			const poolAssetData =
+				await this._api.query.assetConversion.pools.entries();
 
-	// 		if (asset.isSufficient.toString().toLowerCase() === 'true') {
-	// 			return true;
-	// 		}
+			for (let i = 0; i < poolAssetData.length; i++) {
+				const poolStorageKeyData = poolAssetData[i][0].toHuman();
+				const lpToken = new BN(poolAssetData[i][1].unwrap().lpToken.toNumber());
 
-	// 		return false;
-	// 	} catch (err: unknown) {
-	// 		throw new BaseError(
-	// 			`assetId ${assetId} does not match a valid asset`,
-	// 			BaseErrorsEnum.InvalidAsset
-	// 		);
-	// 	}
-	// };
+				// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
+				const poolAssetDataStr = JSON.stringify(poolStorageKeyData).replace(
+					/(\d),/g,
+					'$1'
+				);
+
+				const palletAssetConversionNativeOrAssetIdData =
+					this._api.registry.createType(
+						'Vec<Vec<MultiLocation>>',
+						JSON.parse(poolAssetDataStr)
+					);
+				const firstLpToken = palletAssetConversionNativeOrAssetIdData[0][0];
+				const secondLpToken = palletAssetConversionNativeOrAssetIdData[0][1];
+
+				if (
+					firstLpToken.eq(paysWithFeeOrigin) ||
+					secondLpToken.eq(paysWithFeeOrigin)
+				) {
+					return [true, lpToken];
+				}
+			}
+
+			return [false, new BN(0)];
+		} catch (e) {
+			throw new BaseError(
+				`error querying ${this._specName} liquidity token pool assets: ${
+					e as string
+				}`,
+				BaseErrorsEnum.InternalError
+			);
+		}
+	};
 
 	/**
 	 * Return the specName of the destination chainId

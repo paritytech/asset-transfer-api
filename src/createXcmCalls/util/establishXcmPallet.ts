@@ -21,7 +21,8 @@ export enum XcmPalletName {
 export const establishXcmPallet = (
 	api: ApiPromise,
 	direction?: Direction,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer?: boolean,
+	isParachainPrimaryNativeAsset?: boolean
 ): XcmPalletName => {
 	// checks for the existence of the xTokens pallet
 	// for direction ParaToSystem, if it exists and the tx is
@@ -30,7 +31,8 @@ export const establishXcmPallet = (
 		isXTokensParaToSystemNonForeignAssetsPalletTx(
 			api,
 			direction,
-			isForeignAssetsTransfer
+			isForeignAssetsTransfer,
+			isParachainPrimaryNativeAsset
 		)
 	) {
 		return XcmPalletName.xTokens;
@@ -56,11 +58,12 @@ export const establishXcmPallet = (
 const isXTokensParaToSystemNonForeignAssetsPalletTx = (
 	api: ApiPromise,
 	direction?: Direction,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer?: boolean,
+	isParachainPrimaryNativeAsset?: boolean
 ): boolean => {
 	if (
-		isForeignAssetsTransfer != undefined &&
 		!isForeignAssetsTransfer &&
+		!isParachainPrimaryNativeAsset &&
 		direction &&
 		direction === Direction.ParaToSystem &&
 		api.tx.xTokens

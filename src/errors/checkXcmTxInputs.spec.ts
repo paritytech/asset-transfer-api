@@ -18,6 +18,8 @@ import {
 	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkParaAssets,
+	checkParaPrimaryAssetAmountsLength,
+	checkParaPrimaryAssetAssetIdsLength,
 	checkParaToSystemIsNonForeignAssetXTokensTx,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
@@ -75,6 +77,26 @@ describe('checkAssetsAmountMatch', () => {
 
 		expect(err).toThrow(
 			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
+		);
+	});
+});
+
+describe('checkParaPrimaryAssetAssetIdsLength', () => {
+	it('Should error with an incorrect assetId length when sending a primary parachain native asset', () => {
+		const err = () => checkParaPrimaryAssetAssetIdsLength(['movr', 'usdt']);
+
+		expect(err).toThrow(
+			'`assetIds` should be of length 1 when sending a primary native parachain asset'
+		);
+	});
+});
+
+describe('checkParaPrimaryAssetAmountsLength', () => {
+	it('Should error with an incorrect amounts length when sending a primary parachain native asset', () => {
+		const err = () => checkParaPrimaryAssetAmountsLength(['1000000', '200000']);
+
+		expect(err).toThrow(
+			'`amounts` should be of length 1 when sending a primary native parachain asset'
 		);
 	});
 });
@@ -915,5 +937,159 @@ describe('checkParaAssets', () => {
 		}).rejects.toThrowError(
 			'unable to identify xcAsset with ID 311091173110107856861649819128533077277'
 		);
+	});
+
+	describe('cache', () => {
+		it('Should correctly cache an asset that is not found in the registry after being queried for origin System', async () => {
+			const registry = new Registry('statemine', {});
+			const chainInfo = {
+				'1000': {
+					assetsInfo: {},
+					poolPairsInfo: {},
+					foreignAssetsPalletInstance: null,
+					assetsPalletInstance: null,
+					specName: '',
+					tokens: [],
+					foreignAssetsInfo: {},
+				},
+			};
+
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['1984'],
+				chainInfo,
+				'statemine',
+				Direction.SystemToPara,
+				registry,
+				false,
+				false
+			);
+
+			expect(registry.cacheLookupAsset('1984')).toEqual('USDt');
+		});
+		it('Should correctly cache an asset that is not found in the registry after being queried for origin Para', async () => {
+			const registry = new Registry('moonriver', {});
+			const chainInfo = {
+				'2023': {
+					assetsInfo: {},
+					poolPairsInfo: {},
+					foreignAssetsPalletInstance: null,
+					assetsPalletInstance: null,
+					specName: '',
+					tokens: [],
+					foreignAssetsInfo: {},
+				},
+			};
+
+			await checkAssetIdInput(
+				adjustedMockParachainApi,
+				['xcUSDT'],
+				chainInfo,
+				'moonriver',
+				Direction.ParaToSystem,
+				registry,
+				false,
+				false
+			);
+
+			expect(
+				registry.cacheLookupAsset('311091173110107856861649819128533077277')
+			).toEqual('xcUSDT');
+		});
+
+		it('Should correctly cache a foreign asset that is not found in the registry after being queried', async () => {
+			const registry = new Registry('statemine', {
+				injectedRegistry: {
+					kusama: {
+						'1000': {
+							assetsInfo: {},
+							poolPairsInfo: {},
+							foreignAssetsPalletInstance: null,
+							assetsPalletInstance: null,
+							specName: '',
+							tokens: [],
+							foreignAssetsInfo: {},
+						},
+					},
+				},
+			});
+			const chainInfo = {
+				'1000': {
+					assetsInfo: {},
+					poolPairsInfo: {},
+					foreignAssetsPalletInstance: null,
+					assetsPalletInstance: null,
+					specName: '',
+					tokens: [],
+					foreignAssetsInfo: {},
+				},
+			};
+
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				[
+					'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
+				],
+				chainInfo,
+				'statemine',
+				Direction.SystemToPara,
+				registry,
+				true,
+				false
+			);
+
+			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual({
+				multiLocation:
+					'{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+				name: 'Tinkernet',
+				symbol: 'TNKR',
+			});
+		});
+
+		it('Should correctly cache a liquid asset that is not found in the registry after being queried', async () => {
+			const registry = new Registry('statemine', {
+				injectedRegistry: {
+					kusama: {
+						'1000': {
+							assetsInfo: {},
+							poolPairsInfo: {},
+							foreignAssetsPalletInstance: null,
+							assetsPalletInstance: null,
+							specName: '',
+							tokens: [],
+							foreignAssetsInfo: {},
+						},
+					},
+				},
+			});
+			const chainInfo = {
+				'1000': {
+					assetsInfo: {},
+					poolPairsInfo: {},
+					foreignAssetsPalletInstance: null,
+					assetsPalletInstance: null,
+					specName: '',
+					tokens: [],
+					foreignAssetsInfo: {},
+				},
+			};
+
+			await checkAssetIdInput(
+				adjustedMockSystemApi,
+				['0'],
+				chainInfo,
+				'statemine',
+				Direction.SystemToPara,
+				registry,
+				false,
+				true
+			);
+
+			expect(registry.cacheLookupPoolAsset('0')).toEqual({
+				lpToken: '0',
+				pairInfo:
+					'[[{"parents":0,"interior":{"here":null}},{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":100}]}}]]',
+			});
+		});
 	});
 });

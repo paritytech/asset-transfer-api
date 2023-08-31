@@ -13,9 +13,10 @@ import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { ASSET_HUB_CHAIN_ID } from '../consts';
 import { BaseError, BaseErrorsEnum } from '../errors';
-import type { Registry } from '../registry';
+import { Registry } from '../registry';
 import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
 import {
+	Direction,
 	MultiAsset,
 	XCMDestBenificiary,
 	XcmMultiAsset,
@@ -24,6 +25,7 @@ import {
 } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import { validateNumber } from '../validate';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -33,7 +35,8 @@ import type {
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
-import { getAssetHubAssetId } from './util/getAssetHubAssetId';
+import { getAssetId } from './util/getAssetId';
+import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -221,6 +224,7 @@ export const ParaToSystem: ICreateXcmType = {
 
 			const assetIndex = getFeeAssetItemIndex(
 				api,
+				registry,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
@@ -285,15 +289,15 @@ export const ParaToSystem: ICreateXcmType = {
 		assetId: string,
 		opts: CreateAssetsOpts
 	): Promise<XcmVersionedMultiAsset> => {
-		const { xcAssets } = opts.registry;
-		const { tokens: relayTokens } = opts.registry.currentRelayRegistry['0'];
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+		const { registry } = opts;
+		const { xcAssets } = registry;
+		const { tokens: relayTokens } = registry.currentRelayRegistry['0'];
+		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
 		const currentRelayChainSpecName = opts.registry.relayChain;
 
-		if (!isRelayNative && isNotANumber) {
-			assetId = await getAssetHubAssetId(api, assetId, specName);
+		if (!isRelayNative && !isValidInt) {
+			assetId = await getAssetId(api, registry, assetId, specName);
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
@@ -324,14 +328,14 @@ export const ParaToSystem: ICreateXcmType = {
 		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
 			.xcmV1MultiLocation.v1;
 
-		const concretMultiLocation = api.registry.createType(
+		const concreteMultiLocation = api.registry.createType(
 			'MultiLocation',
 			xcAssetMultiLocation
 		);
 
 		const multiAsset = {
 			id: {
-				Concrete: concretMultiLocation,
+				Concrete: concreteMultiLocation,
 			},
 			fun: {
 				Fungible: { Fungible: amount },
@@ -395,8 +399,9 @@ const createXTokensMultiAssets = async (
 	assets: string[],
 	opts: CreateAssetsOpts
 ): Promise<VersionedMultiAssets> => {
-	const { xcAssets } = opts.registry;
-	const currentRelayChainSpecName = opts.registry.relayChain;
+	const { registry } = opts;
+	const { xcAssets } = registry;
+	const currentRelayChainSpecName = registry.relayChain;
 
 	let multiAssets: XcmMultiAsset[] = [];
 
@@ -404,11 +409,10 @@ const createXTokensMultiAssets = async (
 		const amount = amounts[i];
 		let assetId = assets[i];
 
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+		const isValidInt = validateNumber(assetId);
 
-		if (isNotANumber) {
-			assetId = await getAssetHubAssetId(api, assetId, specName);
+		if (!isValidInt) {
+			assetId = await getAssetId(api, registry, assetId, specName);
 		}
 
 		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
@@ -438,14 +442,14 @@ const createXTokensMultiAssets = async (
 		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
 			.xcmV1MultiLocation.v1;
 
-		const concretMultiLocation = api.registry.createType(
+		const concreteMultiLocation = api.registry.createType(
 			'MultiLocation',
 			xcAssetMultiLocation
 		);
 
 		const multiAsset = {
 			id: {
-				Concrete: concretMultiLocation,
+				Concrete: concreteMultiLocation,
 			},
 			fun: {
 				Fungible: { Fungible: amount },
@@ -508,75 +512,98 @@ const createParaToSystemMultiAssets = async (
 	// have the foreign assets pallet present, so we type cast here to work around the type compiler.
 	const foreignAssetsPalletId = foreignAssetsPalletInstance as string;
 	let multiAssets: MultiAsset[] = [];
+	let concreteMultiLocation: MultiLocation;
+	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
+		registry,
+		specName,
+		Direction.ParaToSystem,
+		assets[0]
+	);
 
-	for (let i = 0; i < assets.length; i++) {
-		const amount = amounts[i];
-		let assetId = assets[i];
-
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
-
-		if (isNotANumber) {
-			assetId = await getAssetHubAssetId(
-				api,
-				assetId,
-				specName,
-				isForeignAssetsTransfer
-			);
-		}
-
-		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
-		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-			relayChainXcAssetInfoKeys = xcAssets.kusama;
-		}
-		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-			relayChainXcAssetInfoKeys = xcAssets.polkadot;
-		}
-
-		let xcAsset: XCMChainInfoDataKeys | string = '';
-		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
-			const chainInfo = relayChainXcAssetInfoKeys[i];
-
-			for (let j = 0; j < chainInfo.data.length; j++) {
-				const xcAssetData = chainInfo.data[j];
-				if (
-					typeof xcAssetData.asset === 'string' &&
-					xcAssetData.asset === assetId
-				) {
-					xcAsset = xcAssetData;
-					break;
-				}
-			}
-		}
-		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
-			.xcmV1MultiLocation.v1;
-
-		let concretMultiLocation: MultiLocation;
-
-		if (isForeignAssetsTransfer) {
-			concretMultiLocation = constructForeignAssetMultiLocationFromAssetId(
-				api,
-				assetId,
-				foreignAssetsPalletId
-			);
-		} else {
-			concretMultiLocation = api.registry.createType(
-				'MultiLocation',
-				xcAssetMultiLocation
-			);
-		}
+	if (isPrimaryParachainNativeAsset) {
+		concreteMultiLocation = api.registry.createType('MultiLocation', {
+			parents: 0,
+			interior: { Here: '' },
+		});
 
 		const multiAsset = {
 			id: {
-				Concrete: concretMultiLocation,
+				Concrete: concreteMultiLocation,
 			},
 			fun: {
-				Fungible: amount,
+				Fungible: amounts[0],
 			},
 		};
 
 		multiAssets.push(multiAsset);
+	} else {
+		for (let i = 0; i < assets.length; i++) {
+			const amount = amounts[i];
+			let assetId = assets[i];
+
+			const parsedAssetIdAsNumber = Number.parseInt(assetId);
+			const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+
+			if (isNotANumber && !isPrimaryParachainNativeAsset) {
+				assetId = await getAssetId(
+					api,
+					registry,
+					assetId,
+					specName,
+					isForeignAssetsTransfer
+				);
+			}
+
+			// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
+			let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
+			if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
+				relayChainXcAssetInfoKeys = xcAssets.kusama;
+			}
+			if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
+				relayChainXcAssetInfoKeys = xcAssets.polkadot;
+			}
+
+			let xcAsset: XCMChainInfoDataKeys | string = '';
+			for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
+				const chainInfo = relayChainXcAssetInfoKeys[i];
+
+				for (let j = 0; j < chainInfo.data.length; j++) {
+					const xcAssetData = chainInfo.data[j];
+					if (
+						typeof xcAssetData.asset === 'string' &&
+						xcAssetData.asset === assetId
+					) {
+						xcAsset = xcAssetData;
+						break;
+					}
+				}
+			}
+			const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
+				.xcmV1MultiLocation.v1;
+
+			if (isForeignAssetsTransfer) {
+				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(
+					api,
+					assetId,
+					foreignAssetsPalletId
+				);
+			} else {
+				concreteMultiLocation = api.registry.createType(
+					'MultiLocation',
+					xcAssetMultiLocation
+				);
+			}
+
+			const multiAsset = {
+				id: {
+					Concrete: concreteMultiLocation,
+				},
+				fun: {
+					Fungible: amount,
+				},
+			};
+			multiAssets.push(multiAsset);
+		}
 	}
 
 	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];

@@ -90,7 +90,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2023',
 				'statemine',
-				'call'
+				{ format: 'call' }
 			);
 			expect(res).toEqual({
 				dest: 'moonriver',
@@ -110,7 +110,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2023',
 				'statemine',
-				'payload'
+				{ format: 'payload' }
 			);
 			expect(res).toEqual({
 				dest: 'moonriver',
@@ -130,7 +130,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2023',
 				'Statmine',
-				'submittable'
+				{ format: 'submittable' }
 			);
 			expect(res.tx.toRawType()).toEqual('Extrinsic');
 		});
@@ -202,6 +202,7 @@ describe('AssetTransferAPI', () => {
 					Direction.RelayToSystem,
 					AssetType.Native,
 					false,
+					false,
 					relayAssetsApi.registry
 				);
 
@@ -216,6 +217,7 @@ describe('AssetTransferAPI', () => {
 					['ksm'],
 					Direction.RelayToPara,
 					AssetType.Native,
+					false,
 					false,
 					relayAssetsApi.registry
 				);
@@ -232,6 +234,7 @@ describe('AssetTransferAPI', () => {
 					Direction.SystemToRelay,
 					AssetType.Native,
 					false,
+					false,
 					systemAssetsApi.registry
 				);
 
@@ -247,6 +250,7 @@ describe('AssetTransferAPI', () => {
 					Direction.SystemToSystem,
 					AssetType.Native,
 					false,
+					false,
 					systemAssetsApi.registry
 				);
 
@@ -261,6 +265,7 @@ describe('AssetTransferAPI', () => {
 						Direction.SystemToSystem,
 						AssetType.Foreign,
 						true,
+						false,
 						systemAssetsApi.registry
 					);
 
@@ -278,6 +283,7 @@ describe('AssetTransferAPI', () => {
 					Direction.SystemToPara,
 					AssetType.Foreign,
 					true,
+					false,
 					systemAssetsApi.registry
 				);
 
@@ -293,6 +299,7 @@ describe('AssetTransferAPI', () => {
 					Direction.SystemToPara,
 					AssetType.Foreign,
 					true,
+					false,
 					systemAssetsApi.registry
 				);
 
@@ -307,6 +314,7 @@ describe('AssetTransferAPI', () => {
 					['ksm'],
 					Direction.ParaToRelay,
 					AssetType.Foreign,
+					false,
 					false,
 					moonriverAssetsApi.registry
 				);
@@ -323,6 +331,21 @@ describe('AssetTransferAPI', () => {
 					Direction.ParaToSystem,
 					AssetType.Foreign,
 					true,
+					false,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Teleport');
+			});
+			it('Should correctly return Teleport when sending the parachains native asset', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'1000',
+					['movr'],
+					Direction.ParaToSystem,
+					AssetType.Foreign,
+					true,
+					true,
 					moonriverAssetsApi.registry
 				);
 
@@ -336,6 +359,7 @@ describe('AssetTransferAPI', () => {
 					Direction.ParaToSystem,
 					AssetType.Foreign,
 					true,
+					false,
 					moonriverAssetsApi.registry
 				);
 
@@ -351,6 +375,7 @@ describe('AssetTransferAPI', () => {
 					Direction.ParaToPara,
 					AssetType.Foreign,
 					true,
+					false,
 					moonriverAssetsApi.registry
 				);
 
@@ -408,7 +433,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2000',
 				'statemine',
-				'payload'
+				{ format: 'payload' }
 			);
 
 			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(
@@ -428,7 +453,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2000',
 				'statmine',
-				'call'
+				{ format: 'call' }
 			);
 			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
 				callTxResult.tx,
@@ -471,6 +496,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'payload',
 						keepAlive: true,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 
@@ -537,6 +563,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'payload',
 						keepAlive: true,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 
@@ -609,6 +636,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'payload',
 						keepAlive: false,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 
@@ -712,18 +740,19 @@ describe('AssetTransferAPI', () => {
 	});
 	describe('paysWithFeeOrigin', () => {
 		it('Should correctly assign the assedId field to an unsigned transaction when a valid sufficient paysWithFeeOrigin option is provided', async () => {
-			const expected = '1,984';
+			const expected = '2';
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1984', 'usdc'],
 				['5000000', '4000000000'],
 				{
-					paysWithFeeOrigin: '1984',
+					paysWithFeeOrigin: `{"parents": "0", "interior": { "X2": [{"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}`,
 					format: 'payload',
 					keepAlive: true,
 					paysWithFeeDest: 'USDC',
 					xcmVersion: 3,
+					sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 				}
 			);
 
@@ -740,14 +769,15 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly assign the assedId field to an unsigned transaction when a valid sufficient paysWithFeeOrigin option is provided testing', async () => {
-			const expected = '4';
+			const expected = '1';
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1984'],
 				['5000000'],
 				{
-					paysWithFeeOrigin: '4',
+					sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					paysWithFeeOrigin: `{"parents": "1", "interior": {"X2": [{"Parachain": "2023"}, {"PalletInstance":"10"}]}}`,
 					format: 'payload',
 					keepAlive: true,
 					xcmVersion: 3,
@@ -762,12 +792,11 @@ describe('AssetTransferAPI', () => {
 				}
 			);
 			const unsigned = result.toHuman() as unknown as UnsignedTransaction;
-			
-			console.log('UNSIGNED IS', unsigned);
+
 			expect(unsigned.assetId).toEqual(expected);
 		});
 
-		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not a number', async () => {
+		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not a valid MultiLocation', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
@@ -780,14 +809,15 @@ describe('AssetTransferAPI', () => {
 						keepAlive: true,
 						paysWithFeeDest: 'USDC',
 						xcmVersion: 3,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			}).rejects.toThrowError(
-				'paysWithFeeOrigin value must be a valid number. Received: hello there'
+				'paysWithFeeOrigin value must be a valid MultiLocation. Received: hello there'
 			);
 		});
 
-		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {
+		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not part of a valid lp token pair', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
@@ -795,15 +825,16 @@ describe('AssetTransferAPI', () => {
 					['1984', 'usdc'],
 					['5000000', '4000000000'],
 					{
-						paysWithFeeOrigin: '100',
+						paysWithFeeOrigin: `"parents": "1", "interior": {"X2": ["Parachain": "2007", "PalletInstance":"1000000"]}`,
 						format: 'payload',
 						keepAlive: true,
 						paysWithFeeDest: 'USDC',
 						xcmVersion: 3,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			}).rejects.toThrowError(
-				'asset with assetId 100 is not a sufficient asset to pay for fees'
+				'paysWithFeeOrigin value must be a valid MultiLocation. Received: "parents": "1", "interior": {"X2": ["Parachain": "2007", "PalletInstance":"1000000"]}'
 			);
 		});
 	});

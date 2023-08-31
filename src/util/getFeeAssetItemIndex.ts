@@ -2,9 +2,11 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { getAssetHubAssetId } from '../createXcmTypes/util/getAssetHubAssetId';
+import { getAssetId } from '../createXcmTypes/util/getAssetId';
 import { BaseError, BaseErrorsEnum } from '../errors';
+import { Registry } from '../registry';
 import { MultiAsset } from '../types';
+
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index
  * of the MultiAsset to be used for fees on the destination chain
@@ -15,6 +17,7 @@ import { MultiAsset } from '../types';
  */
 export const getFeeAssetItemIndex = async (
 	api: ApiPromise,
+	registry: Registry,
 	paysWithFeeDest: string,
 	multiAssets: MultiAsset[],
 	specName: string,
@@ -44,8 +47,9 @@ export const getFeeAssetItemIndex = async (
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
 				if (isNotANumber) {
-					const paysWithFeeDestGeneralIndex = await getAssetHubAssetId(
+					const paysWithFeeDestGeneralIndex = await getAssetId(
 						api,
+						registry,
 						paysWithFeeDest,
 						specName,
 						isForeignAssetsTransfer

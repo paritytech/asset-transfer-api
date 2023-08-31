@@ -255,6 +255,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						xcmVersion,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -273,6 +274,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion,
 						weightLimit: opts.weightLimit,
 						isLimited: opts.isLimited,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -295,6 +297,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts.isLimited,
 						weightLimit: opts.weightLimit,
 						xcmVersion,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -319,6 +322,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion,
 						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -955,6 +959,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -978,6 +983,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1000,6 +1006,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion,
 						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1456,6 +1463,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1621,6 +1629,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1798,6 +1807,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime,
 							proofSize,
 						},
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -1971,6 +1981,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts.isLimited,
 						weightLimit: opts.weightLimit,
 						paysWithFeeDest: '0',
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -2183,6 +2194,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						weightLimit: opts.weightLimit,
 						paysWithFeeDest:
 							'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -2424,6 +2436,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion,
 						isLimited: opts.isLimited,
 						weightLimit: opts.weightLimit,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
 			};
@@ -2523,7 +2536,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
-			describe('V3 transfer api', () => {
+			describe('V3', () => {
 				it('Should correctly build a V3 transferMultiAssets call', async () => {
 					const res = await baseParachainTransferMultiAssetsTx('call', 3, {
 						isLimited: true,
@@ -2616,6 +2629,121 @@ describe('AssetTransferApi Integration Tests', () => {
 						3,
 						{ isForeignAssetsTransfer: false, isLiquidTokenTransfer: false }
 					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			const baseParachainTransferPolkadotXCM = async <T extends Format>(
+				format: T,
+				xcmVersion: number,
+				opts: CreateXcmCallOpts
+			): Promise<TxResult<T>> => {
+				return await moonriverAssetsApi.createTransferTransaction(
+					'1000', // `1000` indicating the dest chain is a system chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['MOVR'],
+					['10000000000'],
+					{
+						format,
+						xcmVersion,
+						isLimited: opts.isLimited,
+						weightLimit: opts.weightLimit,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					}
+				);
+			};
+			describe('V2', () => {
+				it('Should correctly build a V2 limitedTeleportAssets payload containing the native parachain asset', async () => {
+					const res = await baseParachainTransferPolkadotXCM('payload', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000000',
+							proofSize: '10000',
+						},
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'limitedTeleportAssets',
+						tx: '0x1101670903010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000000000700e40b5402000000000102093d00419c45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V2 limitedTeleportAssets call containing the native parachain asset', async () => {
+					const res = await baseParachainTransferPolkadotXCM('call', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000000',
+							proofSize: '10000',
+						},
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'limitedTeleportAssets',
+						tx: '0x670903010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000000000700e40b5402000000000102093d00419c',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V2 limitedTeleportAssets submittable containing the native parachain asset', async () => {
+					const res = await baseParachainTransferPolkadotXCM('submittable', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000000',
+							proofSize: '10000',
+						},
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('V3', () => {
+				it('Should correctly build a V3 teleportAssets payload containing the native parachain asset', async () => {
+					const res = await baseParachainTransferPolkadotXCM('payload', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+						isLimited: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'payload',
+						method: 'teleportAssets',
+						tx: '0xf4670103010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000000000700e40b54020000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 teleportAssets call containing the native parachain asset', async () => {
+					const res = await baseParachainTransferPolkadotXCM('call', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+						isLimited: false,
+					});
+					expect(res).toEqual({
+						dest: 'statemine',
+						origin: 'moonriver',
+						direction: 'ParaToSystem',
+						format: 'call',
+						method: 'teleportAssets',
+						tx: '0x670103010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000000000700e40b540200000000',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a V3 teleportAssets submittable containing the native parachain asset', async () => {
+					const res = await baseParachainTransferPolkadotXCM('submittable', 3, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+						isLimited: false,
+					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});

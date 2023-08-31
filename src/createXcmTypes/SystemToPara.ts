@@ -19,6 +19,7 @@ import type { Registry } from '../registry';
 import { MultiAsset } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import { validateNumber } from '../validate';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -29,7 +30,7 @@ import {
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getAssetHubAssetId } from './util/getAssetHubAssetId';
+import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
@@ -244,6 +245,7 @@ export const SystemToPara: ICreateXcmType = {
 
 			const assetIndex = await getFeeAssetItemIndex(
 				api,
+				registry,
 				paysWithFeeDest,
 				multiAssets,
 				specName,
@@ -296,23 +298,23 @@ export const createSystemToParaMultiAssets = async (
 		let assetId: string = assets[i];
 		const amount = amounts[i];
 
-		const parsedAssetIdAsNumber = Number.parseInt(assetId);
-		const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
-		if (!isRelayNative && isNotANumber) {
-			assetId = await getAssetHubAssetId(
+		if (!isRelayNative && !isValidInt) {
+			assetId = await getAssetId(
 				api,
+				registry,
 				assetId,
 				specName,
 				isForeignAssetsTransfer
 			);
 		}
 
-		let concretMultiLocation: MultiLocation;
+		let concreteMultiLocation: MultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			concretMultiLocation = constructForeignAssetMultiLocationFromAssetId(
+			concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(
 				api,
 				assetId,
 				foreignAssetsPalletId
@@ -325,7 +327,7 @@ export const createSystemToParaMultiAssets = async (
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 				  });
 
-			concretMultiLocation = api.registry.createType('MultiLocation', {
+			concreteMultiLocation = api.registry.createType('MultiLocation', {
 				parents,
 				interior,
 			});
@@ -333,7 +335,7 @@ export const createSystemToParaMultiAssets = async (
 
 		const multiAsset = {
 			id: {
-				Concrete: concretMultiLocation,
+				Concrete: concreteMultiLocation,
 			},
 			fun: {
 				Fungible: amount,

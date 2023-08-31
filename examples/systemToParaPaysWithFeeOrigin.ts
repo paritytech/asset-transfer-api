@@ -11,8 +11,8 @@ import { GREEN, PURPLE, RESET } from './colors';
  * In this example we are creating a reserve payload to send 1 USDt (assetId: 1984)
  * from a Kusama Asset Hub (System Parachain) account
  * to a Moonriver (ParaChain) account, where the `xcmVersion` is set to 3, `isLimited` is false declaring that
- * the allowable weight will be `unlimited` and `paysWithFeeOrigin` is `1984`
- * declaring that asset with ID `1984` (USDt) should be used to pay for tx fees in the origin.
+ * the allowable weight will be `unlimited` and `paysWithFeeOrigin` is `{"parents": "0", "interior": { "X2": [["PalletInstance": "50", GeneralIndex: "1984"]]}}`
+ * declaring that asset with mulitlocation ID `'{"parents": "0", "interior": { "X2": [["PalletInstance": "50", GeneralIndex: "1984"]]}}'` (USDt) should be used to pay for tx fees in the origin.
  *
  * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
  */
@@ -33,7 +33,7 @@ const main = async () => {
 				format: 'payload',
 				isLimited: false,
 				xcmVersion: 3,
-				paysWithFeeOrigin: '1984',
+				paysWithFeeOrigin: `{"parents": "0", "interior": { "X2": [["PalletInstance": "50", "GeneralIndex": "1984"]]}}`,
 			}
 		);
 

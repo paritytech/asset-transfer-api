@@ -50,3 +50,8 @@ export const SUPPORTED_XCM_VERSIONS: [number, number] = [2, 3];
  * https://github.com/paritytech/polkadot/blob/e0ed7e862c8c8b6c75eda1731c449543642176ef/xcm/pallet-xcm/src/lib.rs#L1131
  */
 export const MAX_ASSETS_FOR_TRANSFER = 2;
+
+/**
+ * This is the max length for a number before we need to use BigInt.
+ */
+export const MAX_NUM_LENGTH = Number.MAX_SAFE_INTEGER.toString().length;

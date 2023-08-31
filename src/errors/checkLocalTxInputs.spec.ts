@@ -39,6 +39,18 @@ describe('checkLocalTxInput', () => {
 		);
 		expect(res).toEqual('Balances');
 	});
+	it('Should correctly return Balances with an empty string assetId', async () => {
+		const res = await checkLocalTxInput(
+			systemAssetsApi._api,
+			[''],
+			['10000'],
+			specName,
+			registry,
+			false,
+			false
+		);
+		expect(res).toEqual('Balances');
+	});
 	it('Should correctly return Assets with a valid assetId', async () => {
 		const res = await checkLocalTxInput(
 			systemAssetsApi._api,
@@ -107,7 +119,7 @@ describe('checkLocalTxInput', () => {
 				false,
 				false
 			);
-		}).rejects.toThrowError('The integer assetId 9876111 was not found');
+		}).rejects.toThrowError('general index for assetId 9876111 was not found');
 	});
 
 	it('Should correctly return ForeignAssets when given a valid multilocation', async () => {

@@ -8,6 +8,7 @@ import {
 	MultiLocation,
 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
+import BN from 'bn.js';
 
 import type { ChainInfoRegistry } from './registry/types';
 
@@ -184,6 +185,11 @@ export interface TransferArgsOpts<T extends Format> {
 	 */
 	paysWithFeeDest?: string;
 	/**
+	 * The SS58 Address the tx will be sent from. This is specifically used for the format `payload`.
+	 * It is necessary because the `payload` will need information such as the `nonce`.
+	 */
+	sendersAddr?: string;
+	/**
 	 * Boolean to declare if this will be with limited XCM transfers.
 	 * Deafult is unlimited.
 	 */
@@ -209,7 +215,6 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Set the xcmVersion for message construction. If this is not present a supported version
 	 * will be queried, and if there is no supported version a safe version will be queried.
 	 */
-
 	xcmVersion?: number;
 	/**
 	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
@@ -311,7 +316,7 @@ export interface UnsignedTransaction extends SignerPayloadJSON {
 	 *
 	 * @default 0
 	 */
-	assetId?: number;
+	assetId: BN;
 }
 
 export interface LocalDest {
@@ -447,4 +452,12 @@ export type AssetInfo = {
 export type ForeignAssetMultiLocation = {
 	parents: string;
 	interior: InteriorMultiLocation;
+};
+
+export type AssetMetadata = {
+	deposit: string;
+	name: string;
+	symbol: string;
+	decimals: string;
+	isFrozen: boolean;
 };
