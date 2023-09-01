@@ -26,8 +26,6 @@ export interface ChainInfoKeys {
 	tokens: string[];
 	assetsInfo: AssetsInfo;
 	foreignAssetsInfo: ForeignAssetsInfo;
-	assetsPalletInstance: string | null;
-	foreignAssetsPalletInstance: string | null;
 	poolPairsInfo: PoolPairsData;
 }
 

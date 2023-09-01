@@ -72,8 +72,6 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 					'1000': {
 						assetsInfo: {},
 						poolPairsInfo: {},
-						foreignAssetsPalletInstance: null,
-						assetsPalletInstance: null,
 						specName: '',
 						tokens: [],
 						foreignAssetsInfo: {},
