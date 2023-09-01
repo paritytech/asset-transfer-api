@@ -77,16 +77,10 @@ export class Registry {
 		assetKey: string
 	): ForeignAssetsData | undefined {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const lookup =
+			this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'];
 
-		if (
-			this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetKey]
-		) {
-			return this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][
-				assetKey
-			] as ForeignAssetsData;
-		}
-
-		return undefined;
+		return lookup[assetKey] ? lookup[assetKey] : undefined;
 	}
 
 	/**
@@ -114,16 +108,9 @@ export class Registry {
 		assetKey: string
 	): { lpToken: string; pairInfo: string } | undefined {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const lookup = this.cache[this.relayChain][currentChainId]['poolPairsInfo'];
 
-		if (
-			this.cache[this.relayChain][currentChainId]['poolPairsInfo'][assetKey]
-		) {
-			return this.cache[this.relayChain][currentChainId]['poolPairsInfo'][
-				assetKey
-			] as { lpToken: string; pairInfo: string };
-		}
-
-		return undefined;
+		return lookup[assetKey] ? lookup[assetKey] : undefined;
 	}
 
 	/**
@@ -149,14 +136,9 @@ export class Registry {
 	 */
 	public cacheLookupAsset(assetKey: string): string | undefined {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const lookup = this.cache[this.relayChain][currentChainId]['assetsInfo'];
 
-		if (this.cache[this.relayChain][currentChainId]['assetsInfo'][assetKey]) {
-			return this.cache[this.relayChain][currentChainId]['assetsInfo'][
-				assetKey
-			];
-		}
-
-		return undefined;
+		return lookup[assetKey] ? lookup[assetKey] : undefined;
 	}
 
 	/**

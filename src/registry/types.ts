@@ -25,8 +25,8 @@ export interface ChainInfoKeys {
 	specName: string;
 	tokens: string[];
 	assetsInfo: AssetsInfo;
-	foreignAssetsInfo: ForeignAssetsInfo | {};
-	poolPairsInfo: PoolPairsData | {};
+	foreignAssetsInfo: ForeignAssetsInfo;
+	poolPairsInfo: PoolPairsData;
 }
 
 export type ExpandedChainInfoKeys = { chainId: string } & ChainInfoKeys;
