@@ -5,35 +5,16 @@ import '@polkadot/api-augment';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';
 import { DispatchError } from '@polkadot/types/interfaces';
-import { formatDate } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
 import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL } from './consts';
+import { delay, logWithDate } from './util';
 
 /**
  * This script is intended to be run after zombienet is running.
  * It uses the hard coded values given in `zombienet.toml`.
  */
-
-/**
- * Set a delay (sleep)
- *
- * @param ms Milliseconds
- */
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-/**
- * Formats a string to match the output of polkadot-js logging.
- *
- * @param log String to be logged
- * @param remove Remove lines before that were cleared by std
- */
-const logWithDate = (log: string, remove?: boolean) => {
-	remove
-		? console.log(`\r${formatDate(new Date())}          ${log}`)
-		: console.log(`${formatDate(new Date())}          ${log}`);
-};
 
 /**
  * Will block the main script from running until there is blocks in Polkadot AssetHub being produced.
