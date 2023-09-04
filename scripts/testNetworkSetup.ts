@@ -9,13 +9,12 @@ import { formatDate } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
+import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL } from './consts';
+
 /**
  * This script is intended to be run after zombienet is running.
  * It uses the hard coded values given in `zombienet.toml`.
  */
-
-const KUSAMA_ASSET_HUB_WS_URL = 'ws://127.0.0.1:9911';
-const ROCOCO_ALICE_WS_URL = 'ws://127.0.0.1:9900';
 
 /**
  * Set a delay (sleep)
