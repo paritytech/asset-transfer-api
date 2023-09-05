@@ -46,16 +46,17 @@ cumulus_based = true
 id = 2000
 add_to_genesis = true
 cumulus_based = true
+chain = "trappist-local"
 
   [[parachains.collators]]
   name = "trappist-collator01"
-  command = "./bin/trappist-collator"
+  command = "./bin/trappist-node"
   ws_port = 9920
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
   [[parachains.collators]]
   name = "trappist-collator02"
-  command = "./bin/trappist-collator"
+  command = "./bin/trappist-node"
   ws_port = 9921
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
@@ -63,16 +64,17 @@ cumulus_based = true
 id = 3000
 add_to_genesis = true
 cumulus_based = true
+chain = "trappist-local"
 
   [[parachains.collators]]
   name = "stout-collator01"
-  command = "./bin/trappist-collator"
+  command = "./bin/trappist-node"
   ws_port = 9930
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
   [[parachains.collators]]
   name = "stout-collator02"
-  command = "./bin/trappist-collator"
+  command = "./bin/trappist-node"
   ws_port = 9931
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
