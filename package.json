@@ -9,6 +9,7 @@
     "build:examples": "substrate-exec-rimraf examples/build/ && substrate-exec-tsc --project examples/tsconfig.json",
     "start": "node ./lib/index.js",
     "start:zombienet-post-script": "yarn build:scripts && node ./scripts/build/testNetworkSetup.js",
+    "start:zombienet-foriegn-assets-scirpt": "yarn build:scripts && node ./scripts/build/testNetworkForeignAssets.js",
     "lint": "substrate-dev-run-lint",
     "lint:fix": "substrate-dev-run-lint --fix",
     "test": "NODE_ENV=test substrate-exec-jest --detectOpenHandles",
