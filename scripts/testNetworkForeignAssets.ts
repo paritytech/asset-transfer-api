@@ -2,11 +2,42 @@
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';
+import { stringToU8a } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
 import { KUSAMA_ASSET_HUB_WS_URL, TRAPPIST_WS_URL } from './consts';
-import { awaitBlockProduction, logWithDate } from './util';
+import { awaitBlockProduction, delay, logWithDate } from './util';
+
+const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
+	const trappistMultiLocation = assetHubApi.registry.createType(
+		'MultiLocation',
+		{
+			parents: 1,
+			interior: {
+				X1: {
+					parachain: 1836,
+				},
+			},
+		}
+	);
+
+	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(
+		trappistMultiLocation,
+		stringToU8a('Trappist Hop'),
+		stringToU8a('Hop'),
+		12
+	);
+
+	const hexCall = assetHubApi.registry
+		.createType('Call', {
+			callIndex: setMetadataTx.callIndex,
+			args: setMetadataTx.args,
+		})
+		.toHex();
+
+	return hexCall;
+};
 
 const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 	const trappistMultiLocation = assetHubApi.registry.createType(
@@ -140,9 +171,15 @@ const createForeignAssetViaSudo = (
 	trappistApi: ApiPromise
 ) => {
 	const foreignAssetCreateCall = fAssetCreateCall(assetHubApi);
-	const sudoCall = sudoCallWrapper(trappistApi, foreignAssetCreateCall);
+	return sudoCallWrapper(trappistApi, foreignAssetCreateCall);
+};
 
-	return sudoCall;
+const setMetadataForeignAssetViaSudo = (
+	assetHubApi: ApiPromise,
+	trappistApi: ApiPromise
+) => {
+	const setMetadataCall = fAssetSetMetadataCall(assetHubApi);
+	return sudoCallWrapper(trappistApi, setMetadataCall);
 };
 
 const main = async () => {
@@ -177,11 +214,27 @@ const main = async () => {
 	);
 
 	logWithDate(
-		'Sending Sudo XCM message from relay chain to execute forceCreate call on Kusama AssetHub'
+		'Sending Sudo XCM message from relay chain to execute create foreign asset call on Kusama AssetHub'
 	);
 	await trappistApi.tx.sudo
 		.sudo(foreignAssetsCreateSudoXcmCall)
 		.signAndSend(alice);
+
+	await delay(24000);
+
+	const foreignAssetsSetMetadataSudoXcmCall = setMetadataForeignAssetViaSudo(
+		kusamaAssetHubApi,
+		trappistApi
+	);
+
+	logWithDate(
+		'Sending Sudo XCM message from relay chain to execute setMetadata call on Kusama AssetHub'
+	);
+	await trappistApi.tx.sudo
+		.sudo(foreignAssetsSetMetadataSudoXcmCall)
+		.signAndSend(alice);
+
+	await delay(24000);
 
 	await kusamaAssetHubApi.disconnect().then(() => {
 		logWithDate(
