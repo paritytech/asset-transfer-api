@@ -6,12 +6,9 @@ import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
 import { KUSAMA_ASSET_HUB_WS_URL, TRAPPIST_WS_URL } from './consts';
-import { logWithDate } from './util';
+import { awaitBlockProduction, logWithDate } from './util';
 
-const createForeignAssetCall = (
-	assetHubApi: ApiPromise,
-	trappistApi: ApiPromise
-) => {
+const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 	const trappistMultiLocation = assetHubApi.registry.createType(
 		'MultiLocation',
 		{
@@ -24,22 +21,26 @@ const createForeignAssetCall = (
 		}
 	);
 
-	const foreignAssetCreateTx = assetHubApi.tx.foreignAssets.create(
+	const createTx = assetHubApi.tx.foreignAssets.create(
 		trappistMultiLocation,
 		'FBeL7DbnXs4AvP7LqG1yiuFYAsPxE9Yiv4wayoLguBH46Bp', // Sibling 1836 -> ParaId
 		'33333333'
 	);
 
-	const foreignAssetCreateCallHex = assetHubApi.registry
+	const hexCall = assetHubApi.registry
 		.createType('Call', {
-			callIndex: foreignAssetCreateTx.callIndex,
-			args: foreignAssetCreateTx.args,
+			callIndex: createTx.callIndex,
+			args: createTx.args,
 		})
 		.toHex();
 
+	return hexCall;
+};
+
+const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 	// Double encode the call
 	const xcmDoubleEncoded = trappistApi.createType('XcmDoubleEncoded', {
-		encoded: foreignAssetCreateCallHex,
+		encoded: call,
 	});
 
 	const xcmOriginType = trappistApi.createType('XcmOriginKind', 'Xcm');
@@ -91,8 +92,8 @@ const createForeignAssetCall = (
 				transact: {
 					originKind: xcmOriginType,
 					requireWeightAtMost: {
-						refTime: 1000000000,
-						proofSize: 900000,
+						refTime: 8000000000,
+						proofSize: 65536,
 					},
 					call: xcmDoubleEncoded,
 				},
@@ -134,6 +135,16 @@ const createForeignAssetCall = (
 	return xcmCall;
 };
 
+const createForeignAssetViaSudo = (
+	assetHubApi: ApiPromise,
+	trappistApi: ApiPromise
+) => {
+	const foreignAssetCreateCall = fAssetCreateCall(assetHubApi);
+	const sudoCall = sudoCallWrapper(trappistApi, foreignAssetCreateCall);
+
+	return sudoCall;
+};
+
 const main = async () => {
 	logWithDate(
 		chalk.yellow('Initializing script to create foreignAssets on chain')
@@ -160,7 +171,7 @@ const main = async () => {
 	await trappistApi.isReady;
 	logWithDate(chalk.green('Created a connection to Trappist'));
 
-	const createForeignAssetsXcmCall = createForeignAssetCall(
+	const foreignAssetsCreateSudoXcmCall = createForeignAssetViaSudo(
 		kusamaAssetHubApi,
 		trappistApi
 	);
@@ -168,7 +179,9 @@ const main = async () => {
 	logWithDate(
 		'Sending Sudo XCM message from relay chain to execute forceCreate call on Kusama AssetHub'
 	);
-	await trappistApi.tx.sudo.sudo(createForeignAssetsXcmCall).signAndSend(alice);
+	await trappistApi.tx.sudo
+		.sudo(foreignAssetsCreateSudoXcmCall)
+		.signAndSend(alice);
 
 	await kusamaAssetHubApi.disconnect().then(() => {
 		logWithDate(
@@ -183,6 +196,9 @@ const main = async () => {
 	});
 };
 
-main()
-	.catch(console.error)
-	.finally(() => process.exit());
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+awaitBlockProduction(TRAPPIST_WS_URL).then(async () => {
+	await main()
+		.catch(console.error)
+		.finally(() => process.exit());
+});

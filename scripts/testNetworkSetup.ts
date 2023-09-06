@@ -9,7 +9,7 @@ import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
 import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL } from './consts';
-import { delay, logWithDate, awaitBlockProduction } from './util';
+import { awaitBlockProduction, delay, logWithDate } from './util';
 
 /**
  * This script is intended to be run after zombienet is running.
