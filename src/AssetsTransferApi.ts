@@ -127,7 +127,7 @@ export class AssetsTransferApi {
 		 * Ensure that the options passed in are compatible with eachother.
 		 * It will throw an error if any are incorrect.
 		 */
-		checkBaseInputOptions(opts);
+		checkBaseInputOptions(opts, this._specName);
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
