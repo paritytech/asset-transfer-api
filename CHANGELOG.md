@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.1.0-beta.5](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.4..v0.1.0-beta.5)(2023-09-13)
+
+## Features
+
+- feat: support construction of teleports for parachains' primary native assets to AssetHub
+- feat: add disabled options config and function
+
+## Fix
+
+- fix: adjust fetchPalletInstanceId to handle ForeignAssets pallet
+- fix: remove remaining use of parseInt
+
+## Chore
+
+- chore: bump actions/checkout from 3 to 4
+- chore(lint): change print-width for prettier to 120
+
 ## [0.1.0-beta.4](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.3..v0.1.0-beta.4)(2023-08-30)
 
 ## Features
