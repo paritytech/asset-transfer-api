@@ -9,7 +9,7 @@ describe('isSystemChain', () => {
 		expect(result).toEqual(true);
 	});
 	it('Should correctly return false for a chainId of 2000', () => {
-		const result = isSystemChain(2000);
+		const result = isSystemChain('2000');
 
 		expect(result).toEqual(false);
 	});

@@ -185,7 +185,7 @@ export class AssetsTransferApi {
 		if (isLocalSystemTx || isLocalRelayTx) {
 			let assetId = assetIds[0];
 			const amount = amounts[0];
-			const localAssetIdIsNotANumber = Number.isNaN(parseInt(assetId));
+			const isValidNumber = validateNumber(assetId);
 			let isNativeRelayChainAsset = false;
 			if (
 				assetIds.length === 0 ||
@@ -196,7 +196,7 @@ export class AssetsTransferApi {
 
 			if (
 				xcmDirection === Direction.SystemToSystem &&
-				localAssetIdIsNotANumber &&
+				!isValidNumber &&
 				!isNativeRelayChainAsset
 			) {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number

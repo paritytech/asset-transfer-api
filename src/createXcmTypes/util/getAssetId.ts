@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { ApiPromise } from '@polkadot/api';
+import BN from 'bn.js';
 
 import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
@@ -31,7 +32,7 @@ export const getAssetId = async (
 ): Promise<string> => {
 	const currentChainId = getChainIdBySpecName(registry, specName);
 	const assetIsValidInt = validateNumber(asset);
-	const isParachain = parseInt(currentChainId) >= 2000;
+	const isParachain = new BN(currentChainId).gte(new BN(2000));
 
 	// if assets pallet, check the cache and return the cached assetId if found
 	if (!isForeignAssetsTransfer) {
