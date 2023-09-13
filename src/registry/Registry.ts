@@ -73,12 +73,9 @@ export class Registry {
 	 *
 	 * @param assetKey string
 	 */
-	public cacheLookupForeignAsset(
-		assetKey: string
-	): ForeignAssetsData | undefined {
+	public cacheLookupForeignAsset(assetKey: string): ForeignAssetsData | undefined {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
-		const lookup =
-			this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'];
+		const lookup = this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'];
 
 		return lookup[assetKey] ? lookup[assetKey] : undefined;
 	}
@@ -89,14 +86,10 @@ export class Registry {
 	 * @param assetKey string
 	 * @param assetValue ForeignAssetData
 	 */
-	public setForeignAssetInCache(
-		assetKey: string,
-		assetValue: ForeignAssetsData
-	) {
+	public setForeignAssetInCache(assetKey: string, assetValue: ForeignAssetsData) {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 
-		this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetKey] =
-			assetValue;
+		this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetKey] = assetValue;
 	}
 
 	/**
@@ -104,9 +97,7 @@ export class Registry {
 	 *
 	 * @param assetKey string
 	 */
-	public cacheLookupPoolAsset(
-		assetKey: string
-	): { lpToken: string; pairInfo: string } | undefined {
+	public cacheLookupPoolAsset(assetKey: string): { lpToken: string; pairInfo: string } | undefined {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 		const lookup = this.cache[this.relayChain][currentChainId]['poolPairsInfo'];
 
@@ -119,14 +110,10 @@ export class Registry {
 	 * @param assetKey string
 	 * @param assetValue { lpToken: string; pairInfo: string }
 	 */
-	public setLiquidPoolTokenInCache(
-		assetKey: string,
-		assetValue: { lpToken: string; pairInfo: string }
-	) {
+	public setLiquidPoolTokenInCache(assetKey: string, assetValue: { lpToken: string; pairInfo: string }) {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 
-		this.cache[this.relayChain][currentChainId]['poolPairsInfo'][assetKey] =
-			assetValue;
+		this.cache[this.relayChain][currentChainId]['poolPairsInfo'][assetKey] = assetValue;
 	}
 
 	/**
@@ -150,8 +137,7 @@ export class Registry {
 	public setAssetInCache(assetKey: string, assetValue: string) {
 		const currentChainId = getChainIdBySpecName(this, this.specName);
 
-		this.cache[this.relayChain][currentChainId]['assetsInfo'][assetKey] =
-			assetValue;
+		this.cache[this.relayChain][currentChainId]['assetsInfo'][assetKey] = assetValue;
 	}
 
 	/**
@@ -237,9 +223,7 @@ export class Registry {
 	public lookupParachainInfo(id: string): ExpandedChainInfoKeys[] {
 		const chainIds = Object.keys(this.currentRelayRegistry);
 		if (chainIds.includes(id)) {
-			return [
-				Object.assign({}, this.currentRelayRegistry[id], { chainId: id }),
-			];
+			return [Object.assign({}, this.currentRelayRegistry[id], { chainId: id })];
 		}
 		return [];
 	}

@@ -13,15 +13,13 @@ export const foreignAssetMultiLocationIsInCacheOrRegistry = (
 	registry: Registry
 ): boolean => {
 	// check if foreign asset exists in assets cache
-	const foreignAssetsCache =
-		registry.cache[registry.relayChain][ASSET_HUB_CHAIN_ID].foreignAssetsInfo;
+	const foreignAssetsCache = registry.cache[registry.relayChain][ASSET_HUB_CHAIN_ID].foreignAssetsInfo;
 	if (checkForeignAssetExists(api, foreignAssetsCache, multilocationStr)) {
 		return true;
 	}
 
 	// check if foreign asset exists in registry
-	const foreignAssetsRegistry =
-		registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID].foreignAssetsInfo;
+	const foreignAssetsRegistry = registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID].foreignAssetsInfo;
 	return checkForeignAssetExists(api, foreignAssetsRegistry, multilocationStr);
 };
 
@@ -31,10 +29,7 @@ const checkForeignAssetExists = (
 	multiLocationStr: string
 ): boolean => {
 	try {
-		const multiLocation = api.registry.createType(
-			'MultiLocation',
-			JSON.parse(multiLocationStr)
-		);
+		const multiLocation = api.registry.createType('MultiLocation', JSON.parse(multiLocationStr));
 
 		if (Object.keys(foreignAssetsInfo).length > 0) {
 			const foreignAssets = Object.entries(foreignAssetsInfo).map((data) => {
@@ -42,10 +37,7 @@ const checkForeignAssetExists = (
 			});
 
 			for (const asset of foreignAssets) {
-				const foreignAssetMultiLocation = api.registry.createType(
-					'MultiLocation',
-					JSON.parse(asset)
-				);
+				const foreignAssetMultiLocation = api.registry.createType('MultiLocation', JSON.parse(asset));
 
 				if (foreignAssetMultiLocation.toString() === multiLocation.toString()) {
 					return true;
@@ -55,9 +47,7 @@ const checkForeignAssetExists = (
 	} catch (error) {
 		if ((error as Error).message.includes('::')) {
 			const errorInfo = (error as Error).message.split('::');
-			const errorDetails = errorInfo[errorInfo.length - 2].concat(
-				errorInfo[errorInfo.length - 1]
-			);
+			const errorDetails = errorInfo[errorInfo.length - 2].concat(errorInfo[errorInfo.length - 1]);
 			throw new BaseError(
 				`Error creating MultiLocation type:${errorDetails}`,
 				BaseErrorsEnum.InvalidMultiLocationAsset

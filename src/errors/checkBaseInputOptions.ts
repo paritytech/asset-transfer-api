@@ -10,10 +10,7 @@ import { disableOpts } from './disableOpts';
  *
  * @param opts
  */
-export const checkBaseInputOptions = (
-	opts: TransferArgsOpts<Format>,
-	specName: string
-) => {
+export const checkBaseInputOptions = (opts: TransferArgsOpts<Format>, specName: string) => {
 	const { paysWithFeeOrigin, format, sendersAddr } = opts;
 
 	disableOpts(opts, specName);
@@ -38,10 +35,7 @@ export const checkBaseInputOptions = (
 		const [bool, errMsg] = validateAddress(sendersAddr);
 
 		if (!bool) {
-			throw new BaseError(
-				`The inputted sendersAddr is not valid. ${errMsg as string}`,
-				BaseErrorsEnum.InvalidInput
-			);
+			throw new BaseError(`The inputted sendersAddr is not valid. ${errMsg as string}`, BaseErrorsEnum.InvalidInput);
 		}
 	}
 };

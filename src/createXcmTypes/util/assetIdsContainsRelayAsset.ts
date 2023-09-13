@@ -3,10 +3,7 @@
 import { Registry } from '../../registry';
 import { isRelayNativeAsset } from './isRelayNativeAsset';
 
-export const assetIdsContainRelayAsset = (
-	assetIds: string[],
-	registry: Registry
-): boolean => {
+export const assetIdsContainRelayAsset = (assetIds: string[], registry: Registry): boolean => {
 	// if assetIds is empty it is the relay asset
 	if (assetIds.length === 0) {
 		return true;
@@ -23,8 +20,7 @@ export const assetIdsContainRelayAsset = (
 
 		// check assets against relay asset multilocation
 		if (
-			asset.toLowerCase().trim().replace(/ /g, '') ===
-			relayAssetMultiLocation.toLowerCase().trim().replace(/ /g, '')
+			asset.toLowerCase().trim().replace(/ /g, '') === relayAssetMultiLocation.toLowerCase().trim().replace(/ /g, '')
 		) {
 			return true;
 		}

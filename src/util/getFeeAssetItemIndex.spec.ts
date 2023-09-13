@@ -9,25 +9,11 @@ import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { MultiAsset } from '../types';
 import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
 
-type Test = [
-	paysWithFeeDest: string,
-	specName: string,
-	multiAssets: MultiAsset[],
-	api: ApiPromise,
-	expected: number
-];
+type Test = [paysWithFeeDest: string, specName: string, multiAssets: MultiAsset[], api: ApiPromise, expected: number];
 
 describe('getFeeAssetItemIndex', () => {
-	const systemAssetsApi = new AssetsTransferApi(
-		adjustedMockSystemApi,
-		'statemine',
-		2
-	);
-	const relayAssetsApi = new AssetsTransferApi(
-		adjustedMockRelayApi,
-		'kusama',
-		2
-	);
+	const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2);
+	const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
 	const registry = new Registry('statemine', {});
 
 	it('Should select and return the index of the correct multiassets when given their token symbols', async () => {
@@ -38,16 +24,10 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 1,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{ Here: '' }
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 1,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', { Here: '' }),
+							}),
 						},
 						fun: {
 							Fungible: '1000',
@@ -55,16 +35,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 0,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{ X2: [{ PalletInstance: '50' }, { GeneralIndex: '8' }] }
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 0,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', {
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '8' }],
+								}),
+							}),
 						},
 						fun: {
 							Fungible: '2000',
@@ -80,16 +56,10 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 1,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{ Here: '' }
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 1,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', { Here: '' }),
+							}),
 						},
 						fun: {
 							Fungible: '1000',
@@ -97,16 +67,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 0,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{ X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }] }
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 0,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', {
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
+								}),
+							}),
 						},
 						fun: {
 							Fungible: '1500',
@@ -114,16 +80,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 0,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{ X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }] }
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 0,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', {
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+								}),
+							}),
 						},
 						fun: {
 							Fungible: '2000',
@@ -138,16 +100,9 @@ describe('getFeeAssetItemIndex', () => {
 		for (const test of tests) {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
-			expect(
-				await getFeeAssetItemIndex(
-					api,
-					registry,
-					paysWithFeeDest,
-					multiAssets,
-					specName,
-					false
-				)
-			).toEqual(expected);
+			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, false)).toEqual(
+				expected
+			);
 		}
 	});
 
@@ -159,16 +114,10 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 1,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{ Here: '' }
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 1,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', { Here: '' }),
+							}),
 						},
 						fun: {
 							Fungible: '1000',
@@ -176,18 +125,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 0,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{
-											X2: [{ PalletInstance: '50' }, { GeneralIndex: '8' }],
-										}
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 0,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', {
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '8' }],
+								}),
+							}),
 						},
 						fun: {
 							Fungible: '1500',
@@ -195,18 +138,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 0,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{
-											X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-										}
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 0,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', {
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+								}),
+							}),
 						},
 						fun: {
 							Fungible: '2000',
@@ -222,16 +159,10 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 1,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{ Here: '' }
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 1,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', { Here: '' }),
+							}),
 						},
 						fun: {
 							Fungible: '1000',
@@ -239,18 +170,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 0,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{
-											X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
-										}
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 0,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', {
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+								}),
+							}),
 						},
 						fun: {
 							Fungible: '1500',
@@ -258,18 +183,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 0,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{
-											X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
-										}
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 0,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', {
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
+								}),
+							}),
 						},
 						fun: {
 							Fungible: '2000',
@@ -284,16 +203,9 @@ describe('getFeeAssetItemIndex', () => {
 		for (const test of tests) {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
-			expect(
-				await getFeeAssetItemIndex(
-					api,
-					registry,
-					paysWithFeeDest,
-					multiAssets,
-					specName,
-					false
-				)
-			).toEqual(expected);
+			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, false)).toEqual(
+				expected
+			);
 		}
 	});
 
@@ -305,16 +217,12 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType(
-								'MultiLocation',
-								{
-									parents: 1,
-									interior: systemAssetsApi._api.registry.createType(
-										'InteriorMultiLocation',
-										{ X2: [{ Parachain: '2125' }, { GeneralIndex: '0' }] }
-									),
-								}
-							),
+							Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
+								parents: 1,
+								interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', {
+									X2: [{ Parachain: '2125' }, { GeneralIndex: '0' }],
+								}),
+							}),
 						},
 						fun: {
 							Fungible: '2000',
@@ -329,16 +237,7 @@ describe('getFeeAssetItemIndex', () => {
 		for (const test of tests) {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
-			expect(
-				await getFeeAssetItemIndex(
-					api,
-					registry,
-					paysWithFeeDest,
-					multiAssets,
-					specName,
-					true
-				)
-			).toEqual(expected);
+			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, true)).toEqual(expected);
 		}
 	});
 
@@ -351,12 +250,9 @@ describe('getFeeAssetItemIndex', () => {
 				id: {
 					Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
 						parents: 0,
-						interior: systemAssetsApi._api.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1337' }],
-							}
-						),
+						interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1337' }],
+						}),
 					}),
 				},
 				fun: {
@@ -367,10 +263,7 @@ describe('getFeeAssetItemIndex', () => {
 				id: {
 					Concrete: systemAssetsApi._api.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: systemAssetsApi._api.registry.createType(
-							'InteriorMultiLocation',
-							{ Here: '' }
-						),
+						interior: systemAssetsApi._api.registry.createType('InteriorMultiLocation', { Here: '' }),
 					}),
 				},
 				fun: {
@@ -380,14 +273,7 @@ describe('getFeeAssetItemIndex', () => {
 		];
 
 		await expect(async () => {
-			await getFeeAssetItemIndex(
-				systemAssetsApi._api,
-				registry,
-				paysWithFeeDest,
-				multiAssets,
-				specName,
-				false
-			);
+			await getFeeAssetItemIndex(systemAssetsApi._api, registry, paysWithFeeDest, multiAssets, specName, false);
 		}).rejects.toThrowError(
 			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"x2":[{"palletInstance":50},{"generalIndex":1337}]},Here'
 		);

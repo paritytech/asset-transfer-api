@@ -18,24 +18,17 @@ export const constructForeignAssetMultiLocationFromAssetId = (
 	foreignAssetsPalletInstance: string
 ): MultiLocation => {
 	const numberOfAdditionalJunctions = 1;
-	const assetIdMultiLocation = api.registry.createType(
-		'MultiLocation',
-		JSON.parse(multiLocationAssetId)
-	);
+	const assetIdMultiLocation = api.registry.createType('MultiLocation', JSON.parse(multiLocationAssetId));
 
 	// start of the junctions values of the assetId. + 1 to ignore the '['
 	const junctionsStartIndex = multiLocationAssetId.indexOf('[');
 	// end index of the junctions values of the multiLocationAssetId
 	const junctionsEndIndex = multiLocationAssetId.indexOf(']');
 	// e.g. {"Parachain": "2125"}, {"GeneralIndex": "0"}
-	const junctions = multiLocationAssetId.slice(
-		junctionsStartIndex + 1,
-		junctionsEndIndex
-	);
+	const junctions = multiLocationAssetId.slice(junctionsStartIndex + 1, junctionsEndIndex);
 	// number of junctions found in the assetId. used to determine the number of junctions
 	// after adding the PalletInstance (e.g. 2 junctions becomes X3 for System origin)
-	const junctionCount =
-		junctions.split('},').length + numberOfAdditionalJunctions;
+	const junctionCount = junctions.split('},').length + numberOfAdditionalJunctions;
 
 	const numberOfJunctions = `"X${junctionCount}"`;
 	const palletInstanceJunctionStr = `{"PalletInstance":"${foreignAssetsPalletInstance}"},`;
@@ -43,9 +36,6 @@ export const constructForeignAssetMultiLocationFromAssetId = (
 
 	return api.registry.createType('MultiLocation', {
 		parents: assetIdMultiLocation.parents,
-		interior: api.registry.createType(
-			'InteriorMultiLocation',
-			JSON.parse(interiorMultiLocationStr)
-		),
+		interior: api.registry.createType('InteriorMultiLocation', JSON.parse(interiorMultiLocationStr)),
 	});
 };

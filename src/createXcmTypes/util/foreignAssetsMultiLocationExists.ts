@@ -12,20 +12,13 @@ export const foreignAssetsMultiLocationExists = async (
 	multilocationStr: string
 ): Promise<boolean> => {
 	try {
-		const multiLocation = assetHubApi.registry.createType(
-			'MultiLocation',
-			JSON.parse(multilocationStr)
-		);
+		const multiLocation = assetHubApi.registry.createType('MultiLocation', JSON.parse(multilocationStr));
 
-		const foreignAsset = await assetHubApi.query.foreignAssets.asset(
-			multiLocation
-		);
+		const foreignAsset = await assetHubApi.query.foreignAssets.asset(multiLocation);
 
 		// check if foreign asset exists
 		if (foreignAsset.toString().length > 0) {
-			const foreignAssetMetadata = (
-				await assetHubApi.query.foreignAssets.metadata(multiLocation)
-			).toHuman();
+			const foreignAssetMetadata = (await assetHubApi.query.foreignAssets.metadata(multiLocation)).toHuman();
 
 			if (foreignAssetMetadata) {
 				const metadata = foreignAssetMetadata as AssetMetadata;
@@ -48,9 +41,7 @@ export const foreignAssetsMultiLocationExists = async (
 	} catch (error) {
 		if ((error as Error).message.includes('::')) {
 			const errorInfo = (error as Error).message.split('::');
-			const errorDetails = errorInfo[errorInfo.length - 2].concat(
-				errorInfo[errorInfo.length - 1]
-			);
+			const errorDetails = errorInfo[errorInfo.length - 2].concat(errorInfo[errorInfo.length - 1]);
 
 			throw new BaseError(
 				`Error creating MultiLocation type:${errorDetails}`,

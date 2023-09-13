@@ -8,9 +8,7 @@
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Metadata, TypeRegistry } from '@polkadot/types';
 
-export function createApiWithAugmentations(
-	metadataHex: `0x${string}`
-): ApiPromise {
+export function createApiWithAugmentations(metadataHex: `0x${string}`): ApiPromise {
 	const registry = new TypeRegistry();
 	const metadata = new Metadata(registry, metadataHex);
 

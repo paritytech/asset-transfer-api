@@ -16,10 +16,7 @@ type DisabledOptions = {
 };
 
 const callError = (opt: string, chain: string) => {
-	throw new BaseError(
-		`${opt} is disbaled for ${chain}.`,
-		BaseErrorsEnum.DisabledOption
-	);
+	throw new BaseError(`${opt} is disbaled for ${chain}.`, BaseErrorsEnum.DisabledOption);
 };
 
 export const disabledOpts: DisabledOptions = {

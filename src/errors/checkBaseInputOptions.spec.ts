@@ -11,9 +11,7 @@ describe('checkBaseInputOptions', () => {
 		} as TransferArgsOpts<Format>;
 		const err = () => checkBaseInputOptions(opts, 'statemine');
 
-		expect(err).toThrow(
-			'PaysWithFeeOrigin is only compatible with the format type payload. Received: call'
-		);
+		expect(err).toThrow('PaysWithFeeOrigin is only compatible with the format type payload. Received: call');
 	});
 	it('Should error when a submittable is used with `PaysWithFeeOrigin`', () => {
 		const opts = {
@@ -22,9 +20,7 @@ describe('checkBaseInputOptions', () => {
 		} as TransferArgsOpts<Format>;
 		const err = () => checkBaseInputOptions(opts, 'statemine');
 
-		expect(err).toThrow(
-			'PaysWithFeeOrigin is only compatible with the format type payload. Received: submittable'
-		);
+		expect(err).toThrow('PaysWithFeeOrigin is only compatible with the format type payload. Received: submittable');
 	});
 	it('Should error when a payload format is inputted but there is no sendersAddr', () => {
 		const opts = {
@@ -33,9 +29,7 @@ describe('checkBaseInputOptions', () => {
 		} as TransferArgsOpts<Format>;
 		const err = () => checkBaseInputOptions(opts, 'statemine');
 
-		expect(err).toThrow(
-			"The 'sendersAddr' option must be present when constructing a 'payload' format."
-		);
+		expect(err).toThrow("The 'sendersAddr' option must be present when constructing a 'payload' format.");
 	});
 	it('Should error when a sendersAddr is an incorrect format', () => {
 		const opts = {
@@ -45,9 +39,7 @@ describe('checkBaseInputOptions', () => {
 		} as TransferArgsOpts<Format>;
 		const err = () => checkBaseInputOptions(opts, 'statemine');
 
-		expect(err).toThrow(
-			'The inputted sendersAddr is not valid. Invalid base58 character "0" (0x30) at index 0'
-		);
+		expect(err).toThrow('The inputted sendersAddr is not valid. Invalid base58 character "0" (0x30) at index 0');
 	});
 	it('Should not error when a sendersAddr is a correct format', () => {
 		const opts = {

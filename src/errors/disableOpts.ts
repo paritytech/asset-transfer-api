@@ -10,10 +10,7 @@ import type { Format, TransferArgsOpts } from '../types';
  * @param opts Options for `createTransferTransaction`
  * @param specName SpecName of the current chain
  */
-export const disableOpts = <T extends Format>(
-	opts: TransferArgsOpts<T>,
-	specName: string
-) => {
+export const disableOpts = <T extends Format>(opts: TransferArgsOpts<T>, specName: string) => {
 	const optKeys = Object.keys(opts) as MappedOpts[];
 	const chain = specName.toLowerCase();
 

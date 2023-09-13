@@ -52,8 +52,7 @@ export const adjustedMockRelayApi = {
 	},
 	tx: {
 		xcmPallet: {
-			limitedReserveTransferAssets:
-				mockRelayApi.tx['xcmPallet'].limitedReserveTransferAssets,
+			limitedReserveTransferAssets: mockRelayApi.tx['xcmPallet'].limitedReserveTransferAssets,
 			reserveTransferAssets: mockRelayApi.tx['xcmPallet'].reserveTransferAssets,
 			teleportAssets: mockRelayApi.tx['xcmPallet'].teleportAssets,
 			limitedTeleportAssets: mockRelayApi.tx['xcmPallet'].limitedTeleportAssets,

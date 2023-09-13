@@ -29,10 +29,7 @@ export const SYSTEM_PARACHAINS_NAMES = [
 	'encointer-parachain',
 	'collectives',
 ];
-export const POLKADOT_ASSET_HUB_SPEC_NAMES = [
-	'statemint',
-	'asset-hub-polkadot',
-];
+export const POLKADOT_ASSET_HUB_SPEC_NAMES = ['statemint', 'asset-hub-polkadot'];
 export const KUSAMA_ASSET_HUB_SPEC_NAMES = ['statemine', 'asset-hub-kusama'];
 export const WESTEND_ASSET_HUB_SPEC_NAMES = ['westmint', 'asset-hub-westend'];
 

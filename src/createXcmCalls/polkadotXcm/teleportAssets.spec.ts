@@ -56,9 +56,7 @@ describe('teleportAssets', () => {
 						isForeignAssetsTransfer,
 					}
 				);
-			}).rejects.toThrowError(
-				"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API"
-			);
+			}).rejects.toThrowError("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
 		});
 	});
 });

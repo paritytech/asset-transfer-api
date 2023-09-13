@@ -17,25 +17,20 @@ describe('ParaToSystem', () => {
 			const expectedRes = {
 				v2: {
 					parents: 0,
-					interior: mockParachainApi.registry.createType(
-						'InteriorMultiLocation',
-						{
-							X1: {
-								AccountId32: {
-									id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-									network: {
-										any: null,
-									},
+					interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+						X1: {
+							AccountId32: {
+								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								network: {
+									any: null,
 								},
 							},
-						}
-					),
+						},
+					}),
 				},
 			};
 
-			expect(beneficiary.toJSON()?.toString()).toStrictEqual(
-				expectedRes.toString()
-			);
+			expect(beneficiary.toJSON()?.toString()).toStrictEqual(expectedRes.toString());
 		});
 		it('Should work for V3', () => {
 			const beneficiary = ParaToSystem.createBeneficiary(
@@ -47,23 +42,18 @@ describe('ParaToSystem', () => {
 			const expectedRes = {
 				v3: {
 					parents: 0,
-					interior: mockParachainApi.registry.createType(
-						'InteriorMultiLocation',
-						{
-							X1: {
-								AccountId32: {
-									id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-									network: null,
-								},
+					interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+						X1: {
+							AccountId32: {
+								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								network: null,
 							},
-						}
-					),
+						},
+					}),
 				},
 			};
 
-			expect(beneficiary.toJSON()?.toString()).toStrictEqual(
-				expectedRes.toString()
-			);
+			expect(beneficiary.toJSON()?.toString()).toStrictEqual(expectedRes.toString());
 		});
 	});
 	describe('Destination', () => {
@@ -73,20 +63,15 @@ describe('ParaToSystem', () => {
 			const expectedRes = {
 				v2: {
 					parents: 1,
-					interior: mockParachainApi.registry.createType(
-						'InteriorMultiLocation',
-						{
-							X1: {
-								Parachain: 100,
-							},
-						}
-					),
+					interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+						X1: {
+							Parachain: 100,
+						},
+					}),
 				},
 			};
 
-			expect(destination.toJSON()?.toString()).toStrictEqual(
-				expectedRes.toString()
-			);
+			expect(destination.toJSON()?.toString()).toStrictEqual(expectedRes.toString());
 		});
 		it('Should work for V3', () => {
 			const destination = ParaToSystem.createDest(mockParachainApi, '100', 3);
@@ -94,20 +79,15 @@ describe('ParaToSystem', () => {
 			const expectedRes = {
 				v3: {
 					parents: 1,
-					interior: mockParachainApi.registry.createType(
-						'InteriorMultiLocation',
-						{
-							X1: {
-								Parachain: 100,
-							},
-						}
-					),
+					interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+						X1: {
+							Parachain: 100,
+						},
+					}),
 				},
 			};
 
-			expect(destination.toJSON()?.toString()).toStrictEqual(
-				expectedRes.toString()
-			);
+			expect(destination.toJSON()?.toString()).toStrictEqual(expectedRes.toString());
 		});
 	});
 	describe('Assets', () => {
@@ -119,10 +99,7 @@ describe('ParaToSystem', () => {
 				['1000000000000', '2000000000'],
 				2,
 				'moonriver',
-				[
-					'42259045809535163221576417993425387648',
-					'182365888117048807484804376330534607370',
-				],
+				['42259045809535163221576417993425387648', '182365888117048807484804376330534607370'],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -136,12 +113,9 @@ describe('ParaToSystem', () => {
 						id: {
 							concrete: {
 								parents: 1,
-								interior: mockParachainApi.registry.createType(
-									'InteriorMultiLocation',
-									{
-										Here: null,
-									}
-								),
+								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+									Here: null,
+								}),
 							},
 						},
 						fun: {
@@ -152,16 +126,9 @@ describe('ParaToSystem', () => {
 						id: {
 							concrete: {
 								parents: 1,
-								interior: mockParachainApi.registry.createType(
-									'InteriorMultiLocation',
-									{
-										X3: [
-											{ Parachain: 1000 },
-											{ PalletInstance: 50 },
-											{ GeneralIndex: 8 },
-										],
-									}
-								),
+								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
+								}),
 							},
 						},
 						fun: {
@@ -179,10 +146,7 @@ describe('ParaToSystem', () => {
 				['1000000', '20000000000'],
 				3,
 				'moonriver',
-				[
-					'182365888117048807484804376330534607370',
-					'311091173110107856861649819128533077277',
-				],
+				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -196,16 +160,9 @@ describe('ParaToSystem', () => {
 						id: {
 							concrete: {
 								parents: 1,
-								interior: mockParachainApi.registry.createType(
-									'InteriorMultiLocation',
-									{
-										X3: [
-											{ Parachain: 1000 },
-											{ PalletInstance: 50 },
-											{ GeneralIndex: 8 },
-										],
-									}
-								),
+								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
+								}),
 							},
 						},
 						fun: {
@@ -216,16 +173,9 @@ describe('ParaToSystem', () => {
 						id: {
 							concrete: {
 								parents: 1,
-								interior: mockParachainApi.registry.createType(
-									'InteriorMultiLocation',
-									{
-										X3: [
-											{ Parachain: 1000 },
-											{ PalletInstance: 50 },
-											{ GeneralIndex: 1984 },
-										],
-									}
-								),
+								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 1984 }],
+								}),
 							},
 						},
 						fun: {

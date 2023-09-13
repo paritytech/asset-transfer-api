@@ -40,12 +40,7 @@ export const transferMultiAsset = async (
 	xcmPallet: XcmPalletName,
 	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	const {
-		isLimited,
-		weightLimit,
-		isForeignAssetsTransfer,
-		isLiquidTokenTransfer,
-	} = opts;
+	const { isLimited, weightLimit, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
 	const ext = api.tx[xcmPallet].transferMultiasset;
 	const typeCreator = createXcmTypes[direction];
 	const destWeightLimit = typeCreator.createWeightLimit(api, {
@@ -57,25 +52,15 @@ export const transferMultiAsset = async (
 		const amount = amounts[0];
 		const assetId = assetIds[0];
 
-		const asset = await typeCreator.createXTokensAsset(
-			api,
-			amount,
-			xcmVersion,
-			specName,
-			assetId,
-			{ registry, isForeignAssetsTransfer, isLiquidTokenTransfer }
-		);
-		const beneficiary = typeCreator.createXTokensBeneficiary(
-			destChainId,
-			destAddr,
-			xcmVersion
-		);
+		const asset = await typeCreator.createXTokensAsset(api, amount, xcmVersion, specName, assetId, {
+			registry,
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
+		});
+		const beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);
 
 		return ext(asset, beneficiary, destWeightLimit);
 	}
 
-	throw new BaseError(
-		'Unable to create xTokens assets',
-		BaseErrorsEnum.InternalError
-	);
+	throw new BaseError('Unable to create xTokens assets', BaseErrorsEnum.InternalError);
 };

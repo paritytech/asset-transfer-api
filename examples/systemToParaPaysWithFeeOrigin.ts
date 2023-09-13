@@ -17,9 +17,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise(
-		'wss://kusama-asset-hub-rpc.polkadot.io'
-	);
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io');
 	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'payload'>;
@@ -44,13 +42,7 @@ const main = async () => {
 	}
 
 	const decoded = assetApi.decodeExtrinsic(callInfo.tx, 'call');
-	console.log(
-		`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(
-			JSON.parse(decoded),
-			null,
-			4
-		)}${RESET}`
-	);
+	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
 main().finally(() => process.exit());

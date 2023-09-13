@@ -1,12 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { hexToU8a, isHex } from '@polkadot/util';
-import {
-	base58Decode,
-	checkAddressChecksum,
-	encodeAddress,
-	isEthereumAddress,
-} from '@polkadot/util-crypto';
+import { base58Decode, checkAddressChecksum, encodeAddress, isEthereumAddress } from '@polkadot/util-crypto';
 import { defaults } from '@polkadot/util-crypto/address/defaults';
 
 /**
@@ -17,9 +12,7 @@ import { defaults } from '@polkadot/util-crypto/address/defaults';
  *
  * @param address potential ss58 or raw address
  */
-export const validateAddress = (
-	address: string
-): [boolean, string | undefined] => {
+export const validateAddress = (address: string): [boolean, string | undefined] => {
 	let u8Address;
 
 	if (isEthereumAddress(address)) {

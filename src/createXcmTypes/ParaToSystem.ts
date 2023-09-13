@@ -48,11 +48,7 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (
-		api: ApiPromise,
-		accountId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createBeneficiary: (api: ApiPromise, accountId: string, xcmVersion?: number): VersionedMultiLocation => {
 		if (xcmVersion == 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -145,11 +141,10 @@ export const ParaToSystem: ICreateXcmType = {
 				})
 			);
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets =
-				api.registry.createType(
-					'XcmV3MultiassetMultiAssets',
-					sortedAndDedupedMultiAssets
-				);
+			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
+				'XcmV3MultiassetMultiAssets',
+				sortedAndDedupedMultiAssets
+			);
 
 			return Promise.resolve(
 				api.registry.createType('XcmVersionedMultiAssets', {
@@ -166,10 +161,7 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (
-		api: ApiPromise,
-		opts: CreateWeightLimitOpts
-	): WeightLimitV2 => {
+	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
 		const limit: IWeightLimit =
 			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 				? {
@@ -193,26 +185,9 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: async (
-		api: ApiPromise,
-		opts: CreateFeeAssetItemOpts
-	): Promise<u32> => {
-		const {
-			registry,
-			paysWithFeeDest,
-			specName,
-			assetIds,
-			amounts,
-			xcmVersion,
-		} = opts;
-		if (
-			xcmVersion &&
-			xcmVersion === 3 &&
-			specName &&
-			amounts &&
-			assetIds &&
-			paysWithFeeDest
-		) {
+	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
+		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion } = opts;
+		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createParaToSystemMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
@@ -236,20 +211,13 @@ export const ParaToSystem: ICreateXcmType = {
 
 		return api.registry.createType('u32', 0);
 	},
-	createXTokensBeneficiary: (
-		destChainId: string,
-		accountId: string,
-		xcmVersion: number
-	): XCMDestBenificiary => {
+	createXTokensBeneficiary: (destChainId: string, accountId: string, xcmVersion: number): XCMDestBenificiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
 					parents: 1,
 					interior: {
-						X2: [
-							{ Parachain: destChainId },
-							{ AccountId32: { id: accountId } },
-						],
+						X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
 					},
 				},
 			};
@@ -272,14 +240,7 @@ export const ParaToSystem: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): Promise<VersionedMultiAssets> => {
-		return await createXTokensMultiAssets(
-			api,
-			amounts,
-			xcmVersion,
-			specName,
-			assets,
-			opts
-		);
+		return await createXTokensMultiAssets(api, amounts, xcmVersion, specName, assets, opts);
 	},
 	createXTokensAsset: async (
 		api: ApiPromise,
@@ -315,23 +276,16 @@ export const ParaToSystem: ICreateXcmType = {
 
 			for (let j = 0; j < chainInfo.data.length; j++) {
 				const xcAssetData = chainInfo.data[j];
-				if (
-					typeof xcAssetData.asset === 'string' &&
-					xcAssetData.asset === assetId
-				) {
+				if (typeof xcAssetData.asset === 'string' && xcAssetData.asset === assetId) {
 					xcAsset = xcAssetData;
 					break;
 				}
 			}
 		}
 
-		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
-			.xcmV1MultiLocation.v1;
+		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys).xcmV1MultiLocation.v1;
 
-		const concreteMultiLocation = api.registry.createType(
-			'MultiLocation',
-			xcAssetMultiLocation
-		);
+		const concreteMultiLocation = api.registry.createType('MultiLocation', xcAssetMultiLocation);
 
 		const multiAsset = {
 			id: {
@@ -353,17 +307,11 @@ export const ParaToSystem: ICreateXcmType = {
 		}
 	},
 
-	createXTokensFeeAssetItem: (
-		api: ApiPromise,
-		opts: CreateFeeAssetItemOpts
-	): XcmMultiLocation => {
+	createXTokensFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts): XcmMultiLocation => {
 		const { paysWithFeeDest, xcmVersion } = opts;
 
 		if (xcmVersion && paysWithFeeDest) {
-			const paysWithFeeMultiLocation = api.registry.createType(
-				'MultiLocation',
-				JSON.parse(paysWithFeeDest)
-			);
+			const paysWithFeeMultiLocation = api.registry.createType('MultiLocation', JSON.parse(paysWithFeeDest));
 
 			if (xcmVersion === 2) {
 				return {
@@ -384,10 +332,7 @@ export const ParaToSystem: ICreateXcmType = {
 			};
 		}
 
-		throw new BaseError(
-			'failed to create xTokens fee multilocation',
-			BaseErrorsEnum.InternalError
-		);
+		throw new BaseError('failed to create xTokens fee multilocation', BaseErrorsEnum.InternalError);
 	},
 };
 
@@ -430,22 +375,15 @@ const createXTokensMultiAssets = async (
 
 			for (let j = 0; j < chainInfo.data.length; j++) {
 				const xcAssetData = chainInfo.data[j];
-				if (
-					typeof xcAssetData.asset === 'string' &&
-					xcAssetData.asset === assetId
-				) {
+				if (typeof xcAssetData.asset === 'string' && xcAssetData.asset === assetId) {
 					xcAsset = xcAssetData;
 					break;
 				}
 			}
 		}
-		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
-			.xcmV1MultiLocation.v1;
+		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys).xcmV1MultiLocation.v1;
 
-		const concreteMultiLocation = api.registry.createType(
-			'MultiLocation',
-			xcAssetMultiLocation
-		);
+		const concreteMultiLocation = api.registry.createType('MultiLocation', xcAssetMultiLocation);
 
 		const multiAsset = {
 			id: {
@@ -460,9 +398,7 @@ const createXTokensMultiAssets = async (
 	}
 
 	multiAssets = sortMultiAssetsAscending(multiAssets) as XcmMultiAsset[];
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
-		multiAssets
-	) as XcmMultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as XcmMultiAsset[];
 	if (xcmVersion === 2) {
 		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
 			'XcmV2MultiassetMultiAssets',
@@ -540,13 +476,7 @@ const createParaToSystemMultiAssets = async (
 			const isValidNumber = validateNumber(assetId);
 
 			if (!isValidNumber && !isPrimaryParachainNativeAsset) {
-				assetId = await getAssetId(
-					api,
-					registry,
-					assetId,
-					specName,
-					isForeignAssetsTransfer
-				);
+				assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
 			}
 
 			// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
@@ -564,29 +494,18 @@ const createParaToSystemMultiAssets = async (
 
 				for (let j = 0; j < chainInfo.data.length; j++) {
 					const xcAssetData = chainInfo.data[j];
-					if (
-						typeof xcAssetData.asset === 'string' &&
-						xcAssetData.asset === assetId
-					) {
+					if (typeof xcAssetData.asset === 'string' && xcAssetData.asset === assetId) {
 						xcAsset = xcAssetData;
 						break;
 					}
 				}
 			}
-			const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
-				.xcmV1MultiLocation.v1;
+			const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys).xcmV1MultiLocation.v1;
 
 			if (isForeignAssetsTransfer) {
-				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(
-					api,
-					assetId,
-					palletId
-				);
+				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(api, assetId, palletId);
 			} else {
-				concreteMultiLocation = api.registry.createType(
-					'MultiLocation',
-					xcAssetMultiLocation
-				);
+				concreteMultiLocation = api.registry.createType('MultiLocation', xcAssetMultiLocation);
 			}
 
 			const multiAsset = {
@@ -603,9 +522,7 @@ const createParaToSystemMultiAssets = async (
 
 	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
-		multiAssets
-	) as MultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as MultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

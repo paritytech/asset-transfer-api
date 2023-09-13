@@ -21,10 +21,7 @@ export interface ApiInfo {
  * @param wsUrl WebSocket Url to connect to.
  * @param opts ApiOptions
  */
-export const constructApiPromise = async (
-	wsUrl: string,
-	opts: ApiOptions = {}
-): Promise<ApiInfo> => {
+export const constructApiPromise = async (wsUrl: string, opts: ApiOptions = {}): Promise<ApiInfo> => {
 	const api = await ApiPromise.create({
 		provider: new WsProvider(wsUrl),
 		noInitWarn: true,

@@ -7,9 +7,7 @@ import { MultiAsset, XcmMultiAsset } from '../../types';
  *
  * @param multiAssets MulitAsset[]
  */
-export const dedupeMultiAssets = (
-	multiAssets: MultiAsset[] | XcmMultiAsset[]
-): MultiAsset[] | XcmMultiAsset[] => {
+export const dedupeMultiAssets = (multiAssets: MultiAsset[] | XcmMultiAsset[]): MultiAsset[] | XcmMultiAsset[] => {
 	const dedupedAssets = [];
 
 	for (let i = 0; i < multiAssets.length; i++) {

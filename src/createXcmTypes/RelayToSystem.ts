@@ -22,11 +22,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (
-		api: ApiPromise,
-		accountId: string,
-		xcmVersion: number
-	): VersionedMultiLocation => {
+	createBeneficiary: (api: ApiPromise, accountId: string, xcmVersion: number): VersionedMultiLocation => {
 		if (xcmVersion === 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -63,11 +59,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (
-		api: ApiPromise,
-		destId: string,
-		xcmVersion: number
-	): VersionedMultiLocation => {
+	createDest: (api: ApiPromise, destId: string, xcmVersion: number): VersionedMultiLocation => {
 		if (xcmVersion === 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -126,10 +118,7 @@ export const RelayToSystem: ICreateXcmType = {
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
-			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
-				'XcmV2MultiassetMultiAssets',
-				multiAssets
-			);
+			const multiAssetsType: MultiAssetsV2 = api.registry.createType('XcmV2MultiassetMultiAssets', multiAssets);
 
 			return Promise.resolve(
 				api.registry.createType('XcmVersionedMultiAssets', {
@@ -137,8 +126,10 @@ export const RelayToSystem: ICreateXcmType = {
 				})
 			);
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets =
-				api.registry.createType('XcmV3MultiassetMultiAssets', multiAssets);
+			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
+				'XcmV3MultiassetMultiAssets',
+				multiAssets
+			);
 
 			return Promise.resolve(
 				api.registry.createType('XcmVersionedMultiAssets', {
@@ -155,10 +146,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (
-		api: ApiPromise,
-		opts: CreateWeightLimitOpts
-	): WeightLimitV2 => {
+	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
 		const limit: IWeightLimit =
 			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 				? {

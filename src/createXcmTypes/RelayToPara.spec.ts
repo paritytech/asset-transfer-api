@@ -33,11 +33,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V2 Ethereum address', () => {
-			const beneficiary = RelayToPara.createBeneficiary(
-				mockRelayApi,
-				'0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-				2
-			);
+			const beneficiary = RelayToPara.createBeneficiary(mockRelayApi, '0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 2);
 
 			const expectedRes = {
 				v2: {
@@ -81,11 +77,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 Ethereum address', () => {
-			const beneficiary = RelayToPara.createBeneficiary(
-				mockRelayApi,
-				'0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-				3
-			);
+			const beneficiary = RelayToPara.createBeneficiary(mockRelayApi, '0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
 
 			const expectedRes = {
 				v3: {
@@ -144,18 +136,11 @@ describe('RelayToPara XcmVersioned Generation', () => {
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
-			const assets = await RelayToPara.createAssets(
-				mockRelayApi,
-				['100'],
-				2,
-				'',
-				[],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await RelayToPara.createAssets(mockRelayApi, ['100'], 2, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v2: [
@@ -178,18 +163,11 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await RelayToPara.createAssets(
-				mockRelayApi,
-				['100'],
-				3,
-				'',
-				[],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await RelayToPara.createAssets(mockRelayApi, ['100'], 3, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v3: [

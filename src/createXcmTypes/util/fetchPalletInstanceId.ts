@@ -10,25 +10,15 @@ import { BaseError, BaseErrorsEnum } from '../../errors';
  * @param api ApiPromise.
  * @param isLiquidToken Boolean to determine whether or not to fetch the PoolAssets id.
  */
-export const fetchPalletInstanceId = (
-	api: ApiPromise,
-	isLiquidToken: boolean,
-	isForeignAsset: boolean
-): string => {
+export const fetchPalletInstanceId = (api: ApiPromise, isLiquidToken: boolean, isForeignAsset: boolean): string => {
 	if (isLiquidToken && isForeignAsset) {
 		throw new BaseError(
 			"Can't find the appropriate pallet when both liquid tokens and foreign assets",
 			BaseErrorsEnum.InternalError
 		);
 	}
-	const palletName = isLiquidToken
-		? 'PoolAssets'
-		: isForeignAsset
-		? 'ForeignAssets'
-		: 'Assets';
-	const pallet = api.registry.metadata.pallets.filter(
-		(pallet) => pallet.name.toString() === palletName
-	);
+	const palletName = isLiquidToken ? 'PoolAssets' : isForeignAsset ? 'ForeignAssets' : 'Assets';
+	const pallet = api.registry.metadata.pallets.filter((pallet) => pallet.name.toString() === palletName);
 
 	if (pallet.length === 0) {
 		throw new BaseError(

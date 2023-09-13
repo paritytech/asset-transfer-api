@@ -5,22 +5,19 @@ import { transferKeepAlive } from './transferKeepAlive';
 
 describe('transfer', () => {
 	it('Should construct a valid foreignAssets transferKeepAlive extrinsic', () => {
-		const foreignAssetMultiLocation = mockSystemApi.createType(
-			'MultiLocation',
-			{
-				parents: '1',
-				interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
-					X2: [
-						{
-							Parachain: '2125',
-						},
-						{
-							GeneralIndex: '0',
-						},
-					],
-				}),
-			}
-		);
+		const foreignAssetMultiLocation = mockSystemApi.createType('MultiLocation', {
+			parents: '1',
+			interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+				X2: [
+					{
+						Parachain: '2125',
+					},
+					{
+						GeneralIndex: '0',
+					},
+				],
+			}),
+		});
 
 		const res = transferKeepAlive(
 			mockSystemApi,
