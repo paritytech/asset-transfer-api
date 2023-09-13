@@ -6,6 +6,7 @@ import { getAssetId } from '../createXcmTypes/util/getAssetId';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
 import { MultiAsset } from '../types';
+import { validateNumber } from '../validate/validateNumber';
 
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index
@@ -41,12 +42,11 @@ export const getFeeAssetItemIndex = async (
 					break;
 				}
 			} else {
-				const parsedAssetIdAsNumber = Number.parseInt(paysWithFeeDest);
-				const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+				const isValidNumber = validateNumber(paysWithFeeDest);
 
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
-				if (isNotANumber) {
+				if (!isValidNumber) {
 					const paysWithFeeDestGeneralIndex = await getAssetId(
 						api,
 						registry,

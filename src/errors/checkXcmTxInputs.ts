@@ -400,7 +400,7 @@ export const checkLiquidTokenValidity = async (
 			);
 
 			const poolAssetInfo = poolAsset[1].unwrap();
-			if (poolAssetInfo.lpToken.toNumber() === parseInt(assetId)) {
+			if (poolAssetInfo.lpToken.toString() === assetId) {
 				const asset: {
 					lpToken: string;
 					pairInfo: string;

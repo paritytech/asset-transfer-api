@@ -473,10 +473,9 @@ const createParaToSystemMultiAssets = async (
 			const amount = amounts[i];
 			let assetId = assets[i];
 
-			const parsedAssetIdAsNumber = Number.parseInt(assetId);
-			const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+			const isValidNumber = validateNumber(assetId);
 
-			if (isNotANumber && !isPrimaryParachainNativeAsset) {
+			if (!isValidNumber && !isPrimaryParachainNativeAsset) {
 				assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
 			}
 

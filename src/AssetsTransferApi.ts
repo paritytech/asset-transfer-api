@@ -112,7 +112,7 @@ export class AssetsTransferApi {
 		 * Ensure that the options passed in are compatible with eachother.
 		 * It will throw an error if any are incorrect.
 		 */
-		checkBaseInputOptions(opts);
+		checkBaseInputOptions(opts, this._specName);
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
@@ -146,13 +146,13 @@ export class AssetsTransferApi {
 		if (isLocalSystemTx || isLocalRelayTx) {
 			let assetId = assetIds[0];
 			const amount = amounts[0];
-			const localAssetIdIsNotANumber = Number.isNaN(parseInt(assetId));
+			const isValidNumber = validateNumber(assetId);
 			let isNativeRelayChainAsset = false;
 			if (assetIds.length === 0 || nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()) {
 				isNativeRelayChainAsset = true;
 			}
 
-			if (xcmDirection === Direction.SystemToSystem && localAssetIdIsNotANumber && !isNativeRelayChainAsset) {
+			if (xcmDirection === Direction.SystemToSystem && !isValidNumber && !isNativeRelayChainAsset) {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found

@@ -55,6 +55,10 @@ export enum BaseErrorsEnum {
 	 * The inputted address is invalid.
 	 */
 	InvalidAddress = 'InvalidAddress',
+	/**
+	 * The following option is disabled given the inputs.
+	 */
+	DisabledOption = 'DisabledOption',
 }
 
 export class BaseError extends Error {
