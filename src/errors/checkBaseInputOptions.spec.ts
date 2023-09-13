@@ -1,3 +1,5 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
 import type { Format, TransferArgsOpts } from '../types';
 import { checkBaseInputOptions } from './checkBaseInputOptions';
 
@@ -7,7 +9,7 @@ describe('checkBaseInputOptions', () => {
 			format: 'call',
 			paysWithFeeOrigin: '1984',
 		} as TransferArgsOpts<Format>;
-		const err = () => checkBaseInputOptions(opts);
+		const err = () => checkBaseInputOptions(opts, 'statemine');
 
 		expect(err).toThrow(
 			'PaysWithFeeOrigin is only compatible with the format type payload. Received: call'
@@ -18,7 +20,7 @@ describe('checkBaseInputOptions', () => {
 			format: 'submittable',
 			paysWithFeeOrigin: '1984',
 		} as TransferArgsOpts<Format>;
-		const err = () => checkBaseInputOptions(opts);
+		const err = () => checkBaseInputOptions(opts, 'statemine');
 
 		expect(err).toThrow(
 			'PaysWithFeeOrigin is only compatible with the format type payload. Received: submittable'
@@ -29,7 +31,7 @@ describe('checkBaseInputOptions', () => {
 			format: 'payload',
 			paysWithFeeOrigin: '1984',
 		} as TransferArgsOpts<Format>;
-		const err = () => checkBaseInputOptions(opts);
+		const err = () => checkBaseInputOptions(opts, 'statemine');
 
 		expect(err).toThrow(
 			"The 'sendersAddr' option must be present when constructing a 'payload' format."
@@ -41,7 +43,7 @@ describe('checkBaseInputOptions', () => {
 			paysWithFeeOrigin: '1984',
 			sendersAddr: '0x000',
 		} as TransferArgsOpts<Format>;
-		const err = () => checkBaseInputOptions(opts);
+		const err = () => checkBaseInputOptions(opts, 'statemine');
 
 		expect(err).toThrow(
 			'The inputted sendersAddr is not valid. Invalid base58 character "0" (0x30) at index 0'
@@ -53,7 +55,7 @@ describe('checkBaseInputOptions', () => {
 			paysWithFeeOrigin: '1984',
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 		} as TransferArgsOpts<Format>;
-		const res = () => checkBaseInputOptions(opts);
+		const res = () => checkBaseInputOptions(opts, 'statemine');
 
 		expect(res).not.toThrow();
 	});
