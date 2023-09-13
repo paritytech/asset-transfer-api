@@ -2,7 +2,6 @@
 
 import { disabledOpts } from '../config/disabledOpts';
 import type { Format, TransferArgsOpts } from '../types';
-import { BaseError, BaseErrorsEnum } from './BaseError';
 
 /**
  * This checks specific options to ensure they are disabled when met in certain conditions.
@@ -16,11 +15,13 @@ export const disableOpts = <T extends Format>(
 ) => {
 	if (opts.paysWithFeeOrigin) {
 		const { paysWithFeeOrigin } = disabledOpts;
-		if (paysWithFeeOrigin.chains.includes(specName.toLowerCase())) {
-			throw new BaseError(
-				`paysWithFeeOrigin is disbaled for ${specName.toLowerCase()}.`,
-				BaseErrorsEnum.DisabledOption
-			);
+		const chain = specName.toLowerCase();
+		if (paysWithFeeOrigin.chains.includes(chain)) {
+			paysWithFeeOrigin.error(`paysWithFeeOrigin`, chain);
+		}
+
+		if (paysWithFeeOrigin.chains.includes('*')) {
+			paysWithFeeOrigin.error(`paysWithFeeOrigin`, `all chains`);
 		}
 	}
 };
