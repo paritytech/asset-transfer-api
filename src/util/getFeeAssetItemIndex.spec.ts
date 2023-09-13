@@ -300,7 +300,7 @@ describe('getFeeAssetItemIndex', () => {
 	it('Should correctly select and return the index of the correct multiassets when given a foreign assets multilocation', async () => {
 		const tests: Test[] = [
 			[
-				`{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}`,
+				'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
 				'statemine',
 				[
 					{

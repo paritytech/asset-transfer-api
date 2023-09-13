@@ -10,7 +10,7 @@ describe('checkBaseInputTypes', () => {
 				['10000000000']
 			);
 
-		expect(err).toThrow(`'destChainId' must be a string. Received: number`);
+		expect(err).toThrow("'destChainId' must be a string. Received: number");
 	});
 	it('Should error when destAddr is the wrong type', () => {
 		const err = () =>
@@ -21,7 +21,7 @@ describe('checkBaseInputTypes', () => {
 				['10000000000']
 			);
 
-		expect(err).toThrow(`'destAddr' must be a string. Received: number`);
+		expect(err).toThrow("'destAddr' must be a string. Received: number");
 	});
 	it('Should error when assetIds is the wrong type', () => {
 		const err = () =>
@@ -32,7 +32,7 @@ describe('checkBaseInputTypes', () => {
 				['10000000000']
 			);
 
-		expect(err).toThrow(`'assetIds' must be a array. Received: string`);
+		expect(err).toThrow("'assetIds' must be a array. Received: string");
 	});
 	it('Should error when assetIds has the wrong types in the array', () => {
 		const err = () =>
@@ -44,7 +44,7 @@ describe('checkBaseInputTypes', () => {
 			);
 
 		expect(err).toThrow(
-			`All inputs in the 'assetIds' array must be strings: Received: a number at index 0`
+			"All inputs in the 'assetIds' array must be strings: Received: a number at index 0"
 		);
 	});
 	it('Should error when amounts is the wrong type', () => {
@@ -56,7 +56,7 @@ describe('checkBaseInputTypes', () => {
 				10000000000 as unknown as string[]
 			);
 
-		expect(err).toThrow(`'amounts' must be a array. Received: number`);
+		expect(err).toThrow("'amounts' must be a array. Received: number");
 	});
 	it('Should error when amounts has the wrong types in the array', () => {
 		const err = () =>
@@ -68,7 +68,7 @@ describe('checkBaseInputTypes', () => {
 			);
 
 		expect(err).toThrow(
-			`All inputs in the 'amounts' array must be strings: Received: a number at index 0`
+			"All inputs in the 'amounts' array must be strings: Received: a number at index 0"
 		);
 	});
 });

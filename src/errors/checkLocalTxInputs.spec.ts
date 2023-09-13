@@ -139,7 +139,7 @@ describe('checkLocalTxInput', () => {
 	it('Should correctly throw an error when given an invalid multilocation', async () => {
 		const incorrectMultiLocationStr =
 			'{"parents":"1","interior":{"X2": [{"Parachain":"2,125"}, {"GeneralIndex": "0"}]}}';
-		const expectedError = `Error creating MultiLocation type: Enum(Parachain) String should not contain decimal points or scientific notation`;
+		const expectedError = "Error creating MultiLocation type: Enum(Parachain) String should not contain decimal points or scientific notation";
 
 		await expect(async () => {
 			await checkLocalTxInput(

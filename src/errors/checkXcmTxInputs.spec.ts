@@ -115,7 +115,7 @@ describe('checkAssetIds', () => {
 				'Statemine',
 				[' ', 'KSM'],
 				Direction.SystemToRelay,
-				`assetId cannot be blank spaces.`,
+				"assetId cannot be blank spaces.",
 			],
 		];
 
@@ -128,19 +128,19 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToSystem,
-				`(RelayToSystem) asset 1 is not polkadot's native asset. Expected DOT`,
+				"(RelayToSystem) asset 1 is not polkadot's native asset. Expected DOT",
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToSystem,
-				`(RelayToSystem) asset DOT is not kusama's native asset. Expected KSM`,
+				"(RelayToSystem) asset DOT is not kusama's native asset. Expected KSM",
 			],
 			[
 				'Westend',
 				['WND', '100000'],
 				Direction.RelayToSystem,
-				`(RelayToSystem) asset 100000 is not westend's native asset. Expected WND`,
+				"(RelayToSystem) asset 100000 is not westend's native asset. Expected WND",
 			],
 		];
 
@@ -153,13 +153,13 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToPara,
-				`(RelayToPara) asset 1 is not polkadot's native asset. Expected DOT`,
+				"(RelayToPara) asset 1 is not polkadot's native asset. Expected DOT",
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToPara,
-				`(RelayToPara) asset DOT is not kusama's native asset. Expected KSM`,
+				"(RelayToPara) asset DOT is not kusama's native asset. Expected KSM",
 			],
 		];
 
@@ -172,19 +172,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['0'],
 				Direction.SystemToRelay,
-				`(SystemToRelay) assetId 0 not native to polkadot`,
+				"(SystemToRelay) assetId 0 not native to polkadot",
 			],
 			[
 				'Statemine',
 				['MOVR', 'KSM'],
 				Direction.SystemToRelay,
-				`(SystemToRelay) assetId MOVR not native to kusama`,
+				"(SystemToRelay) assetId MOVR not native to kusama",
 			],
 			[
 				'Westmint',
 				['WND', '250'],
 				Direction.SystemToRelay,
-				`(SystemToRelay) assetId 250 not native to westend`,
+				"(SystemToRelay) assetId 250 not native to westend",
 			],
 		];
 
@@ -197,7 +197,7 @@ describe('checkAssetIds', () => {
 				'Statemine',
 				['KSM', '8', 'stateMineDoge'],
 				Direction.SystemToPara,
-				`(SystemToPara) assetId stateMineDoge not found for system parachain Statemine`,
+				"(SystemToPara) assetId stateMineDoge not found for system parachain Statemine",
 			],
 		];
 
@@ -227,19 +227,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToPara,
-				`(SystemToPara) assetId xcDOT not found for system parachain Statemint`,
+				"(SystemToPara) assetId xcDOT not found for system parachain Statemint",
 			],
 			[
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToPara,
-				`(SystemToPara) assetId xcMOVR not found for system parachain Statemine`,
+				"(SystemToPara) assetId xcMOVR not found for system parachain Statemine",
 			],
 			[
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToPara,
-				`(SystemToPara) assetId Test Westend not found for system parachain Westmint`,
+				"(SystemToPara) assetId Test Westend not found for system parachain Westmint",
 			],
 		];
 
@@ -269,7 +269,7 @@ describe('checkAssetIds', () => {
 				'Statemine',
 				['USDT'],
 				Direction.SystemToPara,
-				`Multiple assets found with symbol USDT`,
+				"Multiple assets found with symbol USDT",
 			],
 		];
 
@@ -299,19 +299,19 @@ describe('checkAssetIds', () => {
 				'Statemint',
 				['1337', 'xcDOT'],
 				Direction.SystemToSystem,
-				`(SystemToSystem) assetId xcDOT not found for system parachain Statemint`,
+				"(SystemToSystem) assetId xcDOT not found for system parachain Statemint",
 			],
 			[
 				'Statemine',
 				['KSM', 'xcMOVR'],
 				Direction.SystemToSystem,
-				`(SystemToSystem) assetId xcMOVR not found for system parachain Statemine`,
+				"(SystemToSystem) assetId xcMOVR not found for system parachain Statemine",
 			],
 			[
 				'Westmint',
 				['WND', 'Test Westend'],
 				Direction.SystemToSystem,
-				`(SystemToSystem) assetId Test Westend not found for system parachain Westmint`,
+				"(SystemToSystem) assetId Test Westend not found for system parachain Westmint",
 			],
 		];
 
@@ -340,7 +340,7 @@ describe('checkAssetIds', () => {
 				'Statemine',
 				['{"parents":"2","interior":{"X1": {"Parachain":"2125000"}}}'],
 				Direction.SystemToPara,
-				`(SystemToPara) assetId {"parents":"2","interior":{"X1": {"Parachain":"2125000"}}} not found for system parachain Statemine`,
+				'(SystemToPara) assetId {"parents":"2","interior":{"X1": {"Parachain":"2125000"}}} not found for system parachain Statemine',
 			],
 		];
 
@@ -369,7 +369,7 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				['311091173110107856861649819128533077277', '200'],
 				Direction.ParaToSystem,
-				`(ParaToSystem) integer assetId 200 not found in moonriver`,
+				"(ParaToSystem) integer assetId 200 not found in moonriver",
 			],
 		];
 
@@ -397,13 +397,13 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				['xcKSM', 'USDT'],
 				Direction.ParaToSystem,
-				`(ParaToSystem) symbol assetId USDT not found for parachain moonriver`,
+				"(ParaToSystem) symbol assetId USDT not found for parachain moonriver",
 			],
 			[
 				'moonriver',
 				['xcUSDT', 'ASTR'],
 				Direction.ParaToSystem,
-				`(ParaToSystem) symbol assetId ASTR not found for parachain moonriver`,
+				"(ParaToSystem) symbol assetId ASTR not found for parachain moonriver",
 			],
 		];
 
@@ -667,7 +667,7 @@ describe('checkAssetIdsHaveNoDuplicates', () => {
 		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
 
 		expect(err).toThrow(
-			`AssetIds must be unique. Found duplicate assetId {"parents": "1", "interior":{"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}`
+			'AssetIds must be unique. Found duplicate assetId {"parents": "1", "interior":{"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}'
 		);
 	});
 });
