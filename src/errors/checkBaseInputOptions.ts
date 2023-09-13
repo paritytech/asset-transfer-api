@@ -21,7 +21,7 @@ export const checkBaseInputOptions = (opts: TransferArgsOpts<Format>) => {
 
 	if (format === 'payload' && !sendersAddr) {
 		throw new BaseError(
-			`The 'sendersAddr' option must be present when constructing a 'payload' format.`,
+			"The 'sendersAddr' option must be present when constructing a 'payload' format.",
 			BaseErrorsEnum.InvalidInput
 		);
 	}

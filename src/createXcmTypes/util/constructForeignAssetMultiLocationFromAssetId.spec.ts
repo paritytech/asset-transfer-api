@@ -5,7 +5,7 @@ import { constructForeignAssetMultiLocationFromAssetId } from './constructForeig
 
 describe('constructForeignAssetMultiLocationFromAssetId', () => {
 	it('Should correctly construct a multilocation given a multilocation assetId', () => {
-		const assetId = `{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}`;
+		const assetId = '{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}';
 		const foreignAssetsPalletInstance = '53';
 
 		const expectedMultiLocation = mockSystemApi.registry.createType(

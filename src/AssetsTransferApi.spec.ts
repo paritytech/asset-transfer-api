@@ -261,7 +261,7 @@ describe('AssetTransferAPI', () => {
 					systemAssetsApi['fetchCallType'](
 						'1000',
 						'1001',
-						[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+						['{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}'],
 						Direction.SystemToSystem,
 						AssetType.Foreign,
 						true,
@@ -279,7 +279,7 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = systemAssetsApi['fetchCallType'](
 					'1000',
 					'2023',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					['{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}'],
 					Direction.SystemToPara,
 					AssetType.Foreign,
 					true,
@@ -295,7 +295,7 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = systemAssetsApi['fetchCallType'](
 					'1000',
 					'2125',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					['{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}'],
 					Direction.SystemToPara,
 					AssetType.Foreign,
 					true,
@@ -327,7 +327,7 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'1000',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					['{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}'],
 					Direction.ParaToSystem,
 					AssetType.Foreign,
 					true,
@@ -355,7 +355,7 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'1000',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2125"}}}`],
+					['{"parents": "1", "interior": { "X1": {"Parachain": "2125"}}}'],
 					Direction.ParaToSystem,
 					AssetType.Foreign,
 					true,
@@ -371,7 +371,7 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'2125',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					['{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}'],
 					Direction.ParaToPara,
 					AssetType.Foreign,
 					true,

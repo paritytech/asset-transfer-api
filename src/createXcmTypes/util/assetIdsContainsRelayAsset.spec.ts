@@ -24,7 +24,7 @@ describe('assetIdsContainsRelayAsset', () => {
 		const registry = new Registry('asset-hub-polkadot', {});
 		const assetIds = [
 			`{"parents": 1, "interior": {"Here": ''}}`,
-			`{"parents": 1, interior: {"X1": {"Parachain": "2023"}}}`,
+			'{"parents": 1, interior: {"X1": {"Parachain": "2023"}}}',
 		];
 
 		const result = assetIdsContainRelayAsset(assetIds, registry);
@@ -34,7 +34,7 @@ describe('assetIdsContainsRelayAsset', () => {
 	it('Should return false when assetIds does not contain the relay assets multilocation', () => {
 		const registry = new Registry('statemine', {});
 		const assetIds = [
-			`{"parents": 1, interior: {"X1": {"Parachain": "2023"}}}`,
+			'{"parents": 1, interior: {"X1": {"Parachain": "2023"}}}',
 		];
 
 		const result = assetIdsContainRelayAsset(assetIds, registry);

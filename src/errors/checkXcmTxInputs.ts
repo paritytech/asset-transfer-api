@@ -137,7 +137,7 @@ export const checkParaToSystemIsNonForeignAssetXTokensTx = (
 ) => {
 	if (xcmPallet === XcmPalletName.xTokens && isForeignAssetsTransfer) {
 		throw new BaseError(
-			`(ParaToSystem) xTokens pallet does not support foreign asset transfers`,
+			"(ParaToSystem) xTokens pallet does not support foreign asset transfers",
 			BaseErrorsEnum.InvalidPallet
 		);
 	}
@@ -153,7 +153,7 @@ const checkIfAssetIdIsBlankSpace = (assetId: string) => {
 	// check if assetId is a blank space, if it is, throw an error
 	if (assetId.length > 0 && assetId.trim() === '') {
 		throw new BaseError(
-			`assetId cannot be blank spaces.`,
+			"assetId cannot be blank spaces.",
 			BaseErrorsEnum.InvalidInput
 		);
 	}
@@ -412,7 +412,7 @@ export const checkLiquidTokenValidity = async (
 	const isValidInt = validateNumber(assetId);
 	if (!isValidInt) {
 		throw new BaseError(
-			`Liquid Tokens must be valid Integers`,
+			"Liquid Tokens must be valid Integers",
 			BaseErrorsEnum.InvalidAsset
 		);
 	}
@@ -465,7 +465,7 @@ export const checkLiquidTokenValidity = async (
 
 	// liquid token not found in cache, registry or chain state
 	throw new BaseError(
-		`No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.`,
+		'No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.',
 		BaseErrorsEnum.InvalidAsset
 	);
 };
@@ -895,7 +895,7 @@ export const checkAssetIdsHaveNoDuplicates = (assetIds: string[]) => {
 		if (duplicateAssetIds.length > 0) {
 			if (assetIds[0] === '') {
 				throw new BaseError(
-					`AssetIds must be unique. Found duplicate native relay assets as empty strings`,
+					"AssetIds must be unique. Found duplicate native relay assets as empty strings",
 					BaseErrorsEnum.InvalidInput
 				);
 			}
