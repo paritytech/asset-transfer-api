@@ -1,5 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import type { MappedOpts } from '../config/disabledOpts';
 import { disabledOpts } from '../config/disabledOpts';
 import type { Format, TransferArgsOpts } from '../types';
 
@@ -13,15 +14,18 @@ export const disableOpts = <T extends Format>(
 	opts: TransferArgsOpts<T>,
 	specName: string
 ) => {
-	if (opts.paysWithFeeOrigin) {
-		const { paysWithFeeOrigin } = disabledOpts;
-		const chain = specName.toLowerCase();
-		if (paysWithFeeOrigin.chains.includes(chain)) {
-			paysWithFeeOrigin.error(`paysWithFeeOrigin`, chain);
-		}
+	const optKeys = Object.keys(opts) as MappedOpts[];
+	const chain = specName.toLowerCase();
 
-		if (paysWithFeeOrigin.chains.includes('*')) {
-			paysWithFeeOrigin.error(`paysWithFeeOrigin`, `all chains`);
+	for (const key of optKeys) {
+		const disabledKeyInfo = disabledOpts[key];
+		if (opts[key] && disabledKeyInfo.disabled) {
+			if (disabledKeyInfo.chains.includes('*')) {
+				disabledKeyInfo.error(key, `all chains`);
+			}
+			if (disabledKeyInfo.chains.includes(chain)) {
+				disabledKeyInfo.error(key, chain);
+			}
 		}
 	}
 };

@@ -9,7 +9,7 @@ interface DisabledOptionsInfo {
 	error: (opts: string, chain: string) => never;
 }
 
-type MappedOpts = Extract<keyof TransferArgsOpts<Format>, string>;
+export type MappedOpts = Extract<keyof TransferArgsOpts<Format>, string>;
 
 type DisabledOptions = {
 	[key in MappedOpts]: DisabledOptionsInfo;
