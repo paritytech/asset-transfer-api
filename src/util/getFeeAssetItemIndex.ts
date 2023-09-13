@@ -60,11 +60,7 @@ export const getFeeAssetItemIndex = async (
 							'MultiLocation',
 							JSON.parse(paysWithFeeDestGeneralIndex)
 						);
-						if (
-							multiAsset.id.Concrete.interior.eq(
-								paysWithFeeDestMultiLocation.interior
-							)
-						) {
+						if (multiAsset.id.Concrete.interior.eq(paysWithFeeDestMultiLocation.interior)) {
 							result = i;
 							break;
 						}
@@ -77,8 +73,7 @@ export const getFeeAssetItemIndex = async (
 
 						if (
 							multiAsset.id.Concrete.interior.isX2 &&
-							multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
-								paysWithFeeDestGeneralIndex
+							multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() === paysWithFeeDestGeneralIndex
 						) {
 							result = i;
 							break;
@@ -87,8 +82,7 @@ export const getFeeAssetItemIndex = async (
 				} else {
 					if (
 						multiAsset.id.Concrete.interior.isX2 &&
-						multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
-							paysWithFeeDest
+						multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() === paysWithFeeDest
 					) {
 						result = i;
 						break;

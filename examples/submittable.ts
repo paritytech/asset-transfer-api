@@ -17,9 +17,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  * `sign`, `signAsync`, `dryRun`, `addSignature`, `paymentInfo`, etc.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise(
-		'ws://127.0.0.1:9944'
-	);
+	const { api, specName, safeXcmVersion } = await constructApiPromise('ws://127.0.0.1:9944');
 	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
 
 	// When declaring this type it will ensure that the inputted `format` matches it or the type checker will error.
@@ -38,11 +36,7 @@ const main = async () => {
 		);
 
 		console.log(
-			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(
-				callInfo,
-				null,
-				4
-			)}${RESET}`
+			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(callInfo, null, 4)}${RESET}`
 		);
 	} catch (e) {
 		console.error(e);

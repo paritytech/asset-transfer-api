@@ -26,11 +26,7 @@ import {
 	checkXcmVersionIsValidForPaysWithFeeDest,
 } from './checkXcmTxInputs';
 
-const parachainAssetsApi = new AssetsTransferApi(
-	adjustedMockParachainApi,
-	'moonriver',
-	2
-);
+const parachainAssetsApi = new AssetsTransferApi(adjustedMockParachainApi, 'moonriver', 2);
 const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
 		const [specName, testInputs, direction, errorMessage] = test;
@@ -56,18 +52,14 @@ describe('checkRelayAssetIdLength', () => {
 	it('Should error with an incorrect assetId length for inputs to or from relay chains', () => {
 		const err = () => checkRelayAssetIdLength(['dot', 'usdt']);
 
-		expect(err).toThrow(
-			"`assetIds` should be empty or length 1 when sending tx's to or from the relay chain."
-		);
+		expect(err).toThrow("`assetIds` should be empty or length 1 when sending tx's to or from the relay chain.");
 	});
 });
 
 describe('checkRelayAmountsLength', () => {
 	it('Should error with an incorrect amounts length', () => {
 		const err = () => checkRelayAmountsLength(['1000000000', '10000000000']);
-		expect(err).toThrow(
-			'`amounts` should be of length 1 when sending to or from a relay chain'
-		);
+		expect(err).toThrow('`amounts` should be of length 1 when sending to or from a relay chain');
 	});
 });
 
@@ -85,9 +77,7 @@ describe('checkParaPrimaryAssetAssetIdsLength', () => {
 	it('Should error with an incorrect assetId length when sending a primary parachain native asset', () => {
 		const err = () => checkParaPrimaryAssetAssetIdsLength(['movr', 'usdt']);
 
-		expect(err).toThrow(
-			'`assetIds` should be of length 1 when sending a primary native parachain asset'
-		);
+		expect(err).toThrow('`assetIds` should be of length 1 when sending a primary native parachain asset');
 	});
 });
 
@@ -95,29 +85,15 @@ describe('checkParaPrimaryAssetAmountsLength', () => {
 	it('Should error with an incorrect amounts length when sending a primary parachain native asset', () => {
 		const err = () => checkParaPrimaryAssetAmountsLength(['1000000', '200000']);
 
-		expect(err).toThrow(
-			'`amounts` should be of length 1 when sending a primary native parachain asset'
-		);
+		expect(err).toThrow('`amounts` should be of length 1 when sending a primary native parachain asset');
 	});
 });
 
-type Test = [
-	specName: string,
-	inputs: string[],
-	xcmDirection: Direction,
-	errorMessage: string
-];
+type Test = [specName: string, inputs: string[], xcmDirection: Direction, errorMessage: string];
 
 describe('checkAssetIds', () => {
 	it('Should error when an assetId is found that is a blank space', async () => {
-		const tests: Test[] = [
-			[
-				'Statemine',
-				[' ', 'KSM'],
-				Direction.SystemToRelay,
-				`assetId cannot be blank spaces.`,
-			],
-		];
+		const tests: Test[] = [['Statemine', [' ', 'KSM'], Direction.SystemToRelay, `assetId cannot be blank spaces.`]];
 
 		await runTests(tests);
 	});
@@ -168,24 +144,9 @@ describe('checkAssetIds', () => {
 
 	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', async () => {
 		const tests: Test[] = [
-			[
-				'Statemint',
-				['0'],
-				Direction.SystemToRelay,
-				`(SystemToRelay) assetId 0 not native to polkadot`,
-			],
-			[
-				'Statemine',
-				['MOVR', 'KSM'],
-				Direction.SystemToRelay,
-				`(SystemToRelay) assetId MOVR not native to kusama`,
-			],
-			[
-				'Westmint',
-				['WND', '250'],
-				Direction.SystemToRelay,
-				`(SystemToRelay) assetId 250 not native to westend`,
-			],
+			['Statemint', ['0'], Direction.SystemToRelay, `(SystemToRelay) assetId 0 not native to polkadot`],
+			['Statemine', ['MOVR', 'KSM'], Direction.SystemToRelay, `(SystemToRelay) assetId MOVR not native to kusama`],
+			['Westmint', ['WND', '250'], Direction.SystemToRelay, `(SystemToRelay) assetId 250 not native to westend`],
 		];
 
 		await runTests(tests);
@@ -264,14 +225,7 @@ describe('checkAssetIds', () => {
 	});
 
 	it('Should error when an asset id is provided that matches multiple asset symbols in the assets registry', async () => {
-		const tests: Test[] = [
-			[
-				'Statemine',
-				['USDT'],
-				Direction.SystemToPara,
-				`Multiple assets found with symbol USDT`,
-			],
-		];
+		const tests: Test[] = [['Statemine', ['USDT'], Direction.SystemToPara, `Multiple assets found with symbol USDT`]];
 
 		for (const test of tests) {
 			const [specName, testInputs, direction, errorMessage] = test;
@@ -441,9 +395,7 @@ describe('checkAssetIds', () => {
 				false,
 				false
 			);
-		}).rejects.toThrowError(
-			'(ParaToSystem) assetId 0x1234, is not a valid erc20 token.'
-		);
+		}).rejects.toThrowError('(ParaToSystem) assetId 0x1234, is not a valid erc20 token.');
 	});
 	it('Should error when an invalid token is passed into a liquidTokenTransfer', async () => {
 		const registry = new Registry('westmint', {});
@@ -512,8 +464,7 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 		const specName = 'statemine';
 		const registry = new Registry(specName, {});
 
-		const err = () =>
-			checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
+		const err = () => checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 		expect(err).toThrowError(expectErrorMessage);
 	});
 });
@@ -530,11 +481,7 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 		];
 
 		const err = () =>
-			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(
-				xcmDirection,
-				destChainId,
-				multiLocationAssetIds
-			);
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, multiLocationAssetIds);
 
 		expect(err).toThrowError(expectedErrorMessage);
 	});
@@ -548,11 +495,7 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 		];
 
 		const err = () =>
-			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(
-				xcmDirection,
-				destChainId,
-				multiLocationAssetIds
-			);
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, multiLocationAssetIds);
 
 		expect(err).not.toThrowError();
 	});
@@ -566,45 +509,30 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 		];
 
 		const err = () =>
-			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(
-				xcmDirection,
-				destChainId,
-				multiLocationAssetIds
-			);
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, multiLocationAssetIds);
 
 		expect(err).not.toThrowError();
 	});
 });
 
-type CreateMultiLocationTest = [
-	multiLocationAssetIds: string[],
-	expected: string
-];
+type CreateMultiLocationTest = [multiLocationAssetIds: string[], expected: string];
 
 describe('checkAllMultiLocationAssetIdsAreValid', () => {
 	it('Should correctly error when an invalid multilocation is provided in assetIds', () => {
 		const tests: CreateMultiLocationTest[] = [
 			[
-				[
-					'{"parents":"1","interior":{"X2": [{"Parachain":"2125", {"GeneralIndex": "0"}]}}',
-				],
+				['{"parents":"1","interior":{"X2": [{"Parachain":"2125", {"GeneralIndex": "0"}]}}'],
 				'Unexpected token { in JSON at position 55',
 			],
 			[
-				[
-					'{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}',
-				],
+				['{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}'],
 				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}} -  Enum(Parachain) String should not contain decimal points or scientific notation',
 			],
 		];
 
 		for (const test of tests) {
 			const [multiLocationAssetIds, expected] = test;
-			const err = () =>
-				checkAllMultiLocationAssetIdsAreValid(
-					mockSystemApi,
-					multiLocationAssetIds
-				);
+			const err = () => checkAllMultiLocationAssetIdsAreValid(mockSystemApi, multiLocationAssetIds);
 
 			expect(err).toThrowError(expected);
 		}
@@ -617,18 +545,14 @@ describe('checkAssetIdsLengthIsValid', () => {
 
 		const err = () => checkAssetIdsLengthIsValid(assetIds);
 
-		expect(err).toThrowError(
-			'Maximum number of assets allowed for transfer is 2. Found 3 assetIds'
-		);
+		expect(err).toThrowError('Maximum number of assets allowed for transfer is 2. Found 3 assetIds');
 	});
 	it('Should correctly not error when less 2 or less assetIds are passed in', () => {
 		const assetIds = ['ksm', '1984'];
 
 		const err = () => checkAssetIdsLengthIsValid(assetIds);
 
-		expect(err).not.toThrow(
-			'Maximum number of assets allowed for transfer is 2. Found 3 assetIds'
-		);
+		expect(err).not.toThrow('Maximum number of assets allowed for transfer is 2. Found 3 assetIds');
 	});
 });
 
@@ -638,9 +562,7 @@ describe('checkAssetIdsHaveNoDuplicates', () => {
 
 		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
 
-		expect(err).toThrow(
-			'AssetIds must be unique. Found duplicate native relay assets as empty strings'
-		);
+		expect(err).toThrow('AssetIds must be unique. Found duplicate native relay assets as empty strings');
 	});
 	it('Should correctly error if duplicate integer assetIds are found', () => {
 		const assetIds = ['10', '10'];
@@ -654,9 +576,7 @@ describe('checkAssetIdsHaveNoDuplicates', () => {
 
 		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
 
-		expect(err).toThrow(
-			'AssetIds must be unique. Found duplicate assetId USDT'
-		);
+		expect(err).toThrow('AssetIds must be unique. Found duplicate assetId USDT');
 	});
 	it('Should correctly error if duplicate multilocation assetIds are found', () => {
 		const assetIds = [
@@ -674,10 +594,7 @@ describe('checkAssetIdsHaveNoDuplicates', () => {
 
 describe('checkAssetIdsAreOfSameAssetIdType', () => {
 	it('Should correctly error when an integer assetId and multilocation assetId are passed in together', () => {
-		const assetIds = [
-			'1984',
-			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
-		];
+		const assetIds = ['1984', '{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}'];
 
 		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
 
@@ -687,10 +604,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 	});
 
 	it('Should correctly error when a symbol assetId and multilocation assetId are passed in together', () => {
-		const assetIds = [
-			'ksm',
-			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
-		];
+		const assetIds = ['ksm', '{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}'];
 
 		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
 
@@ -700,10 +614,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 	});
 
 	it('Should correctly error when the default relay asset value and multilocation assetId are passed in together', () => {
-		const assetIds = [
-			'',
-			'{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}',
-		];
+		const assetIds = ['', '{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}'];
 
 		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
 
@@ -718,12 +629,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 		const xcmVersion = 2;
 		const paysWithFeeDest = '1984';
 
-		const err = () =>
-			checkXcmVersionIsValidForPaysWithFeeDest(
-				Direction.SystemToPara,
-				xcmVersion,
-				paysWithFeeDest
-			);
+		const err = () => checkXcmVersionIsValidForPaysWithFeeDest(Direction.SystemToPara, xcmVersion, paysWithFeeDest);
 
 		expect(err).toThrow('paysWithFeeDest requires XCM version 3');
 	});
@@ -731,12 +637,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 		const xcmVersion = 3;
 		const paysWithFeeDest = '1984';
 
-		const err = () =>
-			checkXcmVersionIsValidForPaysWithFeeDest(
-				Direction.SystemToPara,
-				xcmVersion,
-				paysWithFeeDest
-			);
+		const err = () => checkXcmVersionIsValidForPaysWithFeeDest(Direction.SystemToPara, xcmVersion, paysWithFeeDest);
 
 		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
 	});
@@ -745,12 +646,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 		const xcmVersion = 3;
 		const paysWithFeeDest = '1984';
 
-		const err = () =>
-			checkXcmVersionIsValidForPaysWithFeeDest(
-				Direction.ParaToSystem,
-				xcmVersion,
-				paysWithFeeDest
-			);
+		const err = () => checkXcmVersionIsValidForPaysWithFeeDest(Direction.ParaToSystem, xcmVersion, paysWithFeeDest);
 
 		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
 	});
@@ -762,26 +658,18 @@ describe('checkParaToSystemIsNonForeignAssetXTokensTx', () => {
 		const xcmPallet = XcmPalletName.xTokens;
 
 		const err = () => {
-			checkParaToSystemIsNonForeignAssetXTokensTx(
-				xcmPallet,
-				isForeignAssetsTransfer
-			);
+			checkParaToSystemIsNonForeignAssetXTokensTx(xcmPallet, isForeignAssetsTransfer);
 		};
 
-		expect(err).toThrow(
-			'(ParaToSystem) xTokens pallet does not support foreign asset transfers'
-		);
+		expect(err).toThrow('(ParaToSystem) xTokens pallet does not support foreign asset transfers');
 	});
 });
 
 describe('checkLiquidTokenTransferDirectionValidity', () => {
 	it('Should correctly throw an error when inputs dont match the specification', () => {
-		const err = () =>
-			checkLiquidTokenTransferDirectionValidity(Direction.ParaToSystem, true);
+		const err = () => checkLiquidTokenTransferDirectionValidity(Direction.ParaToSystem, true);
 
-		expect(err).toThrow(
-			'isLiquidTokenTransfer may not be true for the xcmDirection: ParaToSystem.'
-		);
+		expect(err).toThrow('isLiquidTokenTransfer may not be true for the xcmDirection: ParaToSystem.');
 	});
 });
 
@@ -793,13 +681,7 @@ describe('checkParaAssets', () => {
 		let didNotError = true;
 
 		try {
-			await checkParaAssets(
-				adjustedMockParachainApi,
-				assetId,
-				specName,
-				registry,
-				Direction.ParaToSystem
-			);
+			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
 		} catch (err) {
 			didNotError = false;
 		}
@@ -813,13 +695,7 @@ describe('checkParaAssets', () => {
 		let didNotError = true;
 
 		try {
-			await checkParaAssets(
-				adjustedMockParachainApi,
-				assetId,
-				specName,
-				registry,
-				Direction.ParaToSystem
-			);
+			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
 		} catch (err) {
 			didNotError = false;
 		}
@@ -832,16 +708,8 @@ describe('checkParaAssets', () => {
 		const registry = new Registry(specName, {});
 
 		await expect(async () => {
-			await checkParaAssets(
-				adjustedMockParachainApi,
-				assetId,
-				specName,
-				registry,
-				Direction.ParaToSystem
-			);
-		}).rejects.toThrowError(
-			'(ParaToSystem) symbol assetId xcUSDfake not found for parachain moonriver'
-		);
+			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+		}).rejects.toThrowError('(ParaToSystem) symbol assetId xcUSDfake not found for parachain moonriver');
 	});
 	it('Should correctly error when an invalid integer assetId is provided', async () => {
 		const assetId = '2096586909097964981698161';
@@ -849,16 +717,8 @@ describe('checkParaAssets', () => {
 		const registry = new Registry(specName, {});
 
 		await expect(async () => {
-			await checkParaAssets(
-				adjustedMockParachainApi,
-				assetId,
-				specName,
-				registry,
-				Direction.ParaToSystem
-			);
-		}).rejects.toThrowError(
-			'(ParaToSystem) integer assetId 2096586909097964981698161 not found in moonriver'
-		);
+			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+		}).rejects.toThrowError('(ParaToSystem) integer assetId 2096586909097964981698161 not found in moonriver');
 	});
 	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {
 		const assetId = '311091173110107856861649819128533077277';
@@ -927,16 +787,8 @@ describe('checkParaAssets', () => {
 		});
 
 		await expect(async () => {
-			await checkParaAssets(
-				adjustedMockParachainApi,
-				assetId,
-				specName,
-				registry,
-				Direction.ParaToSystem
-			);
-		}).rejects.toThrowError(
-			'unable to identify xcAsset with ID 311091173110107856861649819128533077277'
-		);
+			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+		}).rejects.toThrowError('unable to identify xcAsset with ID 311091173110107856861649819128533077277');
 	});
 
 	describe('cache', () => {
@@ -988,9 +840,7 @@ describe('checkParaAssets', () => {
 				false
 			);
 
-			expect(
-				registry.cacheLookupAsset('311091173110107856861649819128533077277')
-			).toEqual('xcUSDT');
+			expect(registry.cacheLookupAsset('311091173110107856861649819128533077277')).toEqual('xcUSDT');
 		});
 
 		it('Should correctly cache a foreign asset that is not found in the registry after being queried', async () => {
@@ -1019,9 +869,7 @@ describe('checkParaAssets', () => {
 
 			await checkAssetIdInput(
 				adjustedMockSystemApi,
-				[
-					'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
-				],
+				['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 				chainInfo,
 				'statemine',
 				Direction.SystemToPara,
@@ -1031,8 +879,7 @@ describe('checkParaAssets', () => {
 			);
 
 			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual({
-				multiLocation:
-					'{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+				multiLocation: '{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
 				name: 'Tinkernet',
 				symbol: 'TNKR',
 			});

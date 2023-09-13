@@ -97,18 +97,11 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
-			const assets = await SystemToSystem.createAssets(
-				mockSystemApi,
-				['100'],
-				2,
-				'statemine',
-				['USDT'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToSystem.createAssets(mockSystemApi, ['100'], 2, 'statemine', ['USDT'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v2: [
@@ -131,18 +124,11 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await SystemToSystem.createAssets(
-				mockSystemApi,
-				['100'],
-				3,
-				'bridge-hub-kusama',
-				['ksm'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToSystem.createAssets(mockSystemApi, ['100'], 3, 'bridge-hub-kusama', ['ksm'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v3: [
@@ -166,37 +152,22 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		});
 
 		it('Should error when asset ID is not found for V3', async () => {
-			const expectedErrorMessage =
-				'bridge-hub-kusama has no associated token symbol usdc';
+			const expectedErrorMessage = 'bridge-hub-kusama has no associated token symbol usdc';
 
 			await expect(async () => {
-				await SystemToSystem.createAssets(
-					mockSystemApi,
-					['100'],
-					3,
-					'bridge-hub-kusama',
-					['usdc'],
-					{
-						registry,
-						isForeignAssetsTransfer,
-						isLiquidTokenTransfer,
-					}
-				);
+				await SystemToSystem.createAssets(mockSystemApi, ['100'], 3, 'bridge-hub-kusama', ['usdc'], {
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+				});
 			}).rejects.toThrowError(expectedErrorMessage);
 		});
 		it('Should work for a liquid token transfer', async () => {
-			const assets = await SystemToSystem.createAssets(
-				mockSystemApi,
-				['100'],
-				2,
-				'statemine',
-				['USDT'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer: true,
-				}
-			);
+			const assets = await SystemToSystem.createAssets(mockSystemApi, ['100'], 2, 'statemine', ['USDT'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer: true,
+			});
 
 			const expectedRes = {
 				v2: [

@@ -147,18 +147,11 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
-			const assets = await SystemToPara.createAssets(
-				mockSystemApi,
-				['100', '100'],
-				2,
-				'statemine',
-				['1', '2'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToPara.createAssets(mockSystemApi, ['100', '100'], 2, 'statemine', ['1', '2'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v2: [
@@ -194,18 +187,11 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 for testing this', async () => {
-			const assets = await SystemToPara.createAssets(
-				mockSystemApi,
-				['100', '100'],
-				3,
-				'statemine',
-				['1', '2'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToPara.createAssets(mockSystemApi, ['100', '100'], 3, 'statemine', ['1', '2'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v3: [
@@ -241,18 +227,11 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should correctly construct a liquid token transfer', async () => {
-			const assets = await SystemToPara.createAssets(
-				mockSystemApi,
-				['100', '100'],
-				3,
-				'statemine',
-				['1', '2'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer: true,
-				}
-			);
+			const assets = await SystemToPara.createAssets(mockSystemApi, ['100', '100'], 3, 'statemine', ['1', '2'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer: true,
+			});
 
 			const expectedRes = {
 				v3: [
@@ -328,12 +307,9 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					id: {
 						Concrete: mockSystemApi.registry.createType('MultiLocation', {
-							interior: mockSystemApi.registry.createType(
-								'InteriorMultiLocation',
-								{
-									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
-								}
-							),
+							interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
+							}),
 							parents: 0,
 						}),
 					},
@@ -344,12 +320,9 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					id: {
 						Concrete: mockSystemApi.registry.createType('MultiLocation', {
-							interior: mockSystemApi.registry.createType(
-								'InteriorMultiLocation',
-								{
-									Here: '',
-								}
-							),
+							interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+								Here: '',
+							}),
 							parents: 1,
 						}),
 					},

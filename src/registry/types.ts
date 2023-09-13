@@ -44,38 +44,16 @@ export type ChainInfoRegistry = {
 
 export type RelayChains = 'polkadot' | 'kusama' | 'westend';
 
-export type InterMultiLocationJunctionType =
-	| 'here'
-	| 'x1'
-	| 'x2'
-	| 'x3'
-	| 'x4'
-	| 'x5'
-	| 'x6'
-	| 'x7'
-	| 'x8';
+export type InterMultiLocationJunctionType = 'here' | 'x1' | 'x2' | 'x3' | 'x4' | 'x5' | 'x6' | 'x7' | 'x8';
 type XCMRegistryInteriorMultiLocation = Partial<
-	Record<
-		InterMultiLocationJunctionType,
-		null | XCMRegistryJunction | XCMRegistryJunctions
-	>
+	Record<InterMultiLocationJunctionType, null | XCMRegistryJunction | XCMRegistryJunctions>
 >;
 
 export type XCMRegistryJunction = {
-	[x: string]:
-		| string
-		| number
-		| undefined
-		| null
-		| Partial<Record<string, string | number | undefined | null>>;
+	[x: string]: string | number | undefined | null | Partial<Record<string, string | number | undefined | null>>;
 };
 export type XCMRegistryJunctions = {
-	[x: string]:
-		| string
-		| number
-		| undefined
-		| null
-		| Partial<Record<string, string | number | undefined | null>>;
+	[x: string]: string | number | undefined | null | Partial<Record<string, string | number | undefined | null>>;
 }[];
 
 export interface XCMRegistryMultiLocation {
@@ -114,7 +92,4 @@ export type XCMChainInfoRegistry = {
 	kusama: XCMChainInfoKeys[];
 };
 
-export type AssetsInfoType =
-	| 'assetsInfo'
-	| 'foreignAssetsInfo'
-	| 'poolPairsInfo';
+export type AssetsInfoType = 'assetsInfo' | 'foreignAssetsInfo' | 'poolPairsInfo';

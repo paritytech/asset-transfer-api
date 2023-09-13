@@ -13,12 +13,9 @@ describe('sortMultiAssetsAscending', () => {
 				},
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+						}),
 						parents: 1,
 					}),
 				},
@@ -30,12 +27,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 0,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								Here: '',
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							Here: '',
+						}),
 					}),
 				},
 			},
@@ -45,12 +39,9 @@ describe('sortMultiAssetsAscending', () => {
 				},
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+						}),
 						parents: 0,
 					}),
 				},
@@ -65,12 +56,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 0,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								Here: '',
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							Here: '',
+						}),
 					}),
 				},
 			},
@@ -80,12 +68,9 @@ describe('sortMultiAssetsAscending', () => {
 				},
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+						}),
 						parents: 0,
 					}),
 				},
@@ -97,12 +82,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+						}),
 					}),
 				},
 			},
@@ -125,14 +107,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -143,14 +122,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 2,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
+							},
+						}),
 					}),
 				},
 			},
@@ -161,14 +137,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
+							},
+						}),
 					}),
 				},
 			},
@@ -182,14 +155,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -200,14 +170,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
+							},
+						}),
 					}),
 				},
 			},
@@ -218,14 +185,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 2,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
+							},
+						}),
 					}),
 				},
 			},
@@ -248,14 +212,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
+							},
+						}),
 					}),
 				},
 			},
@@ -266,14 +227,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -287,14 +245,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -305,14 +260,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
+							},
+						}),
 					}),
 				},
 			},
@@ -335,14 +287,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 0,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
+							},
+						}),
 					}),
 				},
 			},
@@ -353,14 +302,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -371,14 +317,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 2,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									PalletInstance: '50',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								PalletInstance: '50',
+							},
+						}),
 					}),
 				},
 			},
@@ -392,14 +335,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 0,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
+							},
+						}),
 					}),
 				},
 			},
@@ -410,14 +350,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -428,14 +365,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 2,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									PalletInstance: '50',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								PalletInstance: '50',
+							},
+						}),
 					}),
 				},
 			},
@@ -458,15 +392,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2023' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2023' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -477,15 +405,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2000' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2000' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -499,15 +421,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2000' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2000' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -518,15 +434,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2023' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2023' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -549,16 +459,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '1984' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '2000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+						}),
 					}),
 				},
 			},
@@ -569,16 +472,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '1' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '2000' }, { PalletInstance: '50' }, { GeneralIndex: '1' }],
+						}),
 					}),
 				},
 			},
@@ -592,16 +488,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '1' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '2000' }, { PalletInstance: '50' }, { GeneralIndex: '1' }],
+						}),
 					}),
 				},
 			},
@@ -612,16 +501,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '1984' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '2000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+						}),
 					}),
 				},
 			},
@@ -644,15 +526,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2023' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2023' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -663,12 +539,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+						}),
 					}),
 				},
 			},
@@ -679,12 +552,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ Parachain: '2000' }, { GeneralIndex: '0' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2000' }, { GeneralIndex: '0' }],
+						}),
 					}),
 				},
 			},
@@ -698,12 +568,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ Parachain: '2000' }, { GeneralIndex: '0' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2000' }, { GeneralIndex: '0' }],
+						}),
 					}),
 				},
 			},
@@ -714,15 +581,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2023' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2023' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -733,12 +594,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+						}),
 					}),
 				},
 			},
@@ -761,16 +619,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '1000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '1984' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+						}),
 					}),
 				},
 			},
@@ -781,16 +632,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '1000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '8' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
+						}),
 					}),
 				},
 			},
@@ -804,16 +648,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '1000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '8' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
+						}),
 					}),
 				},
 			},
@@ -824,16 +661,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '1000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '1984' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+						}),
 					}),
 				},
 			},
@@ -856,16 +686,13 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '50' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [
+								{ Parachain: '2000' },
+								{ PalletInstance: '50' },
+								{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
+							],
+						}),
 					}),
 				},
 			},
@@ -876,16 +703,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '1' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '2000' }, { PalletInstance: '50' }, { GeneralIndex: '1' }],
+						}),
 					}),
 				},
 			},
@@ -899,16 +719,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '50' },
-									{ GeneralIndex: '1' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '2000' }, { PalletInstance: '50' }, { GeneralIndex: '1' }],
+						}),
 					}),
 				},
 			},
@@ -919,16 +732,13 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '50' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [
+								{ Parachain: '2000' },
+								{ PalletInstance: '50' },
+								{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
+							],
+						}),
 					}),
 				},
 			},
@@ -951,14 +761,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 2,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
+							},
+						}),
 					}),
 				},
 			},
@@ -969,12 +776,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 2,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+						}),
 					}),
 				},
 			},
@@ -985,12 +789,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ Parachain: '2000' }, { GeneralIndex: '0' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2000' }, { GeneralIndex: '0' }],
+						}),
 					}),
 				},
 			},
@@ -1001,15 +802,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2000' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2000' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -1020,15 +815,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2023' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2023' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -1039,12 +828,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+						}),
 					}),
 				},
 			},
@@ -1055,12 +841,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+						}),
 					}),
 				},
 			},
@@ -1071,16 +854,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '55' },
-									{ GeneralIndex: '0' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '2000' }, { PalletInstance: '55' }, { GeneralIndex: '0' }],
+						}),
 					}),
 				},
 			},
@@ -1091,12 +867,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								Here: '',
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							Here: '',
+						}),
 					}),
 				},
 			},
@@ -1107,14 +880,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -1125,14 +895,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
+							},
+						}),
 					}),
 				},
 			},
@@ -1146,12 +913,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								Here: '',
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							Here: '',
+						}),
 					}),
 				},
 			},
@@ -1162,14 +926,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -1180,14 +941,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
+							},
+						}),
 					}),
 				},
 			},
@@ -1198,12 +956,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ Parachain: '2000' }, { GeneralIndex: '0' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2000' }, { GeneralIndex: '0' }],
+						}),
 					}),
 				},
 			},
@@ -1214,15 +969,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2000' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2000' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -1233,15 +982,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [
-									{ Parachain: '2023' },
-									{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ Parachain: '2023' }, { GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' }],
+						}),
 					}),
 				},
 			},
@@ -1252,12 +995,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+						}),
 					}),
 				},
 			},
@@ -1268,12 +1008,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+						}),
 					}),
 				},
 			},
@@ -1284,16 +1021,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X3: [
-									{ Parachain: '2000' },
-									{ PalletInstance: '55' },
-									{ GeneralIndex: '0' },
-								],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X3: [{ Parachain: '2000' }, { PalletInstance: '55' }, { GeneralIndex: '0' }],
+						}),
 					}),
 				},
 			},
@@ -1304,14 +1034,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 2,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978',
+							},
+						}),
 					}),
 				},
 			},
@@ -1322,12 +1049,9 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 2,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
+						}),
 					}),
 				},
 			},
@@ -1350,14 +1074,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -1368,14 +1089,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -1389,14 +1107,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},
@@ -1407,14 +1122,11 @@ describe('sortMultiAssetsAscending', () => {
 				id: {
 					Concrete: mockSystemApi.registry.createType('MultiLocation', {
 						parents: 1,
-						interior: mockSystemApi.registry.createType(
-							'InteriorMultiLocation',
-							{
-								X1: {
-									Parachain: '2023',
-								},
-							}
-						),
+						interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+							X1: {
+								Parachain: '2023',
+							},
+						}),
 					}),
 				},
 			},

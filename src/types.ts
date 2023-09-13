@@ -3,28 +3,18 @@
 import { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { u8 } from '@polkadot/types';
-import {
-	InteriorMultiLocation,
-	MultiLocation,
-} from '@polkadot/types/interfaces';
+import { InteriorMultiLocation, MultiLocation } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
 import type { ChainInfoRegistry } from './registry/types';
 
-export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
-	T,
-	Exclude<keyof T, Keys>
-> &
+export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
 	{
-		[K in Keys]-?: Required<Pick<T, K>> &
-			Partial<Record<Exclude<Keys, K>, undefined>>;
+		[K in Keys]-?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, undefined>>;
 	}[Keys];
 
-export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
-	T,
-	Exclude<keyof T, Keys>
-> &
+export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
 	{
 		[K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
 	}[Keys];

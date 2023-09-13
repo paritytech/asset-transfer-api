@@ -115,14 +115,11 @@ describe('Registry', () => {
 			const foreignAssetData: ForeignAssetsData = {
 				symbol: 'TNKR',
 				name: 'Tinkernet',
-				multiLocation:
-					'{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+				multiLocation: '{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
 			};
 			registry.setForeignAssetInCache('TNKR', foreignAssetData);
 
-			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual(
-				foreignAssetData
-			);
+			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual(foreignAssetData);
 		});
 	});
 });

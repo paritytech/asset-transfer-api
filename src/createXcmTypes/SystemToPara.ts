@@ -20,13 +20,7 @@ import { MultiAsset } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { validateNumber } from '../validate';
-import {
-	CreateAssetsOpts,
-	CreateFeeAssetItemOpts,
-	CreateWeightLimitOpts,
-	ICreateXcmType,
-	IWeightLimit,
-} from './types';
+import { CreateAssetsOpts, CreateFeeAssetItemOpts, CreateWeightLimitOpts, ICreateXcmType, IWeightLimit } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
@@ -43,11 +37,7 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (
-		api: ApiPromise,
-		accountId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createBeneficiary: (api: ApiPromise, accountId: string, xcmVersion?: number): VersionedMultiLocation => {
 		if (xcmVersion == 2) {
 			const X1 = isEthereumAddress(accountId)
 				? { AccountKey20: { network: 'Any', key: accountId } }
@@ -63,9 +53,7 @@ export const SystemToPara: ICreateXcmType = {
 			});
 		}
 
-		const X1 = isEthereumAddress(accountId)
-			? { AccountKey20: { key: accountId } }
-			: { AccountId32: { id: accountId } };
+		const X1 = isEthereumAddress(accountId) ? { AccountKey20: { key: accountId } } : { AccountId32: { id: accountId } };
 
 		return api.registry.createType('XcmVersionedMultiLocation', {
 			V3: {
@@ -83,11 +71,7 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (
-		api: ApiPromise,
-		destId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createDest: (api: ApiPromise, destId: string, xcmVersion?: number): VersionedMultiLocation => {
 		if (xcmVersion === 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -154,11 +138,10 @@ export const SystemToPara: ICreateXcmType = {
 				})
 			);
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets =
-				api.registry.createType(
-					'XcmV3MultiassetMultiAssets',
-					sortedAndDedupedMultiAssets
-				);
+			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
+				'XcmV3MultiassetMultiAssets',
+				sortedAndDedupedMultiAssets
+			);
 
 			return Promise.resolve(
 				api.registry.createType('XcmVersionedMultiAssets', {
@@ -175,10 +158,7 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (
-		api: ApiPromise,
-		opts: CreateWeightLimitOpts
-	): WeightLimitV2 => {
+	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
 		const limit: IWeightLimit =
 			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 				? {
@@ -203,10 +183,7 @@ export const SystemToPara: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: async (
-		api: ApiPromise,
-		opts: CreateFeeAssetItemOpts
-	): Promise<u32> => {
+	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
 		const {
 			registry,
 			paysWithFeeDest,
@@ -217,14 +194,7 @@ export const SystemToPara: ICreateXcmType = {
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
 		} = opts;
-		if (
-			xcmVersion &&
-			xcmVersion === 3 &&
-			specName &&
-			amounts &&
-			assetIds &&
-			paysWithFeeDest
-		) {
+		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createSystemToParaMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
@@ -277,11 +247,7 @@ export const createSystemToParaMultiAssets = async (
 	isLiquidTokenTransfer: boolean
 ): Promise<MultiAsset[]> => {
 	let multiAssets: MultiAsset[] = [];
-	const palletId = fetchPalletInstanceId(
-		api,
-		isLiquidTokenTransfer,
-		isForeignAssetsTransfer
-	);
+	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
 	const systemChainId = getChainIdBySpecName(registry, specName);
 
 	if (!isSystemChain(systemChainId)) {
@@ -301,23 +267,13 @@ export const createSystemToParaMultiAssets = async (
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
 		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId(
-				api,
-				registry,
-				assetId,
-				specName,
-				isForeignAssetsTransfer
-			);
+			assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
 		}
 
 		let concreteMultiLocation: MultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(
-				api,
-				assetId,
-				palletId
-			);
+			concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(api, assetId, palletId);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior: InteriorMultiLocation = isRelayNative
@@ -346,9 +302,7 @@ export const createSystemToParaMultiAssets = async (
 
 	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
-		multiAssets
-	) as MultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as MultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

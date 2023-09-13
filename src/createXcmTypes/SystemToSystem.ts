@@ -19,13 +19,7 @@ import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { validateNumber } from '../validate';
 import { MultiAsset } from './../types';
-import {
-	CreateAssetsOpts,
-	CreateFeeAssetItemOpts,
-	CreateWeightLimitOpts,
-	ICreateXcmType,
-	IWeightLimit,
-} from './types';
+import { CreateAssetsOpts, CreateFeeAssetItemOpts, CreateWeightLimitOpts, ICreateXcmType, IWeightLimit } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
@@ -41,11 +35,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (
-		api: ApiPromise,
-		accountId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createBeneficiary: (api: ApiPromise, accountId: string, xcmVersion?: number): VersionedMultiLocation => {
 		if (xcmVersion == 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -73,11 +63,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (
-		api: ApiPromise,
-		destId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createDest: (api: ApiPromise, destId: string, xcmVersion?: number): VersionedMultiLocation => {
 		if (xcmVersion === 2) {
 			return api.registry.createType('XcmVersionedMultiLocation', {
 				V2: {
@@ -145,11 +131,10 @@ export const SystemToSystem: ICreateXcmType = {
 				})
 			);
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets =
-				api.registry.createType(
-					'XcmV3MultiassetMultiAssets',
-					sortedAndDedupedMultiAssets
-				);
+			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
+				'XcmV3MultiassetMultiAssets',
+				sortedAndDedupedMultiAssets
+			);
 
 			return Promise.resolve(
 				api.registry.createType('XcmVersionedMultiAssets', {
@@ -166,10 +151,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (
-		api: ApiPromise,
-		opts: CreateWeightLimitOpts
-	): WeightLimitV2 => {
+	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
 		const limit: IWeightLimit =
 			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 				? {
@@ -194,10 +176,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: async (
-		api: ApiPromise,
-		opts: CreateFeeAssetItemOpts
-	): Promise<u32> => {
+	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
 		const {
 			registry,
 			paysWithFeeDest,
@@ -208,14 +187,7 @@ export const SystemToSystem: ICreateXcmType = {
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
 		} = opts;
-		if (
-			xcmVersion &&
-			xcmVersion === 3 &&
-			specName &&
-			amounts &&
-			assetIds &&
-			paysWithFeeDest
-		) {
+		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createSystemToSystemMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
@@ -271,11 +243,7 @@ export const createSystemToSystemMultiAssets = async (
 ): Promise<MultiAsset[]> => {
 	let multiAssets: MultiAsset[] = [];
 	const systemChainId = getChainIdBySpecName(registry, specName);
-	const palletId = fetchPalletInstanceId(
-		api,
-		isLiquidTokenTransfer,
-		isForeignAssetsTransfer
-	);
+	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
 
 	if (!isSystemChain(systemChainId)) {
 		throw new BaseError(
@@ -294,32 +262,20 @@ export const createSystemToSystemMultiAssets = async (
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
 		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId(
-				api,
-				registry,
-				assetId,
-				specName,
-				isForeignAssetsTransfer
-			);
+			assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
 		}
 
 		let concreteMultiLocation: MultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			const assetIdMultiLocation = api.registry.createType(
-				'MultiLocation',
-				JSON.parse(assetId)
-			);
+			const assetIdMultiLocation = api.registry.createType('MultiLocation', JSON.parse(assetId));
 
 			// start of the junctions values of the assetId. + 1 to ignore the '['
 			const junctionsStartIndex = assetId.indexOf('[') + 1;
 			// end index of the junctions values of the assetId
 			const junctionsEndIndex = assetId.indexOf(']');
 			// e.g. {"Parachain": "2125"}, {"GeneralIndex": "0"}
-			const junctions = assetId.slice(
-				junctionsStartIndex + 1,
-				junctionsEndIndex
-			);
+			const junctions = assetId.slice(junctionsStartIndex + 1, junctionsEndIndex);
 			// number of junctions found in the assetId. used to determine the number of junctions
 			// after adding the PalletInstance (e.g. 2 junctions becomes X3)
 			const junctionCount = junctions.split('},').length + 1;
@@ -330,10 +286,7 @@ export const createSystemToSystemMultiAssets = async (
 
 			concreteMultiLocation = api.registry.createType('MultiLocation', {
 				parents: assetIdMultiLocation.parents,
-				interior: api.registry.createType(
-					'InteriorMultiLocation',
-					JSON.parse(interiorMultiLocationStr)
-				),
+				interior: api.registry.createType('InteriorMultiLocation', JSON.parse(interiorMultiLocationStr)),
 			});
 		} else {
 			const parents = isRelayNative ? 1 : 0;
@@ -362,9 +315,7 @@ export const createSystemToSystemMultiAssets = async (
 
 	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
-		multiAssets
-	) as MultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as MultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

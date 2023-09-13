@@ -91,18 +91,11 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
 		it('Should work for V2', async () => {
-			const assets = await SystemToRelay.createAssets(
-				mockSystemApi,
-				['100'],
-				2,
-				'',
-				[],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToRelay.createAssets(mockSystemApi, ['100'], 2, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v2: [
@@ -125,18 +118,11 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await SystemToRelay.createAssets(
-				mockSystemApi,
-				['100'],
-				3,
-				'',
-				[],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToRelay.createAssets(mockSystemApi, ['100'], 3, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v3: [

@@ -40,11 +40,7 @@ const logWithDate = (log: string, remove?: boolean) => {
  * Will block the main script from running until there is blocks in Polkadot AssetHub being produced.
  */
 const awaitBlockProduction = async () => {
-	logWithDate(
-		chalk.yellow(
-			`Initializing polkadot-js: Polling until ${KUSAMA_ASSET_HUB_WS_URL} is available`
-		)
-	);
+	logWithDate(chalk.yellow(`Initializing polkadot-js: Polling until ${KUSAMA_ASSET_HUB_WS_URL} is available`));
 	const kusamaAssetHubApi = await ApiPromise.create({
 		provider: new WsProvider(KUSAMA_ASSET_HUB_WS_URL),
 		noInitWarn: true,
@@ -65,11 +61,7 @@ const awaitBlockProduction = async () => {
 
 		counter += 1;
 		process.stdout.clearLine(0);
-		process.stdout.write(
-			`\rWaiting for Block production on Kusama AssetHub${'.'.repeat(
-				(counter % 3) + 1
-			)}`
-		);
+		process.stdout.write(`\rWaiting for Block production on Kusama AssetHub${'.'.repeat((counter % 3) + 1)}`);
 	}
 
 	process.stdout.clearLine(0);
@@ -112,12 +104,7 @@ const main = async () => {
 	/**
 	 * Create this call via the parachain api, since this is the chain in which it will be called.
 	 */
-	const forceCreate = kusamaAssetHubApi.tx.assets.forceCreate(
-		assetInfo.assetId,
-		alice.address,
-		true,
-		1000
-	);
+	const forceCreate = kusamaAssetHubApi.tx.assets.forceCreate(assetInfo.assetId, alice.address, true, 1000);
 	const forceCreateCall = kusamaAssetHubApi.createType('Call', {
 		callIndex: forceCreate.callIndex,
 		args: forceCreate.args,
@@ -163,10 +150,7 @@ const main = async () => {
 			},
 		],
 	};
-	const multiLocation = rococoApi.createType(
-		'XcmVersionedMultiLocation',
-		xcmDest
-	);
+	const multiLocation = rococoApi.createType('XcmVersionedMultiLocation', xcmDest);
 	const xcmVersionedMsg = rococoApi.createType('XcmVersionedXcm', xcmMessage);
 	const xcmMsg = rococoApi.tx.xcmPallet.send(multiLocation, xcmVersionedMsg);
 	const xcmCall = rococoApi.createType('Call', {
@@ -174,9 +158,7 @@ const main = async () => {
 		args: xcmMsg.args,
 	});
 
-	logWithDate(
-		'Sending Sudo XCM message from relay chain to execute forceCreate call on Kusama AssetHub'
-	);
+	logWithDate('Sending Sudo XCM message from relay chain to execute forceCreate call on Kusama AssetHub');
 	await rococoApi.tx.sudo.sudo(xcmCall).signAndSend(alice);
 
 	/**
@@ -196,24 +178,16 @@ const main = async () => {
 			assetInfo.assetSymbol,
 			assetInfo.assetDecimals
 		),
-		kusamaAssetHubApi.tx.assets.mint(
-			assetInfo.assetId,
-			alice.address,
-			1000 * 120000000
-		),
+		kusamaAssetHubApi.tx.assets.mint(assetInfo.assetId, alice.address, 1000 * 120000000),
 	];
 	const batch = kusamaAssetHubApi.tx.utility.batchAll(txs);
 
-	logWithDate(
-		'Sending batch call in order to mint a test asset on Kusama AssetHub'
-	);
+	logWithDate('Sending batch call in order to mint a test asset on Kusama AssetHub');
 	await batch.signAndSend(alice, { nonce }, ({ status, events }) => {
 		if (status.isInBlock || status.isFinalized) {
 			events
 				// find/filter for failed events
-				.filter(({ event }) =>
-					kusamaAssetHubApi.events.system.ExtrinsicFailed.is(event)
-				)
+				.filter(({ event }) => kusamaAssetHubApi.events.system.ExtrinsicFailed.is(event))
 				// we know that data for system.ExtrinsicFailed is
 				// (DispatchError, DispatchInfo)
 				.forEach(
@@ -224,9 +198,7 @@ const main = async () => {
 					}) => {
 						if ((error as DispatchError).isModule) {
 							// for module errors, we have the section indexed, lookup
-							const decoded = kusamaAssetHubApi.registry.findMetaError(
-								(error as DispatchError).asModule
-							);
+							const decoded = kusamaAssetHubApi.registry.findMetaError((error as DispatchError).asModule);
 							const { docs, method, section } = decoded;
 
 							console.log(`${section}.${method}: ${docs.join(' ')}`);

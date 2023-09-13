@@ -30,10 +30,7 @@ export const checkBaseInputOptions = (opts: TransferArgsOpts<Format>) => {
 		const [bool, errMsg] = validateAddress(sendersAddr);
 
 		if (!bool) {
-			throw new BaseError(
-				`The inputted sendersAddr is not valid. ${errMsg as string}`,
-				BaseErrorsEnum.InvalidInput
-			);
+			throw new BaseError(`The inputted sendersAddr is not valid. ${errMsg as string}`, BaseErrorsEnum.InvalidInput);
 		}
 	}
 };

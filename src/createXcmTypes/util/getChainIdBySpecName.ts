@@ -1,10 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import {
-	KUSAMA_ASSET_HUB_SPEC_NAMES,
-	POLKADOT_ASSET_HUB_SPEC_NAMES,
-	WESTEND_ASSET_HUB_SPEC_NAMES,
-} from '../../consts';
+import { KUSAMA_ASSET_HUB_SPEC_NAMES, POLKADOT_ASSET_HUB_SPEC_NAMES, WESTEND_ASSET_HUB_SPEC_NAMES } from '../../consts';
 import { Registry } from '../../registry';
 /**
  * returns a chains ID based on its relay chain and specName
@@ -13,10 +9,7 @@ import { Registry } from '../../registry';
  * @param specName string
  * @returns
  */
-export const getChainIdBySpecName = (
-	registry: Registry,
-	specName: string
-): string => {
+export const getChainIdBySpecName = (registry: Registry, specName: string): string => {
 	let result = '';
 
 	Object.entries(registry.currentRelayRegistry).forEach((chainInfo) => {

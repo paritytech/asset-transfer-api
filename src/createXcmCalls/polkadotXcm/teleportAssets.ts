@@ -43,18 +43,11 @@ export const teleportAssets = async (
 	const typeCreator = createXcmTypes[direction];
 	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
 	const dest = typeCreator.createDest(api, destChainId, xcmVersion);
-	const assets = await typeCreator.createAssets(
-		api,
-		normalizeArrToStr(amounts),
-		xcmVersion,
-		specName,
-		assetIds,
-		{
-			registry,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer: false,
-		}
-	);
+	const assets = await typeCreator.createAssets(api, normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
+		registry,
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer: false,
+	});
 
 	const feeAssetItem = paysWithFeeDest
 		? await typeCreator.createFeeAssetItem(api, {

@@ -108,9 +108,7 @@ describe('limitedReserveTransferAssets', () => {
 						isForeignAssetsTransfer,
 					}
 				);
-			}).rejects.toThrowError(
-				"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API"
-			);
+			}).rejects.toThrowError("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
 		});
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V2', async () => {
@@ -120,9 +118,7 @@ describe('limitedReserveTransferAssets', () => {
 				mockSystemApi,
 				Direction.SystemToPara,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				[
-					'{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
-				],
+				['{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 				['100'],
 				'2023',
 				2,
@@ -151,9 +147,7 @@ describe('limitedReserveTransferAssets', () => {
 				mockSystemApi,
 				Direction.SystemToPara,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				[
-					'{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
-				],
+				['{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 				['100'],
 				'2023',
 				2,
