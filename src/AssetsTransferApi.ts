@@ -371,7 +371,7 @@ export class AssetsTransferApi {
 						isLiquidTokenTransfer,
 					}
 				);
-			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
+			} else if ( paysWithFeeDest?.includes('parents')) {
 				txMethod = 'transferMultiAssetWithFee';
 				transaction = await transferMultiAssetWithFee(
 					_api,
