@@ -8,7 +8,6 @@ import type {
 	ExpandedChainInfoKeys,
 	ForeignAssetsData,
 	RelayChains,
-	XCMChainInfoRegistry,
 } from './types';
 
 export class Registry {
@@ -16,7 +15,6 @@ export class Registry {
 	readonly registry: ChainInfoRegistry;
 	readonly relayChain: RelayChains;
 	readonly currentRelayRegistry: ChainInfo;
-	readonly xcAssets: XCMChainInfoRegistry;
 	cache: ChainInfoRegistry;
 
 	constructor(specName: string, opts: AssetsTransferApiOpts) {
@@ -24,15 +22,10 @@ export class Registry {
 		this.registry = parseRegistry(opts);
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
-		this.xcAssets = this.registry.xcAssets;
 		this.cache = {
 			polkadot: {},
 			kusama: {},
 			westend: {},
-			xcAssets: {
-				polkadot: [],
-				kusama: [],
-			},
 		};
 		this.initializeAssetHubCache();
 		this.initializeCurrentChainIdCache();
