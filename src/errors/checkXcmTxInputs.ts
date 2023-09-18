@@ -14,7 +14,6 @@ import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachai
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
-import { XCMChainInfoKeys } from '../registry/types';
 import { AssetInfo, Direction } from '../types';
 import { validateNumber } from '../validate';
 import { BaseError, BaseErrorsEnum } from './BaseError';
@@ -569,9 +568,7 @@ export const checkParaAssets = async (
 		return;
 	}
 
-	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
-
 	const isValidInt = validateNumber(assetId);
 
 	if (isValidInt) {
@@ -592,30 +589,19 @@ export const checkParaAssets = async (
 			}
 		}
 
-		// check that xcAsset exists in the xcAsset registry
-		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
-		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-			relayChainXcAssetInfoKeys = xcAssets.kusama;
-		}
-		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-			relayChainXcAssetInfoKeys = xcAssets.polkadot;
-		}
+		const paraId = getChainIdBySpecName(registry, specName);
+		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
 
-		if (relayChainXcAssetInfoKeys.length === 0) {
+		if (!paraXcAssets || paraXcAssets.length === 0) {
 			throw new BaseError(
 				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
 				BaseErrorsEnum.InvalidPallet
 			);
 		}
 
-		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
-			const chainInfo = relayChainXcAssetInfoKeys[i];
-
-			for (let j = 0; j < chainInfo.data.length; j++) {
-				const xcAssetData = chainInfo.data[j];
-				if (typeof xcAssetData.asset === 'string' && xcAssetData.asset === assetId) {
-					return;
-				}
+		for (const info of paraXcAssets) {
+			if (typeof info.asset === 'string' && info.asset === assetId) {
+				return;
 			}
 		}
 

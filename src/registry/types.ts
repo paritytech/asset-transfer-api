@@ -70,7 +70,16 @@ export type SanitizedXcAssetsData = {
 	symbol: string;
 	decimals: number;
 	xcmV1MultiLocation: string;
-	asset: { ForeignAsset: string } | { VToken: string } | { VToken2: string } | { VSToken: string } | { VSToken2: string } | { Token2: string } | { Native: string } | { Stable: string } | string;
+	asset:
+		| { ForeignAsset: string }
+		| { VToken: string }
+		| { VToken2: string }
+		| { VSToken: string }
+		| { VSToken2: string }
+		| { Token2: string }
+		| { Native: string }
+		| { Stable: string }
+		| string;
 };
 
 export type AssetsInfoType = 'assetsInfo' | 'foreignAssetsInfo' | 'poolPairsInfo';

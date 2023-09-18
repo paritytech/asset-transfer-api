@@ -2,13 +2,7 @@ import { ASSET_HUB_CHAIN_ID } from '../consts';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import type { AssetTransferApiOpts } from '../types';
 import { findRelayChain, parseRegistry } from './';
-import type {
-	ChainInfo,
-	ChainInfoRegistry,
-	ExpandedChainInfoKeys,
-	ForeignAssetsData,
-	RelayChains,
-} from './types';
+import type { ChainInfo, ChainInfoRegistry, ExpandedChainInfoKeys, ForeignAssetsData, RelayChains } from './types';
 
 export class Registry {
 	readonly specName: string;

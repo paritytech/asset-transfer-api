@@ -725,63 +725,26 @@ describe('checkParaAssets', () => {
 		const specName = 'moonriver';
 		const registry = new Registry(specName, {
 			injectedRegistry: {
-				xcAssets: {
-					polkadot: [],
-					kusama: [
-						{
-							relayChain: 'kusama',
-							paraID: 2000,
-							id: 'karura',
-							xcAssetCnt: '21',
-							data: [
-								{
-									paraID: 1000,
-									relayChain: 'kusama',
-									nativeChainID: 'statemine',
-									symbol: 'RMRK',
-									decimals: 10,
-									interiorType: 'x3',
-									xcmV1Standardized: [
-										{
-											network: 'kusama',
-										},
-										{
-											parachain: 1000,
-										},
-										{
-											palletInstance: 50,
-										},
-										{
-											generalIndex: 8,
-										},
-									],
-									xcmV1MultiLocationByte: false,
-									xcmV1MultiLocation: {
-										v1: {
-											parents: 1,
-											interior: {
-												x3: [
-													{
-														parachain: 1000,
-													},
-													{
-														palletInstance: 50,
-													},
-													{
-														generalIndex: 8,
-													},
-												],
-											},
-										},
-									},
-									asset: {
-										ForeignAsset: '0',
-									},
-									source: ['2000'],
+				kusama: {
+					'2000': {
+						tokens: ['KAR', 'KUSD', 'KSM', 'LKSM', 'BNC', 'VSKSM', 'PHA', 'KINT', 'KBTC', 'TAI'],
+						assetsInfo: {},
+						foreignAssetsInfo: {},
+						poolPairsInfo: {},
+						specName: 'karura',
+						xcAssetsData: [
+							{
+								paraID: 1000,
+								symbol: 'RMRK',
+								decimals: 10,
+								xcmV1MultiLocation:
+									'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
+								asset: {
+									ForeignAsset: '0',
 								},
-							],
-						},
-					],
+							},
+						],
+					},
 				},
 			},
 		});
