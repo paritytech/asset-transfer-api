@@ -59,6 +59,9 @@ Note: System refers to System Parachains like Asset Hub.
 
 ### Example Usage
 
+**NOTE:** For more practical usage, and specified examples please look through our `./examples` directory to see more use cases. To
+run these examples: `yarn build:examples && node ./examples/build/examples/<file_to_run>.js`.
+
 ```typescript
 import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfer-api';
 
@@ -182,6 +185,74 @@ interface TransferArgsOpts<T extends Format> {
 	transferLiquidToken?: boolean;
 }
 ```
+
+### Teleport and Reserve Transfer via polkadotXcm pallet
+
+The `AssetsTransferApi.createTransferTransaction` is able to infer what kind of transaction is necessary given the inputs. When sending cross chain transfers the api does a lot of validation to ensure the inputs are valid, and the assets either exist or dont. This process is done through a registry which is maintained in a seperate repo [here](https://github.com/paritytech/asset-transfer-api-registry). If the asset in not in the registry it will then lookup if that asset exists on chain and cache it if necessary. On chain verification is not always possible in respect to the direction the asset is being sent and what the destination chain is since we only maintain one api connection. Therefore, if you would like the inject information into the registry, you can using the `injectedRegistry` option for the `AssetsTransferApi`.
+
+### Transferring assets via xTokens pallet
+
+If the transfer is being sent from a parachain that utilizes the `xTokens` pallet, the API will detect that and construct the transaction that is necessary. It will construct one of three calls: `transferMultiAsset`, `transferMultiAssets`, or `transferMultiAssetWithFee`. This is only application when the intended transfer direction starts from a parachain. The xTokens pallet can be found [here](https://github.com/open-web3-stack/open-runtime-module-library/tree/master/xtokens).
+
+An example would look like:
+```typescript
+api.createTransferTransaction(
+	'1000',
+	'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
+	['xcUSDT'],
+	['1000000'],
+	{
+		format: 'call',
+		isLimited: false,
+		xcmVersion: 2,
+	}
+);
+```
+
+If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/paraToSystemTransferMultiAsset.js`
+
+### Foreign Asset Transfers
+
+Sending a foreign asset requires the input `assetIds` in `createTransferTransaction` to include the `multiLocation` of the asset you would like to send. If a multilocation is not passed it will not know if the asset you are sending is a foreign asset. If the `multiLocation` passed in has a `Parachain` id which matches the `destChainId` input for the transfer then the output will be a teleport, otherwise it will be a reserve backed transfer.
+
+An example would look like:
+```typescript
+api.createTransferTransaction(
+	'2125', // Note: the Parchain ID matches the MultiLocations 'Parachain' ID, making this a teleport of assets
+	'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
+	['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
+	['1000000000000'],
+	{
+		format: 'call',
+		isLimited: true,
+		xcmVersion: 3,
+	}
+)
+```
+
+If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/systemToParaTeleportForeignAssets.js`
+
+### Liquid Pool Asset Transfers
+
+Sending a liquidity token (from the poolAssets pallet) in Asset Hub is as simple as setting the option `transferLiquidToken` to true. That being said, it does have some nuances. A liquidity token transfer must be in the direction of a SystemToPara, and the inputted asset must be a valid integer as a string. The api will error if either of these conditions are not met.
+
+An example would look like:
+```typescript
+api.createTransferTransaction(
+	'2023',
+	'0xF977814e90dA44bFA03b6295A0616a897441aceC',
+	['0'],
+	['100000'],
+	{
+		format: 'call',
+		isLimited: true,
+		xcmVersion: 2,
+		transferLiquidToken: true,
+	}
+);
+```
+
+If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/systemToParaLpToken.js`
 
 #### **Local Transactions**
 
