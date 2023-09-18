@@ -209,6 +209,8 @@ api.createTransferTransaction(
 );
 ```
 
+If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/paraToSystemTransferMultiAsset.js`
+
 ### Foreign Asset Transfers
 
 Sending a foreign asset requires the input `assetIds` in `createTransferTransaction` to include the `multiLocation` of the asset you would like to send. If a multilocation is not passed it will not know if the asset you are sending is a foreign asset. If the `multiLocation` passed in has a `Parachain` id which matches the `destChainId` input for the transfer then the output will be a teleport, otherwise it will be a reserve backed transfer.
