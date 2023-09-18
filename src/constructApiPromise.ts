@@ -7,16 +7,31 @@ import { WsProvider } from '@polkadot/rpc-provider';
 import { fetchSafeXcmVersion } from './createXcmCalls/util/fetchSafeXcmVersion';
 
 /**
- * the api promise, specName and safeXcmVersion for the currently connected rpc endpoint
+ * Return value for `constructApiPromise`
  */
 export interface ApiInfo {
+	/**
+	 * Polkadot-js ApiPromise
+	 */
 	api: ApiPromise;
+	/**
+	 * SpecName of the chain which the api is connected to.
+	 */
 	specName: string;
+	/**
+	 * SafeXcmVersion for the chain which the api is connected too.
+	 */
 	safeXcmVersion: number;
 }
 
 /**
- * Construct an Polkadot-js ApiPromise, and and retrieve the specName of the chain
+ * Construct a Polkadot-js ApiPromise, and retrieve the specName of the chain.
+ *
+ * ```ts
+ * import { constructApiPromise } from '@substrate/asset-transfer-api';
+ *
+ * const { api, specName, safeXcmVersion } = constructApiPromise('wss://some_ws_url');
+ * ```
  *
  * @param wsUrl WebSocket Url to connect to.
  * @param opts ApiOptions

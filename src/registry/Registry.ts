@@ -1,6 +1,6 @@
 import { ASSET_HUB_CHAIN_ID } from '../consts';
 import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
-import type { AssetsTransferApiOpts } from '../types';
+import type { AssetTransferApiOpts } from '../types';
 import { findRelayChain, parseRegistry } from './';
 import type {
 	ChainInfo,
@@ -17,7 +17,7 @@ export class Registry {
 	readonly currentRelayRegistry: ChainInfo;
 	cache: ChainInfoRegistry;
 
-	constructor(specName: string, opts: AssetsTransferApiOpts) {
+	constructor(specName: string, opts: AssetTransferApiOpts) {
 		this.specName = specName;
 		this.registry = parseRegistry(opts);
 		this.relayChain = findRelayChain(this.specName, this.registry);

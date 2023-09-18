@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetsTransferApi } from '../AssetsTransferApi';
+import { AssetTransferApi } from '../AssetTransferApi';
 import { Registry } from '../registry';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { checkLocalTxInput } from './checkLocalTxInputs';
@@ -9,7 +9,7 @@ describe('checkLocalTxInput', () => {
 	const registry = new Registry('statemine', {});
 	const specName = 'statemine';
 
-	const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2);
+	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
 
 	it('Should correctly return Balances with an empty assetIds', async () => {
 		const res = await checkLocalTxInput(systemAssetsApi._api, [], ['10000'], specName, registry, false, false);

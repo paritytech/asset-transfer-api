@@ -2,7 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { AssetsTransferApi } from '../AssetsTransferApi';
+import { AssetTransferApi } from '../AssetTransferApi';
 import { Registry } from '../registry';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
@@ -12,8 +12,8 @@ import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
 type Test = [paysWithFeeDest: string, specName: string, multiAssets: MultiAsset[], api: ApiPromise, expected: number];
 
 describe('getFeeAssetItemIndex', () => {
-	const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2);
-	const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
+	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
+	const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
 	const registry = new Registry('statemine', {});
 
 	it('Should select and return the index of the correct multiassets when given their token symbols', async () => {

@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetsTransferApi } from '../AssetsTransferApi';
+import { AssetTransferApi } from '../AssetTransferApi';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';
 import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
@@ -26,7 +26,7 @@ import {
 	checkXcmVersionIsValidForPaysWithFeeDest,
 } from './checkXcmTxInputs';
 
-const parachainAssetsApi = new AssetsTransferApi(adjustedMockParachainApi, 'moonriver', 2);
+const parachainAssetsApi = new AssetTransferApi(adjustedMockParachainApi, 'moonriver', 2);
 const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
 		const [specName, testInputs, direction, errorMessage] = test;

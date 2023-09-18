@@ -2,10 +2,10 @@
 
 import registry from '@substrate/asset-transfer-api-registry';
 
-import type { AssetsTransferApiOpts } from '../types';
+import type { AssetTransferApiOpts } from '../types';
 import type { ChainInfoRegistry } from './types';
 
-export const parseRegistry = (assetsOpts: AssetsTransferApiOpts): ChainInfoRegistry => {
+export const parseRegistry = (assetsOpts: AssetTransferApiOpts): ChainInfoRegistry => {
 	if (assetsOpts.injectedRegistry) {
 		const { injectedRegistry } = assetsOpts;
 		const polkadot = injectedRegistry.polkadot;
