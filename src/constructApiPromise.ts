@@ -7,11 +7,20 @@ import { WsProvider } from '@polkadot/rpc-provider';
 import { fetchSafeXcmVersion } from './createXcmCalls/util/fetchSafeXcmVersion';
 
 /**
- * the api promise, specName and safeXcmVersion for the currently connected rpc endpoint
+ * Return value for `constructApiPromise`
  */
 export interface ApiInfo {
+	/**
+	 * Polkadot-js ApiPromise
+	 */
 	api: ApiPromise;
+	/**
+	 * SpecName of the chain which the api is connected too.
+	 */
 	specName: string;
+	/**
+	 * SafeXcmVersion for the chain which the api is connected too.
+	 */
 	safeXcmVersion: number;
 }
 

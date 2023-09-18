@@ -1,6 +1,9 @@
 module.exports = {
 	entryPoints: [
-		'./src/index.ts',
+		'./src/AssetsTransferApi.ts',
+		'./src/constructApiPromise.ts',
+		'./src/types.ts',
+		'./src/errors/BaseError.ts'
 	],
 	plugin: ["typedoc-theme-hierarchy"],
 	exclude: [
