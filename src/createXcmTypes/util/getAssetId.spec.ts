@@ -1,13 +1,13 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetsTransferApi } from '../../AssetsTransferApi';
+import { AssetTransferApi } from '../../AssetTransferApi';
 import { Registry } from '../../registry';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
 import { getAssetId } from './getAssetId';
 
 describe('getAssetId', () => {
 	const registry = new Registry('statemine', {});
-	const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2);
+	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
 	it('Should correctly return the integer assetId when given a valid native system chain token symbol', async () => {
 		const expected = '10';
 

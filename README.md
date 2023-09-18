@@ -63,15 +63,15 @@ Note: System refers to System Parachains like Asset Hub.
 run these examples: `yarn build:examples && node ./examples/build/examples/<file_to_run>.js`.
 
 ```typescript
-import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfer-api';
+import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api';
 
 // NOTE: This should all be wrapped in an asynchronous layer.
 
 // This constructs a polkadot-js ApiPromise, it is totally viable for one to construct their
-// own ApiPromise, and pass it into AssetsTransferApi, but keep in mind the `specName`, and `safeXcmVersion` are also necessary.
+// own ApiPromise, and pass it into AssetTransferApi, but keep in mind the `specName`, and `safeXcmVersion` are also necessary.
 const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westmint-rpc.polkadot.io');
 
-const assetsApi = new AssetsTransferApi(api, specName, safeXcmVersion);
+const assetsApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 const call = assetsApi.createTransferTransaction(
   '2001', // destChainId (If the destination is a relay chain put `0`)
@@ -86,10 +86,10 @@ const call = assetsApi.createTransferTransaction(
 )
 ```
 
-### AssetTransferApi & AssetsTransferApiOpts & TransferArgsOpts
+### AssetTransferApi & AssetTransferApiOpts & TransferArgsOpts
 
 ```Typescript
-// The AssetsTransferApi exposes one method as of now called: `createTransferTransaction`
+// The AssetTransferApi exposes one method as of now called: `createTransferTransaction`
 
 /**
  * Create an XCM transaction to transfer Assets, or native tokens from one
@@ -101,7 +101,7 @@ const call = assetsApi.createTransferTransaction(
  * @param amounts Array of the amounts of each token to transfer
  * @param opts Options
  */
-AssetsTransferApi.createTransferTransaction(
+AssetTransferApi.createTransferTransaction(
   	destChainId: string,
 	destAddr: string,
 	assetIds: string[],
@@ -112,9 +112,9 @@ AssetsTransferApi.createTransferTransaction(
 
 
 ```typescript
-// AssetsTransferApiOpts are the options for the `AssetsTransferApi`
+// AssetTransferApiOpts are the options for the `AssetTransferApi`
 
-type AssetsTransferApiOpts = {
+type AssetTransferApiOpts = {
 	/**
 	 * The injectedRegistry allows you to add custom values to the predefined initialized registry.
 	 * If you would like to see the registry you may visit https://github.com/paritytech/asset-transfer-api-registry/blob/main/registry.json
@@ -188,7 +188,7 @@ interface TransferArgsOpts<T extends Format> {
 
 ### Teleport and Reserve Transfer via polkadotXcm pallet
 
-The `AssetsTransferApi.createTransferTransaction` is able to infer what kind of transaction is necessary given the inputs. When sending cross chain transfers the api does a lot of validation to ensure the inputs are valid, and the assets either exist or dont. This process is done through a registry which is maintained in a seperate repo [here](https://github.com/paritytech/asset-transfer-api-registry). If the asset in not in the registry it will then lookup if that asset exists on chain and cache it if necessary. On chain verification is not always possible in respect to the direction the asset is being sent and what the destination chain is since we only maintain one api connection. Therefore, if you would like the inject information into the registry, you can using the `injectedRegistry` option for the `AssetsTransferApi`.
+The `AssetTransferApi.createTransferTransaction` is able to infer what kind of transaction is necessary given the inputs. When sending cross chain transfers the api does a lot of validation to ensure the inputs are valid, and the assets either exist or dont. This process is done through a registry which is maintained in a seperate repo [here](https://github.com/paritytech/asset-transfer-api-registry). If the asset in not in the registry it will then lookup if that asset exists on chain and cache it if necessary. On chain verification is not always possible in respect to the direction the asset is being sent and what the destination chain is since we only maintain one api connection. Therefore, if you would like the inject information into the registry, you can using the `injectedRegistry` option for the `AssetTransferApi`.
 
 ### Transferring assets via xTokens pallet
 

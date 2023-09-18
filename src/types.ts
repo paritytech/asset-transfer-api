@@ -112,7 +112,7 @@ export type Methods =
 	| 'transferMultiAssets'
 	| 'transferMultiAssetWithFee';
 
-export type AssetsTransferApiOpts = {
+export type AssetTransferApiOpts = {
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
 	assetHubApi?: ApiPromise;
 };

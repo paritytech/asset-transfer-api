@@ -1,15 +1,15 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetsTransferApi } from '../AssetsTransferApi';
+import { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import type { Format, TxResult } from '../types';
 
-const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
-const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2);
-const moonriverAssetsApi = new AssetsTransferApi(adjustedMockParachainApi, 'moonriver', 2);
+const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
+const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
+const moonriverAssetsApi = new AssetTransferApi(adjustedMockParachainApi, 'moonriver', 2);
 
 describe('AssetTransferApi Integration Tests', () => {
 	describe('createTransferTransaction', () => {

@@ -4,7 +4,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { Weight } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { AssetsTransferApi } from './AssetsTransferApi';
+import { AssetTransferApi } from './AssetTransferApi';
 import { adjustedMockParachainApi } from './testHelpers/adjustedMockParachainApi';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApi';
@@ -18,9 +18,9 @@ const mockSubmittableExt = mockSystemApi.registry.createType(
 	'0xfc041f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000'
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-const systemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2);
-const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
-const moonriverAssetsApi = new AssetsTransferApi(adjustedMockParachainApi, 'moonriver', 2);
+const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
+const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
+const moonriverAssetsApi = new AssetTransferApi(adjustedMockParachainApi, 'moonriver', 2);
 
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
@@ -350,7 +350,7 @@ describe('AssetTransferAPI', () => {
 					},
 				},
 			};
-			const mockSystemAssetsApi = new AssetsTransferApi(adjustedMockSystemApi, 'statemine', 2, {
+			const mockSystemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, {
 				injectedRegistry,
 			});
 

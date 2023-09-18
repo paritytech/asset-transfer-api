@@ -43,7 +43,7 @@ import { Registry } from './registry';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetCallType,
-	AssetsTransferApiOpts,
+	AssetTransferApiOpts,
 	AssetType,
 	ConstructedFormat,
 	Direction,
@@ -61,27 +61,27 @@ import { validateNumber } from './validate';
  * construct transactions for assets and estimating fees.
  *
  * ```ts
- * import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
+ * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  *
  * const main = () => {
  *   const { api, specName, safeXcmVersion } = await constructApiPromise('wss://some_ws_url');
- *   const assetsApi = new AssetsTransferApi(api, specName, safeXcmVersion);
+ *   const assetsApi = new AssetTransferApi(api, specName, safeXcmVersion);
  * }
  * ```
  *
  * @constructor api ApiPromise provided by Polkadot-js
  * @constructor specName The specName of the provided chains api
  * @constructor safeXcmVersion The safeXcmVersion of the chain.
- * @constructor opts AssetsTransferApiOpts
+ * @constructor opts AssetTransferApiOpts
  */
-export class AssetsTransferApi {
+export class AssetTransferApi {
 	readonly _api: ApiPromise;
-	readonly _opts: AssetsTransferApiOpts;
+	readonly _opts: AssetTransferApiOpts;
 	readonly _specName: string;
 	readonly _safeXcmVersion: number;
 	readonly registry: Registry;
 
-	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetsTransferApiOpts = {}) {
+	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetTransferApiOpts = {}) {
 		this._api = api;
 		this._opts = opts;
 		this._specName = specName;
