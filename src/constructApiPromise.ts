@@ -25,7 +25,7 @@ export interface ApiInfo {
 }
 
 /**
- * Construct an Polkadot-js ApiPromise, and and retrieve the specName of the chain.
+ * Construct a Polkadot-js ApiPromise, and retrieve the specName of the chain.
  *
  * ```ts
  * import { constructApiPromise } from '@substrate/asset-transfer-api';
