@@ -1,6 +1,6 @@
 module.exports = {
 	entryPoints: [
-		'./src/AssetsTransferApi.ts',
+		'./src/AssetTransferApi.ts',
 		'./src/constructApiPromise.ts',
 		'./src/types.ts',
 		'./src/errors/BaseError.ts'
