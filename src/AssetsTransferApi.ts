@@ -59,10 +59,10 @@ import { validateNumber } from './validate';
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
  * construct transactions for assets and estimating fees.
- * 
+ *
  * ```ts
  * import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
- * 
+ *
  * const main = () => {
  *   const { api, specName, safeXcmVersion } = await constructApiPromise('wss://some_ws_url');
  *   const assetsApi = new AssetsTransferApi(api, specName, safeXcmVersion);
@@ -92,10 +92,10 @@ export class AssetsTransferApi {
 	/**
 	 * Create an asset transfer transaction. This can be either locally on a systems parachain or relay chain,
 	 * or between chains using xcm.
-	 * 
+	 *
 	 * ```ts
 	 * import { TxResult } from '@substrate/asset-transfer-api'
-	 * 
+	 *
 	 * let callInfo: TxResult<'call'>;
 	 * try {
 	 *   callInfo = await assetsApi.createTransferTransaction(
@@ -448,7 +448,7 @@ export class AssetsTransferApi {
 	}
 	/**
 	 * Fetch estimated fee information for an extrinsic
-	 * 
+	 *
 	 * ```ts
 	 * const feeInfo = assetApi.fetchFeeInfo(tx, 'call');
 	 * console.log(feeInfo.toJSON());
@@ -494,7 +494,7 @@ export class AssetsTransferApi {
 	}
 	/**
 	 * Decodes the hex of an extrinsic into a string readable format.
-	 * 
+	 *
 	 * ```ts
 	 * const decodedExt = assetsApi.decodeExtrinsic(tx, 'call');
 	 * console.log(JSON.parse(decodedExt));
