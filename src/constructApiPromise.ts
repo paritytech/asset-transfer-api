@@ -15,7 +15,7 @@ export interface ApiInfo {
 	 */
 	api: ApiPromise;
 	/**
-	 * SpecName of the chain which the api is connected too.
+	 * SpecName of the chain which the api is connected to.
 	 */
 	specName: string;
 	/**
