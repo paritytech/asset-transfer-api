@@ -19,6 +19,8 @@
 <section class="tsd-panel tsd-comment">
 <div class="tsd-comment tsd-typography"><p>Holds open an api connection to a specified chain within the ApiPromise in order to help
 construct transactions for assets and estimating fees.</p>
+<pre><code class="language-ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">AssetsTransferApi</span><span class="hl-1">, </span><span class="hl-2">constructApiPromise</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;@substrate/asset-transfer-api&#39;</span><br/><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-7">main</span><span class="hl-1"> = () </span><span class="hl-5">=&gt;</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> { </span><span class="hl-6">api</span><span class="hl-1">, </span><span class="hl-6">specName</span><span class="hl-1">, </span><span class="hl-6">safeXcmVersion</span><span class="hl-1"> } = </span><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-7">constructApiPromise</span><span class="hl-1">(</span><span class="hl-3">&#39;wss://some_ws_url&#39;</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">assetsApi</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-7">AssetsTransferApi</span><span class="hl-1">(</span><span class="hl-2">api</span><span class="hl-1">, </span><span class="hl-2">specName</span><span class="hl-1">, </span><span class="hl-2">safeXcmVersion</span><span class="hl-1">);</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
 </div>
 <div class="tsd-comment tsd-typography"></div></section>
 <section class="tsd-panel tsd-hierarchy">
@@ -26,7 +28,7 @@ construct transactions for assets and estimating fees.</p>
 <ul class="tsd-hierarchy">
 <li><span class="target">AssetsTransferApi</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/paritytech/asset-transfer-api/blob/780dfdf/src/AssetsTransferApi.ts#L68">AssetsTransferApi.ts:68</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/paritytech/asset-transfer-api/blob/b031f56/src/AssetsTransferApi.ts#L77">AssetsTransferApi.ts:77</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -47,6 +49,8 @@ construct transactions for assets and estimating fees.</p>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Create an asset transfer transaction. This can be either locally on a systems parachain or relay chain,
 or between chains using xcm.</p>
+<pre><code class="language-ts"><span class="hl-0">import</span><span class="hl-1"> { </span><span class="hl-2">TxResult</span><span class="hl-1"> } </span><span class="hl-0">from</span><span class="hl-1"> </span><span class="hl-3">&#39;@substrate/asset-transfer-api&#39;</span><br/><br/><span class="hl-5">let</span><span class="hl-1"> </span><span class="hl-2">callInfo</span><span class="hl-1">: </span><span class="hl-9">TxResult</span><span class="hl-1">&lt;</span><span class="hl-3">&#39;call&#39;</span><span class="hl-1">&gt;;</span><br/><span class="hl-0">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-2">callInfo</span><span class="hl-1"> = </span><span class="hl-0">await</span><span class="hl-1"> </span><span class="hl-2">assetsApi</span><span class="hl-1">.</span><span class="hl-7">createTransferTransaction</span><span class="hl-1">(</span><br/><span class="hl-1">    </span><span class="hl-3">&#39;1000&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    </span><span class="hl-3">&#39;5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">    [</span><span class="hl-3">&#39;WND&#39;</span><span class="hl-1">],</span><br/><span class="hl-1">    [</span><span class="hl-3">&#39;1000000000000&#39;</span><span class="hl-1">],</span><br/><span class="hl-1">    {</span><br/><span class="hl-1">      </span><span class="hl-2">format:</span><span class="hl-1"> </span><span class="hl-3">&#39;call&#39;</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">isLimited:</span><span class="hl-1"> </span><span class="hl-5">true</span><span class="hl-1">,</span><br/><span class="hl-1">      </span><span class="hl-2">xcmVersion:</span><span class="hl-1"> </span><span class="hl-8">2</span><span class="hl-1">,</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  )</span><br/><span class="hl-1">} </span><span class="hl-0">catch</span><span class="hl-1"> (</span><span class="hl-2">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-7">error</span><span class="hl-1">(</span><span class="hl-2">e</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-0">throw</span><span class="hl-1"> </span><span class="hl-7">Error</span><span class="hl-1">(</span><span class="hl-2">e</span><span class="hl-1">);</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
 </div>
 <section class="tsd-panel">
 <h4>Type Parameters</h4>
@@ -84,13 +88,15 @@ or between chains using xcm.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/types.TxResult.html" class="tsd-signature-type tsd-kind-interface">TxResult</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/paritytech/asset-transfer-api/blob/780dfdf/src/AssetsTransferApi.ts#L93">AssetsTransferApi.ts:93</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/paritytech/asset-transfer-api/blob/b031f56/src/AssetsTransferApi.ts#L124">AssetsTransferApi.ts:124</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="decodeExtrinsic" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>decode<wbr/>Extrinsic</span><a href="#decodeExtrinsic" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="decodeExtrinsic.decodeExtrinsic-1"><span class="tsd-kind-call-signature">decode<wbr/>Extrinsic</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">encodedTransaction</span>, <span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><a href="#decodeExtrinsic.decodeExtrinsic-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Decodes the hex of an extrinsic into a string readable format</p>
+<div class="tsd-comment tsd-typography"><p>Decodes the hex of an extrinsic into a string readable format.</p>
+<pre><code class="language-ts"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">decodedExt</span><span class="hl-1"> = </span><span class="hl-2">assetsApi</span><span class="hl-1">.</span><span class="hl-7">decodeExtrinsic</span><span class="hl-1">(</span><span class="hl-2">tx</span><span class="hl-1">, </span><span class="hl-3">&#39;call&#39;</span><span class="hl-1">);</span><br/><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-7">log</span><span class="hl-1">(</span><span class="hl-6">JSON</span><span class="hl-1">.</span><span class="hl-7">parse</span><span class="hl-1">(</span><span class="hl-2">decodedExt</span><span class="hl-1">));</span>
+</code><button>Copy</button></pre>
 </div>
 <section class="tsd-panel">
 <h4>Type Parameters</h4>
@@ -113,13 +119,15 @@ or between chains using xcm.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/paritytech/asset-transfer-api/blob/780dfdf/src/AssetsTransferApi.ts#L709">AssetsTransferApi.ts:709</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/paritytech/asset-transfer-api/blob/b031f56/src/AssetsTransferApi.ts#L506">AssetsTransferApi.ts:506</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member"><a id="fetchFeeInfo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>fetch<wbr/>Fee<wbr/>Info</span><a href="#fetchFeeInfo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="fetchFeeInfo.fetchFeeInfo-1"><span class="tsd-kind-call-signature">fetch<wbr/>Fee<wbr/>Info</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">tx</span>, <span class="tsd-kind-parameter">format</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">RuntimeDispatchInfo</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">RuntimeDispatchInfoV1</span><span class="tsd-signature-symbol">&gt;</span><a href="#fetchFeeInfo.fetchFeeInfo-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="#icon-anchor"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Fetch estimated fee information for an extrinsic</p>
+<pre><code class="language-ts"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">feeInfo</span><span class="hl-1"> = </span><span class="hl-2">assetApi</span><span class="hl-1">.</span><span class="hl-7">fetchFeeInfo</span><span class="hl-1">(</span><span class="hl-2">tx</span><span class="hl-1">, </span><span class="hl-3">&#39;call&#39;</span><span class="hl-1">);</span><br/><span class="hl-2">console</span><span class="hl-1">.</span><span class="hl-7">log</span><span class="hl-1">(</span><span class="hl-2">feeInfo</span><span class="hl-1">.</span><span class="hl-7">toJSON</span><span class="hl-1">());</span>
+</code><button>Copy</button></pre>
 </div>
 <section class="tsd-panel">
 <h4>Type Parameters</h4>
@@ -142,7 +150,7 @@ or between chains using xcm.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type ">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">RuntimeDispatchInfo</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type ">RuntimeDispatchInfoV1</span><span class="tsd-signature-symbol">&gt;</span></h4>
 <div class="tsd-comment tsd-typography"></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/paritytech/asset-transfer-api/blob/780dfdf/src/AssetsTransferApi.ts#L424">AssetsTransferApi.ts:424</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/paritytech/asset-transfer-api/blob/b031f56/src/AssetsTransferApi.ts#L460">AssetsTransferApi.ts:460</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">

@@ -25,7 +25,13 @@ export interface ApiInfo {
 }
 
 /**
- * Construct an Polkadot-js ApiPromise, and and retrieve the specName of the chain
+ * Construct an Polkadot-js ApiPromise, and and retrieve the specName of the chain.
+ * 
+ * ```ts
+ * import { constructApiPromise } from '@substrate/asset-transfer-api';
+ * 
+ * const { api, specName, safeXcmVersion } = constructApiPromise('wss://some_ws_url');
+ * ```
  *
  * @param wsUrl WebSocket Url to connect to.
  * @param opts ApiOptions
