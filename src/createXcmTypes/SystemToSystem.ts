@@ -12,7 +12,6 @@ import type {
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
@@ -198,7 +197,7 @@ export const SystemToSystem: ICreateXcmType = {
 				isLiquidTokenTransfer
 			);
 
-			const systemChainId = getChainIdBySpecName(registry, specName);
+			const systemChainId = registry.lookupChainIdBySpecName(specName);
 
 			if (!isSystemChain(systemChainId)) {
 				throw new BaseError(
@@ -242,7 +241,7 @@ export const createSystemToSystemMultiAssets = async (
 	isLiquidTokenTransfer: boolean
 ): Promise<MultiAsset[]> => {
 	let multiAssets: MultiAsset[] = [];
-	const systemChainId = getChainIdBySpecName(registry, specName);
+	const systemChainId = registry.lookupChainIdBySpecName(specName);
 	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
 
 	if (!isSystemChain(systemChainId)) {
