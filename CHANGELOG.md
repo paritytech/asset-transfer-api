@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.1.0](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.5..v0.1.0)(2023-09-19)
+
+## Summary
+
+This release assumes the following is stable, and tested. The api is still not fully featured as we don't have support for certain things which will be listed below. Please review the documentation in the [README.md](https://github.com/paritytech/asset-transfer-api/blob/main/README.md) for any information, and feel free to file an issue if anything is unclear. 
+
+What is not supported:
+
+- ParaToPara
+- ParaToRelay
+- NFTs
+
+What is supported:
+
+- SystemToPara (ForeignAssets, LiquidPoolAssets, CrossChain Transfers)
+- SystemToRelay (CrossChain Transfers)
+- RelayToParachain (CrossChain Transfers)
+- RelayToSystem (CrossChain Transfers)
+- SystemToSystem (ForeignAssets, LiquidPoolAssets, CrossChain Transfers)
+- ParaToSystem (ForeignAssets, CrossChain Transfers via either Xtokens, or polkadotXcm pallet).
+    - NOTE: There is a performance bottleneck currently with the construction of xtokens pallet transfers. This is actively being looked into and will be resovled soon.
+- Decoding extrinsics
+- Estimating fees of extrinsics
+- Registry lookup
+
+## Breaking Change
+
+- fix!: replace AssetsTransferApi with AssetTransferApi
+
+## Docs
+
+- docs: enhance the documentation and add inline code examples
+- docs: update readme, and add use case examples
+
 ## [0.1.0-beta.5](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.4..v0.1.0-beta.5)(2023-09-13)
 
 ## Features
