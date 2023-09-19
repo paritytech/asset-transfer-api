@@ -15,10 +15,10 @@ What is not supported:
 What is supported:
 
 - SystemToPara (native assets, foreign assets, liquid pool assets, CrossChain Transfers)
-- SystemToRelay (CrossChain Transfers)
-- RelayToParachain (CrossChain Transfers)
-- RelayToSystem (CrossChain Transfers)
-- SystemToSystem (ForeignAssets, LiquidPoolAssets, CrossChain Transfers)
+- SystemToRelay (Native relay token, CrossChain Transfers)
+- RelayToParachain (Native relay token, CrossChain Transfers)
+- RelayToSystem (Native relay token, CrossChain Transfers)
+- SystemToSystem (CrossChain Transfers of the native relay token)
 - ParaToSystem (Asset Hub assets, foreign assets, CrossChain Transfers via either Xtokens, or polkadotXcm pallet).
     - NOTE: There is a performance bottleneck currently with the construction of xtokens pallet transfers. This is actively being looked into and will be resovled soon.
 - Decoding extrinsics
