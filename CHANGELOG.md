@@ -14,7 +14,7 @@ What is not supported:
 
 What is supported:
 
-- SystemToPara (ForeignAssets, LiquidPoolAssets, CrossChain Transfers)
+- SystemToPara (native assets, foreign assets, liquid pool assets, CrossChain Transfers)
 - SystemToRelay (CrossChain Transfers)
 - RelayToParachain (CrossChain Transfers)
 - RelayToSystem (CrossChain Transfers)
