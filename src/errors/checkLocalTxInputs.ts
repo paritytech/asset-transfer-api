@@ -5,7 +5,6 @@ import { ApiPromise } from '@polkadot/api';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getAssetId } from '../createXcmTypes/util/getAssetId';
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { checkLiquidTokenValidity } from '../errors/checkXcmTxInputs';
 import { Registry } from '../registry';
 import { BaseError, BaseErrorsEnum } from './BaseError';
@@ -65,7 +64,7 @@ export const checkLocalTxInput = async (
 		}
 	} else if (isLiquidTokenTransfer) {
 		const relayChainInfo = registry.currentRelayRegistry;
-		const systemChainId = getChainIdBySpecName(registry, specName);
+		const systemChainId = registry.lookupChainIdBySpecName(specName);
 		const systemParachainInfo = relayChainInfo[systemChainId];
 
 		// If anything is incorrect this will throw an error.
@@ -74,7 +73,7 @@ export const checkLocalTxInput = async (
 		return LocalTxType.PoolAssets;
 	} else {
 		const relayChainInfo = registry.currentRelayRegistry;
-		const systemChainId = getChainIdBySpecName(registry, specName);
+		const systemChainId = registry.lookupChainIdBySpecName(specName);
 		const systemParachainInfo = relayChainInfo[systemChainId];
 
 		/**

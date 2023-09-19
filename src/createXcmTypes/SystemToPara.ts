@@ -13,7 +13,6 @@ import type {
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
 import { MultiAsset } from '../types';
@@ -205,7 +204,7 @@ export const SystemToPara: ICreateXcmType = {
 				isLiquidTokenTransfer
 			);
 
-			const systemChainId = getChainIdBySpecName(registry, specName);
+			const systemChainId = registry.lookupChainIdBySpecName(specName);
 			if (!isSystemChain(systemChainId)) {
 				throw new BaseError(
 					`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`,
@@ -248,7 +247,7 @@ export const createSystemToParaMultiAssets = async (
 ): Promise<MultiAsset[]> => {
 	let multiAssets: MultiAsset[] = [];
 	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
-	const systemChainId = getChainIdBySpecName(registry, specName);
+	const systemChainId = registry.lookupChainIdBySpecName(specName);
 
 	if (!isSystemChain(systemChainId)) {
 		throw new BaseError(

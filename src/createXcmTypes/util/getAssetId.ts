@@ -9,7 +9,6 @@ import { Registry } from '../../registry';
 import { validateNumber } from '../../validate';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
-import { getChainIdBySpecName } from './getChainIdBySpecName';
 
 /**
  *
@@ -30,7 +29,7 @@ export const getAssetId = async (
 	specName: string,
 	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
-	const currentChainId = getChainIdBySpecName(registry, specName);
+	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
 	const isParachain = new BN(currentChainId).gte(new BN(2000));
 

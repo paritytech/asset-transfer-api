@@ -379,7 +379,20 @@ describe('Registry', () => {
 			expect(res).toEqual(expected);
 		});
 	});
-
+	describe('lookupChainIdBySpecName', () => {
+		it('Should return the correct result', () => {
+			const res = registry.lookupChainIdBySpecName('moonbeam');
+			expect(res).toEqual('2004');
+		});
+		it('Should correctly cache specNames when they have Ids', () => {
+			registry.lookupChainIdBySpecName('statemint');
+			registry.lookupChainIdBySpecName('moonbeam');
+			registry.lookupChainIdBySpecName('acala');
+			expect(registry.specNameToIdCache.has('statemint')).toEqual(true);
+			expect(registry.specNameToIdCache.has('moonbeam')).toEqual(true);
+			expect(registry.specNameToIdCache.has('acala')).toEqual(true);
+		});
+	});
 	describe('Registry cache', () => {
 		it('Should correctly add an asset to the assetsInfo cache ', () => {
 			registry.setAssetInCache('1984', 'USDt');
