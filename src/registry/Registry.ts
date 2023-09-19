@@ -1,5 +1,9 @@
-import { ASSET_HUB_CHAIN_ID } from '../consts';
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
+import {
+	ASSET_HUB_CHAIN_ID,
+	KUSAMA_ASSET_HUB_SPEC_NAMES,
+	POLKADOT_ASSET_HUB_SPEC_NAMES,
+	WESTEND_ASSET_HUB_SPEC_NAMES,
+} from '../consts';
 import type { AssetTransferApiOpts } from '../types';
 import { findRelayChain, parseRegistry } from './';
 import type {
@@ -18,6 +22,7 @@ export class Registry {
 	readonly currentRelayRegistry: ChainInfo;
 	readonly xcAssets: XCMChainInfoRegistry;
 	cache: ChainInfoRegistry;
+	specNameToIdCache: Map<string, string>;
 
 	constructor(specName: string, opts: AssetTransferApiOpts) {
 		this.specName = specName;
@@ -25,6 +30,7 @@ export class Registry {
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.xcAssets = this.registry.xcAssets;
+		this.specNameToIdCache = new Map<string, string>();
 		this.cache = {
 			polkadot: {},
 			kusama: {},
@@ -42,7 +48,7 @@ export class Registry {
 	 * Initialize the cache for the current chain that is connected
 	 */
 	private initializeCurrentChainIdCache() {
-		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const currentChainId = this.lookupChainIdBySpecName(this.specName);
 		if (!this.cache[this.relayChain][currentChainId]) {
 			this.cache[this.relayChain][currentChainId] = {
 				assetsInfo: {},
@@ -74,7 +80,7 @@ export class Registry {
 	 * @param assetKey string
 	 */
 	public cacheLookupForeignAsset(assetKey: string): ForeignAssetsData | undefined {
-		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const currentChainId = this.lookupChainIdBySpecName(this.specName);
 		const lookup = this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'];
 
 		return lookup[assetKey] ? lookup[assetKey] : undefined;
@@ -87,7 +93,7 @@ export class Registry {
 	 * @param assetValue ForeignAssetData
 	 */
 	public setForeignAssetInCache(assetKey: string, assetValue: ForeignAssetsData) {
-		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const currentChainId = this.lookupChainIdBySpecName(this.specName);
 
 		this.cache[this.relayChain][currentChainId]['foreignAssetsInfo'][assetKey] = assetValue;
 	}
@@ -98,7 +104,7 @@ export class Registry {
 	 * @param assetKey string
 	 */
 	public cacheLookupPoolAsset(assetKey: string): { lpToken: string; pairInfo: string } | undefined {
-		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const currentChainId = this.lookupChainIdBySpecName(this.specName);
 		const lookup = this.cache[this.relayChain][currentChainId]['poolPairsInfo'];
 
 		return lookup[assetKey] ? lookup[assetKey] : undefined;
@@ -111,7 +117,7 @@ export class Registry {
 	 * @param assetValue { lpToken: string; pairInfo: string }
 	 */
 	public setLiquidPoolTokenInCache(assetKey: string, assetValue: { lpToken: string; pairInfo: string }) {
-		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const currentChainId = this.lookupChainIdBySpecName(this.specName);
 
 		this.cache[this.relayChain][currentChainId]['poolPairsInfo'][assetKey] = assetValue;
 	}
@@ -122,7 +128,7 @@ export class Registry {
 	 * @param assetKey string
 	 */
 	public cacheLookupAsset(assetKey: string): string | undefined {
-		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const currentChainId = this.lookupChainIdBySpecName(this.specName);
 		const lookup = this.cache[this.relayChain][currentChainId]['assetsInfo'];
 
 		return lookup[assetKey] ? lookup[assetKey] : undefined;
@@ -135,7 +141,7 @@ export class Registry {
 	 * @param assetValue string
 	 */
 	public setAssetInCache(assetKey: string, assetValue: string) {
-		const currentChainId = getChainIdBySpecName(this, this.specName);
+		const currentChainId = this.lookupChainIdBySpecName(this.specName);
 
 		this.cache[this.relayChain][currentChainId]['assetsInfo'][assetKey] = assetValue;
 	}
@@ -226,5 +232,37 @@ export class Registry {
 			return [Object.assign({}, this.currentRelayRegistry[id], { chainId: id })];
 		}
 		return [];
+	}
+
+	/**
+	 * Return the Id of a parachain given its specName.
+	 *
+	 * @param specName
+	 */
+	public lookupChainIdBySpecName(specName: string): string {
+		if (this.specNameToIdCache.has(specName)) {
+			return this.specNameToIdCache.get(specName) as string;
+		}
+
+		if (
+			POLKADOT_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
+			KUSAMA_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
+			WESTEND_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase())
+		) {
+			this.specNameToIdCache.set(specName, '1000');
+			return '1000';
+		}
+
+		const paraIds = Object.keys(this.currentRelayRegistry);
+		for (let i = 0; i < paraIds.length; i++) {
+			const id = paraIds[i];
+			const chain = this.currentRelayRegistry[id];
+			if (chain.specName.toLowerCase() === specName.toLowerCase()) {
+				this.specNameToIdCache.set(specName, id);
+				return id;
+			}
+		}
+
+		return '';
 	}
 }

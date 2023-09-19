@@ -26,7 +26,6 @@ import {
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
-import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
@@ -161,7 +160,7 @@ export class AssetTransferApi {
 		 */
 		const addr = sanitizeAddress(destAddr);
 
-		const originChainId = getChainIdBySpecName(registry, _specName);
+		const originChainId = registry.lookupChainIdBySpecName(_specName);
 		const isLocalSystemTx = isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId;
 		const isLocalRelayTx = destChainId === '0' && RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
 		const relayChainID = RELAY_CHAIN_IDS[0];
