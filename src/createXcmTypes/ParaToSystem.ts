@@ -36,7 +36,6 @@ import { constructForeignAssetMultiLocationFromAssetId } from './util/constructF
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
-import { getChainIdBySpecName } from './util/getChainIdBySpecName';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
@@ -260,7 +259,7 @@ export const ParaToSystem: ICreateXcmType = {
 			assetId = await getAssetId(api, registry, assetId, specName);
 		}
 
-		const paraId = getChainIdBySpecName(registry, specName);
+		const paraId = registry.lookupChainIdBySpecName(specName);
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
 
 		let xcAsset = '';
@@ -345,7 +344,7 @@ const createXTokensMultiAssets = async (
 			assetId = await getAssetId(api, registry, assetId, specName);
 		}
 
-		const paraId = getChainIdBySpecName(registry, specName);
+		const paraId = registry.lookupChainIdBySpecName(specName);
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
 
 		let xcAsset = '';
@@ -453,7 +452,7 @@ const createParaToSystemMultiAssets = async (
 				assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
 			}
 
-			const paraId = getChainIdBySpecName(registry, specName);
+			const paraId = registry.lookupChainIdBySpecName(specName);
 			const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
 
 			let xcAsset = '';

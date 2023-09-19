@@ -588,7 +588,7 @@ export const checkParaAssets = async (
 			}
 		}
 
-		const paraId = getChainIdBySpecName(registry, specName);
+		const paraId = registry.lookupChainIdBySpecName(specName);
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
 
 		if (!paraXcAssets || paraXcAssets.length === 0) {
