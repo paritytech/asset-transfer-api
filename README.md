@@ -22,12 +22,6 @@
 
 Find full documentation [here](https://paritytech.github.io/asset-transfer-api/), for quick start guide read below. All examples can be found [here](https://github.com/paritytech/asset-transfer-api/tree/main/examples/).
 
-## About
-
-WARNING: This package is in stable beta, and does not support sending assets in all directions. Read **Current Cross-chain Support** for more info.
-
-**BETA**: This package is in stable beta.
-
 **Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Asset Hub (Polkadot and Kusama). It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
 
 ### Current Cross-chain Support
