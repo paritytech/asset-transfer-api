@@ -19,7 +19,7 @@ What is supported:
 - RelayToParachain (CrossChain Transfers)
 - RelayToSystem (CrossChain Transfers)
 - SystemToSystem (ForeignAssets, LiquidPoolAssets, CrossChain Transfers)
-- ParaToSystem (ForeignAssets, CrossChain Transfers via either Xtokens, or polkadotXcm pallet).
+- ParaToSystem (Asset Hub assets, foreign assets, CrossChain Transfers via either Xtokens, or polkadotXcm pallet).
     - NOTE: There is a performance bottleneck currently with the construction of xtokens pallet transfers. This is actively being looked into and will be resovled soon.
 - Decoding extrinsics
 - Estimating fees of extrinsics
