@@ -9,7 +9,6 @@ import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { CheckXcmTxInputsOpts } from '../createXcmTypes/types';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
@@ -433,7 +432,7 @@ const checkSystemAssets = async (
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer?: boolean
 ) => {
-	const currentChainId = getChainIdBySpecName(registry, specName);
+	const currentChainId = registry.lookupChainIdBySpecName(specName);
 
 	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
@@ -685,7 +684,7 @@ export const checkIsValidSystemChainAssetId = async (
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean
 ) => {
-	const systemChainId = getChainIdBySpecName(registry, specName);
+	const systemChainId = registry.lookupChainIdBySpecName(specName);
 	const systemParachainInfo = relayChainInfo[systemChainId];
 
 	if (typeof assetId === 'string') {
