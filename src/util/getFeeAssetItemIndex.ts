@@ -5,7 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { getAssetId } from '../createXcmTypes/util/getAssetId';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
-import { MultiAsset } from '../types';
+import { FungibleStrMultiAsset } from '../types';
 import { validateNumber } from '../validate/validateNumber';
 
 /**
@@ -20,7 +20,7 @@ export const getFeeAssetItemIndex = async (
 	api: ApiPromise,
 	registry: Registry,
 	paysWithFeeDest: string,
-	multiAssets: MultiAsset[],
+	multiAssets: FungibleStrMultiAsset[],
 	specName: string,
 	isForeignAssetsTransfer?: boolean
 ): Promise<number> => {

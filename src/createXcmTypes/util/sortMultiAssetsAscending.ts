@@ -1,10 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { JunctionV1 } from '@polkadot/types/interfaces';
-import { ITuple } from '@polkadot/types-codec/types';
+import type { XcmV2Junction, XcmV3Junction } from '@polkadot/types/lookup';
+import type { ITuple } from '@polkadot/types-codec/types';
 import { BN } from 'bn.js';
 
-import { MultiAsset, XcmMultiAsset } from '../../types';
+import type { FungibleObjMultiAsset, FungibleStrMultiAsset } from '../../types';
 import { validateNumber } from '../../validate';
 
 /**
@@ -12,17 +12,19 @@ import { validateNumber } from '../../validate';
  *
  * @param multiAssets MultiAsset[]
  */
-export const sortMultiAssetsAscending = (multiAssets: MultiAsset[] | XcmMultiAsset[]) => {
+export const sortMultiAssetsAscending = (multiAssets: FungibleStrMultiAsset[] | FungibleObjMultiAsset[]) => {
 	return multiAssets.sort((a, b) => {
 		let parentSortOrder = 0; // sort order based on parents value
 		let interiorMultiLocationTypeSortOrder = 0; // sort order based on interior multilocation type value (e.g. X1 < X2)
 		let interiorMultiLocationSortOrder = 0; // sort order based on multilocation junction values
 		let fungibleSortOrder = 0; // sort order based on fungible value
 		if (typeof a.fun.Fungible === 'string' && typeof b.fun.Fungible === 'string') {
-			fungibleSortOrder = (a as MultiAsset).fun.Fungible.localeCompare((b as MultiAsset).fun.Fungible);
+			fungibleSortOrder = (a as FungibleStrMultiAsset).fun.Fungible.localeCompare(
+				(b as FungibleStrMultiAsset).fun.Fungible
+			);
 		} else {
-			fungibleSortOrder = (a as XcmMultiAsset).fun.Fungible.Fungible.localeCompare(
-				(b as XcmMultiAsset).fun.Fungible.Fungible
+			fungibleSortOrder = (a as FungibleObjMultiAsset).fun.Fungible.Fungible.localeCompare(
+				(b as FungibleObjMultiAsset).fun.Fungible.Fungible
 			);
 		}
 
@@ -47,8 +49,8 @@ export const sortMultiAssetsAscending = (multiAssets: MultiAsset[] | XcmMultiAss
 };
 
 const getSameJunctionMultiLocationSortOrder = (
-	a: MultiAsset | XcmMultiAsset,
-	b: MultiAsset | XcmMultiAsset
+	a: FungibleStrMultiAsset | FungibleObjMultiAsset,
+	b: FungibleStrMultiAsset | FungibleObjMultiAsset
 ): number => {
 	let sortOrder = 0;
 
@@ -103,14 +105,25 @@ const getSameJunctionMultiLocationSortOrder = (
 	return sortOrder;
 };
 
+type UnionJunction = XcmV3Junction | XcmV2Junction;
+
 type MultiLocationJunctions =
-	| [JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1];
+	| [UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
+	| [
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction
+	  ];
 
 enum MultiLocationJunctionType {
 	Parachain,
@@ -122,6 +135,7 @@ enum MultiLocationJunctionType {
 	GeneralKey,
 	OnlyChild,
 	Plurality,
+	GlobalConsensus,
 }
 
 const getSortOrderForX2ThroughX8 = (a: ITuple<MultiLocationJunctions>, b: ITuple<MultiLocationJunctions>): number => {

@@ -53,6 +53,7 @@ import {
 	TxResult,
 	UnsignedTransaction,
 } from './types';
+import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { validateNumber } from './validate';
 
 /**
@@ -169,6 +170,8 @@ export class AssetTransferApi {
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, _specName, xcmDirection, assetIds[0]);
 		const xcmPallet = establishXcmPallet(_api, xcmDirection, isForeignAssetsTransfer, isPrimaryParachainNativeAsset);
+		const declaredXcmVersion = xcmVersion === undefined ? _safeXcmVersion : xcmVersion;
+		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
 		/**
 		 * Create a local asset transfer on a system parachain
@@ -227,7 +230,7 @@ export class AssetTransferApi {
 							: poolAssets.transfer(_api, addr, assetId, amount);
 					palletMethod = `poolAssets::${method}`;
 				} else {
-					const multiLocation = _api.registry.createType('MultiLocation', JSON.parse(assetId));
+					const multiLocation = resolveMultiLocation(_api, assetId, declaredXcmVersion);
 					tx =
 						method === 'transferKeepAlive'
 							? foreignAssets.transferKeepAlive(_api, addr, multiLocation, amount)
@@ -255,8 +258,6 @@ export class AssetTransferApi {
 			}
 		}
 
-		const declaredXcmVersion = xcmVersion === undefined ? _safeXcmVersion : xcmVersion;
-		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 		await checkXcmTxInputs(
 			_api,
 			destChainId,

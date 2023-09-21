@@ -2,7 +2,7 @@
 
 import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
-import { MultiAsset } from '../types';
+import { FungibleStrMultiAsset } from '../types';
 import { SystemToPara } from './SystemToPara';
 import { createSystemToParaMultiAssets } from './SystemToPara';
 
@@ -300,16 +300,16 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 	describe('createSystemToParaMultiAssets', () => {
 		it('Should correctly create system multi assets for SystemToPara xcm direction', async () => {
-			const expected: MultiAsset[] = [
+			const expected: FungibleStrMultiAsset[] = [
 				{
 					fun: {
 						Fungible: '300000000000000',
 					},
 					id: {
-						Concrete: mockSystemApi.registry.createType('MultiLocation', {
-							interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+						Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+							interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
-							}),
+							},
 							parents: 0,
 						}),
 					},
@@ -319,10 +319,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 						Fungible: '100000000000000',
 					},
 					id: {
-						Concrete: mockSystemApi.registry.createType('MultiLocation', {
-							interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+						Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+							interior: {
 								Here: '',
-							}),
+							},
 							parents: 1,
 						}),
 					},
@@ -338,6 +338,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				specName,
 				assets,
 				registry,
+				2,
 				false,
 				false
 			);

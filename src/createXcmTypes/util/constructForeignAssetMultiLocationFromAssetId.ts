@@ -1,7 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { ApiPromise } from '@polkadot/api';
-import { MultiLocation } from '@polkadot/types/interfaces';
+import type { ApiPromise } from '@polkadot/api';
+import type { AnyJson } from '@polkadot/types/types';
+
+import { UnionXcmMultiLocation } from '../../types';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation';
 
 /**
  * constructs a foreign asset multilocation from an assetId string
@@ -15,10 +18,11 @@ import { MultiLocation } from '@polkadot/types/interfaces';
 export const constructForeignAssetMultiLocationFromAssetId = (
 	api: ApiPromise,
 	multiLocationAssetId: string,
-	foreignAssetsPalletInstance: string
-): MultiLocation => {
+	foreignAssetsPalletInstance: string,
+	xcmVersion: number
+): UnionXcmMultiLocation => {
 	const numberOfAdditionalJunctions = 1;
-	const assetIdMultiLocation = api.registry.createType('MultiLocation', JSON.parse(multiLocationAssetId));
+	const assetIdMultiLocation = resolveMultiLocation(api, multiLocationAssetId, xcmVersion);
 
 	// start of the junctions values of the assetId. + 1 to ignore the '['
 	const junctionsStartIndex = multiLocationAssetId.indexOf('[');
@@ -33,9 +37,10 @@ export const constructForeignAssetMultiLocationFromAssetId = (
 	const numberOfJunctions = `"X${junctionCount}"`;
 	const palletInstanceJunctionStr = `{"PalletInstance":"${foreignAssetsPalletInstance}"},`;
 	const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
+	const multiLocation = {
+		parents: assetIdMultiLocation.parents.toNumber(),
+		interior: JSON.parse(interiorMultiLocationStr) as AnyJson,
+	};
 
-	return api.registry.createType('MultiLocation', {
-		parents: assetIdMultiLocation.parents,
-		interior: api.registry.createType('InteriorMultiLocation', JSON.parse(interiorMultiLocationStr)),
-	});
+	return resolveMultiLocation(api, multiLocation, xcmVersion);
 };

@@ -1,13 +1,15 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { MultiAsset, XcmMultiAsset } from '../../types';
+import type { FungibleObjMultiAsset, FungibleStrMultiAsset } from '../../types';
 
 /**
  * This removes duplicate multi assets when given a sorted list
  *
  * @param multiAssets MulitAsset[]
  */
-export const dedupeMultiAssets = (multiAssets: MultiAsset[] | XcmMultiAsset[]): MultiAsset[] | XcmMultiAsset[] => {
+export const dedupeMultiAssets = (
+	multiAssets: FungibleStrMultiAsset[] | FungibleObjMultiAsset[]
+): FungibleStrMultiAsset[] | FungibleObjMultiAsset[] => {
 	const dedupedAssets = [];
 
 	for (let i = 0; i < multiAssets.length; i++) {
@@ -27,8 +29,8 @@ export const dedupeMultiAssets = (multiAssets: MultiAsset[] | XcmMultiAsset[]): 
 	}
 
 	if (typeof multiAssets[0].fun.Fungible === 'string') {
-		return dedupedAssets as MultiAsset[];
+		return dedupedAssets as FungibleStrMultiAsset[];
 	}
 
-	return dedupedAssets as XcmMultiAsset[];
+	return dedupedAssets as FungibleObjMultiAsset[];
 };

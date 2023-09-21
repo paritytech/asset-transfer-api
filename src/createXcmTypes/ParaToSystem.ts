@@ -4,26 +4,27 @@ import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
 import type {
 	MultiAssetsV2,
-	MultiLocation,
 	VersionedMultiAssets,
 	VersionedMultiLocation,
 	WeightLimitV2,
 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
+import type { AnyJson } from '@polkadot/types/types';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
 import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
 import {
 	Direction,
-	MultiAsset,
+	FungibleObjMultiAsset,
+	FungibleStrMultiAsset,
 	XCMDestBenificiary,
-	XcmMultiAsset,
 	XcmMultiLocation,
 	XcmVersionedMultiAsset,
 } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate';
 import type {
 	CreateAssetsOpts,
@@ -125,6 +126,7 @@ export const ParaToSystem: ICreateXcmType = {
 			amounts,
 			specName,
 			assets,
+			xcmVersion,
 			opts.registry,
 			opts.isForeignAssetsTransfer
 		);
@@ -193,6 +195,7 @@ export const ParaToSystem: ICreateXcmType = {
 				normalizeArrToStr(amounts),
 				specName,
 				assetIds,
+				xcmVersion,
 				registry,
 				opts.isForeignAssetsTransfer
 			);
@@ -283,9 +286,9 @@ export const ParaToSystem: ICreateXcmType = {
 			}
 		}
 
-		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys).xcmV1MultiLocation.v1;
+		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys).xcmV1MultiLocation.v1 as unknown as AnyJson;
 
-		const concreteMultiLocation = api.registry.createType('MultiLocation', xcAssetMultiLocation);
+		const concreteMultiLocation = resolveMultiLocation(api, xcAssetMultiLocation, xcmVersion);
 
 		const multiAsset = {
 			id: {
@@ -297,13 +300,9 @@ export const ParaToSystem: ICreateXcmType = {
 		};
 
 		if (xcmVersion === 2) {
-			return {
-				V2: multiAsset,
-			};
+			return { V2: multiAsset };
 		} else {
-			return {
-				V3: multiAsset,
-			};
+			return { V3: multiAsset };
 		}
 	},
 
@@ -311,7 +310,7 @@ export const ParaToSystem: ICreateXcmType = {
 		const { paysWithFeeDest, xcmVersion } = opts;
 
 		if (xcmVersion && paysWithFeeDest) {
-			const paysWithFeeMultiLocation = api.registry.createType('MultiLocation', JSON.parse(paysWithFeeDest));
+			const paysWithFeeMultiLocation = resolveMultiLocation(api, paysWithFeeDest, xcmVersion);
 
 			if (xcmVersion === 2) {
 				return {
@@ -348,7 +347,7 @@ const createXTokensMultiAssets = async (
 	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
 
-	let multiAssets: XcmMultiAsset[] = [];
+	let multiAssets: FungibleObjMultiAsset[] = [];
 
 	for (let i = 0; i < assets.length; i++) {
 		const amount = amounts[i];
@@ -381,9 +380,9 @@ const createXTokensMultiAssets = async (
 				}
 			}
 		}
-		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys).xcmV1MultiLocation.v1;
+		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys).xcmV1MultiLocation.v1 as unknown as AnyJson;
 
-		const concreteMultiLocation = api.registry.createType('MultiLocation', xcAssetMultiLocation);
+		const concreteMultiLocation = resolveMultiLocation(api, xcAssetMultiLocation, xcmVersion);
 
 		const multiAsset = {
 			id: {
@@ -397,8 +396,8 @@ const createXTokensMultiAssets = async (
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as XcmMultiAsset[];
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as XcmMultiAsset[];
+	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleObjMultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleObjMultiAsset[];
 	if (xcmVersion === 2) {
 		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
 			'XcmV2MultiassetMultiAssets',
@@ -437,14 +436,15 @@ const createParaToSystemMultiAssets = async (
 	amounts: string[],
 	specName: string,
 	assets: string[],
+	xcmVersion: number,
 	registry: Registry,
 	isForeignAssetsTransfer: boolean
-): Promise<MultiAsset[]> => {
+): Promise<FungibleStrMultiAsset[]> => {
 	const { xcAssets } = registry;
 	const currentRelayChainSpecName = registry.relayChain;
 	const palletId = fetchPalletInstanceId(api, false, isForeignAssetsTransfer);
-	let multiAssets: MultiAsset[] = [];
-	let concreteMultiLocation: MultiLocation;
+	let multiAssets: FungibleStrMultiAsset[] = [];
+	let concreteMultiLocation;
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 		registry,
 		specName,
@@ -453,10 +453,14 @@ const createParaToSystemMultiAssets = async (
 	);
 
 	if (isPrimaryParachainNativeAsset) {
-		concreteMultiLocation = api.registry.createType('MultiLocation', {
-			parents: 0,
-			interior: { Here: '' },
-		});
+		concreteMultiLocation = resolveMultiLocation(
+			api,
+			{
+				parents: 0,
+				interior: { Here: '' },
+			},
+			xcmVersion
+		);
 
 		const multiAsset = {
 			id: {
@@ -500,12 +504,12 @@ const createParaToSystemMultiAssets = async (
 					}
 				}
 			}
-			const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys).xcmV1MultiLocation.v1;
+			const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys).xcmV1MultiLocation.v1 as unknown as AnyJson;
 
 			if (isForeignAssetsTransfer) {
-				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(api, assetId, palletId);
+				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(api, assetId, palletId, xcmVersion);
 			} else {
-				concreteMultiLocation = api.registry.createType('MultiLocation', xcAssetMultiLocation);
+				concreteMultiLocation = resolveMultiLocation(api, xcAssetMultiLocation, xcmVersion);
 			}
 
 			const multiAsset = {
@@ -520,9 +524,9 @@ const createParaToSystemMultiAssets = async (
 		}
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
+	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleStrMultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as MultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleStrMultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

@@ -1,9 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import { u8 } from '@polkadot/types';
-import { InteriorMultiLocation, MultiLocation } from '@polkadot/types/interfaces';
+import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
+import type { XcmV2MultiLocation, XcmV3MultiLocation } from '@polkadot/types/lookup';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
@@ -223,21 +223,21 @@ export interface ChainInfo {
 	specVersion: string;
 }
 
-export type MultiAsset = {
+export type FungibleStrMultiAsset = {
 	fun: {
 		Fungible: string;
 	};
 	id: {
-		Concrete: MultiLocation;
+		Concrete: UnionXcmMultiLocation;
 	};
 };
 
-export type XcmMultiAsset = {
+export type FungibleObjMultiAsset = {
 	fun: {
 		Fungible: { Fungible: string };
 	};
 	id: {
-		Concrete: MultiLocation;
+		Concrete: UnionXcmMultiLocation;
 	};
 };
 
@@ -359,26 +359,20 @@ export type XCMDestBenificiary =
 	| XCMV2ParachainDestBenificiary
 	| XCMV3ParachainDestBenificiary;
 
-export interface XCMV2MultiAsset {
+export interface IXcmV2MultiAsset {
 	V2: {
 		id: {
-			Concrete: {
-				parents: u8 | string | number;
-				interior: InteriorMultiLocation;
-			};
+			Concrete: UnionXcmMultiLocation;
 		};
 		fun: {
 			Fungible: { Fungible: number | string };
 		};
 	};
 }
-export interface XCMV3MultiAsset {
+export interface IXcmV3MultiAsset {
 	V3: {
 		id: {
-			Concrete: {
-				parents: u8 | string | number;
-				interior: InteriorMultiLocation;
-			};
+			Concrete: UnionXcmMultiLocation;
 		};
 		fun: {
 			Fungible: { Fungible: number | string };
@@ -386,24 +380,24 @@ export interface XCMV3MultiAsset {
 	};
 }
 
-export type XcmVersionedMultiAsset = XCMV2MultiAsset | XCMV3MultiAsset;
+export type XcmVersionedMultiAsset = IXcmV2MultiAsset | IXcmV3MultiAsset;
 
-export interface XCMV2MultiLocation {
+export interface VersionedXcmV2MultiLocation {
 	V2: {
 		id: {
-			Concrete: MultiLocation;
+			Concrete: UnionXcmMultiLocation;
 		};
 	};
 }
-export interface XCMV3MultiLocation {
+export interface VersionedXcmV3MultiLocation {
 	V3: {
 		id: {
-			Concrete: MultiLocation;
+			Concrete: UnionXcmMultiLocation;
 		};
 	};
 }
 
-export type XcmMultiLocation = XCMV2MultiLocation | XCMV3MultiLocation;
+export type XcmMultiLocation = VersionedXcmV2MultiLocation | VersionedXcmV3MultiLocation;
 
 export interface XcmWeightUnlimited {
 	Unlimited: null | undefined;
@@ -451,3 +445,5 @@ export type AssetMetadata = {
 	decimals: string;
 	isFrozen: boolean;
 };
+
+export type UnionXcmMultiLocation = XcmV3MultiLocation | XcmV2MultiLocation;
