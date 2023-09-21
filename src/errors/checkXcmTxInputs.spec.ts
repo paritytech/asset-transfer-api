@@ -721,37 +721,13 @@ describe('checkParaAssets', () => {
 		}).rejects.toThrowError('(ParaToSystem) integer assetId 2096586909097964981698161 not found in moonriver');
 	});
 	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {
-		const assetId = '311091173110107856861649819128533077277';
+		const assetId = '999999999999999999999999999999999999999';
 		const specName = 'moonriver';
-		const registry = new Registry(specName, {
-			injectedRegistry: {
-				kusama: {
-					'2000': {
-						tokens: ['KAR', 'KUSD', 'KSM', 'LKSM', 'BNC', 'VSKSM', 'PHA', 'KINT', 'KBTC', 'TAI'],
-						assetsInfo: {},
-						foreignAssetsInfo: {},
-						poolPairsInfo: {},
-						specName: 'karura',
-						xcAssetsData: [
-							{
-								paraID: 1000,
-								symbol: 'RMRK',
-								decimals: 10,
-								xcmV1MultiLocation:
-									'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
-								asset: {
-									ForeignAsset: '0',
-								},
-							},
-						],
-					},
-				},
-			},
-		});
+		const registry = new Registry(specName, {});
 
 		await expect(async () => {
 			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
-		}).rejects.toThrowError('unable to identify xcAsset with ID 311091173110107856861649819128533077277');
+		}).rejects.toThrowError('unable to identify xcAsset with ID 999999999999999999999999999999999999999');
 	});
 
 	describe('cache', () => {
