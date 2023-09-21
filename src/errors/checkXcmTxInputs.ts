@@ -588,6 +588,7 @@ export const checkParaAssets = async (
 			}
 		}
 
+		// Below checks when the asset exists on chain but not in our xcAssets registry.
 		const paraId = registry.lookupChainIdBySpecName(specName);
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
 
