@@ -37,13 +37,7 @@ const main = async () => {
 			}
 		);
 
-		console.log(
-			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(
-				callInfo,
-				null,
-				4
-			)}${RESET}`
-		);
+		
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);

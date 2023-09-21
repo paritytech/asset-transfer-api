@@ -37,20 +37,14 @@ const main = async () => {
 			}
 		);
 
-		console.log(callInfo);
+		
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);
 	}
 
 	const decoded = assetApi.decodeExtrinsic(callInfo.tx, 'call');
-	console.log(
-		`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(
-			JSON.parse(decoded),
-			null,
-			4
-		)}${RESET}`
-	);
+	
 };
 
 main().finally(() => process.exit());

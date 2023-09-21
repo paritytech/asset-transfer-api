@@ -31,9 +31,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * @param remove Remove lines before that were cleared by std
  */
 const logWithDate = (log: string, remove?: boolean) => {
-	remove
-		? console.log(`\r${formatDate(new Date())}          ${log}`)
-		: console.log(`${formatDate(new Date())}          ${log}`);
+	
 };
 
 /**
@@ -229,10 +227,10 @@ const main = async () => {
 							);
 							const { docs, method, section } = decoded;
 
-							console.log(`${section}.${method}: ${docs.join(' ')}`);
+							
 						} else {
 							// Other, CannotLookup, BadOrigin, no extra info
-							console.log(error.toString());
+							
 						}
 					}
 				);
