@@ -18,7 +18,8 @@ describe('constructForeignAssetMultiLocationFromAssetId', () => {
 		const multiLocation = constructForeignAssetMultiLocationFromAssetId(
 			mockSystemApi,
 			assetId,
-			foreignAssetsPalletInstance
+			foreignAssetsPalletInstance,
+			2
 		);
 
 		expect(JSON.stringify(multiLocation)).toEqual(JSON.stringify(expectedMultiLocation));

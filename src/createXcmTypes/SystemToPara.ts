@@ -3,9 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
 import type {
-	InteriorMultiLocation,
 	MultiAssetsV2,
-	MultiLocation,
 	VersionedMultiAssets,
 	VersionedMultiLocation,
 	WeightLimitV2,
@@ -15,7 +13,7 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
-import { MultiAsset } from '../types';
+import { FungibleStrMultiAsset, UnionXcmMultiLocation } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { validateNumber } from '../validate';
@@ -121,6 +119,7 @@ export const SystemToPara: ICreateXcmType = {
 			specName,
 			assets,
 			registry,
+			xcmVersion,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer
 		);
@@ -200,6 +199,7 @@ export const SystemToPara: ICreateXcmType = {
 				specName,
 				assetIds,
 				registry,
+				xcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer
 			);
@@ -242,10 +242,11 @@ export const createSystemToParaMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
+	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean
-): Promise<MultiAsset[]> => {
-	let multiAssets: MultiAsset[] = [];
+): Promise<FungibleStrMultiAsset[]> => {
+	let multiAssets: FungibleStrMultiAsset[] = [];
 	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 
@@ -269,19 +270,19 @@ export const createSystemToParaMultiAssets = async (
 			assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
 		}
 
-		let concreteMultiLocation: MultiLocation;
+		let concreteMultiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(api, assetId, palletId);
+			concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(api, assetId, palletId, xcmVersion);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
-			const interior: InteriorMultiLocation = isRelayNative
-				? api.registry.createType('InteriorMultiLocation', { Here: '' })
-				: api.registry.createType('InteriorMultiLocation', {
+			const interior = isRelayNative
+				? { Here: '' }
+				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-				  });
+				  };
 
-			concreteMultiLocation = api.registry.createType('MultiLocation', {
+			concreteMultiLocation = api.registry.createType('XcmV2MultiLocation', {
 				parents,
 				interior,
 			});
@@ -299,9 +300,9 @@ export const createSystemToParaMultiAssets = async (
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
+	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleStrMultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as MultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleStrMultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

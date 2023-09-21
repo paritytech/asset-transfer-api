@@ -3,9 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
 import type {
-	InteriorMultiLocation,
 	MultiAssetsV2,
-	MultiLocation,
 	VersionedMultiAssets,
 	VersionedMultiLocation,
 	WeightLimitV2,
@@ -16,8 +14,9 @@ import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate';
-import { MultiAsset } from './../types';
+import { FungibleStrMultiAsset, UnionXcmMultiLocation } from './../types';
 import { CreateAssetsOpts, CreateFeeAssetItemOpts, CreateWeightLimitOpts, ICreateXcmType, IWeightLimit } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
@@ -114,6 +113,7 @@ export const SystemToSystem: ICreateXcmType = {
 			specName,
 			assets,
 			registry,
+			xcmVersion,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer
 		);
@@ -193,6 +193,7 @@ export const SystemToSystem: ICreateXcmType = {
 				specName,
 				assetIds,
 				registry,
+				xcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer
 			);
@@ -237,10 +238,11 @@ export const createSystemToSystemMultiAssets = async (
 	specName: string,
 	assets: string[],
 	registry: Registry,
+	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean
-): Promise<MultiAsset[]> => {
-	let multiAssets: MultiAsset[] = [];
+): Promise<FungibleStrMultiAsset[]> => {
+	let multiAssets: FungibleStrMultiAsset[] = [];
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
 
@@ -264,10 +266,10 @@ export const createSystemToSystemMultiAssets = async (
 			assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
 		}
 
-		let concreteMultiLocation: MultiLocation;
+		let concreteMultiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			const assetIdMultiLocation = api.registry.createType('MultiLocation', JSON.parse(assetId));
+			const assetIdMultiLocation = resolveMultiLocation(api, assetId, xcmVersion);
 
 			// start of the junctions values of the assetId. + 1 to ignore the '['
 			const junctionsStartIndex = assetId.indexOf('[') + 1;
@@ -283,21 +285,29 @@ export const createSystemToSystemMultiAssets = async (
 			const palletInstanceJunctionStr = `{"PalletInstance":"${palletId}"},`;
 			const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
 
-			concreteMultiLocation = api.registry.createType('MultiLocation', {
-				parents: assetIdMultiLocation.parents,
-				interior: api.registry.createType('InteriorMultiLocation', JSON.parse(interiorMultiLocationStr)),
-			});
+			concreteMultiLocation = resolveMultiLocation(
+				api,
+				{
+					parents: assetIdMultiLocation.parents.toNumber(),
+					interior: interiorMultiLocationStr,
+				},
+				xcmVersion
+			);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
-			const interior: InteriorMultiLocation = isRelayNative
-				? api.registry.createType('InteriorMultiLocation', { Here: '' })
-				: api.registry.createType('InteriorMultiLocation', {
+			const interior = isRelayNative
+				? { Here: '' }
+				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-				  });
-			concreteMultiLocation = api.registry.createType('MultiLocation', {
-				parents,
-				interior,
-			});
+				  };
+			concreteMultiLocation = resolveMultiLocation(
+				api,
+				{
+					parents,
+					interior,
+				},
+				xcmVersion
+			);
 		}
 
 		const multiAsset = {
@@ -312,9 +322,9 @@ export const createSystemToSystemMultiAssets = async (
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
+	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleStrMultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as MultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleStrMultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };
