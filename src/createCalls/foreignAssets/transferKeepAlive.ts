@@ -2,13 +2,14 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import { MultiLocation } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
+
+import type { UnionXcmMultiLocation } from '../../types';
 
 export const transferKeepAlive = (
 	api: ApiPromise,
 	destAddr: string,
-	assetId: MultiLocation,
+	assetId: UnionXcmMultiLocation,
 	amount: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	return api.tx.foreignAssets.transferKeepAlive(assetId, destAddr, amount);

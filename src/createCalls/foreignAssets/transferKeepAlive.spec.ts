@@ -1,11 +1,12 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
+import type { UnionXcmMultiLocation } from '../../types';
 import { transferKeepAlive } from './transferKeepAlive';
 
 describe('transfer', () => {
 	it('Should construct a valid foreignAssets transferKeepAlive extrinsic', () => {
-		const foreignAssetMultiLocation = mockSystemApi.createType('MultiLocation', {
+		const foreignAssetMultiLocation = mockSystemApi.createType('XcmV2MultiLocation', {
 			parents: '1',
 			interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
 				X2: [
@@ -17,7 +18,7 @@ describe('transfer', () => {
 					},
 				],
 			}),
-		});
+		}) as unknown as UnionXcmMultiLocation;
 
 		const res = transferKeepAlive(
 			mockSystemApi,
