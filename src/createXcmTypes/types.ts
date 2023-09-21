@@ -30,7 +30,7 @@ export interface CreateWeightLimitOpts {
 }
 
 export interface CheckXcmTxInputsOpts {
-	xcmVersion?: number;
+	xcmVersion: number;
 	paysWithFeeDest?: string;
 	isLimited?: boolean;
 	weightLimit?: { refTime?: string; proofSize?: string };

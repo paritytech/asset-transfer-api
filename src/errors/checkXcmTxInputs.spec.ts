@@ -41,6 +41,7 @@ const runTests = async (tests: Test[]) => {
 				specName,
 				direction,
 				registry,
+				2,
 				false,
 				false
 			);
@@ -175,6 +176,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -217,6 +219,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -240,6 +243,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -282,6 +286,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -311,6 +316,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -339,6 +345,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -374,6 +381,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -392,6 +400,7 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				Direction.ParaToSystem,
 				registry,
+				2,
 				false,
 				false
 			);
@@ -410,6 +419,7 @@ describe('checkAssetIds', () => {
 				'westmint',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				isLiquidTokenTransfer
 			);
@@ -428,6 +438,7 @@ describe('checkAssetIds', () => {
 				'westmint',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				isLiquidTokenTransfer
 			);
@@ -449,6 +460,7 @@ describe('checkAssetIds', () => {
 				'westmint',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				isLiquidTokenTransfer
 			);
@@ -532,7 +544,7 @@ describe('checkAllMultiLocationAssetIdsAreValid', () => {
 
 		for (const test of tests) {
 			const [multiLocationAssetIds, expected] = test;
-			const err = () => checkAllMultiLocationAssetIdsAreValid(mockSystemApi, multiLocationAssetIds);
+			const err = () => checkAllMultiLocationAssetIdsAreValid(mockSystemApi, multiLocationAssetIds, 2);
 
 			expect(err).toThrowError(expected);
 		}
@@ -750,6 +762,7 @@ describe('checkParaAssets', () => {
 				'statemine',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				false
 			);
@@ -775,6 +788,7 @@ describe('checkParaAssets', () => {
 				'moonriver',
 				Direction.ParaToSystem,
 				registry,
+				2,
 				false,
 				false
 			);
@@ -813,6 +827,7 @@ describe('checkParaAssets', () => {
 				'statemine',
 				Direction.SystemToPara,
 				registry,
+				2,
 				true,
 				false
 			);
@@ -855,6 +870,7 @@ describe('checkParaAssets', () => {
 				'statemine',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				true
 			);

@@ -183,7 +183,7 @@ const foreignAsset = (asset: MultiLocation): Promise<Option<PalletAssetsAssetDet
 	Promise.resolve().then(() => {
 		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
 		const multiLocationStr = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
-		const multiLocation = mockSystemApi.registry.createType('MultiLocation', JSON.parse(multiLocationStr));
+		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', JSON.parse(multiLocationStr));
 		const multiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
 		assets.set(multiLocation.toHex(), multiLocationAsset);
 
@@ -213,7 +213,7 @@ const foreignAssetsMetadata = (assetId: MultiLocation): Promise<PalletAssetsAsse
 			'PalletAssetsAssetMetadata',
 			rawTnkrMultiLocationMetadata
 		);
-		const multiLocation = mockSystemApi.registry.createType('MultiLocation', {
+		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', {
 			parents: '1',
 			interior: { X2: [{ Parachain: '2125' }, { GeneralIndex: '0' }] },
 		});

@@ -27,6 +27,7 @@ export const getAssetId = async (
 	registry: Registry,
 	asset: string,
 	specName: string,
+	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
@@ -75,12 +76,12 @@ export const getAssetId = async (
 
 	if (isAssetHub && isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the cache or registry
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(_api, asset, registry);
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(_api, asset, registry, xcmVersion);
 
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
 		} else {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(_api, registry, asset);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(_api, registry, asset, xcmVersion);
 
 			if (!isValidForeignAsset) {
 				throw new BaseError(`MultiLocation ${asset} not found`, BaseErrorsEnum.AssetNotFound);

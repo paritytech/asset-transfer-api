@@ -206,6 +206,7 @@ export const ParaToSystem: ICreateXcmType = {
 				paysWithFeeDest,
 				multiAssets,
 				specName,
+				xcmVersion,
 				opts.isForeignAssetsTransfer
 			);
 
@@ -259,7 +260,7 @@ export const ParaToSystem: ICreateXcmType = {
 		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
 
 		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName);
+			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion);
 		}
 
 		const paraId = registry.lookupChainIdBySpecName(specName);
@@ -341,7 +342,7 @@ const createXTokensMultiAssets = async (
 		const isValidInt = validateNumber(assetId);
 
 		if (!isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName);
+			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion);
 		}
 
 		const paraId = registry.lookupChainIdBySpecName(specName);
@@ -454,7 +455,7 @@ const createParaToSystemMultiAssets = async (
 			const isValidNumber = validateNumber(assetId);
 
 			if (!isValidNumber && !isPrimaryParachainNativeAsset) {
-				assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
+				assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 			}
 
 			const paraId = registry.lookupChainIdBySpecName(specName);

@@ -6,6 +6,7 @@ import { getAssetId } from '../createXcmTypes/util/getAssetId';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
 import { FungibleStrMultiAsset } from '../types';
+import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate/validateNumber';
 
 /**
@@ -22,6 +23,7 @@ export const getFeeAssetItemIndex = async (
 	paysWithFeeDest: string,
 	multiAssets: FungibleStrMultiAsset[],
 	specName: string,
+	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean
 ): Promise<number> => {
 	let result = -1;
@@ -52,14 +54,12 @@ export const getFeeAssetItemIndex = async (
 						registry,
 						paysWithFeeDest,
 						specName,
+						xcmVersion,
 						isForeignAssetsTransfer
 					);
 					// if isForeignAssetsTransfer, compare the multiAsset interior to the the paysWithFeeDestGeneralIndex as a multilocation
 					if (isForeignAssetsTransfer) {
-						const paysWithFeeDestMultiLocation = api.registry.createType(
-							'MultiLocation',
-							JSON.parse(paysWithFeeDestGeneralIndex)
-						);
+						const paysWithFeeDestMultiLocation = resolveMultiLocation(api, paysWithFeeDestGeneralIndex, xcmVersion);
 						if (multiAsset.id.Concrete.interior.eq(paysWithFeeDestMultiLocation.interior)) {
 							result = i;
 							break;

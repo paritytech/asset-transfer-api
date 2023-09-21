@@ -14,6 +14,7 @@ import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/uti
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { AssetInfo, Direction } from '../types';
+import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate';
 import { BaseError, BaseErrorsEnum } from './BaseError';
 
@@ -237,10 +238,14 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
  * @param api
  * @param multiLocationAssetIds
  */
-export const checkAllMultiLocationAssetIdsAreValid = (api: ApiPromise, multiLocationAssetIds: string[]) => {
+export const checkAllMultiLocationAssetIdsAreValid = (
+	api: ApiPromise,
+	multiLocationAssetIds: string[],
+	xcmVersion: number
+) => {
 	for (const multilocationId of multiLocationAssetIds) {
 		try {
-			api.registry.createType('MultiLocation', JSON.parse(multilocationId));
+			resolveMultiLocation(api, multilocationId, xcmVersion);
 		} catch (error) {
 			if ((error as Error).message.includes('Unexpected token')) {
 				throw new BaseError((error as Error).message, BaseErrorsEnum.InvalidMultiLocationAsset);
@@ -428,6 +433,7 @@ const checkSystemAssets = async (
 	systemParachainInfo: ChainInfoKeys,
 	registry: Registry,
 	xcmDirection: string,
+	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer?: boolean
 ) => {
@@ -435,10 +441,10 @@ const checkSystemAssets = async (
 
 	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(api, assetId, registry);
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(api, assetId, registry, xcmVersion);
 
 		if (!multiLocationIsInRegistry) {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId, xcmVersion);
 
 			if (!isValidForeignAsset) {
 				throw new BaseError(`MultiLocation ${assetId} not found`, BaseErrorsEnum.AssetNotFound);
@@ -646,6 +652,7 @@ const checkSystemToParaAssetId = async (
 	relayChainInfo: ChainInfo,
 	registry: Registry,
 	xcmDirection: Direction,
+	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean
 ) => {
@@ -656,6 +663,7 @@ const checkSystemToParaAssetId = async (
 		relayChainInfo,
 		registry,
 		xcmDirection,
+		xcmVersion,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer
 	);
@@ -668,6 +676,7 @@ export const checkIsValidSystemChainAssetId = async (
 	relayChainInfo: ChainInfo,
 	registry: Registry,
 	xcmDirection: Direction,
+	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean
 ) => {
@@ -682,6 +691,7 @@ export const checkIsValidSystemChainAssetId = async (
 			systemParachainInfo,
 			registry,
 			xcmDirection,
+			xcmVersion,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer
 		);
@@ -730,6 +740,7 @@ const checkSystemToSystemAssetId = async (
 	relayChainInfo: ChainInfo,
 	registry: Registry,
 	xcmDirection: Direction,
+	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean
 ) => {
@@ -740,6 +751,7 @@ const checkSystemToSystemAssetId = async (
 		relayChainInfo,
 		registry,
 		xcmDirection,
+		xcmVersion,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer
 	);
@@ -904,6 +916,7 @@ export const checkAssetIdInput = async (
 	specName: string,
 	xcmDirection: Direction,
 	registry: Registry,
+	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean
 ) => {
@@ -932,6 +945,7 @@ export const checkAssetIdInput = async (
 				relayChainInfo,
 				registry,
 				xcmDirection,
+				xcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer
 			);
@@ -945,6 +959,7 @@ export const checkAssetIdInput = async (
 				relayChainInfo,
 				registry,
 				xcmDirection,
+				xcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer
 			);
@@ -1029,6 +1044,7 @@ export const checkXcmTxInputs = async (
 		specName,
 		xcmDirection,
 		registry,
+		xcmVersion,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer
 	);
@@ -1053,7 +1069,7 @@ export const checkXcmTxInputs = async (
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkAllMultiLocationAssetIdsAreValid(api, assetIds);
+			checkAllMultiLocationAssetIdsAreValid(api, assetIds, xcmVersion);
 			checkAssetsAmountMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds);
 		}
@@ -1065,7 +1081,7 @@ export const checkXcmTxInputs = async (
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkAllMultiLocationAssetIdsAreValid(api, assetIds);
+			checkAllMultiLocationAssetIdsAreValid(api, assetIds, xcmVersion);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds);
 		}
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);

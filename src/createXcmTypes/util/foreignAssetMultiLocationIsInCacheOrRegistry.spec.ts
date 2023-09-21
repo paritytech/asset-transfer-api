@@ -13,7 +13,8 @@ describe('foreignAssetMultiLocationIsInCacheOrRegistry', () => {
 		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
 			mockSystemApi,
 			multiLocation,
-			registry
+			registry,
+			2
 		);
 
 		expect(foreignAssetExistsInRegistry).toEqual(expected);
@@ -27,7 +28,8 @@ describe('foreignAssetMultiLocationIsInCacheOrRegistry', () => {
 		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
 			mockSystemApi,
 			multiLocation,
-			registry
+			registry,
+			2
 		);
 
 		expect(foreignAssetExistsInRegistry).toEqual(expected);
@@ -39,7 +41,7 @@ describe('foreignAssetMultiLocationIsInCacheOrRegistry', () => {
 		const multiLocation = '{"parents":"1","interior":{"X1": {"Parachain":"g2125"}}}';
 		const registry = new Registry('statemine', {});
 
-		const err = () => foreignAssetMultiLocationIsInCacheOrRegistry(mockSystemApi, multiLocation, registry);
+		const err = () => foreignAssetMultiLocationIsInCacheOrRegistry(mockSystemApi, multiLocation, registry, 2);
 
 		expect(err).toThrow(expectedError);
 	});
@@ -51,7 +53,7 @@ describe('foreignAssetMultiLocationIsInCacheOrRegistry', () => {
 		const multiLocation = '{"parents":"2","interior":{"X1": {"Parachain":"2,125"}}}';
 		const registry = new Registry('statemine', {});
 
-		const err = () => foreignAssetMultiLocationIsInCacheOrRegistry(mockSystemApi, multiLocation, registry);
+		const err = () => foreignAssetMultiLocationIsInCacheOrRegistry(mockSystemApi, multiLocation, registry, 2);
 
 		expect(err).toThrow(expectedError);
 	});
