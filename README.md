@@ -228,7 +228,7 @@ If you would like to run an example to understand the output run: `yarn build:ex
 
 ### Liquid Pool Asset Transfers
 
-Sending a liquidity token (from the poolAssets pallet) in Asset Hub is as simple as setting the option `transferLiquidToken` to true. That being said, it does have some nuances. A liquidity token transfer must be in the direction of a SystemToPara, and the inputted asset must be a valid integer as a string. The api will error if either of these conditions are not met.
+Sending a liquidity token (from the poolAssets pallet) in Asset Hub is as simple as setting the option `transferLiquidToken` to true. That being said, it does have some nuances. A liquidity token cross-chain transfer must be in the direction of a SystemToPara, and the inputted asset must be a valid integer as a string. The api will error if either of these conditions are not met.
 
 An example would look like:
 ```typescript
@@ -248,7 +248,7 @@ api.createTransferTransaction(
 
 If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/systemToParaLpToken.js`
 
-#### **Local Transactions**
+### Local Transactions
 
 Sending an Asset or Native token locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Kusama AssetHub`, `Polkadot AssetHub`, `Westend AssetHub` and as a side affect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
 
