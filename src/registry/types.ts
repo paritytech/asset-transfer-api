@@ -40,9 +40,10 @@ export type ChainInfoRegistry = {
 	polkadot: ChainInfo;
 	kusama: ChainInfo;
 	westend: ChainInfo;
+	rococo: ChainInfo;
 };
 
-export type RelayChains = 'polkadot' | 'kusama' | 'westend';
+export type RelayChains = 'polkadot' | 'kusama' | 'westend' | 'rococo';
 
 export type InterMultiLocationJunctionType = 'here' | 'x1' | 'x2' | 'x3' | 'x4' | 'x5' | 'x6' | 'x7' | 'x8';
 type XCMRegistryInteriorMultiLocation = Partial<
