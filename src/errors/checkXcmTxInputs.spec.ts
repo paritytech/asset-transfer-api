@@ -533,10 +533,6 @@ describe('checkAllMultiLocationAssetIdsAreValid', () => {
 	it('Should correctly error when an invalid multilocation is provided in assetIds', () => {
 		const tests: CreateMultiLocationTest[] = [
 			[
-				['{"parents":"1","interior":{"X2": [{"Parachain":"2125", {"GeneralIndex": "0"}]}}'],
-				'Unexpected token { in JSON at position 55',
-			],
-			[
 				['{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}'],
 				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}} -  Enum(Parachain) String should not contain decimal points or scientific notation',
 			],

@@ -247,9 +247,7 @@ export const checkAllMultiLocationAssetIdsAreValid = (
 		try {
 			resolveMultiLocation(api, multilocationId, xcmVersion);
 		} catch (error) {
-			if ((error as Error).message.includes('Unexpected token')) {
-				throw new BaseError((error as Error).message, BaseErrorsEnum.InvalidMultiLocationAsset);
-			} else if ((error as Error).message.includes('::')) {
+			if ((error as Error).message.includes('::')) {
 				const errorInfo = (error as Error).message.split('::');
 				const errorDetails = errorInfo[errorInfo.length - 2].concat(errorInfo[errorInfo.length - 1]);
 
