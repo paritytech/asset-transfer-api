@@ -11,7 +11,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		const expected = true;
 		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
-		const isValid = await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation);
+		const isValid = await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
 
 		expect(isValid).toEqual(expected);
 	});
@@ -20,7 +20,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		const expected = false;
 		const multiLocation = '{"parents":"1","interior":{"X1": {"Parachain":"21252525"}}}';
 
-		const isValid = await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation);
+		const isValid = await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
 
 		expect(isValid).toEqual(expected);
 	});
@@ -30,7 +30,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		const multiLocation = '{"parents":"1","interior":{"X1": {"Parachain":"g2125"}}}';
 
 		await expect(async () => {
-			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation);
+			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
 		}).rejects.toThrowError(expectedError);
 	});
 
@@ -40,7 +40,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		const multiLocation = '{"parents":"2","interior":{"X1": {"Parachain":"2,125"}}}';
 
 		await expect(async () => {
-			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation);
+			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
 		}).rejects.toThrowError(expectedError);
 	});
 
@@ -60,7 +60,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		});
 		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
-		await foreignAssetsMultiLocationExists(adjustedMockSystemApi, emptyRegistry, multiLocation);
+		await foreignAssetsMultiLocationExists(adjustedMockSystemApi, emptyRegistry, multiLocation, 2);
 
 		const result = emptyRegistry.cacheLookupForeignAsset('TNKR');
 

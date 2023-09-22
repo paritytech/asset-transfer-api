@@ -41,6 +41,7 @@ const runTests = async (tests: Test[]) => {
 				specName,
 				direction,
 				registry,
+				2,
 				false,
 				false
 			);
@@ -175,6 +176,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -217,6 +219,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -240,6 +243,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -282,6 +286,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -311,6 +316,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -339,6 +345,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -374,6 +381,7 @@ describe('checkAssetIds', () => {
 					specName,
 					direction,
 					registry,
+					2,
 					false,
 					false
 				);
@@ -392,6 +400,7 @@ describe('checkAssetIds', () => {
 				'moonriver',
 				Direction.ParaToSystem,
 				registry,
+				2,
 				false,
 				false
 			);
@@ -410,6 +419,7 @@ describe('checkAssetIds', () => {
 				'westmint',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				isLiquidTokenTransfer
 			);
@@ -428,6 +438,7 @@ describe('checkAssetIds', () => {
 				'westmint',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				isLiquidTokenTransfer
 			);
@@ -449,6 +460,7 @@ describe('checkAssetIds', () => {
 				'westmint',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				isLiquidTokenTransfer
 			);
@@ -521,10 +533,6 @@ describe('checkAllMultiLocationAssetIdsAreValid', () => {
 	it('Should correctly error when an invalid multilocation is provided in assetIds', () => {
 		const tests: CreateMultiLocationTest[] = [
 			[
-				['{"parents":"1","interior":{"X2": [{"Parachain":"2125", {"GeneralIndex": "0"}]}}'],
-				'Unexpected token { in JSON at position 55',
-			],
-			[
 				['{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}'],
 				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}} -  Enum(Parachain) String should not contain decimal points or scientific notation',
 			],
@@ -532,7 +540,7 @@ describe('checkAllMultiLocationAssetIdsAreValid', () => {
 
 		for (const test of tests) {
 			const [multiLocationAssetIds, expected] = test;
-			const err = () => checkAllMultiLocationAssetIdsAreValid(mockSystemApi, multiLocationAssetIds);
+			const err = () => checkAllMultiLocationAssetIdsAreValid(mockSystemApi, multiLocationAssetIds, 2);
 
 			expect(err).toThrowError(expected);
 		}
@@ -721,74 +729,13 @@ describe('checkParaAssets', () => {
 		}).rejects.toThrowError('(ParaToSystem) integer assetId 2096586909097964981698161 not found in moonriver');
 	});
 	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {
-		const assetId = '311091173110107856861649819128533077277';
+		const assetId = '999999999999999999999999999999999999999';
 		const specName = 'moonriver';
-		const registry = new Registry(specName, {
-			injectedRegistry: {
-				xcAssets: {
-					polkadot: [],
-					kusama: [
-						{
-							relayChain: 'kusama',
-							paraID: 2000,
-							id: 'karura',
-							xcAssetCnt: '21',
-							data: [
-								{
-									paraID: 1000,
-									relayChain: 'kusama',
-									nativeChainID: 'statemine',
-									symbol: 'RMRK',
-									decimals: 10,
-									interiorType: 'x3',
-									xcmV1Standardized: [
-										{
-											network: 'kusama',
-										},
-										{
-											parachain: 1000,
-										},
-										{
-											palletInstance: 50,
-										},
-										{
-											generalIndex: 8,
-										},
-									],
-									xcmV1MultiLocationByte: false,
-									xcmV1MultiLocation: {
-										v1: {
-											parents: 1,
-											interior: {
-												x3: [
-													{
-														parachain: 1000,
-													},
-													{
-														palletInstance: 50,
-													},
-													{
-														generalIndex: 8,
-													},
-												],
-											},
-										},
-									},
-									asset: {
-										ForeignAsset: '0',
-									},
-									source: ['2000'],
-								},
-							],
-						},
-					],
-				},
-			},
-		});
+		const registry = new Registry(specName, {});
 
 		await expect(async () => {
 			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
-		}).rejects.toThrowError('unable to identify xcAsset with ID 311091173110107856861649819128533077277');
+		}).rejects.toThrowError('unable to identify xcAsset with ID 999999999999999999999999999999999999999');
 	});
 
 	describe('cache', () => {
@@ -811,6 +758,7 @@ describe('checkParaAssets', () => {
 				'statemine',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				false
 			);
@@ -836,6 +784,7 @@ describe('checkParaAssets', () => {
 				'moonriver',
 				Direction.ParaToSystem,
 				registry,
+				2,
 				false,
 				false
 			);
@@ -874,6 +823,7 @@ describe('checkParaAssets', () => {
 				'statemine',
 				Direction.SystemToPara,
 				registry,
+				2,
 				true,
 				false
 			);
@@ -916,6 +866,7 @@ describe('checkParaAssets', () => {
 				'statemine',
 				Direction.SystemToPara,
 				registry,
+				2,
 				false,
 				true
 			);

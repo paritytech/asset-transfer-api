@@ -147,6 +147,36 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcRmrk = mockParachainApi.registry.createType('PalletAssetsAssetDetails', xcRmrkAssetInfo);
 		assets.set('182365888117048807484804376330534607370', xcRmrk);
 
+		// Test asset that should not exist inside of xcAssets, so we can test when its on chain and when its not available in the registry
+		const xcTestInfo = {
+			owner: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockParachainApi.registry.createType('u128', 100),
+			deposit: mockParachainApi.registry.createType('u128', 100),
+			minBalance: mockParachainApi.registry.createType('u128', 100),
+			isSufficient: mockParachainApi.registry.createType('bool', true),
+			accounts: mockParachainApi.registry.createType('u32', 100),
+			sufficients: mockParachainApi.registry.createType('u32', 100),
+			approvals: mockParachainApi.registry.createType('u32', 100),
+			status: mockParachainApi.registry.createType('PalletAssetsAssetStatus', 'live'),
+		};
+		const xcTest = mockParachainApi.registry.createType('PalletAssetsAssetDetails', xcTestInfo);
+		assets.set('999999999999999999999999999999999999999', xcTest);
+
 		const maybeAsset = assets.has(assetId) ? assets.get(assetId) : undefined;
 
 		if (maybeAsset) {

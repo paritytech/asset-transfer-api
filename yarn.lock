@@ -1294,10 +1294,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@substrate/asset-transfer-api-registry@npm:^0.2.6":
-  version: 0.2.6
-  resolution: "@substrate/asset-transfer-api-registry@npm:0.2.6"
-  checksum: 2b5f82c1bcb9726cf8031a8e2e6c7b50fc90389810ce1e5f273a7139326263389661163f913420ad40f8019c20ad194f0ecf5a76e3bd6839de6ed6c2c7cd71db
+"@substrate/asset-transfer-api-registry@npm:^0.2.9":
+  version: 0.2.9
+  resolution: "@substrate/asset-transfer-api-registry@npm:0.2.9"
+  checksum: 703736b799001405b2358410349f88c820f8faec72d865dfddf89374ffefee596e17041f4083b4da9ae9d5ed3a5b65f66a2419681597ad8b953fe0cc7e9bf985
   languageName: node
   linkType: hard
 
@@ -1306,7 +1306,7 @@ __metadata:
   resolution: "@substrate/asset-transfer-api@workspace:."
   dependencies:
     "@polkadot/api": ^10.9.1
-    "@substrate/asset-transfer-api-registry": ^0.2.6
+    "@substrate/asset-transfer-api-registry": ^0.2.9
     "@substrate/dev": ^0.6.7
     chalk: 4.1.2
     typedoc: ^0.24.8

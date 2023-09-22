@@ -6,21 +6,13 @@ import {
 } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
 import { findRelayChain, parseRegistry } from './';
-import type {
-	ChainInfo,
-	ChainInfoRegistry,
-	ExpandedChainInfoKeys,
-	ForeignAssetsData,
-	RelayChains,
-	XCMChainInfoRegistry,
-} from './types';
+import type { ChainInfo, ChainInfoRegistry, ExpandedChainInfoKeys, ForeignAssetsData, RelayChains } from './types';
 
 export class Registry {
 	readonly specName: string;
 	readonly registry: ChainInfoRegistry;
 	readonly relayChain: RelayChains;
 	readonly currentRelayRegistry: ChainInfo;
-	readonly xcAssets: XCMChainInfoRegistry;
 	cache: ChainInfoRegistry;
 	specNameToIdCache: Map<string, string>;
 
@@ -29,16 +21,11 @@ export class Registry {
 		this.registry = parseRegistry(opts);
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
-		this.xcAssets = this.registry.xcAssets;
 		this.specNameToIdCache = new Map<string, string>();
 		this.cache = {
 			polkadot: {},
 			kusama: {},
 			westend: {},
-			xcAssets: {
-				polkadot: [],
-				kusama: [],
-			},
 		};
 		this.initializeAssetHubCache();
 		this.initializeCurrentChainIdCache();

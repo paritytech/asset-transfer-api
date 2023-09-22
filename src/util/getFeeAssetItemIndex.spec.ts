@@ -106,7 +106,7 @@ describe('getFeeAssetItemIndex', () => {
 		for (const test of tests) {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
-			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, false)).toEqual(
+			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, 2, false)).toEqual(
 				expected
 			);
 		}
@@ -209,7 +209,7 @@ describe('getFeeAssetItemIndex', () => {
 		for (const test of tests) {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
-			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, false)).toEqual(
+			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, 2, false)).toEqual(
 				expected
 			);
 		}
@@ -243,7 +243,9 @@ describe('getFeeAssetItemIndex', () => {
 		for (const test of tests) {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
-			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, true)).toEqual(expected);
+			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, 2, true)).toEqual(
+				expected
+			);
 		}
 	});
 
@@ -279,7 +281,7 @@ describe('getFeeAssetItemIndex', () => {
 		];
 
 		await expect(async () => {
-			await getFeeAssetItemIndex(systemAssetsApi._api, registry, paysWithFeeDest, multiAssets, specName, false);
+			await getFeeAssetItemIndex(systemAssetsApi._api, registry, paysWithFeeDest, multiAssets, specName, 2, false);
 		}).rejects.toThrowError(
 			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"x2":[{"palletInstance":50},{"generalIndex":1337}]},Here'
 		);

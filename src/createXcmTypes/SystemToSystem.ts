@@ -213,6 +213,7 @@ export const SystemToSystem: ICreateXcmType = {
 				paysWithFeeDest,
 				multiAssets,
 				specName,
+				xcmVersion,
 				opts.isForeignAssetsTransfer
 			);
 
@@ -263,7 +264,7 @@ export const createSystemToSystemMultiAssets = async (
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
 		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
+			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 		}
 
 		let concreteMultiLocation: UnionXcmMultiLocation;

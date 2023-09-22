@@ -29,6 +29,7 @@ export const checkLocalTxInput = async (
 	amounts: string[],
 	specName: string,
 	registry: Registry,
+	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean
 ): Promise<LocalTxType> => {
@@ -50,12 +51,17 @@ export const checkLocalTxInput = async (
 
 		// check the cache and registrys foreignAssetsInfo to see if the provided foreign asset exists
 		const multiLocationStr = assetIds[0];
-		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(api, multiLocationStr, registry);
+		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
+			api,
+			multiLocationStr,
+			registry,
+			xcmVersion
+		);
 
 		if (foreignAssetIsInRegistry) {
 			return LocalTxType.ForeignAssets;
 		} else {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, multiLocationStr);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, multiLocationStr, xcmVersion);
 			if (isValidForeignAsset) {
 				return LocalTxType.ForeignAssets;
 			} else {
@@ -96,7 +102,7 @@ export const checkLocalTxInput = async (
 		}
 
 		// not a number so we check the registry using the symbol
-		assetId = await getAssetId(api, registry, assetId, specName, isForeignAssetsTransfer);
+		assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 
 		if (assetId.length > 0) {
 			return LocalTxType.Assets;

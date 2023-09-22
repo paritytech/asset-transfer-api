@@ -189,7 +189,7 @@ export class AssetTransferApi {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
-				assetId = await getAssetId(_api, registry, assetId, _specName, isForeignAssetsTransfer);
+				assetId = await getAssetId(_api, registry, assetId, _specName, declaredXcmVersion, isForeignAssetsTransfer);
 			}
 
 			/**
@@ -202,6 +202,7 @@ export class AssetTransferApi {
 				amounts,
 				_specName,
 				registry,
+				declaredXcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer
 			); // Throws an error when any of the inputs are incorrect.
@@ -271,7 +272,7 @@ export class AssetTransferApi {
 			isLiquidTokenTransfer,
 			isPrimaryParachainNativeAsset,
 			{
-				xcmVersion,
+				xcmVersion: declaredXcmVersion,
 				paysWithFeeDest,
 				isLimited,
 				weightLimit,
@@ -440,7 +441,7 @@ export class AssetTransferApi {
 			}
 		}
 
-		return this.constructFormat<T>(transaction, xcmDirection, xcmVersion, txMethod, destChainId, _specName, {
+		return this.constructFormat<T>(transaction, xcmDirection, declaredXcmVersion, txMethod, destChainId, _specName, {
 			format,
 			paysWithFeeOrigin,
 			sendersAddr,

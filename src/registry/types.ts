@@ -27,6 +27,7 @@ export interface ChainInfoKeys {
 	assetsInfo: AssetsInfo;
 	foreignAssetsInfo: ForeignAssetsInfo;
 	poolPairsInfo: PoolPairsData;
+	xcAssetsData?: SanitizedXcAssetsData[];
 }
 
 export type ExpandedChainInfoKeys = { chainId: string } & ChainInfoKeys;
@@ -39,7 +40,6 @@ export type ChainInfoRegistry = {
 	polkadot: ChainInfo;
 	kusama: ChainInfo;
 	westend: ChainInfo;
-	xcAssets: XCMChainInfoRegistry;
 };
 
 export type RelayChains = 'polkadot' | 'kusama' | 'westend';
@@ -65,31 +65,21 @@ export interface XCMAssetRegistryMultiLocation {
 	v1: XCMRegistryMultiLocation;
 }
 
-export interface XCMChainInfoDataKeys {
-	paraID?: number;
-	relayChain: string;
-	nativeChainID: string | null;
+export type SanitizedXcAssetsData = {
+	paraID: number;
 	symbol: string;
 	decimals: number;
-	interiorType: string;
-	xcmV1Standardized: Array<XCMRegistryJunction | string>;
-	xcmV1MultiLocationByte: boolean | string;
-	xcmV1MultiLocation: XCMAssetRegistryMultiLocation;
-	asset: string | { [x: string]: string | undefined };
-	source: string[];
-}
-
-export interface XCMChainInfoKeys {
-	relayChain: string;
-	paraID: number;
-	id: string;
-	xcAssetCnt: string;
-	data: XCMChainInfoDataKeys[];
-}
-
-export type XCMChainInfoRegistry = {
-	polkadot: XCMChainInfoKeys[];
-	kusama: XCMChainInfoKeys[];
+	xcmV1MultiLocation: string;
+	asset:
+		| { ForeignAsset: string }
+		| { VToken: string }
+		| { VToken2: string }
+		| { VSToken: string }
+		| { VSToken2: string }
+		| { Token2: string }
+		| { Native: string }
+		| { Stable: string }
+		| string;
 };
 
 export type AssetsInfoType = 'assetsInfo' | 'foreignAssetsInfo' | 'poolPairsInfo';

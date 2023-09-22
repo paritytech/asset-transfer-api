@@ -11,7 +11,7 @@ describe('getAssetId', () => {
 	it('Should correctly return the integer assetId when given a valid native system chain token symbol', async () => {
 		const expected = '10';
 
-		const result = await getAssetId(systemAssetsApi._api, registry, 'USDC', 'statemine', false);
+		const result = await getAssetId(systemAssetsApi._api, registry, 'USDC', 'statemine', 2, false);
 
 		expect(result).toEqual(expected);
 	});
@@ -19,14 +19,14 @@ describe('getAssetId', () => {
 	it('Should correctly return the integer assetId when given a valid native system chain token assetId', async () => {
 		const expected = '8';
 
-		const result = await getAssetId(systemAssetsApi._api, registry, 'RMRK', 'statemine', false);
+		const result = await getAssetId(systemAssetsApi._api, registry, 'RMRK', 'statemine', 2, false);
 
 		expect(result).toEqual(expected);
 	});
 
 	it('Should error when an asset id symbol is given that is not present in the registry or chain tate', async () => {
 		await expect(async () => {
-			await getAssetId(systemAssetsApi._api, registry, 'hello', 'statemine', false);
+			await getAssetId(systemAssetsApi._api, registry, 'hello', 'statemine', 2, false);
 		}).rejects.toThrowError('assetId hello is not a valid symbol or integer asset id');
 	});
 
@@ -34,7 +34,7 @@ describe('getAssetId', () => {
 		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 		const expected = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
-		const result = await getAssetId(systemAssetsApi._api, registry, multiLocation, 'statemine', true);
+		const result = await getAssetId(systemAssetsApi._api, registry, multiLocation, 'statemine', 2, true);
 
 		expect(result).toEqual(expected);
 	});
@@ -43,7 +43,7 @@ describe('getAssetId', () => {
 		const multiLocation = '{"parents":"1","interior":{"X1":{"Parachain":"212500000"}}}';
 
 		await expect(async () => {
-			await getAssetId(systemAssetsApi._api, registry, multiLocation, 'statemine', true);
+			await getAssetId(systemAssetsApi._api, registry, multiLocation, 'statemine', 2, true);
 		}).rejects.toThrowError(`MultiLocation ${multiLocation} not found`);
 	});
 });

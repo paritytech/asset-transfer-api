@@ -6,13 +6,16 @@ import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
 import type { ForeignAssetsData } from '../../registry/types';
 import type { AssetMetadata } from '../../types';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation';
+
 export const foreignAssetsMultiLocationExists = async (
 	assetHubApi: ApiPromise,
 	registry: Registry,
-	multilocationStr: string
+	multilocationStr: string,
+	xcmVersion: number
 ): Promise<boolean> => {
 	try {
-		const multiLocation = assetHubApi.registry.createType('MultiLocation', JSON.parse(multilocationStr));
+		const multiLocation = resolveMultiLocation(assetHubApi, multilocationStr, xcmVersion);
 
 		const foreignAsset = await assetHubApi.query.foreignAssets.asset(multiLocation);
 
