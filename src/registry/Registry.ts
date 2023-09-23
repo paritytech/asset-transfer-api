@@ -26,6 +26,7 @@ export class Registry {
 			polkadot: {},
 			kusama: {},
 			westend: {},
+			rococo: {},
 		};
 		this.initializeAssetHubCache();
 		this.initializeCurrentChainIdCache();
