@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.1](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0..v0.1.1)(2023-09-25)
+
+## Features
+
+- feat: add rococo support and to the registry ([#293](https://github.com/paritytech/asset-transfer-api/pull/293))
+
+## Fix
+
+- fix(internal): remove getChainIdBySpecName and add caching system ([#288](https://github.com/paritytech/asset-transfer-api/pull/288))
+- fix(internal): remove all use of MultiLocation, and use correct versioned type. ([#292](https://github.com/paritytech/asset-transfer-api/pull/292))
+- fix: update the registry to the new xcAssets format ([#284](https://github.com/paritytech/asset-transfer-api/pull/284))
+
+## Docs
+
+- docs: Improve README.md ([#291](https://github.com/paritytech/asset-transfer-api/pull/291))
+
 ## [0.1.0](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.5..v0.1.0)(2023-09-19)
 
 ## Summary
