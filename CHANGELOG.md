@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.1.2](https://github.com/paritytech/asset-transfer-api/compare/v0.1.1..v0.1.2)(2023-09-26)
+
+## Fix
+
+- fix: rococo initialization in the registry ([#297](https://github.com/paritytech/asset-transfer-api/pull/297))
+
+NOTE: 
+
+In order to use rococo's asset hub with the `AssetTransferApi` one will need to hardcode the `specName` into the initialization like the following:
+
+```typescript
+new AssetTransferApi(api, `asset-hub-rococo`, xcmVersion);
+```
+
+The reason being, kusama's asset hub and and rococo's asset-hub both share the same specName currently and will cause conflicts. We currently do an overewrite in the registry that the api uses and set the `specName` for rococo's asset hub to be `asset-hub-rococo`. This is on the horizon to get solved on the actual chain itself soon, so this wont be necessary in the coming future. 
+
+## Docs
+
+- docs: Fixed typos ([#296](https://github.com/paritytech/asset-transfer-api/pull/296))
+
 ## [0.1.1](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0..v0.1.1)(2023-09-25)
 
 ## Features
