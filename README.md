@@ -20,7 +20,7 @@
 
 ## Docs
 
-Find full documentation [here](https://paritytech.github.io/asset-transfer-api/), for quick start guide read below. All examples can be found [here](https://github.com/paritytech/asset-transfer-api/tree/main/examples/).
+Find the full documentation [here](https://paritytech.github.io/asset-transfer-api/), for quick start guide read below. All examples can be found [here](https://github.com/paritytech/asset-transfer-api/tree/main/examples/).
 
 **Summary**: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Asset Hub (Polkadot and Kusama). It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.
 
@@ -182,11 +182,11 @@ interface TransferArgsOpts<T extends Format> {
 
 ### Teleport and Reserve Transfer via polkadotXcm pallet
 
-The `AssetTransferApi.createTransferTransaction` is able to infer what kind of transaction is necessary given the inputs. When sending cross chain transfers the api does a lot of validation to ensure the inputs are valid, and the assets either exist or dont. This process is done through a registry which is maintained in a seperate repo [here](https://github.com/paritytech/asset-transfer-api-registry). If the asset in not in the registry it will then lookup if that asset exists on chain and cache it if necessary. On chain verification is not always possible in respect to the direction the asset is being sent and what the destination chain is since we only maintain one api connection. Therefore, if you would like the inject information into the registry, you can using the `injectedRegistry` option for the `AssetTransferApi`.
+The `AssetTransferApi.createTransferTransaction` is able to infer what kind of transaction is necessary given the inputs. When sending cross chain transfers, the api does a lot of validation to ensure the inputs are valid, and the assets either exist or don't. This process is done through a registry which is maintained in a separate repo [here](https://github.com/paritytech/asset-transfer-api-registry). If the asset is not in the registry, it will then lookup if that asset exists on-chain and cache it if necessary. On-chain verification is not always possible in respect to the direction the asset is being sent and what the destination chain is since we only maintain one api connection. Therefore, if you would like to inject information into the registry, you can using the `injectedRegistry` option for the `AssetTransferApi`.
 
 ### Transferring assets via xTokens pallet
 
-If the transfer is being sent from a parachain that utilizes the `xTokens` pallet, the API will detect that and construct the transaction that is necessary. It will construct one of three calls: `transferMultiAsset`, `transferMultiAssets`, or `transferMultiAssetWithFee`. This is only application when the intended transfer direction starts from a parachain. The xTokens pallet can be found [here](https://github.com/open-web3-stack/open-runtime-module-library/tree/master/xtokens).
+If the transfer is being sent from a parachain that utilizes the `xTokens` pallet, the API will detect that and construct the transaction that is necessary. It will construct one of three calls: `transferMultiAsset`, `transferMultiAssets`, or `transferMultiAssetWithFee`. This is only applicable when the intended transfer direction starts from a parachain. The `xTokens` pallet can be found [here](https://github.com/open-web3-stack/open-runtime-module-library/tree/master/xtokens).
 
 An example would look like:
 ```typescript
@@ -203,11 +203,11 @@ api.createTransferTransaction(
 );
 ```
 
-If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/paraToSystemTransferMultiAsset.js`
+If you would like to run an example to understand the output, run: `yarn build:examples && node ./examples/build/examples/paraToSystemTransferMultiAsset.js`
 
 ### Foreign Asset Transfers
 
-Sending a foreign asset requires the input `assetIds` in `createTransferTransaction` to include the `multiLocation` of the asset you would like to send. If a multilocation is not passed it will not know if the asset you are sending is a foreign asset. If the `multiLocation` passed in has a `Parachain` id which matches the `destChainId` input for the transfer then the output will be a teleport, otherwise it will be a reserve backed transfer.
+Sending a foreign asset requires the input `assetIds` in `createTransferTransaction` to include the `MultiLocation` of the asset you would like to send. If a `MultiLocation` is not passed it will not know if the asset you are sending is a foreign asset. If the `MultiLocation` passed in has a `Parachain` id which matches the `destChainId` input for the transfer, then the output will be a teleport, otherwise it will be a reserve backed transfer.
 
 An example would look like:
 ```typescript
@@ -228,7 +228,7 @@ If you would like to run an example to understand the output run: `yarn build:ex
 
 ### Liquid Pool Asset Transfers
 
-Sending a liquidity token (from the poolAssets pallet) in Asset Hub is as simple as setting the option `transferLiquidToken` to true. That being said, it does have some nuances. A liquidity token cross-chain transfer must be in the direction of a SystemToPara, and the inputted asset must be a valid integer as a string. The api will error if either of these conditions are not met.
+Sending a liquidity token (from the `poolAssets` pallet) in Asset Hub is as simple as setting the option `transferLiquidToken` to true. That being said, it does have some nuances. A liquidity token cross-chain transfer must be in the direction of a SystemToPara, and the inputted asset must be a valid integer as a string. The api will error if either of these conditions are not met.
 
 An example would look like:
 ```typescript
@@ -266,9 +266,9 @@ api.createTransferTransaction(
 )
 ```
 
-The api can also send native tokens as well. Similar to the above you would replace the `assetIds` with `['DOT']`, in addition to that you may provide an empty array to denote you want to send the chains native token. 
+The api can also send native tokens as well. Similar to the above you would replace the `assetIds` with `['DOT']`. In addition to that you may provide an empty array to denote you want to send the chain's native token. 
 
-The api can also send local transactions for Relay chains. Its the same principal as above, the only difference being that the `destChainId` woule need to be `'0'`.
+The api can also send local transactions for Relay chains. Its the same principal as above, the only difference being that the `destChainId` would need to be `'0'`.
 
 For more information, refer to the [docs](https://github.com/paritytech/asset-transfer-api/tree/main/docs) in the repository.
 
