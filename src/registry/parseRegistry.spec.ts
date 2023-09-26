@@ -13,7 +13,7 @@ describe('parseRegistry', () => {
 	});
 	it('Should correctly overwrite rococos asset-hub specName', () => {
 		const registry = parseRegistry({});
-		expect((registry.rococo['1000'].specName = 'asset-hub-rococo'));
+		expect(registry.rococo['1000'].specName).toEqual('asset-hub-rococo');
 	});
 	it('Should correctly inject an injectedRegsitry', () => {
 		const assetsInfo = {};
