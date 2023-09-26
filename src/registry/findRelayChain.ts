@@ -1,4 +1,9 @@
-import { KUSAMA_ASSET_HUB_SPEC_NAMES, POLKADOT_ASSET_HUB_SPEC_NAMES, WESTEND_ASSET_HUB_SPEC_NAMES } from '../consts';
+import {
+	KUSAMA_ASSET_HUB_SPEC_NAMES,
+	POLKADOT_ASSET_HUB_SPEC_NAMES,
+	ROCOCO_ASSET_HUB_SPEC_NAME,
+	WESTEND_ASSET_HUB_SPEC_NAMES,
+} from '../consts';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { ChainInfoRegistry, RelayChains } from './types';
 /**
@@ -20,6 +25,11 @@ export const findRelayChain = (specName: string, registry: ChainInfoRegistry): R
 	const westendChains = Object.keys(registry.westend).map((val) => registry.westend[val].specName);
 	if (westendChains.includes(specName.toLowerCase()) || WESTEND_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()))
 		return 'westend';
+
+	const rococoChains = Object.keys(registry.rococo).map((val) => registry.rococo[val].specName);
+	if (rococoChains.includes(specName.toLowerCase()) || ROCOCO_ASSET_HUB_SPEC_NAME) {
+		return 'rococo';
+	}
 
 	throw new BaseError(`Cannot find the relay chain for specName: ${specName}`, BaseErrorsEnum.InternalError);
 };

@@ -3,6 +3,12 @@ import type { ForeignAssetsData } from './types';
 
 describe('Registry', () => {
 	const registry = new Registry('polkadot', {});
+	describe('initialization', () => {
+		it('Should initalize rococo correctly', () => {
+			const registry = new Registry('rococo', {});
+			expect(registry.relayChain).toEqual('rococo');
+		});
+	});
 	describe('lookupTokenSymbol', () => {
 		it('Should return the correct result', () => {
 			const res = registry.lookupTokenSymbol('GLMR');

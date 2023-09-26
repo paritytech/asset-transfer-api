@@ -32,6 +32,9 @@ export const SYSTEM_PARACHAINS_NAMES = [
 export const POLKADOT_ASSET_HUB_SPEC_NAMES = ['statemint', 'asset-hub-polkadot'];
 export const KUSAMA_ASSET_HUB_SPEC_NAMES = ['statemine', 'asset-hub-kusama'];
 export const WESTEND_ASSET_HUB_SPEC_NAMES = ['westmint', 'asset-hub-westend'];
+// Rococo's asset hub is currently labeled as `statemine` within our registry.
+// There I put both names a recognizable just in case it changes in polkadot-js.
+export const ROCOCO_ASSET_HUB_SPEC_NAME = ['rococo', 'statemine', 'asset-hub-rococo'];
 
 /**
  * The default xcm version to construct a xcm message.
