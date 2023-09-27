@@ -250,7 +250,7 @@ If you would like to run an example to understand the output run: `yarn build:ex
 
 ### Local Transactions
 
-Sending an Asset or Native token locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Kusama AssetHub`, `Polkadot AssetHub`, `Westend AssetHub` and as a side affect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
+Sending an Asset or Native token locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Kusama AssetHub`, `Polkadot AssetHub`, `Westend AssetHub`, `Rococo AssetHub` ([note](https://github.com/paritytech/asset-transfer-api/pull/297#issue-1913578303) on how to use it) and as a side effect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
 
 An example would look like:
 ```typescript
@@ -266,15 +266,15 @@ api.createTransferTransaction(
 )
 ```
 
-The api can also send native tokens as well. Similar to the above you would replace the `assetIds` with `['DOT']`. In addition to that you may provide an empty array to denote you want to send the chain's native token. 
+The api can also send native tokens as well. Similar to the above you would replace the `assetIds` with `['DOT']`. In addition to that, you may provide an empty array to denote you want to send the chain's native token.
 
-The api can also send local transactions for Relay chains. Its the same principal as above, the only difference being that the `destChainId` would need to be `'0'`.
+The api can also send local transactions for Relay chains. It is the same principal as above, the only difference being that the `destChainId` would need to be `'0'`.
 
 For more information, refer to the [docs](https://github.com/paritytech/asset-transfer-api/tree/main/docs) in the repository.
 
 ## License
 
-The source code in this repository is distributed under the Apache 2.0 license. See the <LICENSE> file. This source code comes with absolutely no warranty. Use at your own risk.
+The source code in this repository is distributed under the Apache 2.0 license. See the [LICENSE](https://github.com/paritytech/asset-transfer-api/blob/main/LICENSE) file. This source code comes with absolutely no warranty. Use at your own risk.
 
 ## Zombienet Testing
 
@@ -282,17 +282,17 @@ Zombienet is used to launch a complete network including a relay chain, and two 
 
 ### **Requirements**:
 
-**Zombienet Binary**: You can download the appropriate binary from the zombienet repositor [here](https://github.com/paritytech/zombienet/releases). Ensure that it is in the root of this directory. Note: For macos users if permission is denied to run the binary you can `chmod 755 <file_name>` to allow permissions.
+**Zombienet Binary**: You can download the appropriate binary from the zombienet repository [here](https://github.com/paritytech/zombienet/releases). Ensure that it is in the root of this directory. Note: For macos users if permission is denied to run the binary you can `chmod 755 <file_name>` to allow permissions.
 
 **Test Network Binaries**: You will need the following binaries depending on whether you want to run a small or medium network:
 
-- polkadot: You can find the the releases [here](https://github.com/paritytech/polkadot/releases). (Needed for small, or medium network)
+- polkadot: You can find the releases [here](https://github.com/paritytech/polkadot-sdk/releases). (Needed for small, or medium network)
 - trappist-collator: This binary is compiled along with polkadot above. You can find it [here](https://github.com/paritytech/trappist). (Needed for medium network)
-- polkadot-parachain (ie: cumulus): You can find the releases [here](https://github.com/paritytech/cumulus/releases). (Needed for small, or medium network)
+- polkadot-parachain (ie: cumulus): You can find the releases [here](https://github.com/paritytech/polkadot-sdk/releases). (Needed for small, or medium network)
 
 NOTES: 
 
-- When it comes to picking a version for both `cumulus` and and `polkadot` ensure they are the same. Cumulus will have an extra 0 at the end though. Ex: v0.9.37 (polkadot) -> v0.9.370 (cumulus)
+- When it comes to picking a version for both `cumulus` and `polkadot` ensure they are the same. Cumulus will have an extra 0 at the end though. Ex: v0.9.37 (polkadot) -> v0.9.370 (cumulus)
 
 - You can retrieve the binaries via the release, or by compiling yourself. It's recommended to compile it yourself.
 
