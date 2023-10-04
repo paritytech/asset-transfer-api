@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Direction } from '../types';
+import { ParaToPara } from './ParaToPara';
 import { ParaToSystem } from './ParaToSystem';
 import { RelayToPara } from './RelayToPara';
 import { RelayToSystem } from './RelayToSystem';
@@ -10,7 +11,7 @@ import { SystemToSystem } from './SystemToSystem';
 import { ICreateXcmType } from './types';
 
 type ICreateXcmTypeLookup = {
-	[key in Direction]: ICreateXcmType;
+	[key in Exclude<Direction, Direction.Local>]: ICreateXcmType;
 };
 
 export const createXcmTypes: ICreateXcmTypeLookup = {
@@ -19,7 +20,7 @@ export const createXcmTypes: ICreateXcmTypeLookup = {
 	RelayToPara,
 	SystemToRelay,
 	RelayToSystem,
-	ParaToPara: {} as ICreateXcmType,
+	ParaToPara,
 	ParaToRelay: {} as ICreateXcmType,
 	ParaToSystem,
 };

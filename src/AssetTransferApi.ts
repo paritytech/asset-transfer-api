@@ -26,6 +26,7 @@ import {
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
+import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
@@ -52,6 +53,7 @@ import {
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
+	XcmDirection,
 } from './types';
 import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { validateNumber } from './validate';
@@ -151,8 +153,13 @@ export class AssetTransferApi {
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
 		const { _api, _specName, _safeXcmVersion, registry } = this;
+		const originChainId = registry.lookupChainIdBySpecName(_specName);
+		const relayChainID = RELAY_CHAIN_IDS[0];
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(_specName.toLowerCase());
+		const isOriginParachain = isParachain(originChainId);
+		const isDestRelayChain = destChainId === relayChainID;
 		const isDestSystemParachain = isSystemChain(destChainId);
+		const isDestParachain = isParachain(destChainId);
 		const isLiquidTokenTransfer = transferLiquidToken === true;
 
 		/**
@@ -161,12 +168,18 @@ export class AssetTransferApi {
 		 */
 		const addr = sanitizeAddress(destAddr);
 
-		const originChainId = registry.lookupChainIdBySpecName(_specName);
 		const isLocalSystemTx = isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId;
 		const isLocalRelayTx = destChainId === '0' && RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
-		const relayChainID = RELAY_CHAIN_IDS[0];
+		const isLocalTx = isLocalRelayTx || isLocalSystemTx;
 		const nativeRelayChainAsset = registry.currentRelayRegistry[relayChainID].tokens[0];
-		const xcmDirection = this.establishDirection(destChainId, _specName, isDestSystemParachain);
+		const xcmDirection = this.establishDirection(
+			isLocalTx,
+			isDestRelayChain,
+			isDestSystemParachain,
+			isDestParachain,
+			isOriginSystemParachain,
+			isOriginParachain
+		);
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, _specName, xcmDirection, assetIds[0]);
 		const xcmPallet = establishXcmPallet(_api, xcmDirection, isForeignAssetsTransfer, isPrimaryParachainNativeAsset);
@@ -294,8 +307,11 @@ export class AssetTransferApi {
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-		if (xcmPallet === XcmPalletName.xTokens && xcmDirection === Direction.ParaToSystem) {
-			if (paysWithFeeDest && !paysWithFeeDest.includes('parents') && assetIds.length < 2) {
+		if (
+			xcmPallet === XcmPalletName.xTokens &&
+			(xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara)
+		) {
+			if (!paysWithFeeDest && assetIds.length < 2) {
 				txMethod = 'transferMultiAsset';
 				transaction = await transferMultiAsset(
 					_api,
@@ -364,7 +380,7 @@ export class AssetTransferApi {
 				txMethod = 'limitedReserveTransferAssets';
 				transaction = await limitedReserveTransferAssets(
 					_api,
-					xcmDirection,
+					xcmDirection as XcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -384,7 +400,7 @@ export class AssetTransferApi {
 				txMethod = 'reserveTransferAssets';
 				transaction = await reserveTransferAssets(
 					_api,
-					xcmDirection,
+					xcmDirection as XcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -404,7 +420,7 @@ export class AssetTransferApi {
 				txMethod = 'limitedTeleportAssets';
 				transaction = await limitedTeleportAssets(
 					_api,
-					xcmDirection,
+					xcmDirection as XcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -424,7 +440,7 @@ export class AssetTransferApi {
 				txMethod = 'teleportAssets';
 				transaction = await teleportAssets(
 					_api,
-					xcmDirection,
+					xcmDirection as XcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -539,22 +555,32 @@ export class AssetTransferApi {
 	 * @param destChainId
 	 * @param specName
 	 */
-	private establishDirection(destChainId: string, specName: string, destIsSystemParachain: boolean): Direction {
+	private establishDirection(
+		isLocal: boolean,
+		destIsRelayChain: boolean,
+		destIsSystemParachain: boolean,
+		destIsParachain: boolean,
+		originIsSystemParachain: boolean,
+		originIsParachain: boolean
+	): Direction {
+		if (isLocal) {
+			return Direction.Local;
+		}
+
 		const { _api } = this;
-		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(specName.toLowerCase());
 
 		/**
 		 * Check if the origin is a System Parachain
 		 */
-		if (isSystemParachain && destChainId === '0') {
+		if (originIsSystemParachain && destIsRelayChain) {
 			return Direction.SystemToRelay;
 		}
 
-		if (isSystemParachain && destIsSystemParachain) {
+		if (originIsSystemParachain && destIsSystemParachain) {
 			return Direction.SystemToSystem;
 		}
 
-		if (isSystemParachain && destChainId !== '0') {
+		if (originIsSystemParachain && destIsParachain) {
 			return Direction.SystemToPara;
 		}
 
@@ -565,14 +591,14 @@ export class AssetTransferApi {
 			return Direction.RelayToSystem;
 		}
 
-		if (_api.query.paras && !destIsSystemParachain) {
+		if (_api.query.paras && destIsParachain) {
 			return Direction.RelayToPara;
 		}
 
 		/**
 		 * Check if the origin is a Parachain or Parathread
 		 */
-		if (_api.query.polkadotXcm && !destIsSystemParachain) {
+		if (originIsParachain && destIsRelayChain) {
 			throw new BaseError('ParaToRelay is not yet implemented', BaseErrorsEnum.NotImplemented);
 
 			return Direction.ParaToRelay;
@@ -581,13 +607,11 @@ export class AssetTransferApi {
 		/**
 		 * Check if the origin is a parachain, and the destination is a system parachain.
 		 */
-		if ((_api.query.polkadotXcm || _api.query.xTokens) && destIsSystemParachain) {
+		if (originIsParachain && destIsSystemParachain) {
 			return Direction.ParaToSystem;
 		}
 
-		if (_api.query.polkadotXcm) {
-			throw new BaseError('ParaToPara is not yet implemented', BaseErrorsEnum.NotImplemented);
-
+		if (originIsParachain && destIsParachain) {
 			return Direction.ParaToPara;
 		}
 

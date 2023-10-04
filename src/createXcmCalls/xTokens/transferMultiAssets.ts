@@ -8,7 +8,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import { createXcmTypes } from '../../createXcmTypes';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import type { Registry } from '../../registry';
-import { Direction, XCMDestBenificiary } from '../../types';
+import { XCMDestBenificiary, XcmDirection } from '../../types';
 import type { CreateXcmCallOpts } from '../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 
@@ -30,7 +30,7 @@ import { XcmPalletName } from '../util/establishXcmPallet';
  */
 export const transferMultiAssets = async (
 	api: ApiPromise,
-	direction: Direction,
+	direction: XcmDirection,
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[],
@@ -65,7 +65,6 @@ export const transferMultiAssets = async (
 		});
 
 		beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);
-
 		return ext(assets, paysWithFeeDest, beneficiary, destWeightLimit);
 	}
 

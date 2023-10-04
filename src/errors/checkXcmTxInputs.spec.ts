@@ -15,15 +15,16 @@ import {
 	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
+	checkIsValidParaToParaXcmVersion,
 	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkParaAssets,
 	checkParaPrimaryAssetAmountsLength,
 	checkParaPrimaryAssetAssetIdsLength,
-	checkParaToSystemIsNonForeignAssetXTokensTx,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
 	checkXcmVersionIsValidForPaysWithFeeDest,
+	CheckXTokensPalletOriginIsNonForeignAssetTx,
 } from './checkXcmTxInputs';
 
 const parachainAssetsApi = new AssetTransferApi(adjustedMockParachainApi, 'moonriver', 2);
@@ -356,9 +357,9 @@ describe('checkAssetIds', () => {
 		const tests: Test[] = [
 			[
 				'moonriver',
-				['xcKSM', 'USDT'],
+				['xcKSMFake', 'USDT'],
 				Direction.ParaToSystem,
-				`(ParaToSystem) symbol assetId USDT not found for parachain moonriver`,
+				`(ParaToSystem) symbol assetId xcKSMFake not found for parachain moonriver`,
 			],
 			[
 				'moonriver',
@@ -660,16 +661,24 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 	});
 });
 
-describe('checkParaToSystemIsNonForeignAssetXTokensTx', () => {
+describe('CheckXTokensPalletOriginIsNonForeignAssetTx', () => {
 	it('Should correctly throw an error when xcm pallet is xTokens and isForeignAssetsTransfer is true', () => {
-		const isForeignAssetsTransfer = true;
-		const xcmPallet = XcmPalletName.xTokens;
+		type Test = [isForeignAssetTransfer: boolean, xcmPallet: XcmPalletName, xcmDirection: Direction];
 
-		const err = () => {
-			checkParaToSystemIsNonForeignAssetXTokensTx(xcmPallet, isForeignAssetsTransfer);
-		};
+		const tests: Test[] = [
+			[true, XcmPalletName.xTokens, Direction.ParaToSystem],
+			[true, XcmPalletName.xTokens, Direction.ParaToPara],
+		];
 
-		expect(err).toThrow('(ParaToSystem) xTokens pallet does not support foreign asset transfers');
+		for (const test of tests) {
+			const [isForeignAssetsTransfer, xcmPallet, xcmDirection] = test;
+
+			const err = () => {
+				CheckXTokensPalletOriginIsNonForeignAssetTx(xcmDirection, xcmPallet, isForeignAssetsTransfer);
+			};
+
+			expect(err).toThrow(`(${xcmDirection}) xTokens pallet does not support foreign asset transfers`);
+		}
 	});
 });
 
@@ -876,6 +885,44 @@ describe('checkParaAssets', () => {
 				pairInfo:
 					'[[{"parents":0,"interior":{"here":null}},{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":100}]}}]]',
 			});
+		});
+	});
+
+	describe('checkIsValidParaToParaXcmVersion', () => {
+		it('Should correctly throw an error when xcm version is not 2 for a tx that does not contain the native parachain asset', () => {
+			const isParachainPrimaryNativeAsset = false;
+			const xcmVersion = 3;
+
+			const err = () => checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
+
+			expect(err).toThrow('XcmVersion must be version 2 for txs that do not contain the Parachain primary asset.');
+		});
+
+		it('Should correctly not throw an error when xcm version is 2 for a tx that does not contain the native parachain asset', () => {
+			const isParachainPrimaryNativeAsset = false;
+			const xcmVersion = 2;
+
+			const err = () => checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
+
+			expect(err).not.toThrow();
+		});
+
+		it('Should correctly not throw an error when xcmVersion is 2 for a tx that contains the native parachain asset', () => {
+			const isParachainPrimaryNativeAsset = true;
+			const xcmVersion = 2;
+
+			const err = () => checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
+
+			expect(err).not.toThrow();
+		});
+
+		it('Should correctly not throw an error when xcmVersion is 3 for a tx that contains the native parachain asset', () => {
+			const isParachainPrimaryNativeAsset = true;
+			const xcmVersion = 3;
+
+			const err = () => checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
+
+			expect(err).not.toThrow();
 		});
 	});
 });

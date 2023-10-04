@@ -124,14 +124,28 @@ export const checkAssetsAmountMatch = (
  * @param xcmPallet
  * @param isForeignAssetsTransfer
  */
-export const checkParaToSystemIsNonForeignAssetXTokensTx = (
+export const CheckXTokensPalletOriginIsNonForeignAssetTx = (
+	xcmDirection: Direction,
 	xcmPallet: XcmPalletName,
 	isForeignAssetsTransfer: boolean
 ) => {
 	if (xcmPallet === XcmPalletName.xTokens && isForeignAssetsTransfer) {
 		throw new BaseError(
-			`(ParaToSystem) xTokens pallet does not support foreign asset transfers`,
+			`(${xcmDirection}) xTokens pallet does not support foreign asset transfers`,
 			BaseErrorsEnum.InvalidPallet
+		);
+	}
+};
+
+/**
+ * This will check that the given xcmVersion is version 2 when direction is ParaToPara
+ * for txs that do not contain the native parachains asset
+ */
+export const checkIsValidParaToParaXcmVersion = (xcmVersion: number, isParachainPrimaryNativeAsset: boolean) => {
+	if (xcmVersion != 2 && !isParachainPrimaryNativeAsset) {
+		throw new BaseError(
+			'XcmVersion must be version 2 for txs that do not contain the Parachain primary asset.',
+			BaseErrorsEnum.InvalidXcmVersion
 		);
 	}
 };
@@ -573,6 +587,7 @@ export const checkParaAssets = async (
 
 	const currentRelayChainSpecName = registry.relayChain;
 	const isValidInt = validateNumber(assetId);
+	const paraId = registry.lookupChainIdBySpecName(specName);
 
 	if (isValidInt) {
 		if (!registry.cacheLookupAsset(assetId)) {
@@ -593,7 +608,6 @@ export const checkParaAssets = async (
 		}
 
 		// Below checks when the asset exists on chain but not in our xcAssets registry.
-		const paraId = registry.lookupChainIdBySpecName(specName);
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
 
 		if (!paraXcAssets || paraXcAssets.length === 0) {
@@ -612,7 +626,7 @@ export const checkParaAssets = async (
 		throw new BaseError(`unable to identify xcAsset with ID ${assetId}`, BaseErrorsEnum.AssetNotFound);
 	} else {
 		// not a valid number
-		// check if id is a valid token symbol of the system parachain chain
+		// check if id is a valid token symbol of the parachain chain
 		const parachainAssets = await api.query.assets.asset.entries();
 
 		for (let i = 0; i < parachainAssets.length; i++) {
@@ -624,6 +638,23 @@ export const checkParaAssets = async (
 			if (symbol && symbol.toLowerCase() === assetId.toLowerCase()) {
 				// store in registry cache
 				registry.setAssetInCache(id.toString(), symbol);
+				return;
+			}
+		}
+
+		// not an asset native to the Parachain
+		// check xcAsset registry for the symbol
+		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
+
+		if (!paraXcAssets || paraXcAssets.length === 0) {
+			throw new BaseError(
+				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
+				BaseErrorsEnum.InvalidPallet
+			);
+		}
+
+		for (const info of paraXcAssets) {
+			if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
 				return;
 			}
 		}
@@ -697,15 +728,12 @@ export const checkIsValidSystemChainAssetId = async (
 };
 
 /**
- * The current functionality of ParaToSystem requires the passed in assets to be
- * in the format to which it is stored in the corresponding system parachain.
- * Therefore we can share the same functionality as SystemToPara.
  *
  * @param assetId
  * @param specName
- * @param relayChainInfo
+ * @param registry
  */
-const checkParaToAssetHubAssetId = async (api: ApiPromise, assetId: string, specName: string, registry: Registry) => {
+const checkParaOriginAssetId = async (api: ApiPromise, assetId: string, specName: string, registry: Registry) => {
 	if (typeof assetId === 'string') {
 		// An assetId may be a hex value to represent a GeneralKey for erc20 tokens.
 		// These will be represented as Foreign Assets in regard to its MultiLocation
@@ -963,8 +991,8 @@ export const checkAssetIdInput = async (
 			);
 		}
 
-		if (xcmDirection === Direction.ParaToSystem) {
-			await checkParaToAssetHubAssetId(api, assetId, specName, registry);
+		if (xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara) {
+			await checkParaOriginAssetId(api, assetId, specName, registry);
 		}
 	}
 };
@@ -1085,8 +1113,11 @@ export const checkXcmTxInputs = async (
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 	}
 
-	if (xcmDirection === Direction.ParaToSystem) {
-		checkParaToSystemIsNonForeignAssetXTokensTx(xcmPallet, isForeignAssetsTransfer);
+	if (xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara) {
+		if (xcmDirection === Direction.ParaToPara) {
+			checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
+		}
+		CheckXTokensPalletOriginIsNonForeignAssetTx(xcmDirection, xcmPallet, isForeignAssetsTransfer);
 		checkAssetsAmountMatch(assetIds, amounts, isParachainPrimaryNativeAsset);
 	}
 };

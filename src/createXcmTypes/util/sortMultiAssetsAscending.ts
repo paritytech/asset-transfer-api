@@ -152,8 +152,8 @@ const getSortOrderForX2ThroughX8 = (a: ITuple<MultiLocationJunctions>, b: ITuple
 			// compare number values if both junction values are valid integers
 			// otherwise compare the lexicographical values
 			if (junctionAIsValidInt && junctionBIsValidInt) {
-				const junctionAValueAsBN = new BN(junctionA.value.toString());
-				const junctionBValueAsBN = new BN(junctionB.value.toString());
+				const junctionAValueAsBN = new BN(Number.parseInt(junctionA.value.toString()));
+				const junctionBValueAsBN = new BN(Number.parseInt(junctionB.value.toString()));
 				if (junctionAValueAsBN.lt(junctionBValueAsBN)) {
 					return -1;
 				} else if (junctionAValueAsBN.gt(junctionBValueAsBN)) {

@@ -34,7 +34,7 @@ The below chart is focusing on what directions are supported for constructing as
 | System to Relay        |         ✅         |      ✅            |
 | Relay to Parachain     |         ✅         |      ✅            |
 | Relay to System        |         ✅         |      ✅            |
-| Parachain to Parachain |         ❌         |      ❌            |
+| Parachain to Parachain |         ✅         |      ❌            |
 | Parachain to Relay     |         ❌         |      ❌            |
 | Parachain to System    |         ✅         |      ✅            |
 | System to System       |         ✅         |      ✅            |

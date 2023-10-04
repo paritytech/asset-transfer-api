@@ -24,29 +24,37 @@ const moonriverAssetsApi = new AssetTransferApi(adjustedMockParachainApi, 'moonr
 
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
+		it('Should correctly determine direction for Local', () => {
+			const res = systemAssetsApi['establishDirection'](true, false, false, false, false, false);
+			expect(res).toEqual('Local');
+		});
 		it('Should correctly determine direction for SystemToSystem', () => {
-			const res = systemAssetsApi['establishDirection']('1000', 'statemint', true);
+			const res = systemAssetsApi['establishDirection'](false, false, true, false, true, false);
 			expect(res).toEqual('SystemToSystem');
 		});
 		it('Should correctly determine direction for SystemToPara', () => {
-			const res = systemAssetsApi['establishDirection']('2000', 'statemint', false);
+			const res = systemAssetsApi['establishDirection'](false, false, false, true, true, false);
 			expect(res).toEqual('SystemToPara');
 		});
 		it('Should correctly determine direction for SystemToRelay', () => {
-			const res = systemAssetsApi['establishDirection']('0', 'asset-hub-polkadot', false);
+			const res = systemAssetsApi['establishDirection'](false, true, false, false, true, false);
 			expect(res).toEqual('SystemToRelay');
 		});
 		it('Should correctly determine direction for RelayToPara', () => {
-			const res = relayAssetsApi['establishDirection']('2000', 'polkadot', false);
+			const res = relayAssetsApi['establishDirection'](false, false, false, true, false, false);
 			expect(res).toEqual('RelayToPara');
 		});
 		it('Should correctly determine direction for RelayToSystem', () => {
-			const res = relayAssetsApi['establishDirection']('1000', 'polkadot', true);
+			const res = relayAssetsApi['establishDirection'](false, false, true, false, false, false);
 			expect(res).toEqual('RelayToSystem');
 		});
 		it('Should correctly determine direction for ParaToSystem', () => {
-			const res = moonriverAssetsApi['establishDirection']('1000', 'moonriver', true);
+			const res = moonriverAssetsApi['establishDirection'](false, false, true, false, false, true);
 			expect(res).toEqual('ParaToSystem');
+		});
+		it('Should correctly determine direction for ParaToPara', () => {
+			const res = moonriverAssetsApi['establishDirection'](false, false, false, true, false, true);
+			expect(res).toEqual('ParaToPara');
 		});
 	});
 	describe('constructFormat', () => {
@@ -395,6 +403,65 @@ describe('AssetTransferAPI', () => {
 	});
 
 	describe('decodeExtrinsic', () => {
+		describe('ParaToPara', () => {
+			it('Should decode a tx call extrinsic given its hash for ParaToPara', async () => {
+				const expected =
+					'{"args":{"asset":{"V2":{"id":{"Concrete":{"parents":"1","interior":{"X2":[{"Parachain":"2,001"},{"GeneralKey":"0x010a"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}},"dest":{"V2":{"parents":"1","interior":{"X2":[{"Parachain":"2,001"},{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}]}}},"dest_weight_limit":"Unlimited"},"method":"transferMultiasset","section":"xTokens"}';
+
+				const callTxResult = await moonriverAssetsApi.createTransferTransaction(
+					'2001',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					['vMOVR'],
+					['10000000000000'],
+					{
+						format: 'call',
+						keepAlive: false,
+					}
+				);
+
+				const decoded = moonriverAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a tx payload extrinsic given its hash for ParaToPara', async () => {
+				const expected =
+					'{"args":{"asset":{"V2":{"id":{"Concrete":{"parents":"1","interior":{"X2":[{"Parachain":"2,092"},{"GeneralKey":"0x000c"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}},"dest":{"V2":{"parents":"1","interior":{"X2":[{"Parachain":"2,092"},{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}]}}},"dest_weight_limit":"Unlimited"},"method":"transferMultiasset","section":"xTokens"}';
+
+				const payloadTxResult = await moonriverAssetsApi.createTransferTransaction(
+					'2092',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					['KINT'],
+					['10000000000000'],
+					{
+						xcmVersion: 2,
+						format: 'payload',
+						keepAlive: false,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					}
+				);
+
+				const decoded = moonriverAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a tx submittable extrinsic given its hash for ParaToPara', async () => {
+				const expected =
+					'{"args":{"asset":{"V2":{"id":{"Concrete":{"parents":"1","interior":{"X1":{"Parachain":"2,007"}}}},"fun":{"Fungible":"10,000,000,000,000"}}},"dest":{"V2":{"parents":"1","interior":{"X2":[{"Parachain":"2,007"},{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}]}}},"dest_weight_limit":"Unlimited"},"method":"transferMultiasset","section":"xTokens"}';
+
+				const callTxResult = await moonriverAssetsApi.createTransferTransaction(
+					'2007',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					['SDN'],
+					['10000000000000'],
+					{
+						format: 'submittable',
+					}
+				);
+
+				const decoded = moonriverAssetsApi.decodeExtrinsic(callTxResult.tx.toHex(), 'submittable');
+				expect(decoded).toEqual(expected);
+			});
+		});
 		describe('RelayToSystem', () => {
 			it('Should decode a calls extrinsic given its hash for RelayToSystem', async () => {
 				const expected =
