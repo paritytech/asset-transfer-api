@@ -8,7 +8,7 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send pha from a Phala Network (Parachain) account
+ * In this example we are creating a call to send PHA from a Phala Network (Parachain) account
  * to a Moonbeam (Parachain) account, where the `xcmVersion` is set to 3, and `isLimited` is false declaring that
  * it will allow `unlimited` weight for the tx.
  *
