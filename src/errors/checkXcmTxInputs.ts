@@ -138,19 +138,6 @@ export const CheckXTokensPalletOriginIsNonForeignAssetTx = (
 };
 
 /**
- * This will check that the given xcmVersion is version 2 when direction is ParaToPara
- * for txs that do not contain the native parachains asset
- */
-export const checkIsValidParaToParaXcmVersion = (xcmVersion: number, isParachainPrimaryNativeAsset: boolean) => {
-	if (xcmVersion != 2 && !isParachainPrimaryNativeAsset) {
-		throw new BaseError(
-			'XcmVersion must be version 2 for txs that do not contain the Parachain primary asset.',
-			BaseErrorsEnum.InvalidXcmVersion
-		);
-	}
-};
-
-/**
  * This will check that a given assetId is neither an empty string
  * or known blank space
  *
@@ -1114,9 +1101,6 @@ export const checkXcmTxInputs = async (
 	}
 
 	if (xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara) {
-		if (xcmDirection === Direction.ParaToPara) {
-			checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
-		}
 		CheckXTokensPalletOriginIsNonForeignAssetTx(xcmDirection, xcmPallet, isForeignAssetsTransfer);
 		checkAssetsAmountMatch(assetIds, amounts, isParachainPrimaryNativeAsset);
 	}

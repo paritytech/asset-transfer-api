@@ -32,7 +32,7 @@ const main = async () => {
 					proofSize: '3000',
 				},
 				xcmVersion: 2,
-				// NOTE: for xTokens `transferMultiAssetWithFee` txs, paysWithFeeDest is the multiLocation of the asset that is intended to be used to pay for fees in the dest chain
+				// NOTE: for `xTokens` pallet `transferMultiAssetWithFee` txs, `paysWithFeeDest` is the multiLocation of the asset that is intended to be used to pay for fees in the dest chain
 				paysWithFeeDest:
 					'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
 			}

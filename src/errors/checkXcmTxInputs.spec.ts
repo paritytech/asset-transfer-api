@@ -15,7 +15,6 @@ import {
 	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
-	checkIsValidParaToParaXcmVersion,
 	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkParaAssets,
@@ -885,44 +884,6 @@ describe('checkParaAssets', () => {
 				pairInfo:
 					'[[{"parents":0,"interior":{"here":null}},{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":100}]}}]]',
 			});
-		});
-	});
-
-	describe('checkIsValidParaToParaXcmVersion', () => {
-		it('Should correctly throw an error when xcm version is not 2 for a tx that does not contain the native parachain asset', () => {
-			const isParachainPrimaryNativeAsset = false;
-			const xcmVersion = 3;
-
-			const err = () => checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
-
-			expect(err).toThrow('XcmVersion must be version 2 for txs that do not contain the Parachain primary asset.');
-		});
-
-		it('Should correctly not throw an error when xcm version is 2 for a tx that does not contain the native parachain asset', () => {
-			const isParachainPrimaryNativeAsset = false;
-			const xcmVersion = 2;
-
-			const err = () => checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
-
-			expect(err).not.toThrow();
-		});
-
-		it('Should correctly not throw an error when xcmVersion is 2 for a tx that contains the native parachain asset', () => {
-			const isParachainPrimaryNativeAsset = true;
-			const xcmVersion = 2;
-
-			const err = () => checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
-
-			expect(err).not.toThrow();
-		});
-
-		it('Should correctly not throw an error when xcmVersion is 3 for a tx that contains the native parachain asset', () => {
-			const isParachainPrimaryNativeAsset = true;
-			const xcmVersion = 3;
-
-			const err = () => checkIsValidParaToParaXcmVersion(xcmVersion, isParachainPrimaryNativeAsset);
-
-			expect(err).not.toThrow();
 		});
 	});
 });

@@ -8,8 +8,8 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send vMOVR and 1 vBNC from a Moonriver (Parachain) account
- * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` is false declaring that
+ * In this example we are creating a call to send vMOVR and vBNC from a Moonriver (Parachain) account
+ * to a Bifrost Kusama (Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` is false declaring that
  * it will allow `unlimited` weight for the tx.
  *
  * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
