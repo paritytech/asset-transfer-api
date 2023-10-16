@@ -28,6 +28,8 @@ Find the full documentation [here](https://paritytech.github.io/asset-transfer-a
 
 The below chart is focusing on what directions are supported for constructing asset transfers and in what XCM version. The goal is to have everything in green checkmarks. Note that local transfers (intra-chain) are not visualized here.
 
+Note: Parachain To Parachain support is currently limited to XCM V2, with the exception of Parachain primary asset tx construction (e.g. MOVR, SDN, etc.)
+
 | Direction              | V2                 | V3                 |
 | ---------------------  | ------------------ | ------------------ |
 | System to Parachain    |         ✅         |      ✅            |
@@ -35,11 +37,13 @@ The below chart is focusing on what directions are supported for constructing as
 | Relay to Parachain     |         ✅         |      ✅            |
 | Relay to System        |         ✅         |      ✅            |
 | Parachain to Parachain |         ✅         |      ❌            |
-| Parachain to Relay     |         ❌         |      ⚠️             |
+| Parachain to Relay     |         ❌         |      ❎             |
 | Parachain to System    |         ✅         |      ✅            |
 | System to System       |         ✅         |      ✅            |
 
+
 Note: System refers to System Parachains like Asset Hub.
+
 
 ## Usage
 
