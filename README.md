@@ -37,7 +37,7 @@ Note: Parachain To Parachain support is currently limited to XCM V2, with the ex
 | Relay to Parachain     |         ✅         |      ✅            |
 | Relay to System        |         ✅         |      ✅            |
 | Parachain to Parachain |         ✅         |      ❌            |
-| Parachain to Relay     |         ❌         |      ❎             |
+| Parachain to Relay     |         ❌         |      ❎            |
 | Parachain to System    |         ✅         |      ✅            |
 | System to System       |         ✅         |      ✅            |
 
