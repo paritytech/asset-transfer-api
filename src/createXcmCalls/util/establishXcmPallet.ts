@@ -20,7 +20,7 @@ export enum XcmPalletName {
  */
 export const establishXcmPallet = (
 	api: ApiPromise,
-	direction?: Direction | string,
+	direction?: Direction,
 	isForeignAssetsTransfer?: boolean,
 	isParachainPrimaryNativeAsset?: boolean
 ): XcmPalletName => {
