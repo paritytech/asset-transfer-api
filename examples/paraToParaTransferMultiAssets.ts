@@ -9,7 +9,7 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a call to send vMOVR and vBNC from a Moonriver (Parachain) account
- * to a Bifrost Kusama (Parachain) account, where the `xcmVersion` is set to 2, and `isLimited` is false declaring that
+ * to a Bifrost Kusama (Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` is false declaring that
  * it will be `unlimited` since there is no `weightLimit` option as well.
  *
  * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
