@@ -8,7 +8,7 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send BNC from a Moonriver (Parachain) account
+ * In this example we are creating a call to send `BNC` from a Moonriver (Parachain) account
  * to a Bifrost Kusama (Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` is false declaring that
  * it will be `unlimited` since there is no `weightLimit` option as well.
  *
