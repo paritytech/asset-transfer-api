@@ -10,7 +10,7 @@ import { GREEN, PURPLE, RESET } from './colors';
 /**
  * In this example we are creating a call to send PHA from a Phala Network (Parachain) account
  * to a Moonbeam (Parachain) account, where the `xcmVersion` is set to 3, and `isLimited` is false declaring that
- * it will allow `unlimited` weight for the tx.
+ * it will be `unlimited` since there is no `weightLimit` option as well.
  *
  * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
  */
