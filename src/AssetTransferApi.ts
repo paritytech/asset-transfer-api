@@ -53,7 +53,6 @@ import {
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
-	XcmDirection,
 } from './types';
 import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { validateNumber } from './validate';
@@ -170,10 +169,9 @@ export class AssetTransferApi {
 
 		const isLocalSystemTx = isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId;
 		const isLocalRelayTx = destChainId === '0' && RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
-		const isLocalTx = isLocalRelayTx || isLocalSystemTx;
+		// const isLocalTx = isLocalRelayTx || isLocalSystemTx;
 		const nativeRelayChainAsset = registry.currentRelayRegistry[relayChainID].tokens[0];
 		const xcmDirection = this.establishDirection(
-			isLocalTx,
 			isDestRelayChain,
 			isDestSystemParachain,
 			isDestParachain,
@@ -380,7 +378,7 @@ export class AssetTransferApi {
 				txMethod = 'limitedReserveTransferAssets';
 				transaction = await limitedReserveTransferAssets(
 					_api,
-					xcmDirection as XcmDirection,
+					xcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -400,7 +398,7 @@ export class AssetTransferApi {
 				txMethod = 'reserveTransferAssets';
 				transaction = await reserveTransferAssets(
 					_api,
-					xcmDirection as XcmDirection,
+					xcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -420,7 +418,7 @@ export class AssetTransferApi {
 				txMethod = 'limitedTeleportAssets';
 				transaction = await limitedTeleportAssets(
 					_api,
-					xcmDirection as XcmDirection,
+					xcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -440,7 +438,7 @@ export class AssetTransferApi {
 				txMethod = 'teleportAssets';
 				transaction = await teleportAssets(
 					_api,
-					xcmDirection as XcmDirection,
+					xcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -556,17 +554,12 @@ export class AssetTransferApi {
 	 * @param specName
 	 */
 	private establishDirection(
-		isLocal: boolean,
 		destIsRelayChain: boolean,
 		destIsSystemParachain: boolean,
 		destIsParachain: boolean,
 		originIsSystemParachain: boolean,
 		originIsParachain: boolean
 	): Direction {
-		if (isLocal) {
-			return Direction.Local;
-		}
-
 		const { _api } = this;
 
 		/**
@@ -615,7 +608,7 @@ export class AssetTransferApi {
 			return Direction.ParaToPara;
 		}
 
-		throw Error('Could not establish a xcm transaction direction');
+		// throw Error('Could not establish a xcm transaction direction');
 	}
 
 	/**

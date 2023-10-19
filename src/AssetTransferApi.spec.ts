@@ -24,36 +24,32 @@ const moonriverAssetsApi = new AssetTransferApi(adjustedMockParachainApi, 'moonr
 
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
-		it('Should correctly determine direction for Local', () => {
-			const res = systemAssetsApi['establishDirection'](true, false, false, false, false, false);
-			expect(res).toEqual('Local');
-		});
 		it('Should correctly determine direction for SystemToSystem', () => {
-			const res = systemAssetsApi['establishDirection'](false, false, true, false, true, false);
+			const res = systemAssetsApi['establishDirection'](false, true, false, true, false);
 			expect(res).toEqual('SystemToSystem');
 		});
 		it('Should correctly determine direction for SystemToPara', () => {
-			const res = systemAssetsApi['establishDirection'](false, false, false, true, true, false);
+			const res = systemAssetsApi['establishDirection'](false, false, true, true, false);
 			expect(res).toEqual('SystemToPara');
 		});
 		it('Should correctly determine direction for SystemToRelay', () => {
-			const res = systemAssetsApi['establishDirection'](false, true, false, false, true, false);
+			const res = systemAssetsApi['establishDirection'](true, false, false, true, false);
 			expect(res).toEqual('SystemToRelay');
 		});
 		it('Should correctly determine direction for RelayToPara', () => {
-			const res = relayAssetsApi['establishDirection'](false, false, false, true, false, false);
+			const res = relayAssetsApi['establishDirection'](false, false, true, false, false);
 			expect(res).toEqual('RelayToPara');
 		});
 		it('Should correctly determine direction for RelayToSystem', () => {
-			const res = relayAssetsApi['establishDirection'](false, false, true, false, false, false);
+			const res = relayAssetsApi['establishDirection'](false, true, false, false, false);
 			expect(res).toEqual('RelayToSystem');
 		});
 		it('Should correctly determine direction for ParaToSystem', () => {
-			const res = moonriverAssetsApi['establishDirection'](false, false, true, false, false, true);
+			const res = moonriverAssetsApi['establishDirection'](false, true, false, false, true);
 			expect(res).toEqual('ParaToSystem');
 		});
 		it('Should correctly determine direction for ParaToPara', () => {
-			const res = moonriverAssetsApi['establishDirection'](false, false, false, true, false, true);
+			const res = moonriverAssetsApi['establishDirection'](false, false, true, false, true);
 			expect(res).toEqual('ParaToPara');
 		});
 	});

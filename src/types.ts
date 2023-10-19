@@ -24,10 +24,6 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclu
  */
 export enum Direction {
 	/**
-	 * Local tx
-	 */
-	Local = 'Local',
-	/**
 	 * System parachain to Parachain.
 	 */
 	SystemToPara = 'SystemToPara',
@@ -60,11 +56,6 @@ export enum Direction {
 	 */
 	RelayToPara = 'RelayToPara',
 }
-
-/**
- *  The direction of the cross chain transfer. This only concerns XCM transactions.
- */
-export type XcmDirection = Exclude<Direction, 'Local'>;
 
 export enum AssetType {
 	Native = 'Native',

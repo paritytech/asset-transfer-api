@@ -11,7 +11,7 @@ import { SystemToSystem } from './SystemToSystem';
 import { ICreateXcmType } from './types';
 
 type ICreateXcmTypeLookup = {
-	[key in Exclude<Direction, Direction.Local>]: ICreateXcmType;
+	[key in Direction]: ICreateXcmType;
 };
 
 export const createXcmTypes: ICreateXcmTypeLookup = {

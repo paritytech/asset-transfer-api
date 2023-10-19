@@ -7,7 +7,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import { createXcmTypes } from '../../createXcmTypes';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import type { Registry } from '../../registry';
-import { XcmDirection } from '../../types';
+import { Direction } from '../../types';
 import type { CreateXcmCallOpts } from '../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 
@@ -29,7 +29,7 @@ import { XcmPalletName } from '../util/establishXcmPallet';
  */
 export const transferMultiAssetWithFee = async (
 	api: ApiPromise,
-	direction: XcmDirection,
+	direction: Direction,
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[],
