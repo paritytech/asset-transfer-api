@@ -608,7 +608,7 @@ export class AssetTransferApi {
 			return Direction.ParaToPara;
 		}
 
-		// throw Error('Could not establish a xcm transaction direction');
+		throw Error('Could not establish a xcm transaction direction');
 	}
 
 	/**

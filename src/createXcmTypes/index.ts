@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Direction } from '../types';
-import { ParaToPara } from './ParaToPara';
 import { ParaToSystem } from './ParaToSystem';
 import { RelayToPara } from './RelayToPara';
 import { RelayToSystem } from './RelayToSystem';
@@ -20,7 +19,7 @@ export const createXcmTypes: ICreateXcmTypeLookup = {
 	RelayToPara,
 	SystemToRelay,
 	RelayToSystem,
-	ParaToPara,
+	ParaToPara: {} as ICreateXcmType,
 	ParaToRelay: {} as ICreateXcmType,
 	ParaToSystem,
 };
