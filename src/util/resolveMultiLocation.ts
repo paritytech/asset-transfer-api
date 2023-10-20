@@ -18,6 +18,13 @@ export const resolveMultiLocation = (
 		return api.registry.createType('XcmV3MultiLocation', JSON.parse(multiLocationStr));
 	}
 
+	if (xcmVersion != 2 && (multiLocationStr.includes('generalKey') || multiLocationStr.includes('GeneralKey'))) {
+		throw new BaseError(
+			'XcmVersion must be version 2 for MultiLocations that contain a GeneralKey junction.',
+			BaseErrorsEnum.InvalidXcmVersion
+		);
+	}
+
 	if (!SUPPORTED_XCM_VERSIONS.includes(xcmVersion)) {
 		throw new BaseError(`Invalid XcmVersion for mulitLocation construction`, BaseErrorsEnum.InternalError);
 	}

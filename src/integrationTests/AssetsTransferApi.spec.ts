@@ -1689,7 +1689,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion,
 						isLimited: opts.isLimited,
 						weightLimit: opts.weightLimit,
-						paysWithFeeDest: '0',
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
@@ -1785,7 +1784,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
-			describe('V3 transfer api', () => {
+			describe('V3', () => {
 				it('Should correctly build a V3 transferMultiAsset call', async () => {
 					const res = await baseParachainTransferMultiAssetTx('call', 3, {
 						isLimited: true,
@@ -2395,6 +2394,241 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+		});
+		describe('ParaToPara', () => {
+			const baseParaToParaTransferMultiAssetTx = async <T extends Format>(
+				format: T,
+				xcmVersion: number,
+				destChainId: string,
+				assetId: string,
+				opts: CreateXcmCallOpts
+			): Promise<TxResult<T>> => {
+				return await moonriverAssetsApi.createTransferTransaction(
+					destChainId,
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[assetId],
+					['10000000000'],
+					{
+						format,
+						xcmVersion,
+						isLimited: opts.isLimited,
+						weightLimit: opts.weightLimit,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					}
+				);
+			};
+			describe('transferMultiAsset', () => {
+				describe('V2', () => {
+					it('Should correctly build a V2 transferMultiAsset call', async () => {
+						const res = await baseParaToParaTransferMultiAssetTx('call', 2, '2001', 'vMOVR', {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						expect(res).toEqual({
+							dest: 'bifrost',
+							origin: 'moonriver',
+							direction: 'ParaToPara',
+							format: 'call',
+							method: 'transferMultiAsset',
+							tx: '0x6a010100010200451f0608010a000700e40b540201010200451f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+							xcmVersion: 2,
+						});
+					});
+					it('Should correctly build a V2 transferMultiAsset payload', async () => {
+						const res = await baseParaToParaTransferMultiAssetTx('payload', 2, '2001', 'BNC', {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						expect(res).toEqual({
+							dest: 'bifrost',
+							origin: 'moonriver',
+							direction: 'ParaToPara',
+							format: 'payload',
+							method: 'transferMultiAsset',
+							tx: '0x05016a010100010200451f06080001000700e40b540201010200451f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+							xcmVersion: 2,
+						});
+					});
+					it('Should correctly build a V2 submittable transferMultiAsset', async () => {
+						const res = await baseParaToParaTransferMultiAssetTx('submittable', 2, '2001', 'MOVR', {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						expect(res.tx.toRawType()).toEqual('Extrinsic');
+					});
+				});
+			});
+			describe('transferMultiAssets', () => {
+				const baseParaToParaTransferMultiAssetsTx = async <T extends Format>(
+					format: T,
+					xcmVersion: number,
+					destChainId: string,
+					assetIds: string[],
+					opts: CreateXcmCallOpts
+				): Promise<TxResult<T>> => {
+					return await moonriverAssetsApi.createTransferTransaction(
+						destChainId,
+						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+						assetIds,
+						['10000000000', '100000'],
+						{
+							format,
+							xcmVersion,
+							isLimited: opts.isLimited,
+							weightLimit: opts.weightLimit,
+							sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						}
+					);
+				};
+				describe('V2', () => {
+					it('Should correctly build a V2 transferMultiAsset call', async () => {
+						const res = await baseParaToParaTransferMultiAssetsTx('call', 2, '2001', ['vMOVR', 'vBNC'], {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						expect(res).toEqual({
+							dest: 'bifrost',
+							origin: 'moonriver',
+							direction: 'ParaToPara',
+							format: 'call',
+							method: 'transferMultiAssets',
+							tx: '0x6a05010800010200451f0608010100821a060000010200451f0608010a000700e40b54020000000001010200451f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+							xcmVersion: 2,
+						});
+					});
+					it('Should correctly build a V2 transferMultiAsset payload', async () => {
+						const res = await baseParaToParaTransferMultiAssetsTx('payload', 2, '2001', ['vksm', 'bnc'], {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						expect(res).toEqual({
+							dest: 'bifrost',
+							origin: 'moonriver',
+							direction: 'ParaToPara',
+							format: 'payload',
+							method: 'transferMultiAssets',
+							tx: '0x55016a05010800010200451f0608000100821a060000010200451f06080104000700e40b54020000000001010200451f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+							xcmVersion: 2,
+						});
+					});
+					it('Should correctly build a V2 submittable transferMultiAsset', async () => {
+						const res = await baseParaToParaTransferMultiAssetsTx('submittable', 2, '2001', ['vMOVR', 'vBNC'], {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						expect(res.tx.toRawType()).toEqual('Extrinsic');
+					});
+				});
+			});
+			describe('transferMultiAssetWithFee', () => {
+				const baseParaToParaTransferMultiAssetWithFeeTx = async <T extends Format>(
+					format: T,
+					xcmVersion: number,
+					destChainId: string,
+					assetId: string,
+					opts: CreateXcmCallOpts
+				): Promise<TxResult<T>> => {
+					return await moonriverAssetsApi.createTransferTransaction(
+						destChainId,
+						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+						[assetId],
+						['10000000000'],
+						{
+							format,
+							xcmVersion,
+							isLimited: opts.isLimited,
+							weightLimit: opts.weightLimit,
+							paysWithFeeDest:
+								'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
+							sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						}
+					);
+				};
+				describe('V2', () => {
+					it('Should correctly build a V2 transferMultiAsset call', async () => {
+						const res = await baseParaToParaTransferMultiAssetWithFeeTx('call', 2, '2001', 'vKSM', {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						expect(res).toEqual({
+							dest: 'bifrost',
+							origin: 'moonriver',
+							direction: 'ParaToPara',
+							format: 'call',
+							method: 'transferMultiAssetWithFee',
+							tx: '0x6a030100010200451f06080104000700e40b54020100010300a10f043205011f000001010200451f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+							xcmVersion: 2,
+						});
+					});
+					it('Should correctly build a V2 transferMultiAsset payload', async () => {
+						const res = await baseParaToParaTransferMultiAssetWithFeeTx('payload', 2, '2001', 'vmovr', {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						expect(res).toEqual({
+							dest: 'bifrost',
+							origin: 'moonriver',
+							direction: 'ParaToPara',
+							format: 'payload',
+							method: 'transferMultiAssetWithFee',
+							tx: '0x3d016a030100010200451f0608010a000700e40b54020100010300a10f043205011f000001010200451f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+							xcmVersion: 2,
+						});
+					});
+					it('Should correctly build a V2 submittable transferMultiAsset', async () => {
+						const res = await baseParaToParaTransferMultiAssetWithFeeTx('submittable', 2, '2001', 'movr', {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						expect(res.tx.toRawType()).toEqual('Extrinsic');
+					});
 				});
 			});
 		});

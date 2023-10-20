@@ -6,7 +6,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
 import type { Registry } from '../../registry';
-import { Direction } from '../../types';
+import { XcmDirection } from '../../types';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr';
 import type { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
@@ -27,7 +27,7 @@ import { establishXcmPallet } from '../util/establishXcmPallet';
  */
 export const limitedTeleportAssets = async (
 	api: ApiPromise,
-	direction: Direction,
+	direction: XcmDirection,
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[],

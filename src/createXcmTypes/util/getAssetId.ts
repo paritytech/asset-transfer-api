@@ -133,6 +133,31 @@ export const getAssetId = async (
 					break;
 				}
 			}
+			const paraId = registry.lookupChainIdBySpecName(specName);
+
+			// if assetId length is 0, check xcAssets for symbol
+			const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
+			const currentRelayChainSpecName = registry.relayChain;
+
+			if (!paraXcAssets || paraXcAssets.length === 0) {
+				throw new BaseError(
+					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
+					BaseErrorsEnum.InvalidPallet
+				);
+			}
+
+			for (const info of paraXcAssets) {
+				if (
+					typeof info.asset === 'string' &&
+					typeof info.symbol === 'string' &&
+					info.symbol.toLowerCase() === asset.toLowerCase()
+				) {
+					assetId = info.asset;
+					registry.setAssetInCache(assetId, asset);
+					break;
+				}
+			}
+
 			if (assetId.length === 0) {
 				throw new BaseError(
 					`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`,
