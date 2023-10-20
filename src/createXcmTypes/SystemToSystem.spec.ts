@@ -15,15 +15,13 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 0,
 					interior: {
 						X1: {
-							accountId32: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: {
-									any: null,
-								},
+								network: 'Any',
 							},
 						},
 					},
@@ -39,13 +37,12 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 0,
 					interior: {
 						X1: {
-							accountId32: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: null,
 							},
 						},
 					},
@@ -60,11 +57,11 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			const destination = SystemToSystem.createDest('1000', 2);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: 1000,
+							Parachain: '1000',
 						},
 					},
 				},
@@ -76,11 +73,11 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			const destination = SystemToSystem.createDest('1002', 3);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: 1002,
+							Parachain: '1002',
 						},
 					},
 				},
