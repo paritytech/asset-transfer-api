@@ -9,86 +9,81 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = RelayToSystem.createBeneficiary(
-				mockRelayApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2
 			);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountId32: {
+						X1: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: {
-									any: null,
-								},
+								network: 'Any',
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
 			const beneficiary = RelayToSystem.createBeneficiary(
-				mockRelayApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3
 			);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountId32: {
+						X1: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: null,
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 	});
 
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = RelayToSystem.createDest(mockRelayApi, '100', 2);
+			const destination = RelayToSystem.createDest('100', 2);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 0,
 					interior: {
-						x1: {
-							parachain: 100,
+						X1: {
+							Parachain: '100',
 						},
 					},
 				},
 			};
 
-			expect(destination.toJSON()).toStrictEqual(expectedRes);
+			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = RelayToSystem.createDest(mockRelayApi, '100', 3);
+			const destination = RelayToSystem.createDest('100', 3);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 0,
 					interior: {
-						x1: {
-							parachain: 100,
+						X1: {
+							Parachain: '100',
 						},
 					},
 				},
 			};
 
-			expect(destination.toJSON()).toStrictEqual(expectedRes);
+			expect(destination).toStrictEqual(expectedRes);
 		});
 	});
 	describe('Assets', () => {
