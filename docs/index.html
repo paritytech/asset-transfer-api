@@ -33,7 +33,6 @@
 <a id="md:docs" class="tsd-anchor"></a><h2><a href="#md:docs">Docs</a></h2><p>Find the full documentation <a href="https://paritytech.github.io/asset-transfer-api/">here</a>, for quick start guide read below. All examples can be found <a href="https://github.com/paritytech/asset-transfer-api/tree/main/examples/">here</a>.</p>
 <p><strong>Summary</strong>: Asset-transfer-api is a library focused on simplifying the construction of asset transfers for Substrate based chains that involves system parachains like Asset Hub (Polkadot and Kusama). It exposes a reduced set of methods which facilitates users to send transfers to other (para) chains or locally.</p>
 <a id="md:current-cross-chain-support" class="tsd-anchor"></a><h3><a href="#md:current-cross-chain-support">Current Cross-chain Support</a></h3><p>The below chart is focusing on what directions are supported for constructing asset transfers and in what XCM version. The goal is to have everything in green checkmarks. Note that local transfers (intra-chain) are not visualized here.</p>
-<p>Note: Parachain To Parachain support is currently limited to XCM V2, with the exception of Parachain primary asset tx construction (e.g. MOVR, SDN, etc.)</p>
 <table>
 <thead>
 <tr>
@@ -65,12 +64,12 @@
 <tr>
 <td>Parachain to Parachain</td>
 <td>✅</td>
-<td>❌</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Parachain to Relay</td>
 <td>❌</td>
-<td>❎</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Parachain to System</td>
@@ -83,6 +82,7 @@
 <td>✅</td>
 </tr>
 </tbody></table>
+<a id="md:note-on-parachain-to-parachain-support" class="tsd-anchor"></a><h2><a href="#md:note-on-parachain-to-parachain-support">Note on Parachain to Parachain Support</a></h2><p>Parachain To Parachain support is currently limited to XCM V2, with the exception of Parachain primary asset tx construction (e.g. MOVR, SDN, etc.).</p>
 <p>Note: System refers to System Parachains like Asset Hub.</p>
 <a id="md:usage" class="tsd-anchor"></a><h2><a href="#md:usage">Usage</a></h2><a id="md:npm" class="tsd-anchor"></a><h3><a href="#md:npm">Npm</a></h3><p><code>npm install @substrate/asset-transfer-api</code></p>
 <a id="md:yarn" class="tsd-anchor"></a><h3><a href="#md:yarn">Yarn</a></h3><p><code>yarn add @substrate/asset-transfer-api</code></p>
@@ -162,6 +162,7 @@ run these examples: <code>yarn build:examples &amp;&amp; node ./examples/build/e
 <li>
 <ul>
 <li><a href="#md:current-cross-chain-support"><span>Current <wbr/>Cross-<wbr/>chain <wbr/>Support</span></a></li>
+<li><a href="#md:note-on-parachain-to-parachain-support"><span>Note on <wbr/>Parachain to <wbr/>Parachain <wbr/>Support</span></a></li>
 <li><a href="#md:usage"><span>Usage</span></a></li>
 <li>
 <ul>

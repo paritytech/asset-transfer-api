@@ -17,7 +17,7 @@ describe('ParaToPara', () => {
 			const expectedRes = {
 				v2: {
 					parents: 0,
-					interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+					interior: {
 						X1: {
 							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -26,7 +26,7 @@ describe('ParaToPara', () => {
 								},
 							},
 						},
-					}),
+					},
 				},
 			};
 
@@ -63,11 +63,11 @@ describe('ParaToPara', () => {
 			const expectedRes = {
 				v2: {
 					parents: 1,
-					interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+					interior: {
 						X1: {
 							Parachain: 100,
 						},
-					}),
+					},
 				},
 			};
 
@@ -79,11 +79,11 @@ describe('ParaToPara', () => {
 			const expectedRes = {
 				v3: {
 					parents: 1,
-					interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+					interior: {
 						X1: {
 							Parachain: 100,
 						},
-					}),
+					},
 				},
 			};
 
@@ -113,9 +113,9 @@ describe('ParaToPara', () => {
 						id: {
 							concrete: {
 								parents: 1,
-								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
-									Here: null,
-								}),
+								interior: {
+									here: null,
+								},
 							},
 						},
 						fun: {
@@ -126,9 +126,9 @@ describe('ParaToPara', () => {
 						id: {
 							concrete: {
 								parents: 1,
-								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
-									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
-								}),
+								interior: {
+									x3: [{ parachain: 1000 }, { palletInstance: 50 }, { generalIndex: 8 }],
+								},
 							},
 						},
 						fun: {
@@ -160,9 +160,9 @@ describe('ParaToPara', () => {
 						id: {
 							concrete: {
 								parents: 1,
-								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
-									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
-								}),
+								interior: {
+									x3: [{ parachain: 1000 }, { palletInstance: 50 }, { generalIndex: 8 }],
+								},
 							},
 						},
 						fun: {
@@ -173,9 +173,9 @@ describe('ParaToPara', () => {
 						id: {
 							concrete: {
 								parents: 1,
-								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
-									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 1984 }],
-								}),
+								interior: {
+									x3: [{ parachain: 1000 }, { palletInstance: 50 }, { generalIndex: 1984 }],
+								},
 							},
 						},
 						fun: {

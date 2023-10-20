@@ -121,14 +121,16 @@ export const ParaToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): Promise<VersionedMultiAssets> => {
+		const { registry, isForeignAssetsTransfer } = opts;
+
 		const sortedAndDedupedMultiAssets = await createParaToParaMultiAssets(
 			api,
 			amounts,
 			specName,
 			assets,
 			xcmVersion,
-			opts.registry,
-			opts.isForeignAssetsTransfer
+			registry,
+			isForeignAssetsTransfer
 		);
 
 		if (xcmVersion === 2) {
@@ -188,7 +190,7 @@ export const ParaToPara: ICreateXcmType = {
 	 *
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
-		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion } = opts;
+		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isForeignAssetsTransfer } = opts;
 		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createParaToParaMultiAssets(
 				api,
@@ -197,7 +199,7 @@ export const ParaToPara: ICreateXcmType = {
 				assetIds,
 				xcmVersion,
 				registry,
-				opts.isForeignAssetsTransfer
+				isForeignAssetsTransfer
 			);
 
 			const assetIndex = getFeeAssetItemIndex(
@@ -207,7 +209,7 @@ export const ParaToPara: ICreateXcmType = {
 				multiAssets,
 				specName,
 				xcmVersion,
-				opts.isForeignAssetsTransfer
+				isForeignAssetsTransfer
 			);
 
 			return api.registry.createType('u32', assetIndex);
