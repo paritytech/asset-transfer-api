@@ -9,24 +9,24 @@ import type { RequireOnlyOne, XCMDestBenificiary, XcmMultiLocation, XcmVersioned
 
 export type XcmBase = {
 	[x: string]: {
-		parents: number,
+		parents: number;
 		interior: {
-			[x: string]: RequireOnlyOne<XcmJunction> | null
-		}
-	}
-}
+			[x: string]: RequireOnlyOne<XcmJunction> | null;
+		};
+	};
+};
 
 export type XcmJunction = {
 	AccountId32: {
 		network?: string;
 		id: string;
-	},
+	};
 	AccountKey20: {
 		network?: string;
 		key: string;
-	}
-	Parachain: string
-}
+	};
+	Parachain: string;
+};
 
 export interface CreateAssetsOpts {
 	registry: Registry;

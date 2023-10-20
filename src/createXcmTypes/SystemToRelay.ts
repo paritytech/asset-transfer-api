@@ -2,11 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type {
-	MultiAssetsV2,
-	VersionedMultiAssets,
-	WeightLimitV2,
-} from '@polkadot/types/interfaces';
+import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit, XcmBase } from './types';

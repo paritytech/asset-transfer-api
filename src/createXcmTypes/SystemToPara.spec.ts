@@ -32,10 +32,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V2 for an Ethereum Address', () => {
-			const beneficiary = SystemToPara.createBeneficiary(
-				'0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-				2
-			);
+			const beneficiary = SystemToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 2);
 
 			const expectedRes = {
 				V2: {
@@ -75,10 +72,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 for an Ethereum Address', () => {
-			const beneficiary = SystemToPara.createBeneficiary(
-				'0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-				3
-			);
+			const beneficiary = SystemToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
 
 			const expectedRes = {
 				V3: {

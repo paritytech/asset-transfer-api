@@ -2,11 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
-import type {
-	MultiAssetsV2,
-	VersionedMultiAssets,
-	WeightLimitV2,
-} from '@polkadot/types/interfaces';
+import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
@@ -16,7 +12,14 @@ import { FungibleStrMultiAsset, UnionXcmMultiLocation } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { validateNumber } from '../validate';
-import { CreateAssetsOpts, CreateFeeAssetItemOpts, CreateWeightLimitOpts, ICreateXcmType, IWeightLimit, XcmBase } from './types';
+import {
+	CreateAssetsOpts,
+	CreateFeeAssetItemOpts,
+	CreateWeightLimitOpts,
+	ICreateXcmType,
+	IWeightLimit,
+	XcmBase,
+} from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';

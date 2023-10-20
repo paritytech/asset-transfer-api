@@ -2,11 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type {
-	MultiAssetsV2,
-	VersionedMultiAssets,
-	WeightLimitV2,
-} from '@polkadot/types/interfaces';
+import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
@@ -16,15 +12,20 @@ import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate';
 import { FungibleStrMultiAsset, UnionXcmMultiLocation } from './../types';
-import { CreateAssetsOpts, CreateFeeAssetItemOpts, CreateWeightLimitOpts, ICreateXcmType, IWeightLimit, XcmBase } from './types';
+import {
+	CreateAssetsOpts,
+	CreateFeeAssetItemOpts,
+	CreateWeightLimitOpts,
+	ICreateXcmType,
+	IWeightLimit,
+	XcmBase,
+} from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
-
-
 
 export const SystemToSystem: ICreateXcmType = {
 	/**
