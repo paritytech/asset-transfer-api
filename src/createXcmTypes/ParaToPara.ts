@@ -2,12 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
-import type {
-	MultiAssetsV2,
-	VersionedMultiAssets,
-	VersionedMultiLocation,
-	WeightLimitV2,
-} from '@polkadot/types/interfaces';
+import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import type { AnyJson } from '@polkadot/types/types';
 
@@ -32,6 +27,7 @@ import type {
 	CreateWeightLimitOpts,
 	ICreateXcmType,
 	IWeightLimit,
+	XcmBase,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
@@ -45,66 +41,64 @@ export const ParaToPara: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
-	 * @param api ApiPromise
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (api: ApiPromise, accountId: string, xcmVersion?: number): VersionedMultiLocation => {
+	createBeneficiary: (accountId: string, xcmVersion?: number): XcmBase => {
 		if (xcmVersion == 2) {
-			return api.registry.createType('XcmVersionedMultiLocation', {
+			return {
 				V2: {
 					parents: 0,
 					interior: {
 						X1: { AccountId32: { network: 'Any', id: accountId } },
 					},
 				},
-			});
+			};
 		}
 
-		return api.registry.createType('XcmVersionedMultiLocation', {
+		return {
 			V3: {
 				parents: 0,
 				interior: {
 					X1: { AccountId32: { id: accountId } },
 				},
 			},
-		});
+		};
 	},
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
-	 * @param api ApiPromise
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (api: ApiPromise, destId: string, xcmVersion?: number) => {
+	createDest: (destId: string, xcmVersion?: number): XcmBase => {
 		if (xcmVersion === 2) {
-			return api.registry.createType('XcmVersionedMultiLocation', {
+			return {
 				V2: {
 					parents: 1,
 					interior: {
 						X1: {
-							parachain: destId,
+							Parachain: destId,
 						},
 					},
 				},
-			});
+			};
 		}
 
 		/**
 		 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
 		 * from a system parachain to a sovereign parachain.
 		 */
-		return api.registry.createType('XcmVersionedMultiLocation', {
+		return {
 			V3: {
 				parents: 1,
 				interior: {
 					X1: {
-						parachain: destId,
+						Parachain: destId,
 					},
 				},
 			},
-		});
+		};
 	},
 	/**
 	 * Create a VersionedMultiAsset type.

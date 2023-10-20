@@ -2,10 +2,31 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type { VersionedMultiAssets, VersionedMultiLocation, WeightLimitV2 } from '@polkadot/types/interfaces';
+import type { VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
 
 import type { Registry } from '../registry';
 import type { RequireOnlyOne, XCMDestBenificiary, XcmMultiLocation, XcmVersionedMultiAsset, XcmWeight } from '../types';
+
+export type XcmBase = {
+	[x: string]: {
+		parents: number;
+		interior: {
+			[x: string]: RequireOnlyOne<XcmJunction> | null;
+		};
+	};
+};
+
+export type XcmJunction = {
+	AccountId32: {
+		network?: string;
+		id: string;
+	};
+	AccountKey20: {
+		network?: string;
+		key: string;
+	};
+	Parachain: string;
+};
 
 export interface CreateAssetsOpts {
 	registry: Registry;
@@ -37,8 +58,8 @@ export interface CheckXcmTxInputsOpts {
 }
 
 export interface ICreateXcmType {
-	createBeneficiary: (api: ApiPromise, accountId: string, xcmVersion: number) => VersionedMultiLocation;
-	createDest: (api: ApiPromise, destId: string, xcmVersion: number) => VersionedMultiLocation;
+	createBeneficiary: (accountId: string, xcmVersion: number) => XcmBase;
+	createDest: (destId: string, xcmVersion: number) => XcmBase;
 	createAssets: (
 		api: ApiPromise,
 		amounts: string[],
