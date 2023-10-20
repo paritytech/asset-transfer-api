@@ -16,18 +16,15 @@ export type XcmBase = {
 	}
 }
 
-export type XcmAccountId32 = {
+export type XcmJunction = {
 	AccountId32: {
 		network?: string;
 		id: string;
-	}
-}
-
-export type XcmJunction = {
-	AccountId32?: {
-		network?: string;
-		id: string;
 	},
+	AccountKey20: {
+		network?: string;
+		key: string;
+	}
 	Parachain: string
 }
 
