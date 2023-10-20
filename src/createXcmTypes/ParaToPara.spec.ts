@@ -42,14 +42,14 @@ describe('ParaToPara', () => {
 			const expectedRes = {
 				v3: {
 					parents: 0,
-					interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+					interior: {
 						X1: {
 							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 								network: null,
 							},
 						},
-					}),
+					},
 				},
 			};
 
