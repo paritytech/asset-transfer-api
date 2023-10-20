@@ -11,7 +11,7 @@ export type XcmBase = {
 	[x: string]: {
 		parents: number,
 		interior: {
-			[x: string]: RequireOnlyOne<XcmJunction>
+			[x: string]: RequireOnlyOne<XcmJunction> | null
 		}
 	}
 }
