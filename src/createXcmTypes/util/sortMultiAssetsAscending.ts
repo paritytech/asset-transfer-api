@@ -60,7 +60,7 @@ const getSameJunctionMultiLocationSortOrder = (
 				a.id.Concrete.interior.asX1.type === b.id.Concrete.interior.asX1.type &&
 				!a.id.Concrete.interior.asX1.eq(b.id.Concrete.interior.asX1)
 			) {
-				if (a.id.Concrete.interior.asX1.value < a.id.Concrete.interior.asX1.value) {
+				if (a.id.Concrete.interior.asX1.value < b.id.Concrete.interior.asX1.value) {
 					return -1;
 				} else if (a.id.Concrete.interior.asX1.value > b.id.Concrete.interior.asX1.value) {
 					return 1;
