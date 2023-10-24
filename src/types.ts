@@ -19,6 +19,8 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclu
 		[K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
 	}[Keys];
 
+export type AnyObj = { [x: string]: unknown }
+
 /**
  * Represents all possible tx directions
  */
