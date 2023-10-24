@@ -1,14 +1,14 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import type { UnionXcmMultiLocation } from '../../types';
+import type { UnionXcmMultiLocation } from '../../createXcmTypes/types';
 import { transfer } from './transfer';
 
 describe('transfer', () => {
 	it('Should construct a valid foreignAsset transfer extrinsic', () => {
-		const foreignAsset = mockSystemApi.createType('XcmV2MultiLocation', {
-			parents: '1',
-			interior: mockSystemApi.registry.createType('InteriorMultiLocation', {
+		const foreignAsset = {
+			parents: 1,
+			interior: {
 				X2: [
 					{
 						Parachain: '2125',
@@ -17,8 +17,8 @@ describe('transfer', () => {
 						GeneralIndex: '0',
 					},
 				],
-			}),
-		}) as unknown as UnionXcmMultiLocation;
+			},
+		} as unknown as UnionXcmMultiLocation;
 
 		const res = transfer(
 			mockSystemApi,
