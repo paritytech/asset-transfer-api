@@ -6,6 +6,7 @@ const isPlainObject = (input: unknown) => {
 
 /**
  * Set all keys in an object with the first key being capitalized
+ * TODO: consider adding a map that correctly will set keys such as `GeneralKey`
  * 
  * @param xcmObj 
  */
