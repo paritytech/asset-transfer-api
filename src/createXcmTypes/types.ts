@@ -31,10 +31,10 @@ export type XcmJunction = {
 
 export type XcmV2MultiLocation = {
 	parents: number;
-	interior: XcmV2Junctions;
+	interior: RequireOnlyOne<XcmV2Junctions>;
 };
 
-export type XcmV2Junctions = {
+export interface XcmV2Junctions {
 	Here: '' | null;
 	X1: XcmV2Junction;
 	X2: [XcmV2Junction, XcmV2Junction];
@@ -58,11 +58,11 @@ export type XcmV2Junctions = {
 export type XcmV2Junction = RequireOnlyOne<XcmV2JunctionBase>;
 
 export type XcmV2JunctionBase = {
-	Parachain: number;
+	Parachain: number | string;
 	AccountId32: { network?: XcmV2Network; id: string };
 	AccountIndex64: { network?: XcmV2Network; id: string };
 	AccountKey20: { network?: XcmV2Network; id: string };
-	PalletInstance: number;
+	PalletInstance: number | string;
 	GeneralIndex: string | number;
 	GeneralKey: string;
 	OnlyChild: AnyJson;
@@ -73,10 +73,10 @@ export type XcmV2Network = string | null;
 
 export type XcmV3MultiLocation = {
 	parents: number;
-	interior: XcmV3Junctions;
+	interior: RequireOnlyOne<XcmV3Junctions>;
 };
 
-export type XcmV3Junctions = {
+export interface XcmV3Junctions {
 	Here: '' | null;
 	X1: XcmV3Junction;
 	X2: [XcmV3Junction, XcmV3Junction];
@@ -112,10 +112,50 @@ export type XcmV3JunctionBase = {
 	GlobalConsensus: string | AnyJson;
 };
 
+export type UnionXcmMultiLocation = XcmV3MultiLocation | XcmV2MultiLocation;
+
+export type UnionXcmMultiAssets = XcmV2MultiAssets | XcmV3MultiAssets;
+
+export interface XcmMultiAsset {
+	id: {
+		Concrete: UnionXcmMultiLocation;
+	};
+	fun: {
+		Fungible: string;
+	};
+}
+
+export interface XcmV2MultiAssets {
+	V2: XcmMultiAsset[];
+}
+
+export interface XcmV3MultiAssets {
+	V3: XcmMultiAsset[];
+}
+
+export type FungibleStrMultiAsset = {
+	fun: {
+		Fungible: string;
+	};
+	id: {
+		Concrete: UnionXcmMultiLocation;
+	};
+};
+
+export type FungibleObjMultiAsset = {
+	fun: {
+		Fungible: { Fungible: string };
+	};
+	id: {
+		Concrete: UnionXcmMultiLocation;
+	};
+};
+
 export interface CreateAssetsOpts {
 	registry: Registry;
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
+	api: ApiPromise;
 }
 
 export interface CreateFeeAssetItemOpts {
@@ -145,13 +185,12 @@ export interface ICreateXcmType {
 	createBeneficiary: (accountId: string, xcmVersion: number) => XcmBase;
 	createDest: (destId: string, xcmVersion: number) => XcmBase;
 	createAssets: (
-		api: ApiPromise,
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts
-	) => Promise<VersionedMultiAssets>;
+	) => Promise<UnionXcmMultiAssets>;
 	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts) => WeightLimitV2;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<u32>;
 	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XCMDestBenificiary;
