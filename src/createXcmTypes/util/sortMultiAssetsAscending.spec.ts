@@ -278,7 +278,6 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should correctly sort an unsorted multiasset array with in ascending order when parents values are different', () => {
-		// TODO: verify if the refactor of this test is correct.
 		const multiAssets: FungibleStrMultiAsset[] = [
 			{
 				fun: {

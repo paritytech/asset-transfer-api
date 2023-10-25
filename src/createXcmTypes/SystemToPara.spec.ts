@@ -287,7 +287,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 	describe('createSystemToParaMultiAssets', () => {
 		it('Should correctly create system multi assets for SystemToPara xcm direction', async () => {
-			// TODO: This is unsorted, and once the sorting is fixed this test should be switch to ordered assets
 			const expected: FungibleStrMultiAsset[] = [
 				{
 					fun: {
