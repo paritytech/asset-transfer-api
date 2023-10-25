@@ -47,7 +47,7 @@ export const reserveTransferAssets = async (
 		registry,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
-		api
+		api,
 	});
 
 	const feeAssetItem = paysWithFeeDest

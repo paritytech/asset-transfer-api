@@ -37,7 +37,7 @@ export const constructForeignAssetMultiLocationFromAssetId = (
 	const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
 	const multiLocation = {
 		// TODO: keying into any xcm field should be standardized to all caps.
-		parents: assetIdMultiLocation['Parents'] || assetIdMultiLocation['parents'] ,
+		parents: assetIdMultiLocation['Parents'] || assetIdMultiLocation['parents'],
 		interior: JSON.parse(interiorMultiLocationStr) as AnyJson,
 	};
 

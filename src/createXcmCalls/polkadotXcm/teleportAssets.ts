@@ -47,7 +47,7 @@ export const teleportAssets = async (
 		registry,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer: false,
-		api
+		api,
 	});
 
 	const feeAssetItem = paysWithFeeDest

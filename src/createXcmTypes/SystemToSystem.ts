@@ -17,15 +17,15 @@ import {
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	IWeightLimit,
-	UnionXcmMultiLocation,
 	UnionXcmMultiAssets,
+	UnionXcmMultiLocation,
 	XcmBase,
 } from './types';
+import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
-import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const SystemToSystem: ICreateXcmType = {
@@ -119,16 +119,13 @@ export const SystemToSystem: ICreateXcmType = {
 		);
 
 		if (xcmVersion === 2) {
-			return Promise.resolve(
-				{
-					V2: sortedAndDedupedMultiAssets,
-				}
-			);
+			return Promise.resolve({
+				V2: sortedAndDedupedMultiAssets,
+			});
 		} else {
 			return Promise.resolve({
-					V3: sortedAndDedupedMultiAssets,
-				}
-			);
+				V3: sortedAndDedupedMultiAssets,
+			});
 		}
 	},
 	/**

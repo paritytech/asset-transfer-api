@@ -9,11 +9,7 @@ describe('foreignAssetMultiLocationIsInCacheOrRegistry', () => {
 		const multiLocation = '{"parents":1,"interior":{ "X2":[{"Parachain":2125},{"GeneralIndex":0}]}}';
 		const registry = new Registry('statemine', {});
 
-		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
-			multiLocation,
-			registry,
-			2
-		);
+		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(multiLocation, registry, 2);
 
 		expect(foreignAssetExistsInRegistry).toEqual(expected);
 	});
@@ -23,11 +19,7 @@ describe('foreignAssetMultiLocationIsInCacheOrRegistry', () => {
 		const multiLocation = '{"parents":"1","interior":{"X1": {"Parachain":"200100510"}}}';
 		const registry = new Registry('statemine', {});
 
-		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
-			multiLocation,
-			registry,
-			2
-		);
+		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(multiLocation, registry, 2);
 
 		expect(foreignAssetExistsInRegistry).toEqual(expected);
 	});

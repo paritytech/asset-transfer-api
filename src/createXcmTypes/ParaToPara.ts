@@ -8,10 +8,7 @@ import type { AnyJson } from '@polkadot/types/types';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
 import { SanitizedXcAssetsData, XCMAssetRegistryMultiLocation } from '../registry/types';
-import {
-	Direction,
-	XCMDestBenificiary,
-} from '../types';
+import { Direction, XCMDestBenificiary } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
@@ -19,14 +16,14 @@ import { validateNumber } from '../validate';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
-	CreateWeightLimitOpts,	
+	CreateWeightLimitOpts,
 	FungibleObjMultiAsset,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	IWeightLimit,
-	UnionXcAssetsMultiLocation,
-	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiAsset,
+	UnionXcAssetsMultiAssets,
+	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
 	XcmBase,
 	XcmV3MultiLocation,
@@ -129,18 +126,13 @@ export const ParaToPara: ICreateXcmType = {
 		);
 
 		if (xcmVersion === 2) {
-			return Promise.resolve(
-				{
-					V2: sortedAndDedupedMultiAssets,
-				}
-			);
+			return Promise.resolve({
+				V2: sortedAndDedupedMultiAssets,
+			});
 		} else {
-
-			return Promise.resolve(
-				{
-					V3: sortedAndDedupedMultiAssets,
-				}
-			);
+			return Promise.resolve({
+				V3: sortedAndDedupedMultiAssets,
+			});
 		}
 	},
 	/**
@@ -361,17 +353,13 @@ const createXTokensMultiAssets = async (
 	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleObjMultiAsset[];
 	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleObjMultiAsset[];
 	if (xcmVersion === 2) {
-		return Promise.resolve(
-			{
-				V2: sortedAndDedupedMultiAssets,
-			}
-		);
+		return Promise.resolve({
+			V2: sortedAndDedupedMultiAssets,
+		});
 	} else {
-		return Promise.resolve(
-			{
-				V3: sortedAndDedupedMultiAssets,
-			}
-		);
+		return Promise.resolve({
+			V3: sortedAndDedupedMultiAssets,
+		});
 	}
 };
 

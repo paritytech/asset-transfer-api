@@ -3,10 +3,10 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { AssetTransferApi } from '../AssetTransferApi';
+import { FungibleStrMultiAsset } from '../createXcmTypes/types';
 import { Registry } from '../registry';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
-import { FungibleStrMultiAsset } from '../createXcmTypes/types';
 import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
 
 type Test = [
@@ -283,7 +283,7 @@ describe('getFeeAssetItemIndex', () => {
 		await expect(async () => {
 			await getFeeAssetItemIndex(systemAssetsApi._api, registry, paysWithFeeDest, multiAssets, specName, 2, false);
 		}).rejects.toThrowError(
-			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {\"X2\":[{\"PalletInstance\":\"50\"},{\"GeneralIndex\":\"1337\"}]},{\"Here\":\"\"}'
+			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1337"}]},{"Here":""}'
 		);
 	});
 });

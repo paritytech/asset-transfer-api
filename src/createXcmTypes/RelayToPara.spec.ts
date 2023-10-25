@@ -132,7 +132,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockRelayApi
+				api: mockRelayApi,
 			});
 
 			const expectedRes = {
@@ -160,7 +160,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockRelayApi
+				api: mockRelayApi,
 			});
 
 			const expectedRes = {

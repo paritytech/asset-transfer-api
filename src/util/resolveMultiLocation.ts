@@ -2,30 +2,28 @@
 
 import type { AnyJson } from '@polkadot/types/types';
 
-import { sanitizeKeys } from './sanitizeKeys';
 import { SUPPORTED_XCM_VERSIONS } from '../consts';
-import { BaseError, BaseErrorsEnum } from '../errors/BaseError';
 import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
+import { BaseError, BaseErrorsEnum } from '../errors/BaseError';
+import { sanitizeKeys } from './sanitizeKeys';
 
 /**
  * This ensures that the given multiLocation does not have certain junctions depending on the xcm version.
- * 
- * @param multiLocation 
- * @param xcmVersion 
- * @returns 
+ *
+ * @param multiLocation
+ * @param xcmVersion
+ * @returns
  */
-export const resolveMultiLocation = (
-	multiLocation: AnyJson,
-	xcmVersion: number
-): UnionXcmMultiLocation => {
+export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number): UnionXcmMultiLocation => {
 	const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
 	// Ensure we check this first since the main difference between v2, and v3 is `globalConsensus`
-	const hasGlobalConsensus = multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
+	const hasGlobalConsensus =
+		multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
 	if (xcmVersion < 3 && hasGlobalConsensus) {
 		throw new BaseError(
 			'XcmVersion must be version 2 for MultiLocations that contain a GlobalConsensus junction.',
 			BaseErrorsEnum.InvalidXcmVersion
-		)
+		);
 	}
 
 	const hasGeneralKey = multiLocationStr.includes('generalKey') || multiLocationStr.includes('GeneralKey');

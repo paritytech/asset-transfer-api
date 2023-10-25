@@ -36,7 +36,7 @@ const checkForeignAssetExists = (
 
 		for (const asset of foreignAssets) {
 			// TODO: How to ensure 2 foreign assets are exactly the same. Best
-			// to sanitize both then compare. Also what if some value is of a `parents: number` and another 
+			// to sanitize both then compare. Also what if some value is of a `parents: number` and another
 			// is of `parents: string`...
 
 			if (JSON.stringify(sanitizeKeys(JSON.parse(asset))) === JSON.stringify(multiLocation)) {

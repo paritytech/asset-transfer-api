@@ -90,7 +90,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockSystemApi
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
@@ -118,7 +118,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockSystemApi
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {

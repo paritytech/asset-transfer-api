@@ -4,7 +4,14 @@ import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
 import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 
-import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit, UnionXcmMultiAssets, XcmBase, XcmMultiAsset } from './types';
+import {
+	CreateWeightLimitOpts,
+	ICreateXcmType,
+	IWeightLimit,
+	UnionXcmMultiAssets,
+	XcmBase,
+	XcmMultiAsset,
+} from './types';
 /**
  * XCM type generation for transactions from the relay chain to a system parachain.
  */
@@ -85,10 +92,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param amounts
 	 * @param xcmVersion
 	 */
-	createAssets: async (
-		amounts: string[],
-		xcmVersion: number,
-	): Promise<UnionXcmMultiAssets> => {
+	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
 		const multiAssets = [];
 
 		const amount = amounts[0];
@@ -109,17 +113,13 @@ export const RelayToSystem: ICreateXcmType = {
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
-			return Promise.resolve(
-				{
-					V2: multiAssets,
-				}
-			);
+			return Promise.resolve({
+				V2: multiAssets,
+			});
 		} else {
-			return Promise.resolve(
-				{
-					V3: multiAssets,
-				}
-			);
+			return Promise.resolve({
+				V3: multiAssets,
+			});
 		}
 	},
 	/**

@@ -56,7 +56,7 @@ export const transferMultiAsset = async (
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
-			api
+			api,
 		});
 		const beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);
 

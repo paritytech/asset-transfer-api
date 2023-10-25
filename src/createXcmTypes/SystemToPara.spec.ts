@@ -2,9 +2,9 @@
 
 import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
-import { FungibleStrMultiAsset } from './types';
 import { SystemToPara } from './SystemToPara';
 import { createSystemToParaMultiAssets } from './SystemToPara';
+import { FungibleStrMultiAsset } from './types';
 
 describe('SystemToPara XcmVersioned Generation', () => {
 	const registry = new Registry('statemine', {});
@@ -135,7 +135,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockSystemApi
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
@@ -176,7 +176,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockSystemApi
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
@@ -217,7 +217,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
-				api: mockSystemApi
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {

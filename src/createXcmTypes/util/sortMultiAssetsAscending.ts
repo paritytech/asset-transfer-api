@@ -3,7 +3,12 @@
 import { stringToHex } from '@polkadot/util';
 import { BN } from 'bn.js';
 
-import type { FungibleObjMultiAsset, FungibleStrMultiAsset, XcmV2Junction, XcmV3Junction } from '../../createXcmTypes/types';
+import type {
+	FungibleObjMultiAsset,
+	FungibleStrMultiAsset,
+	XcmV2Junction,
+	XcmV3Junction,
+} from '../../createXcmTypes/types';
 import { validateNumber } from '../../validate';
 
 /**
@@ -65,10 +70,7 @@ const getSameJunctionMultiLocationSortOrder = (
 		case 'X1':
 			const aX1Type = Object.keys(aInterior.X1!)[0];
 			const bX1Type = Object.keys(bInterior.X1!)[0];
-			if (
-				aX1Type === bX1Type &&
-				aInterior.X1 !== bInterior.X1
-			) {
+			if (aX1Type === bX1Type && aInterior.X1 !== bInterior.X1) {
 				const aHex = stringToHex(JSON.stringify(aInterior.X1));
 				const bHex = stringToHex(JSON.stringify(bInterior.X1));
 				if (aHex < bHex) {
@@ -78,15 +80,9 @@ const getSameJunctionMultiLocationSortOrder = (
 				}
 			} else if (aInterior.X1 !== bInterior.X1) {
 				// for junctions of different types we compare the junction values themselves
-				if (
-					MultiLocationJunctionType[aX1Type] <
-					MultiLocationJunctionType[bX1Type]
-				) {
+				if (MultiLocationJunctionType[aX1Type] < MultiLocationJunctionType[bX1Type]) {
 					return -1;
-				} else if (
-					MultiLocationJunctionType[aX1Type] >
-					MultiLocationJunctionType[bX1Type]
-				) {
+				} else if (MultiLocationJunctionType[aX1Type] > MultiLocationJunctionType[bX1Type]) {
 					return 1;
 				}
 			}

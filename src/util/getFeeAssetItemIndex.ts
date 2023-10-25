@@ -2,10 +2,10 @@
 
 import { ApiPromise } from '@polkadot/api';
 
+import { FungibleStrMultiAsset } from '../createXcmTypes/types';
 import { getAssetId } from '../createXcmTypes/util/getAssetId';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
-import { FungibleStrMultiAsset } from '../createXcmTypes/types';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate/validateNumber';
 
@@ -61,7 +61,8 @@ export const getFeeAssetItemIndex = async (
 					// if isForeignAssetsTransfer, compare the multiAsset interior to the the paysWithFeeDestGeneralIndex as a multilocation
 					if (isForeignAssetsTransfer) {
 						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestGeneralIndex, xcmVersion);
-						const paysWithFeeDestMultiLocationInterior = paysWithFeeDestMultiLocation.interior || paysWithFeeDestMultiLocation['Interior'];
+						const paysWithFeeDestMultiLocationInterior =
+							paysWithFeeDestMultiLocation.interior || paysWithFeeDestMultiLocation['Interior'];
 						if (JSON.stringify(multiAssetInterior) === JSON.stringify(paysWithFeeDestMultiLocationInterior)) {
 							result = i;
 							break;
@@ -75,7 +76,8 @@ export const getFeeAssetItemIndex = async (
 
 						if (
 							multiAssetInterior.X2 &&
-							(multiAssetInterior.X2[1].GeneralIndex || multiAssetInterior.X2[1]['Generalindex']) === paysWithFeeDestGeneralIndex
+							(multiAssetInterior.X2[1].GeneralIndex || multiAssetInterior.X2[1]['Generalindex']) ===
+								paysWithFeeDestGeneralIndex
 						) {
 							result = i;
 							break;
@@ -84,7 +86,7 @@ export const getFeeAssetItemIndex = async (
 				} else {
 					if (
 						multiAssetInterior.X2 &&
-						(multiAssetInterior.X2[1].GeneralIndex || multiAssetInterior.X2![1]['Generalindex']) === paysWithFeeDest
+						(multiAssetInterior.X2[1].GeneralIndex || multiAssetInterior.X2[1]['Generalindex']) === paysWithFeeDest
 					) {
 						result = i;
 						break;
@@ -96,7 +98,9 @@ export const getFeeAssetItemIndex = async (
 
 	if (result === -1) {
 		throw new BaseError(
-			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets.map((asset) => JSON.stringify(asset.id.Concrete.interior))}`,
+			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets.map((asset) =>
+				JSON.stringify(asset.id.Concrete.interior)
+			)}`,
 			BaseErrorsEnum.InvalidInput
 		);
 	}

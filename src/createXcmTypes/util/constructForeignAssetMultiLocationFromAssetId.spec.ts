@@ -14,11 +14,7 @@ describe('constructForeignAssetMultiLocationFromAssetId', () => {
 			},
 		};
 
-		const multiLocation = constructForeignAssetMultiLocationFromAssetId(
-			assetId,
-			foreignAssetsPalletInstance,
-			2
-		);
+		const multiLocation = constructForeignAssetMultiLocationFromAssetId(assetId, foreignAssetsPalletInstance, 2);
 
 		expect(JSON.stringify(multiLocation)).toEqual(JSON.stringify(expectedMultiLocation));
 	});

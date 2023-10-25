@@ -2,9 +2,16 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type {  WeightLimitV2 } from '@polkadot/types/interfaces';
+import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 
-import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit, UnionXcmMultiAssets,XcmMultiAsset, XcmBase } from './types';
+import {
+	CreateWeightLimitOpts,
+	ICreateXcmType,
+	IWeightLimit,
+	UnionXcmMultiAssets,
+	XcmBase,
+	XcmMultiAsset,
+} from './types';
 
 export const SystemToRelay: ICreateXcmType = {
 	/**
@@ -77,10 +84,7 @@ export const SystemToRelay: ICreateXcmType = {
 	 * @param amounts
 	 * @param xcmVersion
 	 */
-	createAssets: async (
-		amounts: string[],
-		xcmVersion: number,
-	): Promise<UnionXcmMultiAssets> => {
+	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
 		const multiAssets: XcmMultiAsset[] = [];
 
 		const amount = amounts[0];
@@ -101,17 +105,13 @@ export const SystemToRelay: ICreateXcmType = {
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
-			return Promise.resolve(
-				{
-					V2: multiAssets,
-				}
-			);
+			return Promise.resolve({
+				V2: multiAssets,
+			});
 		} else {
-			return Promise.resolve(
-				{
-					V3: multiAssets,
-				}
-			);
+			return Promise.resolve({
+				V3: multiAssets,
+			});
 		}
 	},
 	/**

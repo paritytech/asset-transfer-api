@@ -526,7 +526,6 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 	});
 });
 
-
 describe('checkAssetIdsLengthIsValid', () => {
 	it('Should correctly error when more than 2 assetIds are passed in', () => {
 		const assetIds = ['ksm', '1984', '10'];

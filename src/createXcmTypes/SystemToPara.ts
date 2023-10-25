@@ -5,9 +5,9 @@ import type { u32 } from '@polkadot/types';
 import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import type { RequireOnlyOne } from '../types';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
+import type { RequireOnlyOne } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { validateNumber } from '../validate';
@@ -18,11 +18,11 @@ import type {
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	IWeightLimit,
+	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
+	XcmBase,
 	XcmV2Junctions,
 	XcmV3Junctions,
-	XcmBase,
-	UnionXcmMultiAssets,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
@@ -128,17 +128,13 @@ export const SystemToPara: ICreateXcmType = {
 		);
 
 		if (xcmVersion === 2) {
-			return Promise.resolve(
-				{
-					V2: sortedAndDedupedMultiAssets,
-				}
-			);
+			return Promise.resolve({
+				V2: sortedAndDedupedMultiAssets,
+			});
 		} else {
-			return Promise.resolve(
-				{
-					V3: sortedAndDedupedMultiAssets,
-				}
-			);
+			return Promise.resolve({
+				V3: sortedAndDedupedMultiAssets,
+			});
 		}
 	},
 	/**

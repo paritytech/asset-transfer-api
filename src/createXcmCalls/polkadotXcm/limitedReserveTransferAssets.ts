@@ -49,7 +49,7 @@ export const limitedReserveTransferAssets = async (
 		registry,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
-		api
+		api,
 	});
 	const weightLimitType = typeCreator.createWeightLimit(api, {
 		isLimited,

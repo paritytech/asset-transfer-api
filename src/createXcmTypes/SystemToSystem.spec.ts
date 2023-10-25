@@ -124,7 +124,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockSystemApi
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
@@ -156,7 +156,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					registry,
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
-					api: mockSystemApi
+					api: mockSystemApi,
 				});
 			}).rejects.toThrowError(expectedErrorMessage);
 		});
@@ -165,7 +165,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
-				api: mockSystemApi
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {

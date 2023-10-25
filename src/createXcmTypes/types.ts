@@ -53,7 +53,7 @@ export interface XcmV2Junctions {
 		XcmV2Junction,
 		XcmV2Junction
 	];
-};
+}
 
 export type XcmV2Junction = RequireOnlyOne<XcmV2JunctionBase>;
 
@@ -95,7 +95,7 @@ export interface XcmV3Junctions {
 		XcmV3Junction,
 		XcmV3Junction
 	];
-};
+}
 
 export type XcmV3Junction = RequireOnlyOne<XcmV3JunctionBase>;
 
@@ -186,17 +186,17 @@ export type UnionXcAssetsMultiLocation = XcAssetsV2MultiLocation | XcAssetsV3Mul
 export interface XcAssetsV2MultiLocation {
 	V2: {
 		id: {
-			Concrete: XcmV2MultiLocation
-		}
-	}
+			Concrete: XcmV2MultiLocation;
+		};
+	};
 }
 
 export interface XcAssetsV3MultiLocation {
 	V3: {
 		id: {
-			Concrete: XcmV3MultiLocation
-		}
-	}
+			Concrete: XcmV3MultiLocation;
+		};
+	};
 }
 
 export interface CreateAssetsOpts {

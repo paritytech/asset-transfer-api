@@ -55,7 +55,7 @@ export const transferMultiAssetWithFee = async (
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
-			api
+			api,
 		});
 		const fee = typeCreator.createXTokensFeeAssetItem({
 			registry,

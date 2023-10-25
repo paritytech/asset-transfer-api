@@ -1,6 +1,5 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-
 import { FungibleObjMultiAsset, FungibleStrMultiAsset } from '../../createXcmTypes/types';
 import { sortMultiAssetsAscending } from './sortMultiAssetsAscending';
 

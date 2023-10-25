@@ -222,7 +222,9 @@ const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAs
 		});
 		metadata.set(multiLocation.toHex(), tnkrForeignAssetMetadata);
 
-		const maybeMetadata = metadata.has(assetIdMultiLocation.toHex()) ? metadata.get(assetIdMultiLocation.toHex()) : undefined;
+		const maybeMetadata = metadata.has(assetIdMultiLocation.toHex())
+			? metadata.get(assetIdMultiLocation.toHex())
+			: undefined;
 
 		if (maybeMetadata) {
 			return maybeMetadata;
