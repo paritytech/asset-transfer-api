@@ -11,4 +11,9 @@ describe('sanitizeKeys', () => {
         const exp = { Key1: { Key2: { Key3: [{ Key6: null, Key7: null }, { Key8: null}], Key4: '' } }, Key5: ''};
         expect(sanitizeKeys(obj)).toStrictEqual(exp);
     });
+    it('Should correctly sanitize all keys that are relevant to an xcm junction', () => {
+        const obj = { onlyChild: { palletinstance: '' }, Globalconsensus: { key1: '' } };
+        const exp = { OnlyChild: { PalletInstance: '' }, GlobalConsensus: { Key1: '' } };
+        expect(sanitizeKeys(obj)).toStrictEqual(exp)
+    });
 });
