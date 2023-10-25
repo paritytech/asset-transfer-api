@@ -98,9 +98,9 @@ export const getFeeAssetItemIndex = async (
 
 	if (result === -1) {
 		throw new BaseError(
-			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets.map((asset) =>
-				JSON.stringify(asset.id.Concrete.interior)
-			)}`,
+			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets
+				.map((asset) => JSON.stringify(asset.id.Concrete.interior))
+				.join(',')}`,
 			BaseErrorsEnum.InvalidInput
 		);
 	}

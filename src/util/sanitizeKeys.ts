@@ -43,7 +43,7 @@ export const sanitizeKeys = <T extends AnyObj>(xcmObj: T): T => {
 const mapKey = (key: string): string => {
 	const lowerKey = key.toLowerCase();
 	if (MultiLocationJunctionTypeKeys[lowerKey]) {
-		return MultiLocationJunctionTypeKeys[lowerKey];
+		return MultiLocationJunctionTypeKeys[lowerKey] as string;
 	}
 	return key[0].toUpperCase() + key.slice(1).toLowerCase();
 };

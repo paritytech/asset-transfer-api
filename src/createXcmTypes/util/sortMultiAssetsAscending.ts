@@ -1,5 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable no-case-declarations */
 import { stringToHex } from '@polkadot/util';
 import { BN } from 'bn.js';
 
@@ -32,8 +34,8 @@ export const sortMultiAssetsAscending = (multiAssets: FungibleStrMultiAsset[] | 
 			);
 		}
 
-		const aParents = a.id.Concrete.parents || a.id.Concrete['Parents'];
-		const bParents = b.id.Concrete.parents || b.id.Concrete['Parents'];
+		const aParents = (a.id.Concrete.parents || a.id.Concrete['Parents']) as string | number;
+		const bParents = (b.id.Concrete.parents || b.id.Concrete['Parents']) as string | number;
 		if (aParents < bParents) {
 			parentSortOrder = -1;
 		} else if (aParents > bParents) {

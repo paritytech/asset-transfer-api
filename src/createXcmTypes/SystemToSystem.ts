@@ -6,6 +6,7 @@ import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
+import { RequireOnlyOne } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
@@ -20,6 +21,8 @@ import {
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmBase,
+	XcmV2Junctions,
+	XcmV3Junctions,
 } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
@@ -275,7 +278,7 @@ export const createSystemToSystemMultiAssets = async (
 			concreteMultiLocation = resolveMultiLocation(
 				{
 					parents: assetIdMultiLocation.parents,
-					interior: JSON.parse(interiorMultiLocationStr),
+					interior: JSON.parse(interiorMultiLocationStr) as RequireOnlyOne<XcmV3Junctions | XcmV2Junctions>,
 				},
 				xcmVersion
 			);

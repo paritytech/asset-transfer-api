@@ -36,8 +36,8 @@ export const constructForeignAssetMultiLocationFromAssetId = (
 	const palletInstanceJunctionStr = `{"PalletInstance":"${foreignAssetsPalletInstance}"},`;
 	const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
 	const multiLocation = {
-		// TODO: keying into any xcm field should be standardized to all caps.
-		parents: assetIdMultiLocation['Parents'] || assetIdMultiLocation['parents'],
+		// Since sanitizeKeys is run in resolveMultiLocation Parents will always be capitalized
+		parents: assetIdMultiLocation['Parents'] as string | number,
 		interior: JSON.parse(interiorMultiLocationStr) as AnyJson,
 	};
 
