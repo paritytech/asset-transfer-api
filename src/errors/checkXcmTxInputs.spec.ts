@@ -861,7 +861,7 @@ describe('checkParaAssets', () => {
 			expect(registry.cacheLookupPoolAsset('0')).toEqual({
 				lpToken: '0',
 				pairInfo:
-					'[[{"parents":0,"interior":{"here":null}},{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":100}]}}]]',
+					'[[{"parents":"0","interior":{"Here":""}},{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"100"}]}}]]',
 			});
 		});
 	});

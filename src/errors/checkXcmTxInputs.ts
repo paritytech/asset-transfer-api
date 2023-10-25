@@ -361,11 +361,6 @@ export const checkLiquidTokenValidity = async (
 		for (let i = 0; i < poolAssets.length; i++) {
 			const poolAsset = poolAssets[i];
 			const poolAssetData = JSON.stringify(poolAsset[0].toHuman()).replace(/(\d),/g, '$1');
-			// TODO: remove this createType
-			const palletAssetConversionNativeOrAssetIdData = api.registry.createType(
-				'Vec<Vec<MultiLocation>>',
-				JSON.parse(poolAssetData)
-			);
 
 			const poolAssetInfo = poolAsset[1].unwrap();
 			if (poolAssetInfo.lpToken.toString() === assetId) {
@@ -374,7 +369,7 @@ export const checkLiquidTokenValidity = async (
 					pairInfo: string;
 				} = {
 					lpToken: assetId,
-					pairInfo: JSON.stringify(palletAssetConversionNativeOrAssetIdData.toJSON()),
+					pairInfo: poolAssetData,
 				};
 
 				// cache the queried liquidToken asset
