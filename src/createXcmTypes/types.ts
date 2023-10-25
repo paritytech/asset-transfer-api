@@ -8,16 +8,16 @@ import type { AnyJson } from '@polkadot/types/types';
 import type { Registry } from '../registry';
 import type { RequireOnlyOne } from '../types';
 
-export type XcmBase = {
+export type XcmDestBenificiary = {
 	[x: string]: {
 		parents: number;
 		interior: {
-			[x: string]: RequireOnlyOne<XcmJunction> | null;
+			[x: string]: RequireOnlyOne<XcmJunctionDestBeneficiary> | null;
 		};
 	};
 };
 
-export type XcmJunction = {
+export type XcmJunctionDestBeneficiary = {
 	AccountId32: {
 		network?: string;
 		id: string;
@@ -235,7 +235,7 @@ export interface XcmV3ParachainDestBenificiary {
 	};
 }
 
-export type XcmDestBenificiary =
+export type XcmDestBenificiaryXcAssets =
 	| XcmV3DestBenificiary
 	| XcmV2DestBenificiary
 	| XcmV2ParachainDestBenificiary
@@ -285,8 +285,8 @@ export interface CheckXcmTxInputsOpts {
 }
 
 export interface ICreateXcmType {
-	createBeneficiary: (accountId: string, xcmVersion: number) => XcmBase;
-	createDest: (destId: string, xcmVersion: number) => XcmBase;
+	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBenificiary;
+	createDest: (destId: string, xcmVersion: number) => XcmDestBenificiary;
 	createAssets: (
 		amounts: string[],
 		xcmVersion: number,
@@ -296,7 +296,7 @@ export interface ICreateXcmType {
 	) => Promise<UnionXcmMultiAssets>;
 	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts) => WeightLimitV2;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<u32>;
-	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBenificiary;
+	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBenificiaryXcAssets;
 	createXTokensAssets?: (
 		amounts: string[],
 		xcmVersion: number,

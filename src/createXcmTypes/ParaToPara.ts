@@ -5,7 +5,6 @@ import type { u32 } from '@polkadot/types';
 import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { AnyJson } from '@polkadot/types/types';
 
-import type { XcmDestBenificiary } from '../createXcmTypes/types';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
 import { SanitizedXcAssetsData, XCMAssetRegistryMultiLocation } from '../registry/types';
@@ -26,7 +25,8 @@ import type {
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
-	XcmBase,
+	XcmDestBenificiary,
+	XcmDestBenificiaryXcAssets,
 	XcmV3MultiLocation,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
@@ -44,7 +44,7 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (accountId: string, xcmVersion?: number): XcmBase => {
+	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion == 2) {
 			return {
 				V2: {
@@ -71,7 +71,7 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (destId: string, xcmVersion?: number): XcmBase => {
+	createDest: (destId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -196,7 +196,11 @@ export const ParaToPara: ICreateXcmType = {
 
 		return api.registry.createType('u32', 0);
 	},
-	createXTokensBeneficiary: (destChainId: string, accountId: string, xcmVersion: number): XcmDestBenificiary => {
+	createXTokensBeneficiary: (
+		destChainId: string,
+		accountId: string,
+		xcmVersion: number
+	): XcmDestBenificiaryXcAssets => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {

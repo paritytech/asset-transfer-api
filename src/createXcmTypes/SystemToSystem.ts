@@ -20,7 +20,7 @@ import {
 	IWeightLimit,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
-	XcmBase,
+	XcmDestBenificiary,
 	XcmV2Junctions,
 	XcmV3Junctions,
 } from './types';
@@ -38,7 +38,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (accountId: string, xcmVersion?: number): XcmBase => {
+	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion == 2) {
 			return {
 				V2: {
@@ -65,7 +65,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (destId: string, xcmVersion?: number): XcmBase => {
+	createDest: (destId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
