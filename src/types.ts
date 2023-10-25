@@ -3,7 +3,6 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
-import type { XcmV2MultiLocation, XcmV3MultiLocation } from '@polkadot/types/lookup';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
@@ -352,46 +351,6 @@ export type XCMDestBenificiary =
 	| XCMV2ParachainDestBenificiary
 	| XCMV3ParachainDestBenificiary;
 
-export interface IXcmV2MultiAsset {
-	V2: {
-		id: {
-			Concrete: UnionXcmMultiLocation;
-		};
-		fun: {
-			Fungible: { Fungible: number | string };
-		};
-	};
-}
-export interface IXcmV3MultiAsset {
-	V3: {
-		id: {
-			Concrete: UnionXcmMultiLocation;
-		};
-		fun: {
-			Fungible: { Fungible: number | string };
-		};
-	};
-}
-
-export type XcmVersionedMultiAsset = IXcmV2MultiAsset | IXcmV3MultiAsset;
-
-export interface VersionedXcmV2MultiLocation {
-	V2: {
-		id: {
-			Concrete: UnionXcmMultiLocation;
-		};
-	};
-}
-export interface VersionedXcmV3MultiLocation {
-	V3: {
-		id: {
-			Concrete: UnionXcmMultiLocation;
-		};
-	};
-}
-
-export type XcmMultiLocation = VersionedXcmV2MultiLocation | VersionedXcmV3MultiLocation;
-
 export interface XcmWeightUnlimited {
 	Unlimited: null | undefined;
 }
@@ -438,5 +397,3 @@ export type AssetMetadata = {
 	decimals: string;
 	isFrozen: boolean;
 };
-
-export type UnionXcmMultiLocation = XcmV3MultiLocation | XcmV2MultiLocation;

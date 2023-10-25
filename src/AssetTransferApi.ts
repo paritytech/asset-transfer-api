@@ -935,7 +935,6 @@ export class AssetTransferApi {
 			return false;
 		}
 
-		// TODO: ensure this is more specific
 		if (!assetIds[0].toLowerCase().includes('parents')) {
 			return false;
 		}
