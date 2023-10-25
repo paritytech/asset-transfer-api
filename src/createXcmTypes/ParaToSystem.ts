@@ -379,7 +379,7 @@ const createParaToSystemMultiAssets = async (
 	isForeignAssetsTransfer: boolean
 ): Promise<FungibleStrMultiAsset[]> => {
 	const palletId = fetchPalletInstanceId(api, false, isForeignAssetsTransfer);
-	const multiAssets: FungibleStrMultiAsset[] = [];
+	let multiAssets: FungibleStrMultiAsset[] = [];
 	let concreteMultiLocation;
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 		registry,
@@ -450,10 +450,8 @@ const createParaToSystemMultiAssets = async (
 		}
 	}
 
-	// TODO!
-	// multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleStrMultiAsset[];
+	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleStrMultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleStrMultiAsset[];
 
-	// const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleStrMultiAsset[];
-
-	return multiAssets;
+	return sortedAndDedupedMultiAssets;
 };
