@@ -90,22 +90,23 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
 		it('Should work for V2', async () => {
-			const assets = await RelayToSystem.createAssets(mockRelayApi, ['100'], 2, '', [], {
+			const assets = await RelayToSystem.createAssets(['100'], 2, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
+				api: mockRelayApi
 			});
 
 			const expectedRes = {
-				v2: [
+				V2: [
 					{
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 						id: {
-							concrete: {
+							Concrete: {
 								interior: {
-									here: null,
+									Here: '',
 								},
 								parents: 0,
 							},
@@ -114,25 +115,26 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await RelayToSystem.createAssets(mockRelayApi, ['100'], 3, '', [], {
+			const assets = await RelayToSystem.createAssets(['100'], 3, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
+				api: mockRelayApi
 			});
 
 			const expectedRes = {
-				v3: [
+				V3: [
 					{
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 						id: {
-							concrete: {
+							Concrete: {
 								interior: {
-									here: null,
+									Here: '',
 								},
 								parents: 0,
 							},
@@ -141,7 +143,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 	});
 	describe('WeightLimit', () => {

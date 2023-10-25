@@ -15,7 +15,7 @@ export const foreignAssetsMultiLocationExists = async (
 	xcmVersion: number
 ): Promise<boolean> => {
 	try {
-		const multiLocation = resolveMultiLocation(assetHubApi, multilocationStr, xcmVersion);
+		const multiLocation = resolveMultiLocation(multilocationStr, xcmVersion);
 
 		const foreignAsset = await assetHubApi.query.foreignAssets.asset(multiLocation);
 
@@ -30,7 +30,7 @@ export const foreignAssetsMultiLocationExists = async (
 				const asset: ForeignAssetsData = {
 					symbol: assetSymbol,
 					name: assetName,
-					multiLocation: JSON.stringify(multiLocation.toJSON()),
+					multiLocation: JSON.stringify(multiLocation),
 				};
 
 				// cache the foreign asset

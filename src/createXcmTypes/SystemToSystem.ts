@@ -2,8 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
-import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
+import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
@@ -11,20 +10,22 @@ import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate';
-import { FungibleStrMultiAsset, UnionXcmMultiLocation } from './../types';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	CreateWeightLimitOpts,
+	FungibleStrMultiAsset,
 	ICreateXcmType,
 	IWeightLimit,
+	UnionXcmMultiLocation,
+	UnionXcmMultiAssets,
 	XcmBase,
 } from './types';
-import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
+import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const SystemToSystem: ICreateXcmType = {
@@ -98,14 +99,13 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param xcmVersion
 	 */
 	createAssets: async (
-		api: ApiPromise,
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts
-	): Promise<VersionedMultiAssets> => {
-		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
+	): Promise<UnionXcmMultiAssets> => {
+		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
 
 		const sortedAndDedupedMultiAssets = await createSystemToSystemMultiAssets(
 			api,
@@ -119,26 +119,15 @@ export const SystemToSystem: ICreateXcmType = {
 		);
 
 		if (xcmVersion === 2) {
-			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
-				'XcmV2MultiassetMultiAssets',
-				sortedAndDedupedMultiAssets
-			);
-
 			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V2: multiAssetsType,
-				})
+				{
+					V2: sortedAndDedupedMultiAssets,
+				}
 			);
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
-				'XcmV3MultiassetMultiAssets',
-				sortedAndDedupedMultiAssets
-			);
-
-			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V3: multiAssetsType,
-				})
+			return Promise.resolve({
+					V3: sortedAndDedupedMultiAssets,
+				}
 			);
 		}
 	},
@@ -270,7 +259,7 @@ export const createSystemToSystemMultiAssets = async (
 		let concreteMultiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			const assetIdMultiLocation = resolveMultiLocation(api, assetId, xcmVersion);
+			const assetIdMultiLocation = resolveMultiLocation(assetId, xcmVersion);
 
 			// start of the junctions values of the assetId. + 1 to ignore the '['
 			const junctionsStartIndex = assetId.indexOf('[') + 1;
@@ -287,10 +276,9 @@ export const createSystemToSystemMultiAssets = async (
 			const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
 
 			concreteMultiLocation = resolveMultiLocation(
-				api,
 				{
-					parents: assetIdMultiLocation.parents.toNumber(),
-					interior: interiorMultiLocationStr,
+					parents: assetIdMultiLocation.parents,
+					interior: JSON.parse(interiorMultiLocationStr),
 				},
 				xcmVersion
 			);
@@ -302,7 +290,6 @@ export const createSystemToSystemMultiAssets = async (
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 				  };
 			concreteMultiLocation = resolveMultiLocation(
-				api,
 				{
 					parents,
 					interior,

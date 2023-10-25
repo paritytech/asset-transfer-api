@@ -2,11 +2,11 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type { VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
+import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { AnyJson } from '@polkadot/types/types';
 
 import type { Registry } from '../registry';
-import type { RequireOnlyOne, XCMDestBenificiary, XcmMultiLocation, XcmVersionedMultiAsset, XcmWeight } from '../types';
+import type { RequireOnlyOne, XCMDestBenificiary, XcmWeight } from '../types';
 
 export type XcmBase = {
 	[x: string]: {
@@ -116,6 +116,12 @@ export type UnionXcmMultiLocation = XcmV3MultiLocation | XcmV2MultiLocation;
 
 export type UnionXcmMultiAssets = XcmV2MultiAssets | XcmV3MultiAssets;
 
+export type UnionXcmMultiAsset = XcmV2MultiAsset | XcmV3MultiAsset;
+
+export type UnionXcAssetsMultiAssets = XcAssetsV2MultiAssets | XcAssetsV3MultiAssets;
+
+export type UnionXcAssetsMultiAsset = XcAssetsV2MultiAsset | XcAssetsV3MultiAsset;
+
 export interface XcmMultiAsset {
 	id: {
 		Concrete: UnionXcmMultiLocation;
@@ -131,6 +137,30 @@ export interface XcmV2MultiAssets {
 
 export interface XcmV3MultiAssets {
 	V3: XcmMultiAsset[];
+}
+
+export interface XcmV2MultiAsset {
+	V2: XcmMultiAsset;
+}
+
+export interface XcmV3MultiAsset {
+	V3: XcmMultiAsset;
+}
+
+export interface XcAssetsV2MultiAssets {
+	V2: FungibleObjMultiAsset[];
+}
+
+export interface XcAssetsV3MultiAssets {
+	V3: FungibleObjMultiAsset[];
+}
+
+export interface XcAssetsV2MultiAsset {
+	V2: FungibleObjMultiAsset;
+}
+
+export interface XcAssetsV3MultiAsset {
+	V3: FungibleObjMultiAsset;
 }
 
 export type FungibleStrMultiAsset = {
@@ -150,6 +180,24 @@ export type FungibleObjMultiAsset = {
 		Concrete: UnionXcmMultiLocation;
 	};
 };
+
+export type UnionXcAssetsMultiLocation = XcAssetsV2MultiLocation | XcAssetsV3MultiLocation;
+
+export interface XcAssetsV2MultiLocation {
+	V2: {
+		id: {
+			Concrete: XcmV2MultiLocation
+		}
+	}
+}
+
+export interface XcAssetsV3MultiLocation {
+	V3: {
+		id: {
+			Concrete: XcmV3MultiLocation
+		}
+	}
+}
 
 export interface CreateAssetsOpts {
 	registry: Registry;
@@ -195,23 +243,21 @@ export interface ICreateXcmType {
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<u32>;
 	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XCMDestBenificiary;
 	createXTokensAssets?: (
-		api: ApiPromise,
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts
-	) => Promise<VersionedMultiAssets>;
+	) => Promise<UnionXcAssetsMultiAssets>;
 	createXTokensAsset?: (
-		api: ApiPromise,
 		amount: string,
 		xcmVersion: number,
 		specName: string,
 		asset: string,
 		opts: CreateAssetsOpts
-	) => Promise<XcmVersionedMultiAsset>;
+	) => Promise<UnionXcAssetsMultiAsset>;
 	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
-	createXTokensFeeAssetItem?: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => XcmMultiLocation;
+	createXTokensFeeAssetItem?: (opts: CreateFeeAssetItemOpts) => UnionXcAssetsMultiLocation;
 }
 
 interface IWeightLimitBase {

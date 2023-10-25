@@ -10,7 +10,7 @@ describe('constructForeignAssetMultiLocationFromAssetId', () => {
 		const expectedMultiLocation = {
 			Parents: '1',
 			Interior: {
-				X3: [{ Palletinstance: '53' }, { Parachain: '2125' }, { Generalindex: '0' }],
+				X3: [{ PalletInstance: '53' }, { Parachain: '2125' }, { GeneralIndex: '0' }],
 			},
 		};
 

@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
 import { Direction } from '../../types';
 import { reserveTransferAssets } from './reserveTransferAssets';
 
@@ -16,7 +16,7 @@ describe('reserveTransferAssets', () => {
 			const isForeignAssetsTransfer = false;
 
 			const ext = await reserveTransferAssets(
-				mockSystemApi,
+				adjustedMockSystemApi,
 				Direction.SystemToPara,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1'],
@@ -66,7 +66,7 @@ describe('reserveTransferAssets', () => {
 			const isForeignAssetsTransfer = true;
 
 			const ext = await reserveTransferAssets(
-				mockSystemApi,
+				adjustedMockSystemApi,
 				Direction.SystemToPara,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
@@ -92,7 +92,7 @@ describe('reserveTransferAssets', () => {
 			const isForeignAssetsTransfer = true;
 
 			const ext = await reserveTransferAssets(
-				mockSystemApi,
+				adjustedMockSystemApi,
 				Direction.SystemToPara,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],

@@ -2,10 +2,9 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
-import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
+import type {  WeightLimitV2 } from '@polkadot/types/interfaces';
 
-import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit, XcmBase } from './types';
+import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit, UnionXcmMultiAssets,XcmMultiAsset, XcmBase } from './types';
 
 export const SystemToRelay: ICreateXcmType = {
 	/**
@@ -56,7 +55,7 @@ export const SystemToRelay: ICreateXcmType = {
 				V2: {
 					parents: 1,
 					interior: {
-						here: null,
+						Here: null,
 					},
 				},
 			};
@@ -66,7 +65,7 @@ export const SystemToRelay: ICreateXcmType = {
 			V3: {
 				parents: 1,
 				interior: {
-					here: null,
+					Here: null,
 				},
 			},
 		};
@@ -79,12 +78,10 @@ export const SystemToRelay: ICreateXcmType = {
 	 * @param xcmVersion
 	 */
 	createAssets: async (
-		api: ApiPromise,
 		amounts: string[],
 		xcmVersion: number,
-		_: string
-	): Promise<VersionedMultiAssets> => {
-		const multiAssets = [];
+	): Promise<UnionXcmMultiAssets> => {
+		const multiAssets: XcmMultiAsset[] = [];
 
 		const amount = amounts[0];
 		const multiAsset = {
@@ -99,28 +96,21 @@ export const SystemToRelay: ICreateXcmType = {
 					parents: 1,
 				},
 			},
-		};
+		} as XcmMultiAsset;
 
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
-			const multiAssetsType: MultiAssetsV2 = api.registry.createType('XcmV2MultiassetMultiAssets', multiAssets);
-
 			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V2: multiAssetsType,
-				})
+				{
+					V2: multiAssets,
+				}
 			);
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
-				'XcmV3MultiassetMultiAssets',
-				multiAssets
-			);
-
 			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V3: multiAssetsType,
-				})
+				{
+					V3: multiAssets,
+				}
 			);
 		}
 	},

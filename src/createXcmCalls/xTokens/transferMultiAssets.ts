@@ -2,10 +2,10 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { VersionedMultiAssets } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
+import { UnionXcAssetsMultiAssets } from '../../createXcmTypes/types';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import type { Registry } from '../../registry';
 import { XCMDestBenificiary, XcmDirection } from '../../types';
@@ -50,7 +50,7 @@ export const transferMultiAssets = async (
 		weightLimit,
 	});
 
-	let assets: VersionedMultiAssets;
+	let assets: UnionXcAssetsMultiAssets;
 	let beneficiary: XCMDestBenificiary;
 
 	if (
@@ -58,10 +58,11 @@ export const transferMultiAssets = async (
 		typeCreator.createXTokensFeeAssetItem &&
 		typeCreator.createXTokensBeneficiary
 	) {
-		assets = await typeCreator.createXTokensAssets(api, amounts, xcmVersion, specName, assetIds, {
+		assets = await typeCreator.createXTokensAssets(amounts, xcmVersion, specName, assetIds, {
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
+			api
 		});
 
 		beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);

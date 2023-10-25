@@ -8,7 +8,6 @@ import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
-	checkAllMultiLocationAssetIdsAreValid,
 	checkAssetIdInput,
 	checkAssetIdsAreOfSameAssetIdType,
 	checkAssetIdsHaveNoDuplicates,
@@ -527,25 +526,6 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 	});
 });
 
-type CreateMultiLocationTest = [multiLocationAssetIds: string[], expected: string];
-
-describe('checkAllMultiLocationAssetIdsAreValid', () => {
-	it('Should correctly error when an invalid multilocation is provided in assetIds', () => {
-		const tests: CreateMultiLocationTest[] = [
-			[
-				['{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}'],
-				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}} -  Enum(Parachain) String should not contain decimal points or scientific notation',
-			],
-		];
-
-		for (const test of tests) {
-			const [multiLocationAssetIds, expected] = test;
-			const err = () => checkAllMultiLocationAssetIdsAreValid(mockSystemApi, multiLocationAssetIds, 2);
-
-			expect(err).toThrowError(expected);
-		}
-	});
-});
 
 describe('checkAssetIdsLengthIsValid', () => {
 	it('Should correctly error when more than 2 assetIds are passed in', () => {
@@ -837,7 +817,7 @@ describe('checkParaAssets', () => {
 			);
 
 			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual({
-				multiLocation: '{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+				multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
 				name: 'Tinkernet',
 				symbol: 'TNKR',
 			});

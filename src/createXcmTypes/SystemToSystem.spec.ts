@@ -92,97 +92,101 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
-			const assets = await SystemToSystem.createAssets(mockSystemApi, ['100'], 2, 'statemine', ['USDT'], {
+			const assets = await SystemToSystem.createAssets(['100'], 2, 'statemine', ['USDT'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
-				v2: [
+				V2: [
 					{
 						id: {
-							concrete: {
-								parents: 0,
-								interior: {
-									x2: [{ palletInstance: 50 }, { generalIndex: 11 }],
+							Concrete: {
+								Parents: 0,
+								Interior: {
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await SystemToSystem.createAssets(mockSystemApi, ['100'], 3, 'bridge-hub-kusama', ['ksm'], {
+			const assets = await SystemToSystem.createAssets(['100'], 3, 'bridge-hub-kusama', ['ksm'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
+				api: mockSystemApi
 			});
 
 			const expectedRes = {
-				v3: [
+				V3: [
 					{
 						id: {
-							concrete: {
-								parents: 1,
-								interior: {
-									here: null,
+							Concrete: {
+								Parents: 1,
+								Interior: {
+									Here: '',
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 
 		it('Should error when asset ID is not found for V3', async () => {
 			const expectedErrorMessage = 'bridge-hub-kusama has no associated token symbol usdc';
 
 			await expect(async () => {
-				await SystemToSystem.createAssets(mockSystemApi, ['100'], 3, 'bridge-hub-kusama', ['usdc'], {
+				await SystemToSystem.createAssets(['100'], 3, 'bridge-hub-kusama', ['usdc'], {
 					registry,
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
+					api: mockSystemApi
 				});
 			}).rejects.toThrowError(expectedErrorMessage);
 		});
 		it('Should work for a liquid token transfer', async () => {
-			const assets = await SystemToSystem.createAssets(mockSystemApi, ['100'], 2, 'statemine', ['USDT'], {
+			const assets = await SystemToSystem.createAssets(['100'], 2, 'statemine', ['USDT'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
+				api: mockSystemApi
 			});
 
 			const expectedRes = {
-				v2: [
+				V2: [
 					{
 						id: {
-							concrete: {
-								parents: 0,
-								interior: {
-									x2: [{ palletInstance: 55 }, { generalIndex: 11 }],
+							Concrete: {
+								Parents: 0,
+								Interior: {
+									X2: [{ PalletInstance: '55' }, { GeneralIndex: '11' }],
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 	});
 	describe('WeightLimit', () => {

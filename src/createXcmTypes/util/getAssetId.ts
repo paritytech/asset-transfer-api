@@ -76,7 +76,7 @@ export const getAssetId = async (
 
 	if (isAssetHub && isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the cache or registry
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(_api, asset, registry, xcmVersion);
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(asset, registry, xcmVersion);
 
 		if (multiLocationIsInRegistry) {
 			assetId = asset;

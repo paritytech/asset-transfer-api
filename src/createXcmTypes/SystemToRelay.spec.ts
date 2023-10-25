@@ -60,7 +60,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				V2: {
 					parents: 1,
 					interior: {
-						here: null,
+						Here: null,
 					},
 				},
 			};
@@ -74,7 +74,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 				V3: {
 					parents: 1,
 					interior: {
-						here: null,
+						Here: null,
 					},
 				},
 			};
@@ -86,58 +86,60 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
 		it('Should work for V2', async () => {
-			const assets = await SystemToRelay.createAssets(mockSystemApi, ['100'], 2, '', [], {
+			const assets = await SystemToRelay.createAssets(['100'], 2, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
+				api: mockSystemApi
 			});
 
 			const expectedRes = {
-				v2: [
+				V2: [
 					{
 						id: {
-							concrete: {
+							Concrete: {
 								parents: 1,
 								interior: {
-									here: null,
+									Here: '',
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await SystemToRelay.createAssets(mockSystemApi, ['100'], 3, '', [], {
+			const assets = await SystemToRelay.createAssets(['100'], 3, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
+				api: mockSystemApi
 			});
 
 			const expectedRes = {
-				v3: [
+				V3: [
 					{
 						id: {
-							concrete: {
+							Concrete: {
 								parents: 1,
 								interior: {
-									here: null,
+									Here: '',
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 	});
 	describe('WeightLimit', () => {

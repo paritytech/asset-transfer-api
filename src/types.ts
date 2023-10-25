@@ -234,24 +234,6 @@ export interface ChainInfo {
 	specVersion: string;
 }
 
-export type FungibleStrMultiAsset = {
-	fun: {
-		Fungible: string;
-	};
-	id: {
-		Concrete: UnionXcmMultiLocation;
-	};
-};
-
-export type FungibleObjMultiAsset = {
-	fun: {
-		Fungible: { Fungible: string };
-	};
-	id: {
-		Concrete: UnionXcmMultiLocation;
-	};
-};
-
 /**
  * @hidden
  */

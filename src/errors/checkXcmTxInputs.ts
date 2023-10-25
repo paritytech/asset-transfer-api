@@ -14,7 +14,6 @@ import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/uti
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import { AssetInfo, Direction } from '../types';
-import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate';
 import { BaseError, BaseErrorsEnum } from './BaseError';
 
@@ -233,40 +232,6 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
 };
 
 /**
- * Checks that each multilocation string provided is of the proper format to create a MultiLocation
- * throws an error if the MultiLocation is unable to be created
- *
- * @param api
- * @param multiLocationAssetIds
- */
-export const checkAllMultiLocationAssetIdsAreValid = (
-	api: ApiPromise,
-	multiLocationAssetIds: string[],
-	xcmVersion: number
-) => {
-	for (const multilocationId of multiLocationAssetIds) {
-		try {
-			resolveMultiLocation(api, multilocationId, xcmVersion);
-		} catch (error) {
-			if ((error as Error).message.includes('::')) {
-				const errorInfo = (error as Error).message.split('::');
-				const errorDetails = errorInfo[errorInfo.length - 2].concat(errorInfo[errorInfo.length - 1]);
-
-				throw new BaseError(
-					`Error creating MultiLocation type with multilocation string value ${multilocationId} - ${errorDetails}`,
-					BaseErrorsEnum.InvalidMultiLocationAsset
-				);
-			} else {
-				throw new BaseError(
-					`Error creating multilocation type: ${(error as Error).message}`,
-					BaseErrorsEnum.InvalidMultiLocationAsset
-				);
-			}
-		}
-	}
-};
-
-/**
  * This will check the given assetId and ensure that it is the native token of the relay chain
  *
  * @param assetId
@@ -440,7 +405,7 @@ const checkSystemAssets = async (
 
 	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(api, assetId, registry, xcmVersion);
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmVersion);
 
 		if (!multiLocationIsInRegistry) {
 			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId, xcmVersion);
@@ -1082,7 +1047,6 @@ export const checkXcmTxInputs = async (
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkAllMultiLocationAssetIdsAreValid(api, assetIds, xcmVersion);
 			checkAssetsAmountMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds);
 		}
@@ -1094,7 +1058,6 @@ export const checkXcmTxInputs = async (
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkAllMultiLocationAssetIdsAreValid(api, assetIds, xcmVersion);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds);
 		}
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);

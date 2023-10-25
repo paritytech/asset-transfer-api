@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { FungibleObjMultiAsset, FungibleStrMultiAsset } from '../../types';
+import type { FungibleObjMultiAsset, FungibleStrMultiAsset } from '../../createXcmTypes/types';
 
 /**
  * This removes duplicate multi assets when given a sorted list
