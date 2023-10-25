@@ -361,6 +361,7 @@ export const checkLiquidTokenValidity = async (
 		for (let i = 0; i < poolAssets.length; i++) {
 			const poolAsset = poolAssets[i];
 			const poolAssetData = JSON.stringify(poolAsset[0].toHuman()).replace(/(\d),/g, '$1');
+			// TODO: remove this createType
 			const palletAssetConversionNativeOrAssetIdData = api.registry.createType(
 				'Vec<Vec<MultiLocation>>',
 				JSON.parse(poolAssetData)
