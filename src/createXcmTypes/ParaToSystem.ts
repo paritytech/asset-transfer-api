@@ -5,10 +5,11 @@ import type { u32 } from '@polkadot/types';
 import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { AnyJson } from '@polkadot/types/types';
 
+import type { XcmDestBenificiary } from '../createXcmTypes/types';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
 import { SanitizedXcAssetsData, XCMAssetRegistryMultiLocation } from '../registry/types';
-import { Direction, XCMDestBenificiary } from '../types';
+import { Direction } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
@@ -193,7 +194,7 @@ export const ParaToSystem: ICreateXcmType = {
 
 		return api.registry.createType('u32', 0);
 	},
-	createXTokensBeneficiary: (destChainId: string, accountId: string, xcmVersion: number): XCMDestBenificiary => {
+	createXTokensBeneficiary: (destChainId: string, accountId: string, xcmVersion: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {

@@ -6,7 +6,7 @@ import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { AnyJson } from '@polkadot/types/types';
 
 import type { Registry } from '../registry';
-import type { RequireOnlyOne, XCMDestBenificiary, XcmWeight } from '../types';
+import type { RequireOnlyOne } from '../types';
 
 export type XcmBase = {
 	[x: string]: {
@@ -199,6 +199,61 @@ export interface XcAssetsV3MultiLocation {
 	};
 }
 
+export interface XcmV2DestBenificiary {
+	V2: {
+		parents: string | number;
+		interior: {
+			X1: { AccountId32: { id: string } };
+		};
+	};
+}
+
+export interface XcmV3DestBenificiary {
+	V3: {
+		parents: string | number;
+		interior: {
+			X1: { AccountId32: { id: string } };
+		};
+	};
+}
+
+export interface XcmV2ParachainDestBenificiary {
+	V2: {
+		parents: string | number;
+		interior: {
+			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
+		};
+	};
+}
+
+export interface XcmV3ParachainDestBenificiary {
+	V3: {
+		parents: string | number;
+		interior: {
+			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
+		};
+	};
+}
+
+export type XcmDestBenificiary =
+	| XcmV3DestBenificiary
+	| XcmV2DestBenificiary
+	| XcmV2ParachainDestBenificiary
+	| XcmV3ParachainDestBenificiary;
+
+export interface XcmWeightUnlimited {
+	Unlimited: null | undefined;
+}
+
+export interface XcmWeightLimited {
+	Limited: {
+		refTime: string;
+		proofSize: string;
+	};
+}
+
+export type XcmWeight = XcmWeightUnlimited | XcmWeightLimited;
+
 export interface CreateAssetsOpts {
 	registry: Registry;
 	isForeignAssetsTransfer: boolean;
@@ -241,7 +296,7 @@ export interface ICreateXcmType {
 	) => Promise<UnionXcmMultiAssets>;
 	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts) => WeightLimitV2;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<u32>;
-	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XCMDestBenificiary;
+	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBenificiary;
 	createXTokensAssets?: (
 		amounts: string[],
 		xcmVersion: number,
