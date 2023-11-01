@@ -2,7 +2,6 @@
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';
-import { stringToU8a } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
@@ -10,22 +9,19 @@ import { KUSAMA_ASSET_HUB_WS_URL, TRAPPIST_WS_URL } from './consts';
 import { awaitBlockProduction, delay, logWithDate } from './util';
 
 const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
-	const trappistMultiLocation = assetHubApi.registry.createType(
-		'MultiLocation',
-		{
+	const trappistMultiLocation = {
 			parents: 1,
 			interior: {
 				X1: {
 					parachain: 1836,
 				},
 			},
-		}
-	);
+		};
 
 	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(
 		trappistMultiLocation,
-		stringToU8a('Trappist Hop'),
-		stringToU8a('Hop'),
+		'Trappist Hop',
+		'Hop',
 		12
 	);
 
@@ -40,8 +36,7 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 };
 
 const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
-	const trappistMultiLocation = assetHubApi.registry.createType(
-		'MultiLocation',
+	const trappistMultiLocation =
 		{
 			parents: 1,
 			interior: {
@@ -49,13 +44,12 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 					parachain: 1836,
 				},
 			},
-		}
-	);
+		};
 
 	const createTx = assetHubApi.tx.foreignAssets.create(
 		trappistMultiLocation,
-		'FBeL7DbnXs4AvP7LqG1yiuFYAsPxE9Yiv4wayoLguBH46Bp', // Sibling 1836 -> ParaId
-		'33333333'
+		'5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', // Sibling 1836 -> ParaId
+		'100000000000'
 	);
 
 	const hexCall = assetHubApi.registry
@@ -75,23 +69,20 @@ const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 	});
 
 	const xcmOriginType = trappistApi.createType('XcmOriginKind', 'Xcm');
-	const xcmDestMultiLocation = trappistApi.createType(
-		'XcmVersionedMultiLocation',
-		{
+	const xcmDestMultiLocation = {
 			V3: {
-				parents: 0,
+				parents: 1,
 				interior: {
 					X1: {
 						parachain: 1000,
 					},
 				},
 			},
-		}
-	);
+	};
 	const xcmMessage = {
 		V3: [
 			{
-				withdrawAsset: {
+				withdrawAsset: [{
 					id: {
 						concrete: {
 							parents: 1,
@@ -101,7 +92,7 @@ const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 					fun: {
 						fungible: 100000000000,
 					},
-				},
+				}],
 			},
 			{
 				buyExecution: {
@@ -153,10 +144,9 @@ const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 			},
 		],
 	};
-	const xcmVersionedMsg = trappistApi.createType('XcmVersionedXcm', xcmMessage);
-	const xcmMsg = trappistApi.tx.xcmPallet.send(
+	const xcmMsg = trappistApi.tx.polkadotXcm.send(
 		xcmDestMultiLocation,
-		xcmVersionedMsg
+		xcmMessage
 	);
 	const xcmCall = trappistApi.createType('Call', {
 		callIndex: xcmMsg.callIndex,
@@ -190,7 +180,7 @@ const main = async () => {
 
 	const keyring = new Keyring({ type: 'sr25519' });
 	const alice = keyring.addFromUri('//Alice');
-	console.log(alice);
+	const bob = keyring.addFromUri('//Bob');
 
 	const kusamaAssetHubApi = await ApiPromise.create({
 		provider: new WsProvider(KUSAMA_ASSET_HUB_WS_URL),
@@ -207,6 +197,10 @@ const main = async () => {
 
 	await trappistApi.isReady;
 	logWithDate(chalk.green('Created a connection to Trappist'));
+
+	logWithDate(chalk.magenta('Sending funds to Trappist Sibling on Kusama AssetHub'));
+
+	await kusamaAssetHubApi.tx.balances.transferKeepAlive('5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', 10000000000000).signAndSend(bob);
 
 	const foreignAssetsCreateSudoXcmCall = createForeignAssetViaSudo(
 		kusamaAssetHubApi,
