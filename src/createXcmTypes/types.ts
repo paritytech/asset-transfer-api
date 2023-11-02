@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { u32 } from '@polkadot/types';
 import type { AnyJson } from '@polkadot/types/types';
 
 import type { Registry } from '../registry';
@@ -294,7 +293,7 @@ export interface ICreateXcmType {
 		opts: CreateAssetsOpts
 	) => Promise<UnionXcmMultiAssets>;
 	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
-	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<u32>;
+	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
 	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBenificiaryXcAssets;
 	createXTokensAssets?: (
 		amounts: string[],

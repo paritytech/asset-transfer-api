@@ -6,6 +6,6 @@ import { fetchSafeXcmVersion } from './fetchSafeXcmVersion';
 describe('fetchSafeXcmVersion', () => {
 	it('Should return the correct value when the Option is true', async () => {
 		const version = await fetchSafeXcmVersion(adjustedMockSystemApi);
-		expect(version.toNumber()).toEqual(2);
+		expect(version).toEqual(2);
 	});
 });

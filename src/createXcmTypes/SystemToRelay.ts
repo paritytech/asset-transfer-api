@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { u32 } from '@polkadot/types';
 
 import {
 	CreateWeightLimitOpts,
@@ -137,7 +136,7 @@ export const SystemToRelay: ICreateXcmType = {
 	 *
 	 * @param api ApiPromise
 	 */
-	createFeeAssetItem: async (api: ApiPromise): Promise<u32> => {
-		return Promise.resolve(api.registry.createType('u32', 0));
+	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
+		return await Promise.resolve(0);
 	},
 };

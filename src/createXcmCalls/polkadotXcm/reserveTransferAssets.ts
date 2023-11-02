@@ -61,7 +61,7 @@ export const reserveTransferAssets = async (
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 		  })
-		: api.registry.createType('u32', 0);
+		: 0;
 
 	return ext(dest, beneficiary, assets, feeAssetItem);
 };

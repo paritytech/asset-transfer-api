@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import type { u32 } from '@polkadot/types';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
@@ -166,7 +165,7 @@ export const SystemToPara: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
+	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const {
 			registry,
 			paysWithFeeDest,
@@ -207,10 +206,10 @@ export const SystemToPara: ICreateXcmType = {
 				isForeignAssetsTransfer
 			);
 
-			return api.registry.createType('u32', assetIndex);
+			return assetIndex;
 		}
 
-		return api.registry.createType('u32', 0);
+		return 0;
 	},
 };
 

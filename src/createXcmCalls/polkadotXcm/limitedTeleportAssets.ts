@@ -60,7 +60,7 @@ export const limitedTeleportAssets = async (
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: false,
 		  })
-		: api.registry.createType('u32', 0);
+		: 0;
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);
 };

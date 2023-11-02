@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import type { u32 } from '@polkadot/types';
 import type { AnyJson } from '@polkadot/types/types';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
@@ -164,7 +163,7 @@ export const ParaToPara: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
+	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isForeignAssetsTransfer } = opts;
 		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createParaToParaMultiAssets(
@@ -187,10 +186,10 @@ export const ParaToPara: ICreateXcmType = {
 				isForeignAssetsTransfer
 			);
 
-			return api.registry.createType('u32', assetIndex);
+			return assetIndex;
 		}
 
-		return api.registry.createType('u32', 0);
+		return 0;
 	},
 	createXTokensBeneficiary: (
 		destChainId: string,

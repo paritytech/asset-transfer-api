@@ -2,7 +2,6 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import { u32 } from '@polkadot/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
@@ -56,7 +55,7 @@ export const limitedReserveTransferAssets = async (
 		weightLimit,
 	});
 
-	const feeAssetItem: u32 = paysWithFeeDest
+	const feeAssetItem = paysWithFeeDest
 		? await typeCreator.createFeeAssetItem(api, {
 				registry,
 				paysWithFeeDest,
@@ -67,7 +66,7 @@ export const limitedReserveTransferAssets = async (
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 		  })
-		: api.registry.createType('u32', 0);
+		: 0;
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);
 };
