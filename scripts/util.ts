@@ -9,8 +9,7 @@ import chalk from 'chalk';
  *
  * @param ms Milliseconds
  */
-export const delay = (ms: number) =>
-	new Promise((resolve) => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Formats a string to match the output of polkadot-js logging.
@@ -28,11 +27,7 @@ export const logWithDate = (log: string, remove?: boolean) => {
  * Will block the main script from running until there is blocks in Polkadot AssetHub being produced.
  */
 export const awaitBlockProduction = async (wsUrl: string) => {
-	logWithDate(
-		chalk.yellow(
-			`Initializing polkadot-js: Polling until ${wsUrl} is available`
-		)
-	);
+	logWithDate(chalk.yellow(`Initializing polkadot-js: Polling until ${wsUrl} is available`));
 	const api = await ApiPromise.create({
 		provider: new WsProvider(wsUrl),
 		noInitWarn: true,
@@ -53,11 +48,7 @@ export const awaitBlockProduction = async (wsUrl: string) => {
 
 		counter += 1;
 		process.stdout.clearLine(0);
-		process.stdout.write(
-			`\rWaiting for Block production on Kusama AssetHub${'.'.repeat(
-				(counter % 3) + 1
-			)}`
-		);
+		process.stdout.write(`\rWaiting for Block production on Kusama AssetHub${'.'.repeat((counter % 3) + 1)}`);
 	}
 
 	process.stdout.clearLine(0);

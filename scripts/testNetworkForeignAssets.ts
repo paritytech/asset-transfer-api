@@ -10,20 +10,15 @@ import { awaitBlockProduction, delay, logWithDate } from './util';
 
 const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 	const trappistMultiLocation = {
-			parents: 1,
-			interior: {
-				X1: {
-					parachain: 1836,
-				},
+		parents: 1,
+		interior: {
+			X1: {
+				parachain: 1836,
 			},
-		};
+		},
+	};
 
-	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(
-		trappistMultiLocation,
-		'Trappist Hop',
-		'Hop',
-		12
-	);
+	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(trappistMultiLocation, 'Trappist Hop', 'Hop', 12);
 
 	const hexCall = assetHubApi.registry
 		.createType('Call', {
@@ -36,15 +31,14 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 };
 
 const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
-	const trappistMultiLocation =
-		{
-			parents: 1,
-			interior: {
-				X1: {
-					parachain: 1836,
-				},
+	const trappistMultiLocation = {
+		parents: 1,
+		interior: {
+			X1: {
+				parachain: 1836,
 			},
-		};
+		},
+	};
 
 	const createTx = assetHubApi.tx.foreignAssets.create(
 		trappistMultiLocation,
@@ -70,29 +64,31 @@ const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 
 	const xcmOriginType = trappistApi.createType('XcmOriginKind', 'Xcm');
 	const xcmDestMultiLocation = {
-			V3: {
-				parents: 1,
-				interior: {
-					X1: {
-						parachain: 1000,
-					},
+		V3: {
+			parents: 1,
+			interior: {
+				X1: {
+					parachain: 1000,
 				},
 			},
+		},
 	};
 	const xcmMessage = {
 		V3: [
 			{
-				withdrawAsset: [{
-					id: {
-						concrete: {
-							parents: 1,
-							interior: { Here: '' },
+				withdrawAsset: [
+					{
+						id: {
+							concrete: {
+								parents: 1,
+								interior: { Here: '' },
+							},
+						},
+						fun: {
+							fungible: 100000000000,
 						},
 					},
-					fun: {
-						fungible: 100000000000,
-					},
-				}],
+				],
 			},
 			{
 				buyExecution: {
@@ -144,10 +140,7 @@ const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 			},
 		],
 	};
-	const xcmMsg = trappistApi.tx.polkadotXcm.send(
-		xcmDestMultiLocation,
-		xcmMessage
-	);
+	const xcmMsg = trappistApi.tx.polkadotXcm.send(xcmDestMultiLocation, xcmMessage);
 	const xcmCall = trappistApi.createType('Call', {
 		callIndex: xcmMsg.callIndex,
 		args: xcmMsg.args,
@@ -156,26 +149,18 @@ const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 	return xcmCall;
 };
 
-const createForeignAssetViaSudo = (
-	assetHubApi: ApiPromise,
-	trappistApi: ApiPromise
-) => {
+const createForeignAssetViaSudo = (assetHubApi: ApiPromise, trappistApi: ApiPromise) => {
 	const foreignAssetCreateCall = fAssetCreateCall(assetHubApi);
 	return sudoCallWrapper(trappistApi, foreignAssetCreateCall);
 };
 
-const setMetadataForeignAssetViaSudo = (
-	assetHubApi: ApiPromise,
-	trappistApi: ApiPromise
-) => {
+const setMetadataForeignAssetViaSudo = (assetHubApi: ApiPromise, trappistApi: ApiPromise) => {
 	const setMetadataCall = fAssetSetMetadataCall(assetHubApi);
 	return sudoCallWrapper(trappistApi, setMetadataCall);
 };
 
 const main = async () => {
-	logWithDate(
-		chalk.yellow('Initializing script to create foreignAssets on chain')
-	);
+	logWithDate(chalk.yellow('Initializing script to create foreignAssets on chain'));
 	await cryptoWaitReady();
 
 	const keyring = new Keyring({ type: 'sr25519' });
@@ -200,46 +185,30 @@ const main = async () => {
 
 	logWithDate(chalk.magenta('Sending funds to Trappist Sibling on Kusama AssetHub'));
 
-	await kusamaAssetHubApi.tx.balances.transferKeepAlive('5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', 10000000000000).signAndSend(bob);
+	await kusamaAssetHubApi.tx.balances
+		.transferKeepAlive('5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', 10000000000000)
+		.signAndSend(bob);
 
-	const foreignAssetsCreateSudoXcmCall = createForeignAssetViaSudo(
-		kusamaAssetHubApi,
-		trappistApi
-	);
+	const foreignAssetsCreateSudoXcmCall = createForeignAssetViaSudo(kusamaAssetHubApi, trappistApi);
 
-	logWithDate(
-		'Sending Sudo XCM message from relay chain to execute create foreign asset call on Kusama AssetHub'
-	);
-	await trappistApi.tx.sudo
-		.sudo(foreignAssetsCreateSudoXcmCall)
-		.signAndSend(alice);
+	logWithDate('Sending Sudo XCM message from relay chain to execute create foreign asset call on Kusama AssetHub');
+	await trappistApi.tx.sudo.sudo(foreignAssetsCreateSudoXcmCall).signAndSend(alice);
 
 	await delay(24000);
 
-	const foreignAssetsSetMetadataSudoXcmCall = setMetadataForeignAssetViaSudo(
-		kusamaAssetHubApi,
-		trappistApi
-	);
+	const foreignAssetsSetMetadataSudoXcmCall = setMetadataForeignAssetViaSudo(kusamaAssetHubApi, trappistApi);
 
-	logWithDate(
-		'Sending Sudo XCM message from relay chain to execute setMetadata call on Kusama AssetHub'
-	);
-	await trappistApi.tx.sudo
-		.sudo(foreignAssetsSetMetadataSudoXcmCall)
-		.signAndSend(alice);
+	logWithDate('Sending Sudo XCM message from relay chain to execute setMetadata call on Kusama AssetHub');
+	await trappistApi.tx.sudo.sudo(foreignAssetsSetMetadataSudoXcmCall).signAndSend(alice);
 
 	await delay(24000);
 
 	await kusamaAssetHubApi.disconnect().then(() => {
-		logWithDate(
-			chalk.blue('Polkadot-js successfully disconnected from asset-hub')
-		);
+		logWithDate(chalk.blue('Polkadot-js successfully disconnected from asset-hub'));
 	});
 
 	await trappistApi.disconnect().then(() => {
-		logWithDate(
-			chalk.blue('Polkadot-js successfully disconnected from trappist')
-		);
+		logWithDate(chalk.blue('Polkadot-js successfully disconnected from trappist'));
 	});
 };
 
