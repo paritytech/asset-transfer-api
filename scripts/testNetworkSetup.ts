@@ -5,71 +5,16 @@ import '@polkadot/api-augment';
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';
 import { DispatchError } from '@polkadot/types/interfaces';
-import { formatDate } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
+
+import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL } from './consts';
+import { awaitBlockProduction, delay, logWithDate } from './util';
 
 /**
  * This script is intended to be run after zombienet is running.
  * It uses the hard coded values given in `zombienet.toml`.
  */
-
-const KUSAMA_ASSET_HUB_WS_URL = 'ws://127.0.0.1:9911';
-const ROCOCO_ALICE_WS_URL = 'ws://127.0.0.1:9900';
-
-/**
- * Set a delay (sleep)
- *
- * @param ms Milliseconds
- */
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-/**
- * Formats a string to match the output of polkadot-js logging.
- *
- * @param log String to be logged
- * @param remove Remove lines before that were cleared by std
- */
-const logWithDate = (log: string, remove?: boolean) => {
-	remove
-		? console.log(`\r${formatDate(new Date())}          ${log}`)
-		: console.log(`${formatDate(new Date())}          ${log}`);
-};
-
-/**
- * Will block the main script from running until there is blocks in Polkadot AssetHub being produced.
- */
-const awaitBlockProduction = async () => {
-	logWithDate(chalk.yellow(`Initializing polkadot-js: Polling until ${KUSAMA_ASSET_HUB_WS_URL} is available`));
-	const kusamaAssetHubApi = await ApiPromise.create({
-		provider: new WsProvider(KUSAMA_ASSET_HUB_WS_URL),
-		noInitWarn: true,
-	});
-	logWithDate(chalk.yellow('Polkadot-js is connected'));
-
-	await kusamaAssetHubApi.isReady;
-
-	let counter = 3;
-	let blocksProducing = false;
-	while (!blocksProducing) {
-		const { number } = await kusamaAssetHubApi.rpc.chain.getHeader();
-
-		if (number.toNumber() > 0) {
-			blocksProducing = true;
-		}
-		await delay(1000);
-
-		counter += 1;
-		process.stdout.clearLine(0);
-		process.stdout.write(`\rWaiting for Block production on Kusama AssetHub${'.'.repeat((counter % 3) + 1)}`);
-	}
-
-	process.stdout.clearLine(0);
-	logWithDate(chalk.magenta('Blocks are producing'), true);
-	await kusamaAssetHubApi.disconnect().then(() => {
-		logWithDate(chalk.blue('Polkadot-js successfully disconnected'));
-	});
-};
 
 const main = async () => {
 	logWithDate(chalk.yellow('Initializing script to run transaction on chain'));
@@ -214,7 +159,7 @@ const main = async () => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
-awaitBlockProduction().then(async () => {
+awaitBlockProduction(KUSAMA_ASSET_HUB_WS_URL).then(async () => {
 	await main()
 		.catch(console.error)
 		.finally(() => process.exit());

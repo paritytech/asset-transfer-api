@@ -43,37 +43,21 @@ cumulus_based = true
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
 [[parachains]]
-id = 2000
+id = 1836
 add_to_genesis = true
 cumulus_based = true
+chain = "trappist-local"
 
   [[parachains.collators]]
   name = "trappist-collator01"
-  command = "./bin/trappist-collator"
+  command = "./bin/trappist-node"
   ws_port = 9920
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
   [[parachains.collators]]
   name = "trappist-collator02"
-  command = "./bin/trappist-collator"
+  command = "./bin/trappist-node"
   ws_port = 9921
-  args = ["--log=xcm=trace,pallet-assets=trace"]
-
-[[parachains]]
-id = 3000
-add_to_genesis = true
-cumulus_based = true
-
-  [[parachains.collators]]
-  name = "stout-collator01"
-  command = "./bin/trappist-collator"
-  ws_port = 9930
-  args = ["--log=xcm=trace,pallet-assets=trace"]
-
-  [[parachains.collators]]
-  name = "stout-collator02"
-  command = "./bin/trappist-collator"
-  ws_port = 9931
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
 [types.Header]
@@ -83,36 +67,12 @@ post_state = "Hash"
 
 [[hrmp_channels]]
 sender = 1000
-recipient = 2000
+recipient = 1836
 max_capacity = 8
 max_message_size = 512
 
 [[hrmp_channels]]
-sender = 2000
+sender = 1836
 recipient = 1000
-max_capacity = 8
-max_message_size = 512
-
-[[hrmp_channels]]
-sender = 1000
-recipient = 3000
-max_capacity = 8
-max_message_size = 512
-
-[[hrmp_channels]]
-sender = 3000
-recipient = 1000
-max_capacity = 8
-max_message_size = 512
-
-[[hrmp_channels]]
-sender = 2000
-recipient = 3000
-max_capacity = 8
-max_message_size = 512
-
-[[hrmp_channels]]
-sender = 3000
-recipient = 2000
 max_capacity = 8
 max_message_size = 512
