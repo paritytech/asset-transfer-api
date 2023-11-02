@@ -51,7 +51,7 @@ export const limitedReserveTransferAssets = async (
 		isLiquidTokenTransfer,
 		api,
 	});
-	const weightLimitType = typeCreator.createWeightLimit(api, {
+	const weightLimitType = typeCreator.createWeightLimit({
 		isLimited,
 		weightLimit,
 	});

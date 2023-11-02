@@ -2,7 +2,6 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { AnyJson } from '@polkadot/types/types';
 
 import type { Registry } from '../registry';
@@ -294,7 +293,7 @@ export interface ICreateXcmType {
 		assets: string[],
 		opts: CreateAssetsOpts
 	) => Promise<UnionXcmMultiAssets>;
-	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts) => WeightLimitV2;
+	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<u32>;
 	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBenificiaryXcAssets;
 	createXTokensAssets?: (
@@ -314,13 +313,3 @@ export interface ICreateXcmType {
 	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createXTokensFeeAssetItem?: (opts: CreateFeeAssetItemOpts) => UnionXcAssetsMultiLocation;
 }
-
-interface IWeightLimitBase {
-	Unlimited: null;
-	Limited: {
-		refTime: string;
-		proofSize: string;
-	};
-}
-
-export type IWeightLimit = RequireOnlyOne<IWeightLimitBase>;

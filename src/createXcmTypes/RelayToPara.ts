@@ -2,16 +2,15 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import {
 	CreateWeightLimitOpts,
 	ICreateXcmType,
-	IWeightLimit,
 	UnionXcmMultiAssets,
 	XcmDestBenificiary,
 	XcmMultiAsset,
+	XcmWeight,
 } from './types';
 
 /**
@@ -127,18 +126,15 @@ export const RelayToPara: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
-		const limit: IWeightLimit =
-			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-				? {
-						Limited: {
-							refTime: opts.weightLimit?.refTime,
-							proofSize: opts.weightLimit?.proofSize,
-						},
-				  }
-				: { Unlimited: null };
-
-		return api.registry.createType('XcmV3WeightLimit', limit);
+	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
+		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
+			? {
+					Limited: {
+						refTime: opts.weightLimit?.refTime,
+						proofSize: opts.weightLimit?.proofSize,
+					},
+			  }
+			: { Unlimited: null };
 	},
 
 	/**

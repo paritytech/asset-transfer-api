@@ -2,7 +2,6 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
-import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { AnyJson } from '@polkadot/types/types';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
@@ -20,7 +19,6 @@ import type {
 	FungibleObjMultiAsset,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
-	IWeightLimit,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
@@ -28,6 +26,7 @@ import type {
 	XcmDestBenificiary,
 	XcmDestBenificiaryXcAssets,
 	XcmV3MultiLocation,
+	XcmWeight,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
@@ -144,18 +143,15 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
-		const limit: IWeightLimit =
-			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-				? {
-						Limited: {
-							refTime: opts.weightLimit.refTime,
-							proofSize: opts.weightLimit.proofSize,
-						},
-				  }
-				: { Unlimited: null };
-
-		return api.registry.createType('XcmV3WeightLimit', limit);
+	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
+		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
+			? {
+					Limited: {
+						refTime: opts.weightLimit.refTime,
+						proofSize: opts.weightLimit.proofSize,
+					},
+			  }
+			: { Unlimited: null };
 	},
 	/**
 	 * returns the correct feeAssetItem based on XCM direction.
