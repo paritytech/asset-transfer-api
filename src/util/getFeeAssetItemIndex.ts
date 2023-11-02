@@ -5,7 +5,9 @@ import { ApiPromise } from '@polkadot/api';
 import { getAssetId } from '../createXcmTypes/util/getAssetId';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
-import { MultiAsset } from '../types';
+import { FungibleStrMultiAsset } from '../types';
+import { resolveMultiLocation } from '../util/resolveMultiLocation';
+import { validateNumber } from '../validate/validateNumber';
 
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index
@@ -19,8 +21,9 @@ export const getFeeAssetItemIndex = async (
 	api: ApiPromise,
 	registry: Registry,
 	paysWithFeeDest: string,
-	multiAssets: MultiAsset[],
+	multiAssets: FungibleStrMultiAsset[],
 	specName: string,
+	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean
 ): Promise<number> => {
 	let result = -1;
@@ -41,30 +44,23 @@ export const getFeeAssetItemIndex = async (
 					break;
 				}
 			} else {
-				const parsedAssetIdAsNumber = Number.parseInt(paysWithFeeDest);
-				const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+				const isValidNumber = validateNumber(paysWithFeeDest);
 
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
-				if (isNotANumber) {
+				if (!isValidNumber) {
 					const paysWithFeeDestGeneralIndex = await getAssetId(
 						api,
 						registry,
 						paysWithFeeDest,
 						specName,
+						xcmVersion,
 						isForeignAssetsTransfer
 					);
 					// if isForeignAssetsTransfer, compare the multiAsset interior to the the paysWithFeeDestGeneralIndex as a multilocation
 					if (isForeignAssetsTransfer) {
-						const paysWithFeeDestMultiLocation = api.registry.createType(
-							'MultiLocation',
-							JSON.parse(paysWithFeeDestGeneralIndex)
-						);
-						if (
-							multiAsset.id.Concrete.interior.eq(
-								paysWithFeeDestMultiLocation.interior
-							)
-						) {
+						const paysWithFeeDestMultiLocation = resolveMultiLocation(api, paysWithFeeDestGeneralIndex, xcmVersion);
+						if (multiAsset.id.Concrete.interior.eq(paysWithFeeDestMultiLocation.interior)) {
 							result = i;
 							break;
 						}
@@ -77,8 +73,7 @@ export const getFeeAssetItemIndex = async (
 
 						if (
 							multiAsset.id.Concrete.interior.isX2 &&
-							multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
-								paysWithFeeDestGeneralIndex
+							multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() === paysWithFeeDestGeneralIndex
 						) {
 							result = i;
 							break;
@@ -87,8 +82,7 @@ export const getFeeAssetItemIndex = async (
 				} else {
 					if (
 						multiAsset.id.Concrete.interior.isX2 &&
-						multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() ===
-							paysWithFeeDest
+						multiAsset.id.Concrete.interior.asX2[1].asGeneralIndex.toString() === paysWithFeeDest
 					) {
 						result = i;
 						break;

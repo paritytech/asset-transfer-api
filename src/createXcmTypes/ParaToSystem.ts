@@ -2,28 +2,24 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
-import type {
-	MultiAssetsV2,
-	MultiLocation,
-	VersionedMultiAssets,
-	VersionedMultiLocation,
-	WeightLimitV2,
-} from '@polkadot/types/interfaces';
+import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
+import type { AnyJson } from '@polkadot/types/types';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
-import { XCMChainInfoDataKeys, XCMChainInfoKeys } from '../registry/types';
+import { SanitizedXcAssetsData, XCMAssetRegistryMultiLocation } from '../registry/types';
 import {
 	Direction,
-	MultiAsset,
+	FungibleObjMultiAsset,
+	FungibleStrMultiAsset,
 	XCMDestBenificiary,
-	XcmMultiAsset,
 	XcmMultiLocation,
 	XcmVersionedMultiAsset,
 } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate';
 import type {
 	CreateAssetsOpts,
@@ -31,6 +27,7 @@ import type {
 	CreateWeightLimitOpts,
 	ICreateXcmType,
 	IWeightLimit,
+	XcmBase,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
@@ -44,70 +41,64 @@ export const ParaToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
-	 * @param api ApiPromise
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (
-		api: ApiPromise,
-		accountId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createBeneficiary: (accountId: string, xcmVersion?: number): XcmBase => {
 		if (xcmVersion == 2) {
-			return api.registry.createType('XcmVersionedMultiLocation', {
+			return {
 				V2: {
 					parents: 0,
 					interior: {
 						X1: { AccountId32: { network: 'Any', id: accountId } },
 					},
 				},
-			});
+			};
 		}
 
-		return api.registry.createType('XcmVersionedMultiLocation', {
+		return {
 			V3: {
 				parents: 0,
 				interior: {
 					X1: { AccountId32: { id: accountId } },
 				},
 			},
-		});
+		};
 	},
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
-	 * @param api ApiPromise
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (api: ApiPromise, destId: string, xcmVersion?: number) => {
+	createDest: (destId: string, xcmVersion?: number): XcmBase => {
 		if (xcmVersion === 2) {
-			return api.registry.createType('XcmVersionedMultiLocation', {
+			return {
 				V2: {
 					parents: 1,
 					interior: {
 						X1: {
-							parachain: destId,
+							Parachain: destId,
 						},
 					},
 				},
-			});
+			};
 		}
 
 		/**
 		 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
 		 * from a system parachain to a sovereign parachain.
 		 */
-		return api.registry.createType('XcmVersionedMultiLocation', {
+		return {
 			V3: {
 				parents: 1,
 				interior: {
 					X1: {
-						parachain: destId,
+						Parachain: destId,
 					},
 				},
 			},
-		});
+		};
 	},
 	/**
 	 * Create a VersionedMultiAsset type.
@@ -129,6 +120,7 @@ export const ParaToSystem: ICreateXcmType = {
 			amounts,
 			specName,
 			assets,
+			xcmVersion,
 			opts.registry,
 			opts.isForeignAssetsTransfer
 		);
@@ -145,11 +137,10 @@ export const ParaToSystem: ICreateXcmType = {
 				})
 			);
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets =
-				api.registry.createType(
-					'XcmV3MultiassetMultiAssets',
-					sortedAndDedupedMultiAssets
-				);
+			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
+				'XcmV3MultiassetMultiAssets',
+				sortedAndDedupedMultiAssets
+			);
 
 			return Promise.resolve(
 				api.registry.createType('XcmVersionedMultiAssets', {
@@ -166,10 +157,7 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (
-		api: ApiPromise,
-		opts: CreateWeightLimitOpts
-	): WeightLimitV2 => {
+	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
 		const limit: IWeightLimit =
 			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 				? {
@@ -193,31 +181,15 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: async (
-		api: ApiPromise,
-		opts: CreateFeeAssetItemOpts
-	): Promise<u32> => {
-		const {
-			registry,
-			paysWithFeeDest,
-			specName,
-			assetIds,
-			amounts,
-			xcmVersion,
-		} = opts;
-		if (
-			xcmVersion &&
-			xcmVersion === 3 &&
-			specName &&
-			amounts &&
-			assetIds &&
-			paysWithFeeDest
-		) {
+	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
+		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion } = opts;
+		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createParaToSystemMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
 				specName,
 				assetIds,
+				xcmVersion,
 				registry,
 				opts.isForeignAssetsTransfer
 			);
@@ -228,6 +200,7 @@ export const ParaToSystem: ICreateXcmType = {
 				paysWithFeeDest,
 				multiAssets,
 				specName,
+				xcmVersion,
 				opts.isForeignAssetsTransfer
 			);
 
@@ -236,20 +209,13 @@ export const ParaToSystem: ICreateXcmType = {
 
 		return api.registry.createType('u32', 0);
 	},
-	createXTokensBeneficiary: (
-		destChainId: string,
-		accountId: string,
-		xcmVersion: number
-	): XCMDestBenificiary => {
+	createXTokensBeneficiary: (destChainId: string, accountId: string, xcmVersion: number): XCMDestBenificiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
 					parents: 1,
 					interior: {
-						X2: [
-							{ Parachain: destChainId },
-							{ AccountId32: { id: accountId } },
-						],
+						X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
 					},
 				},
 			};
@@ -272,14 +238,7 @@ export const ParaToSystem: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts
 	): Promise<VersionedMultiAssets> => {
-		return await createXTokensMultiAssets(
-			api,
-			amounts,
-			xcmVersion,
-			specName,
-			assets,
-			opts
-		);
+		return await createXTokensMultiAssets(api, amounts, xcmVersion, specName, assets, opts);
 	},
 	createXTokensAsset: async (
 		api: ApiPromise,
@@ -290,48 +249,29 @@ export const ParaToSystem: ICreateXcmType = {
 		opts: CreateAssetsOpts
 	): Promise<XcmVersionedMultiAsset> => {
 		const { registry } = opts;
-		const { xcAssets } = registry;
 		const { tokens: relayTokens } = registry.currentRelayRegistry['0'];
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
-		const currentRelayChainSpecName = opts.registry.relayChain;
 
 		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName);
+			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion);
 		}
 
-		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
-		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-			relayChainXcAssetInfoKeys = xcAssets.kusama;
-		}
-		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-			relayChainXcAssetInfoKeys = xcAssets.polkadot;
-		}
+		const paraId = registry.lookupChainIdBySpecName(specName);
+		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
 
-		let xcAsset: XCMChainInfoDataKeys | string = '';
-		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
-			const chainInfo = relayChainXcAssetInfoKeys[i];
-
-			for (let j = 0; j < chainInfo.data.length; j++) {
-				const xcAssetData = chainInfo.data[j];
-				if (
-					typeof xcAssetData.asset === 'string' &&
-					xcAssetData.asset === assetId
-				) {
-					xcAsset = xcAssetData;
-					break;
-				}
+		let xcAsset = '';
+		for (const info of paraXcAssets) {
+			if (typeof info.asset === 'string' && info.asset === assetId) {
+				xcAsset = info.xcmV1MultiLocation;
+				break;
 			}
 		}
 
-		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
-			.xcmV1MultiLocation.v1;
+		const parsedMultiLocation = JSON.parse(xcAsset) as XCMAssetRegistryMultiLocation;
+		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
-		const concreteMultiLocation = api.registry.createType(
-			'MultiLocation',
-			xcAssetMultiLocation
-		);
+		const concreteMultiLocation = resolveMultiLocation(api, xcAssetMultiLocation, xcmVersion);
 
 		const multiAsset = {
 			id: {
@@ -343,27 +283,17 @@ export const ParaToSystem: ICreateXcmType = {
 		};
 
 		if (xcmVersion === 2) {
-			return {
-				V2: multiAsset,
-			};
+			return { V2: multiAsset };
 		} else {
-			return {
-				V3: multiAsset,
-			};
+			return { V3: multiAsset };
 		}
 	},
 
-	createXTokensFeeAssetItem: (
-		api: ApiPromise,
-		opts: CreateFeeAssetItemOpts
-	): XcmMultiLocation => {
+	createXTokensFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts): XcmMultiLocation => {
 		const { paysWithFeeDest, xcmVersion } = opts;
 
 		if (xcmVersion && paysWithFeeDest) {
-			const paysWithFeeMultiLocation = api.registry.createType(
-				'MultiLocation',
-				JSON.parse(paysWithFeeDest)
-			);
+			const paysWithFeeMultiLocation = resolveMultiLocation(api, paysWithFeeDest, xcmVersion);
 
 			if (xcmVersion === 2) {
 				return {
@@ -384,10 +314,7 @@ export const ParaToSystem: ICreateXcmType = {
 			};
 		}
 
-		throw new BaseError(
-			'failed to create xTokens fee multilocation',
-			BaseErrorsEnum.InternalError
-		);
+		throw new BaseError('failed to create xTokens fee multilocation', BaseErrorsEnum.InternalError);
 	},
 };
 
@@ -400,10 +327,7 @@ const createXTokensMultiAssets = async (
 	opts: CreateAssetsOpts
 ): Promise<VersionedMultiAssets> => {
 	const { registry } = opts;
-	const { xcAssets } = registry;
-	const currentRelayChainSpecName = registry.relayChain;
-
-	let multiAssets: XcmMultiAsset[] = [];
+	let multiAssets: FungibleObjMultiAsset[] = [];
 
 	for (let i = 0; i < assets.length; i++) {
 		const amount = amounts[i];
@@ -412,40 +336,24 @@ const createXTokensMultiAssets = async (
 		const isValidInt = validateNumber(assetId);
 
 		if (!isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName);
+			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion);
 		}
 
-		// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-		let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
-		if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-			relayChainXcAssetInfoKeys = xcAssets.kusama;
-		}
-		if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-			relayChainXcAssetInfoKeys = xcAssets.polkadot;
-		}
+		const paraId = registry.lookupChainIdBySpecName(specName);
+		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
 
-		let xcAsset: XCMChainInfoDataKeys | string = '';
-		for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
-			const chainInfo = relayChainXcAssetInfoKeys[i];
-
-			for (let j = 0; j < chainInfo.data.length; j++) {
-				const xcAssetData = chainInfo.data[j];
-				if (
-					typeof xcAssetData.asset === 'string' &&
-					xcAssetData.asset === assetId
-				) {
-					xcAsset = xcAssetData;
-					break;
-				}
+		let xcAsset = '';
+		for (const info of paraXcAssets) {
+			if (typeof info.asset === 'string' && info.asset === assetId) {
+				xcAsset = info.xcmV1MultiLocation;
+				break;
 			}
 		}
-		const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
-			.xcmV1MultiLocation.v1;
 
-		const concreteMultiLocation = api.registry.createType(
-			'MultiLocation',
-			xcAssetMultiLocation
-		);
+		const parsedMultiLocation = JSON.parse(xcAsset) as XCMAssetRegistryMultiLocation;
+		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
+
+		const concreteMultiLocation = resolveMultiLocation(api, xcAssetMultiLocation, xcmVersion);
 
 		const multiAsset = {
 			id: {
@@ -459,10 +367,8 @@ const createXTokensMultiAssets = async (
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as XcmMultiAsset[];
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
-		multiAssets
-	) as XcmMultiAsset[];
+	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleObjMultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleObjMultiAsset[];
 	if (xcmVersion === 2) {
 		const multiAssetsType: MultiAssetsV2 = api.registry.createType(
 			'XcmV2MultiassetMultiAssets',
@@ -501,14 +407,13 @@ const createParaToSystemMultiAssets = async (
 	amounts: string[],
 	specName: string,
 	assets: string[],
+	xcmVersion: number,
 	registry: Registry,
 	isForeignAssetsTransfer: boolean
-): Promise<MultiAsset[]> => {
-	const { xcAssets } = registry;
-	const currentRelayChainSpecName = registry.relayChain;
+): Promise<FungibleStrMultiAsset[]> => {
 	const palletId = fetchPalletInstanceId(api, false, isForeignAssetsTransfer);
-	let multiAssets: MultiAsset[] = [];
-	let concreteMultiLocation: MultiLocation;
+	let multiAssets: FungibleStrMultiAsset[] = [];
+	let concreteMultiLocation;
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 		registry,
 		specName,
@@ -517,10 +422,14 @@ const createParaToSystemMultiAssets = async (
 	);
 
 	if (isPrimaryParachainNativeAsset) {
-		concreteMultiLocation = api.registry.createType('MultiLocation', {
-			parents: 0,
-			interior: { Here: '' },
-		});
+		concreteMultiLocation = resolveMultiLocation(
+			api,
+			{
+				parents: 0,
+				interior: { Here: '' },
+			},
+			xcmVersion
+		);
 
 		const multiAsset = {
 			id: {
@@ -537,57 +446,30 @@ const createParaToSystemMultiAssets = async (
 			const amount = amounts[i];
 			let assetId = assets[i];
 
-			const parsedAssetIdAsNumber = Number.parseInt(assetId);
-			const isNotANumber = Number.isNaN(parsedAssetIdAsNumber);
+			const isValidNumber = validateNumber(assetId);
 
-			if (isNotANumber && !isPrimaryParachainNativeAsset) {
-				assetId = await getAssetId(
-					api,
-					registry,
-					assetId,
-					specName,
-					isForeignAssetsTransfer
-				);
+			if (!isValidNumber && !isPrimaryParachainNativeAsset) {
+				assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 			}
 
-			// once we have the parachain assetId, use it to get the multilocation from the xc asset registry
-			let relayChainXcAssetInfoKeys: XCMChainInfoKeys[] = [];
-			if (currentRelayChainSpecName.toLowerCase() === 'kusama') {
-				relayChainXcAssetInfoKeys = xcAssets.kusama;
-			}
-			if (currentRelayChainSpecName.toLowerCase() === 'polkadot') {
-				relayChainXcAssetInfoKeys = xcAssets.polkadot;
-			}
+			const paraId = registry.lookupChainIdBySpecName(specName);
+			const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
 
-			let xcAsset: XCMChainInfoDataKeys | string = '';
-			for (let i = 0; i < relayChainXcAssetInfoKeys.length; i++) {
-				const chainInfo = relayChainXcAssetInfoKeys[i];
-
-				for (let j = 0; j < chainInfo.data.length; j++) {
-					const xcAssetData = chainInfo.data[j];
-					if (
-						typeof xcAssetData.asset === 'string' &&
-						xcAssetData.asset === assetId
-					) {
-						xcAsset = xcAssetData;
-						break;
-					}
+			let xcAsset = '';
+			for (const info of paraXcAssets) {
+				if (typeof info.asset === 'string' && info.asset === assetId) {
+					xcAsset = info.xcmV1MultiLocation;
+					break;
 				}
 			}
-			const xcAssetMultiLocation = (xcAsset as XCMChainInfoDataKeys)
-				.xcmV1MultiLocation.v1;
+
+			const parsedMultiLocation = JSON.parse(xcAsset) as XCMAssetRegistryMultiLocation;
+			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
 			if (isForeignAssetsTransfer) {
-				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(
-					api,
-					assetId,
-					palletId
-				);
+				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(api, assetId, palletId, xcmVersion);
 			} else {
-				concreteMultiLocation = api.registry.createType(
-					'MultiLocation',
-					xcAssetMultiLocation
-				);
+				concreteMultiLocation = resolveMultiLocation(api, xcAssetMultiLocation, xcmVersion);
 			}
 
 			const multiAsset = {
@@ -602,11 +484,9 @@ const createParaToSystemMultiAssets = async (
 		}
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as MultiAsset[];
+	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleStrMultiAsset[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(
-		multiAssets
-	) as MultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleStrMultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

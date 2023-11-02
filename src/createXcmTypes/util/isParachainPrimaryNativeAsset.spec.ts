@@ -5,12 +5,7 @@ import { Direction } from '../../types';
 import { isParachainPrimaryNativeAsset } from './isParachainPrimaryNativeAsset';
 
 describe('isParachainPrimaryNativeAsset', () => {
-	type Test = [
-		primaryNativeAssetSymbol: string | undefined,
-		specName: string,
-		registry: Registry,
-		expected: boolean
-	];
+	type Test = [primaryNativeAssetSymbol: string | undefined, specName: string, registry: Registry, expected: boolean];
 
 	it('Should correctly return true for valid parachain primary asset inputs', () => {
 		const moonriverRegistry = new Registry('moonriver', {});

@@ -1,5 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+/**
+ * Errors that may be returned by the API.
+ */
 export enum BaseErrorsEnum {
 	/**
 	 * An input or lack of input to any public facing function by the user is incorrect, and or invalid.
@@ -55,6 +58,10 @@ export enum BaseErrorsEnum {
 	 * The inputted address is invalid.
 	 */
 	InvalidAddress = 'InvalidAddress',
+	/**
+	 * The following option is disabled given the inputs.
+	 */
+	DisabledOption = 'DisabledOption',
 }
 
 export class BaseError extends Error {

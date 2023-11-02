@@ -5,7 +5,6 @@ import { ApiPromise } from '@polkadot/api';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getAssetId } from '../createXcmTypes/util/getAssetId';
-import { getChainIdBySpecName } from '../createXcmTypes/util/getChainIdBySpecName';
 import { checkLiquidTokenValidity } from '../errors/checkXcmTxInputs';
 import { Registry } from '../registry';
 import { BaseError, BaseErrorsEnum } from './BaseError';
@@ -30,6 +29,7 @@ export const checkLocalTxInput = async (
 	amounts: string[],
 	specName: string,
 	registry: Registry,
+	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean
 ): Promise<LocalTxType> => {
@@ -51,47 +51,35 @@ export const checkLocalTxInput = async (
 
 		// check the cache and registrys foreignAssetsInfo to see if the provided foreign asset exists
 		const multiLocationStr = assetIds[0];
-		const foreignAssetIsInRegistry =
-			foreignAssetMultiLocationIsInCacheOrRegistry(
-				api,
-				multiLocationStr,
-				registry
-			);
+		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
+			api,
+			multiLocationStr,
+			registry,
+			xcmVersion
+		);
 
 		if (foreignAssetIsInRegistry) {
 			return LocalTxType.ForeignAssets;
 		} else {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
-				api,
-				registry,
-				multiLocationStr
-			);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, multiLocationStr, xcmVersion);
 			if (isValidForeignAsset) {
 				return LocalTxType.ForeignAssets;
 			} else {
-				throw new BaseError(
-					`MultiLocation ${multiLocationStr} not found`,
-					BaseErrorsEnum.AssetNotFound
-				);
+				throw new BaseError(`MultiLocation ${multiLocationStr} not found`, BaseErrorsEnum.AssetNotFound);
 			}
 		}
 	} else if (isLiquidTokenTransfer) {
 		const relayChainInfo = registry.currentRelayRegistry;
-		const systemChainId = getChainIdBySpecName(registry, specName);
+		const systemChainId = registry.lookupChainIdBySpecName(specName);
 		const systemParachainInfo = relayChainInfo[systemChainId];
 
 		// If anything is incorrect this will throw an error.
-		await checkLiquidTokenValidity(
-			api,
-			registry,
-			systemParachainInfo,
-			assetIds[0]
-		);
+		await checkLiquidTokenValidity(api, registry, systemParachainInfo, assetIds[0]);
 
 		return LocalTxType.PoolAssets;
 	} else {
 		const relayChainInfo = registry.currentRelayRegistry;
-		const systemChainId = getChainIdBySpecName(registry, specName);
+		const systemChainId = registry.lookupChainIdBySpecName(specName);
 		const systemParachainInfo = relayChainInfo[systemChainId];
 
 		/**
@@ -108,21 +96,13 @@ export const checkLocalTxInput = async (
 			return LocalTxType.Balances;
 		}
 
-		const isNativeToken = systemParachainInfo.tokens.find(
-			(token) => token.toLowerCase() === assetId.toLowerCase()
-		);
+		const isNativeToken = systemParachainInfo.tokens.find((token) => token.toLowerCase() === assetId.toLowerCase());
 		if (isNativeToken !== undefined) {
 			return LocalTxType.Balances;
 		}
 
 		// not a number so we check the registry using the symbol
-		assetId = await getAssetId(
-			api,
-			registry,
-			assetId,
-			specName,
-			isForeignAssetsTransfer
-		);
+		assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 
 		if (assetId.length > 0) {
 			return LocalTxType.Assets;

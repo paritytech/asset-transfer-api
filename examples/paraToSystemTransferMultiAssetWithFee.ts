@@ -1,9 +1,9 @@
 /**
  * When importing from @substrate/asset-transfer-api it would look like the following
  *
- * import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
+ * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetsTransferApi, constructApiPromise } from '../src';
+import { AssetTransferApi, constructApiPromise } from '../src';
 import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
@@ -15,10 +15,8 @@ import { GREEN, PURPLE, RESET } from './colors';
  * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise(
-		'wss://moonriver.api.onfinality.io/public-ws'
-	);
-	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.api.onfinality.io/public-ws');
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
@@ -34,32 +32,20 @@ const main = async () => {
 					proofSize: '3000',
 				},
 				xcmVersion: 3,
-				// NOTE: for xTokens txs, paysWithFeeDest is a multiLocation that is used to pay for fees in the dest chain
+				// NOTE: for xTokens `transferMultiAssetWithFee` txs, paysWithFeeDest is the multiLocation of the asset that is intended to be used to pay for fees in the dest chain
 				paysWithFeeDest:
 					'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
 			}
 		);
 
-		console.log(
-			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(
-				callInfo,
-				null,
-				4
-			)}`
-		);
+		console.log(`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(callInfo, null, 4)}`);
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);
 	}
 
 	const decoded = assetApi.decodeExtrinsic(callInfo.tx, 'call');
-	console.log(
-		`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(
-			JSON.parse(decoded),
-			null,
-			4
-		)}${RESET}`
-	);
+	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
 main().finally(() => process.exit());

@@ -2,24 +2,29 @@
 
 import registry from '@substrate/asset-transfer-api-registry';
 
-import type { AssetsTransferApiOpts } from '../types';
+import { ASSET_HUB_CHAIN_ID } from '../consts';
+import type { AssetTransferApiOpts } from '../types';
 import type { ChainInfoRegistry } from './types';
 
-export const parseRegistry = (
-	assetsOpts: AssetsTransferApiOpts
-): ChainInfoRegistry => {
+export const parseRegistry = (assetsOpts: AssetTransferApiOpts): ChainInfoRegistry => {
 	if (assetsOpts.injectedRegistry) {
 		const { injectedRegistry } = assetsOpts;
 		const polkadot = injectedRegistry.polkadot;
 		const kusama = injectedRegistry.kusama;
 		const westend = injectedRegistry.westend;
-		const xcAssets = injectedRegistry.xcAssets;
+		const rococo = injectedRegistry.rococo;
 
 		if (polkadot) Object.assign(registry.polkadot, polkadot);
 		if (kusama) Object.assign(registry.kusama, kusama);
 		if (westend) Object.assign(registry.westend, westend);
-		if (xcAssets) Object.assign(registry.xcAssets, xcAssets);
+		if (rococo) Object.assign(registry.rococo, rococo);
 	}
 
-	return registry;
+	/**
+	 * This is a temporary overwrite to ensure the statemine specName is not shared between
+	 * kusama and rococo for their asset-hub chains.
+	 */
+	registry.rococo[ASSET_HUB_CHAIN_ID].specName = 'asset-hub-rococo';
+
+	return registry as ChainInfoRegistry;
 };

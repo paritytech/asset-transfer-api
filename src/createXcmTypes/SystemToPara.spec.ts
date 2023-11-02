@@ -2,7 +2,7 @@
 
 import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
-import { MultiAsset } from '../types';
+import { FungibleStrMultiAsset } from '../types';
 import { SystemToPara } from './SystemToPara';
 import { createSystemToParaMultiAssets } from './SystemToPara';
 
@@ -11,134 +11,118 @@ describe('SystemToPara XcmVersioned Generation', () => {
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = SystemToPara.createBeneficiary(
-				mockSystemApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2
 			);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountId32: {
+						X1: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: {
-									any: null,
-								},
+								network: 'Any',
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V2 for an Ethereum Address', () => {
-			const beneficiary = SystemToPara.createBeneficiary(
-				mockSystemApi,
-				'0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-				2
-			);
+			const beneficiary = SystemToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 2);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountKey20: {
-								key: '0x96bd611ebe3af39544104e26764f4939924f6ece',
-								network: {
-									any: null,
-								},
+						X1: {
+							AccountKey20: {
+								key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
+								network: 'Any',
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
 			const beneficiary = SystemToPara.createBeneficiary(
-				mockSystemApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3
 			);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountId32: {
+						X1: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: null,
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 for an Ethereum Address', () => {
-			const beneficiary = SystemToPara.createBeneficiary(
-				mockSystemApi,
-				'0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-				3
-			);
+			const beneficiary = SystemToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountKey20: {
-								key: '0x96bd611ebe3af39544104e26764f4939924f6ece',
-								network: null,
+						X1: {
+							AccountKey20: {
+								key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 	});
 
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = SystemToPara.createDest(mockSystemApi, '100', 2);
+			const destination = SystemToPara.createDest('100', 2);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 1,
 					interior: {
-						x1: {
-							parachain: 100,
+						X1: {
+							Parachain: '100',
 						},
 					},
 				},
 			};
 
-			expect(destination.toJSON()).toStrictEqual(expectedRes);
+			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = SystemToPara.createDest(mockSystemApi, '100', 3);
+			const destination = SystemToPara.createDest('100', 3);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 1,
 					interior: {
-						x1: {
-							parachain: 100,
+						X1: {
+							Parachain: '100',
 						},
 					},
 				},
 			};
 
-			expect(destination.toJSON()).toStrictEqual(expectedRes);
+			expect(destination).toStrictEqual(expectedRes);
 		});
 	});
 
@@ -147,18 +131,11 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
-			const assets = await SystemToPara.createAssets(
-				mockSystemApi,
-				['100', '100'],
-				2,
-				'statemine',
-				['1', '2'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToPara.createAssets(mockSystemApi, ['100', '100'], 2, 'statemine', ['1', '2'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v2: [
@@ -194,18 +171,11 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 for testing this', async () => {
-			const assets = await SystemToPara.createAssets(
-				mockSystemApi,
-				['100', '100'],
-				3,
-				'statemine',
-				['1', '2'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToPara.createAssets(mockSystemApi, ['100', '100'], 3, 'statemine', ['1', '2'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v3: [
@@ -241,18 +211,11 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should correctly construct a liquid token transfer', async () => {
-			const assets = await SystemToPara.createAssets(
-				mockSystemApi,
-				['100', '100'],
-				3,
-				'statemine',
-				['1', '2'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer: true,
-				}
-			);
+			const assets = await SystemToPara.createAssets(mockSystemApi, ['100', '100'], 3, 'statemine', ['1', '2'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer: true,
+			});
 
 			const expectedRes = {
 				v3: [
@@ -321,19 +284,16 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 	describe('createSystemToParaMultiAssets', () => {
 		it('Should correctly create system multi assets for SystemToPara xcm direction', async () => {
-			const expected: MultiAsset[] = [
+			const expected: FungibleStrMultiAsset[] = [
 				{
 					fun: {
 						Fungible: '300000000000000',
 					},
 					id: {
-						Concrete: mockSystemApi.registry.createType('MultiLocation', {
-							interior: mockSystemApi.registry.createType(
-								'InteriorMultiLocation',
-								{
-									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
-								}
-							),
+						Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+							interior: {
+								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
+							},
 							parents: 0,
 						}),
 					},
@@ -343,13 +303,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 						Fungible: '100000000000000',
 					},
 					id: {
-						Concrete: mockSystemApi.registry.createType('MultiLocation', {
-							interior: mockSystemApi.registry.createType(
-								'InteriorMultiLocation',
-								{
-									Here: '',
-								}
-							),
+						Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+							interior: {
+								Here: '',
+							},
 							parents: 1,
 						}),
 					},
@@ -365,6 +322,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				specName,
 				assets,
 				registry,
+				2,
 				false,
 				false
 			);

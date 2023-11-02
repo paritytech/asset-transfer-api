@@ -5,18 +5,11 @@ import '@polkadot/api-augment';
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
-import type {
-	RuntimeDispatchInfo,
-	RuntimeDispatchInfoV1,
-} from '@polkadot/types/interfaces';
+import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
-import {
-	RELAY_CHAIN_IDS,
-	RELAY_CHAIN_NAMES,
-	SYSTEM_PARACHAINS_NAMES,
-} from './consts';
+import { RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
 import * as assets from './createCalls/assets';
 import * as balances from './createCalls/balances';
 import * as foreignAssets from './createCalls/foreignAssets';
@@ -30,13 +23,10 @@ import {
 	transferMultiAssets,
 	transferMultiAssetWithFee,
 } from './createXcmCalls';
-import {
-	establishXcmPallet,
-	XcmPalletName,
-} from './createXcmCalls/util/establishXcmPallet';
+import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
-import { getChainIdBySpecName } from './createXcmTypes/util/getChainIdBySpecName';
+import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
@@ -53,7 +43,7 @@ import { Registry } from './registry';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetCallType,
-	AssetsTransferApiOpts,
+	AssetTransferApiOpts,
 	AssetType,
 	ConstructedFormat,
 	Direction,
@@ -63,31 +53,37 @@ import {
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
+	XcmDirection,
 } from './types';
+import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { validateNumber } from './validate';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
  * construct transactions for assets and estimating fees.
  *
+ * ```ts
+ * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
+ *
+ * const main = () => {
+ *   const { api, specName, safeXcmVersion } = await constructApiPromise('wss://some_ws_url');
+ *   const assetsApi = new AssetTransferApi(api, specName, safeXcmVersion);
+ * }
+ * ```
+ *
  * @constructor api ApiPromise provided by Polkadot-js
  * @constructor specName The specName of the provided chains api
  * @constructor safeXcmVersion The safeXcmVersion of the chain.
- * @constructor opts AssetsTransferApiOpts
+ * @constructor opts AssetTransferApiOpts
  */
-export class AssetsTransferApi {
+export class AssetTransferApi {
 	readonly _api: ApiPromise;
-	readonly _opts: AssetsTransferApiOpts;
+	readonly _opts: AssetTransferApiOpts;
 	readonly _specName: string;
 	readonly _safeXcmVersion: number;
 	readonly registry: Registry;
 
-	constructor(
-		api: ApiPromise,
-		specName: string,
-		safeXcmVersion: number,
-		opts: AssetsTransferApiOpts = {}
-	) {
+	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetTransferApiOpts = {}) {
 		this._api = api;
 		this._opts = opts;
 		this._specName = specName;
@@ -98,6 +94,28 @@ export class AssetsTransferApi {
 	/**
 	 * Create an asset transfer transaction. This can be either locally on a systems parachain or relay chain,
 	 * or between chains using xcm.
+	 *
+	 * ```ts
+	 * import { TxResult } from '@substrate/asset-transfer-api'
+	 *
+	 * let callInfo: TxResult<'call'>;
+	 * try {
+	 *   callInfo = await assetsApi.createTransferTransaction(
+	 *     '1000',
+	 *     '5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
+	 *     ['WND'],
+	 *     ['1000000000000'],
+	 *     {
+	 *       format: 'call',
+	 *       isLimited: true,
+	 *       xcmVersion: 2,
+	 *     }
+	 *   )
+	 * } catch (e) {
+	 *   console.error(e);
+	 *   throw Error(e);
+	 * }
+	 * ```
 	 *
 	 * @param destChainId ID of the destination (para) chain (‘0’ for Relaychain)
 	 * @param destAddr Address of destination account
@@ -127,7 +145,7 @@ export class AssetsTransferApi {
 		 * Ensure that the options passed in are compatible with eachother.
 		 * It will throw an error if any are incorrect.
 		 */
-		checkBaseInputOptions(opts);
+		checkBaseInputOptions(opts, this._specName);
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
@@ -135,10 +153,13 @@ export class AssetsTransferApi {
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
 		const { _api, _specName, _safeXcmVersion, registry } = this;
-		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
-			_specName.toLowerCase()
-		);
+		const originChainId = registry.lookupChainIdBySpecName(_specName);
+		const relayChainID = RELAY_CHAIN_IDS[0];
+		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(_specName.toLowerCase());
+		const isOriginParachain = isParachain(originChainId);
+		const isDestRelayChain = destChainId === relayChainID;
 		const isDestSystemParachain = isSystemChain(destChainId);
+		const isDestParachain = isParachain(destChainId);
 		const isLiquidTokenTransfer = transferLiquidToken === true;
 
 		/**
@@ -147,37 +168,23 @@ export class AssetsTransferApi {
 		 */
 		const addr = sanitizeAddress(destAddr);
 
-		const originChainId = getChainIdBySpecName(registry, _specName);
-		const isLocalSystemTx =
-			isOriginSystemParachain &&
-			isDestSystemParachain &&
-			originChainId === destChainId;
-		const isLocalRelayTx =
-			destChainId === '0' &&
-			RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
-
-		const relayChainID = RELAY_CHAIN_IDS[0];
-		const nativeRelayChainAsset =
-			registry.currentRelayRegistry[relayChainID].tokens[0];
+		const isLocalSystemTx = isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId;
+		const isLocalRelayTx = destChainId === '0' && RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
+		const isLocalTx = isLocalRelayTx || isLocalSystemTx;
+		const nativeRelayChainAsset = registry.currentRelayRegistry[relayChainID].tokens[0];
 		const xcmDirection = this.establishDirection(
-			destChainId,
-			_specName,
-			isDestSystemParachain
+			isLocalTx,
+			isDestRelayChain,
+			isDestSystemParachain,
+			isDestParachain,
+			isOriginSystemParachain,
+			isOriginParachain
 		);
-		const isForeignAssetsTransfer: boolean =
-			this.checkIsForeignAssetTransfer(assetIds);
-		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
-			registry,
-			_specName,
-			xcmDirection,
-			assetIds[0]
-		);
-		const xcmPallet = establishXcmPallet(
-			_api,
-			xcmDirection,
-			isForeignAssetsTransfer,
-			isPrimaryParachainNativeAsset
-		);
+		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
+		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, _specName, xcmDirection, assetIds[0]);
+		const xcmPallet = establishXcmPallet(_api, xcmDirection, isForeignAssetsTransfer, isPrimaryParachainNativeAsset);
+		const declaredXcmVersion = xcmVersion === undefined ? _safeXcmVersion : xcmVersion;
+		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
 		/**
 		 * Create a local asset transfer on a system parachain
@@ -185,30 +192,17 @@ export class AssetsTransferApi {
 		if (isLocalSystemTx || isLocalRelayTx) {
 			let assetId = assetIds[0];
 			const amount = amounts[0];
-			const localAssetIdIsNotANumber = Number.isNaN(parseInt(assetId));
+			const isValidNumber = validateNumber(assetId);
 			let isNativeRelayChainAsset = false;
-			if (
-				assetIds.length === 0 ||
-				nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()
-			) {
+			if (assetIds.length === 0 || nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()) {
 				isNativeRelayChainAsset = true;
 			}
 
-			if (
-				xcmDirection === Direction.SystemToSystem &&
-				localAssetIdIsNotANumber &&
-				!isNativeRelayChainAsset
-			) {
+			if (xcmDirection === Direction.SystemToSystem && !isValidNumber && !isNativeRelayChainAsset) {
 				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 				// check for the general index of the assetId and assign the correct value for the local tx
 				// throws an error if the general index is not found
-				assetId = await getAssetId(
-					_api,
-					registry,
-					assetId,
-					_specName,
-					isForeignAssetsTransfer
-				);
+				assetId = await getAssetId(_api, registry, assetId, _specName, declaredXcmVersion, isForeignAssetsTransfer);
 			}
 
 			/**
@@ -221,6 +215,7 @@ export class AssetsTransferApi {
 				amounts,
 				_specName,
 				registry,
+				declaredXcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer
 			); // Throws an error when any of the inputs are incorrect.
@@ -249,34 +244,18 @@ export class AssetsTransferApi {
 							: poolAssets.transfer(_api, addr, assetId, amount);
 					palletMethod = `poolAssets::${method}`;
 				} else {
-					const multiLocation = _api.registry.createType(
-						'MultiLocation',
-						JSON.parse(assetId)
-					);
+					const multiLocation = resolveMultiLocation(_api, assetId, declaredXcmVersion);
 					tx =
 						method === 'transferKeepAlive'
-							? foreignAssets.transferKeepAlive(
-									_api,
-									addr,
-									multiLocation,
-									amount
-							  )
+							? foreignAssets.transferKeepAlive(_api, addr, multiLocation, amount)
 							: foreignAssets.transfer(_api, addr, multiLocation, amount);
 					palletMethod = `foreignAssets::${method}`;
 				}
 
-				return await this.constructFormat(
-					tx,
-					'local',
-					null,
-					palletMethod,
-					destChainId,
-					_specName,
-					{
-						format,
-						paysWithFeeOrigin,
-					}
-				);
+				return await this.constructFormat(tx, 'local', null, palletMethod, destChainId, _specName, {
+					format,
+					paysWithFeeOrigin,
+				});
 			} else {
 				/**
 				 * By default local transaction on a relay chain will always be from the balances pallet
@@ -286,24 +265,13 @@ export class AssetsTransferApi {
 					method === 'transferKeepAlive'
 						? balances.transferKeepAlive(_api, addr, amount)
 						: balances.transfer(_api, addr, amount);
-				return this.constructFormat(
-					tx,
-					'local',
-					null,
-					palletMethod,
-					destChainId,
-					_specName,
-					{
-						format,
-						paysWithFeeOrigin,
-					}
-				);
+				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, _specName, {
+					format,
+					paysWithFeeOrigin,
+				});
 			}
 		}
 
-		const declaredXcmVersion =
-			xcmVersion === undefined ? _safeXcmVersion : xcmVersion;
-		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 		await checkXcmTxInputs(
 			_api,
 			destChainId,
@@ -317,17 +285,14 @@ export class AssetsTransferApi {
 			isLiquidTokenTransfer,
 			isPrimaryParachainNativeAsset,
 			{
-				xcmVersion,
+				xcmVersion: declaredXcmVersion,
 				paysWithFeeDest,
 				isLimited,
 				weightLimit,
 			}
 		);
 
-		const assetType = this.fetchAssetType(
-			xcmDirection,
-			isForeignAssetsTransfer
-		);
+		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
 		const assetCallType = this.fetchCallType(
 			originChainId,
 			destChainId,
@@ -344,13 +309,9 @@ export class AssetsTransferApi {
 
 		if (
 			xcmPallet === XcmPalletName.xTokens &&
-			xcmDirection === Direction.ParaToSystem
+			(xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara)
 		) {
-			if (
-				paysWithFeeDest &&
-				!paysWithFeeDest.includes('parents') &&
-				assetIds.length < 2
-			) {
+			if (!paysWithFeeDest && assetIds.length < 2) {
 				txMethod = 'transferMultiAsset';
 				transaction = await transferMultiAsset(
 					_api,
@@ -419,7 +380,7 @@ export class AssetsTransferApi {
 				txMethod = 'limitedReserveTransferAssets';
 				transaction = await limitedReserveTransferAssets(
 					_api,
-					xcmDirection,
+					xcmDirection as XcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -439,7 +400,7 @@ export class AssetsTransferApi {
 				txMethod = 'reserveTransferAssets';
 				transaction = await reserveTransferAssets(
 					_api,
-					xcmDirection,
+					xcmDirection as XcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -459,7 +420,7 @@ export class AssetsTransferApi {
 				txMethod = 'limitedTeleportAssets';
 				transaction = await limitedTeleportAssets(
 					_api,
-					xcmDirection,
+					xcmDirection as XcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -479,7 +440,7 @@ export class AssetsTransferApi {
 				txMethod = 'teleportAssets';
 				transaction = await teleportAssets(
 					_api,
-					xcmDirection,
+					xcmDirection as XcmDirection,
 					addr,
 					assetIds,
 					amounts,
@@ -496,22 +457,19 @@ export class AssetsTransferApi {
 			}
 		}
 
-		return this.constructFormat<T>(
-			transaction,
-			xcmDirection,
-			xcmVersion,
-			txMethod,
-			destChainId,
-			_specName,
-			{
-				format,
-				paysWithFeeOrigin,
-				sendersAddr,
-			}
-		);
+		return this.constructFormat<T>(transaction, xcmDirection, declaredXcmVersion, txMethod, destChainId, _specName, {
+			format,
+			paysWithFeeOrigin,
+			sendersAddr,
+		});
 	}
 	/**
 	 * Fetch estimated fee information for an extrinsic
+	 *
+	 * ```ts
+	 * const feeInfo = assetApi.fetchFeeInfo(tx, 'call');
+	 * console.log(feeInfo.toJSON());
+	 * ```
 	 *
 	 * @param tx a payload, call or submittable
 	 * @param format The format the tx is in
@@ -523,13 +481,9 @@ export class AssetsTransferApi {
 		const { _api } = this;
 
 		if (format === 'payload') {
-			const extrinsicPayload = _api.registry.createType(
-				'ExtrinsicPayload',
-				tx,
-				{
-					version: EXTRINSIC_VERSION,
-				}
-			);
+			const extrinsicPayload = _api.registry.createType('ExtrinsicPayload', tx, {
+				version: EXTRINSIC_VERSION,
+			});
 
 			const ext = _api.registry.createType(
 				'Extrinsic',
@@ -540,11 +494,7 @@ export class AssetsTransferApi {
 
 			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
 		} else if (format === 'call') {
-			const ext = _api.registry.createType(
-				'Extrinsic',
-				{ method: tx },
-				{ version: EXTRINSIC_VERSION }
-			);
+			const ext = _api.registry.createType('Extrinsic', { method: tx }, { version: EXTRINSIC_VERSION });
 			const u8a = ext.toU8a();
 
 			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
@@ -559,7 +509,46 @@ export class AssetsTransferApi {
 
 		return null;
 	}
+	/**
+	 * Decodes the hex of an extrinsic into a string readable format.
+	 *
+	 * ```ts
+	 * const decodedExt = assetsApi.decodeExtrinsic(tx, 'call');
+	 * console.log(JSON.parse(decodedExt));
+	 * ```
+	 *
+	 * @param encodedTransaction the hex of an extrinsic tx
+	 * @param format The format the tx is in
+	 */
+	public decodeExtrinsic<T extends Format>(encodedTransaction: string, format: T): string {
+		const { _api } = this;
+		const fmt = format ? format : 'payload';
 
+		if (fmt === 'payload') {
+			const extrinsicPayload = _api.registry.createType('ExtrinsicPayload', encodedTransaction, {
+				version: EXTRINSIC_VERSION,
+			});
+
+			const call = _api.registry.createType('Call', extrinsicPayload.method);
+			const decodedMethodInfo = JSON.stringify(call.toHuman());
+
+			return decodedMethodInfo;
+		} else if (fmt === 'call') {
+			const call = _api.registry.createType('Call', encodedTransaction);
+
+			const decodedMethodInfo = JSON.stringify(call.toHuman());
+
+			return decodedMethodInfo;
+		} else if (fmt === 'submittable') {
+			const extrinsic = _api.registry.createType('Extrinsic', encodedTransaction);
+
+			const decodedMethodInfo = JSON.stringify(extrinsic.method.toHuman());
+
+			return decodedMethodInfo;
+		}
+
+		return '';
+	}
 	/**
 	 * Declare the direction of the xcm message.
 	 *
@@ -567,27 +556,31 @@ export class AssetsTransferApi {
 	 * @param specName
 	 */
 	private establishDirection(
-		destChainId: string,
-		specName: string,
-		destIsSystemParachain: boolean
+		isLocal: boolean,
+		destIsRelayChain: boolean,
+		destIsSystemParachain: boolean,
+		destIsParachain: boolean,
+		originIsSystemParachain: boolean,
+		originIsParachain: boolean
 	): Direction {
+		if (isLocal) {
+			return Direction.Local;
+		}
+
 		const { _api } = this;
-		const isSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
-			specName.toLowerCase()
-		);
 
 		/**
 		 * Check if the origin is a System Parachain
 		 */
-		if (isSystemParachain && destChainId === '0') {
+		if (originIsSystemParachain && destIsRelayChain) {
 			return Direction.SystemToRelay;
 		}
 
-		if (isSystemParachain && destIsSystemParachain) {
+		if (originIsSystemParachain && destIsSystemParachain) {
 			return Direction.SystemToSystem;
 		}
 
-		if (isSystemParachain && destChainId !== '0') {
+		if (originIsSystemParachain && destIsParachain) {
 			return Direction.SystemToPara;
 		}
 
@@ -598,18 +591,15 @@ export class AssetsTransferApi {
 			return Direction.RelayToSystem;
 		}
 
-		if (_api.query.paras && !destIsSystemParachain) {
+		if (_api.query.paras && destIsParachain) {
 			return Direction.RelayToPara;
 		}
 
 		/**
 		 * Check if the origin is a Parachain or Parathread
 		 */
-		if (_api.query.polkadotXcm && !destIsSystemParachain) {
-			throw new BaseError(
-				'ParaToRelay is not yet implemented',
-				BaseErrorsEnum.NotImplemented
-			);
+		if (originIsParachain && destIsRelayChain) {
+			throw new BaseError('ParaToRelay is not yet implemented', BaseErrorsEnum.NotImplemented);
 
 			return Direction.ParaToRelay;
 		}
@@ -617,19 +607,11 @@ export class AssetsTransferApi {
 		/**
 		 * Check if the origin is a parachain, and the destination is a system parachain.
 		 */
-		if (
-			(_api.query.polkadotXcm || _api.query.xTokens) &&
-			destIsSystemParachain
-		) {
+		if (originIsParachain && destIsSystemParachain) {
 			return Direction.ParaToSystem;
 		}
 
-		if (_api.query.polkadotXcm) {
-			throw new BaseError(
-				'ParaToPara is not yet implemented',
-				BaseErrorsEnum.NotImplemented
-			);
-
+		if (originIsParachain && destIsParachain) {
 			return Direction.ParaToPara;
 		}
 
@@ -691,10 +673,7 @@ export class AssetsTransferApi {
 		return result;
 	}
 
-	private fetchAssetType(
-		xcmDirection: Direction,
-		isForeignAssetsTransfer?: boolean
-	): AssetType {
+	private fetchAssetType(xcmDirection: Direction, isForeignAssetsTransfer?: boolean): AssetType {
 		if (
 			xcmDirection === Direction.RelayToSystem ||
 			xcmDirection === Direction.SystemToRelay ||
@@ -708,10 +687,7 @@ export class AssetsTransferApi {
 		 * parachains then this logic will change. But for now all assets, and native tokens
 		 * transferred from a System parachain to a parachain it should use a reserve transfer.
 		 */
-		if (
-			xcmDirection === Direction.RelayToPara ||
-			xcmDirection === Direction.SystemToPara
-		) {
+		if (xcmDirection === Direction.RelayToPara || xcmDirection === Direction.SystemToPara) {
 			return AssetType.Foreign;
 		}
 
@@ -730,10 +706,7 @@ export class AssetsTransferApi {
 	): AssetCallType {
 		// relay to system -> teleport
 		// system to relay -> teleport
-		if (
-			xcmDirection === Direction.RelayToSystem ||
-			xcmDirection === Direction.SystemToRelay
-		) {
+		if (xcmDirection === Direction.RelayToSystem || xcmDirection === Direction.SystemToRelay) {
 			return AssetCallType.Teleport;
 		}
 
@@ -749,9 +722,7 @@ export class AssetsTransferApi {
 			if (xcmDirection === Direction.ParaToSystem) {
 				// check if the asset(s) are native to the origin chain
 				for (const assetId of assetIds) {
-					if (
-						multiLocationAssetIsParachainsNativeAsset(originChainId, assetId)
-					) {
+					if (multiLocationAssetIsParachainsNativeAsset(originChainId, assetId)) {
 						originIsMultiLocationsNativeChain = true;
 						break;
 					}
@@ -768,18 +739,12 @@ export class AssetsTransferApi {
 		}
 
 		// system to system native asset -> teleport
-		if (
-			assetType === AssetType.Native &&
-			xcmDirection === Direction.SystemToSystem
-		) {
+		if (assetType === AssetType.Native && xcmDirection === Direction.SystemToSystem) {
 			return AssetCallType.Teleport;
 		}
 
 		// system to system foreign asset -> not allowed
-		if (
-			assetType === AssetType.Foreign &&
-			xcmDirection === Direction.SystemToSystem
-		) {
+		if (assetType === AssetType.Foreign && xcmDirection === Direction.SystemToSystem) {
 			throw new BaseError(
 				`Unable to send foreign assets in direction ${xcmDirection}`,
 				BaseErrorsEnum.InvalidDirection
@@ -787,10 +752,7 @@ export class AssetsTransferApi {
 		}
 
 		// system to para native asset -> reserve
-		if (
-			assetType === AssetType.Native &&
-			xcmDirection === Direction.SystemToPara
-		) {
+		if (assetType === AssetType.Native && xcmDirection === Direction.SystemToPara) {
 			return AssetCallType.Reserve;
 		}
 
@@ -804,11 +766,7 @@ export class AssetsTransferApi {
 		}
 
 		// system to para foreign asset (native to destination) -> teleport
-		if (
-			assetType === AssetType.Foreign &&
-			xcmDirection === Direction.SystemToPara &&
-			destIsMultiLocationsNativeChain
-		) {
+		if (assetType === AssetType.Foreign && xcmDirection === Direction.SystemToPara && destIsMultiLocationsNativeChain) {
 			return AssetCallType.Teleport;
 		}
 
@@ -829,8 +787,7 @@ export class AssetsTransferApi {
 
 		// para to system when assets contain the relay asset or the assets arent native to the origin -> reserve
 		if (
-			(xcmDirection === Direction.ParaToSystem &&
-				assetIdsContainRelayAsset(assetIds, registry)) ||
+			(xcmDirection === Direction.ParaToSystem && assetIdsContainRelayAsset(assetIds, registry)) ||
 			!originIsMultiLocationsNativeChain
 		) {
 			return AssetCallType.Reserve;
@@ -843,52 +800,6 @@ export class AssetsTransferApi {
 
 		return AssetCallType.Reserve;
 	}
-	/**
-	 * Decodes the hex of an extrinsic into a string readable format
-	 *
-	 * @param encodedTransaction the hex of an extrinsic tx
-	 * @param format The format the tx is in
-	 */
-	public decodeExtrinsic<T extends Format>(
-		encodedTransaction: string,
-		format: T
-	): string {
-		const { _api } = this;
-		const fmt = format ? format : 'payload';
-
-		if (fmt === 'payload') {
-			const extrinsicPayload = _api.registry.createType(
-				'ExtrinsicPayload',
-				encodedTransaction,
-				{
-					version: EXTRINSIC_VERSION,
-				}
-			);
-
-			const call = _api.registry.createType('Call', extrinsicPayload.method);
-			const decodedMethodInfo = JSON.stringify(call.toHuman());
-
-			return decodedMethodInfo;
-		} else if (fmt === 'call') {
-			const call = _api.registry.createType('Call', encodedTransaction);
-
-			const decodedMethodInfo = JSON.stringify(call.toHuman());
-
-			return decodedMethodInfo;
-		} else if (fmt === 'submittable') {
-			const extrinsic = _api.registry.createType(
-				'Extrinsic',
-				encodedTransaction
-			);
-
-			const decodedMethodInfo = JSON.stringify(extrinsic.method.toHuman());
-
-			return decodedMethodInfo;
-		}
-
-		return '';
-	}
-
 	/**
 	 * returns an ExtrinsicPayload
 	 *
@@ -904,9 +815,7 @@ export class AssetsTransferApi {
 
 		// if a paysWithFeeOrigin is provided and the chain is of system origin
 		// we assign the assetId to the value of paysWithFeeOrigin
-		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(
-			this._specName.toLowerCase()
-		);
+		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(this._specName.toLowerCase());
 
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
 			const isValidInt = validateNumber(paysWithFeeOrigin);
@@ -930,10 +839,7 @@ export class AssetsTransferApi {
 		}
 
 		const lastHeader = await this._api.rpc.chain.getHeader();
-		const blockNumber = this._api.registry.createType(
-			'BlockNumber',
-			lastHeader.number.toNumber()
-		);
+		const blockNumber = this._api.registry.createType('BlockNumber', lastHeader.number.toNumber());
 		const method = this._api.registry.createType('Call', tx);
 		const era = this._api.registry.createType('ExtrinsicEra', {
 			current: lastHeader.number.toNumber(),
@@ -966,13 +872,9 @@ export class AssetsTransferApi {
 			version: tx.version,
 		};
 
-		const extrinsicPayload = this._api.registry.createType(
-			'ExtrinsicPayload',
-			unsignedPayload,
-			{
-				version: unsignedPayload.version,
-			}
-		);
+		const extrinsicPayload = this._api.registry.createType('ExtrinsicPayload', unsignedPayload, {
+			version: unsignedPayload.version,
+		});
 
 		return extrinsicPayload.toHex();
 	};
@@ -994,10 +896,7 @@ export class AssetsTransferApi {
 
 			return false;
 		} catch (err: unknown) {
-			throw new BaseError(
-				`assetId ${assetId.toString()} does not match a valid asset`,
-				BaseErrorsEnum.InvalidAsset
-			);
+			throw new BaseError(`assetId ${assetId.toString()} does not match a valid asset`, BaseErrorsEnum.InvalidAsset);
 		}
 	};
 

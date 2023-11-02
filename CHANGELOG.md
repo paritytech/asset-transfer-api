@@ -1,5 +1,92 @@
 # Changelog
 
+## [0.1.2](https://github.com/paritytech/asset-transfer-api/compare/v0.1.1..v0.1.2)(2023-09-26)
+
+## Fix
+
+- fix: rococo initialization in the registry ([#297](https://github.com/paritytech/asset-transfer-api/pull/297))
+
+NOTE: 
+
+In order to use rococo's asset hub with the `AssetTransferApi` one will need to hardcode the `specName` into the initialization like the following:
+
+```typescript
+new AssetTransferApi(api, `asset-hub-rococo`, xcmVersion);
+```
+
+The reason being, kusama's asset hub and and rococo's asset-hub both share the same specName currently and will cause conflicts. We currently do an overewrite in the registry that the api uses and set the `specName` for rococo's asset hub to be `asset-hub-rococo`. This is on the horizon to get solved on the actual chain itself soon, so this wont be necessary in the coming future. 
+
+## Docs
+
+- docs: Fixed typos ([#296](https://github.com/paritytech/asset-transfer-api/pull/296))
+
+## [0.1.1](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0..v0.1.1)(2023-09-25)
+
+## Features
+
+- feat: add rococo support and to the registry ([#293](https://github.com/paritytech/asset-transfer-api/pull/293))
+
+## Fix
+
+- fix(internal): remove getChainIdBySpecName and add caching system ([#288](https://github.com/paritytech/asset-transfer-api/pull/288))
+- fix(internal): remove all use of MultiLocation, and use correct versioned type. ([#292](https://github.com/paritytech/asset-transfer-api/pull/292))
+- fix: update the registry to the new xcAssets format ([#284](https://github.com/paritytech/asset-transfer-api/pull/284))
+
+## Docs
+
+- docs: Improve README.md ([#291](https://github.com/paritytech/asset-transfer-api/pull/291))
+
+## [0.1.0](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.5..v0.1.0)(2023-09-19)
+
+## Summary
+
+This release assumes the following is stable, and tested. The api is still not fully featured as we don't have support for certain things which will be listed below. Please review the documentation in the [README.md](https://github.com/paritytech/asset-transfer-api/blob/main/README.md) for any information, and feel free to file an issue if anything is unclear. 
+
+What is not supported:
+
+- ParaToPara
+- ParaToRelay
+- NFTs
+
+What is supported:
+
+- SystemToPara (native assets, foreign assets, liquid pool assets, CrossChain Transfers)
+- SystemToRelay (Native relay token, CrossChain Transfers)
+- RelayToParachain (Native relay token, CrossChain Transfers)
+- RelayToSystem (Native relay token, CrossChain Transfers)
+- SystemToSystem (Native relay token, CrossChain Transfers)
+- ParaToSystem (Asset Hub assets, foreign assets, CrossChain Transfers via either Xtokens, or polkadotXcm pallet).
+    - NOTE: There is a performance bottleneck currently with the construction of xtokens pallet transfers. This is actively being looked into and will be resovled soon.
+- Decoding extrinsics
+- Estimating fees of extrinsics
+- Registry lookup
+
+## Breaking Change
+
+- fix!: replace AssetsTransferApi with AssetTransferApi
+
+## Docs
+
+- docs: enhance the documentation and add inline code examples
+- docs: update readme, and add use case examples
+
+## [0.1.0-beta.5](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.4..v0.1.0-beta.5)(2023-09-13)
+
+## Features
+
+- feat: support construction of teleports for parachains' primary native assets to AssetHub
+- feat: add disabled options config and function
+
+## Fix
+
+- fix: adjust fetchPalletInstanceId to handle ForeignAssets pallet
+- fix: remove remaining use of parseInt
+
+## Chore
+
+- chore: bump actions/checkout from 3 to 4
+- chore(lint): change print-width for prettier to 120
+
 ## [0.1.0-beta.4](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.3..v0.1.0-beta.4)(2023-08-30)
 
 ## Features

@@ -2,16 +2,11 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type {
-	MultiAssetsV2,
-	VersionedMultiAssets,
-	VersionedMultiLocation,
-	WeightLimitV2,
-} from '@polkadot/types/interfaces';
+import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit } from './types';
+import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit, XcmBase } from './types';
 
 /**
  * XCM type generation for transactions from the relay chain to a parachain.
@@ -20,77 +15,65 @@ export const RelayToPara: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
-	 * @param api ApiPromise
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (
-		api: ApiPromise,
-		accountId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createBeneficiary: (accountId: string, xcmVersion?: number): XcmBase => {
 		if (xcmVersion === 2) {
 			const X1 = isEthereumAddress(accountId)
 				? { AccountKey20: { network: 'Any', key: accountId } }
 				: { AccountId32: { network: 'Any', id: accountId } };
-			return api.registry.createType('XcmVersionedMultiLocation', {
+			return {
 				V2: {
 					parents: 0,
 					interior: {
 						X1,
 					},
 				},
-			});
+			};
 		}
 
-		const X1 = isEthereumAddress(accountId)
-			? { AccountKey20: { key: accountId } }
-			: { AccountId32: { id: accountId } };
+		const X1 = isEthereumAddress(accountId) ? { AccountKey20: { key: accountId } } : { AccountId32: { id: accountId } };
 
-		return api.registry.createType('XcmVersionedMultiLocation', {
+		return {
 			V3: {
 				parents: 0,
 				interior: {
 					X1,
 				},
 			},
-		});
+		};
 	},
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
-	 * @param api ApiPromise
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (
-		api: ApiPromise,
-		destId: string,
-		xcmVersion?: number
-	): VersionedMultiLocation => {
+	createDest: (destId: string, xcmVersion?: number): XcmBase => {
 		if (xcmVersion === 2) {
-			return api.registry.createType('XcmVersionedMultiLocation', {
+			return {
 				V2: {
 					parents: 0,
 					interior: {
 						X1: {
-							parachain: destId,
+							Parachain: destId,
 						},
 					},
 				},
-			});
+			};
 		}
 
-		return api.registry.createType('XcmVersionedMultiLocation', {
+		return {
 			V3: {
 				parents: 0,
 				interior: {
 					X1: {
-						parachain: destId,
+						Parachain: destId,
 					},
 				},
 			},
-		});
+		};
 	},
 	/**
 	 * Create a VersionedMultiAsset type.
@@ -126,10 +109,7 @@ export const RelayToPara: ICreateXcmType = {
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
-			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
-				'XcmV2MultiassetMultiAssets',
-				multiAssets
-			);
+			const multiAssetsType: MultiAssetsV2 = api.registry.createType('XcmV2MultiassetMultiAssets', multiAssets);
 
 			return Promise.resolve(
 				api.registry.createType('XcmVersionedMultiAssets', {
@@ -137,8 +117,10 @@ export const RelayToPara: ICreateXcmType = {
 				})
 			);
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets =
-				api.registry.createType('XcmV3MultiassetMultiAssets', multiAssets);
+			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
+				'XcmV3MultiassetMultiAssets',
+				multiAssets
+			);
 
 			return Promise.resolve(
 				api.registry.createType('XcmVersionedMultiAssets', {
@@ -155,10 +137,7 @@ export const RelayToPara: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (
-		api: ApiPromise,
-		opts: CreateWeightLimitOpts
-	): WeightLimitV2 => {
+	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
 		const limit: IWeightLimit =
 			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 				? {

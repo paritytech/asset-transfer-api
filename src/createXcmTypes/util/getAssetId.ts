@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { ApiPromise } from '@polkadot/api';
+import BN from 'bn.js';
 
 import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
@@ -8,7 +9,6 @@ import { Registry } from '../../registry';
 import { validateNumber } from '../../validate';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
-import { getChainIdBySpecName } from './getChainIdBySpecName';
 
 /**
  *
@@ -27,11 +27,12 @@ export const getAssetId = async (
 	registry: Registry,
 	asset: string,
 	specName: string,
+	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
-	const currentChainId = getChainIdBySpecName(registry, specName);
+	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
-	const isParachain = parseInt(currentChainId) >= 2000;
+	const isParachain = new BN(currentChainId).gte(new BN(2000));
 
 	// if assets pallet, check the cache and return the cached assetId if found
 	if (!isForeignAssetsTransfer) {
@@ -49,10 +50,7 @@ export const getAssetId = async (
 	const { assetsInfo } = registry.currentRelayRegistry[currentChainId];
 	if (!isParachain) {
 		if (Object.keys(assetsInfo).length === 0) {
-			throw new BaseError(
-				`${specName} has no associated token symbol ${asset}`,
-				BaseErrorsEnum.InvalidAsset
-			);
+			throw new BaseError(`${specName} has no associated token symbol ${asset}`, BaseErrorsEnum.InvalidAsset);
 		}
 	}
 	// check number assetId in registry
@@ -78,23 +76,15 @@ export const getAssetId = async (
 
 	if (isAssetHub && isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the cache or registry
-		const multiLocationIsInRegistry =
-			foreignAssetMultiLocationIsInCacheOrRegistry(_api, asset, registry);
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(_api, asset, registry, xcmVersion);
 
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
 		} else {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(
-				_api,
-				registry,
-				asset
-			);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(_api, registry, asset, xcmVersion);
 
 			if (!isValidForeignAsset) {
-				throw new BaseError(
-					`MultiLocation ${asset} not found`,
-					BaseErrorsEnum.AssetNotFound
-				);
+				throw new BaseError(`MultiLocation ${asset} not found`, BaseErrorsEnum.AssetNotFound);
 			}
 
 			assetId = asset;
@@ -118,10 +108,7 @@ export const getAssetId = async (
 					registry.setAssetInCache(asset, assetSymbol);
 				}
 			} else {
-				throw new BaseError(
-					`general index for assetId ${asset} was not found`,
-					BaseErrorsEnum.AssetNotFound
-				);
+				throw new BaseError(`general index for assetId ${asset} was not found`, BaseErrorsEnum.AssetNotFound);
 			}
 		} else {
 			throw new BaseError(
@@ -139,16 +126,38 @@ export const getAssetId = async (
 				const id = parachainAsset[0].args[0];
 
 				const metadata = await _api.query.assets.metadata(id);
-				if (
-					metadata.symbol.toHuman()?.toString().toLowerCase() ===
-					asset.toLowerCase()
-				) {
+				if (metadata.symbol.toHuman()?.toString().toLowerCase() === asset.toLowerCase()) {
 					assetId = id.toString();
 					// add queried asset to registry
 					registry.setAssetInCache(assetId, asset);
 					break;
 				}
 			}
+			const paraId = registry.lookupChainIdBySpecName(specName);
+
+			// if assetId length is 0, check xcAssets for symbol
+			const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
+			const currentRelayChainSpecName = registry.relayChain;
+
+			if (!paraXcAssets || paraXcAssets.length === 0) {
+				throw new BaseError(
+					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
+					BaseErrorsEnum.InvalidPallet
+				);
+			}
+
+			for (const info of paraXcAssets) {
+				if (
+					typeof info.asset === 'string' &&
+					typeof info.symbol === 'string' &&
+					info.symbol.toLowerCase() === asset.toLowerCase()
+				) {
+					assetId = info.asset;
+					registry.setAssetInCache(assetId, asset);
+					break;
+				}
+			}
+
 			if (assetId.length === 0) {
 				throw new BaseError(
 					`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`,

@@ -33,9 +33,7 @@ describe('assetIdsContainsRelayAsset', () => {
 	});
 	it('Should return false when assetIds does not contain the relay assets multilocation', () => {
 		const registry = new Registry('statemine', {});
-		const assetIds = [
-			`{"parents": 1, interior: {"X1": {"Parachain": "2023"}}}`,
-		];
+		const assetIds = [`{"parents": 1, interior: {"X1": {"Parachain": "2023"}}}`];
 
 		const result = assetIdsContainRelayAsset(assetIds, registry);
 

@@ -7,50 +7,41 @@ import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMult
 describe('foreignAssetMultiLocationIsInCacheOrRegistry', () => {
 	it('Should return true if a given foreign asset multilocation exists in the asset api registry', () => {
 		const expected = true;
-		const multiLocation =
-			'{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}';
+		const multiLocation = '{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}';
 		const registry = new Registry('statemine', {});
 
-		const foreignAssetExistsInRegistry =
-			foreignAssetMultiLocationIsInCacheOrRegistry(
-				mockSystemApi,
-				multiLocation,
-				registry
-			);
+		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
+			mockSystemApi,
+			multiLocation,
+			registry,
+			2
+		);
 
 		expect(foreignAssetExistsInRegistry).toEqual(expected);
 	});
 
 	it('Should return false if a given foreign asset multilocation does not exist in the asset api registry', () => {
 		const expected = false;
-		const multiLocation =
-			'{"parents":"1","interior":{"X1": {"Parachain":"200100510"}}}';
+		const multiLocation = '{"parents":"1","interior":{"X1": {"Parachain":"200100510"}}}';
 		const registry = new Registry('statemine', {});
 
-		const foreignAssetExistsInRegistry =
-			foreignAssetMultiLocationIsInCacheOrRegistry(
-				mockSystemApi,
-				multiLocation,
-				registry
-			);
+		const foreignAssetExistsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
+			mockSystemApi,
+			multiLocation,
+			registry,
+			2
+		);
 
 		expect(foreignAssetExistsInRegistry).toEqual(expected);
 	});
 
 	it('Should throw an invalid character error when an invalid character is found in a multilocation keys value', () => {
-		const expectedError =
-			'Error creating MultiLocation type: Enum(Parachain) Invalid character';
+		const expectedError = 'Error creating MultiLocation type: Enum(Parachain) Invalid character';
 
-		const multiLocation =
-			'{"parents":"1","interior":{"X1": {"Parachain":"g2125"}}}';
+		const multiLocation = '{"parents":"1","interior":{"X1": {"Parachain":"g2125"}}}';
 		const registry = new Registry('statemine', {});
 
-		const err = () =>
-			foreignAssetMultiLocationIsInCacheOrRegistry(
-				mockSystemApi,
-				multiLocation,
-				registry
-			);
+		const err = () => foreignAssetMultiLocationIsInCacheOrRegistry(mockSystemApi, multiLocation, registry, 2);
 
 		expect(err).toThrow(expectedError);
 	});
@@ -59,16 +50,10 @@ describe('foreignAssetMultiLocationIsInCacheOrRegistry', () => {
 		const expectedError =
 			'Error creating MultiLocation type: Enum(Parachain) String should not contain decimal points or scientific notation';
 
-		const multiLocation =
-			'{"parents":"2","interior":{"X1": {"Parachain":"2,125"}}}';
+		const multiLocation = '{"parents":"2","interior":{"X1": {"Parachain":"2,125"}}}';
 		const registry = new Registry('statemine', {});
 
-		const err = () =>
-			foreignAssetMultiLocationIsInCacheOrRegistry(
-				mockSystemApi,
-				multiLocation,
-				registry
-			);
+		const err = () => foreignAssetMultiLocationIsInCacheOrRegistry(mockSystemApi, multiLocation, registry, 2);
 
 		expect(err).toThrow(expectedError);
 	});

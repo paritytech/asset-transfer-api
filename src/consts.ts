@@ -24,17 +24,16 @@ export const SYSTEM_PARACHAINS_NAMES = [
 	'asset-hub-kusama',
 	'asset-hub-polkadot',
 	'asset-hub-westend',
+	'asset-hub-rococo',
 	'bridge-hub-kusama',
 	'bridge-hub-polkadot',
 	'encointer-parachain',
 	'collectives',
 ];
-export const POLKADOT_ASSET_HUB_SPEC_NAMES = [
-	'statemint',
-	'asset-hub-polkadot',
-];
+export const POLKADOT_ASSET_HUB_SPEC_NAMES = ['statemint', 'asset-hub-polkadot'];
 export const KUSAMA_ASSET_HUB_SPEC_NAMES = ['statemine', 'asset-hub-kusama'];
 export const WESTEND_ASSET_HUB_SPEC_NAMES = ['westmint', 'asset-hub-westend'];
+export const ROCOCO_ASSET_HUB_SPEC_NAME = ['asset-hub-rococo'];
 
 /**
  * The default xcm version to construct a xcm message.

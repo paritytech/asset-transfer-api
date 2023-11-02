@@ -8,7 +8,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import { createXcmTypes } from '../../createXcmTypes';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import type { Registry } from '../../registry';
-import { Direction, XCMDestBenificiary } from '../../types';
+import { XCMDestBenificiary, XcmDirection } from '../../types';
 import type { CreateXcmCallOpts } from '../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 
@@ -30,7 +30,7 @@ import { XcmPalletName } from '../util/establishXcmPallet';
  */
 export const transferMultiAssets = async (
 	api: ApiPromise,
-	direction: Direction,
+	direction: XcmDirection,
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[],
@@ -41,13 +41,7 @@ export const transferMultiAssets = async (
 	xcmPallet: XcmPalletName,
 	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	const {
-		isLimited,
-		weightLimit,
-		paysWithFeeDest,
-		isForeignAssetsTransfer,
-		isLiquidTokenTransfer,
-	} = opts;
+	const { isLimited, weightLimit, paysWithFeeDest, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
 	const ext = api.tx[xcmPallet].transferMultiassets;
 	const typeCreator = createXcmTypes[direction];
 
@@ -64,26 +58,15 @@ export const transferMultiAssets = async (
 		typeCreator.createXTokensFeeAssetItem &&
 		typeCreator.createXTokensBeneficiary
 	) {
-		assets = await typeCreator.createXTokensAssets(
-			api,
-			amounts,
-			xcmVersion,
-			specName,
-			assetIds,
-			{ registry, isForeignAssetsTransfer, isLiquidTokenTransfer }
-		);
+		assets = await typeCreator.createXTokensAssets(api, amounts, xcmVersion, specName, assetIds, {
+			registry,
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
+		});
 
-		beneficiary = typeCreator.createXTokensBeneficiary(
-			destChainId,
-			destAddr,
-			xcmVersion
-		);
-
+		beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);
 		return ext(assets, paysWithFeeDest, beneficiary, destWeightLimit);
 	}
 
-	throw new BaseError(
-		'Unable to create xTokens assets',
-		BaseErrorsEnum.InternalError
-	);
+	throw new BaseError('Unable to create xTokens assets', BaseErrorsEnum.InternalError);
 };

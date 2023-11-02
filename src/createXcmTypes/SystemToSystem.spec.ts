@@ -10,85 +10,80 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = SystemToSystem.createBeneficiary(
-				mockSystemApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2
 			);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountId32: {
+						X1: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: {
-									any: null,
-								},
+								network: 'Any',
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
 			const beneficiary = SystemToSystem.createBeneficiary(
-				mockSystemApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3
 			);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountId32: {
+						X1: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: null,
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 	});
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = SystemToSystem.createDest(mockSystemApi, '1000', 2);
+			const destination = SystemToSystem.createDest('1000', 2);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 1,
 					interior: {
-						x1: {
-							parachain: 1000,
+						X1: {
+							Parachain: '1000',
 						},
 					},
 				},
 			};
 
-			expect(destination.toJSON()).toStrictEqual(expectedRes);
+			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = SystemToSystem.createDest(mockSystemApi, '1002', 3);
+			const destination = SystemToSystem.createDest('1002', 3);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 1,
 					interior: {
-						x1: {
-							parachain: 1002,
+						X1: {
+							Parachain: '1002',
 						},
 					},
 				},
 			};
 
-			expect(destination.toJSON()).toStrictEqual(expectedRes);
+			expect(destination).toStrictEqual(expectedRes);
 		});
 	});
 
@@ -97,18 +92,11 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
-			const assets = await SystemToSystem.createAssets(
-				mockSystemApi,
-				['100'],
-				2,
-				'statemine',
-				['USDT'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToSystem.createAssets(mockSystemApi, ['100'], 2, 'statemine', ['USDT'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v2: [
@@ -131,18 +119,11 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await SystemToSystem.createAssets(
-				mockSystemApi,
-				['100'],
-				3,
-				'bridge-hub-kusama',
-				['ksm'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await SystemToSystem.createAssets(mockSystemApi, ['100'], 3, 'bridge-hub-kusama', ['ksm'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v3: [
@@ -166,37 +147,22 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		});
 
 		it('Should error when asset ID is not found for V3', async () => {
-			const expectedErrorMessage =
-				'bridge-hub-kusama has no associated token symbol usdc';
+			const expectedErrorMessage = 'bridge-hub-kusama has no associated token symbol usdc';
 
 			await expect(async () => {
-				await SystemToSystem.createAssets(
-					mockSystemApi,
-					['100'],
-					3,
-					'bridge-hub-kusama',
-					['usdc'],
-					{
-						registry,
-						isForeignAssetsTransfer,
-						isLiquidTokenTransfer,
-					}
-				);
+				await SystemToSystem.createAssets(mockSystemApi, ['100'], 3, 'bridge-hub-kusama', ['usdc'], {
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+				});
 			}).rejects.toThrowError(expectedErrorMessage);
 		});
 		it('Should work for a liquid token transfer', async () => {
-			const assets = await SystemToSystem.createAssets(
-				mockSystemApi,
-				['100'],
-				2,
-				'statemine',
-				['USDT'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer: true,
-				}
-			);
+			const assets = await SystemToSystem.createAssets(mockSystemApi, ['100'], 2, 'statemine', ['USDT'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer: true,
+			});
 
 			const expectedRes = {
 				v2: [

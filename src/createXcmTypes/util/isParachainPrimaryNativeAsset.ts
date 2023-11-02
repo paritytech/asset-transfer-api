@@ -2,7 +2,6 @@
 
 import { Registry } from '../../registry';
 import { Direction } from '../../types';
-import { getChainIdBySpecName } from './getChainIdBySpecName';
 
 export const isParachainPrimaryNativeAsset = (
 	registry: Registry,
@@ -11,7 +10,7 @@ export const isParachainPrimaryNativeAsset = (
 	assetId?: string
 ) => {
 	// check direction is origin Para
-	if (xcmDirection != Direction.ParaToSystem) {
+	if (xcmDirection != Direction.ParaToSystem && xcmDirection != Direction.ParaToPara) {
 		return false;
 	}
 
@@ -26,7 +25,7 @@ export const isParachainPrimaryNativeAsset = (
 		return true;
 	}
 
-	const currentChainId = getChainIdBySpecName(registry, specName);
+	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const { tokens } = registry.currentRelayRegistry[currentChainId];
 	const primaryParachainNativeAsset = tokens[0];
 	if (primaryParachainNativeAsset.toLowerCase() === assetId.toLowerCase()) {

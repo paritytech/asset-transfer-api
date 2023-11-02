@@ -1,10 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { JunctionV1 } from '@polkadot/types/interfaces';
-import { ITuple } from '@polkadot/types-codec/types';
+import type { XcmV2Junction, XcmV3Junction } from '@polkadot/types/lookup';
+import type { ITuple } from '@polkadot/types-codec/types';
 import { BN } from 'bn.js';
 
-import { MultiAsset, XcmMultiAsset } from '../../types';
+import type { FungibleObjMultiAsset, FungibleStrMultiAsset } from '../../types';
 import { validateNumber } from '../../validate';
 
 /**
@@ -12,26 +12,19 @@ import { validateNumber } from '../../validate';
  *
  * @param multiAssets MultiAsset[]
  */
-export const sortMultiAssetsAscending = (
-	multiAssets: MultiAsset[] | XcmMultiAsset[]
-) => {
+export const sortMultiAssetsAscending = (multiAssets: FungibleStrMultiAsset[] | FungibleObjMultiAsset[]) => {
 	return multiAssets.sort((a, b) => {
 		let parentSortOrder = 0; // sort order based on parents value
 		let interiorMultiLocationTypeSortOrder = 0; // sort order based on interior multilocation type value (e.g. X1 < X2)
 		let interiorMultiLocationSortOrder = 0; // sort order based on multilocation junction values
 		let fungibleSortOrder = 0; // sort order based on fungible value
-		if (
-			typeof a.fun.Fungible === 'string' &&
-			typeof b.fun.Fungible === 'string'
-		) {
-			fungibleSortOrder = (a as MultiAsset).fun.Fungible.localeCompare(
-				(b as MultiAsset).fun.Fungible
+		if (typeof a.fun.Fungible === 'string' && typeof b.fun.Fungible === 'string') {
+			fungibleSortOrder = (a as FungibleStrMultiAsset).fun.Fungible.localeCompare(
+				(b as FungibleStrMultiAsset).fun.Fungible
 			);
 		} else {
-			fungibleSortOrder = (
-				a as XcmMultiAsset
-			).fun.Fungible.Fungible.localeCompare(
-				(b as XcmMultiAsset).fun.Fungible.Fungible
+			fungibleSortOrder = (a as FungibleObjMultiAsset).fun.Fungible.Fungible.localeCompare(
+				(b as FungibleObjMultiAsset).fun.Fungible.Fungible
 			);
 		}
 
@@ -48,24 +41,16 @@ export const sortMultiAssetsAscending = (
 		}
 
 		if (a.id.Concrete.interior.type === b.id.Concrete.interior.type) {
-			interiorMultiLocationSortOrder = getSameJunctionMultiLocationSortOrder(
-				a,
-				b
-			);
+			interiorMultiLocationSortOrder = getSameJunctionMultiLocationSortOrder(a, b);
 		}
 
-		return (
-			parentSortOrder ||
-			interiorMultiLocationTypeSortOrder ||
-			interiorMultiLocationSortOrder ||
-			fungibleSortOrder
-		);
+		return parentSortOrder || interiorMultiLocationTypeSortOrder || interiorMultiLocationSortOrder || fungibleSortOrder;
 	});
 };
 
 const getSameJunctionMultiLocationSortOrder = (
-	a: MultiAsset | XcmMultiAsset,
-	b: MultiAsset | XcmMultiAsset
+	a: FungibleStrMultiAsset | FungibleObjMultiAsset,
+	b: FungibleStrMultiAsset | FungibleObjMultiAsset
 ): number => {
 	let sortOrder = 0;
 
@@ -75,13 +60,9 @@ const getSameJunctionMultiLocationSortOrder = (
 				a.id.Concrete.interior.asX1.type === b.id.Concrete.interior.asX1.type &&
 				!a.id.Concrete.interior.asX1.eq(b.id.Concrete.interior.asX1)
 			) {
-				if (
-					a.id.Concrete.interior.asX1.value < a.id.Concrete.interior.asX1.value
-				) {
+				if (a.id.Concrete.interior.asX1.value < b.id.Concrete.interior.asX1.value) {
 					return -1;
-				} else if (
-					a.id.Concrete.interior.asX1.value > b.id.Concrete.interior.asX1.value
-				) {
+				} else if (a.id.Concrete.interior.asX1.value > b.id.Concrete.interior.asX1.value) {
 					return 1;
 				}
 			} else if (!a.id.Concrete.interior.asX1.eq(b.id.Concrete.interior.asX1)) {
@@ -100,75 +81,48 @@ const getSameJunctionMultiLocationSortOrder = (
 			}
 			break;
 		case 'X2':
-			sortOrder = getSortOrderForX2ThroughX8(
-				a.id.Concrete.interior.asX2,
-				b.id.Concrete.interior.asX2
-			);
+			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX2, b.id.Concrete.interior.asX2);
 			break;
 		case 'X3':
-			sortOrder = getSortOrderForX2ThroughX8(
-				a.id.Concrete.interior.asX3,
-				b.id.Concrete.interior.asX3
-			);
+			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX3, b.id.Concrete.interior.asX3);
 			break;
 		case 'X4':
-			sortOrder = getSortOrderForX2ThroughX8(
-				a.id.Concrete.interior.asX4,
-				b.id.Concrete.interior.asX4
-			);
+			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX4, b.id.Concrete.interior.asX4);
 			break;
 		case 'X5':
-			sortOrder = getSortOrderForX2ThroughX8(
-				a.id.Concrete.interior.asX5,
-				b.id.Concrete.interior.asX5
-			);
+			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX5, b.id.Concrete.interior.asX5);
 			break;
 		case 'X6':
-			sortOrder = getSortOrderForX2ThroughX8(
-				a.id.Concrete.interior.asX6,
-				b.id.Concrete.interior.asX6
-			);
+			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX6, b.id.Concrete.interior.asX6);
 			break;
 		case 'X7':
-			sortOrder = getSortOrderForX2ThroughX8(
-				a.id.Concrete.interior.asX7,
-				b.id.Concrete.interior.asX7
-			);
+			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX7, b.id.Concrete.interior.asX7);
 			break;
 		case 'X8':
-			sortOrder = getSortOrderForX2ThroughX8(
-				a.id.Concrete.interior.asX8,
-				b.id.Concrete.interior.asX8
-			);
+			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX8, b.id.Concrete.interior.asX8);
 	}
 
 	return sortOrder;
 };
 
+type UnionJunction = XcmV3Junction | XcmV2Junction;
+
 type MultiLocationJunctions =
-	| [JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1]
-	| [JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1, JunctionV1]
+	| [UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
+	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
 	| [
-			JunctionV1,
-			JunctionV1,
-			JunctionV1,
-			JunctionV1,
-			JunctionV1,
-			JunctionV1,
-			JunctionV1
-	  ]
-	| [
-			JunctionV1,
-			JunctionV1,
-			JunctionV1,
-			JunctionV1,
-			JunctionV1,
-			JunctionV1,
-			JunctionV1,
-			JunctionV1
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction,
+			UnionJunction
 	  ];
 
 enum MultiLocationJunctionType {
@@ -181,12 +135,10 @@ enum MultiLocationJunctionType {
 	GeneralKey,
 	OnlyChild,
 	Plurality,
+	GlobalConsensus,
 }
 
-const getSortOrderForX2ThroughX8 = (
-	a: ITuple<MultiLocationJunctions>,
-	b: ITuple<MultiLocationJunctions>
-): number => {
+const getSortOrderForX2ThroughX8 = (a: ITuple<MultiLocationJunctions>, b: ITuple<MultiLocationJunctions>): number => {
 	for (let i = 0; i < a.length; i++) {
 		const junctionA = a[i];
 		const junctionB = b[i];
@@ -200,8 +152,8 @@ const getSortOrderForX2ThroughX8 = (
 			// compare number values if both junction values are valid integers
 			// otherwise compare the lexicographical values
 			if (junctionAIsValidInt && junctionBIsValidInt) {
-				const junctionAValueAsBN = new BN(junctionA.value.toString());
-				const junctionBValueAsBN = new BN(junctionB.value.toString());
+				const junctionAValueAsBN = new BN(Number.parseInt(junctionA.value.toString()));
+				const junctionBValueAsBN = new BN(Number.parseInt(junctionB.value.toString()));
 				if (junctionAValueAsBN.lt(junctionBValueAsBN)) {
 					return -1;
 				} else if (junctionAValueAsBN.gt(junctionBValueAsBN)) {
@@ -216,15 +168,9 @@ const getSortOrderForX2ThroughX8 = (
 			}
 		} else if (!junctionA.eq(junctionB)) {
 			// for junctions of different types we compare the junction values themselves
-			if (
-				MultiLocationJunctionType[junctionA.type] <
-				MultiLocationJunctionType[junctionB.type]
-			) {
+			if (MultiLocationJunctionType[junctionA.type] < MultiLocationJunctionType[junctionB.type]) {
 				return -1;
-			} else if (
-				MultiLocationJunctionType[junctionA.type] >
-				MultiLocationJunctionType[junctionB.type]
-			) {
+			} else if (MultiLocationJunctionType[junctionA.type] > MultiLocationJunctionType[junctionB.type]) {
 				return 1;
 			}
 		}

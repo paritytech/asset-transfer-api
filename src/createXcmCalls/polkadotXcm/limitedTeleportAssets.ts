@@ -6,7 +6,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
 import type { Registry } from '../../registry';
-import { Direction } from '../../types';
+import { XcmDirection } from '../../types';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr';
 import type { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
@@ -27,7 +27,7 @@ import { establishXcmPallet } from '../util/establishXcmPallet';
  */
 export const limitedTeleportAssets = async (
 	api: ApiPromise,
-	direction: Direction,
+	direction: XcmDirection,
 	destAddr: string,
 	assetIds: string[],
 	amounts: string[],
@@ -37,25 +37,17 @@ export const limitedTeleportAssets = async (
 	registry: Registry,
 	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	const { isLimited, weightLimit, paysWithFeeDest, isForeignAssetsTransfer } =
-		opts;
+	const { isLimited, weightLimit, paysWithFeeDest, isForeignAssetsTransfer } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedTeleportAssets;
 	const typeCreator = createXcmTypes[direction];
-	const beneficiary = typeCreator.createBeneficiary(api, destAddr, xcmVersion);
-	const dest = typeCreator.createDest(api, destChainId, xcmVersion);
-	const assets = await typeCreator.createAssets(
-		api,
-		normalizeArrToStr(amounts),
-		xcmVersion,
-		specName,
-		assetIds,
-		{
-			registry,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer: false,
-		}
-	);
+	const beneficiary = typeCreator.createBeneficiary(destAddr, xcmVersion);
+	const dest = typeCreator.createDest(destChainId, xcmVersion);
+	const assets = await typeCreator.createAssets(api, normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
+		registry,
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer: false,
+	});
 	const weightLimitType = typeCreator.createWeightLimit(api, {
 		isLimited,
 		weightLimit,

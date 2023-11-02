@@ -4,7 +4,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { Weight } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { AssetsTransferApi } from './AssetsTransferApi';
+import { AssetTransferApi } from './AssetTransferApi';
 import { adjustedMockParachainApi } from './testHelpers/adjustedMockParachainApi';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApi';
@@ -18,67 +18,39 @@ const mockSubmittableExt = mockSystemApi.registry.createType(
 	'0xfc041f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000'
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-const systemAssetsApi = new AssetsTransferApi(
-	adjustedMockSystemApi,
-	'statemine',
-	2
-);
-const relayAssetsApi = new AssetsTransferApi(adjustedMockRelayApi, 'kusama', 2);
-const moonriverAssetsApi = new AssetsTransferApi(
-	adjustedMockParachainApi,
-	'moonriver',
-	2
-);
+const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
+const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
+const moonriverAssetsApi = new AssetTransferApi(adjustedMockParachainApi, 'moonriver', 2);
 
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
 		it('Should correctly determine direction for SystemToSystem', () => {
-			const res = systemAssetsApi['establishDirection'](
-				'1000',
-				'statemint',
-				true
-			);
+			const res = systemAssetsApi['establishDirection'](false, false, true, false, true, false);
 			expect(res).toEqual('SystemToSystem');
 		});
 		it('Should correctly determine direction for SystemToPara', () => {
-			const res = systemAssetsApi['establishDirection'](
-				'2000',
-				'statemint',
-				false
-			);
+			const res = systemAssetsApi['establishDirection'](false, false, false, true, true, false);
 			expect(res).toEqual('SystemToPara');
 		});
 		it('Should correctly determine direction for SystemToRelay', () => {
-			const res = systemAssetsApi['establishDirection'](
-				'0',
-				'asset-hub-polkadot',
-				false
-			);
+			const res = systemAssetsApi['establishDirection'](false, true, false, false, true, false);
 			expect(res).toEqual('SystemToRelay');
 		});
 		it('Should correctly determine direction for RelayToPara', () => {
-			const res = relayAssetsApi['establishDirection'](
-				'2000',
-				'polkadot',
-				false
-			);
+			const res = relayAssetsApi['establishDirection'](false, false, false, true, false, false);
 			expect(res).toEqual('RelayToPara');
 		});
 		it('Should correctly determine direction for RelayToSystem', () => {
-			const res = relayAssetsApi['establishDirection'](
-				'1000',
-				'polkadot',
-				true
-			);
+			const res = relayAssetsApi['establishDirection'](false, false, true, false, false, false);
 			expect(res).toEqual('RelayToSystem');
 		});
 		it('Should correctly determine direction for ParaToSystem', () => {
-			const res = moonriverAssetsApi['establishDirection'](
-				'1000',
-				'moonriver',
-				true
-			);
+			const res = moonriverAssetsApi['establishDirection'](false, false, true, false, false, true);
 			expect(res).toEqual('ParaToSystem');
+		});
+		it('Should correctly determine direction for ParaToPara', () => {
+			const res = moonriverAssetsApi['establishDirection'](false, false, false, true, false, true);
+			expect(res).toEqual('ParaToPara');
 		});
 	});
 	describe('constructFormat', () => {
@@ -138,54 +110,41 @@ describe('AssetTransferAPI', () => {
 	describe('fetchAssetType', () => {
 		describe('SystemToRelay', () => {
 			it('Should corectly return Native', () => {
-				const assetType = systemAssetsApi['fetchAssetType'](
-					Direction.SystemToRelay
-				);
+				const assetType = systemAssetsApi['fetchAssetType'](Direction.SystemToRelay);
 
 				expect(assetType).toEqual('Native');
 			});
 		});
 		describe('SystemToSystem', () => {
 			it('Should correctly return Native', () => {
-				const assetType = systemAssetsApi['fetchAssetType'](
-					Direction.SystemToSystem
-				);
+				const assetType = systemAssetsApi['fetchAssetType'](Direction.SystemToSystem);
 
 				expect(assetType).toEqual('Native');
 			});
 
 			it('Should correctly return Foreign', () => {
-				const assetType = systemAssetsApi['fetchAssetType'](
-					Direction.SystemToSystem,
-					true
-				);
+				const assetType = systemAssetsApi['fetchAssetType'](Direction.SystemToSystem, true);
 
 				expect(assetType).toEqual('Foreign');
 			});
 		});
 		describe('RelayToSystem', () => {
 			it('Should correctly return Native', () => {
-				const assetType = systemAssetsApi['fetchAssetType'](
-					Direction.RelayToSystem
-				);
+				const assetType = systemAssetsApi['fetchAssetType'](Direction.RelayToSystem);
 
 				expect(assetType).toEqual('Native');
 			});
 		});
 		describe('SystemToPara', () => {
 			it('Should correctly return Foreign', () => {
-				const assetType = systemAssetsApi['fetchAssetType'](
-					Direction.SystemToPara
-				);
+				const assetType = systemAssetsApi['fetchAssetType'](Direction.SystemToPara);
 
 				expect(assetType).toEqual('Foreign');
 			});
 		});
 		describe('RelayToPara', () => {
 			it('Should correctly return Foreign', () => {
-				const assetType = systemAssetsApi['fetchAssetType'](
-					Direction.RelayToPara
-				);
+				const assetType = systemAssetsApi['fetchAssetType'](Direction.RelayToPara);
 
 				expect(assetType).toEqual('Foreign');
 			});
@@ -269,9 +228,7 @@ describe('AssetTransferAPI', () => {
 						systemAssetsApi.registry
 					);
 
-				expect(err).toThrow(
-					'Unable to send foreign assets in direction SystemToSystem'
-				);
+				expect(err).toThrow('Unable to send foreign assets in direction SystemToSystem');
 			});
 		});
 		describe('SystemToPara', () => {
@@ -397,30 +354,18 @@ describe('AssetTransferAPI', () => {
 					},
 				},
 			};
-			const mockSystemAssetsApi = new AssetsTransferApi(
-				adjustedMockSystemApi,
-				'statemine',
-				2,
-				{
-					injectedRegistry,
-				}
-			);
+			const mockSystemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, {
+				injectedRegistry,
+			});
 
-			expect(mockSystemAssetsApi._opts.injectedRegistry).toStrictEqual(
-				injectedRegistry
-			);
+			expect(mockSystemAssetsApi._opts.injectedRegistry).toStrictEqual(injectedRegistry);
 		});
 	});
 
 	describe('fetchFeeInfo', () => {
 		it('Should correctly fetch estimate for submittable extrinsic xcm', async () => {
-			const submittableFeeInfo = await systemAssetsApi.fetchFeeInfo(
-				mockSubmittableExt,
-				'submittable'
-			);
-			expect((submittableFeeInfo?.weight as Weight).refTime.toString()).toEqual(
-				mockWeightInfo.weight.refTime
-			);
+			const submittableFeeInfo = await systemAssetsApi.fetchFeeInfo(mockSubmittableExt, 'submittable');
+			expect((submittableFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
 		});
 
 		it('Should correctly fetch estimate for a payload based xcm message', async () => {
@@ -434,13 +379,8 @@ describe('AssetTransferAPI', () => {
 				{ format: 'payload' }
 			);
 
-			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(
-				payloadTexResult.tx,
-				'payload'
-			);
-			expect((payloadFeeInfo?.weight as Weight).refTime.toString()).toEqual(
-				mockWeightInfo.weight.refTime
-			);
+			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(payloadTexResult.tx, 'payload');
+			expect((payloadFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
 		});
 
 		it('Should correctly fetch estimate for a call based xcm message', async () => {
@@ -453,17 +393,71 @@ describe('AssetTransferAPI', () => {
 				'statmine',
 				{ format: 'call' }
 			);
-			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(
-				callTxResult.tx,
-				'call'
-			);
-			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(
-				mockWeightInfo.weight.refTime
-			);
+			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(callTxResult.tx, 'call');
+			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
 		});
 	});
 
 	describe('decodeExtrinsic', () => {
+		describe('ParaToPara', () => {
+			it('Should decode a tx call extrinsic given its hash for ParaToPara', async () => {
+				const expected =
+					'{"args":{"asset":{"V2":{"id":{"Concrete":{"parents":"1","interior":{"X2":[{"Parachain":"2,001"},{"GeneralKey":"0x010a"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}},"dest":{"V2":{"parents":"1","interior":{"X2":[{"Parachain":"2,001"},{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}]}}},"dest_weight_limit":"Unlimited"},"method":"transferMultiasset","section":"xTokens"}';
+
+				const callTxResult = await moonriverAssetsApi.createTransferTransaction(
+					'2001',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					['vMOVR'],
+					['10000000000000'],
+					{
+						format: 'call',
+						keepAlive: false,
+					}
+				);
+
+				const decoded = moonriverAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a tx payload extrinsic given its hash for ParaToPara', async () => {
+				const expected =
+					'{"args":{"asset":{"V2":{"id":{"Concrete":{"parents":"1","interior":{"X2":[{"Parachain":"2,092"},{"GeneralKey":"0x000c"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}},"dest":{"V2":{"parents":"1","interior":{"X2":[{"Parachain":"2,092"},{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}]}}},"dest_weight_limit":"Unlimited"},"method":"transferMultiasset","section":"xTokens"}';
+
+				const payloadTxResult = await moonriverAssetsApi.createTransferTransaction(
+					'2092',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					['KINT'],
+					['10000000000000'],
+					{
+						xcmVersion: 2,
+						format: 'payload',
+						keepAlive: false,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					}
+				);
+
+				const decoded = moonriverAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
+				expect(decoded).toEqual(expected);
+			});
+
+			it('Should decode a tx submittable extrinsic given its hash for ParaToPara', async () => {
+				const expected =
+					'{"args":{"asset":{"V2":{"id":{"Concrete":{"parents":"1","interior":{"X1":{"Parachain":"2,007"}}}},"fun":{"Fungible":"10,000,000,000,000"}}},"dest":{"V2":{"parents":"1","interior":{"X2":[{"Parachain":"2,007"},{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}]}}},"dest_weight_limit":"Unlimited"},"method":"transferMultiasset","section":"xTokens"}';
+
+				const callTxResult = await moonriverAssetsApi.createTransferTransaction(
+					'2007',
+					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
+					['SDN'],
+					['10000000000000'],
+					{
+						format: 'submittable',
+					}
+				);
+
+				const decoded = moonriverAssetsApi.decodeExtrinsic(callTxResult.tx.toHex(), 'submittable');
+				expect(decoded).toEqual(expected);
+			});
+		});
 		describe('RelayToSystem', () => {
 			it('Should decode a calls extrinsic given its hash for RelayToSystem', async () => {
 				const expected =
@@ -498,32 +492,25 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 
-				const decoded = relayAssetsApi.decodeExtrinsic(
-					payloadTxResult.tx,
-					'payload'
-				);
+				const decoded = relayAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
 				expect(decoded).toEqual(expected);
 			});
 
 			it('Should decode a submittables extrinsic given its hash for RelayToSystem', async () => {
 				const expected =
 					'{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"520,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"xcmPallet"}';
-				const submittableTxResult =
-					await relayAssetsApi.createTransferTransaction(
-						'1000',
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						[],
-						['520000000000000'],
-						{
-							format: 'submittable',
-							keepAlive: true,
-						}
-					);
-
-				const decoded = relayAssetsApi.decodeExtrinsic(
-					submittableTxResult.tx.toHex(),
-					'submittable'
+				const submittableTxResult = await relayAssetsApi.createTransferTransaction(
+					'1000',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['520000000000000'],
+					{
+						format: 'submittable',
+						keepAlive: true,
+					}
 				);
+
+				const decoded = relayAssetsApi.decodeExtrinsic(submittableTxResult.tx.toHex(), 'submittable');
 				expect(decoded).toEqual(expected);
 			});
 		});
@@ -543,10 +530,7 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 
-				const decoded = systemAssetsApi.decodeExtrinsic(
-					callTxResult.tx,
-					'call'
-				);
+				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
 				expect(decoded).toEqual(expected);
 			});
 
@@ -565,32 +549,25 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 
-				const decoded = systemAssetsApi.decodeExtrinsic(
-					payloadTxResult.tx,
-					'payload'
-				);
+				const decoded = systemAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
 				expect(decoded).toEqual(expected);
 			});
 
 			it('Should decode a submittables extrinsic given its hash for SystemToRelay', async () => {
 				const expected =
 					'{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"50,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"polkadotXcm"}';
-				const submittableTxResult =
-					await systemAssetsApi.createTransferTransaction(
-						'0',
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						[],
-						['50000000000000'],
-						{
-							format: 'submittable',
-							keepAlive: true,
-						}
-					);
-
-				const decoded = systemAssetsApi.decodeExtrinsic(
-					submittableTxResult.tx.toHex(),
-					'submittable'
+				const submittableTxResult = await systemAssetsApi.createTransferTransaction(
+					'0',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					[],
+					['50000000000000'],
+					{
+						format: 'submittable',
+						keepAlive: true,
+					}
 				);
+
+				const decoded = systemAssetsApi.decodeExtrinsic(submittableTxResult.tx.toHex(), 'submittable');
 				expect(decoded).toEqual(expected);
 			});
 		});
@@ -603,9 +580,7 @@ describe('AssetTransferAPI', () => {
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'1000',
 					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
-					[
-						'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
-					],
+					['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 					['10000000000000'],
 					{
 						format: 'call',
@@ -613,10 +588,7 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 
-				const decoded = systemAssetsApi.decodeExtrinsic(
-					callTxResult.tx,
-					'call'
-				);
+				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
 				expect(decoded).toEqual(expected);
 			});
 
@@ -627,9 +599,7 @@ describe('AssetTransferAPI', () => {
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'1000',
 					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
-					[
-						'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
-					],
+					['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 					['10000000000000'],
 					{
 						format: 'payload',
@@ -638,10 +608,7 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 
-				const decoded = systemAssetsApi.decodeExtrinsic(
-					callTxResult.tx,
-					'payload'
-				);
+				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'payload');
 				expect(decoded).toEqual(expected);
 			});
 
@@ -652,19 +619,14 @@ describe('AssetTransferAPI', () => {
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'2023',
 					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
-					[
-						'{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
-					],
+					['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 					['10000000000000'],
 					{
 						format: 'submittable',
 					}
 				);
 
-				const decoded = systemAssetsApi.decodeExtrinsic(
-					callTxResult.tx.toHex(),
-					'submittable'
-				);
+				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx.toHex(), 'submittable');
 				expect(decoded).toEqual(expected);
 			});
 
@@ -684,10 +646,7 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 
-				const decoded = systemAssetsApi.decodeExtrinsic(
-					callTxResult.tx,
-					'call'
-				);
+				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
 				expect(decoded).toEqual(expected);
 			});
 		});
@@ -754,13 +713,9 @@ describe('AssetTransferAPI', () => {
 				}
 			);
 
-			const result = mockSystemApi.registry.createType(
-				'ExtrinsicPayload',
-				payload.tx,
-				{
-					version: 4,
-				}
-			);
+			const result = mockSystemApi.registry.createType('ExtrinsicPayload', payload.tx, {
+				version: 4,
+			});
 			const unsigned = result.toHuman() as unknown as UnsignedTransaction;
 
 			expect(unsigned.assetId).toEqual(expected);
@@ -782,9 +737,7 @@ describe('AssetTransferAPI', () => {
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
-			}).rejects.toThrowError(
-				'paysWithFeeOrigin value must be a valid number. Received: hello there'
-			);
+			}).rejects.toThrowError('paysWithFeeOrigin value must be a valid number. Received: hello there');
 		});
 
 		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {
@@ -803,9 +756,7 @@ describe('AssetTransferAPI', () => {
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
-			}).rejects.toThrowError(
-				'asset with assetId 100 is not a sufficient asset to pay for fees'
-			);
+			}).rejects.toThrowError('asset with assetId 100 is not a sufficient asset to pay for fees');
 		});
 	});
 });

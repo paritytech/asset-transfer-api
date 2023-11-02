@@ -1,6 +1,7 @@
 import {
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
+	ROCOCO_ASSET_HUB_SPEC_NAME,
 	WESTEND_ASSET_HUB_SPEC_NAMES,
 } from '../consts';
 import { BaseError, BaseErrorsEnum } from '../errors';
@@ -12,39 +13,23 @@ import type { ChainInfoRegistry, RelayChains } from './types';
  * @param specName SpecName of the given chain
  * @param registry The registry to search
  */
-export const findRelayChain = (
-	specName: string,
-	registry: ChainInfoRegistry
-): RelayChains => {
-	const polkadotChains = Object.keys(registry.polkadot).map(
-		(val) => registry.polkadot[val].specName
-	);
-	if (
-		polkadotChains.includes(specName.toLowerCase()) ||
-		POLKADOT_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase())
-	)
+export const findRelayChain = (specName: string, registry: ChainInfoRegistry): RelayChains => {
+	const polkadotChains = Object.keys(registry.polkadot).map((val) => registry.polkadot[val].specName);
+	if (polkadotChains.includes(specName.toLowerCase()) || POLKADOT_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()))
 		return 'polkadot';
 
-	const kusamaChains = Object.keys(registry.kusama).map(
-		(val) => registry.kusama[val].specName
-	);
-	if (
-		kusamaChains.includes(specName.toLowerCase()) ||
-		KUSAMA_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase())
-	)
+	const kusamaChains = Object.keys(registry.kusama).map((val) => registry.kusama[val].specName);
+	if (kusamaChains.includes(specName.toLowerCase()) || KUSAMA_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()))
 		return 'kusama';
 
-	const westendChains = Object.keys(registry.westend).map(
-		(val) => registry.westend[val].specName
-	);
-	if (
-		westendChains.includes(specName.toLowerCase()) ||
-		WESTEND_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase())
-	)
+	const westendChains = Object.keys(registry.westend).map((val) => registry.westend[val].specName);
+	if (westendChains.includes(specName.toLowerCase()) || WESTEND_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()))
 		return 'westend';
 
-	throw new BaseError(
-		`Cannot find the relay chain for specName: ${specName}`,
-		BaseErrorsEnum.InternalError
-	);
+	const rococoChains = Object.keys(registry.rococo).map((val) => registry.rococo[val].specName);
+	if (rococoChains.includes(specName.toLowerCase()) || ROCOCO_ASSET_HUB_SPEC_NAME) {
+		return 'rococo';
+	}
+
+	throw new BaseError(`Cannot find the relay chain for specName: ${specName}`, BaseErrorsEnum.InternalError);
 };

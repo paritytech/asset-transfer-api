@@ -10,8 +10,6 @@ describe('transfer', () => {
 			'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 			'10000'
 		);
-		expect(res.toHex()).toEqual(
-			'0x98040a0300f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b419c'
-		);
+		expect(res.toHex()).toEqual('0x98040a0300f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b419c');
 	});
 });

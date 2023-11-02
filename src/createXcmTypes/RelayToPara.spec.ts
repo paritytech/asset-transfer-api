@@ -9,134 +9,118 @@ describe('RelayToPara XcmVersioned Generation', () => {
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = RelayToPara.createBeneficiary(
-				mockRelayApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2
 			);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountId32: {
+						X1: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: {
-									any: null,
-								},
+								network: 'Any',
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V2 Ethereum address', () => {
-			const beneficiary = RelayToPara.createBeneficiary(
-				mockRelayApi,
-				'0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-				2
-			);
+			const beneficiary = RelayToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 2);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountKey20: {
-								key: '0x96bd611ebe3af39544104e26764f4939924f6ece',
-								network: {
-									any: null,
-								},
+						X1: {
+							AccountKey20: {
+								key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
+								network: 'Any',
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
 			const beneficiary = RelayToPara.createBeneficiary(
-				mockRelayApi,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3
 			);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountId32: {
+						X1: {
+							AccountId32: {
 								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-								network: null,
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 Ethereum address', () => {
-			const beneficiary = RelayToPara.createBeneficiary(
-				mockRelayApi,
-				'0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-				3
-			);
+			const beneficiary = RelayToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 0,
 					interior: {
-						x1: {
-							accountKey20: {
-								key: '0x96bd611ebe3af39544104e26764f4939924f6ece',
-								network: null,
+						X1: {
+							AccountKey20: {
+								key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
 							},
 						},
 					},
 				},
 			};
 
-			expect(beneficiary.toJSON()).toStrictEqual(expectedRes);
+			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 	});
 
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = RelayToPara.createDest(mockRelayApi, '100', 2);
+			const destination = RelayToPara.createDest('100', 2);
 
 			const expectedRes = {
-				v2: {
+				V2: {
 					parents: 0,
 					interior: {
-						x1: {
-							parachain: 100,
+						X1: {
+							Parachain: '100',
 						},
 					},
 				},
 			};
 
-			expect(destination.toJSON()).toStrictEqual(expectedRes);
+			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = RelayToPara.createDest(mockRelayApi, '100', 3);
+			const destination = RelayToPara.createDest('100', 3);
 
 			const expectedRes = {
-				v3: {
+				V3: {
 					parents: 0,
 					interior: {
-						x1: {
-							parachain: 100,
+						X1: {
+							Parachain: '100',
 						},
 					},
 				},
 			};
 
-			expect(destination.toJSON()).toStrictEqual(expectedRes);
+			expect(destination).toStrictEqual(expectedRes);
 		});
 	});
 	describe('Assets', () => {
@@ -144,18 +128,11 @@ describe('RelayToPara XcmVersioned Generation', () => {
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
-			const assets = await RelayToPara.createAssets(
-				mockRelayApi,
-				['100'],
-				2,
-				'',
-				[],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await RelayToPara.createAssets(mockRelayApi, ['100'], 2, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v2: [
@@ -178,18 +155,11 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(assets.toJSON()).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await RelayToPara.createAssets(
-				mockRelayApi,
-				['100'],
-				3,
-				'',
-				[],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-				}
-			);
+			const assets = await RelayToPara.createAssets(mockRelayApi, ['100'], 3, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+			});
 
 			const expectedRes = {
 				v3: [

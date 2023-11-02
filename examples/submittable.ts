@@ -1,12 +1,12 @@
 /**
  * When importing from @substrate/asset-transfer-api it would look like the following
  *
- * import { AssetsTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
+ * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
 import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
-import { AssetsTransferApi, constructApiPromise } from '../src';
+import { AssetTransferApi, constructApiPromise } from '../src';
 import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
@@ -17,10 +17,8 @@ import { GREEN, PURPLE, RESET } from './colors';
  * `sign`, `signAsync`, `dryRun`, `addSignature`, `paymentInfo`, etc.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise(
-		'ws://127.0.0.1:9944'
-	);
-	const assetApi = new AssetsTransferApi(api, specName, safeXcmVersion);
+	const { api, specName, safeXcmVersion } = await constructApiPromise('ws://127.0.0.1:9944');
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	// When declaring this type it will ensure that the inputted `format` matches it or the type checker will error.
 	let callInfo: TxResult<'submittable'>;
@@ -38,11 +36,7 @@ const main = async () => {
 		);
 
 		console.log(
-			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(
-				callInfo,
-				null,
-				4
-			)}${RESET}`
+			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(callInfo, null, 4)}${RESET}`
 		);
 	} catch (e) {
 		console.error(e);

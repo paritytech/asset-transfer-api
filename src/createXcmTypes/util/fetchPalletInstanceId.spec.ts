@@ -21,9 +21,7 @@ describe('fetchPalletInstanceId', () => {
 		} as unknown as ApiPromise;
 		const res = () => fetchPalletInstanceId(mockApi, false, false);
 
-		expect(res).toThrowError(
-			"No Assets pallet available, can't find a valid PalletInstance."
-		);
+		expect(res).toThrowError("No Assets pallet available, can't find a valid PalletInstance.");
 	});
 	it('Should correctly grab the poolAssets pallet instance', () => {
 		const res = fetchPalletInstanceId(mockSystemApi, true, false);
@@ -38,8 +36,6 @@ describe('fetchPalletInstanceId', () => {
 	it('Should correctly error when both foreign assets and pool assets are true', () => {
 		const err = () => fetchPalletInstanceId(mockSystemApi, true, true);
 
-		expect(err).toThrowError(
-			"Can't find the appropriate pallet when both liquid tokens and foreign assets"
-		);
+		expect(err).toThrowError("Can't find the appropriate pallet when both liquid tokens and foreign assets");
 	});
 });

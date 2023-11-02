@@ -9,8 +9,12 @@ describe('parseRegistry', () => {
 		expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);
 		expect(registry.kusama['0'].tokens).toStrictEqual(['KSM']);
 		expect(registry.westend['0'].tokens).toStrictEqual(['WND']);
+		expect(registry.rococo['0'].tokens).toStrictEqual(['ROC']);
 	});
-
+	it('Should correctly overwrite rococos asset-hub specName', () => {
+		const registry = parseRegistry({});
+		expect(registry.rococo['1000'].specName).toEqual('asset-hub-rococo');
+	});
 	it('Should correctly inject an injectedRegsitry', () => {
 		const assetsInfo = {};
 		const foreignAssetsInfo = {};
