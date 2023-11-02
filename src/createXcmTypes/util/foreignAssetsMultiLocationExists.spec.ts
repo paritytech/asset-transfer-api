@@ -65,7 +65,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		const result = emptyRegistry.cacheLookupForeignAsset('TNKR');
 
 		expect(result).toEqual({
-			multiLocation: '{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+			multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
 			name: 'Tinkernet',
 			symbol: 'TNKR',
 		});

@@ -2,10 +2,16 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { u32 } from '@polkadot/types';
-import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
-import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
+import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 
-import { CreateWeightLimitOpts, ICreateXcmType, IWeightLimit, XcmBase } from './types';
+import {
+	CreateWeightLimitOpts,
+	ICreateXcmType,
+	IWeightLimit,
+	UnionXcmMultiAssets,
+	XcmDestBenificiary,
+	XcmMultiAsset,
+} from './types';
 /**
  * XCM type generation for transactions from the relay chain to a system parachain.
  */
@@ -16,7 +22,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (accountId: string, xcmVersion: number): XcmBase => {
+	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -53,7 +59,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (destId: string, xcmVersion: number): XcmBase => {
+	createDest: (destId: string, xcmVersion: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -86,12 +92,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param amounts
 	 * @param xcmVersion
 	 */
-	createAssets: async (
-		api: ApiPromise,
-		amounts: string[],
-		xcmVersion: number,
-		_: string
-	): Promise<VersionedMultiAssets> => {
+	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
 		const multiAssets = [];
 
 		const amount = amounts[0];
@@ -107,29 +108,18 @@ export const RelayToSystem: ICreateXcmType = {
 					parents: 0,
 				},
 			},
-		};
+		} as XcmMultiAsset;
 
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
-			const multiAssetsType: MultiAssetsV2 = api.registry.createType('XcmV2MultiassetMultiAssets', multiAssets);
-
-			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V2: multiAssetsType,
-				})
-			);
+			return Promise.resolve({
+				V2: multiAssets,
+			});
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
-				'XcmV3MultiassetMultiAssets',
-				multiAssets
-			);
-
-			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V3: multiAssetsType,
-				})
-			);
+			return Promise.resolve({
+				V3: multiAssets,
+			});
 		}
 	},
 	/**

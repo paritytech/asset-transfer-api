@@ -2,9 +2,9 @@
 
 import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
-import { FungibleStrMultiAsset } from '../types';
 import { SystemToPara } from './SystemToPara';
 import { createSystemToParaMultiAssets } from './SystemToPara';
+import { FungibleStrMultiAsset } from './types';
 
 describe('SystemToPara XcmVersioned Generation', () => {
 	const registry = new Registry('statemine', {});
@@ -131,124 +131,127 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
-			const assets = await SystemToPara.createAssets(mockSystemApi, ['100', '100'], 2, 'statemine', ['1', '2'], {
+			const assets = await SystemToPara.createAssets(['100', '100'], 2, 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
-				v2: [
+				V2: [
 					{
 						id: {
-							concrete: {
+							Concrete: {
 								parents: 0,
 								interior: {
-									x2: [{ palletInstance: 50 }, { generalIndex: 1 }],
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 					{
 						id: {
-							concrete: {
+							Concrete: {
 								parents: 0,
 								interior: {
-									x2: [{ palletInstance: 50 }, { generalIndex: 2 }],
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '2' }],
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 for testing this', async () => {
-			const assets = await SystemToPara.createAssets(mockSystemApi, ['100', '100'], 3, 'statemine', ['1', '2'], {
+			const assets = await SystemToPara.createAssets(['100', '100'], 3, 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
-				v3: [
+				V3: [
 					{
 						id: {
-							concrete: {
+							Concrete: {
 								parents: 0,
 								interior: {
-									x2: [{ palletInstance: 50 }, { generalIndex: 1 }],
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 					{
 						id: {
-							concrete: {
+							Concrete: {
 								parents: 0,
 								interior: {
-									x2: [{ palletInstance: 50 }, { generalIndex: 2 }],
+									X2: [{ PalletInstance: '50' }, { GeneralIndex: '2' }],
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should correctly construct a liquid token transfer', async () => {
-			const assets = await SystemToPara.createAssets(mockSystemApi, ['100', '100'], 3, 'statemine', ['1', '2'], {
+			const assets = await SystemToPara.createAssets(['100', '100'], 3, 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
-				v3: [
+				V3: [
 					{
 						id: {
-							concrete: {
+							Concrete: {
 								parents: 0,
 								interior: {
-									x2: [{ palletInstance: 55 }, { generalIndex: 1 }],
+									X2: [{ PalletInstance: '55' }, { GeneralIndex: '1' }],
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 					{
 						id: {
-							concrete: {
+							Concrete: {
 								parents: 0,
 								interior: {
-									x2: [{ palletInstance: 55 }, { generalIndex: 2 }],
+									X2: [{ PalletInstance: '55' }, { GeneralIndex: '2' }],
 								},
 							},
 						},
 						fun: {
-							fungible: 100,
+							Fungible: '100',
 						},
 					},
 				],
 			};
 
-			expect(assets.toJSON()).toStrictEqual(expectedRes);
+			expect(assets).toStrictEqual(expectedRes);
 		});
 	});
 	describe('WeightLimit', () => {
@@ -287,28 +290,28 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const expected: FungibleStrMultiAsset[] = [
 				{
 					fun: {
-						Fungible: '300000000000000',
-					},
-					id: {
-						Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
-							interior: {
-								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
-							},
-							parents: 0,
-						}),
-					},
-				},
-				{
-					fun: {
 						Fungible: '100000000000000',
 					},
 					id: {
-						Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+						Concrete: {
 							interior: {
 								Here: '',
 							},
 							parents: 1,
-						}),
+						},
+					},
+				},
+				{
+					fun: {
+						Fungible: '300000000000000',
+					},
+					id: {
+						Concrete: {
+							interior: {
+								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
+							},
+							parents: 0,
+						},
 					},
 				},
 			];
@@ -327,7 +330,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				false
 			);
 
-			expect(result).toEqual(expected);
+			expect(result).toStrictEqual(expected);
 		});
 	});
 });

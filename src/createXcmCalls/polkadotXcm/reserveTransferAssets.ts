@@ -43,10 +43,11 @@ export const reserveTransferAssets = async (
 	const typeCreator = createXcmTypes[direction];
 	const beneficiary = typeCreator.createBeneficiary(destAddr, xcmVersion);
 	const dest = typeCreator.createDest(destChainId, xcmVersion);
-	const assets = await typeCreator.createAssets(api, normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
+	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
 		registry,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
+		api,
 	});
 
 	const feeAssetItem = paysWithFeeDest

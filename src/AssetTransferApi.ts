@@ -244,7 +244,7 @@ export class AssetTransferApi {
 							: poolAssets.transfer(_api, addr, assetId, amount);
 					palletMethod = `poolAssets::${method}`;
 				} else {
-					const multiLocation = resolveMultiLocation(_api, assetId, declaredXcmVersion);
+					const multiLocation = resolveMultiLocation(assetId, declaredXcmVersion);
 					tx =
 						method === 'transferKeepAlive'
 							? foreignAssets.transferKeepAlive(_api, addr, multiLocation, amount)

@@ -8,7 +8,6 @@ import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
-	checkAllMultiLocationAssetIdsAreValid,
 	checkAssetIdInput,
 	checkAssetIdsAreOfSameAssetIdType,
 	checkAssetIdsHaveNoDuplicates,
@@ -527,26 +526,6 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 	});
 });
 
-type CreateMultiLocationTest = [multiLocationAssetIds: string[], expected: string];
-
-describe('checkAllMultiLocationAssetIdsAreValid', () => {
-	it('Should correctly error when an invalid multilocation is provided in assetIds', () => {
-		const tests: CreateMultiLocationTest[] = [
-			[
-				['{"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}}'],
-				'Error creating MultiLocation type with multilocation string value {"parents":"1","interior":{"X2": [{"Parachain":"2,023"}, {"GeneralIndex": "0"}]}} -  Enum(Parachain) String should not contain decimal points or scientific notation',
-			],
-		];
-
-		for (const test of tests) {
-			const [multiLocationAssetIds, expected] = test;
-			const err = () => checkAllMultiLocationAssetIdsAreValid(mockSystemApi, multiLocationAssetIds, 2);
-
-			expect(err).toThrowError(expected);
-		}
-	});
-});
-
 describe('checkAssetIdsLengthIsValid', () => {
 	it('Should correctly error when more than 2 assetIds are passed in', () => {
 		const assetIds = ['ksm', '1984', '10'];
@@ -837,7 +816,7 @@ describe('checkParaAssets', () => {
 			);
 
 			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual({
-				multiLocation: '{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+				multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
 				name: 'Tinkernet',
 				symbol: 'TNKR',
 			});
@@ -882,7 +861,7 @@ describe('checkParaAssets', () => {
 			expect(registry.cacheLookupPoolAsset('0')).toEqual({
 				lpToken: '0',
 				pairInfo:
-					'[[{"parents":0,"interior":{"here":null}},{"parents":0,"interior":{"x2":[{"palletInstance":50},{"generalIndex":100}]}}]]',
+					'[[{"parents":"0","interior":{"Here":""}},{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"100"}]}}]]',
 			});
 		});
 	});

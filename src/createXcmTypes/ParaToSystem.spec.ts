@@ -90,7 +90,6 @@ describe('ParaToSystem', () => {
 		const isForeignAssetsTransfer = false;
 		it('Should work for V2', async () => {
 			const assets = await ParaToSystem.createAssets(
-				mockParachainApi,
 				['1000000000000', '2000000000'],
 				2,
 				'moonriver',
@@ -99,45 +98,45 @@ describe('ParaToSystem', () => {
 					registry,
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
+					api: mockParachainApi,
 				}
 			);
 
 			const expectedRes = {
-				v2: [
+				V2: [
 					{
 						id: {
-							concrete: {
-								parents: 1,
-								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+							Concrete: {
+								Parents: 1,
+								Interior: {
 									Here: null,
-								}),
+								},
 							},
 						},
 						fun: {
-							fungible: 1000000000000,
+							Fungible: '1000000000000',
 						},
 					},
 					{
 						id: {
-							concrete: {
-								parents: 1,
-								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+							Concrete: {
+								Parents: 1,
+								Interior: {
 									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
-								}),
+								},
 							},
 						},
 						fun: {
-							fungible: 2000000000,
+							Fungible: '2000000000',
 						},
 					},
 				],
 			};
 
-			expect(assets.toString()).toEqual(JSON.stringify(expectedRes));
+			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
 			const assets = await ParaToSystem.createAssets(
-				mockParachainApi,
 				['1000000', '20000000000'],
 				3,
 				'moonriver',
@@ -146,41 +145,42 @@ describe('ParaToSystem', () => {
 					registry,
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
+					api: mockParachainApi,
 				}
 			);
 
 			const expectedRes = {
-				v3: [
+				V3: [
 					{
 						id: {
-							concrete: {
-								parents: 1,
-								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+							Concrete: {
+								Parents: 1,
+								Interior: {
 									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
-								}),
+								},
 							},
 						},
 						fun: {
-							fungible: 1000000,
+							Fungible: '1000000',
 						},
 					},
 					{
 						id: {
-							concrete: {
-								parents: 1,
-								interior: mockParachainApi.registry.createType('InteriorMultiLocation', {
+							Concrete: {
+								Parents: 1,
+								Interior: {
 									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 1984 }],
-								}),
+								},
 							},
 						},
 						fun: {
-							fungible: 20000000000,
+							Fungible: '20000000000',
 						},
 					},
 				],
 			};
 
-			expect(assets.toString()).toEqual(JSON.stringify(expectedRes));
+			expect(assets).toStrictEqual(expectedRes);
 		});
 	});
 	describe('WeightLimit', () => {

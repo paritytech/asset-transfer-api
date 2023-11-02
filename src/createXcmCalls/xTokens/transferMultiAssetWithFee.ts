@@ -51,12 +51,13 @@ export const transferMultiAssetWithFee = async (
 	if (typeCreator.createXTokensAsset && typeCreator.createXTokensFeeAssetItem && typeCreator.createXTokensBeneficiary) {
 		const amount = amounts[0];
 		const assetId = assetIds[0];
-		const asset = await typeCreator.createXTokensAsset(api, amount, xcmVersion, specName, assetId, {
+		const asset = await typeCreator.createXTokensAsset(amount, xcmVersion, specName, assetId, {
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
+			api,
 		});
-		const fee = typeCreator.createXTokensFeeAssetItem(api, {
+		const fee = typeCreator.createXTokensFeeAssetItem({
 			registry,
 			paysWithFeeDest,
 			xcmVersion,

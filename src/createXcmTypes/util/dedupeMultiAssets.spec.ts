@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import type { FungibleStrMultiAsset } from '../../types';
+import type { FungibleStrMultiAsset } from '../../createXcmTypes/types';
 import { dedupeMultiAssets } from './dedupeMultiAssets';
 
 describe('dedupeMultiAssets', () => {
@@ -12,12 +11,12 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '100000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						interior: {
 							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
 						},
 						parents: 0,
-					}),
+					},
 				},
 			},
 			{
@@ -25,12 +24,12 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '200000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						interior: {
 							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
 						},
 						parents: 1,
-					}),
+					},
 				},
 			},
 		];
@@ -40,12 +39,12 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '100000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						interior: {
 							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
 						},
 						parents: 0,
-					}),
+					},
 				},
 			},
 			{
@@ -53,12 +52,12 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '100000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						interior: {
 							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
 						},
 						parents: 0,
-					}),
+					},
 				},
 			},
 			{
@@ -66,12 +65,12 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '200000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						interior: {
 							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
 						},
 						parents: 1,
-					}),
+					},
 				},
 			},
 		];
@@ -90,7 +89,7 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '200000000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						parents: 1,
 						interior: {
 							X3: [
@@ -99,7 +98,7 @@ describe('dedupeMultiAssets', () => {
 								{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
 							],
 						},
-					}),
+					},
 				},
 			},
 			{
@@ -107,7 +106,7 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '200000000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						parents: 1,
 						interior: {
 							X3: [
@@ -116,7 +115,7 @@ describe('dedupeMultiAssets', () => {
 								{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
 							],
 						},
-					}),
+					},
 				},
 			},
 			{
@@ -124,12 +123,12 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '200000000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						parents: 1,
 						interior: {
 							X3: [{ Parachain: '2000' }, { PalletInstance: '50' }, { GeneralIndex: '1' }],
 						},
-					}),
+					},
 				},
 			},
 		];
@@ -140,7 +139,7 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '200000000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						parents: 1,
 						interior: {
 							X3: [
@@ -149,7 +148,7 @@ describe('dedupeMultiAssets', () => {
 								{ GeneralKey: '0xA73397cE0cCFdE92e7B23F3d0C462eF099E9E978' },
 							],
 						},
-					}),
+					},
 				},
 			},
 			{
@@ -157,12 +156,12 @@ describe('dedupeMultiAssets', () => {
 					Fungible: '200000000',
 				},
 				id: {
-					Concrete: mockSystemApi.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						parents: 1,
 						interior: {
 							X3: [{ Parachain: '2000' }, { PalletInstance: '50' }, { GeneralIndex: '1' }],
 						},
-					}),
+					},
 				},
 			},
 		];

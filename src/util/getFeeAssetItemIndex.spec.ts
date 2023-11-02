@@ -3,10 +3,10 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { AssetTransferApi } from '../AssetTransferApi';
+import { FungibleStrMultiAsset } from '../createXcmTypes/types';
 import { Registry } from '../registry';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
-import { FungibleStrMultiAsset } from '../types';
 import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
 
 type Test = [
@@ -30,10 +30,10 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 1,
 								interior: { Here: '' },
-							}),
+							},
 						},
 						fun: {
 							Fungible: '1000',
@@ -41,12 +41,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 0,
 								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '8' }],
 								},
-							}),
+							},
 						},
 						fun: {
 							Fungible: '2000',
@@ -62,10 +62,10 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 1,
 								interior: { Here: '' },
-							}),
+							},
 						},
 						fun: {
 							Fungible: '1000',
@@ -73,12 +73,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 0,
 								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 								},
-							}),
+							},
 						},
 						fun: {
 							Fungible: '1500',
@@ -86,12 +86,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 0,
 								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
 								},
-							}),
+							},
 						},
 						fun: {
 							Fungible: '2000',
@@ -120,10 +120,10 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 1,
 								interior: { Here: '' },
-							}),
+							},
 						},
 						fun: {
 							Fungible: '1000',
@@ -131,12 +131,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 0,
 								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '8' }],
 								},
-							}),
+							},
 						},
 						fun: {
 							Fungible: '1500',
@@ -144,12 +144,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 0,
 								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
 								},
-							}),
+							},
 						},
 						fun: {
 							Fungible: '2000',
@@ -165,10 +165,10 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 1,
 								interior: { Here: '' },
-							}),
+							},
 						},
 						fun: {
 							Fungible: '1000',
@@ -176,12 +176,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 0,
 								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '10' }],
 								},
-							}),
+							},
 						},
 						fun: {
 							Fungible: '1500',
@@ -189,12 +189,12 @@ describe('getFeeAssetItemIndex', () => {
 					},
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 0,
 								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 								},
-							}),
+							},
 						},
 						fun: {
 							Fungible: '2000',
@@ -223,12 +223,12 @@ describe('getFeeAssetItemIndex', () => {
 				[
 					{
 						id: {
-							Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+							Concrete: {
 								parents: 1,
 								interior: {
 									X2: [{ Parachain: '2125' }, { GeneralIndex: '0' }],
 								},
-							}),
+							},
 						},
 						fun: {
 							Fungible: '2000',
@@ -256,12 +256,12 @@ describe('getFeeAssetItemIndex', () => {
 		const multiAssets: FungibleStrMultiAsset[] = [
 			{
 				id: {
-					Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						parents: 0,
 						interior: {
 							X2: [{ PalletInstance: '50' }, { GeneralIndex: '1337' }],
 						},
-					}),
+					},
 				},
 				fun: {
 					Fungible: '100000000000000',
@@ -269,10 +269,10 @@ describe('getFeeAssetItemIndex', () => {
 			},
 			{
 				id: {
-					Concrete: systemAssetsApi._api.registry.createType('XcmV2MultiLocation', {
+					Concrete: {
 						parents: 1,
 						interior: { Here: '' },
-					}),
+					},
 				},
 				fun: {
 					Fungible: '100000000000000',
@@ -283,7 +283,7 @@ describe('getFeeAssetItemIndex', () => {
 		await expect(async () => {
 			await getFeeAssetItemIndex(systemAssetsApi._api, registry, paysWithFeeDest, multiAssets, specName, 2, false);
 		}).rejects.toThrowError(
-			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"x2":[{"palletInstance":50},{"generalIndex":1337}]},Here'
+			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1337"}]},{"Here":""}'
 		);
 	});
 });

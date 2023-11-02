@@ -2,7 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import { Metadata, Option, TypeRegistry } from '@polkadot/types';
-import type { Header, MultiLocation } from '@polkadot/types/interfaces';
+import type { Header } from '@polkadot/types/interfaces';
 import type {
 	PalletAssetConversionNativeOrAssetId,
 	PalletAssetConversionPoolInfo,
@@ -13,6 +13,7 @@ import { ITuple } from '@polkadot/types-codec/types';
 import { getSpecTypes } from '@polkadot/types-known';
 import BN from 'bn.js';
 
+import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { assetHubWestendV9435 } from './metadata/assetHubWestendV9435';
 import { mockSystemApi } from './mockSystemApi';
 import { mockWeightInfo } from './mockWeightInfo';
@@ -179,15 +180,16 @@ const assetsMetadata = (assetId: number | string | BN): Promise<PalletAssetsAsse
 		return mockSystemApi.registry.createType('PalletAssetsAssetMetadata', {});
 	});
 
-const foreignAsset = (asset: MultiLocation): Promise<Option<PalletAssetsAssetDetails>> =>
+const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
 		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
+		const assetsMutliLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', asset);
 		const multiLocationStr = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', JSON.parse(multiLocationStr));
 		const multiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
 		assets.set(multiLocation.toHex(), multiLocationAsset);
 
-		const maybeAsset = assets.has(asset.toHex()) ? assets.get(asset.toHex()) : undefined;
+		const maybeAsset = assets.has(assetsMutliLocation.toHex()) ? assets.get(assetsMutliLocation.toHex()) : undefined;
 
 		if (maybeAsset) {
 			return new Option(createStatemineRegistry(9435), 'PalletAssetsAssetDetails', maybeAsset);
@@ -196,9 +198,10 @@ const foreignAsset = (asset: MultiLocation): Promise<Option<PalletAssetsAssetDet
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
 	});
 
-const foreignAssetsMetadata = (assetId: MultiLocation): Promise<PalletAssetsAssetMetadata> =>
+const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAssetsAssetMetadata> =>
 	Promise.resolve().then(() => {
 		const metadata: Map<string, PalletAssetsAssetMetadata> = new Map();
+		const assetIdMultiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', assetId);
 
 		const rawTnkrMultiLocationMetadata = {
 			deposit: mockSystemApi.registry.createType('u128', 6693666633),
@@ -219,7 +222,9 @@ const foreignAssetsMetadata = (assetId: MultiLocation): Promise<PalletAssetsAsse
 		});
 		metadata.set(multiLocation.toHex(), tnkrForeignAssetMetadata);
 
-		const maybeMetadata = metadata.has(assetId.toHex()) ? metadata.get(assetId.toHex()) : undefined;
+		const maybeMetadata = metadata.has(assetIdMultiLocation.toHex())
+			? metadata.get(assetIdMultiLocation.toHex())
+			: undefined;
 
 		if (maybeMetadata) {
 			return maybeMetadata;

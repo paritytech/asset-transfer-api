@@ -2,13 +2,14 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { VersionedMultiAssets } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
+import type { XcmDestBenificiaryXcAssets } from '../../createXcmTypes/types';
+import { UnionXcAssetsMultiAssets } from '../../createXcmTypes/types';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import type { Registry } from '../../registry';
-import { XCMDestBenificiary, XcmDirection } from '../../types';
+import { XcmDirection } from '../../types';
 import type { CreateXcmCallOpts } from '../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 
@@ -50,18 +51,19 @@ export const transferMultiAssets = async (
 		weightLimit,
 	});
 
-	let assets: VersionedMultiAssets;
-	let beneficiary: XCMDestBenificiary;
+	let assets: UnionXcAssetsMultiAssets;
+	let beneficiary: XcmDestBenificiaryXcAssets;
 
 	if (
 		typeCreator.createXTokensAssets &&
 		typeCreator.createXTokensFeeAssetItem &&
 		typeCreator.createXTokensBeneficiary
 	) {
-		assets = await typeCreator.createXTokensAssets(api, amounts, xcmVersion, specName, assetIds, {
+		assets = await typeCreator.createXTokensAssets(amounts, xcmVersion, specName, assetIds, {
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
+			api,
 		});
 
 		beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);

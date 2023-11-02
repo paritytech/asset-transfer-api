@@ -1,10 +1,16 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { XcmV2Junction, XcmV3Junction } from '@polkadot/types/lookup';
-import type { ITuple } from '@polkadot/types-codec/types';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable no-case-declarations */
+import { stringToHex } from '@polkadot/util';
 import { BN } from 'bn.js';
 
-import type { FungibleObjMultiAsset, FungibleStrMultiAsset } from '../../types';
+import type {
+	FungibleObjMultiAsset,
+	FungibleStrMultiAsset,
+	XcmV2Junction,
+	XcmV3Junction,
+} from '../../createXcmTypes/types';
 import { validateNumber } from '../../validate';
 
 /**
@@ -28,19 +34,25 @@ export const sortMultiAssetsAscending = (multiAssets: FungibleStrMultiAsset[] | 
 			);
 		}
 
-		if (a.id.Concrete.parents < b.id.Concrete.parents) {
+		const aParents = (a.id.Concrete.parents || a.id.Concrete['Parents']) as string | number;
+		const bParents = (b.id.Concrete.parents || b.id.Concrete['Parents']) as string | number;
+		if (aParents < bParents) {
 			parentSortOrder = -1;
-		} else if (a.id.Concrete.parents > b.id.Concrete.parents) {
+		} else if (aParents > bParents) {
 			parentSortOrder = 1;
 		}
 
-		if (a.id.Concrete.interior.type < b.id.Concrete.interior.type) {
+		const aInterior = a.id.Concrete.interior || a.id.Concrete['Interior'];
+		const bInterior = b.id.Concrete.interior || b.id.Concrete['Interior'];
+		const aInteriorType = Object.keys(aInterior)[0];
+		const bInteriorType = Object.keys(bInterior)[0];
+		if (aInteriorType < bInteriorType) {
 			interiorMultiLocationTypeSortOrder = -1;
-		} else if (a.id.Concrete.interior.type > b.id.Concrete.interior.type) {
+		} else if (aInteriorType > bInteriorType) {
 			interiorMultiLocationTypeSortOrder = 1;
 		}
 
-		if (a.id.Concrete.interior.type === b.id.Concrete.interior.type) {
+		if (aInteriorType === bInteriorType) {
 			interiorMultiLocationSortOrder = getSameJunctionMultiLocationSortOrder(a, b);
 		}
 
@@ -54,52 +66,49 @@ const getSameJunctionMultiLocationSortOrder = (
 ): number => {
 	let sortOrder = 0;
 
-	switch (a.id.Concrete.interior.type) {
+	const aInterior = a.id.Concrete.interior || a.id.Concrete['Interior'];
+	const bInterior = b.id.Concrete.interior || b.id.Concrete['Interior'];
+	switch (Object.keys(aInterior)[0]) {
 		case 'X1':
-			if (
-				a.id.Concrete.interior.asX1.type === b.id.Concrete.interior.asX1.type &&
-				!a.id.Concrete.interior.asX1.eq(b.id.Concrete.interior.asX1)
-			) {
-				if (a.id.Concrete.interior.asX1.value < b.id.Concrete.interior.asX1.value) {
+			const aX1Type = Object.keys(aInterior.X1!)[0];
+			const bX1Type = Object.keys(bInterior.X1!)[0];
+			if (aX1Type === bX1Type && aInterior.X1 !== bInterior.X1) {
+				const aHex = stringToHex(JSON.stringify(aInterior.X1));
+				const bHex = stringToHex(JSON.stringify(bInterior.X1));
+				if (aHex < bHex) {
 					return -1;
-				} else if (a.id.Concrete.interior.asX1.value > b.id.Concrete.interior.asX1.value) {
+				} else if (aHex > bHex) {
 					return 1;
 				}
-			} else if (!a.id.Concrete.interior.asX1.eq(b.id.Concrete.interior.asX1)) {
+			} else if (aInterior.X1 !== bInterior.X1) {
 				// for junctions of different types we compare the junction values themselves
-				if (
-					MultiLocationJunctionType[a.id.Concrete.interior.asX1.type] <
-					MultiLocationJunctionType[b.id.Concrete.interior.asX1.type]
-				) {
+				if (MultiLocationJunctionType[aX1Type] < MultiLocationJunctionType[bX1Type]) {
 					return -1;
-				} else if (
-					MultiLocationJunctionType[a.id.Concrete.interior.asX1.type] >
-					MultiLocationJunctionType[b.id.Concrete.interior.asX1.type]
-				) {
+				} else if (MultiLocationJunctionType[aX1Type] > MultiLocationJunctionType[bX1Type]) {
 					return 1;
 				}
 			}
 			break;
 		case 'X2':
-			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX2, b.id.Concrete.interior.asX2);
+			sortOrder = getSortOrderForX2ThroughX8(aInterior.X2!, bInterior.X2!);
 			break;
 		case 'X3':
-			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX3, b.id.Concrete.interior.asX3);
+			sortOrder = getSortOrderForX2ThroughX8(aInterior.X3!, bInterior.X3!);
 			break;
 		case 'X4':
-			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX4, b.id.Concrete.interior.asX4);
+			sortOrder = getSortOrderForX2ThroughX8(aInterior.X4!, bInterior.X4!);
 			break;
 		case 'X5':
-			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX5, b.id.Concrete.interior.asX5);
+			sortOrder = getSortOrderForX2ThroughX8(aInterior.X5!, bInterior.X5!);
 			break;
 		case 'X6':
-			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX6, b.id.Concrete.interior.asX6);
+			sortOrder = getSortOrderForX2ThroughX8(aInterior.X6!, bInterior.X6!);
 			break;
 		case 'X7':
-			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX7, b.id.Concrete.interior.asX7);
+			sortOrder = getSortOrderForX2ThroughX8(aInterior.X7!, bInterior.X7!);
 			break;
 		case 'X8':
-			sortOrder = getSortOrderForX2ThroughX8(a.id.Concrete.interior.asX8, b.id.Concrete.interior.asX8);
+			sortOrder = getSortOrderForX2ThroughX8(aInterior.X8!, bInterior.X8!);
 	}
 
 	return sortOrder;
@@ -138,39 +147,45 @@ enum MultiLocationJunctionType {
 	GlobalConsensus,
 }
 
-const getSortOrderForX2ThroughX8 = (a: ITuple<MultiLocationJunctions>, b: ITuple<MultiLocationJunctions>): number => {
+const getSortOrderForX2ThroughX8 = (a: MultiLocationJunctions, b: MultiLocationJunctions): number => {
 	for (let i = 0; i < a.length; i++) {
 		const junctionA = a[i];
 		const junctionB = b[i];
+		const junctionAType = Object.keys(junctionA)[0];
+		const junctionBType = Object.keys(junctionB)[0];
 
 		// if the junctions are the same type but not equal
 		// we compare the inner values in order to determine sort order
-		if (junctionA.type === junctionB.type && !junctionA.eq(junctionB)) {
-			const junctionAIsValidInt = validateNumber(junctionA.value.toString());
-			const junctionBIsValidInt = validateNumber(junctionB.value.toString());
+		if (junctionAType === junctionBType && junctionA !== junctionB) {
+			const junctionAValue = Object.values(junctionA)[0];
+			const junctionBValue = Object.values(junctionB)[0];
+			const junctionAIsValidInt = validateNumber(junctionAValue as string);
+			const junctionBIsValidInt = validateNumber(junctionBValue as string);
 
 			// compare number values if both junction values are valid integers
 			// otherwise compare the lexicographical values
 			if (junctionAIsValidInt && junctionBIsValidInt) {
-				const junctionAValueAsBN = new BN(Number.parseInt(junctionA.value.toString()));
-				const junctionBValueAsBN = new BN(Number.parseInt(junctionB.value.toString()));
+				const junctionAValueAsBN = new BN(Number.parseInt(junctionAValue as string));
+				const junctionBValueAsBN = new BN(Number.parseInt(junctionBValue as string));
 				if (junctionAValueAsBN.lt(junctionBValueAsBN)) {
 					return -1;
 				} else if (junctionAValueAsBN.gt(junctionBValueAsBN)) {
 					return 1;
 				}
 			} else {
-				if (junctionA.value < junctionB.value) {
+				const aHex = stringToHex(JSON.stringify(junctionA));
+				const bHex = stringToHex(JSON.stringify(junctionB));
+				if (aHex < bHex) {
 					return -1;
-				} else if (junctionA.value > junctionB.value) {
+				} else if (aHex > bHex) {
 					return 1;
 				}
 			}
-		} else if (!junctionA.eq(junctionB)) {
+		} else if (junctionA !== junctionB) {
 			// for junctions of different types we compare the junction values themselves
-			if (MultiLocationJunctionType[junctionA.type] < MultiLocationJunctionType[junctionB.type]) {
+			if (MultiLocationJunctionType[junctionAType] < MultiLocationJunctionType[junctionBType]) {
 				return -1;
-			} else if (MultiLocationJunctionType[junctionA.type] > MultiLocationJunctionType[junctionB.type]) {
+			} else if (MultiLocationJunctionType[junctionAType] > MultiLocationJunctionType[junctionBType]) {
 				return 1;
 			}
 		}

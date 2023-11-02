@@ -1,9 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
-import { UnionXcmMultiLocation } from '../../types';
+import { UnionXcmMultiLocation } from '../../createXcmTypes/types';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation';
 
 /**
@@ -16,13 +15,12 @@ import { resolveMultiLocation } from '../../util/resolveMultiLocation';
  * @returns
  */
 export const constructForeignAssetMultiLocationFromAssetId = (
-	api: ApiPromise,
 	multiLocationAssetId: string,
 	foreignAssetsPalletInstance: string,
 	xcmVersion: number
 ): UnionXcmMultiLocation => {
 	const numberOfAdditionalJunctions = 1;
-	const assetIdMultiLocation = resolveMultiLocation(api, multiLocationAssetId, xcmVersion);
+	const assetIdMultiLocation = resolveMultiLocation(multiLocationAssetId, xcmVersion);
 
 	// start of the junctions values of the assetId. + 1 to ignore the '['
 	const junctionsStartIndex = multiLocationAssetId.indexOf('[');
@@ -38,9 +36,10 @@ export const constructForeignAssetMultiLocationFromAssetId = (
 	const palletInstanceJunctionStr = `{"PalletInstance":"${foreignAssetsPalletInstance}"},`;
 	const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
 	const multiLocation = {
-		parents: assetIdMultiLocation.parents.toNumber(),
+		// Since sanitizeKeys is run in resolveMultiLocation Parents will always be capitalized
+		parents: assetIdMultiLocation['Parents'] as string | number,
 		interior: JSON.parse(interiorMultiLocationStr) as AnyJson,
 	};
 
-	return resolveMultiLocation(api, multiLocation, xcmVersion);
+	return resolveMultiLocation(multiLocation, xcmVersion);
 };

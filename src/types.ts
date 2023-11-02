@@ -3,7 +3,6 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
-import type { XcmV2MultiLocation, XcmV3MultiLocation } from '@polkadot/types/lookup';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
@@ -18,6 +17,8 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclu
 	{
 		[K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
 	}[Keys];
+
+export type AnyObj = { [x: string]: unknown };
 
 /**
  * Represents all possible tx directions
@@ -232,24 +233,6 @@ export interface ChainInfo {
 	specVersion: string;
 }
 
-export type FungibleStrMultiAsset = {
-	fun: {
-		Fungible: string;
-	};
-	id: {
-		Concrete: UnionXcmMultiLocation;
-	};
-};
-
-export type FungibleObjMultiAsset = {
-	fun: {
-		Fungible: { Fungible: string };
-	};
-	id: {
-		Concrete: UnionXcmMultiLocation;
-	};
-};
-
 /**
  * @hidden
  */
@@ -326,117 +309,6 @@ export interface LocalTarget {
 	Id: string;
 }
 
-export interface XCMV2DestBenificiary {
-	V2: {
-		parents: string | number;
-		interior: {
-			X1: { AccountId32: { id: string } };
-		};
-	};
-}
-
-export interface XCMV3DestBenificiary {
-	V3: {
-		parents: string | number;
-		interior: {
-			X1: { AccountId32: { id: string } };
-		};
-	};
-}
-
-export interface XCMV2ParachainDestBenificiary {
-	V2: {
-		parents: string | number;
-		interior: {
-			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
-		};
-	};
-}
-
-export interface XCMV3ParachainDestBenificiary {
-	V3: {
-		parents: string | number;
-		interior: {
-			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
-		};
-	};
-}
-
-export type XCMDestBenificiary =
-	| XCMV3DestBenificiary
-	| XCMV2DestBenificiary
-	| XCMV2ParachainDestBenificiary
-	| XCMV3ParachainDestBenificiary;
-
-export interface IXcmV2MultiAsset {
-	V2: {
-		id: {
-			Concrete: UnionXcmMultiLocation;
-		};
-		fun: {
-			Fungible: { Fungible: number | string };
-		};
-	};
-}
-export interface IXcmV3MultiAsset {
-	V3: {
-		id: {
-			Concrete: UnionXcmMultiLocation;
-		};
-		fun: {
-			Fungible: { Fungible: number | string };
-		};
-	};
-}
-
-export type XcmVersionedMultiAsset = IXcmV2MultiAsset | IXcmV3MultiAsset;
-
-export interface VersionedXcmV2MultiLocation {
-	V2: {
-		id: {
-			Concrete: UnionXcmMultiLocation;
-		};
-	};
-}
-export interface VersionedXcmV3MultiLocation {
-	V3: {
-		id: {
-			Concrete: UnionXcmMultiLocation;
-		};
-	};
-}
-
-export type XcmMultiLocation = VersionedXcmV2MultiLocation | VersionedXcmV3MultiLocation;
-
-export interface XcmWeightUnlimited {
-	Unlimited: null | undefined;
-}
-
-export interface XcmWeightLimited {
-	Limited: {
-		refTime: string;
-		proofSize: string;
-	};
-}
-
-export type XcmWeight = XcmWeightUnlimited | XcmWeightLimited;
-
-export interface Args {
-	dest?: LocalDest;
-	beneficiary?: XCMDestBenificiary;
-	target?: LocalTarget;
-}
-
-export interface Method {
-	args: Args;
-	method: string;
-	section: string;
-}
-export interface SubmittableMethodData {
-	isSigned: boolean;
-	method: Method;
-}
-
 export type AssetInfo = {
 	id: string;
 	symbol: string;
@@ -454,5 +326,3 @@ export type AssetMetadata = {
 	decimals: string;
 	isFrozen: boolean;
 };
-
-export type UnionXcmMultiLocation = XcmV3MultiLocation | XcmV2MultiLocation;

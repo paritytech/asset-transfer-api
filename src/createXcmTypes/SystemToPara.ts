@@ -2,23 +2,27 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { u32 } from '@polkadot/types';
-import type { MultiAssetsV2, VersionedMultiAssets, WeightLimitV2 } from '@polkadot/types/interfaces';
-import type { XcmV3MultiassetMultiAssets } from '@polkadot/types/lookup';
+import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
-import { FungibleStrMultiAsset, UnionXcmMultiLocation } from '../types';
+import type { RequireOnlyOne } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { validateNumber } from '../validate';
-import {
+import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	CreateWeightLimitOpts,
+	FungibleStrMultiAsset,
 	ICreateXcmType,
 	IWeightLimit,
-	XcmBase,
+	UnionXcmMultiAssets,
+	UnionXcmMultiLocation,
+	XcmDestBenificiary,
+	XcmV2Junctions,
+	XcmV3Junctions,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
@@ -35,7 +39,7 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createBeneficiary: (accountId: string, xcmVersion?: number): XcmBase => {
+	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion == 2) {
 			const X1 = isEthereumAddress(accountId)
 				? { AccountKey20: { network: 'Any', key: accountId } }
@@ -68,7 +72,7 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (destId: string, xcmVersion?: number): XcmBase => {
+	createDest: (destId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -105,14 +109,13 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param xcmVersion
 	 */
 	createAssets: async (
-		api: ApiPromise,
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts
-	): Promise<VersionedMultiAssets> => {
-		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
+	): Promise<UnionXcmMultiAssets> => {
+		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
 		const sortedAndDedupedMultiAssets = await createSystemToParaMultiAssets(
 			api,
 			amounts,
@@ -125,27 +128,13 @@ export const SystemToPara: ICreateXcmType = {
 		);
 
 		if (xcmVersion === 2) {
-			const multiAssetsType: MultiAssetsV2 = api.registry.createType(
-				'XcmV2MultiassetMultiAssets',
-				sortedAndDedupedMultiAssets
-			);
-
-			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V2: multiAssetsType,
-				})
-			);
+			return Promise.resolve({
+				V2: sortedAndDedupedMultiAssets,
+			});
 		} else {
-			const multiAssetsType: XcmV3MultiassetMultiAssets = api.registry.createType(
-				'XcmV3MultiassetMultiAssets',
-				sortedAndDedupedMultiAssets
-			);
-
-			return Promise.resolve(
-				api.registry.createType('XcmVersionedMultiAssets', {
-					V3: multiAssetsType,
-				})
-			);
+			return Promise.resolve({
+				V3: sortedAndDedupedMultiAssets,
+			});
 		}
 	},
 	/**
@@ -274,19 +263,19 @@ export const createSystemToParaMultiAssets = async (
 		let concreteMultiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(api, assetId, palletId, xcmVersion);
+			concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(assetId, palletId, xcmVersion);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
-			const interior = isRelayNative
+			const interior: RequireOnlyOne<XcmV3Junctions | XcmV2Junctions> = isRelayNative
 				? { Here: '' }
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 				  };
 
-			concreteMultiLocation = api.registry.createType('XcmV2MultiLocation', {
+			concreteMultiLocation = {
 				parents,
 				interior,
-			});
+			};
 		}
 
 		const multiAsset = {

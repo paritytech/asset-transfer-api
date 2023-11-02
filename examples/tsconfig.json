@@ -3,6 +3,19 @@
     "compilerOptions": {
         "baseUrl": ".",
         "outDir": "build",
+        "suppressImplicitAnyIndexErrors": true,
         "resolveJsonModule": true,
+        "esModuleInterop": true,
     },
+    "typeRoots": [
+        "../node_modules/@types"
+      ],
+      "exclude": [
+        "node_modules"
+      ],
+      "include": [
+        "./*",
+        "../src/**/*.ts",
+        "../src/**/*.json",
+      ]
 }
