@@ -1,8 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { u32 } from '@polkadot/types';
-import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
@@ -17,12 +15,12 @@ import {
 	CreateWeightLimitOpts,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
-	IWeightLimit,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmDestBenificiary,
 	XcmV2Junctions,
 	XcmV3Junctions,
+	XcmWeight,
 } from './types';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
@@ -139,18 +137,15 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
-		const limit: IWeightLimit =
-			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-				? {
-						Limited: {
-							refTime: opts.weightLimit?.refTime,
-							proofSize: opts.weightLimit?.proofSize,
-						},
-				  }
-				: { Unlimited: null };
-
-		return api.registry.createType('XcmV3WeightLimit', limit);
+	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
+		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
+			? {
+					Limited: {
+						refTime: opts.weightLimit?.refTime,
+						proofSize: opts.weightLimit?.proofSize,
+					},
+			  }
+			: { Unlimited: null };
 	},
 
 	/**
@@ -164,7 +159,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
+	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const {
 			registry,
 			paysWithFeeDest,
@@ -206,10 +201,10 @@ export const SystemToSystem: ICreateXcmType = {
 				opts.isForeignAssetsTransfer
 			);
 
-			return api.registry.createType('u32', assetIndex);
+			return assetIndex;
 		}
 
-		return api.registry.createType('u32', 0);
+		return 0;
 	},
 };
 

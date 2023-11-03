@@ -49,7 +49,7 @@ export const limitedTeleportAssets = async (
 		isLiquidTokenTransfer: false,
 		api,
 	});
-	const weightLimitType = typeCreator.createWeightLimit(api, {
+	const weightLimitType = typeCreator.createWeightLimit({
 		isLimited,
 		weightLimit,
 	});
@@ -60,7 +60,7 @@ export const limitedTeleportAssets = async (
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: false,
 		  })
-		: api.registry.createType('u32', 0);
+		: 0;
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);
 };

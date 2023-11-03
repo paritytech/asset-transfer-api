@@ -262,25 +262,25 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
-			const weightLimit = SystemToPara.createWeightLimit(mockSystemApi, {
+			const weightLimit = SystemToPara.createWeightLimit({
 				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
 				},
 			});
-			expect(weightLimit.toJSON()).toStrictEqual({
-				limited: {
-					refTime: 100000000,
-					proofSize: 1000,
+			expect(weightLimit).toStrictEqual({
+				Limited: {
+					refTime: '100000000',
+					proofSize: '1000',
 				},
 			});
 		});
 		it('Should work when isLimited is falsy', () => {
-			const weightLimit = SystemToPara.createWeightLimit(mockSystemApi, {});
+			const weightLimit = SystemToPara.createWeightLimit({});
 
-			expect(weightLimit.toJSON()).toStrictEqual({
-				unlimited: null,
+			expect(weightLimit).toStrictEqual({
+				Unlimited: null,
 			});
 		});
 	});

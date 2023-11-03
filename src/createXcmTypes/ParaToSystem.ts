@@ -1,8 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import type { u32 } from '@polkadot/types';
-import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { AnyJson } from '@polkadot/types/types';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
@@ -20,7 +18,6 @@ import type {
 	FungibleObjMultiAsset,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
-	IWeightLimit,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
@@ -28,6 +25,7 @@ import type {
 	XcmDestBenificiary,
 	XcmDestBenificiaryXcAssets,
 	XcmV3MultiLocation,
+	XcmWeight,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
@@ -142,18 +140,15 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
-		const limit: IWeightLimit =
-			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-				? {
-						Limited: {
-							refTime: opts.weightLimit.refTime,
-							proofSize: opts.weightLimit.proofSize,
-						},
-				  }
-				: { Unlimited: null };
-
-		return api.registry.createType('XcmV3WeightLimit', limit);
+	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
+		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
+			? {
+					Limited: {
+						refTime: opts.weightLimit.refTime,
+						proofSize: opts.weightLimit.proofSize,
+					},
+			  }
+			: { Unlimited: null };
 	},
 	/**
 	 * returns the correct feeAssetItem based on XCM direction.
@@ -166,7 +161,7 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
+	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion } = opts;
 		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createParaToSystemMultiAssets(
@@ -189,10 +184,10 @@ export const ParaToSystem: ICreateXcmType = {
 				opts.isForeignAssetsTransfer
 			);
 
-			return api.registry.createType('u32', assetIndex);
+			return assetIndex;
 		}
 
-		return api.registry.createType('u32', 0);
+		return 0;
 	},
 	createXTokensBeneficiary: (
 		destChainId: string,

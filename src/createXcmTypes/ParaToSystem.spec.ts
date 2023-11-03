@@ -189,25 +189,25 @@ describe('ParaToSystem', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
-			const weightLimit = ParaToSystem.createWeightLimit(mockParachainApi, {
+			const weightLimit = ParaToSystem.createWeightLimit({
 				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
 				},
 			});
-			expect(weightLimit.toJSON()).toStrictEqual({
-				limited: {
-					proofSize: 1000,
-					refTime: 100000000,
+			expect(weightLimit).toStrictEqual({
+				Limited: {
+					proofSize: '1000',
+					refTime: '100000000',
 				},
 			});
 		});
 		it('Should work when isLimited is falsy', () => {
-			const weightLimit = ParaToSystem.createWeightLimit(mockParachainApi, {});
+			const weightLimit = ParaToSystem.createWeightLimit({});
 
-			expect(weightLimit.toJSON()).toStrictEqual({
-				unlimited: null,
+			expect(weightLimit).toStrictEqual({
+				Unlimited: null,
 			});
 		});
 	});

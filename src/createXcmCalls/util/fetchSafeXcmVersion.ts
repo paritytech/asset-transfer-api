@@ -12,10 +12,10 @@ import { establishXcmPallet } from './establishXcmPallet';
  *
  * @param api ApiPromise
  */
-export const fetchSafeXcmVersion = async (api: ApiPromise): Promise<u32> => {
+export const fetchSafeXcmVersion = async (api: ApiPromise): Promise<number> => {
 	const pallet = establishXcmPallet(api);
 	const safeVersion = await api.query[pallet].safeXcmVersion<Option<u32>>();
-	const version = safeVersion.isSome ? safeVersion.unwrap() : api.registry.createType('u32', DEFAULT_XCM_VERSION);
+	const version = safeVersion.isSome ? safeVersion.unwrap().toNumber() : DEFAULT_XCM_VERSION;
 
 	return version;
 };

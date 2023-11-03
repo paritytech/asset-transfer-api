@@ -50,6 +50,6 @@ export const constructApiPromise = async (wsUrl: string, opts: ApiOptions = {}):
 	return {
 		api,
 		specName: specName.toString(),
-		safeXcmVersion: safeXcmVersion.toNumber(),
+		safeXcmVersion: safeXcmVersion,
 	};
 };

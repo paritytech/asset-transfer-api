@@ -43,7 +43,7 @@ export const transferMultiAsset = async (
 	const { isLimited, weightLimit, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
 	const ext = api.tx[xcmPallet].transferMultiasset;
 	const typeCreator = createXcmTypes[direction];
-	const destWeightLimit = typeCreator.createWeightLimit(api, {
+	const destWeightLimit = typeCreator.createWeightLimit({
 		isLimited,
 		weightLimit,
 	});
