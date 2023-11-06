@@ -10,6 +10,7 @@
     "start": "node ./lib/index.js",
     "start:zombienet-post-script": "yarn build:scripts && node ./scripts/build/testNetworkSetup.js",
     "start:zombienet-foreign-assets-script": "yarn build:scripts && node ./scripts/build/testNetworkForeignAssets.js",
+    "start:zombienet-liquidity-assets-script": "yarn build:scripts && node ./scripts/build/testNetworkLiquidAssets.js",
     "lint": "substrate-dev-run-lint",
     "lint:fix": "substrate-dev-run-lint --fix",
     "test": "NODE_ENV=test substrate-exec-jest --detectOpenHandles",
