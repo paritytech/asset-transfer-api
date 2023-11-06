@@ -536,64 +536,88 @@ export const checkParaAssets = async (
 	const currentRelayChainSpecName = registry.relayChain;
 	const isValidInt = validateNumber(assetId);
 	const paraId = registry.lookupChainIdBySpecName(specName);
-
-	if (isValidInt) {
-		if (!registry.cacheLookupAsset(assetId)) {
-			// query the parachains assets pallet to see if it has a value matching the assetId
-			const asset = await api.query.assets.asset(assetId);
-
-			if (asset.isNone) {
-				throw new BaseError(
-					`(${xcmDirection}) integer assetId ${assetId} not found in ${specName}`,
-					BaseErrorsEnum.AssetNotFound
-				);
-			} else {
-				const assetSymbol = (await api.query.assets.metadata(assetId)).symbol.toHuman()?.toString();
-				const assetStr = assetSymbol as string;
-				// store xcAsset in registry cache
-				registry.setAssetInCache(assetId, assetStr);
+	if (api.query.assets) {
+		if (isValidInt) {
+			if (!registry.cacheLookupAsset(assetId)) {
+				// query the parachains assets pallet to see if it has a value matching the assetId
+				const asset = await api.query.assets.asset(assetId);
+	
+				if (asset.isNone) {
+					throw new BaseError(
+						`(${xcmDirection}) integer assetId ${assetId} not found in ${specName}`,
+						BaseErrorsEnum.AssetNotFound
+					);
+				} else {
+					const assetSymbol = (await api.query.assets.metadata(assetId)).symbol.toHuman()?.toString();
+					const assetStr = assetSymbol as string;
+					// store xcAsset in registry cache
+					registry.setAssetInCache(assetId, assetStr);
+				}
 			}
-		}
-
-		// Below checks when the asset exists on chain but not in our xcAssets registry.
-		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
-
-		if (!paraXcAssets || paraXcAssets.length === 0) {
+	
+			// Below checks when the asset exists on chain but not in our xcAssets registry.
+			const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
+	
+			if (!paraXcAssets || paraXcAssets.length === 0) {
+				throw new BaseError(
+					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
+					BaseErrorsEnum.InvalidPallet
+				);
+			}
+	
+			for (const info of paraXcAssets) {
+				if (typeof info.asset === 'string' && info.asset === assetId) {
+					return;
+				}
+			}
+	
+			throw new BaseError(`unable to identify xcAsset with ID ${assetId}`, BaseErrorsEnum.AssetNotFound);
+		} else {
+			// not a valid number
+			// check if id is a valid token symbol of the parachain chain
+			const parachainAssets = await api.query.assets.asset.entries();
+	
+			for (let i = 0; i < parachainAssets.length; i++) {
+				const parachainAsset = parachainAssets[i];
+				const id = parachainAsset[0].args[0];
+	
+				const metadata = await api.query.assets.metadata(id);
+				const symbol = metadata.symbol.toHuman()?.toString();
+				if (symbol && symbol.toLowerCase() === assetId.toLowerCase()) {
+					// store in registry cache
+					registry.setAssetInCache(id.toString(), symbol);
+					return;
+				}
+			}
+	
+			// not an asset native to the Parachain
+			// check xcAsset registry for the symbol
+			const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
+	
+			if (!paraXcAssets || paraXcAssets.length === 0) {
+				throw new BaseError(
+					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
+					BaseErrorsEnum.InvalidPallet
+				);
+			}
+	
+			for (const info of paraXcAssets) {
+				if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
+					return;
+				}
+			}
+	
+			// if no native token for the parachain was matched, throw an error
 			throw new BaseError(
-				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
-				BaseErrorsEnum.InvalidPallet
+				`(${xcmDirection}) symbol assetId ${assetId} not found for parachain ${specName}`,
+				BaseErrorsEnum.AssetNotFound
 			);
 		}
-
-		for (const info of paraXcAssets) {
-			if (typeof info.asset === 'string' && info.asset === assetId) {
-				return;
-			}
-		}
-
-		throw new BaseError(`unable to identify xcAsset with ID ${assetId}`, BaseErrorsEnum.AssetNotFound);
 	} else {
-		// not a valid number
-		// check if id is a valid token symbol of the parachain chain
-		const parachainAssets = await api.query.assets.asset.entries();
-
-		for (let i = 0; i < parachainAssets.length; i++) {
-			const parachainAsset = parachainAssets[i];
-			const id = parachainAsset[0].args[0];
-
-			const metadata = await api.query.assets.metadata(id);
-			const symbol = metadata.symbol.toHuman()?.toString();
-			if (symbol && symbol.toLowerCase() === assetId.toLowerCase()) {
-				// store in registry cache
-				registry.setAssetInCache(id.toString(), symbol);
-				return;
-			}
-		}
-
-		// not an asset native to the Parachain
-		// check xcAsset registry for the symbol
+		// Parachain doesn't support pallet assets
+		// check for assetId in registry
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
-
+	
 		if (!paraXcAssets || paraXcAssets.length === 0) {
 			throw new BaseError(
 				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
