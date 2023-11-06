@@ -2,6 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
+import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
@@ -44,21 +45,27 @@ export const ParaToPara: ICreateXcmType = {
 	 */
 	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion == 2) {
+			const X1 = isEthereumAddress(accountId)
+				? { AccountKey20: { network: 'Any', key: accountId } }
+				: { AccountId32: { network: 'Any', id: accountId } };
+
 			return {
 				V2: {
 					parents: 0,
 					interior: {
-						X1: { AccountId32: { network: 'Any', id: accountId } },
+						X1,
 					},
 				},
 			};
 		}
 
+		const X1 = isEthereumAddress(accountId) ? { AccountKey20: { key: accountId } } : { AccountId32: { id: accountId } };
+
 		return {
 			V3: {
 				parents: 0,
 				interior: {
-					X1: { AccountId32: { id: accountId } },
+					X1,
 				},
 			},
 		};
