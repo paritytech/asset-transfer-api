@@ -1,8 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
+import type { u32 } from '@polkadot/types';
+import type { WeightLimitV2 } from '@polkadot/types/interfaces';
 import type { AnyJson } from '@polkadot/types/types';
-import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
@@ -19,6 +20,7 @@ import type {
 	FungibleObjMultiAsset,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
+	IWeightLimit,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
@@ -26,7 +28,6 @@ import type {
 	XcmDestBenificiary,
 	XcmDestBenificiaryXcAssets,
 	XcmV3MultiLocation,
-	XcmWeight,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
@@ -45,27 +46,21 @@ export const ParaToSystem: ICreateXcmType = {
 	 */
 	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion == 2) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { network: 'Any', key: accountId } }
-				: { AccountId32: { network: 'Any', id: accountId } };
-
 			return {
 				V2: {
 					parents: 0,
 					interior: {
-						X1,
+						X1: { AccountId32: { network: 'Any', id: accountId } },
 					},
 				},
 			};
 		}
 
-		const X1 = isEthereumAddress(accountId) ? { AccountKey20: { key: accountId } } : { AccountId32: { id: accountId } };
-
 		return {
 			V3: {
 				parents: 0,
 				interior: {
-					X1,
+					X1: { AccountId32: { id: accountId } },
 				},
 			},
 		};
@@ -147,15 +142,18 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @param refTime amount of computation time
 	 * @param proofSize amount of storage to be used
 	 */
-	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-			? {
-					Limited: {
-						refTime: opts.weightLimit.refTime,
-						proofSize: opts.weightLimit.proofSize,
-					},
-			  }
-			: { Unlimited: null };
+	createWeightLimit: (api: ApiPromise, opts: CreateWeightLimitOpts): WeightLimitV2 => {
+		const limit: IWeightLimit =
+			opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
+				? {
+						Limited: {
+							refTime: opts.weightLimit.refTime,
+							proofSize: opts.weightLimit.proofSize,
+						},
+				  }
+				: { Unlimited: null };
+
+		return api.registry.createType('XcmV3WeightLimit', limit);
 	},
 	/**
 	 * returns the correct feeAssetItem based on XCM direction.
@@ -168,7 +166,7 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @xcmVersion number
 	 *
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
+	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<u32> => {
 		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion } = opts;
 		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createParaToSystemMultiAssets(
@@ -191,10 +189,10 @@ export const ParaToSystem: ICreateXcmType = {
 				opts.isForeignAssetsTransfer
 			);
 
-			return assetIndex;
+			return api.registry.createType('u32', assetIndex);
 		}
 
-		return 0;
+		return api.registry.createType('u32', 0);
 	},
 	createXTokensBeneficiary: (
 		destChainId: string,
