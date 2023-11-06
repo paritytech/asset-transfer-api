@@ -43,13 +43,13 @@ const mintCall = (api: ApiPromise, to: KeyringPair, amount: number) => {
 
 const createLiquidityPoolCall = (api: ApiPromise) => {
 	// For now, we have to override the types of the Assets until PJS is updated
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
 	return api.tx.assetConversion.createPool(<any>native, <any>asset);
 };
 
 const addLiquidityCall = (api: ApiPromise, amountNative: number, amountAsset: number, to: KeyringPair) => {
 	// For now, we have to override the types of the Assets until PJS is updated
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
 	return api.tx.assetConversion.addLiquidity(<any>native, <any>asset, amountNative, amountAsset, 0, 0, to.address);
 };
 
