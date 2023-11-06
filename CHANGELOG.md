@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.1.3](https://github.com/paritytech/asset-transfer-api/compare/v0.1.2..v0.1.3)(2023-11-07)
+
+## Features
+
+- feat: support para to para xcm tx construction
+
+## Fix
+
+- fix: sorting bug for ascending assets
+- fix: add Ethereum address check in createBeneficiary for ParaToPara direction
+- fix(internal): refactor dest and beneficiary types generators
+- fix(internal): Refactor multiassets creation, and xcm types
+- fix(internal): refactor all weight limits to not use createType
+- fix(internal): remove createType(Call) where applicable
+- fix(registry): update asset-registry to inlcude extra foreign assets
+
+## Test
+
+- test: add foreign assets script to test network
+- test: add liquid assets script to test network
+- test: fix jest tests running twice
+
+## Docs
+
+- docs: update the README with corrections
+
+## Chore
+
+- chore: chore(yarn): bump yarn to 3.6.2
+- chore: bump actions/setup-node from 3 to 4
+
 ## [0.1.2](https://github.com/paritytech/asset-transfer-api/compare/v0.1.1..v0.1.2)(2023-09-26)
 
 ## Fix
