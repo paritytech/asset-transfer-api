@@ -634,7 +634,6 @@ export class AssetTransferApi {
 		origin: string,
 		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string }
 	): Promise<TxResult<T>> {
-		const { _api } = this;
 		const { format, paysWithFeeOrigin, sendersAddr } = opts;
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
@@ -648,12 +647,7 @@ export class AssetTransferApi {
 		};
 
 		if (fmt === 'call') {
-			result.tx = _api.registry
-				.createType('Call', {
-					callIndex: tx.callIndex,
-					args: tx.args,
-				})
-				.toHex() as ConstructedFormat<T>;
+			result.tx = tx.method.toHex() as ConstructedFormat<T>;
 		}
 
 		if (fmt === 'submittable') {
@@ -840,7 +834,7 @@ export class AssetTransferApi {
 
 		const lastHeader = await this._api.rpc.chain.getHeader();
 		const blockNumber = this._api.registry.createType('BlockNumber', lastHeader.number.toNumber());
-		const method = this._api.registry.createType('Call', tx);
+		const method = tx.method;
 		const era = this._api.registry.createType('ExtrinsicEra', {
 			current: lastHeader.number.toNumber(),
 			period: 64,
