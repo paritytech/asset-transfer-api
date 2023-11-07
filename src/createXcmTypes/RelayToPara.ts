@@ -17,7 +17,7 @@ import {
  */
 export const RelayToPara: ICreateXcmType = {
 	/**
-	 * Create a XcmVersionedMultiLocation type for a beneficiary.
+	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
 	 *
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
@@ -49,7 +49,7 @@ export const RelayToPara: ICreateXcmType = {
 		};
 	},
 	/**
-	 * Create a XcmVersionedMultiLocation type for a destination.
+	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
@@ -80,7 +80,7 @@ export const RelayToPara: ICreateXcmType = {
 		};
 	},
 	/**
-	 * Create a VersionedMultiAsset type.
+	 * Create a VersionedMultiAsset structured type.
 	 *
 	 * @param amounts The amount for a relay native asset. The length will always be one.
 	 * @param xcmVersion The accepted xcm version.
