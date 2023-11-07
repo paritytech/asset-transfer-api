@@ -8,6 +8,7 @@
 
 ## Fix
 
+- fix: xtokens and xTokens naming for ParaTo*
 - fix: sorting bug for ascending assets
 - fix: add Ethereum address check in createBeneficiary for ParaToPara direction
 - fix(internal): refactor dest and beneficiary types generators
