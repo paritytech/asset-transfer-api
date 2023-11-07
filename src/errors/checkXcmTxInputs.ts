@@ -128,7 +128,7 @@ export const CheckXTokensPalletOriginIsNonForeignAssetTx = (
 	xcmPallet: XcmPalletName,
 	isForeignAssetsTransfer: boolean
 ) => {
-	if (xcmPallet === XcmPalletName.xTokens && isForeignAssetsTransfer) {
+	if ((xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens) && isForeignAssetsTransfer) {
 		throw new BaseError(
 			`(${xcmDirection}) xTokens pallet does not support foreign asset transfers`,
 			BaseErrorsEnum.InvalidPallet
