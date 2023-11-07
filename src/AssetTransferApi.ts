@@ -599,8 +599,6 @@ export class AssetTransferApi {
 		 * Check if the origin is a Parachain or Parathread
 		 */
 		if (originIsParachain && destIsRelayChain) {
-			throw new BaseError('ParaToRelay is not yet implemented', BaseErrorsEnum.NotImplemented);
-
 			return Direction.ParaToRelay;
 		}
 
