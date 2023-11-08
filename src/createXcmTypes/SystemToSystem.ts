@@ -31,10 +31,10 @@ import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const SystemToSystem: ICreateXcmType = {
 	/**
-	 * Create a XcmVersionedMultiLocation type for a beneficiary.
+	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
 	 *
-	 * @param accountId The accountId of the beneficiary
-	 * @param xcmVersion The accepted xcm version
+	 * @param accountId The accountId of the beneficiary.
+	 * @param xcmVersion The accepted xcm version.
 	 */
 	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion == 2) {
@@ -58,10 +58,10 @@ export const SystemToSystem: ICreateXcmType = {
 		};
 	},
 	/**
-	 * Create a XcmVersionedMultiLocation type for a destination.
+	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
-	 * @param destId The parachain Id of the destination
-	 * @param xcmVersion The accepted xcm version
+	 * @param destId The parachain Id of the destination.
+	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (destId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
@@ -76,7 +76,6 @@ export const SystemToSystem: ICreateXcmType = {
 				},
 			};
 		}
-
 		/**
 		 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
 		 * from a system parachain to a sovereign parachain.
@@ -93,11 +92,13 @@ export const SystemToSystem: ICreateXcmType = {
 		};
 	},
 	/**
-	 * Create a VersionedMultiAsset type.
+	 * Create a VersionedMultiAsset structured type.
 	 *
-	 * @param assets
-	 * @param amounts
-	 * @param xcmVersion
+	 * @param amounts Amount per asset. It will match the `assets` length.
+	 * @param xcmVersion The accepted xcm version.
+	 * @param specName The specname of the chain the api is connected to.
+	 * @param assets The assets to create into xcm `MultiAssets`.
+	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
 	createAssets: async (
 		amounts: string[],
@@ -130,12 +131,9 @@ export const SystemToSystem: ICreateXcmType = {
 		}
 	},
 	/**
-	 * Create an XcmV3WeightLimit type.
+	 * Create an Xcm WeightLimit structured type.
 	 *
-	 * @param api ApiPromise
-	 * @param isLimited Whether the tx is limited
-	 * @param refTime amount of computation time
-	 * @param proofSize amount of storage to be used
+	 * @param opts Options that are used for WeightLimit.
 	 */
 	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
 		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
@@ -147,17 +145,11 @@ export const SystemToSystem: ICreateXcmType = {
 			  }
 			: { Unlimited: null };
 	},
-
 	/**
-	 * returns the correct feeAssetItem based on XCM direction.
+	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
 	 * @param api ApiPromise
-	 * @param paysWithFeeDest string
-	 * @param specName string
-	 * @param assetIds string[]
-	 * @param amounts string[]
-	 * @xcmVersion number
-	 *
+	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const {
@@ -209,13 +201,16 @@ export const SystemToSystem: ICreateXcmType = {
 };
 
 /**
- * Creates and returns a MultiAsset array for system parachains based on provided specName, chain ID, assets and amounts
+ * Create multiassets for SystemToSystem direction.
  *
- * @param api ApiPromise[]
- * @param amounts string[]
- * @param specName string
- * @param assets string[]
- * @param chainId string
+ * @param api ApiPromise
+ * @param amounts Amount per asset. It will match the `assets` length.
+ * @param specName The specname of the chain the api is connected to.
+ * @param assets The assets to create into xcm `MultiAssets`.
+ * @param xcmVersion The accepted xcm version.
+ * @param registry The asset registry used to construct MultiLocations.
+ * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
+ * @param isLiquidTokenTransfer Whether this transfer is a liquid pool assets transfer.
  */
 export const createSystemToSystemMultiAssets = async (
 	api: ApiPromise,
