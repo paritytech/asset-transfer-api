@@ -20,19 +20,20 @@ const main = async () => {
     // 'wss://moonriver.api.onfinality.io/public-ws'
     const provider = new WsProvider(
         // `wss://moonriver.api.onfinality.io/public-ws`
-        `wss://bifrost-rpc.liebi.com/ws`
+        // `wss://bifrost-parachain.api.onfinality.io/public-ws`
+        `wss://bifrost-rpc.dwellir.com`
     );
 
     const api = await ApiPromise.create({ provider });
 
     await api.isReady;
 
-    const assetTransferApi = new AssetTransferApi(api, 'moonriver', 2);
+    const assetTransferApi = new AssetTransferApi(api, 'bifrost', 2);
 
     const payload = await assetTransferApi.createTransferTransaction(
         '2023',
         '0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B',
-        ['BNC'],
+        ['vbnc'],
         ['2000000000'],
         {
             format: 'payload',

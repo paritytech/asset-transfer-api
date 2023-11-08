@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../../registry';
-import { mockParachainApi } from '../../testHelpers/mockParachainApi';
+import { mockMoonriverParachainApi } from '../../testHelpers/mockMoonriverParachainApi';
 import { Direction } from '../../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 import { transferMultiAssetWithFee } from './transferMultiAssetWithFee';
@@ -18,7 +18,7 @@ describe('transferMultiAssetWithFee', () => {
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}';
 
 			const ext = await transferMultiAssetWithFee(
-				mockParachainApi,
+				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['311091173110107856861649819128533077277'],
@@ -52,7 +52,7 @@ describe('transferMultiAssetWithFee', () => {
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}';
 
 			const ext = await transferMultiAssetWithFee(
-				mockParachainApi,
+				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['311091173110107856861649819128533077277'],
@@ -87,7 +87,7 @@ describe('transferMultiAssetWithFee', () => {
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}';
 
 			const ext = await transferMultiAssetWithFee(
-				mockParachainApi,
+				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['42259045809535163221576417993425387648'],
@@ -121,7 +121,7 @@ describe('transferMultiAssetWithFee', () => {
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}';
 
 			const ext = await transferMultiAssetWithFee(
-				mockParachainApi,
+				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['311091173110107856861649819128533077277'],

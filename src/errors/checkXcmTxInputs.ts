@@ -624,12 +624,22 @@ export const checkParaAssets = async (
 				BaseErrorsEnum.InvalidPallet
 			);
 		}
-
-		for (const info of paraXcAssets) {
-			if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
-				return;
+		// if integer asset Id check if valid registry asset
+		if (isValidInt) {
+			for (const info of paraXcAssets) {
+				if (typeof info.asset === 'string' && info.asset.toLowerCase() === assetId.toLowerCase()) {
+					return;
+				}
+			}
+		} else {
+			// check for assetId symbol match
+			for (const info of paraXcAssets) {
+				if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
+					return;
+				}
 			}
 		}
+
 
 		// if no native token for the parachain was matched, throw an error
 		throw new BaseError(

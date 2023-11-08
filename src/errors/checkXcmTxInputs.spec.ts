@@ -3,7 +3,7 @@
 import { AssetTransferApi } from '../AssetTransferApi';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';
-import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
+import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
@@ -25,7 +25,7 @@ import {
 	CheckXTokensPalletOriginIsNonForeignAssetTx,
 } from './checkXcmTxInputs';
 
-const parachainAssetsApi = new AssetTransferApi(adjustedMockParachainApi, 'moonriver', 2);
+const parachainAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
 const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
 		const [specName, testInputs, direction, errorMessage] = test;
@@ -676,7 +676,7 @@ describe('checkParaAssets', () => {
 		let didNotError = true;
 
 		try {
-			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
 		} catch (err) {
 			didNotError = false;
 		}
@@ -690,7 +690,7 @@ describe('checkParaAssets', () => {
 		let didNotError = true;
 
 		try {
-			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
 		} catch (err) {
 			didNotError = false;
 		}
@@ -703,7 +703,7 @@ describe('checkParaAssets', () => {
 		const registry = new Registry(specName, {});
 
 		await expect(async () => {
-			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
 		}).rejects.toThrowError('(ParaToSystem) symbol assetId xcUSDfake not found for parachain moonriver');
 	});
 	it('Should correctly error when an invalid integer assetId is provided', async () => {
@@ -712,7 +712,7 @@ describe('checkParaAssets', () => {
 		const registry = new Registry(specName, {});
 
 		await expect(async () => {
-			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
 		}).rejects.toThrowError('(ParaToSystem) integer assetId 2096586909097964981698161 not found in moonriver');
 	});
 	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {
@@ -721,7 +721,7 @@ describe('checkParaAssets', () => {
 		const registry = new Registry(specName, {});
 
 		await expect(async () => {
-			await checkParaAssets(adjustedMockParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
 		}).rejects.toThrowError('unable to identify xcAsset with ID 999999999999999999999999999999999999999');
 	});
 
@@ -765,7 +765,7 @@ describe('checkParaAssets', () => {
 			};
 
 			await checkAssetIdInput(
-				adjustedMockParachainApi,
+				adjustedMockMoonriverParachainApi,
 				['xcUSDT'],
 				chainInfo,
 				'moonriver',

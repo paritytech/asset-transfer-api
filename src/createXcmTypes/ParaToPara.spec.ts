@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
-import { mockParachainApi } from '../testHelpers/mockParachainApi';
+import { mockMoonriverParachainApi } from '../testHelpers/mockMoonriverParachainApi';
 import { ParaToPara } from './ParaToPara';
 
 describe('ParaToPara', () => {
@@ -135,7 +135,7 @@ describe('ParaToPara', () => {
 					registry,
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
-					api: mockParachainApi,
+					api: mockMoonriverParachainApi,
 				}
 			);
 
@@ -182,7 +182,7 @@ describe('ParaToPara', () => {
 					registry,
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
-					api: mockParachainApi,
+					api: mockMoonriverParachainApi,
 				}
 			);
 

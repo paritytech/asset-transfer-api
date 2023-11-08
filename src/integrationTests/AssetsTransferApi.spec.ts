@@ -2,14 +2,16 @@
 
 import { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
-import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
+import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi';
+import { adjustedMockBifrostParachainApi } from '../testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
-import type { Format, TxResult } from '../types';
+import type { Direction, Format, TxResult } from '../types';
 
 const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
 const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
-const moonriverAssetsApi = new AssetTransferApi(adjustedMockParachainApi, 'moonriver', 2);
+const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
+const bifrostAssetsApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2);
 
 describe('AssetTransferApi Integration Tests', () => {
 	describe('createTransferTransaction', () => {
@@ -2629,6 +2631,341 @@ describe('AssetTransferApi Integration Tests', () => {
 						});
 						expect(res.tx.toRawType()).toEqual('Extrinsic');
 					});
+				});
+			});
+		});
+		describe('Bifrost', () => {
+			describe('transferMultiAsset', () => {
+				type Test = [
+					parachainId: 
+					string, assetId: string,
+					expected: TxResult<'payload'>
+				];
+				const bifrostTransferMultiAsset = async <T extends Format>(
+					format: T,
+					xcmVersion: number,
+					destChainId: string,
+					assetId: string,
+					opts: CreateXcmCallOpts
+				): Promise<TxResult<T>> => {
+					return await bifrostAssetsApi.createTransferTransaction(
+						destChainId,
+						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+						[assetId],
+						['10000000000'],
+						{
+							format,
+							xcmVersion,
+							isLimited: opts.isLimited,
+							weightLimit: opts.weightLimit,
+							sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						}
+					);
+				};
+	
+				it('Should correctly build xTokens transferMultiAsset txs from Bifrost Kusama', async () => {
+					const tests: Test[] = [
+						// [
+						// 	'2023', 
+						// 	'bnc',
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'limitedReserveTransferAssets',
+						// 		tx: '0x09012908010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000000000700e40b54020000000001a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2023', 
+						// 	'vbnc', 
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200451f06080101000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						[
+							'2023', 
+							'movr', 
+							{
+								dest: 'moonriver',
+								origin: 'bifrost',
+								direction: 'ParaToPara' as Direction,
+								format: 'payload',
+								method: 'transferMultiAssets',
+								tx: '0x55014605010800010200451f0608010a000700e40b5402000102009d1f040a000700e40b540200000000010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+								xcmVersion: 2,
+							}
+						],
+						// [
+						// 	'2023', 
+						// 	'vmovr', 
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200451f0608010a000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2023', 
+						// 	'ksm', 
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0xe8460101000100000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2023', 
+						// 	'vksm', 
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200451f06080104000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2092', 
+						// 	'kint', 
+						// 	{
+						// 		dest: 'kintsugi-parachain',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200b1200608000c000700e40b540201010200b1200100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2000', 
+						// 	'kar', 
+						// 	{
+						// 		dest: 'karura',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200411f06080080000700e40b540201010200411f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2004', 
+						// 	'pha', 
+						// 	{
+						// 		dest: 'khala',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0xf446010100010100511f000700e40b540201010200511f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+					];
+	
+					for (const test of tests) {
+						const [paraId, assetId, expectedResult] = test;
+						const res = await bifrostTransferMultiAsset('payload', 2, paraId, assetId, {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						
+						expect(res).toEqual(expectedResult);			
+					}
+				});
+			});
+			describe('transferMultiAssets', () => {
+				type Test = [
+					parachainId: string, 
+					assetIds: string[],
+					amounts: string[],
+					expected: TxResult<'payload'>
+				];
+
+				const bifrostTransferMultiAssets = async <T extends Format>(
+					format: T,
+					xcmVersion: number,
+					destChainId: string,
+					assetIds: string[],
+					amounts: string[],
+					opts: CreateXcmCallOpts
+				): Promise<TxResult<T>> => {
+					return await bifrostAssetsApi.createTransferTransaction(
+						destChainId,
+						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+						assetIds,
+						amounts,
+						{
+							format,
+							xcmVersion,
+							isLimited: opts.isLimited,
+							weightLimit: opts.weightLimit,
+							sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						}
+					);
+				};
+				it('Should correctly build xTokens transferMultiAssets txs from Bifrost Kusama', async () => {
+					const tests: Test[] = [
+						[
+							'2023', 
+							['vmovr', 'movr'],
+							['10000000000', '10000000000'],
+							{
+								dest: 'moonriver',
+								origin: 'bifrost',
+								direction: 'ParaToPara' as Direction,
+								format: 'payload',
+								method: 'limitedReserveTransferAssets',
+								tx: '0x09012908010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000000000700e40b54020000000001a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+								xcmVersion: 2,
+							}
+						],
+						// [
+						// 	'2023', 
+						// 	'vbnc', 
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200451f06080101000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2023', 
+						// 	'movr', 
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0xfc460101000102009d1f040a000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2023', 
+						// 	'vmovr', 
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200451f0608010a000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2023', 
+						// 	'ksm', 
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0xe8460101000100000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2023', 
+						// 	'vksm', 
+						// 	{
+						// 		dest: 'moonriver',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200451f06080104000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2092', 
+						// 	'kint', 
+						// 	{
+						// 		dest: 'kintsugi-parachain',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200b1200608000c000700e40b540201010200b1200100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2000', 
+						// 	'kar', 
+						// 	{
+						// 		dest: 'karura',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0x050146010100010200411f06080080000700e40b540201010200411f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+						// [
+						// 	'2004', 
+						// 	'pha', 
+						// 	{
+						// 		dest: 'khala',
+						// 		origin: 'bifrost',
+						// 		direction: 'ParaToPara' as Direction,
+						// 		format: 'payload',
+						// 		method: 'transferMultiAsset',
+						// 		tx: '0xf446010100010100511f000700e40b540201010200511f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						// 		xcmVersion: 2,
+						// 	}
+						// ],
+					];
+	
+					for (const test of tests) {
+						const [paraId, assetIds, amounts, expectedResult] = test;
+						const res = await bifrostTransferMultiAssets('payload', 2, paraId, assetIds, amounts, {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+						
+						expect(res).toEqual(expectedResult);			
+					}
 				});
 			});
 		});

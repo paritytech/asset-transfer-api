@@ -30,6 +30,7 @@ export const getAssetId = async (
 	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
+	console.log('GET ASSET ID');
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
 	const isParachain = new BN(currentChainId).gte(new BN(2000));
@@ -117,6 +118,18 @@ export const getAssetId = async (
 			);
 		}
 	} else if (isParachain) {
+		const paraId = registry.lookupChainIdBySpecName(specName);
+	
+		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
+		const currentRelayChainSpecName = registry.relayChain;
+
+		if (!paraXcAssets || paraXcAssets.length === 0) {
+			throw new BaseError(
+				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
+				BaseErrorsEnum.InvalidPallet
+			);
+		}
+
 		if (_api.query.asset) {
 			if (!assetIsValidInt) {
 				// if not assetHub and assetId isnt a number, query the parachain chain for the asset symbol
@@ -134,28 +147,19 @@ export const getAssetId = async (
 						break;
 					}
 				}
-				const paraId = registry.lookupChainIdBySpecName(specName);
-	
+
 				// if assetId length is 0, check xcAssets for symbol
-				const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
-				const currentRelayChainSpecName = registry.relayChain;
-	
-				if (!paraXcAssets || paraXcAssets.length === 0) {
-					throw new BaseError(
-						`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
-						BaseErrorsEnum.InvalidPallet
-					);
-				}
-	
-				for (const info of paraXcAssets) {
-					if (
-						typeof info.asset === 'string' &&
-						typeof info.symbol === 'string' &&
-						info.symbol.toLowerCase() === asset.toLowerCase()
-					) {
-						assetId = info.asset;
-						registry.setAssetInCache(assetId, asset);
-						break;
+				if (assetId.length === 0) {
+					for (const info of paraXcAssets) {
+						if (
+							typeof info.asset === 'string' &&
+							typeof info.symbol === 'string' &&
+							info.symbol.toLowerCase() === asset.toLowerCase()
+						) {
+							assetId = info.asset;
+							registry.setAssetInCache(assetId, asset);
+							break;
+						}
 					}
 				}
 	
@@ -181,7 +185,42 @@ export const getAssetId = async (
 			}
 
 		} else {
+			console.log('AM I REACHED?????');
 			// Pallet Assets isn't supported, check symbol or integer assetId against asset registry
+			if (assetIsValidInt) {
+				for (const info of paraXcAssets) {
+					if (typeof info.asset === 'string' && info.asset.toLowerCase() === asset.toLowerCase()) {
+						assetId = info.xcmV1MultiLocation;
+						registry.setAssetInCache(assetId, asset);
+					}
+				}
+			} else {
+				for (const info of paraXcAssets) {
+					console.log('ASSET ID', info.symbol);
+					if (
+						typeof info.symbol === 'string' && 
+						info.symbol.toLowerCase() === asset.toLowerCase()
+					) {
+						assetId = info.xcmV1MultiLocation;
+						registry.setAssetInCache(assetId, asset);
+					} else if (
+						typeof info.symbol === 'string' && 
+						info.symbol.toLowerCase() === asset.toLowerCase()
+					) {
+						assetId = info.xcmV1MultiLocation;
+						registry.setAssetInCache(assetId, asset);
+					}
+				}
+			}
+
+			console.log('WHAT IS SPECNAME', specName);
+			console.log('WHAT IS ASSET ID', assetId);
+			if (assetId.length === 0) {
+				throw new BaseError(
+					`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`,
+					BaseErrorsEnum.InvalidAsset
+				);
+			}
 		}
 	}
 

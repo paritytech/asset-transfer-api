@@ -60,6 +60,7 @@ export const transferMultiAsset = async (
 		});
 		const beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);
 
+		console.log('WHAT IS ASSET IN TRANSFER', JSON.stringify(asset));
 		return ext(asset, beneficiary, destWeightLimit);
 	}
 

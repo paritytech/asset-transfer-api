@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../../registry';
-import { mockParachainApi } from '../../testHelpers/mockParachainApi';
+import { mockMoonriverParachainApi } from '../../testHelpers/mockMoonriverParachainApi';
 import { Direction } from '../../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 import { transferMultiAssets } from './transferMultiAssets';
@@ -17,7 +17,7 @@ describe('transferMultiAssets', () => {
 			const paysWithFeeDest = '0';
 
 			const ext = await transferMultiAssets(
-				mockParachainApi,
+				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['42259045809535163221576417993425387648', '182365888117048807484804376330534607370'],
@@ -52,7 +52,7 @@ describe('transferMultiAssets', () => {
 			const paysWithFeeDest = '0';
 
 			const ext = await transferMultiAssets(
-				mockParachainApi,
+				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
@@ -86,7 +86,7 @@ describe('transferMultiAssets', () => {
 			const paysWithFeeDest = '1';
 
 			const ext = await transferMultiAssets(
-				mockParachainApi,
+				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['42259045809535163221576417993425387648', '311091173110107856861649819128533077277'],
@@ -119,7 +119,7 @@ describe('transferMultiAssets', () => {
 			const paysWithFeeDest = '0';
 
 			const ext = await transferMultiAssets(
-				mockParachainApi,
+				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['311091173110107856861649819128533077277'],
