@@ -6,8 +6,8 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
-import { KUSAMA_ASSET_HUB_WS_URL } from './consts';
-import { awaitBlockProduction, delay, logWithDate } from './util';
+import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL } from './consts';
+import { awaitBlockProduction, awaitEpochChange, delay, logWithDate } from './util';
 
 const ASSET_ID = 1;
 const ASSET_NAME = 'Testy';
@@ -57,6 +57,10 @@ const transferLPTokensCall = (api: ApiPromise, token: number, amount: number, to
 	return api.tx.poolAssets.transferKeepAlive(token, to.address, amount);
 };
 
+const openHrmpChannels = (api: ApiPromise, sender: number, receiver: number) => {
+	return api.tx.hrmp.forceOpenHrmpChannel(sender, receiver, Number(8), Number(512));
+};
+
 const main = async () => {
 	logWithDate(chalk.yellow('Initializing script to create a liquidity pool on Kusama Asset Hub'));
 	await cryptoWaitReady();
@@ -64,6 +68,24 @@ const main = async () => {
 	const keyring = new Keyring({ type: 'sr25519' });
 	const alice = keyring.addFromUri('//Alice');
 	const bob = keyring.addFromUri('//Bob');
+
+	const relayApi = await ApiPromise.create({
+		provider: new WsProvider(ROCOCO_ALICE_WS_URL),
+		noInitWarn: true,
+	});
+
+	await relayApi.isReady;
+
+	logWithDate(chalk.blue('Opening HRMP Channels'));
+
+	let hrmpChannelCalls = [];
+
+	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1000), Number(1836)));
+	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1836), Number(1000)));
+
+	await relayApi.tx.sudo.sudo(relayApi.tx.utility.batchAll(hrmpChannelCalls)).signAndSend(alice);
+	
+	await awaitEpochChange(relayApi);
 
 	const api = await ApiPromise.create({
 		provider: new WsProvider(KUSAMA_ASSET_HUB_WS_URL),
@@ -87,7 +109,7 @@ const main = async () => {
 	txs.push(createPool);
 	txs.push(addLiquidity);
 
-	await api.tx.utility.batch(txs).signAndSend(alice);
+	await api.tx.utility.batch(txs).signAndSend(alice, { nonce: -1 });
 
 	await delay(24000);
 
@@ -95,7 +117,7 @@ const main = async () => {
 
 	const lpToken = Number(nextLpToken) - 1;
 
-	logWithDate(chalk.yellow('Asset and Liquidity Pool created'));
+	logWithDate(chalk.yellow('Asset and Liquidit Pool created'));
 
 	logWithDate(chalk.green(`Liquidity Pool Token ID: ${lpToken}`));
 
@@ -122,7 +144,7 @@ const main = async () => {
 
 	logWithDate(chalk.magenta('Sending 1,000,000,000,000 lpTokens from Alice to Bob on Kusama Asset Hub'));
 
-	await transferLPTokensCall(api, 0, 1000000000000, bob).signAndSend(alice);
+	await transferLPTokensCall(api, 0, 1000000000000, bob).signAndSend(alice, { nonce: -1 });
 
 	await delay(24000);
 
