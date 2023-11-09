@@ -77,5 +77,5 @@ export const awaitEpochChange = async (api: ApiPromise) => {
 	}
 
 	process.stdout.clearLine(0);
-	logWithDate(chalk.magenta('Epoch changed, HRMP channels opened'), true);
+	logWithDate(chalk.magenta('Epoch changed'), true);
 };

@@ -206,6 +206,7 @@ const main = async () => {
 	await relayApi.tx.sudo.sudo(relayApi.tx.utility.batchAll(hrmpChannelCalls)).signAndSend(alice);
 
 	await awaitEpochChange(relayApi);
+	logWithDate(chalk.magenta('HRMP channels open'));
 
 	logWithDate(chalk.magenta('Sending funds to Trappist Sibling on Kusama AssetHub'));
 

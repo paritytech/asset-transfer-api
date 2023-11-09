@@ -86,6 +86,7 @@ const main = async () => {
 	await relayApi.tx.sudo.sudo(relayApi.tx.utility.batchAll(hrmpChannelCalls)).signAndSend(alice);
 
 	await awaitEpochChange(relayApi);
+	logWithDate(chalk.magenta('HRMP channels open'));
 
 	const api = await ApiPromise.create({
 		provider: new WsProvider(KUSAMA_ASSET_HUB_WS_URL),
