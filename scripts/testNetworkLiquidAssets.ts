@@ -117,7 +117,7 @@ const main = async () => {
 
 	const lpToken = Number(nextLpToken) - 1;
 
-	logWithDate(chalk.yellow('Asset and Liquidit Pool created'));
+	logWithDate(chalk.yellow('Asset and Liquidity Pool created'));
 
 	logWithDate(chalk.green(`Liquidity Pool Token ID: ${lpToken}`));
 
