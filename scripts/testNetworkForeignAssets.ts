@@ -5,8 +5,8 @@ import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
-import { KUSAMA_ASSET_HUB_WS_URL, TRAPPIST_WS_URL, ROCOCO_ALICE_WS_URL } from './consts';
-import { awaitBlockProduction, delay, logWithDate, awaitEpochChange } from './util';
+import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
+import { awaitBlockProduction, awaitEpochChange, delay, logWithDate } from './util';
 
 const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 	const trappistMultiLocation = {
@@ -198,13 +198,13 @@ const main = async () => {
 
 	logWithDate(chalk.blue('Opening HRMP Channels'));
 
-	let hrmpChannelCalls = [];
+	const hrmpChannelCalls = [];
 
 	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1000), Number(1836)));
 	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1836), Number(1000)));
 
 	await relayApi.tx.sudo.sudo(relayApi.tx.utility.batchAll(hrmpChannelCalls)).signAndSend(alice);
-	
+
 	await awaitEpochChange(relayApi);
 
 	logWithDate(chalk.magenta('Sending funds to Trappist Sibling on Kusama AssetHub'));

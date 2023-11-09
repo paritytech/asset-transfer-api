@@ -78,13 +78,13 @@ const main = async () => {
 
 	logWithDate(chalk.blue('Opening HRMP Channels'));
 
-	let hrmpChannelCalls = [];
+	const hrmpChannelCalls = [];
 
 	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1000), Number(1836)));
 	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1836), Number(1000)));
 
 	await relayApi.tx.sudo.sudo(relayApi.tx.utility.batchAll(hrmpChannelCalls)).signAndSend(alice);
-	
+
 	await awaitEpochChange(relayApi);
 
 	const api = await ApiPromise.create({
