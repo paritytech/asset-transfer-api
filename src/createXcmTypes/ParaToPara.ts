@@ -239,14 +239,16 @@ export const ParaToPara: ICreateXcmType = {
 		assetId: string,
 		opts: CreateAssetsOpts
 	): Promise<UnionXcAssetsMultiAsset> => {
+		console.log('PASSED IN ID', assetId);
 		const { registry } = opts;
 		// const { tokens: relayTokens } = registry.currentRelayRegistry['0'];
 		const isValidInt = validateNumber(assetId);
 		// const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
 
-		// if (!isRelayNative && !isValidInt) {
+		if (!isValidInt) {
 			assetId = await getAssetId(opts.api, registry, assetId, specName, xcmVersion);
-		// }
+		}
+		console.log('ASSET ID AFTER GET ASSET ID', assetId);
 
 		const paraId = registry.lookupChainIdBySpecName(specName);
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
@@ -340,9 +342,9 @@ const createXTokensMultiAssets = async (
 
 		const isValidInt = validateNumber(assetId);
 
-		// if (!isValidInt) {
+		if (!isValidInt) {
 		assetId = await getAssetId(opts.api, registry, assetId, specName, xcmVersion);
-		// }
+		}
 
 		const paraId = registry.lookupChainIdBySpecName(specName);
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];

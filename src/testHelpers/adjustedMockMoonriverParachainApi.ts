@@ -118,6 +118,123 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcKsm = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetDetails', xcKsmAssetInfo);
 		assets.set('42259045809535163221576417993425387648', xcKsm);
 
+		const xcBncAssetInfo = {
+			owner: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
+			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
+			minBalance: mockMoonriverParachainApi.registry.createType('u128', 100),
+			isSufficient: mockMoonriverParachainApi.registry.createType('bool', true),
+			accounts: mockMoonriverParachainApi.registry.createType('u32', 100),
+			sufficients: mockMoonriverParachainApi.registry.createType('u32', 100),
+			approvals: mockMoonriverParachainApi.registry.createType('u32', 100),
+			status: mockMoonriverParachainApi.registry.createType('PalletAssetsAssetStatus', 'live'),
+		};
+		const xcBnc = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetDetails', xcBncAssetInfo);
+		assets.set('319623561105283008236062145480775032445', xcBnc);
+
+		const xcvBncAssetInfo = {
+			owner: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
+			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
+			minBalance: mockMoonriverParachainApi.registry.createType('u128', 100),
+			isSufficient: mockMoonriverParachainApi.registry.createType('bool', true),
+			accounts: mockMoonriverParachainApi.registry.createType('u32', 100),
+			sufficients: mockMoonriverParachainApi.registry.createType('u32', 100),
+			approvals: mockMoonriverParachainApi.registry.createType('u32', 100),
+			status: mockMoonriverParachainApi.registry.createType('PalletAssetsAssetStatus', 'live'),
+		};
+		const xcvBnc = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetDetails', xcvBncAssetInfo);
+		assets.set('72145018963825376852137222787619937732', xcvBnc);
+
+		const xcvMovrAssetInfo = {
+			owner: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
+			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
+			minBalance: mockMoonriverParachainApi.registry.createType('u128', 100),
+			isSufficient: mockMoonriverParachainApi.registry.createType('bool', true),
+			accounts: mockMoonriverParachainApi.registry.createType('u32', 100),
+			sufficients: mockMoonriverParachainApi.registry.createType('u32', 100),
+			approvals: mockMoonriverParachainApi.registry.createType('u32', 100),
+			status: mockMoonriverParachainApi.registry.createType('PalletAssetsAssetStatus', 'live'),
+		};
+		const xcvMovr = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetDetails', xcvMovrAssetInfo);
+		assets.set('203223821023327994093278529517083736593', xcvMovr);
+
+		// SDN
+		const xcSDNAssetInfo = {
+			owner: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			issuer: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			admin: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			freezer: mockMoonriverParachainApi.registry.createType(
+				'AccountId32',
+				'0x0987654309876543098765430987654309876543098765430987654309876543'
+			),
+			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
+			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
+			minBalance: mockMoonriverParachainApi.registry.createType('u128', 100),
+			isSufficient: mockMoonriverParachainApi.registry.createType('bool', true),
+			accounts: mockMoonriverParachainApi.registry.createType('u32', 100),
+			sufficients: mockMoonriverParachainApi.registry.createType('u32', 100),
+			approvals: mockMoonriverParachainApi.registry.createType('u32', 100),
+			status: mockMoonriverParachainApi.registry.createType('PalletAssetsAssetStatus', 'live'),
+		};
+		const xcSdn = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetDetails', xcSDNAssetInfo);
+		assets.set('16797826370226091782818345603793389938', xcSdn);
+
 		const xcRmrkAssetInfo = {
 			owner: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
@@ -144,6 +261,7 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 			approvals: mockMoonriverParachainApi.registry.createType('u32', 100),
 			status: mockMoonriverParachainApi.registry.createType('PalletAssetsAssetStatus', 'live'),
 		};
+		
 		const xcRmrk = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetDetails', xcRmrkAssetInfo);
 		assets.set('182365888117048807484804376330534607370', xcRmrk);
 
@@ -202,6 +320,58 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 		const xcKsmMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXcKsmMetadata);
 		metadata.set('42259045809535163221576417993425387648', xcKsmMetadata);
 
+		// xcBNC
+		const rawXCBNCMetadata = {
+			deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
+			name: mockMoonriverParachainApi.registry.createType('Bytes', '0x7863424e43'),
+			symbol: Object.assign(mockMoonriverParachainApi.registry.createType('Bytes', '0x7863424e43'), {
+				toHuman: () => 'xcBNC',
+			}),
+			decimals: mockMoonriverParachainApi.registry.createType('u8', 12),
+			isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
+		};
+		const xcBNCMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCBNCMetadata);
+		metadata.set('319623561105283008236062145480775032445', xcBNCMetadata);
+
+		// xcvBNC
+		const rawXCVBNCMetadata = {
+			deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
+			name: mockMoonriverParachainApi.registry.createType('Bytes', '0x426966726f737420566f756368657220424e43'),
+			symbol: Object.assign(mockMoonriverParachainApi.registry.createType('Bytes', '0x786376424e43'), {
+				toHuman: () => 'xcvBNC',
+			}),
+			decimals: mockMoonriverParachainApi.registry.createType('u8', 12),
+			isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
+		};
+		const xcvBNCMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCVBNCMetadata);
+		metadata.set('72145018963825376852137222787619937732', xcvBNCMetadata);
+
+		// vMOVR
+		const rawXCVMOVRMetadata = {
+			deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
+			name: mockMoonriverParachainApi.registry.createType('Bytes', '0x426966726f737420566f7563686572204d4f5652'),
+			symbol: Object.assign(mockMoonriverParachainApi.registry.createType('Bytes', '0x7863764d4f5652'), {
+				toHuman: () => 'xcvBNC',
+			}),
+			decimals: mockMoonriverParachainApi.registry.createType('u8', 18),
+			isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
+		};
+		const xcvMOVRMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCVMOVRMetadata);
+		metadata.set('203223821023327994093278529517083736593', xcvMOVRMetadata);
+
+		// SDN
+		const rawXCSDNMetadata = {
+			deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
+			name: mockMoonriverParachainApi.registry.createType('Bytes', '0x53686964656e'),
+			symbol: Object.assign(mockMoonriverParachainApi.registry.createType('Bytes', '0x786353444e'), {
+				toHuman: () => 'xcvBNC',
+			}),
+			decimals: mockMoonriverParachainApi.registry.createType('u8', 18),
+			isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
+		};
+		const xcSDNMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCSDNMetadata);
+		metadata.set('203223821023327994093278529517083736593', xcSDNMetadata);
+
 		const rawXcUsdtMetadata = {
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
 			name: mockMoonriverParachainApi.registry.createType('Bytes', '0x54657468657220555344'),
@@ -218,7 +388,7 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
 			name: mockMoonriverParachainApi.registry.createType('Bytes', '0x7863524d524b'),
 			symbol: Object.assign(mockMoonriverParachainApi.registry.createType('Bytes', '0x7863524d524b'), {
-				toHuman: () => 'xcUSDT',
+				toHuman: () => 'xcRMRK',
 			}),
 			decimals: mockMoonriverParachainApi.registry.createType('u8', 6),
 			isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
@@ -257,6 +427,7 @@ export const adjustedMockMoonriverParachainApi = {
 				entries: () => {
 					const metadata: Map<string, PalletAssetsAssetMetadata> = new Map();
 
+					// xcKSM
 					const rawXcKsmMetadata = {
 						deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
 						name: mockMoonriverParachainApi.registry.createType('Bytes', '0x78634b534d'),
@@ -269,6 +440,59 @@ export const adjustedMockMoonriverParachainApi = {
 					const xcKsmMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXcKsmMetadata);
 					metadata.set('42259045809535163221576417993425387648', xcKsmMetadata);
 
+					// xcBNC
+					const rawXCBNCMetadata = {
+						deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
+						name: mockMoonriverParachainApi.registry.createType('Bytes', '0x7863424e43'),
+						symbol: Object.assign(mockMoonriverParachainApi.registry.createType('Bytes', '0x7863424e43'), {
+							toHuman: () => 'xcBNC',
+						}),
+						decimals: mockMoonriverParachainApi.registry.createType('u8', 12),
+						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
+					};
+					const xcBNCMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCBNCMetadata);
+					metadata.set('319623561105283008236062145480775032445', xcBNCMetadata);
+
+					// xcvBNC
+					const rawXCVBNCMetadata = {
+						deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
+						name: mockMoonriverParachainApi.registry.createType('Bytes', '0x426966726f737420566f756368657220424e43'),
+						symbol: Object.assign(mockMoonriverParachainApi.registry.createType('Bytes', '0x786376424e43'), {
+							toHuman: () => 'xcvBNC',
+						}),
+						decimals: mockMoonriverParachainApi.registry.createType('u8', 12),
+						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
+					};
+					const xcvBNCMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCVBNCMetadata);
+					metadata.set('72145018963825376852137222787619937732', xcvBNCMetadata);
+
+					// vMOVR
+					const rawXCVMOVRMetadata = {
+						deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
+						name: mockMoonriverParachainApi.registry.createType('Bytes', '0x426966726f737420566f7563686572204d4f5652'),
+						symbol: Object.assign(mockMoonriverParachainApi.registry.createType('Bytes', '0x7863764d4f5652'), {
+							toHuman: () => 'xcvBNC',
+						}),
+						decimals: mockMoonriverParachainApi.registry.createType('u8', 18),
+						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
+					};
+					const xcvMOVRMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCVMOVRMetadata);
+					metadata.set('203223821023327994093278529517083736593', xcvMOVRMetadata);
+
+					// SDN
+					const rawXCSDNMetadata = {
+						deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
+						name: mockMoonriverParachainApi.registry.createType('Bytes', '0x53686964656e'),
+						symbol: Object.assign(mockMoonriverParachainApi.registry.createType('Bytes', '0x786353444e'), {
+							toHuman: () => 'xcvBNC',
+						}),
+						decimals: mockMoonriverParachainApi.registry.createType('u8', 18),
+						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
+					};
+					const xcSDNMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCSDNMetadata);
+					metadata.set('203223821023327994093278529517083736593', xcSDNMetadata);
+
+					// USDT
 					const rawXcUsdtMetadata = {
 						deposit: mockMoonriverParachainApi.registry.createType('u128', 0),
 						name: mockMoonriverParachainApi.registry.createType('Bytes', '0x54657468657220555344'),

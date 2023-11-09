@@ -4,14 +4,14 @@ import { Registry } from '../../registry';
 import { mockMoonriverParachainApi } from '../../testHelpers/mockMoonriverParachainApi';
 import { Direction } from '../../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
-import { transferMultiAsset } from './transferMultiAsset';
+import { transferMultiasset } from './transferMultiasset';
 
-describe('transferMultiAsset', () => {
+describe('transferMultiasset', () => {
 	describe('ParaToSystem', () => {
 		const registry = new Registry('moonriver', {});
 
 		it('Should correctly construct an Unlimited transferMultiasset tx for V2', async () => {
-			const ext = await transferMultiAsset(
+			const ext = await transferMultiasset(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -34,7 +34,7 @@ describe('transferMultiAsset', () => {
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V2', async () => {
-			const ext = await transferMultiAsset(
+			const ext = await transferMultiasset(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -62,7 +62,7 @@ describe('transferMultiAsset', () => {
 		});
 
 		it('Should correctly construct an Unlimited transferMultiasset tx for V3', async () => {
-			const ext = await transferMultiAsset(
+			const ext = await transferMultiasset(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -85,7 +85,7 @@ describe('transferMultiAsset', () => {
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V3', async () => {
-			const ext = await transferMultiAsset(
+			const ext = await transferMultiasset(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',

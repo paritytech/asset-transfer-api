@@ -4,9 +4,9 @@ import { Registry } from '../../registry';
 import { mockMoonriverParachainApi } from '../../testHelpers/mockMoonriverParachainApi';
 import { Direction } from '../../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
-import { transferMultiAssetWithFee } from './transferMultiAssetWithFee';
+import { transferMultiassetWithFee } from './transferMultiassetWithFee';
 
-describe('transferMultiAssetWithFee', () => {
+describe('transferMultiassetWithFee', () => {
 	describe('ParaToSystem', () => {
 		const registry = new Registry('moonriver', {});
 
@@ -17,7 +17,7 @@ describe('transferMultiAssetWithFee', () => {
 			const paysWithFeeDest =
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}';
 
-			const ext = await transferMultiAssetWithFee(
+			const ext = await transferMultiassetWithFee(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -51,7 +51,7 @@ describe('transferMultiAssetWithFee', () => {
 			const paysWithFeeDest =
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}';
 
-			const ext = await transferMultiAssetWithFee(
+			const ext = await transferMultiassetWithFee(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -86,7 +86,7 @@ describe('transferMultiAssetWithFee', () => {
 			const paysWithFeeDest =
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}';
 
-			const ext = await transferMultiAssetWithFee(
+			const ext = await transferMultiassetWithFee(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -120,7 +120,7 @@ describe('transferMultiAssetWithFee', () => {
 			const paysWithFeeDest =
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}';
 
-			const ext = await transferMultiAssetWithFee(
+			const ext = await transferMultiassetWithFee(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',

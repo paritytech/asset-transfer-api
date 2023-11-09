@@ -30,7 +30,7 @@ export const getAssetId = async (
 	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
-	console.log('GET ASSET ID');
+	console.log('GET ASSET ID', asset);
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
 	const isParachain = new BN(currentChainId).gte(new BN(2000));
@@ -130,7 +130,9 @@ export const getAssetId = async (
 			);
 		}
 
-		if (_api.query.asset) {
+		if (_api.query.assets) {
+			console.log('WHAT IS SPECNAME', specName);
+			console.log('WHAT IS ASSET ID', assetId);
 			if (!assetIsValidInt) {
 				// if not assetHub and assetId isnt a number, query the parachain chain for the asset symbol
 				const parachainAssets = await _api.query.assets.asset.entries();
@@ -173,6 +175,7 @@ export const getAssetId = async (
 				// if not assetHub and assetId is a number, query the parachain chain for the asset
 				const parachainAsset = await _api.query.assets.asset(asset);
 				if (parachainAsset.isSome) {
+					console.log('ASSET IS WHAT', asset);
 					assetId = asset;
 					// add queried asset to registry
 					registry.setAssetInCache(assetId, asset);
@@ -213,8 +216,6 @@ export const getAssetId = async (
 				}
 			}
 
-			console.log('WHAT IS SPECNAME', specName);
-			console.log('WHAT IS ASSET ID', assetId);
 			if (assetId.length === 0) {
 				throw new BaseError(
 					`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`,
@@ -224,5 +225,7 @@ export const getAssetId = async (
 		}
 	}
 
+	console.log('WHAT IS SPECNAME', specName);
+	console.log('WHAT IS ASSET ID', assetId);
 	return assetId;
 };

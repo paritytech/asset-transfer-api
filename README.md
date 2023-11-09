@@ -190,7 +190,7 @@ The `AssetTransferApi.createTransferTransaction` is able to infer what kind of t
 
 ### Transferring assets via xTokens pallet
 
-If the transfer is being sent from a parachain that utilizes the `xTokens` pallet, the API will detect that and construct the transaction that is necessary. It will construct one of three calls: `transferMultiAsset`, `transferMultiAssets`, or `transferMultiAssetWithFee`. This is only applicable when the intended transfer direction starts from a parachain. The `xTokens` pallet can be found [here](https://github.com/open-web3-stack/open-runtime-module-library/tree/master/xtokens).
+If the transfer is being sent from a parachain that utilizes the `xTokens` pallet, the API will detect that and construct the transaction that is necessary. It will construct one of three calls: `transferMultiasset`, `transferMultiassets`, or `transferMultiassetWithFee`. This is only applicable when the intended transfer direction starts from a parachain. The `xTokens` pallet can be found [here](https://github.com/open-web3-stack/open-runtime-module-library/tree/master/xtokens).
 
 An example would look like:
 ```typescript

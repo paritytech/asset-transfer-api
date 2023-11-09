@@ -540,6 +540,7 @@ export const checkParaAssets = async (
 		if (isValidInt) {
 			if (!registry.cacheLookupAsset(assetId)) {
 				// query the parachains assets pallet to see if it has a value matching the assetId
+				console.log('ASSET ID IS', assetId);
 				const asset = await api.query.assets.asset(assetId);
 	
 				if (asset.isNone) {

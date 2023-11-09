@@ -4,19 +4,19 @@ import { Registry } from '../../registry';
 import { mockMoonriverParachainApi } from '../../testHelpers/mockMoonriverParachainApi';
 import { Direction } from '../../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
-import { transferMultiAssets } from './transferMultiAssets';
+import { transferMultiassets } from './transferMultiassets';
 
-describe('transferMultiAssets', () => {
+describe('transferMultiassets', () => {
 	describe('ParaToSystem', () => {
 		const registry = new Registry('moonriver', {});
 
-		it('Should correctly construct an Unlimited transferMultiAssets tx for V2', async () => {
+		it('Should correctly construct an Unlimited transferMultiassets tx for V2', async () => {
 			const isLimited = false;
 			const refTime = undefined;
 			const proofSize = undefined;
 			const paysWithFeeDest = '0';
 
-			const ext = await transferMultiAssets(
+			const ext = await transferMultiassets(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -45,13 +45,13 @@ describe('transferMultiAssets', () => {
 
 			expect(true).toBe(true);
 		});
-		it('Should correctly construct a Limited transferMultiAssets tx for V2', async () => {
+		it('Should correctly construct a Limited transferMultiassets tx for V2', async () => {
 			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 			const paysWithFeeDest = '0';
 
-			const ext = await transferMultiAssets(
+			const ext = await transferMultiassets(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -79,13 +79,13 @@ describe('transferMultiAssets', () => {
 			);
 		});
 
-		it('Should correctly construct an Unlimited transferMultiAssets tx for V3', async () => {
+		it('Should correctly construct an Unlimited transferMultiassets tx for V3', async () => {
 			const isLimited = false;
 			const refTime = undefined;
 			const proofSize = undefined;
 			const paysWithFeeDest = '1';
 
-			const ext = await transferMultiAssets(
+			const ext = await transferMultiassets(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -118,7 +118,7 @@ describe('transferMultiAssets', () => {
 			const proofSize = '2000';
 			const paysWithFeeDest = '0';
 
-			const ext = await transferMultiAssets(
+			const ext = await transferMultiassets(
 				mockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',

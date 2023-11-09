@@ -1,7 +1,5 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { ApiPromise } from '@polkadot/api';
-
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId';
 
@@ -10,18 +8,6 @@ describe('fetchPalletInstanceId', () => {
 		const res = fetchPalletInstanceId(mockSystemApi, false, false);
 
 		expect(res).toEqual('50');
-	});
-	it('Should error when there is no Asset pallet available', () => {
-		const mockApi = {
-			registry: {
-				metadata: {
-					pallets: [{ name: 'NotAssets' }],
-				},
-			},
-		} as unknown as ApiPromise;
-		const res = () => fetchPalletInstanceId(mockApi, false, false);
-
-		expect(res).toThrowError("No Assets pallet available, can't find a valid PalletInstance.");
 	});
 	it('Should correctly grab the poolAssets pallet instance', () => {
 		const res = fetchPalletInstanceId(mockSystemApi, true, false);

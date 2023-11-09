@@ -19,9 +19,9 @@ import {
 	limitedTeleportAssets,
 	reserveTransferAssets,
 	teleportAssets,
-	transferMultiAsset,
-	transferMultiAssets,
-	transferMultiAssetWithFee,
+	transferMultiasset,
+	transferMultiassets,
+	transferMultiassetWithFee,
 } from './createXcmCalls';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
@@ -312,8 +312,8 @@ export class AssetTransferApi {
 			(xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara)
 		) {
 			if (!paysWithFeeDest && assetIds.length < 2) {
-				txMethod = 'transferMultiAsset';
-				transaction = await transferMultiAsset(
+				txMethod = 'transferMultiasset';
+				transaction = await transferMultiasset(
 					_api,
 					xcmDirection,
 					addr,
@@ -333,8 +333,8 @@ export class AssetTransferApi {
 					}
 				);
 			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
-				txMethod = 'transferMultiAssetWithFee';
-				transaction = await transferMultiAssetWithFee(
+				txMethod = 'transferMultiassetWithFee';
+				transaction = await transferMultiassetWithFee(
 					_api,
 					xcmDirection,
 					addr,
@@ -354,8 +354,8 @@ export class AssetTransferApi {
 					}
 				);
 			} else {
-				txMethod = 'transferMultiAssets';
-				transaction = await transferMultiAssets(
+				txMethod = 'transferMultiassets';
+				transaction = await transferMultiassets(
 					_api,
 					xcmDirection,
 					addr,

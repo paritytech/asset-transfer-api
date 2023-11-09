@@ -14,7 +14,7 @@ import type { CreateXcmCallOpts } from '../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 
 /**
- * Build a Polkadot-js `transferMultiAssets` SubmittableExtrinsic
+ * Build a Polkadot-js `transferMultiassets` SubmittableExtrinsic
  * call.
  *
  * @param api ApiPromise
@@ -29,7 +29,7 @@ import { XcmPalletName } from '../util/establishXcmPallet';
  * @param xcmPallet The pallet being used to construct xcm calls.
  * @param opts CreateXcmCallOpts
  */
-export const transferMultiAssets = async (
+export const transferMultiassets = async (
 	api: ApiPromise,
 	direction: XcmDirection,
 	destAddr: string,
