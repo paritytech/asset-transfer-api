@@ -339,6 +339,22 @@ describe('AssetTransferAPI', () => {
 				expect(assetCallType).toEqual('Reserve');
 			});
 		});
+		describe('ParaToRelay', () => {
+			it('Should correctly return XTokens', () => {
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
+					'2023',
+					'0',
+					['KSM'],
+					Direction.ParaToRelay,
+					AssetType.Native,
+					false,
+					false,
+					moonriverAssetsApi.registry
+				);
+
+				expect(assetCallType).toEqual('Reserve');
+			});
+		});
 	});
 
 	describe('Opts', () => {
