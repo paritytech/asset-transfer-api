@@ -177,7 +177,4 @@ export const ParaToRelay: ICreateXcmType = {
 			return Promise.resolve({ V3: multiAsset });
 		}
 	},
-	// createXTokensFeeAssetItem: () => {
-
-	// }
 };
