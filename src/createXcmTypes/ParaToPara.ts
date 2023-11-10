@@ -39,8 +39,8 @@ export const ParaToPara: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
-	 * @param accountId The accountId of the beneficiary
-	 * @param xcmVersion The accepted xcm version
+	 * @param accountId The accountId of the beneficiary.
+	 * @param xcmVersion The accepted xcm version.
 	 */
 	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion == 2) {
@@ -72,8 +72,8 @@ export const ParaToPara: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
-	 * @param destId The parachain Id of the destination
-	 * @param xcmVersion The accepted xcm version
+	 * @param destId The parachain Id of the destination.
+	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (destId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
@@ -105,11 +105,13 @@ export const ParaToPara: ICreateXcmType = {
 		};
 	},
 	/**
-	 * Create a VersionedMultiAsset type.
+	 * Create a VersionedMultiAsset structured type.
 	 *
-	 * @param assets
-	 * @param amounts
-	 * @param xcmVersion
+	 * @param amounts Amount per asset. It will match the `assets` length.
+	 * @param xcmVersion The accepted xcm version.
+	 * @param specName The specname of the chain the api is connected to.
+	 * @param assets The assets to create into xcm `MultiAssets`.
+	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
 	createAssets: async (
 		amounts: string[],
@@ -141,12 +143,9 @@ export const ParaToPara: ICreateXcmType = {
 		}
 	},
 	/**
-	 * Create an XcmV3WeightLimit type.
+	 * Create an Xcm WeightLimit structured type.
 	 *
-	 * @param api ApiPromise
-	 * @param isLimited Whether the tx is limited
-	 * @param refTime amount of computation time
-	 * @param proofSize amount of storage to be used
+	 * @param opts Options that are used for WeightLimit.
 	 */
 	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
 		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
@@ -159,15 +158,10 @@ export const ParaToPara: ICreateXcmType = {
 			: { Unlimited: null };
 	},
 	/**
-	 * returns the correct feeAssetItem based on XCM direction.
+	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
 	 * @param api ApiPromise
-	 * @param paysWithFeeDest string
-	 * @param specName string
-	 * @param assetIds string[]
-	 * @param amounts string[]
-	 * @xcmVersion number
-	 *
+	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isForeignAssetsTransfer } = opts;
@@ -197,6 +191,13 @@ export const ParaToPara: ICreateXcmType = {
 
 		return 0;
 	},
+	/**
+	 * Create xTokens beneficiary structured type.
+	 *
+	 * @param destChainId The parachain Id of the destination.
+	 * @param accountId The accountId of the beneficiary.
+	 * @param xcmVersion The accepted xcm version.
+	 */
 	createXTokensBeneficiary: (
 		destChainId: string,
 		accountId: string,
@@ -226,6 +227,15 @@ export const ParaToPara: ICreateXcmType = {
 			},
 		};
 	},
+	/**
+	 * Create multiple xTokens Assets.
+	 *
+	 * @param amounts Amount per asset. It will match the `assets` length.
+	 * @param xcmVersion The accepted xcm version.
+	 * @param specName The specname of the chain the api is connected to.
+	 * @param assets The assets to create into xcm `MultiAssets`.
+	 * @param opts Options used to create xTokens `MultiAssets`.
+	 */
 	createXTokensAssets: async (
 		amounts: string[],
 		xcmVersion: number,
@@ -235,6 +245,15 @@ export const ParaToPara: ICreateXcmType = {
 	): Promise<UnionXcAssetsMultiAssets> => {
 		return await createXTokensMultiAssets(amounts, xcmVersion, specName, assets, opts);
 	},
+	/**
+	 * Create a single xToken asset.
+	 *
+	 * @param amount Amount per asset. This will be of length 1.
+	 * @param xcmVersion The accepted xcm version.
+	 * @param specName The specname of the chain the api is connected to.
+	 * @param assetId Single asset to be created into a `MultiAsset`.
+	 * @param opts Options to create a single Asset.
+	 */
 	createXTokensAsset: async (
 		amount: string,
 		xcmVersion: number,
@@ -293,7 +312,11 @@ export const ParaToPara: ICreateXcmType = {
 			return { V3: multiAsset };
 		}
 	},
-
+	/**
+	 * Create an xTokens xcm `feeAssetItem`.
+	 *
+	 * @param opts Options used for creating `feeAssetItem`.
+	 */
 	createXTokensFeeAssetItem: (opts: CreateFeeAssetItemOpts): UnionXcAssetsMultiLocation => {
 		const { paysWithFeeDest, xcmVersion } = opts;
 
@@ -323,6 +346,15 @@ export const ParaToPara: ICreateXcmType = {
 	},
 };
 
+/**
+ * Create `xTokens` MultiAssets.
+ *
+ * @param amounts Amount per asset. It will match the `assets` length.
+ * @param xcmVersion The accepted xcm version.
+ * @param specName The specname of the chain the api is connected to.
+ * @param assets The assets to create into xcm `MultiAssets`.
+ * @param opts Options used to create xTokens `MultiAssets`.
+ */
 const createXTokensMultiAssets = async (
 	amounts: string[],
 	xcmVersion: number,
@@ -400,11 +432,13 @@ const createXTokensMultiAssets = async (
 /**
  * Create multiassets for ParaToPara direction.
  *
- * @param api
- * @param amounts
- * @param specName
- * @param assets
- * @param registry
+ * @param api ApiPromise
+ * @param amounts Amount per asset. It will match the `assets` length.
+ * @param specName The specname of the chain the api is connected to.
+ * @param assets The assets to create into xcm `MultiAssets`.
+ * @param xcmVersion The accepted xcm version.
+ * @param registry The asset registry used to construct MultiLocations.
+ * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  */
 const createParaToParaMultiAssets = async (
 	api: ApiPromise,

@@ -308,7 +308,7 @@ export class AssetTransferApi {
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 
 		if (
-			xcmPallet === XcmPalletName.xTokens &&
+			(xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens) &&
 			(xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara)
 		) {
 			if (!paysWithFeeDest && assetIds.length < 2) {

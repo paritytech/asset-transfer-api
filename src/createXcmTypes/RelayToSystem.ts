@@ -15,10 +15,10 @@ import {
  */
 export const RelayToSystem: ICreateXcmType = {
 	/**
-	 * Create a XcmVersionedMultiLocation type for a beneficiary.
+	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
 	 *
-	 * @param accountId The accountId of the beneficiary
-	 * @param xcmVersion The accepted xcm version
+	 * @param accountId The accountId of the beneficiary.
+	 * @param xcmVersion The accepted xcm version.
 	 */
 	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
@@ -51,9 +51,8 @@ export const RelayToSystem: ICreateXcmType = {
 		};
 	},
 	/**
-	 * Create a XcmVersionedMultiLocation type for a destination.
+	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
-	 * @param api ApiPromise
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
@@ -83,12 +82,10 @@ export const RelayToSystem: ICreateXcmType = {
 		};
 	},
 	/**
-	 * Create a VersionedMultiAsset type.
+	 * Create a VersionedMultiAsset structured type.
 	 *
-	 * @param api ApiPromise
-	 * @param assets Assets to be sent
-	 * @param amounts
-	 * @param xcmVersion
+	 * @param amounts The amount for a relay native asset. The length will always be one.
+	 * @param xcmVersion The accepted xcm version.
 	 */
 	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
 		const multiAssets = [];
@@ -121,12 +118,9 @@ export const RelayToSystem: ICreateXcmType = {
 		}
 	},
 	/**
-	 * Create an XcmV3WeightLimit type.
+	 * Create an Xcm WeightLimit structured type.
 	 *
-	 * @param api ApiPromise
-	 * @param isLimited Whether the tx is limited
-	 * @param refTime amount of computation time
-	 * @param proofSize amount of storage to be used
+	 * @param opts Options that are used for WeightLimit.
 	 */
 	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
 		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
@@ -138,11 +132,9 @@ export const RelayToSystem: ICreateXcmType = {
 			  }
 			: { Unlimited: null };
 	},
-
 	/**
-	 * return the correct feeAssetItem based on XCM direction.
-	 *
-	 * @param api ApiPromise
+	 * Return the correct feeAssetItem based on XCM direction.
+	 * In this case it will always be zero since there is no `feeAssetItem` for this direction.
 	 */
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
 		return await Promise.resolve(0);
