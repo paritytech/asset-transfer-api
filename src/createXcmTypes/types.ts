@@ -219,7 +219,9 @@ export interface XcmV2ParachainDestBenificiary {
 	V2: {
 		parents: string | number;
 		interior: {
-			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
+			X2:
+				| [{ Parachain: string }, { AccountId32: { id: string } }]
+				| [{ Parachain: string }, { AccountKey20: { key: string } }];
 		};
 	};
 }
@@ -228,7 +230,9 @@ export interface XcmV3ParachainDestBenificiary {
 	V3: {
 		parents: string | number;
 		interior: {
-			X2: [{ Parachain: string }, { AccountId32: { id: string } }];
+			X2:
+				| [{ Parachain: string }, { AccountId32: { id: string } }]
+				| [{ Parachain: string }, { AccountKey20: { key: string } }];
 		};
 	};
 }

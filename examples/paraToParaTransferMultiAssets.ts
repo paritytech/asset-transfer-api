@@ -15,7 +15,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.api.onfinality.io/public-ws');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.public.blastapi.io');
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 	let callInfo: TxResult<'call'>;
 	try {

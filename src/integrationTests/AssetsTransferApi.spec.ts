@@ -4,7 +4,7 @@ import { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
-import type {Format, TxResult } from '../types';
+import type { Format, TxResult } from '../types';
 
 const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
 const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);

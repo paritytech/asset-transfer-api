@@ -30,7 +30,6 @@ export const getAssetId = async (
 	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean
 ): Promise<string> => {
-	console.log('GET ASSET ID', asset);
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
 	const isParachain = new BN(currentChainId).gte(new BN(2000));
@@ -40,7 +39,7 @@ export const getAssetId = async (
 		const cachedAssetId = registry.cacheLookupAsset(asset);
 
 		if (cachedAssetId) {
-			// if asset is in the registry cache, return the assetId
+			// if asset is in the registry cache, return the asset
 			return cachedAssetId;
 		}
 	}
@@ -107,6 +106,7 @@ export const getAssetId = async (
 				if (assetSymbol) {
 					// add queried asset to registry
 					registry.setAssetInCache(asset, assetSymbol);
+					console.info(`Added asset ${asset} with assetId ${assetSymbol} to the registry cache.`);
 				}
 			} else {
 				throw new BaseError(`general index for assetId ${asset} was not found`, BaseErrorsEnum.AssetNotFound);
@@ -119,7 +119,7 @@ export const getAssetId = async (
 		}
 	} else if (isParachain) {
 		const paraId = registry.lookupChainIdBySpecName(specName);
-	
+
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
 		const currentRelayChainSpecName = registry.relayChain;
 
@@ -131,21 +131,20 @@ export const getAssetId = async (
 		}
 
 		if (_api.query.assets) {
-			console.log('WHAT IS SPECNAME', specName);
-			console.log('WHAT IS ASSET ID', assetId);
 			if (!assetIsValidInt) {
 				// if not assetHub and assetId isnt a number, query the parachain chain for the asset symbol
 				const parachainAssets = await _api.query.assets.asset.entries();
-	
+
 				for (let i = 0; i < parachainAssets.length; i++) {
 					const parachainAsset = parachainAssets[i];
 					const id = parachainAsset[0].args[0];
-	
+
 					const metadata = await _api.query.assets.metadata(id);
 					if (metadata.symbol.toHuman()?.toString().toLowerCase() === asset.toLowerCase()) {
 						assetId = id.toString();
 						// add queried asset to registry
-						registry.setAssetInCache(assetId, asset);
+						registry.setAssetInCache(asset, assetId);
+						console.info(`Added asset ${asset} with assetId ${assetId} to the registry cache.`);
 						break;
 					}
 				}
@@ -158,13 +157,15 @@ export const getAssetId = async (
 							typeof info.symbol === 'string' &&
 							info.symbol.toLowerCase() === asset.toLowerCase()
 						) {
-							assetId = info.asset;
-							registry.setAssetInCache(assetId, asset);
+							assetId = info.xcmV1MultiLocation;
+							registry.setAssetInCache(asset, assetId);
+							console.info(`Added asset ${asset} with value ${assetId} to the registry cache.`);
+
 							break;
 						}
 					}
 				}
-	
+
 				if (assetId.length === 0) {
 					throw new BaseError(
 						`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`,
@@ -175,10 +176,10 @@ export const getAssetId = async (
 				// if not assetHub and assetId is a number, query the parachain chain for the asset
 				const parachainAsset = await _api.query.assets.asset(asset);
 				if (parachainAsset.isSome) {
-					console.log('ASSET IS WHAT', asset);
 					assetId = asset;
 					// add queried asset to registry
-					registry.setAssetInCache(assetId, asset);
+					registry.setAssetInCache(asset, assetId);
+					console.info(`Added asset ${asset} with assetId ${assetId} to the registry cache.`);
 				} else {
 					throw new BaseError(
 						`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`,
@@ -186,32 +187,22 @@ export const getAssetId = async (
 					);
 				}
 			}
-
 		} else {
-			console.log('AM I REACHED?????');
 			// Pallet Assets isn't supported, check symbol or integer assetId against asset registry
 			if (assetIsValidInt) {
 				for (const info of paraXcAssets) {
 					if (typeof info.asset === 'string' && info.asset.toLowerCase() === asset.toLowerCase()) {
 						assetId = info.xcmV1MultiLocation;
-						registry.setAssetInCache(assetId, asset);
+						registry.setAssetInCache(asset, assetId);
+						console.info(`Added asset ${asset} with assetId ${assetId} to the registry cache.`);
 					}
 				}
 			} else {
 				for (const info of paraXcAssets) {
-					console.log('ASSET ID', info.symbol);
-					if (
-						typeof info.symbol === 'string' && 
-						info.symbol.toLowerCase() === asset.toLowerCase()
-					) {
+					if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === asset.toLowerCase()) {
 						assetId = info.xcmV1MultiLocation;
-						registry.setAssetInCache(assetId, asset);
-					} else if (
-						typeof info.symbol === 'string' && 
-						info.symbol.toLowerCase() === asset.toLowerCase()
-					) {
-						assetId = info.xcmV1MultiLocation;
-						registry.setAssetInCache(assetId, asset);
+						registry.setAssetInCache(asset, assetId);
+						console.info(`Added asset ${asset} with assetId ${assetId} to the registry cache.`);
 					}
 				}
 			}
@@ -225,7 +216,5 @@ export const getAssetId = async (
 		}
 	}
 
-	console.log('WHAT IS SPECNAME', specName);
-	console.log('WHAT IS ASSET ID', assetId);
 	return assetId;
 };

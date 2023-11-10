@@ -261,7 +261,7 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 			approvals: mockMoonriverParachainApi.registry.createType('u32', 100),
 			status: mockMoonriverParachainApi.registry.createType('PalletAssetsAssetStatus', 'live'),
 		};
-		
+
 		const xcRmrk = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetDetails', xcRmrkAssetInfo);
 		assets.set('182365888117048807484804376330534607370', xcRmrk);
 
@@ -343,7 +343,10 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 			decimals: mockMoonriverParachainApi.registry.createType('u8', 12),
 			isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 		};
-		const xcvBNCMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCVBNCMetadata);
+		const xcvBNCMetadata = mockMoonriverParachainApi.registry.createType(
+			'PalletAssetsAssetMetadata',
+			rawXCVBNCMetadata
+		);
 		metadata.set('72145018963825376852137222787619937732', xcvBNCMetadata);
 
 		// vMOVR
@@ -356,7 +359,10 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 			decimals: mockMoonriverParachainApi.registry.createType('u8', 18),
 			isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 		};
-		const xcvMOVRMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCVMOVRMetadata);
+		const xcvMOVRMetadata = mockMoonriverParachainApi.registry.createType(
+			'PalletAssetsAssetMetadata',
+			rawXCVMOVRMetadata
+		);
 		metadata.set('203223821023327994093278529517083736593', xcvMOVRMetadata);
 
 		// SDN
@@ -381,7 +387,10 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 			decimals: mockMoonriverParachainApi.registry.createType('u8', 6),
 			isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 		};
-		const xcUsdtMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXcUsdtMetadata);
+		const xcUsdtMetadata = mockMoonriverParachainApi.registry.createType(
+			'PalletAssetsAssetMetadata',
+			rawXcUsdtMetadata
+		);
 		metadata.set('311091173110107856861649819128533077277', xcUsdtMetadata);
 
 		const rawXcRmrkMetadata = {
@@ -393,7 +402,10 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 			decimals: mockMoonriverParachainApi.registry.createType('u8', 6),
 			isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 		};
-		const xcRmrkMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXcRmrkMetadata);
+		const xcRmrkMetadata = mockMoonriverParachainApi.registry.createType(
+			'PalletAssetsAssetMetadata',
+			rawXcRmrkMetadata
+		);
 		metadata.set('182365888117048807484804376330534607370', xcRmrkMetadata);
 
 		const maybeMetadata = metadata.has(assetId.toString()) ? metadata.get(assetId.toString()) : undefined;
@@ -437,7 +449,10 @@ export const adjustedMockMoonriverParachainApi = {
 						decimals: mockMoonriverParachainApi.registry.createType('u8', 12),
 						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 					};
-					const xcKsmMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXcKsmMetadata);
+					const xcKsmMetadata = mockMoonriverParachainApi.registry.createType(
+						'PalletAssetsAssetMetadata',
+						rawXcKsmMetadata
+					);
 					metadata.set('42259045809535163221576417993425387648', xcKsmMetadata);
 
 					// xcBNC
@@ -450,7 +465,10 @@ export const adjustedMockMoonriverParachainApi = {
 						decimals: mockMoonriverParachainApi.registry.createType('u8', 12),
 						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 					};
-					const xcBNCMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCBNCMetadata);
+					const xcBNCMetadata = mockMoonriverParachainApi.registry.createType(
+						'PalletAssetsAssetMetadata',
+						rawXCBNCMetadata
+					);
 					metadata.set('319623561105283008236062145480775032445', xcBNCMetadata);
 
 					// xcvBNC
@@ -463,7 +481,10 @@ export const adjustedMockMoonriverParachainApi = {
 						decimals: mockMoonriverParachainApi.registry.createType('u8', 12),
 						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 					};
-					const xcvBNCMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCVBNCMetadata);
+					const xcvBNCMetadata = mockMoonriverParachainApi.registry.createType(
+						'PalletAssetsAssetMetadata',
+						rawXCVBNCMetadata
+					);
 					metadata.set('72145018963825376852137222787619937732', xcvBNCMetadata);
 
 					// vMOVR
@@ -476,7 +497,10 @@ export const adjustedMockMoonriverParachainApi = {
 						decimals: mockMoonriverParachainApi.registry.createType('u8', 18),
 						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 					};
-					const xcvMOVRMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCVMOVRMetadata);
+					const xcvMOVRMetadata = mockMoonriverParachainApi.registry.createType(
+						'PalletAssetsAssetMetadata',
+						rawXCVMOVRMetadata
+					);
 					metadata.set('203223821023327994093278529517083736593', xcvMOVRMetadata);
 
 					// SDN
@@ -489,7 +513,10 @@ export const adjustedMockMoonriverParachainApi = {
 						decimals: mockMoonriverParachainApi.registry.createType('u8', 18),
 						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 					};
-					const xcSDNMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXCSDNMetadata);
+					const xcSDNMetadata = mockMoonriverParachainApi.registry.createType(
+						'PalletAssetsAssetMetadata',
+						rawXCSDNMetadata
+					);
 					metadata.set('203223821023327994093278529517083736593', xcSDNMetadata);
 
 					// USDT
@@ -502,7 +529,10 @@ export const adjustedMockMoonriverParachainApi = {
 						decimals: mockMoonriverParachainApi.registry.createType('u8', 6),
 						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 					};
-					const xcUsdtMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXcUsdtMetadata);
+					const xcUsdtMetadata = mockMoonriverParachainApi.registry.createType(
+						'PalletAssetsAssetMetadata',
+						rawXcUsdtMetadata
+					);
 					metadata.set('311091173110107856861649819128533077277', xcUsdtMetadata);
 
 					const rawXcRmrkMetadata = {
@@ -514,7 +544,10 @@ export const adjustedMockMoonriverParachainApi = {
 						decimals: mockMoonriverParachainApi.registry.createType('u8', 6),
 						isFrozen: mockMoonriverParachainApi.registry.createType('bool', false),
 					};
-					const xcRmrkMetadata = mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', rawXcRmrkMetadata);
+					const xcRmrkMetadata = mockMoonriverParachainApi.registry.createType(
+						'PalletAssetsAssetMetadata',
+						rawXcRmrkMetadata
+					);
 					metadata.set('182365888117048807484804376330534607370', xcRmrkMetadata);
 
 					const result: [StorageKey<[u128]>, PalletAssetsAssetMetadata][] = [];

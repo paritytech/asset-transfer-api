@@ -563,8 +563,6 @@ export class AssetTransferApi {
 		originIsSystemParachain: boolean,
 		originIsParachain: boolean
 	): Direction {
-		console.log('ORIGIN IS PARACHAIN', originIsParachain);
-		console.log('DEST IS PARACHAIN', destIsParachain);
 		if (isLocal) {
 			return Direction.Local;
 		}

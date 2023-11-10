@@ -33,7 +33,6 @@ import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
-// import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
 export const ParaToPara: ICreateXcmType = {
@@ -208,7 +207,9 @@ export const ParaToPara: ICreateXcmType = {
 				V2: {
 					parents: 1,
 					interior: {
-						X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
+						X2: isEthereumAddress(accountId)
+							? [{ Parachain: destChainId }, { AccountKey20: { key: accountId } }]
+							: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
 					},
 				},
 			};
@@ -218,7 +219,9 @@ export const ParaToPara: ICreateXcmType = {
 			V3: {
 				parents: 1,
 				interior: {
-					X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
+					X2: isEthereumAddress(accountId)
+						? [{ Parachain: destChainId }, { AccountKey20: { key: accountId } }]
+						: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
 				},
 			},
 		};
@@ -239,29 +242,25 @@ export const ParaToPara: ICreateXcmType = {
 		assetId: string,
 		opts: CreateAssetsOpts
 	): Promise<UnionXcAssetsMultiAsset> => {
-		console.log('PASSED IN ID', assetId);
 		const { registry } = opts;
-		// const { tokens: relayTokens } = registry.currentRelayRegistry['0'];
 		const isValidInt = validateNumber(assetId);
-		// const isRelayNative = isRelayNativeAsset(relayTokens, assetId);
 
 		if (!isValidInt) {
 			assetId = await getAssetId(opts.api, registry, assetId, specName, xcmVersion);
 		}
-		console.log('ASSET ID AFTER GET ASSET ID', assetId);
 
 		const paraId = registry.lookupChainIdBySpecName(specName);
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
 
 		let xcAsset = '';
 		if (isValidInt) {
-				for (const info of paraXcAssets) {
-					if (typeof info.asset === 'string' && info.asset === assetId) {
-						xcAsset = info.xcmV1MultiLocation;
-						break;
-					}
+			for (const info of paraXcAssets) {
+				if (typeof info.asset === 'string' && info.asset === assetId) {
+					xcAsset = info.xcmV1MultiLocation;
+					break;
 				}
-			} else {
+			}
+		} else {
 			if (!assetId.includes('parents')) {
 				for (const info of paraXcAssets) {
 					if (typeof info.asset === 'string' && info.asset === assetId) {
@@ -270,12 +269,10 @@ export const ParaToPara: ICreateXcmType = {
 					}
 				}
 			} else {
-					xcAsset = assetId;
+				xcAsset = assetId;
 			}
 		}
 
-		console.log('WHAT IS xcAsset', xcAsset);
-		
 		const parsedMultiLocation = JSON.parse(xcAsset) as XCMAssetRegistryMultiLocation;
 		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
@@ -343,7 +340,7 @@ const createXTokensMultiAssets = async (
 		const isValidInt = validateNumber(assetId);
 
 		if (!isValidInt) {
-		assetId = await getAssetId(opts.api, registry, assetId, specName, xcmVersion);
+			assetId = await getAssetId(opts.api, registry, assetId, specName, xcmVersion);
 		}
 
 		const paraId = registry.lookupChainIdBySpecName(specName);
@@ -351,13 +348,13 @@ const createXTokensMultiAssets = async (
 
 		let xcAsset = '';
 		if (isValidInt) {
-				for (const info of paraXcAssets) {
-					if (typeof info.asset === 'string' && info.asset === assetId) {
-						xcAsset = info.xcmV1MultiLocation;
-						break;
-					}
+			for (const info of paraXcAssets) {
+				if (typeof info.asset === 'string' && info.asset === assetId) {
+					xcAsset = info.xcmV1MultiLocation;
+					break;
 				}
-			} else {
+			}
+		} else {
 			if (!assetId.includes('parents')) {
 				for (const info of paraXcAssets) {
 					if (typeof info.asset === 'string' && info.asset === assetId) {
@@ -366,7 +363,7 @@ const createXTokensMultiAssets = async (
 					}
 				}
 			} else {
-					xcAsset = assetId;
+				xcAsset = assetId;
 			}
 		}
 
@@ -461,20 +458,18 @@ const createParaToParaMultiAssets = async (
 			const paraId = registry.lookupChainIdBySpecName(specName);
 			const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
 
-		let xcAsset = '';
-		if (!assetId.includes('parents')) {
-			for (const info of paraXcAssets) {
-				if (typeof info.asset === 'string' && info.asset === assetId) {
-					xcAsset = info.xcmV1MultiLocation;
-					break;
+			let xcAsset = '';
+			if (!assetId.includes('parents')) {
+				for (const info of paraXcAssets) {
+					if (typeof info.asset === 'string' && info.asset === assetId) {
+						xcAsset = info.xcmV1MultiLocation;
+						break;
+					}
 				}
+			} else {
+				xcAsset = assetId;
 			}
-		} else {
-			xcAsset = assetId;
-		}
 
-		console.log('WHAT IS xcAsset', xcAsset);
-		
 			const parsedMultiLocation = JSON.parse(xcAsset) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
