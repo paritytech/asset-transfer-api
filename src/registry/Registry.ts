@@ -212,7 +212,7 @@ export class Registry {
 	/**
 	 * Return the info for a parachain within a relay chains registry.
 	 *
-	 * @param id
+	 * @param id ParaId
 	 */
 	public lookupParachainInfo(id: string): ExpandedChainInfoKeys[] {
 		const chainIds = Object.keys(this.currentRelayRegistry);
