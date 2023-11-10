@@ -526,7 +526,7 @@ describe('checkAssetIds', () => {
 		}).not.toThrow();
 	});
 	it('Should error when an invalid assetId is inputted for ParaToRelay', async () => {
-		const registry = new Registry('moonriver', {});
+		const registry = new Registry('karura', {});
 		const currentRegistry = registry.currentRelayRegistry;
 
 		await expect(async () => {
@@ -534,7 +534,7 @@ describe('checkAssetIds', () => {
 				adjustedMockParachainApi,
 				['TEST'],
 				currentRegistry,
-				'moonriver',
+				'crust-collator',
 				Direction.ParaToRelay,
 				registry,
 				2,

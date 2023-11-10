@@ -2632,6 +2632,88 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 			});
 		});
+		describe('ParaToRelay', () => {
+			const nativeParaToRelayTx = async <T extends Format>(
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number
+			): Promise<TxResult<T>> => {
+				return await moonriverAssetsApi.createTransferTransaction(
+					'0', // `0` indicating the dest chain is a relay chain.
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['KSM'],
+					['100'],
+					{
+						format,
+						isLimited,
+						xcmVersion,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					}
+				);
+			};
+			describe('transferMultiAsset', () => {
+				describe('V2', () => {
+					it('Should correctly build a V2 transferMultiAsset call', async () => {
+						const res = await nativeParaToRelayTx('call', true, 2);
+						expect(res).toStrictEqual({
+							dest: 'kusama',
+							direction: 'ParaToRelay',
+							format: 'call',
+							method: 'transferMultiAsset',
+							origin: 'moonriver',
+							tx: '0x6a01010001000091010101010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+							xcmVersion: 2,
+						});
+					});
+					it('Should correctly build a V2 transferMultiAsset payload', async () => {
+						const res = await nativeParaToRelayTx('payload', true, 2);
+						expect(res).toStrictEqual({
+							dest: 'kusama',
+							direction: 'ParaToRelay',
+							format: 'payload',
+							method: 'transferMultiAsset',
+							origin: 'moonriver',
+							tx: '0xbc6a01010001000091010101010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+							xcmVersion: 2,
+						});
+					});
+					it('Should correctly build a V2 transferMultiAsset submittableExtrinsic', async () => {
+						const res = await nativeParaToRelayTx('submittable', true, 2);
+						expect(res.tx.toRawType()).toEqual('Extrinsic');
+					});
+				});
+				describe('V3', () => {
+					it('Should correctly build a V3 transferMultiAsset call', async () => {
+						const res = await nativeParaToRelayTx('call', true, 3);
+						expect(res).toStrictEqual({
+							dest: 'kusama',
+							direction: 'ParaToRelay',
+							format: 'call',
+							method: 'transferMultiAsset',
+							origin: 'moonriver',
+							tx: '0x6a01030001000091010301010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
+							xcmVersion: 3,
+						});
+					});
+					it('Should correctly build a V3 transferMultiAsset payload', async () => {
+						const res = await nativeParaToRelayTx('payload', true, 3);
+						expect(res).toStrictEqual({
+							dest: 'kusama',
+							direction: 'ParaToRelay',
+							format: 'payload',
+							method: 'transferMultiAsset',
+							origin: 'moonriver',
+							tx: '0xbc6a01030001000091010301010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+							xcmVersion: 3,
+						});
+					});
+					it('Should correctly build a V3 transferMultiAsset submittableExtrinsic', async () => {
+						const res = await nativeParaToRelayTx('submittable', true, 3);
+						expect(res.tx.toRawType()).toEqual('Extrinsic');
+					});
+				});
+			});
+		});
 		describe('checkLocalTxInput', () => {
 			it('Should error when the assetIds or amounts is the incorrect length', async () => {
 				await expect(async () => {
