@@ -485,7 +485,7 @@ const createParaToParaMultiAssets = async (
 
 			const isValidNumber = validateNumber(assetId);
 
-			if (!isValidNumber && !isPrimaryParachainNativeAsset) {
+			if (!isValidNumber) {
 				assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 			}
 

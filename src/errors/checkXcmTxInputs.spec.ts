@@ -776,7 +776,7 @@ describe('checkParaAssets', () => {
 				false
 			);
 
-			expect(registry.cacheLookupAsset('311091173110107856861649819128533077277')).toEqual('xcUSDT');
+			expect(registry.cacheLookupAsset('xcUSDT')).toEqual('311091173110107856861649819128533077277');
 		});
 
 		it('Should correctly cache a foreign asset that is not found in the registry after being queried', async () => {
