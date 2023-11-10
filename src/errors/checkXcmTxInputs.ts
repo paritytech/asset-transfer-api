@@ -731,10 +731,20 @@ const checkSystemToSystemAssetId = async (
 	);
 };
 
+/**
+ * Check the assets for ParaToRelay.
+ *
+ * @param assetId
+ * @param registry
+ * @param specName
+ */
 const checkParaToRelayAssetId = (assetId: string, registry: Registry, specName: string) => {
 	const relayRegistry = registry.currentRelayRegistry;
 	const relayNativeToken = relayRegistry[0].tokens[0];
 	const nativeEqAssetId = relayNativeToken === assetId;
+	const curParaId = registry.lookupChainIdBySpecName(specName);
+	const curParaRegistry = relayRegistry[curParaId];
+	const { xcAssetsData } = curParaRegistry;
 
 	let assetIsRelayChainNativeAsset = false;
 	if (assetId === '') {
@@ -747,18 +757,19 @@ const checkParaToRelayAssetId = (assetId: string, registry: Registry, specName: 
 	}
 
 	const isValidInt = validateNumber(assetId);
-	if (isValidInt) {
-		const curParaId = registry.lookupChainIdBySpecName(specName);
-		const curParaRegistry = relayRegistry[curParaId];
-		const { xcAssetsData } = curParaRegistry;
-
-		if (xcAssetsData && xcAssetsData.length > 0) {
-			// We assume the first xcAsset will represent the relay chain
-			// since they are all sorted in the registry.
-			if (xcAssetsData[0].asset === assetId) {
-				assetIsRelayChainNativeAsset = true;
-			}
+	if (isValidInt && xcAssetsData && xcAssetsData.length > 0) {
+		// We assume the first xcAsset will represent the relay chain
+		// since they are all sorted in the registry.
+		if (xcAssetsData[0].asset === assetId) {
+			assetIsRelayChainNativeAsset = true;
 		}
+	}
+
+	const paraIncludesRelayNativeInTokens = curParaRegistry.tokens.includes(relayNativeToken);
+	const paraIncludesRelayNativeInXcAssets = xcAssetsData && xcAssetsData[0].symbol === relayNativeToken;
+
+	if (paraIncludesRelayNativeInTokens || paraIncludesRelayNativeInXcAssets) {
+		assetIsRelayChainNativeAsset = true;
 	}
 
 	if (!assetIsRelayChainNativeAsset) {
