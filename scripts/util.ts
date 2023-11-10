@@ -57,3 +57,25 @@ export const awaitBlockProduction = async (wsUrl: string) => {
 		logWithDate(chalk.blue('Polkadot-js successfully disconnected'));
 	});
 };
+
+export const awaitEpochChange = async (api: ApiPromise) => {
+	const currentEpoch = await api.call.babeApi.currentEpoch();
+	const currentEpochIndex = currentEpoch.epochIndex;
+	let counter = 1;
+	let changedEpoch = false;
+	while (!changedEpoch) {
+		const { epochIndex } = await api.call.babeApi.currentEpoch();
+
+		if (epochIndex.toNumber() > currentEpochIndex.toNumber() + 1) {
+			changedEpoch = true;
+		}
+		await delay(1000);
+
+		counter += 1;
+		process.stdout.clearLine(0);
+		process.stdout.write(`\rWaiting for Epoch change${'.'.repeat((counter % 3) + 1)}`);
+	}
+
+	process.stdout.clearLine(0);
+	logWithDate(chalk.magenta('Epoch changed'), true);
+};
