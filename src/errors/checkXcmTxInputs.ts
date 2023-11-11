@@ -374,7 +374,6 @@ export const checkLiquidTokenValidity = async (
 
 				// cache the queried liquidToken asset
 				registry.setLiquidPoolTokenInCache(assetId, asset);
-				console.info(`Added asset ${assetId} with assetId ${asset.toString()} to the registry cache.`);
 			}
 		}
 		return;
@@ -443,7 +442,6 @@ const checkSystemAssets = async (
 					const assetStr = assetSymbol as string;
 					// add the asset to the cache
 					registry.setAssetInCache(assetId, assetStr);
-					console.info(`Added asset ${assetId} with assetId ${assetStr} to the registry cache.`);
 				}
 			}
 		} else {
@@ -554,7 +552,6 @@ export const checkParaAssets = async (
 					const assetSymbolStr = assetSymbol as string;
 					// store xcAsset in registry cache
 					registry.setAssetInCache(assetId, assetSymbolStr);
-					console.info(`Added asset ${assetId} with symbol ${assetSymbolStr} to the registry cache.`);
 				}
 			}
 
@@ -589,7 +586,6 @@ export const checkParaAssets = async (
 				if (symbol && symbol.toLowerCase() === assetId.toLowerCase()) {
 					// store in registry cache
 					registry.setAssetInCache(symbol, id.toString());
-					console.info(`Added asset ${symbol} with assetId ${id.toString()} to registry cache.`);
 					return;
 				}
 			}

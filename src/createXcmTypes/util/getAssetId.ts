@@ -106,7 +106,6 @@ export const getAssetId = async (
 				if (assetSymbol) {
 					// add queried asset to registry
 					registry.setAssetInCache(asset, assetSymbol);
-					console.info(`Added asset ${asset} with assetId ${assetSymbol} to the registry cache.`);
 				}
 			} else {
 				throw new BaseError(`general index for assetId ${asset} was not found`, BaseErrorsEnum.AssetNotFound);
@@ -144,7 +143,6 @@ export const getAssetId = async (
 						assetId = id.toString();
 						// add queried asset to registry
 						registry.setAssetInCache(asset, assetId);
-						console.info(`Added asset ${asset} with assetId ${assetId} to the registry cache.`);
 						break;
 					}
 				}
@@ -159,8 +157,6 @@ export const getAssetId = async (
 						) {
 							assetId = info.xcmV1MultiLocation;
 							registry.setAssetInCache(asset, assetId);
-							console.info(`Added asset ${asset} with value ${assetId} to the registry cache.`);
-
 							break;
 						}
 					}
