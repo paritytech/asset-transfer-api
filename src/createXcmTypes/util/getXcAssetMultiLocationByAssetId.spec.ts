@@ -12,7 +12,7 @@ const bifrostApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifros
 const moonriverRegistry = new Registry('moonriver', {});
 const moonriverApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
 
-describe('getXcAssetByAssetId', () => {
+describe('getXcAssetMultiLocationByAssetId', () => {
 	it('Should correctly return the multilocation when given a valid symbol assetId', async () => {
 		bifrostRegistry.currentRelayRegistry['2001'].xcAssetsData = [
 			{
@@ -42,13 +42,7 @@ describe('getXcAssetByAssetId', () => {
 
 		const expected =
 			'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}';
-		const result = await getXcAssetMultiLocationByAssetId(
-			bifrostApi._api,
-			assetId,
-			specName,
-			xcmVersion,
-			bifrostRegistry
-		);
+		const result = await getXcAssetMultiLocationByAssetId(bifrostApi._api, assetId, specName, xcmVersion, bifrostRegistry);
 
 		expect(result).toStrictEqual(expected);
 	});
@@ -75,13 +69,7 @@ describe('getXcAssetByAssetId', () => {
 		const specName = 'moonriver';
 
 		const expected = '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x010a"}]}}}';
-		const result = await getXcAssetMultiLocationByAssetId(
-			moonriverApi._api,
-			assetId,
-			specName,
-			xcmVersion,
-			moonriverRegistry
-		);
+		const result = await getXcAssetMultiLocationByAssetId(moonriverApi._api, assetId, specName, xcmVersion, moonriverRegistry);
 
 		expect(result).toStrictEqual(expected);
 	});
