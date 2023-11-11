@@ -175,7 +175,6 @@ export const getAssetId = async (
 					assetId = asset;
 					// add queried asset to registry
 					registry.setAssetInCache(asset, assetId);
-					console.info(`Added asset ${asset} with assetId ${assetId} to the registry cache.`);
 				} else {
 					throw new BaseError(
 						`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`,
@@ -190,7 +189,6 @@ export const getAssetId = async (
 					if (typeof info.asset === 'string' && info.asset.toLowerCase() === asset.toLowerCase()) {
 						assetId = info.xcmV1MultiLocation;
 						registry.setAssetInCache(asset, assetId);
-						console.info(`Added asset ${asset} with assetId ${assetId} to the registry cache.`);
 					}
 				}
 			} else {
@@ -198,7 +196,6 @@ export const getAssetId = async (
 					if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === asset.toLowerCase()) {
 						assetId = info.xcmV1MultiLocation;
 						registry.setAssetInCache(asset, assetId);
-						console.info(`Added asset ${asset} with assetId ${assetId} to the registry cache.`);
 					}
 				}
 			}
