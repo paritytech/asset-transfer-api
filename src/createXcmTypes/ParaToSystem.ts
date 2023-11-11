@@ -37,8 +37,8 @@ export const ParaToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
-	 * @param accountId The accountId of the beneficiary
-	 * @param xcmVersion The accepted xcm version
+	 * @param accountId The accountId of the beneficiary.
+	 * @param xcmVersion The accepted xcm version.
 	 */
 	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion == 2) {
@@ -64,8 +64,8 @@ export const ParaToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
-	 * @param destId The parachain Id of the destination
-	 * @param xcmVersion The accepted xcm version
+	 * @param destId The parachain Id of the destination.
+	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (destId: string, xcmVersion?: number): XcmDestBenificiary => {
 		if (xcmVersion === 2) {
