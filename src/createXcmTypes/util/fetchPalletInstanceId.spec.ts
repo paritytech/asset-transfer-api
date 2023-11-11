@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
+import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId';
 
 describe('fetchPalletInstanceId', () => {
@@ -23,5 +24,10 @@ describe('fetchPalletInstanceId', () => {
 		const err = () => fetchPalletInstanceId(mockSystemApi, true, true);
 
 		expect(err).toThrowError("Can't find the appropriate pallet when both liquid tokens and foreign assets");
+	});
+	it('Should correctly return an empty string when the assets pallet is not found', () => {
+		const res = fetchPalletInstanceId(mockBifrostParachainApi, false, false);
+
+		expect(res).toEqual('');
 	});
 });
