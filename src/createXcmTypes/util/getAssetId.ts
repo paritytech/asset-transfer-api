@@ -132,7 +132,7 @@ export const getAssetId = async (
 
 		if (_api.query.assets) {
 			if (!assetIsValidInt) {
-				// if not assetHub and assetId isnt a number, query the parachain chain for the asset symbol
+				// if not assetHub and assetId isnt a number, query the parachain for the asset symbol
 				const parachainAssets = await _api.query.assets.asset.entries();
 
 				for (let i = 0; i < parachainAssets.length; i++) {
@@ -173,7 +173,7 @@ export const getAssetId = async (
 					);
 				}
 			} else {
-				// if not assetHub and assetId is a number, query the parachain chain for the asset
+				// if not assetHub and assetId is a number, query the parachain for the asset
 				const parachainAsset = await _api.query.assets.asset(asset);
 				if (parachainAsset.isSome) {
 					assetId = asset;
