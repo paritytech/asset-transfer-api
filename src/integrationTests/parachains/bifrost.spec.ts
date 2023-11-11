@@ -1,3 +1,5 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
 import { AssetTransferApi } from '../../AssetTransferApi';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
 import type { Direction, Format } from '../../types';

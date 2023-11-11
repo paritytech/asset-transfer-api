@@ -1,3 +1,5 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
 import { AssetTransferApi } from '../../AssetTransferApi';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
 import type { Direction, Format } from '../../types';
