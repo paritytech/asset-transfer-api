@@ -36,11 +36,11 @@ export const getAssetId = async (
 
 	// if assets pallet, check the cache and return the cached assetId if found
 	if (!isForeignAssetsTransfer) {
-		const cachedAssetId = registry.cacheLookupAsset(asset);
+		const cachedAsset = registry.cacheLookupAsset(asset);
 
-		if (cachedAssetId) {
-			// if asset is in the registry cache, return the asset
-			return cachedAssetId;
+		if (cachedAsset) {
+			// if asset is in the registry cache, return the cached asset
+			return cachedAsset;
 		}
 	}
 
