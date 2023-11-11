@@ -263,7 +263,6 @@ export const ParaToPara: ICreateXcmType = {
 		const { registry, api } = opts;
 
 		const xcAssetMultiLocationStr = await getXcAssetIdByAssetId(api, assetId, specName, xcmVersion, registry);
-
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
@@ -342,7 +341,6 @@ const createXTokensMultiAssets = async (
 		const assetId = assets[i];
 
 		const xcAssetMultiLocationStr = await getXcAssetIdByAssetId(api, assetId, specName, xcmVersion, registry);
-
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
@@ -428,7 +426,6 @@ const createParaToParaMultiAssets = async (
 			const assetId = assets[i];
 
 			const xcAssetMultiLocationStr = await getXcAssetIdByAssetId(api, assetId, specName, xcmVersion, registry);
-
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
