@@ -30,7 +30,7 @@ import type {
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getXcAssetIdByAssetId } from './util/getXcAssetIdByAssetId';
+import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -262,7 +262,13 @@ export const ParaToPara: ICreateXcmType = {
 	): Promise<UnionXcAssetsMultiAsset> => {
 		const { registry, api } = opts;
 
-		const xcAssetMultiLocationStr = await getXcAssetIdByAssetId(api, assetId, specName, xcmVersion, registry);
+		const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
+			api,
+			assetId,
+			specName,
+			xcmVersion,
+			registry
+		);
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
@@ -340,7 +346,13 @@ const createXTokensMultiAssets = async (
 		const amount = amounts[i];
 		const assetId = assets[i];
 
-		const xcAssetMultiLocationStr = await getXcAssetIdByAssetId(api, assetId, specName, xcmVersion, registry);
+		const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
+			api,
+			assetId,
+			specName,
+			xcmVersion,
+			registry
+		);
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
@@ -425,7 +437,13 @@ const createParaToParaMultiAssets = async (
 			const amount = amounts[i];
 			const assetId = assets[i];
 
-			const xcAssetMultiLocationStr = await getXcAssetIdByAssetId(api, assetId, specName, xcmVersion, registry);
+			const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
+				api,
+				assetId,
+				specName,
+				xcmVersion,
+				registry
+			);
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 

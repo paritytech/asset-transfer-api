@@ -4,7 +4,7 @@ import { AssetTransferApi } from '../../AssetTransferApi';
 import { Registry } from '../../registry';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
-import { getXcAssetIdByAssetId } from './getXcAssetIdByAssetId';
+import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId';
 
 const bifrostRegistry = new Registry('bifrost', {});
 const bifrostApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 3);
@@ -42,7 +42,13 @@ describe('getXcAssetByAssetId', () => {
 
 		const expected =
 			'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}';
-		const result = await getXcAssetIdByAssetId(bifrostApi._api, assetId, specName, xcmVersion, bifrostRegistry);
+		const result = await getXcAssetMultiLocationByAssetId(
+			bifrostApi._api,
+			assetId,
+			specName,
+			xcmVersion,
+			bifrostRegistry
+		);
 
 		expect(result).toStrictEqual(expected);
 	});
@@ -69,7 +75,13 @@ describe('getXcAssetByAssetId', () => {
 		const specName = 'moonriver';
 
 		const expected = '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x010a"}]}}}';
-		const result = await getXcAssetIdByAssetId(moonriverApi._api, assetId, specName, xcmVersion, moonriverRegistry);
+		const result = await getXcAssetMultiLocationByAssetId(
+			moonriverApi._api,
+			assetId,
+			specName,
+			xcmVersion,
+			moonriverRegistry
+		);
 
 		expect(result).toStrictEqual(expected);
 	});

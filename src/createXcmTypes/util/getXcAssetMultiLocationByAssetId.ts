@@ -7,7 +7,7 @@ import type { SanitizedXcAssetsData } from '../../registry/types';
 import { validateNumber } from '../../validate';
 import { getAssetId } from './getAssetId';
 
-export const getXcAssetIdByAssetId = async (
+export const getXcAssetMultiLocationByAssetId = async (
 	api: ApiPromise,
 	assetId: string,
 	specName: string,
