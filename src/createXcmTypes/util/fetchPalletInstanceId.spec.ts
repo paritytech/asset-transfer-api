@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId';
 
 describe('fetchPalletInstanceId', () => {
