@@ -5,12 +5,11 @@ import type { AnyJson } from '@polkadot/types/types';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
-import { SanitizedXcAssetsData, XCMAssetRegistryMultiLocation } from '../registry/types';
+import { XCMAssetRegistryMultiLocation } from '../registry/types';
 import { Direction } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
-import { validateNumber } from '../validate';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -30,7 +29,7 @@ import type {
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeMultiAssets } from './util/dedupeMultiAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getAssetId } from './util/getAssetId';
+import { getXcAssetIdByAssetId } from './util/getXcAssetIdByAssetId';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
 import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
 
@@ -229,37 +228,11 @@ export const ParaToSystem: ICreateXcmType = {
 		assetId: string,
 		opts: CreateAssetsOpts
 	): Promise<UnionXcAssetsMultiAsset> => {
-		const { registry } = opts;
-		const isValidInt = validateNumber(assetId);
+		const { registry, api } = opts;
 
-		if (!isValidInt) {
-			assetId = await getAssetId(opts.api, registry, assetId, specName, xcmVersion);
-		}
+		const xcAssetMultiLocationStr = await getXcAssetIdByAssetId(api, assetId, specName, xcmVersion, registry);
 
-		const paraId = registry.lookupChainIdBySpecName(specName);
-		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
-
-		let xcAsset = '';
-		if (isValidInt) {
-			for (const info of paraXcAssets) {
-				if (typeof info.asset === 'string' && info.asset === assetId) {
-					xcAsset = info.xcmV1MultiLocation;
-					break;
-				}
-			}
-		} else {
-			if (!assetId.includes('parents')) {
-				for (const info of paraXcAssets) {
-					if (typeof info.asset === 'string' && info.asset === assetId) {
-						xcAsset = info.xcmV1MultiLocation;
-						break;
-					}
-				}
-			} else {
-				xcAsset = assetId;
-			}
-		}
-		const parsedMultiLocation = JSON.parse(xcAsset) as XCMAssetRegistryMultiLocation;
+		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
 		const concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
@@ -316,44 +289,16 @@ const createXTokensMultiAssets = async (
 	assets: string[],
 	opts: CreateAssetsOpts
 ): Promise<UnionXcAssetsMultiAssets> => {
-	const { registry } = opts;
+	const { registry, api } = opts;
 	let multiAssets: FungibleObjMultiAsset[] = [];
 
 	for (let i = 0; i < assets.length; i++) {
 		const amount = amounts[i];
-		let assetId = assets[i];
+		const assetId = assets[i];
 
-		const isValidInt = validateNumber(assetId);
+		const xcAssetMultiLocationStr = await getXcAssetIdByAssetId(api, assetId, specName, xcmVersion, registry);
 
-		if (!isValidInt) {
-			assetId = await getAssetId(opts.api, registry, assetId, specName, xcmVersion);
-		}
-
-		const paraId = registry.lookupChainIdBySpecName(specName);
-		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
-
-		let xcAsset = '';
-		if (isValidInt) {
-			for (const info of paraXcAssets) {
-				if (typeof info.asset === 'string' && info.asset === assetId) {
-					xcAsset = info.xcmV1MultiLocation;
-					break;
-				}
-			}
-		} else {
-			if (!assetId.includes('parents')) {
-				for (const info of paraXcAssets) {
-					if (typeof info.asset === 'string' && info.asset === assetId) {
-						xcAsset = info.xcmV1MultiLocation;
-						break;
-					}
-				}
-			} else {
-				xcAsset = assetId;
-			}
-		}
-
-		const parsedMultiLocation = JSON.parse(xcAsset) as XCMAssetRegistryMultiLocation;
+		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
 		const concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
@@ -432,26 +377,11 @@ const createParaToSystemMultiAssets = async (
 	} else {
 		for (let i = 0; i < assets.length; i++) {
 			const amount = amounts[i];
-			let assetId = assets[i];
+			const assetId = assets[i];
 
-			const isValidNumber = validateNumber(assetId);
+			const xcAssetMultiLocationStr = await getXcAssetIdByAssetId(api, assetId, specName, xcmVersion, registry);
 
-			if (!isValidNumber) {
-				assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
-			}
-
-			const paraId = registry.lookupChainIdBySpecName(specName);
-			const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData as SanitizedXcAssetsData[];
-
-			let xcAsset = '';
-			for (const info of paraXcAssets) {
-				if (typeof info.asset === 'string' && info.asset === assetId) {
-					xcAsset = info.xcmV1MultiLocation;
-					break;
-				}
-			}
-
-			const parsedMultiLocation = JSON.parse(xcAsset) as XCMAssetRegistryMultiLocation;
+			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
 			if (isForeignAssetsTransfer) {
