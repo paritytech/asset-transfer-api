@@ -2,6 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
+import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
 import type { SanitizedXcAssetsData } from '../../registry/types';
 import { validateNumber } from '../../validate';
@@ -28,7 +29,12 @@ export const getXcAssetMultiLocationByAssetId = async (
 				return info.xcmV1MultiLocation;
 			}
 		}
+	} else if (assetId.toLowerCase().includes('parents')) {
+		return assetId;
 	}
 
-	return assetId;
+	throw new BaseError(
+		`assetId ${assetId} is not a valid symbol or integer asset id for ${specName}`,
+		BaseErrorsEnum.InvalidAsset
+	);
 };
