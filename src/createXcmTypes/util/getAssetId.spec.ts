@@ -102,5 +102,11 @@ describe('getAssetId', () => {
 				await getAssetId(moonriverAssetsApi._api, registry, 'TEST', 'moonriver', 2, true);
 			}).rejects.toThrowError(`parachain assetId TEST is not a valid symbol assetIid in moonriver`);
 		});
+
+		it('Should correctly error when given an invalid integer xcAssetId', async () => {
+			await expect(async () => {
+				await getAssetId(moonriverAssetsApi._api, registry, '25830838603860', 'moonriver', 2, true);
+			}).rejects.toThrowError(`parachain assetId 25830838603860 is not a valid integer assetIid in moonriver`);
+		});
 	});
 });
