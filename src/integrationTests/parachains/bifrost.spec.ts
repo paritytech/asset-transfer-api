@@ -1177,4 +1177,144 @@ describe('Bifrost', () => {
 			});
 		});
 	});
+	describe('ParaToRelay', () => {
+		describe('transferMultiasset', () => {
+			describe('XCM V2', () => {
+				it('Should correctly build xTokens transferMultiasset txs from Bifrost', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'0',
+							'xcKSM',
+							'call',
+							{
+								dest: 'kusama',
+								origin: 'bifrost',
+								direction: 'ParaToRelay' as Direction,
+								format: 'call',
+								method: 'transferMultiasset',
+								tx: '0x460101000100000700e40b54020101010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+								xcmVersion: 2,
+							},
+						],
+						[
+							'0',
+							'42259045809535163221576417993425387648',
+							'call',
+							{
+								dest: 'kusama',
+								origin: 'bifrost',
+								direction: 'ParaToRelay' as Direction,
+								format: 'call',
+								method: 'transferMultiasset',
+								tx: '0x460101000100000700e40b54020101010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+								xcmVersion: 2,
+							},
+						],
+						[
+							'0',
+							'ksm',
+							'payload',
+							{
+								dest: 'kusama',
+								origin: 'bifrost',
+								direction: 'ParaToRelay' as Direction,
+								format: 'payload',
+								method: 'transferMultiasset',
+								tx: '0xdc460101000100000700e40b54020101010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+								xcmVersion: 2,
+							},
+						],
+					];
+
+					for (const test of tests) {
+						const [paraId, assetId, format, expectedResult] = test;
+						const res = await bifrostTransferMultiasset(bifrostATA, format as Format, 2, paraId, assetId, {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+
+						expect(res).toEqual(expectedResult);
+					}
+				});
+				it('Should correctly build a V2 submittable transferMultiasset', async () => {
+					const res = await bifrostTransferMultiasset(bifrostATA, 'submittable', 2, '0', 'ksm', {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('XCM V3', () => {
+				it('Should correctly build xTokens transferMultiasset txs from Bifrost', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'0',
+							'ksm',
+							'call',
+							{
+								dest: 'kusama',
+								origin: 'bifrost',
+								direction: 'ParaToRelay' as Direction,
+								format: 'call',
+								method: 'transferMultiasset',
+								tx: '0x460103000100000700e40b54020301010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+								xcmVersion: 3,
+							},
+						],
+						[
+							'0',
+							'42259045809535163221576417993425387648', // SDN
+							'payload',
+							{
+								dest: 'kusama',
+								origin: 'bifrost',
+								direction: 'ParaToRelay' as Direction,
+								format: 'payload',
+								method: 'transferMultiasset',
+								tx: '0xdc460103000100000700e40b54020301010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+								xcmVersion: 3,
+							},
+						],
+					];
+
+					for (const test of tests) {
+						const [paraId, assetId, format, expectedResult] = test;
+						const res = await bifrostTransferMultiasset(bifrostATA, format as Format, 3, paraId, assetId, {
+							isLimited: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+
+						expect(res).toEqual(expectedResult);
+					}
+				});
+				it('Should correctly build a V3 submittable transferMultiasset', async () => {
+					const res = await bifrostTransferMultiasset(bifrostATA, 'submittable', 3, '0', 'ksm', {
+						isLimited: true,
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+		});
+	});
 });

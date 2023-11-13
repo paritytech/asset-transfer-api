@@ -306,12 +306,14 @@ export class AssetTransferApi {
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-
 		if (
 			(xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens) &&
-			(xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara)
+			(xcmDirection === Direction.ParaToSystem ||
+				xcmDirection === Direction.ParaToPara ||
+				xcmDirection === Direction.ParaToRelay)
 		) {
-			if (!paysWithFeeDest && assetIds.length < 2) {
+			// This ensures paraToRelay always uses `transferMultiAsset`.
+			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
 				txMethod = 'transferMultiasset';
 				transaction = await transferMultiasset(
 					_api,
@@ -599,8 +601,6 @@ export class AssetTransferApi {
 		 * Check if the origin is a Parachain or Parathread
 		 */
 		if (originIsParachain && destIsRelayChain) {
-			throw new BaseError('ParaToRelay is not yet implemented', BaseErrorsEnum.NotImplemented);
-
 			return Direction.ParaToRelay;
 		}
 

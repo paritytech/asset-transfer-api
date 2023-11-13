@@ -465,6 +465,86 @@ describe('checkAssetIds', () => {
 			);
 		}).not.toThrow();
 	});
+	it('Should not throw an error for ParaToRelay when its a valid', async () => {
+		const registry = new Registry('moonriver', {});
+		const currentRegistry = registry.currentRelayRegistry;
+		// eslint-disable-next-line @typescript-eslint/await-thenable
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockMoonriverParachainApi,
+				['KSM'],
+				currentRegistry,
+				'moonriver',
+				Direction.ParaToRelay,
+				registry,
+				2,
+				false,
+				false
+			);
+		}).not.toThrow();
+		// eslint-disable-next-line @typescript-eslint/await-thenable
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockMoonriverParachainApi,
+				['42259045809535163221576417993425387648'],
+				currentRegistry,
+				'moonriver',
+				Direction.ParaToRelay,
+				registry,
+				2,
+				false,
+				false
+			);
+		}).not.toThrow();
+		// eslint-disable-next-line @typescript-eslint/await-thenable
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockMoonriverParachainApi,
+				[''],
+				currentRegistry,
+				'moonriver',
+				Direction.ParaToRelay,
+				registry,
+				2,
+				false,
+				false
+			);
+		}).not.toThrow();
+		// eslint-disable-next-line @typescript-eslint/await-thenable
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockMoonriverParachainApi,
+				[],
+				currentRegistry,
+				'moonriver',
+				Direction.ParaToRelay,
+				registry,
+				2,
+				false,
+				false
+			);
+		}).not.toThrow();
+	});
+	it('Should error when an invalid assetId is inputted for ParaToRelay', async () => {
+		const registry = new Registry('karura', {});
+		const currentRegistry = registry.currentRelayRegistry;
+
+		await expect(async () => {
+			await checkAssetIdInput(
+				adjustedMockMoonriverParachainApi,
+				['TEST'],
+				currentRegistry,
+				'crust-collator',
+				Direction.ParaToRelay,
+				registry,
+				2,
+				false,
+				false
+			);
+		}).rejects.toThrowError(
+			"The current input for assetId's does not meet our specifications for ParaToRelay transfers."
+		);
+	});
 });
 
 describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
