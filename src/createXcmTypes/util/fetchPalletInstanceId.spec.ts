@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { ApiPromise } from '@polkadot/api';
-
+import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId';
 
@@ -10,18 +9,6 @@ describe('fetchPalletInstanceId', () => {
 		const res = fetchPalletInstanceId(mockSystemApi, false, false);
 
 		expect(res).toEqual('50');
-	});
-	it('Should error when there is no Asset pallet available', () => {
-		const mockApi = {
-			registry: {
-				metadata: {
-					pallets: [{ name: 'NotAssets' }],
-				},
-			},
-		} as unknown as ApiPromise;
-		const res = () => fetchPalletInstanceId(mockApi, false, false);
-
-		expect(res).toThrowError("No Assets pallet available, can't find a valid PalletInstance.");
 	});
 	it('Should correctly grab the poolAssets pallet instance', () => {
 		const res = fetchPalletInstanceId(mockSystemApi, true, false);
@@ -37,5 +24,10 @@ describe('fetchPalletInstanceId', () => {
 		const err = () => fetchPalletInstanceId(mockSystemApi, true, true);
 
 		expect(err).toThrowError("Can't find the appropriate pallet when both liquid tokens and foreign assets");
+	});
+	it('Should correctly return an empty string when the assets pallet is not found', () => {
+		const res = fetchPalletInstanceId(mockBifrostParachainApi, false, false);
+
+		expect(res).toEqual('');
 	});
 });

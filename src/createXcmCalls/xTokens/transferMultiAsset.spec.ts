@@ -1,18 +1,18 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../../registry';
-import { mockParachainApi } from '../../testHelpers/mockParachainApi';
+import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
 import { Direction } from '../../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
-import { transferMultiAsset } from './transferMultiAsset';
+import { transferMultiasset } from './transferMultiasset';
 
-describe('transferMultiAsset', () => {
+describe('transferMultiasset', () => {
 	describe('ParaToSystem', () => {
 		const registry = new Registry('moonriver', {});
 
 		it('Should correctly construct an Unlimited transferMultiasset tx for V2', async () => {
-			const ext = await transferMultiAsset(
-				mockParachainApi,
+			const ext = await transferMultiasset(
+				adjustedMockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['311091173110107856861649819128533077277'],
@@ -34,8 +34,8 @@ describe('transferMultiAsset', () => {
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V2', async () => {
-			const ext = await transferMultiAsset(
-				mockParachainApi,
+			const ext = await transferMultiasset(
+				adjustedMockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['311091173110107856861649819128533077277'],
@@ -62,8 +62,8 @@ describe('transferMultiAsset', () => {
 		});
 
 		it('Should correctly construct an Unlimited transferMultiasset tx for V3', async () => {
-			const ext = await transferMultiAsset(
-				mockParachainApi,
+			const ext = await transferMultiasset(
+				adjustedMockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['311091173110107856861649819128533077277'],
@@ -85,8 +85,8 @@ describe('transferMultiAsset', () => {
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V3', async () => {
-			const ext = await transferMultiAsset(
-				mockParachainApi,
+			const ext = await transferMultiasset(
+				adjustedMockMoonriverParachainApi,
 				Direction.ParaToSystem,
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['42259045809535163221576417993425387648'],

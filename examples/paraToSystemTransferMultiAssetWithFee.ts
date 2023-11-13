@@ -15,7 +15,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.api.onfinality.io/public-ws');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.public.blastapi.io');
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 	let callInfo: TxResult<'call'>;
 	try {
@@ -32,7 +32,7 @@ const main = async () => {
 					proofSize: '3000',
 				},
 				xcmVersion: 3,
-				// NOTE: for xTokens `transferMultiAssetWithFee` txs, paysWithFeeDest is the multiLocation of the asset that is intended to be used to pay for fees in the dest chain
+				// NOTE: for xTokens `transferMultiassetWithFee` txs, paysWithFeeDest is the multiLocation of the asset that is intended to be used to pay for fees in the dest chain
 				paysWithFeeDest:
 					'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
 			}

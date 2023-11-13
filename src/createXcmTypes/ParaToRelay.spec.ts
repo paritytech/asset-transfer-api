@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
-import { adjustedMockParachainApi } from '../testHelpers/adjustedMockParachainApi';
+import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi';
 import { ParaToRelay } from './ParaToRelay';
 
 describe('ParaToRelay', () => {
@@ -10,7 +10,7 @@ describe('ParaToRelay', () => {
 		registry,
 		isLiquidTokenTransfer: false,
 		isForeignAssetsTransfer: false,
-		api: adjustedMockParachainApi,
+		api: adjustedMockMoonriverParachainApi,
 	};
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
@@ -159,7 +159,7 @@ describe('ParaToRelay', () => {
 			isForeignAssetsTransfer: false,
 		};
 		it('Should return zero', async () => {
-			const feeAssetItem = await ParaToRelay.createFeeAssetItem(adjustedMockParachainApi, opts);
+			const feeAssetItem = await ParaToRelay.createFeeAssetItem(adjustedMockMoonriverParachainApi, opts);
 			expect(feeAssetItem).toStrictEqual(0);
 		});
 	});

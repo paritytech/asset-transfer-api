@@ -36,11 +36,11 @@ export const getAssetId = async (
 
 	// if assets pallet, check the cache and return the cached assetId if found
 	if (!isForeignAssetsTransfer) {
-		const cachedAssetId = registry.cacheLookupAsset(asset);
+		const cachedAsset = registry.cacheLookupAsset(asset);
 
-		if (cachedAssetId) {
-			// if asset is in the registry cache, return the assetId
-			return cachedAssetId;
+		if (cachedAsset) {
+			// if asset is in the registry cache, return the cached asset
+			return cachedAsset;
 		}
 	}
 
@@ -117,63 +117,92 @@ export const getAssetId = async (
 			);
 		}
 	} else if (isParachain) {
-		if (!assetIsValidInt) {
-			// if not assetHub and assetId isnt a number, query the parachain chain for the asset symbol
-			const parachainAssets = await _api.query.assets.asset.entries();
+		const paraId = registry.lookupChainIdBySpecName(specName);
 
-			for (let i = 0; i < parachainAssets.length; i++) {
-				const parachainAsset = parachainAssets[i];
-				const id = parachainAsset[0].args[0];
+		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
+		const currentRelayChainSpecName = registry.relayChain;
 
-				const metadata = await _api.query.assets.metadata(id);
-				if (metadata.symbol.toHuman()?.toString().toLowerCase() === asset.toLowerCase()) {
-					assetId = id.toString();
+		if (!paraXcAssets || paraXcAssets.length === 0) {
+			throw new BaseError(
+				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
+				BaseErrorsEnum.InvalidPallet
+			);
+		}
+
+		if (_api.query.assets) {
+			if (!assetIsValidInt) {
+				// if not assetHub and assetId isnt a number, query the parachain for the asset symbol
+				const parachainAssets = await _api.query.assets.asset.entries();
+
+				for (let i = 0; i < parachainAssets.length; i++) {
+					const parachainAsset = parachainAssets[i];
+					const id = parachainAsset[0].args[0];
+
+					const metadata = await _api.query.assets.metadata(id);
+					if (metadata.symbol.toHuman()?.toString().toLowerCase() === asset.toLowerCase()) {
+						assetId = id.toString();
+						// add queried asset to registry
+						registry.setAssetInCache(asset, assetId);
+						break;
+					}
+				}
+
+				// if assetId length is 0, check xcAssets for symbol
+				if (assetId.length === 0) {
+					for (const info of paraXcAssets) {
+						if (
+							typeof info.asset === 'string' &&
+							typeof info.symbol === 'string' &&
+							info.symbol.toLowerCase() === asset.toLowerCase()
+						) {
+							assetId = info.xcmV1MultiLocation;
+							registry.setAssetInCache(asset, assetId);
+							break;
+						}
+					}
+				}
+
+				if (assetId.length === 0) {
+					throw new BaseError(
+						`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`,
+						BaseErrorsEnum.InvalidAsset
+					);
+				}
+			} else {
+				// if not assetHub and assetId is a number, query the parachain for the asset
+				const parachainAsset = await _api.query.assets.asset(asset);
+				if (parachainAsset.isSome) {
+					assetId = asset;
 					// add queried asset to registry
-					registry.setAssetInCache(assetId, asset);
-					break;
+					registry.setAssetInCache(asset, assetId);
+				} else {
+					throw new BaseError(
+						`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`,
+						BaseErrorsEnum.InvalidAsset
+					);
 				}
 			}
-			const paraId = registry.lookupChainIdBySpecName(specName);
-
-			// if assetId length is 0, check xcAssets for symbol
-			const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
-			const currentRelayChainSpecName = registry.relayChain;
-
-			if (!paraXcAssets || paraXcAssets.length === 0) {
-				throw new BaseError(
-					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
-					BaseErrorsEnum.InvalidPallet
-				);
-			}
-
-			for (const info of paraXcAssets) {
-				if (
-					typeof info.asset === 'string' &&
-					typeof info.symbol === 'string' &&
-					info.symbol.toLowerCase() === asset.toLowerCase()
-				) {
-					assetId = info.asset;
-					registry.setAssetInCache(assetId, asset);
-					break;
+		} else {
+			// Pallet Assets isn't supported, check symbol or integer assetId against asset registry
+			if (assetIsValidInt) {
+				for (const info of paraXcAssets) {
+					if (typeof info.asset === 'string' && info.asset.toLowerCase() === asset.toLowerCase()) {
+						assetId = info.xcmV1MultiLocation;
+						registry.setAssetInCache(asset, assetId);
+					}
+				}
+			} else {
+				for (const info of paraXcAssets) {
+					if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === asset.toLowerCase()) {
+						assetId = info.xcmV1MultiLocation;
+						registry.setAssetInCache(asset, assetId);
+					}
 				}
 			}
 
 			if (assetId.length === 0) {
 				throw new BaseError(
 					`parachain assetId ${asset} is not a valid symbol assetId in ${specName}`,
-					BaseErrorsEnum.InvalidAsset
-				);
-			}
-		} else {
-			// if not assetHub and assetId is a number, query the parachain chain for the asset
-			const parachainAsset = await _api.query.assets.asset(asset);
-			if (parachainAsset.isSome) {
-				assetId = asset;
-				// add queried asset to registry
-				registry.setAssetInCache(assetId, asset);
-			} else {
-				throw new BaseError(
-					`parachain assetId ${asset} is not a valid integer assetId in ${specName}`,
 					BaseErrorsEnum.InvalidAsset
 				);
 			}

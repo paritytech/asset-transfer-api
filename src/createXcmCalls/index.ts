@@ -4,6 +4,6 @@ export { limitedReserveTransferAssets } from './polkadotXcm/limitedReserveTransf
 export { limitedTeleportAssets } from './polkadotXcm/limitedTeleportAssets';
 export { reserveTransferAssets } from './polkadotXcm/reserveTransferAssets';
 export { teleportAssets } from './polkadotXcm/teleportAssets';
-export { transferMultiAsset } from './xTokens/transferMultiAsset';
-export { transferMultiAssets } from './xTokens/transferMultiAssets';
-export { transferMultiAssetWithFee } from './xTokens/transferMultiAssetWithFee';
+export { transferMultiasset } from './xTokens/transferMultiasset';
+export { transferMultiassets } from './xTokens/transferMultiassets';
+export { transferMultiassetWithFee } from './xTokens/transferMultiassetWithFee';

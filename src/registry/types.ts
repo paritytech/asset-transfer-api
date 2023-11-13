@@ -78,6 +78,7 @@ export type SanitizedXcAssetsData = {
 		| { VSToken: string }
 		| { VSToken2: string }
 		| { Token2: string }
+		| { Token: string }
 		| { Native: string }
 		| { Stable: string }
 		| string;
