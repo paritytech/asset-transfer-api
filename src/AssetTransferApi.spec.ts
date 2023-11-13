@@ -340,7 +340,7 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		describe('ParaToRelay', () => {
-			it('Should correctly return XTokens', () => {
+			it('Should correctly return Reserve', () => {
 				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'0',
