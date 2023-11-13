@@ -8,7 +8,7 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send MOVR from a Moonriver (Parachain) account
+ * In this example we are creating a call to send KSM from a Moonriver (Parachain) account
  * to a Kusama Relay chain account, where the `xcmVersion` is set to 3, and `isLimited` is false declaring that
  * it will allow `unlimited` weight for the tx.
  *
