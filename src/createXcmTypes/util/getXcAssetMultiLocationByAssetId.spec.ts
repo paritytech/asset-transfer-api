@@ -14,20 +14,26 @@ const moonriverApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'mo
 
 describe('getXcAssetMultiLocationByAssetId', () => {
 	describe('Bifrost', () => {
-		bifrostRegistry.currentRelayRegistry['2023'].xcAssetsData = [
+		bifrostRegistry.currentRelayRegistry['2001'].xcAssetsData = [
 			{
-				paraID: 2001,
-				symbol: 'vBNC',
-				decimals: 12,
-				xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x0101"}]}}}',
-				asset: '72145018963825376852137222787619937732',
+				paraID: 1000,
+				symbol: 'RMRK',
+				decimals: 10,
+				xcmV1MultiLocation:
+					'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
+				asset: {
+					Token: 'RMRK',
+				},
 			},
 			{
-				paraID: 2001,
-				symbol: 'vMOVR',
-				decimals: 18,
-				xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x010a"}]}}}',
-				asset: '203223821023327994093278529517083736593',
+				paraID: 1000,
+				symbol: 'USDT',
+				decimals: 6,
+				xcmV1MultiLocation:
+					'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+				asset: {
+					Token2: '0',
+				},
 			},
 		];
 
