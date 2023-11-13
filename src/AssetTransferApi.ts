@@ -312,6 +312,7 @@ export class AssetTransferApi {
 				xcmDirection === Direction.ParaToPara ||
 				xcmDirection === Direction.ParaToRelay)
 		) {
+			// This ensures paraToRelay always uses `transferMultiAsset`.
 			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
 				txMethod = 'transferMultiAsset';
 				transaction = await transferMultiAsset(
