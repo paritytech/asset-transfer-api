@@ -732,6 +732,55 @@ const checkSystemToSystemAssetId = async (
 };
 
 /**
+ * Check the assets for ParaToRelay.
+ *
+ * @param assetId
+ * @param registry
+ * @param specName
+ */
+const checkParaToRelayAssetId = (assetId: string, registry: Registry, specName: string) => {
+	const relayRegistry = registry.currentRelayRegistry;
+	const relayNativeToken = relayRegistry[0].tokens[0];
+	const nativeEqAssetId = relayNativeToken === assetId;
+	const curParaId = registry.lookupChainIdBySpecName(specName);
+	const curParaRegistry = relayRegistry[curParaId];
+	const { xcAssetsData } = curParaRegistry;
+
+	let assetIsRelayChainNativeAsset = false;
+	if (assetId === '') {
+		assetIsRelayChainNativeAsset = true;
+	}
+
+	// If the asset equals the relays native asset exit.
+	if (nativeEqAssetId) {
+		assetIsRelayChainNativeAsset = true;
+	}
+
+	const isValidInt = validateNumber(assetId);
+	if (isValidInt && xcAssetsData && xcAssetsData.length > 0) {
+		// We assume the first xcAsset will represent the relay chain
+		// since they are all sorted in the registry.
+		if (xcAssetsData[0].asset === assetId) {
+			assetIsRelayChainNativeAsset = true;
+		}
+	}
+
+	const paraIncludesRelayNativeInTokens = curParaRegistry.tokens.includes(relayNativeToken);
+	const paraIncludesRelayNativeInXcAssets = xcAssetsData && xcAssetsData[0].symbol === relayNativeToken;
+
+	if (paraIncludesRelayNativeInTokens || paraIncludesRelayNativeInXcAssets) {
+		assetIsRelayChainNativeAsset = true;
+	}
+
+	if (!assetIsRelayChainNativeAsset) {
+		throw new BaseError(
+			"The current input for assetId's does not meet our specifications for ParaToRelay transfers.",
+			BaseErrorsEnum.InvalidAsset
+		);
+	}
+};
+
+/**
  * Checks to ensure that assetId's have a length no greater than MAX_ASSETS_FOR_TRANSFER, throws an error if greater than MAX_ASSETS_FOR_TRANSFER
  *
  * @param assetIds
@@ -942,6 +991,10 @@ export const checkAssetIdInput = async (
 		if (xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara) {
 			await checkParaOriginAssetId(api, assetId, specName, registry);
 		}
+
+		if (xcmDirection === Direction.ParaToRelay) {
+			checkParaToRelayAssetId(assetId, registry, specName);
+		}
 	}
 };
 
@@ -1062,5 +1115,10 @@ export const checkXcmTxInputs = async (
 	if (xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara) {
 		CheckXTokensPalletOriginIsNonForeignAssetTx(xcmDirection, xcmPallet, isForeignAssetsTransfer);
 		checkAssetsAmountMatch(assetIds, amounts, isParachainPrimaryNativeAsset);
+	}
+
+	if (xcmDirection === Direction.ParaToRelay) {
+		checkRelayAssetIdLength(assetIds);
+		checkRelayAmountsLength(amounts);
 	}
 };

@@ -68,7 +68,9 @@ const isXTokensOriginNonForeignAssetsPalletTx = (
 		!isForeignAssetsTransfer &&
 		!isParachainPrimaryNativeAsset &&
 		direction &&
-		(direction === Direction.ParaToSystem || direction === Direction.ParaToPara) &&
+		(direction === Direction.ParaToSystem ||
+			direction === Direction.ParaToPara ||
+			direction === Direction.ParaToRelay) &&
 		xPallet
 	) {
 		return true;
