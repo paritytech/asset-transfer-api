@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.4](https://github.com/paritytech/asset-transfer-api/compare/v0.1.3..v0.1.4)(2023-11-14)
+
+## Features
+
+- feat: ParaToRelay
+
+## Fix
+
+- fix: updated zombienet to work with polkadot-sdk nodes
+- fix: support parachains without assets pallet in runtime
+
+## Docs
+
+- docs: adjust inline docs for createXcmTypes
+
 ## [0.1.3](https://github.com/paritytech/asset-transfer-api/compare/v0.1.2..v0.1.3)(2023-11-07)
 
 ## Features
