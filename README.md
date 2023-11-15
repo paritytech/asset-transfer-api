@@ -276,6 +276,42 @@ The api can also send local transactions for Relay chains. It is the same princi
 
 For more information, refer to the [docs](https://github.com/paritytech/asset-transfer-api/tree/main/docs) in the repository.
 
+## Xcm Directions
+
+### SystemToRelay
+
+This direction only sends the the relay chains native asset from the inputted system parachain. Note: the `destId` should always be `0` if you intend on constructing an XCM tx to the relay chain.
+
+### SystemToPara
+
+This direction focuses on sending assets that are connected to three possible pallets: `Assets`, `ForeignAssets`, and `PoolAssets`. This is all dependent on what System Parachain you are currently connected too. If its an `Assets-hub-*` then all three will be available, but for chains like Collective and so on, things could potentially operate differently. The API will detect if there are any issues and report it.
+
+### SystemToSystem
+
+This direction focuses on sending assets between system parachains.  
+
+### RelayToPara
+
+This direction only sends the relay chains native asset from the relay chain to the inputted parachain. The parachain must accept the relay chains native asset in order to receive the transfer.
+
+### RelayToSystem
+
+This direction only sends the the relay chains native asset from the relay chain to the inputted system parachain. Note: the `destId` should always be `0` if you intend on constructing an XCM tx to the relay chain.
+
+### ParaToSystem
+
+This direction focuses on sending assets from a parachain to a inputted system parachain. This focuses on `Assets`, and `ForeignAssets` pallet.
+
+### ParaToPara
+
+**Warning**: Currently there are known issues for sending Relay Chain native assets from Parachains to Parachains. Therefore, it is advised to send the asset via `ParaToRelay`, then send the asset via `RelayToPara`. This will ensure safe delivery of the relay chain asset from one Parachain to another. 
+
+Sending assets from Parachain to Parachain is simple, but requires knowledge of what the destination chain accepts as assets. You can confirm any of this information via the registry provided by the `AssetTransferApi` instance. 
+
+### ParaToRelay
+
+This direction only sends the the relay chains native asset from the inputted parachain to the relay chain. Note: the `destId` should always be `0` if you intend on constructing an XCM tx to the relay chain.
+
 ## License
 
 The source code in this repository is distributed under the Apache 2.0 license. See the [LICENSE](https://github.com/paritytech/asset-transfer-api/blob/main/LICENSE) file. This source code comes with absolutely no warranty. Use at your own risk.
