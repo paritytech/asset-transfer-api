@@ -2,8 +2,8 @@
 
 import { Registry } from '../registry';
 import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi';
-import { ParaToRelay } from './ParaToRelay';
 import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
+import { ParaToRelay } from './ParaToRelay';
 
 describe('ParaToRelay', () => {
 	const registry = new Registry('Moonriver', mockAssetRegistry);

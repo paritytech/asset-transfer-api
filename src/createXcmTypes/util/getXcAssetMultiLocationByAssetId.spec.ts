@@ -4,8 +4,8 @@ import { AssetTransferApi } from '../../AssetTransferApi';
 import { Registry } from '../../registry';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
-import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId';
 import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
+import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId';
 
 const bifrostRegistry = new Registry('bifrost', mockAssetRegistry);
 const bifrostApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 3, bifrostRegistry);

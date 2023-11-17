@@ -1,10 +1,10 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { Direction } from '../../types';
 import { teleportAssets } from './teleportAssets';
-import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('teleportAssets', () => {
 	const registry = new Registry('statemine', mockAssetRegistry);

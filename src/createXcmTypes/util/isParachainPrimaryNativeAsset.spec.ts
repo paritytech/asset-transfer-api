@@ -1,9 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../../registry';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 import { Direction } from '../../types';
 import { isParachainPrimaryNativeAsset } from './isParachainPrimaryNativeAsset';
-import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('isParachainPrimaryNativeAsset', () => {
 	type Test = [primaryNativeAssetSymbol: string | undefined, specName: string, registry: Registry, expected: boolean];

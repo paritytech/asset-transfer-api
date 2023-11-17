@@ -7,6 +7,7 @@ import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 import { AssetTransferApi, constructApiPromise } from '../src';
+import { parseRegistry, Registry } from '../src/registry';
 import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
@@ -18,7 +19,9 @@ import { GREEN, PURPLE, RESET } from './colors';
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('ws://127.0.0.1:9944');
-	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
+	const assetRegistry = await parseRegistry({});
+	const registry = new Registry(specName, assetRegistry);
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, registry);
 
 	// When declaring this type it will ensure that the inputted `format` matches it or the type checker will error.
 	let callInfo: TxResult<'submittable'>;

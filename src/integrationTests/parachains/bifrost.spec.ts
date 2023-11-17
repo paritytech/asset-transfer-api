@@ -1,15 +1,15 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { AssetTransferApi } from '../../AssetTransferApi';
+import { Registry } from '../../registry';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 import type { Direction, Format } from '../../types';
 import type { TestMultiasset, TestMultiassets, TestMultiassetWithFormat } from '../util';
 import { paraTransferMultiasset as bifrostTransferMultiasset } from '../util';
 import { paraTransferMultiassets as bifrostTransferMultiassets } from '../util';
 import { paraTransferMultiassetWithFee as bifrostTransferMultiassetWithFee } from '../util';
 import { paraTeleportNativeAsset as bifrsotTeleportNativeAsset } from '../util';
-import { Registry } from '../../registry';
-import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('Bifrost', () => {
 	const bifrostRegistry = new Registry('bifrost', mockAssetRegistry);

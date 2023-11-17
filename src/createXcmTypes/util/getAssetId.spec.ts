@@ -5,8 +5,8 @@ import { Registry } from '../../registry';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
-import { getAssetId } from './getAssetId';
 import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
+import { getAssetId } from './getAssetId';
 
 describe('getAssetId', () => {
 	describe('Statemine', () => {

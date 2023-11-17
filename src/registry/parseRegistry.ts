@@ -1,13 +1,15 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import fetch from 'node-fetch';
 
 import { ASSET_HUB_CHAIN_ID } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
 import type { ChainInfoRegistry } from './types';
-import fetch from 'node-fetch';
 
 export const parseRegistry = async (assetsOpts: AssetTransferApiOpts): Promise<ChainInfoRegistry> => {
-	const registry = (await (await fetch('https://paritytech.github.io/asset-transfer-api-registry/registry.json')).json()) as ChainInfoRegistry;
+	const registry = (await (
+		await fetch('https://paritytech.github.io/asset-transfer-api-registry/registry.json')
+	).json()) as ChainInfoRegistry;
 
 	if (assetsOpts.injectedRegistry) {
 		const { injectedRegistry } = assetsOpts;

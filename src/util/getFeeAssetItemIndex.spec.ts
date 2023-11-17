@@ -5,9 +5,9 @@ import { ApiPromise } from '@polkadot/api';
 import { AssetTransferApi } from '../AssetTransferApi';
 import { FungibleStrMultiAsset } from '../createXcmTypes/types';
 import { Registry } from '../registry';
-import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
 
 type Test = [

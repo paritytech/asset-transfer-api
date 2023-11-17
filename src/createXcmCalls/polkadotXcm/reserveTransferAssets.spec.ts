@@ -4,9 +4,9 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 import { Direction } from '../../types';
 import { reserveTransferAssets } from './reserveTransferAssets';
-import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('reserveTransferAssets', () => {
 	const registry = new Registry('statemine', mockAssetRegistry);

@@ -1,11 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { mockAssetRegistry } from "../testHelpers/mockAssetRegistry";
-import { parseRegistry } from "./parseRegistry";
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
+import { parseRegistry } from './parseRegistry';
 
 const injectedRegistry = {
-	injectedRegistry: mockAssetRegistry
-}
+	injectedRegistry: mockAssetRegistry,
+};
 describe('parseRegistry', () => {
 	it('Should return the correct object structure', async () => {
 		const registry = await parseRegistry(injectedRegistry);

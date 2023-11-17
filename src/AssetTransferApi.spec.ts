@@ -5,15 +5,15 @@ import type { Weight } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { AssetTransferApi } from './AssetTransferApi';
+import { Registry } from './registry';
 import { adjustedMockMoonriverParachainApi } from './testHelpers/adjustedMockMoonriverParachainApi';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApi';
+import { mockAssetRegistry } from './testHelpers/mockAssetRegistry';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { Direction, UnsignedTransaction } from './types';
 import { AssetType } from './types';
-import { mockAssetRegistry } from './testHelpers/mockAssetRegistry';
-import { Registry } from './registry';
 
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',
@@ -27,7 +27,12 @@ const relayAssetsRegistry = new Registry('kusama', mockAssetRegistry);
 const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, relayAssetsRegistry);
 
 const moonriverAssetsRegistry = new Registry('moonriver', mockAssetRegistry);
-const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, moonriverAssetsRegistry);
+const moonriverAssetsApi = new AssetTransferApi(
+	adjustedMockMoonriverParachainApi,
+	'moonriver',
+	2,
+	moonriverAssetsRegistry
+);
 
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {

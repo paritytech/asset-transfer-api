@@ -17,8 +17,7 @@ export class Registry {
 
 	constructor(specName: string, registry: ChainInfoRegistry) {
 		this.specName = specName;
-		this.registry = registry,
-		this.relayChain = findRelayChain(this.specName, this.registry);
+		(this.registry = registry), (this.relayChain = findRelayChain(this.specName, this.registry));
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.specNameToIdCache = new Map<string, string>();
 		this.cache = {

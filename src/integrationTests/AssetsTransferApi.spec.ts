@@ -2,11 +2,11 @@
 
 import { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
+import { Registry } from '../registry';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
-import type { Format, TxResult } from '../types';
-import { Registry } from '../registry';
 import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
+import type { Format, TxResult } from '../types';
 
 const relayAssetsRegistry = new Registry('kusama', mockAssetRegistry);
 const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, relayAssetsRegistry);

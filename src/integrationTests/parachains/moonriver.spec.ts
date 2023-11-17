@@ -1,15 +1,15 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { AssetTransferApi } from '../../AssetTransferApi';
+import { Registry } from '../../registry';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 import type { Direction, Format } from '../../types';
 import type { TestMultiassetsWithFormat, TestMultiassetWithFormat } from '../util';
 import { paraTransferMultiasset as moonriverTransferMultiasset } from '../util';
 import { paraTransferMultiassets as moonriverTransferMultiassets } from '../util';
 import { paraTransferMultiassetWithFee as moonriverTransferMultiassetWithFee } from '../util';
 import { paraTeleportNativeAsset as moonriverTeleportNativeAsset } from '../util';
-import { Registry } from '../../registry';
-import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('Moonriver', () => {
 	const moonriverRegistry = new Registry('moonriver', mockAssetRegistry);

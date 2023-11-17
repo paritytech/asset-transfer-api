@@ -4,6 +4,7 @@
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
 import { AssetTransferApi, constructApiPromise } from '../src';
+import { parseRegistry, Registry } from '../src/registry';
 import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
@@ -21,7 +22,10 @@ import { GREEN, PURPLE, RESET } from './colors';
  */
 const main = async () => {
 	const { api, safeXcmVersion } = await constructApiPromise('wss://rococo-asset-hub-rpc.polkadot.io');
-	const assetApi = new AssetTransferApi(api, 'asset-hub-rococo', safeXcmVersion);
+	const specName = 'asset-hub-rococo';
+	const assetRegistry = await parseRegistry({});
+	const registry = new Registry(specName, assetRegistry);
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, registry);
 
 	let callInfo: TxResult<'call'>;
 	try {

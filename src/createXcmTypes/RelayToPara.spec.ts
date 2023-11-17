@@ -1,9 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 import { mockRelayApi } from '../testHelpers/mockRelayApi';
 import { RelayToPara } from './RelayToPara';
-import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
 describe('RelayToPara XcmVersioned Generation', () => {
 	const registry = new Registry('kusama', mockAssetRegistry);

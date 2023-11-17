@@ -1,10 +1,13 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { ChainInfoRegistry } from 'src/registry/types';
+
 import { AssetTransferApi } from '../AssetTransferApi';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';
 import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
@@ -24,11 +27,14 @@ import {
 	checkXcmVersionIsValidForPaysWithFeeDest,
 	CheckXTokensPalletOriginIsNonForeignAssetTx,
 } from './checkXcmTxInputs';
-import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
-import { ChainInfoRegistry } from 'src/registry/types';
 
 const parachainAssetsRegistry = new Registry('moonriver', mockAssetRegistry);
-const parachainAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, parachainAssetsRegistry);
+const parachainAssetsApi = new AssetTransferApi(
+	adjustedMockMoonriverParachainApi,
+	'moonriver',
+	2,
+	parachainAssetsRegistry
+);
 
 const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
@@ -865,16 +871,14 @@ describe('checkParaAssets', () => {
 
 		it('Should correctly cache a foreign asset that is not found in the registry after being queried', async () => {
 			const injectedChainRegistry = {
-				injectedRegistry: {
-					polkadot: {},
-					kusama: {
-						'1000': {
-							assetsInfo: {},
-							poolPairsInfo: {},
-							specName: '',
-							tokens: [],
-							foreignAssetsInfo: {},
-						},
+				polkadot: {},
+				kusama: {
+					'1000': {
+						assetsInfo: {},
+						poolPairsInfo: {},
+						specName: '',
+						tokens: [],
+						foreignAssetsInfo: {},
 					},
 				},
 				westend: {},
@@ -913,22 +917,19 @@ describe('checkParaAssets', () => {
 
 		it('Should correctly cache a liquid asset that is not found in the registry after being queried', async () => {
 			const injectedChainRegistry = {
-				injectedRegistry: {
-					polkadot: {},
-					kusama: {
-						'1000': {
-							assetsInfo: {},
-							poolPairsInfo: {},
-							specName: '',
-							tokens: [],
-							foreignAssetsInfo: {},
-						},
+				polkadot: {},
+				kusama: {
+					'1000': {
+						assetsInfo: {},
+						poolPairsInfo: {},
+						specName: '',
+						tokens: [],
+						foreignAssetsInfo: {},
 					},
 				},
 				westend: {},
 				rococo: {},
 			} as unknown as ChainInfoRegistry;
-
 
 			const registry = new Registry('statemine', injectedChainRegistry);
 			const chainInfo = {

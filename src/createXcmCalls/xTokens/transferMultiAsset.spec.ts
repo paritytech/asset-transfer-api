@@ -2,10 +2,10 @@
 
 import { Registry } from '../../registry';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 import { Direction } from '../../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 import { transferMultiasset } from './transferMultiasset';
-import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('transferMultiasset', () => {
 	describe('ParaToSystem', () => {

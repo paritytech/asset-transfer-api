@@ -1,10 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { ChainInfoRegistry } from 'src/registry/types';
+
 import { Registry } from '../../registry';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
-import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
-import { ChainInfoRegistry } from 'src/registry/types';
+import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 
 describe('foreignMultiAssetMultiLocationExists', () => {
 	const registry = new Registry('statemine', mockAssetRegistry);
@@ -48,17 +49,18 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 
 	it('Should correctly cache a valid foreign asset not found in the cache or registry', async () => {
 		const emptyRegistry = new Registry('statemine', {
-			injectedRegistry: {
-				kusama: {
-					'1000': {
-						assetsInfo: {},
-						poolPairsInfo: {},
-						specName: '',
-						tokens: [],
-						foreignAssetsInfo: {},
-					},
+			polkadot: {},
+			kusama: {
+				'1000': {
+					assetsInfo: {},
+					poolPairsInfo: {},
+					specName: '',
+					tokens: [],
+					foreignAssetsInfo: {},
 				},
 			},
+			westend: {},
+			rococo: {},
 		} as unknown as ChainInfoRegistry);
 		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 

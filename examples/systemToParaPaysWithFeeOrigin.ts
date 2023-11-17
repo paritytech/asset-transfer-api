@@ -4,6 +4,7 @@
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
 import { AssetTransferApi, constructApiPromise } from '../src';
+import { parseRegistry, Registry } from '../src/registry';
 import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
@@ -18,7 +19,9 @@ import { GREEN, PURPLE, RESET } from './colors';
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io');
-	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
+	const assetRegistry = await parseRegistry({});
+	const registry = new Registry(specName, assetRegistry);
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, registry);
 
 	let callInfo: TxResult<'payload'>;
 	try {

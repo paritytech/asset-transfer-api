@@ -3,8 +3,8 @@
 import { AssetTransferApi } from '../AssetTransferApi';
 import { Registry } from '../registry';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
-import { checkLocalTxInput } from './checkLocalTxInputs';
 import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
+import { checkLocalTxInput } from './checkLocalTxInputs';
 
 describe('checkLocalTxInput', () => {
 	const registry = new Registry('statemine', mockAssetRegistry);

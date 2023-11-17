@@ -1,11 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { SystemToPara } from './SystemToPara';
 import { createSystemToParaMultiAssets } from './SystemToPara';
 import { FungibleStrMultiAsset } from './types';
-import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
 describe('SystemToPara XcmVersioned Generation', () => {
 	const registry = new Registry('statemine', mockAssetRegistry);

@@ -1,5 +1,5 @@
-import { findRelayChain } from './findRelayChain';
 import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
+import { findRelayChain } from './findRelayChain';
 
 describe('findRelayChain', () => {
 	it('Should correctly discover the right relay chain', () => {
