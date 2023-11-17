@@ -5,12 +5,13 @@ import { Registry } from '../../registry';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
 import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
-const bifrostRegistry = new Registry('bifrost', {});
-const bifrostApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 3);
+const bifrostRegistry = new Registry('bifrost', mockAssetRegistry);
+const bifrostApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 3, bifrostRegistry);
 
-const moonriverRegistry = new Registry('moonriver', {});
-const moonriverApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
+const moonriverRegistry = new Registry('moonriver', mockAssetRegistry);
+const moonriverApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, moonriverRegistry);
 
 describe('getXcAssetMultiLocationByAssetId', () => {
 	describe('Bifrost', () => {

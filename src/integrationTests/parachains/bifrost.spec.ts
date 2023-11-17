@@ -8,10 +8,13 @@ import { paraTransferMultiasset as bifrostTransferMultiasset } from '../util';
 import { paraTransferMultiassets as bifrostTransferMultiassets } from '../util';
 import { paraTransferMultiassetWithFee as bifrostTransferMultiassetWithFee } from '../util';
 import { paraTeleportNativeAsset as bifrsotTeleportNativeAsset } from '../util';
-
-const bifrostATA = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2);
+import { Registry } from '../../registry';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('Bifrost', () => {
+	const bifrostRegistry = new Registry('bifrost', mockAssetRegistry);
+	const bifrostATA = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2, bifrostRegistry);
+
 	describe('ParaToPara', () => {
 		describe('transferMultiasset', () => {
 			describe('XCM V2', () => {

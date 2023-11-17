@@ -4,8 +4,7 @@ import {
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
 	WESTEND_ASSET_HUB_SPEC_NAMES,
 } from '../consts';
-import type { AssetTransferApiOpts } from '../types';
-import { findRelayChain, parseRegistry } from './';
+import { findRelayChain } from './';
 import type { ChainInfo, ChainInfoRegistry, ExpandedChainInfoKeys, ForeignAssetsData, RelayChains } from './types';
 
 export class Registry {
@@ -16,9 +15,9 @@ export class Registry {
 	cache: ChainInfoRegistry;
 	specNameToIdCache: Map<string, string>;
 
-	constructor(specName: string, opts: AssetTransferApiOpts) {
+	constructor(specName: string, registry: ChainInfoRegistry) {
 		this.specName = specName;
-		this.registry = parseRegistry(opts);
+		this.registry = registry,
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.specNameToIdCache = new Map<string, string>();

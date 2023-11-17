@@ -3,9 +3,10 @@
 import { Registry } from '../registry';
 import { mockMoonriverParachainApi } from '../testHelpers/mockMoonriverParachainApi';
 import { ParaToSystem } from './ParaToSystem';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
 describe('ParaToSystem', () => {
-	const registry = new Registry('kusama', {});
+	const registry = new Registry('kusama', mockAssetRegistry);
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = ParaToSystem.createBeneficiary(

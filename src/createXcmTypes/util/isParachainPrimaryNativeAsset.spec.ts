@@ -3,13 +3,14 @@
 import { Registry } from '../../registry';
 import { Direction } from '../../types';
 import { isParachainPrimaryNativeAsset } from './isParachainPrimaryNativeAsset';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('isParachainPrimaryNativeAsset', () => {
 	type Test = [primaryNativeAssetSymbol: string | undefined, specName: string, registry: Registry, expected: boolean];
 
 	it('Should correctly return true for valid parachain primary asset inputs', () => {
-		const moonriverRegistry = new Registry('moonriver', {});
-		const hydraDXRegistry = new Registry('hydradx', {});
+		const moonriverRegistry = new Registry('moonriver', mockAssetRegistry);
+		const hydraDXRegistry = new Registry('hydradx', mockAssetRegistry);
 
 		const tests: Test[] = [
 			['', 'moonriver', moonriverRegistry, true],
@@ -32,8 +33,8 @@ describe('isParachainPrimaryNativeAsset', () => {
 	});
 
 	it('Should correctly return false for invalid primary native parachain asset inputs', () => {
-		const moonriverRegistry = new Registry('moonriver', {});
-		const bifrostRegistry = new Registry('bifrost_polkadot', {});
+		const moonriverRegistry = new Registry('moonriver', mockAssetRegistry);
+		const bifrostRegistry = new Registry('bifrost_polkadot', mockAssetRegistry);
 
 		const tests: Test[] = [
 			['1', 'moonriver', moonriverRegistry, false],
@@ -57,8 +58,8 @@ describe('isParachainPrimaryNativeAsset', () => {
 	});
 
 	it('Should correctly return false when direction is not ParaToSystem', () => {
-		const moonriverRegistry = new Registry('moonriver', {});
-		const hydraDXRegistry = new Registry('hydradx', {});
+		const moonriverRegistry = new Registry('moonriver', mockAssetRegistry);
+		const hydraDXRegistry = new Registry('hydradx', mockAssetRegistry);
 
 		const tests: Test[] = [
 			['MOVR', 'moonriver', moonriverRegistry, false],

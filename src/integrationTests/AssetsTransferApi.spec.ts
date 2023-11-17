@@ -5,9 +5,14 @@ import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import type { Format, TxResult } from '../types';
+import { Registry } from '../registry';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
-const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
-const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
+const relayAssetsRegistry = new Registry('kusama', mockAssetRegistry);
+const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, relayAssetsRegistry);
+
+const systemAssetsRegistry = new Registry('statemine', mockAssetRegistry);
+const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, systemAssetsRegistry);
 
 describe('AssetTransferApi Integration Tests', () => {
 	describe('createTransferTransaction', () => {

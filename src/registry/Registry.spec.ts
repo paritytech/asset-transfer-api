@@ -1,11 +1,13 @@
 import { Registry } from './Registry';
 import type { ForeignAssetsData } from './types';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
-describe('Registry', () => {
-	const registry = new Registry('polkadot', {});
+describe('Registry',() => {
+	const registry = new Registry('polkadot', mockAssetRegistry);
+	
 	describe('initialization', () => {
-		it('Should initalize rococo correctly', () => {
-			const registry = new Registry('rococo', {});
+		it('Should initalize rococo correctly', async () => {
+			const registry = new Registry('rococo', mockAssetRegistry);
 			expect(registry.relayChain).toEqual('rococo');
 		});
 	});
@@ -34,28 +36,28 @@ describe('Registry', () => {
 							paraID: 1000,
 							symbol: 'USDT',
 							xcmV1MultiLocation:
-								'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+								'{"v1":{"parents":1,"interior":{"x3":[{"Parachain":1000},{"palletInstance":50},{"GeneralIndex":1984}]}}}',
 						},
 						{
 							asset: '110021739665376159354538090254163045594',
 							decimals: 12,
 							paraID: 2000,
 							symbol: 'aUSD',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2000},{"generalKey":"0x0001"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2000},{"GeneralKey":"0x0001"}]}}}',
 						},
 						{
 							asset: '224821240862170613278369189818311486111',
 							decimals: 12,
 							paraID: 2000,
 							symbol: 'ACA',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2000},{"generalKey":"0x0000"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2000},{"GeneralKey":"0x0000"}]}}}',
 						},
 						{
 							asset: '224077081838586484055667086558292981199',
 							decimals: 18,
 							paraID: 2006,
 							symbol: 'ASTR',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2006}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2006}}}}',
 						},
 						{
 							asset: '187224307232923873519830480073807488153',
@@ -63,14 +65,14 @@ describe('Registry', () => {
 							paraID: 2011,
 							symbol: 'EQD',
 							xcmV1MultiLocation:
-								'{"v1":{"parents":1,"interior":{"x2":[{"parachain":2011},{"generalKey":"0x657164"}]}}}',
+								'{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2011},{"GeneralKey":"0x657164"}]}}}',
 						},
 						{
 							asset: '190590555344745888270686124937537713878',
 							decimals: 9,
 							paraID: 2011,
 							symbol: 'EQ',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2011}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2011}}}}',
 						},
 						{
 							asset: '32615670524745285411807346420584982855',
@@ -78,105 +80,105 @@ describe('Registry', () => {
 							paraID: 2012,
 							symbol: 'PARA',
 							xcmV1MultiLocation:
-								'{"v1":{"parents":1,"interior":{"x2":[{"parachain":2012},{"generalKey":"0x50415241"}]}}}',
+								'{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2012},{"GeneralKey":"0x50415241"}]}}}',
 						},
 						{
 							asset: '309163521958167876851250718453738106865',
 							decimals: 11,
 							paraID: 2026,
 							symbol: 'NODL',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2026},{"palletInstance":2}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2026},{"palletInstance":2}]}}}',
 						},
 						{
 							asset: '144012926827374458669278577633504620722',
 							decimals: 18,
 							paraID: 2030,
 							symbol: 'FIL',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2030},{"generalKey":"0x0804"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2030},{"GeneralKey":"0x0804"}]}}}',
 						},
 						{
 							asset: '29085784439601774464560083082574142143',
 							decimals: 10,
 							paraID: 2030,
 							symbol: 'vDOT',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2030},{"generalKey":"0x0900"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2030},{"GeneralKey":"0x0900"}]}}}',
 						},
 						{
 							asset: '204507659831918931608354793288110796652',
 							decimals: 18,
 							paraID: 2030,
 							symbol: 'vGLMR',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2030},{"generalKey":"0x0901"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2030},{"GeneralKey":"0x0901"}]}}}',
 						},
 						{
 							asset: '165823357460190568952172802245839421906',
 							decimals: 12,
 							paraID: 2030,
 							symbol: 'BNC',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2030},{"generalKey":"0x0001"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2030},{"GeneralKey":"0x0001"}]}}}',
 						},
 						{
 							asset: '272547899416482196831721420898811311297',
 							decimals: 18,
 							paraID: 2030,
 							symbol: 'vFIL',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2030},{"generalKey":"0x0904"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2030},{"GeneralKey":"0x0904"}]}}}',
 						},
 						{
 							asset: '91372035960551235635465443179559840483',
 							decimals: 18,
 							paraID: 2031,
 							symbol: 'CFG',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2031},{"generalKey":"0x0001"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2031},{"GeneralKey":"0x0001"}]}}}',
 						},
 						{
 							asset: '120637696315203257380661607956669368914',
 							decimals: 8,
 							paraID: 2032,
 							symbol: 'IBTC',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2032},{"generalKey":"0x0001"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2032},{"GeneralKey":"0x0001"}]}}}',
 						},
 						{
 							asset: '101170542313601871197860408087030232491',
 							decimals: 10,
 							paraID: 2032,
 							symbol: 'INTR',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2032},{"generalKey":"0x0002"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2032},{"GeneralKey":"0x0002"}]}}}',
 						},
 						{
 							asset: '69606720909260275826784788104880799692',
 							decimals: 12,
 							paraID: 2034,
 							symbol: 'HDX',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2034},{"generalIndex":0}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2034},{"GeneralIndex":0}]}}}',
 						},
 						{
 							asset: '132685552157663328694213725410064821485',
 							decimals: 12,
 							paraID: 2035,
 							symbol: 'PHA',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2035}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2035}}}}',
 						},
 						{
 							asset: '125699734534028342599692732320197985871',
 							decimals: 18,
 							paraID: 2046,
 							symbol: 'RING',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2046},{"palletInstance":5}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2046},{"palletInstance":5}]}}}',
 						},
 						{
 							asset: '89994634370519791027168048838578580624',
 							decimals: 10,
 							paraID: 2101,
 							symbol: 'SUB',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2101}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2101}}}}',
 						},
 						{
 							asset: '166446646689194205559791995948102903873',
 							decimals: 18,
 							paraID: 2104,
 							symbol: 'MANTA',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2104}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2104}}}}',
 						},
 					],
 				},
@@ -236,13 +238,13 @@ describe('Registry', () => {
 						EQ: {
 							symbol: 'EQ',
 							name: 'Equilibrium',
-							multiLocation: '{"parents":1,"interior":{"x1":{"parachain":2011}}}',
+							multiLocation: '{"parents":1,"interior":{"x1":{"Parachain":2011}}}',
 						},
 						EQD: {
 							symbol: 'EQD',
 							name: 'Equilibrium Dollar',
 							multiLocation:
-								'{"parents":1,"interior":{"x2":[{"parachain":2011},{"generalKey":{"length":3,"data":"0x6571640000000000000000000000000000000000000000000000000000000000"}}]}}',
+								'{"parents":1,"interior":{"x2":[{"Parachain":2011},{"GeneralKey":{"length":3,"data":"0x6571640000000000000000000000000000000000000000000000000000000000"}}]}}',
 						},
 					},
 				},
@@ -279,7 +281,7 @@ describe('Registry', () => {
 							paraID: 1000,
 							symbol: 'USDT',
 							xcmV1MultiLocation:
-								'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+								'{"v1":{"parents":1,"interior":{"x3":[{"Parachain":1000},{"palletInstance":50},{"GeneralIndex":1984}]}}}',
 						},
 						{
 							asset: {
@@ -289,7 +291,7 @@ describe('Registry', () => {
 							paraID: 1000,
 							symbol: 'WETH',
 							xcmV1MultiLocation:
-								'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":100}]}}}',
+								'{"v1":{"parents":1,"interior":{"x3":[{"Parachain":1000},{"palletInstance":50},{"GeneralIndex":100}]}}}',
 						},
 						{
 							asset: {
@@ -299,7 +301,7 @@ describe('Registry', () => {
 							paraID: 1000,
 							symbol: 'WBTC',
 							xcmV1MultiLocation:
-								'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":21}]}}}',
+								'{"v1":{"parents":1,"interior":{"x3":[{"Parachain":1000},{"palletInstance":50},{"GeneralIndex":21}]}}}',
 						},
 						{
 							asset: {
@@ -308,7 +310,7 @@ describe('Registry', () => {
 							decimals: 18,
 							paraID: 2004,
 							symbol: 'GLMR',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2004},{"palletInstance":10}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2004},{"palletInstance":10}]}}}',
 						},
 						{
 							asset: {
@@ -317,7 +319,7 @@ describe('Registry', () => {
 							decimals: 18,
 							paraID: 2006,
 							symbol: 'ASTR',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2006}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2006}}}}',
 						},
 						{
 							asset: {
@@ -326,7 +328,7 @@ describe('Registry', () => {
 							decimals: 12,
 							paraID: 2008,
 							symbol: 'CRU',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2008}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2008}}}}',
 						},
 						{
 							asset: {
@@ -336,7 +338,7 @@ describe('Registry', () => {
 							paraID: 2011,
 							symbol: 'EQD',
 							xcmV1MultiLocation:
-								'{"v1":{"parents":1,"interior":{"x2":[{"parachain":2011},{"generalKey":"0x657164"}]}}}',
+								'{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2011},{"GeneralKey":"0x657164"}]}}}',
 						},
 						{
 							asset: {
@@ -345,7 +347,7 @@ describe('Registry', () => {
 							decimals: 9,
 							paraID: 2011,
 							symbol: 'EQ',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2011}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2011}}}}',
 						},
 						{
 							asset: {
@@ -355,7 +357,7 @@ describe('Registry', () => {
 							paraID: 2012,
 							symbol: 'PARA',
 							xcmV1MultiLocation:
-								'{"v1":{"parents":1,"interior":{"x2":[{"parachain":2012},{"generalKey":"0x50415241"}]}}}',
+								'{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2012},{"GeneralKey":"0x50415241"}]}}}',
 						},
 						{
 							asset: {
@@ -364,7 +366,7 @@ describe('Registry', () => {
 							decimals: 8,
 							paraID: 2032,
 							symbol: 'IBTC',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2032},{"generalKey":"0x0001"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2032},{"GeneralKey":"0x0001"}]}}}',
 						},
 						{
 							asset: {
@@ -373,7 +375,7 @@ describe('Registry', () => {
 							decimals: 10,
 							paraID: 2032,
 							symbol: 'INTR',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2032},{"generalKey":"0x0002"}]}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"Parachain":2032},{"GeneralKey":"0x0002"}]}}}',
 						},
 						{
 							asset: {
@@ -382,7 +384,7 @@ describe('Registry', () => {
 							decimals: 12,
 							paraID: 2035,
 							symbol: 'PHA',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2035}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2035}}}}',
 						},
 						{
 							asset: {
@@ -391,7 +393,7 @@ describe('Registry', () => {
 							decimals: 18,
 							paraID: 2037,
 							symbol: 'UNQ',
-							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"parachain":2037}}}}',
+							xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x1":{"Parachain":2037}}}}',
 						},
 					],
 				},
@@ -432,7 +434,7 @@ describe('Registry', () => {
 			const foreignAssetData: ForeignAssetsData = {
 				symbol: 'TNKR',
 				name: 'Tinkernet',
-				multiLocation: '{"parents":1,"interior":{"x2":[{"parachain":2125},{"generalIndex":0}]}}',
+				multiLocation: '{"parents":1,"interior":{"x2":[{"Parachain":2125},{"GeneralIndex":0}]}}',
 			};
 			registry.setForeignAssetInCache('TNKR', foreignAssetData);
 

@@ -3,9 +3,10 @@
 import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { SystemToRelay } from './SystemToRelay';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
 describe('SystemToRelay XcmVersioned Generation', () => {
-	const registry = new Registry('statemine', {});
+	const registry = new Registry('statemine', mockAssetRegistry);
 
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {

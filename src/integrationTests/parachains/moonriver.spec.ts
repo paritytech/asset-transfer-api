@@ -8,10 +8,13 @@ import { paraTransferMultiasset as moonriverTransferMultiasset } from '../util';
 import { paraTransferMultiassets as moonriverTransferMultiassets } from '../util';
 import { paraTransferMultiassetWithFee as moonriverTransferMultiassetWithFee } from '../util';
 import { paraTeleportNativeAsset as moonriverTeleportNativeAsset } from '../util';
-
-const moonriverATA = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
+import { Registry } from '../../registry';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('Moonriver', () => {
+	const moonriverRegistry = new Registry('moonriver', mockAssetRegistry);
+	const moonriverATA = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, moonriverRegistry);
+
 	describe('ParaToPara', () => {
 		describe('transferMultiasset', () => {
 			describe('XCM V2', () => {

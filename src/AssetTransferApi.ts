@@ -43,7 +43,6 @@ import { Registry } from './registry';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetCallType,
-	AssetTransferApiOpts,
 	AssetType,
 	ConstructedFormat,
 	Direction,
@@ -78,17 +77,15 @@ import { validateNumber } from './validate';
  */
 export class AssetTransferApi {
 	readonly _api: ApiPromise;
-	readonly _opts: AssetTransferApiOpts;
 	readonly _specName: string;
 	readonly _safeXcmVersion: number;
 	readonly registry: Registry;
 
-	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetTransferApiOpts = {}) {
+	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, registry: Registry) {
 		this._api = api;
-		this._opts = opts;
 		this._specName = specName;
 		this._safeXcmVersion = safeXcmVersion;
-		this.registry = new Registry(specName, this._opts);
+		this.registry = registry;
 	}
 
 	/**

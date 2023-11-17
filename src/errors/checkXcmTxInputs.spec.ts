@@ -24,12 +24,16 @@ import {
 	checkXcmVersionIsValidForPaysWithFeeDest,
 	CheckXTokensPalletOriginIsNonForeignAssetTx,
 } from './checkXcmTxInputs';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
+import { ChainInfoRegistry } from 'src/registry/types';
 
-const parachainAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
+const parachainAssetsRegistry = new Registry('moonriver', mockAssetRegistry);
+const parachainAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, parachainAssetsRegistry);
+
 const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
 		const [specName, testInputs, direction, errorMessage] = test;
-		const registry = new Registry(specName, {});
+		const registry = new Registry(specName, mockAssetRegistry);
 		const currentRegistry = registry.currentRelayRegistry;
 
 		await expect(async () => {
@@ -164,7 +168,7 @@ describe('checkAssetIds', () => {
 
 		for (const test of tests) {
 			const [specName, testInputs, direction, errorMessage] = test;
-			const registry = new Registry(specName, {});
+			const registry = new Registry(specName, mockAssetRegistry);
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
@@ -207,7 +211,7 @@ describe('checkAssetIds', () => {
 
 		for (const test of tests) {
 			const [specName, testInputs, direction, errorMessage] = test;
-			const registry = new Registry(specName, {});
+			const registry = new Registry(specName, mockAssetRegistry);
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
@@ -231,7 +235,7 @@ describe('checkAssetIds', () => {
 
 		for (const test of tests) {
 			const [specName, testInputs, direction, errorMessage] = test;
-			const registry = new Registry(specName, {});
+			const registry = new Registry(specName, mockAssetRegistry);
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
@@ -274,7 +278,7 @@ describe('checkAssetIds', () => {
 
 		for (const test of tests) {
 			const [specName, testInputs, direction, errorMessage] = test;
-			const registry = new Registry(specName, {});
+			const registry = new Registry(specName, mockAssetRegistry);
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
@@ -304,7 +308,7 @@ describe('checkAssetIds', () => {
 
 		for (const test of tests) {
 			const [specName, testInputs, direction, errorMessage] = test;
-			const registry = new Registry(specName, {});
+			const registry = new Registry(specName, mockAssetRegistry);
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
@@ -334,7 +338,7 @@ describe('checkAssetIds', () => {
 
 		for (const test of tests) {
 			const [specName, testInputs, direction, errorMessage] = test;
-			const registry = new Registry(specName, {});
+			const registry = new Registry(specName, mockAssetRegistry);
 			const currentRegistry = registry.currentRelayRegistry;
 			await expect(async () => {
 				await checkAssetIdInput(
@@ -369,7 +373,7 @@ describe('checkAssetIds', () => {
 
 		for (const test of tests) {
 			const [specName, testInputs, direction, errorMessage] = test;
-			const registry = new Registry(specName, {});
+			const registry = new Registry(specName, mockAssetRegistry);
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
@@ -388,7 +392,7 @@ describe('checkAssetIds', () => {
 		}
 	});
 	it('Should error for an invalid erc20 token.', async () => {
-		const registry = new Registry('moonriver', {});
+		const registry = new Registry('moonriver', mockAssetRegistry);
 		const currentRegistry = registry.currentRelayRegistry;
 
 		await expect(async () => {
@@ -406,7 +410,7 @@ describe('checkAssetIds', () => {
 		}).rejects.toThrowError('(ParaToSystem) assetId 0x1234, is not a valid erc20 token.');
 	});
 	it('Should error when an invalid token is passed into a liquidTokenTransfer', async () => {
-		const registry = new Registry('westmint', {});
+		const registry = new Registry('westmint', mockAssetRegistry);
 		const currentRegistry = registry.currentRelayRegistry;
 		const isLiquidTokenTransfer = true;
 
@@ -425,7 +429,7 @@ describe('checkAssetIds', () => {
 		}).rejects.toThrowError('Liquid Tokens must be valid Integers');
 	});
 	it('Should error when a token does not exist in the registry or node', async () => {
-		const registry = new Registry('westmint', {});
+		const registry = new Registry('westmint', mockAssetRegistry);
 		const currentRegistry = registry.currentRelayRegistry;
 		const isLiquidTokenTransfer = true;
 
@@ -446,7 +450,7 @@ describe('checkAssetIds', () => {
 		);
 	});
 	it('Should not error when a valid liquid token exists', async () => {
-		const registry = new Registry('westmint', {});
+		const registry = new Registry('westmint', mockAssetRegistry);
 		const currentRegistry = registry.currentRelayRegistry;
 		const isLiquidTokenTransfer = true;
 
@@ -466,7 +470,7 @@ describe('checkAssetIds', () => {
 		}).not.toThrow();
 	});
 	it('Should not throw an error for ParaToRelay when its a valid', async () => {
-		const registry = new Registry('moonriver', {});
+		const registry = new Registry('moonriver', mockAssetRegistry);
 		const currentRegistry = registry.currentRelayRegistry;
 		// eslint-disable-next-line @typescript-eslint/await-thenable
 		await expect(async () => {
@@ -526,7 +530,7 @@ describe('checkAssetIds', () => {
 		}).not.toThrow();
 	});
 	it('Should error when an invalid assetId is inputted for ParaToRelay', async () => {
-		const registry = new Registry('karura', {});
+		const registry = new Registry('karura', mockAssetRegistry);
 		const currentRegistry = registry.currentRelayRegistry;
 
 		await expect(async () => {
@@ -553,7 +557,7 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 			'Found the relay chains native asset in list [ksm,usdc]. `assetIds` list must be empty or only contain the relay chain asset for direction SystemToSystem when sending the relay chains native asset.';
 		const assetIds = ['ksm', 'usdc'];
 		const specName = 'statemine';
-		const registry = new Registry(specName, {});
+		const registry = new Registry(specName, mockAssetRegistry);
 
 		const err = () => checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 		expect(err).toThrowError(expectErrorMessage);
@@ -752,7 +756,7 @@ describe('checkParaAssets', () => {
 	it('Should correctly resolve when a valid symbol assetId is provided', async () => {
 		const assetId = 'xcUSDt';
 		const specName = 'moonriver';
-		const registry = new Registry(specName, {});
+		const registry = new Registry(specName, mockAssetRegistry);
 		let didNotError = true;
 
 		try {
@@ -766,7 +770,7 @@ describe('checkParaAssets', () => {
 	it('Should correctly resolve when a valid integer assetId is provided', async () => {
 		const assetId = '311091173110107856861649819128533077277';
 		const specName = 'moonriver';
-		const registry = new Registry(specName, {});
+		const registry = new Registry(specName, mockAssetRegistry);
 		let didNotError = true;
 
 		try {
@@ -780,7 +784,7 @@ describe('checkParaAssets', () => {
 	it('Should correctly error when an invalid symbol assetId is provided', async () => {
 		const assetId = 'xcUSDfake';
 		const specName = 'moonriver';
-		const registry = new Registry(specName, {});
+		const registry = new Registry(specName, mockAssetRegistry);
 
 		await expect(async () => {
 			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
@@ -789,7 +793,7 @@ describe('checkParaAssets', () => {
 	it('Should correctly error when an invalid integer assetId is provided', async () => {
 		const assetId = '2096586909097964981698161';
 		const specName = 'moonriver';
-		const registry = new Registry(specName, {});
+		const registry = new Registry(specName, mockAssetRegistry);
 
 		await expect(async () => {
 			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
@@ -798,7 +802,7 @@ describe('checkParaAssets', () => {
 	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {
 		const assetId = '999999999999999999999999999999999999999';
 		const specName = 'moonriver';
-		const registry = new Registry(specName, {});
+		const registry = new Registry(specName, mockAssetRegistry);
 
 		await expect(async () => {
 			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
@@ -807,7 +811,7 @@ describe('checkParaAssets', () => {
 
 	describe('cache', () => {
 		it('Should correctly cache an asset that is not found in the registry after being queried for origin System', async () => {
-			const registry = new Registry('statemine', {});
+			const registry = new Registry('statemine', mockAssetRegistry);
 			const chainInfo = {
 				'1000': {
 					assetsInfo: {},
@@ -833,7 +837,7 @@ describe('checkParaAssets', () => {
 			expect(registry.cacheLookupAsset('1984')).toEqual('USDt');
 		});
 		it('Should correctly cache an asset that is not found in the registry after being queried for origin Para', async () => {
-			const registry = new Registry('moonriver', {});
+			const registry = new Registry('moonriver', mockAssetRegistry);
 			const chainInfo = {
 				'2023': {
 					assetsInfo: {},
@@ -860,8 +864,9 @@ describe('checkParaAssets', () => {
 		});
 
 		it('Should correctly cache a foreign asset that is not found in the registry after being queried', async () => {
-			const registry = new Registry('statemine', {
+			const injectedChainRegistry = {
 				injectedRegistry: {
+					polkadot: {},
 					kusama: {
 						'1000': {
 							assetsInfo: {},
@@ -872,7 +877,11 @@ describe('checkParaAssets', () => {
 						},
 					},
 				},
-			});
+				westend: {},
+				rococo: {},
+			} as unknown as ChainInfoRegistry;
+
+			const registry = new Registry('statemine', injectedChainRegistry);
 			const chainInfo = {
 				'1000': {
 					assetsInfo: {},
@@ -903,8 +912,9 @@ describe('checkParaAssets', () => {
 		});
 
 		it('Should correctly cache a liquid asset that is not found in the registry after being queried', async () => {
-			const registry = new Registry('statemine', {
+			const injectedChainRegistry = {
 				injectedRegistry: {
+					polkadot: {},
 					kusama: {
 						'1000': {
 							assetsInfo: {},
@@ -915,7 +925,12 @@ describe('checkParaAssets', () => {
 						},
 					},
 				},
-			});
+				westend: {},
+				rococo: {},
+			} as unknown as ChainInfoRegistry;
+
+
+			const registry = new Registry('statemine', injectedChainRegistry);
 			const chainInfo = {
 				'1000': {
 					assetsInfo: {},

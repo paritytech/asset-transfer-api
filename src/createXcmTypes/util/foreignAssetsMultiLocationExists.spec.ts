@@ -3,9 +3,11 @@
 import { Registry } from '../../registry';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
+import { ChainInfoRegistry } from 'src/registry/types';
 
 describe('foreignMultiAssetMultiLocationExists', () => {
-	const registry = new Registry('statemine', {});
+	const registry = new Registry('statemine', mockAssetRegistry);
 
 	it('Should return true for an existing foreign asset multilocation', async () => {
 		const expected = true;
@@ -57,7 +59,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 					},
 				},
 			},
-		});
+		} as unknown as ChainInfoRegistry);
 		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
 
 		await foreignAssetsMultiLocationExists(adjustedMockSystemApi, emptyRegistry, multiLocation, 2);

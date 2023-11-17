@@ -3,9 +3,10 @@
 import { Registry } from '../registry';
 import { mockRelayApi } from '../testHelpers/mockRelayApi';
 import { RelayToPara } from './RelayToPara';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
 describe('RelayToPara XcmVersioned Generation', () => {
-	const registry = new Registry('kusama', {});
+	const registry = new Registry('kusama', mockAssetRegistry);
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = RelayToPara.createBeneficiary(

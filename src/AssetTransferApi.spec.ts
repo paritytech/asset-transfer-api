@@ -12,15 +12,22 @@ import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { Direction, UnsignedTransaction } from './types';
 import { AssetType } from './types';
+import { mockAssetRegistry } from './testHelpers/mockAssetRegistry';
+import { Registry } from './registry';
 
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',
 	'0xfc041f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000'
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
-const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
-const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
+const systemAssetsRegistry = new Registry('statemine', mockAssetRegistry);
+const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, systemAssetsRegistry);
+
+const relayAssetsRegistry = new Registry('kusama', mockAssetRegistry);
+const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, relayAssetsRegistry);
+
+const moonriverAssetsRegistry = new Registry('moonriver', mockAssetRegistry);
+const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, moonriverAssetsRegistry);
 
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
@@ -354,27 +361,6 @@ describe('AssetTransferAPI', () => {
 
 				expect(assetCallType).toEqual('Reserve');
 			});
-		});
-	});
-
-	describe('Opts', () => {
-		it('Should correctly read in the injectedRegistry option', () => {
-			const injectedRegistry = {
-				polkadot: {
-					'9876': {
-						tokens: ['TST'],
-						assetsInfo: {},
-						foreignAssetsInfo: {},
-						specName: 'testing',
-						poolPairsInfo: {},
-					},
-				},
-			};
-			const mockSystemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, {
-				injectedRegistry,
-			});
-
-			expect(mockSystemAssetsApi._opts.injectedRegistry).toStrictEqual(injectedRegistry);
 		});
 	});
 

@@ -4,12 +4,13 @@ import { AssetTransferApi } from '../AssetTransferApi';
 import { Registry } from '../registry';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { checkLocalTxInput } from './checkLocalTxInputs';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
 describe('checkLocalTxInput', () => {
-	const registry = new Registry('statemine', {});
+	const registry = new Registry('statemine', mockAssetRegistry);
 	const specName = 'statemine';
 
-	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
+	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, registry);
 
 	it('Should correctly return Balances with an empty assetIds', async () => {
 		const res = await checkLocalTxInput(systemAssetsApi._api, [], ['10000'], specName, registry, 2, false, false);

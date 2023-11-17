@@ -1,12 +1,14 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import registry from '@substrate/asset-transfer-api-registry';
 
 import { ASSET_HUB_CHAIN_ID } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
 import type { ChainInfoRegistry } from './types';
+import fetch from 'node-fetch';
 
-export const parseRegistry = (assetsOpts: AssetTransferApiOpts): ChainInfoRegistry => {
+export const parseRegistry = async (assetsOpts: AssetTransferApiOpts): Promise<ChainInfoRegistry> => {
+	const registry = (await (await fetch('https://paritytech.github.io/asset-transfer-api-registry/registry.json')).json()) as ChainInfoRegistry;
+
 	if (assetsOpts.injectedRegistry) {
 		const { injectedRegistry } = assetsOpts;
 		const polkadot = injectedRegistry.polkadot;
@@ -26,5 +28,5 @@ export const parseRegistry = (assetsOpts: AssetTransferApiOpts): ChainInfoRegist
 	 */
 	registry.rococo[ASSET_HUB_CHAIN_ID].specName = 'asset-hub-rococo';
 
-	return registry as ChainInfoRegistry;
+	return registry;
 };

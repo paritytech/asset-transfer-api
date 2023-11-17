@@ -5,6 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { AssetTransferApi } from '../AssetTransferApi';
 import { FungibleStrMultiAsset } from '../createXcmTypes/types';
 import { Registry } from '../registry';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
@@ -18,9 +19,11 @@ type Test = [
 ];
 
 describe('getFeeAssetItemIndex', () => {
-	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
-	const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
-	const registry = new Registry('statemine', {});
+	const registry = new Registry('statemine', mockAssetRegistry);
+	const kusamaRegistry = new Registry('kusama', mockAssetRegistry);
+
+	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, registry);
+	const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, kusamaRegistry);
 
 	it('Should select and return the index of the correct multiassets when given their token symbols', async () => {
 		const tests: Test[] = [

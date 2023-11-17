@@ -3,9 +3,10 @@
 import { Registry } from '../registry';
 import { mockRelayApi } from '../testHelpers/mockRelayApi';
 import { RelayToSystem } from './RelayToSystem';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
 describe('RelayToSystem XcmVersioned Generation', () => {
-	const registry = new Registry('kusama', {});
+	const registry = new Registry('kusama', mockAssetRegistry);
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = RelayToSystem.createBeneficiary(

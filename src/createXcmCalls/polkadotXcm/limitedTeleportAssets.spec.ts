@@ -4,9 +4,10 @@ import { Registry } from '../../registry';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { Direction } from '../../types';
 import { limitedTeleportAssets } from './limitedTeleportAssets';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('limitedTeleportAssets', () => {
-	const registry = new Registry('statemine', {});
+	const registry = new Registry('statemine', mockAssetRegistry);
 	describe('SystemToPara', () => {
 		const isLiquidTokenTransfer = false;
 		it('Should correctly construct a tx for a system parachain with V2', async () => {

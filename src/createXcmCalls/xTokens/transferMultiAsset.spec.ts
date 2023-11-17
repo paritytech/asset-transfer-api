@@ -5,10 +5,11 @@ import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMoc
 import { Direction } from '../../types';
 import { XcmPalletName } from '../util/establishXcmPallet';
 import { transferMultiasset } from './transferMultiasset';
+import { mockAssetRegistry } from '../../testHelpers/mockAssetRegistry';
 
 describe('transferMultiasset', () => {
 	describe('ParaToSystem', () => {
-		const registry = new Registry('moonriver', {});
+		const registry = new Registry('moonriver', mockAssetRegistry);
 
 		it('Should correctly construct an Unlimited transferMultiasset tx for V2', async () => {
 			const ext = await transferMultiasset(

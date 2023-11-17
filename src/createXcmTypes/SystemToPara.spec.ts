@@ -5,9 +5,10 @@ import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { SystemToPara } from './SystemToPara';
 import { createSystemToParaMultiAssets } from './SystemToPara';
 import { FungibleStrMultiAsset } from './types';
+import { mockAssetRegistry } from '../testHelpers/mockAssetRegistry';
 
 describe('SystemToPara XcmVersioned Generation', () => {
-	const registry = new Registry('statemine', {});
+	const registry = new Registry('statemine', mockAssetRegistry);
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
 			const beneficiary = SystemToPara.createBeneficiary(
