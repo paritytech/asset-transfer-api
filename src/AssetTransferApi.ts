@@ -271,24 +271,31 @@ export class AssetTransferApi {
 				});
 			}
 		}
-
-		await checkXcmTxInputs(
-			_api,
-			destChainId,
+		const baseArgs = {
+			api: _api,
+			direction: xcmDirection as XcmDirection,
+			destAddr: addr,
 			assetIds,
 			amounts,
-			xcmDirection,
-			xcmPallet,
-			_specName,
-			registry,
-			isForeignAssetsTransfer,
+			destChainId,
+			xcmVersion: declaredXcmVersion,
+			specName: _specName,
+			registry: this.registry,
+		};
+
+		const baseOpts = {
+			isLimited,
+			weightLimit,
+			paysWithFeeDest,
 			isLiquidTokenTransfer,
-			isPrimaryParachainNativeAsset,
+			isForeignAssetsTransfer,
+		};
+
+		await checkXcmTxInputs(
+			{ ...baseArgs, xcmPallet },
 			{
-				xcmVersion: declaredXcmVersion,
-				paysWithFeeDest,
-				isLimited,
-				weightLimit,
+				...baseOpts,
+				isPrimaryParachainNativeAsset,
 			}
 		);
 
@@ -315,147 +322,35 @@ export class AssetTransferApi {
 			// This ensures paraToRelay always uses `transferMultiAsset`.
 			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
 				txMethod = 'transferMultiasset';
-				transaction = await transferMultiasset(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					xcmPallet,
-					{
-						isLimited,
-						weightLimit,
-						paysWithFeeDest,
-						isForeignAssetsTransfer,
-						isLiquidTokenTransfer,
-					}
-				);
+				transaction = await transferMultiasset({ ...baseArgs, xcmPallet }, baseOpts);
 			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
 				txMethod = 'transferMultiassetWithFee';
-				transaction = await transferMultiassetWithFee(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					xcmPallet,
-					{
-						isLimited,
-						weightLimit,
-						paysWithFeeDest,
-						isForeignAssetsTransfer,
-						isLiquidTokenTransfer,
-					}
-				);
+				transaction = await transferMultiassetWithFee({ ...baseArgs, xcmPallet }, baseOpts);
 			} else {
 				txMethod = 'transferMultiassets';
-				transaction = await transferMultiassets(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					xcmPallet,
-					{
-						isLimited,
-						weightLimit,
-						paysWithFeeDest,
-						isForeignAssetsTransfer,
-						isLiquidTokenTransfer,
-					}
-				);
+				transaction = await transferMultiassets({ ...baseArgs, xcmPallet }, baseOpts);
 			}
 		} else if (assetCallType === AssetCallType.Reserve) {
 			if (isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
-				transaction = await limitedReserveTransferAssets(
-					_api,
-					xcmDirection as XcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					{
-						isLimited,
-						weightLimit,
-						paysWithFeeDest,
-						isLiquidTokenTransfer,
-						isForeignAssetsTransfer,
-					}
-				);
+				transaction = await limitedReserveTransferAssets(baseArgs, baseOpts);
 			} else {
 				txMethod = 'reserveTransferAssets';
-				transaction = await reserveTransferAssets(
-					_api,
-					xcmDirection as XcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					{
-						paysWithFeeDest,
-						isLiquidTokenTransfer,
-						isForeignAssetsTransfer,
-					}
-				);
+				transaction = await reserveTransferAssets(baseArgs, baseOpts);
 			}
 		} else {
 			if (isLimited) {
 				txMethod = 'limitedTeleportAssets';
-				transaction = await limitedTeleportAssets(
-					_api,
-					xcmDirection as XcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					{
-						isLimited,
-						weightLimit,
-						paysWithFeeDest,
-						isForeignAssetsTransfer,
-						isLiquidTokenTransfer: false,
-					}
-				);
+				transaction = await limitedTeleportAssets(baseArgs, {
+					...baseOpts,
+					isLiquidTokenTransfer: false,
+				});
 			} else {
 				txMethod = 'teleportAssets';
-				transaction = await teleportAssets(
-					_api,
-					xcmDirection as XcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					{
-						paysWithFeeDest,
-						isForeignAssetsTransfer,
-						isLiquidTokenTransfer: false,
-					}
-				);
+				transaction = await teleportAssets(baseArgs, {
+					...baseOpts,
+					isLiquidTokenTransfer: false,
+				});
 			}
 		}
 

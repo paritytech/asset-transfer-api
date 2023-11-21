@@ -4,13 +4,28 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
-import { Direction } from '../../types';
+import { Direction, XcmDirection } from '../../types';
 import { limitedReserveTransferAssets } from './limitedReserveTransferAssets';
 
 describe('limitedReserveTransferAssets', () => {
 	const registry = new Registry('statemine', {});
 	describe('SystemToPara', () => {
 		const isLiquidTokenTransfer = false;
+		const baseArgs = {
+			api: adjustedMockSystemApi,
+			direction: Direction.SystemToPara as XcmDirection,
+			destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+			assetIds: ['1'],
+			amounts: ['100'],
+			destChainId: '2023',
+			xcmVersion: 2,
+			specName: 'statemine',
+			registry,
+		};
+		const FAbaseArgs = {
+			...baseArgs,
+			assetIds: ['{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
+		};
 		it('Should correctly construct a tx for a system parachain with V2', async () => {
 			const isLimited = true;
 			const refTime = '1000';
@@ -18,27 +33,16 @@ describe('limitedReserveTransferAssets', () => {
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
-			const ext = await limitedReserveTransferAssets(
-				adjustedMockSystemApi,
-				Direction.SystemToPara,
-				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['1'],
-				['100'],
-				'2023',
-				2,
-				'statemine',
-				registry,
-				{
-					isLimited,
-					weightLimit: {
-						refTime,
-						proofSize,
-					},
-					paysWithFeeDest,
-					isLiquidTokenTransfer,
-					isForeignAssetsTransfer,
-				}
-			);
+			const ext = await limitedReserveTransferAssets(baseArgs, {
+				isLimited,
+				weightLimit: {
+					refTime,
+					proofSize,
+				},
+				paysWithFeeDest,
+				isLiquidTokenTransfer,
+				isForeignAssetsTransfer,
+			});
 
 			expect(ext.toHex()).toBe(
 				'0x0d01041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000001a10f411f'
@@ -51,27 +55,16 @@ describe('limitedReserveTransferAssets', () => {
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
-			const ext = await limitedReserveTransferAssets(
-				adjustedMockSystemApi,
-				Direction.SystemToPara,
-				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['1'],
-				['100'],
-				'2023',
-				2,
-				'statemine',
-				registry,
-				{
-					isLimited,
-					weightLimit: {
-						refTime,
-						proofSize,
-					},
-					paysWithFeeDest,
-					isLiquidTokenTransfer,
-					isForeignAssetsTransfer,
-				}
-			);
+			const ext = await limitedReserveTransferAssets(baseArgs, {
+				isLimited,
+				weightLimit: {
+					refTime,
+					proofSize,
+				},
+				paysWithFeeDest,
+				isLiquidTokenTransfer,
+				isForeignAssetsTransfer,
+			});
 
 			expect(ext.toHex()).toBe(
 				'0x1501041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400000204320504009101000000000102286bee411f'
@@ -84,52 +77,31 @@ describe('limitedReserveTransferAssets', () => {
 			const proofSize = '2000';
 
 			const mockApi = { tx: {} } as unknown as ApiPromise;
+			const mockApiBaseArgs = { ...baseArgs, api: mockApi };
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = true;
 			await expect(async () => {
-				await limitedReserveTransferAssets(
-					mockApi,
-					Direction.SystemToPara,
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1'],
-					['100'],
-					'2023',
-					2,
-					'statemine',
-					registry,
-					{
-						isLimited,
-						weightLimit: {
-							refTime,
-							proofSize,
-						},
-						paysWithFeeDest,
-						isLiquidTokenTransfer,
-						isForeignAssetsTransfer,
-					}
-				);
+				await limitedReserveTransferAssets(mockApiBaseArgs, {
+					isLimited,
+					weightLimit: {
+						refTime,
+						proofSize,
+					},
+					paysWithFeeDest,
+					isLiquidTokenTransfer,
+					isForeignAssetsTransfer,
+				});
 			}).rejects.toThrowError("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
 		});
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V2', async () => {
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = true;
-			const ext = await limitedReserveTransferAssets(
-				adjustedMockSystemApi,
-				Direction.SystemToPara,
-				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
-				['100'],
-				'2023',
-				2,
-				'statemine',
-				registry,
-				{
-					paysWithFeeDest,
-					isLiquidTokenTransfer,
-					isForeignAssetsTransfer,
-				}
-			);
+			const ext = await limitedReserveTransferAssets(FAbaseArgs, {
+				paysWithFeeDest,
+				isLiquidTokenTransfer,
+				isForeignAssetsTransfer,
+			});
 
 			expect(ext.toHex()).toBe(
 				'0x0901041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000000'
@@ -143,27 +115,16 @@ describe('limitedReserveTransferAssets', () => {
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = true;
-			const ext = await limitedReserveTransferAssets(
-				adjustedMockSystemApi,
-				Direction.SystemToPara,
-				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
-				['100'],
-				'2023',
-				2,
-				'statemine',
-				registry,
-				{
-					isLimited,
-					weightLimit: {
-						refTime,
-						proofSize,
-					},
-					paysWithFeeDest,
-					isLiquidTokenTransfer,
-					isForeignAssetsTransfer,
-				}
-			);
+			const ext = await limitedReserveTransferAssets(FAbaseArgs, {
+				isLimited,
+				weightLimit: {
+					refTime,
+					proofSize,
+				},
+				paysWithFeeDest,
+				isLiquidTokenTransfer,
+				isForeignAssetsTransfer,
+			});
 
 			expect(ext.toHex()).toBe(
 				'0x2101041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010304350035210500009101000000000102286bee411f'
