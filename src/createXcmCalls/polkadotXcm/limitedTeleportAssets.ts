@@ -1,42 +1,25 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import type { Registry } from '../../registry';
-import { XcmDirection } from '../../types';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr';
 import type { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
+import type { PolkadotXcmBaseArgs } from './types';
 
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `limitedTeleportAssets` call.
  *
- * @param api ApiPromise
- * @param direction Denotes the xcm direction of the call.
- * @param destAddr The address the funds will be transfered too.
- * @param assetIds An array of asset ids. Note, this should be the same size and order as amounts.
- * @param amounts An array of amounts. Note, this should be the same size and order as assetIds.
- * @param destChainId The id of the destination chain. This will be zero for a relay chain.
- * @param xcmVersion Supported XCM version.
- * @param specName The specName for the current chain
- * @param registry Registry
+ * @param baseArgs The base args needed to construct this call.
  * @param opts CreateXcmCallOpts
  */
 export const limitedTeleportAssets = async (
-	api: ApiPromise,
-	direction: XcmDirection,
-	destAddr: string,
-	assetIds: string[],
-	amounts: string[],
-	destChainId: string,
-	xcmVersion: number,
-	specName: string,
-	registry: Registry,
+	baseArgs: PolkadotXcmBaseArgs,
 	opts: CreateXcmCallOpts
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+	const { api, direction, destAddr, assetIds, amounts, destChainId, xcmVersion, specName, registry } = baseArgs;
 	const { isLimited, weightLimit, paysWithFeeDest, isForeignAssetsTransfer } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedTeleportAssets;
