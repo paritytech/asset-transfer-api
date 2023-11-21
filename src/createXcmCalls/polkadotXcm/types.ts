@@ -5,7 +5,7 @@ import type { ApiPromise } from '@polkadot/api';
 import type { Registry } from '../../registry';
 import type { XcmDirection } from '../../types';
 
-export type PolkadotXcmBaseArgs = {
+export interface PolkadotXcmBaseArgs {
 	api: ApiPromise;
 	direction: XcmDirection;
 	destAddr: string;
@@ -15,4 +15,4 @@ export type PolkadotXcmBaseArgs = {
 	xcmVersion: number;
 	specName: string;
 	registry: Registry;
-};
+}

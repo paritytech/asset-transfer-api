@@ -335,49 +335,13 @@ export class AssetTransferApi {
 			// This ensures paraToRelay always uses `transferMultiAsset`.
 			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
 				txMethod = 'transferMultiasset';
-				transaction = await transferMultiasset(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					xcmPallet,
-					baseOpts
-				);
+				transaction = await transferMultiasset({ ...baseArgs, xcmPallet }, baseOpts);
 			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
 				txMethod = 'transferMultiassetWithFee';
-				transaction = await transferMultiassetWithFee(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					xcmPallet,
-					baseOpts
-				);
+				transaction = await transferMultiassetWithFee({ ...baseArgs, xcmPallet }, baseOpts);
 			} else {
 				txMethod = 'transferMultiassets';
-				transaction = await transferMultiassets(
-					_api,
-					xcmDirection,
-					addr,
-					assetIds,
-					amounts,
-					destChainId,
-					declaredXcmVersion,
-					_specName,
-					this.registry,
-					xcmPallet,
-					baseOpts
-				);
+				transaction = await transferMultiassets({ ...baseArgs, xcmPallet }, baseOpts);
 			}
 		} else if (assetCallType === AssetCallType.Reserve) {
 			if (isLimited) {
