@@ -6,6 +6,8 @@ import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
+import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
+import type { Registry } from './registry';
 import type { ChainInfoRegistry } from './registry/types';
 
 export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
@@ -299,6 +301,22 @@ export interface UnsignedTransaction extends SignerPayloadJSON {
 	 * @default 0
 	 */
 	assetId: BN;
+}
+
+export interface XcmBaseArgs {
+	api: ApiPromise;
+	direction: XcmDirection;
+	destAddr: string;
+	assetIds: string[];
+	amounts: string[];
+	destChainId: string;
+	xcmVersion: number;
+	specName: string;
+	registry: Registry;
+}
+
+export interface XcmBaseArgsWithPallet extends XcmBaseArgs {
+	xcmPallet: XcmPalletName;
 }
 
 export interface LocalDest {

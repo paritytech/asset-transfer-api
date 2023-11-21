@@ -6,16 +6,17 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
-import { CheckXcmTxInputsOpts } from '../createXcmTypes/types';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
+import type { XcmBaseArgsWithPallet } from '../types';
 import { AssetInfo, Direction } from '../types';
 import { validateNumber } from '../validate';
 import { BaseError, BaseErrorsEnum } from './BaseError';
+import type { CheckXcmTxInputsOpts } from './types';
 
 /**
  * Ensure when sending tx's to or from the relay chain that the length of the assetIds array
@@ -1041,24 +1042,12 @@ export const checkAssetIdInput = async (
  * @param specName
  * @param registry
  */
-export const checkXcmTxInputs = async (
-	api: ApiPromise,
-	destChainId: string,
-	assetIds: string[],
-	amounts: string[],
-	xcmDirection: Direction,
-	xcmPallet: XcmPalletName,
-	specName: string,
-	registry: Registry,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean,
-	isParachainPrimaryNativeAsset: boolean,
-	opts: CheckXcmTxInputsOpts
-) => {
-	const { xcmVersion, paysWithFeeDest } = opts;
+export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: CheckXcmTxInputsOpts) => {
+	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet } = baseArgs;
+	const { paysWithFeeDest, isForeignAssetsTransfer, isLiquidTokenTransfer, isPrimaryParachainNativeAsset } = opts;
 	const relayChainInfo = registry.currentRelayRegistry;
 
-	if (isParachainPrimaryNativeAsset) {
+	if (isPrimaryParachainNativeAsset) {
 		/**
 		 * Checks that the assetIds length is correct for primary native parachain asset tx
 		 */
@@ -1072,12 +1061,12 @@ export const checkXcmTxInputs = async (
 	/**
 	 * Checks that the XcmVersion works with `PaysWithFeeDest` option
 	 */
-	checkXcmVersionIsValidForPaysWithFeeDest(xcmDirection, xcmVersion, paysWithFeeDest);
+	checkXcmVersionIsValidForPaysWithFeeDest(direction, xcmVersion, paysWithFeeDest);
 
 	/**
 	 * Checks that the direction of the `transferLiquidToken` option is correct.
 	 */
-	checkLiquidTokenTransferDirectionValidity(xcmDirection, isLiquidTokenTransfer);
+	checkLiquidTokenTransferDirectionValidity(direction, isLiquidTokenTransfer);
 
 	/**
 	 * Checks to ensure that assetId's have a length no greater than MAX_ASSETS_FOR_TRANSFER
@@ -1102,55 +1091,55 @@ export const checkXcmTxInputs = async (
 		assetIds,
 		relayChainInfo,
 		specName,
-		xcmDirection,
+		direction,
 		registry,
 		xcmVersion,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer
 	);
 
-	if (xcmDirection === Direction.RelayToSystem) {
+	if (direction === Direction.RelayToSystem) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
 	}
 
-	if (xcmDirection === Direction.RelayToPara) {
+	if (direction === Direction.RelayToPara) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
 	}
 
-	if (xcmDirection === Direction.SystemToRelay) {
+	if (direction === Direction.SystemToRelay) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
 	}
 
-	if (xcmDirection === Direction.SystemToPara) {
+	if (direction === Direction.SystemToPara) {
 		if (isForeignAssetsTransfer) {
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds);
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
 		checkAssetsAmountMatch(assetIds, amounts);
 	}
 
-	if (xcmDirection === Direction.SystemToSystem) {
+	if (direction === Direction.SystemToSystem) {
 		if (isForeignAssetsTransfer) {
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(xcmDirection, destChainId, assetIds);
+			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
 	}
 
-	if (xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara) {
-		CheckXTokensPalletOriginIsNonForeignAssetTx(xcmDirection, xcmPallet, isForeignAssetsTransfer);
-		checkAssetsAmountMatch(assetIds, amounts, isParachainPrimaryNativeAsset);
+	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {
+		CheckXTokensPalletOriginIsNonForeignAssetTx(direction, xcmPallet, isForeignAssetsTransfer);
+		checkAssetsAmountMatch(assetIds, amounts, isPrimaryParachainNativeAsset);
 	}
 
-	if (xcmDirection === Direction.ParaToRelay) {
+	if (direction === Direction.ParaToRelay) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
 	}

@@ -271,39 +271,6 @@ export class AssetTransferApi {
 				});
 			}
 		}
-
-		await checkXcmTxInputs(
-			_api,
-			destChainId,
-			assetIds,
-			amounts,
-			xcmDirection,
-			xcmPallet,
-			_specName,
-			registry,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer,
-			isPrimaryParachainNativeAsset,
-			{
-				xcmVersion: declaredXcmVersion,
-				paysWithFeeDest,
-				isLimited,
-				weightLimit,
-			}
-		);
-
-		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
-		const assetCallType = this.fetchCallType(
-			originChainId,
-			destChainId,
-			assetIds,
-			xcmDirection,
-			assetType,
-			isForeignAssetsTransfer,
-			isPrimaryParachainNativeAsset,
-			registry
-		);
-
 		const baseArgs = {
 			api: _api,
 			direction: xcmDirection as XcmDirection,
@@ -323,6 +290,26 @@ export class AssetTransferApi {
 			isLiquidTokenTransfer,
 			isForeignAssetsTransfer,
 		};
+
+		await checkXcmTxInputs(
+			{ ...baseArgs, xcmPallet },
+			{
+				...baseOpts,
+				isPrimaryParachainNativeAsset,
+			}
+		);
+
+		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
+		const assetCallType = this.fetchCallType(
+			originChainId,
+			destChainId,
+			assetIds,
+			xcmDirection,
+			assetType,
+			isForeignAssetsTransfer,
+			isPrimaryParachainNativeAsset,
+			registry
+		);
 
 		let txMethod: Methods;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
