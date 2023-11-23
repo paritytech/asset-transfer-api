@@ -276,6 +276,8 @@ The api can also send local transactions for Relay chains. It is the same princi
 
 For more information, refer to the [docs](https://github.com/paritytech/asset-transfer-api/tree/main/docs) in the repository.
 
+Note: For other parachains, local transfers are currently supported via balances and assets pallets. The plan is to extend local transfer support to other pallets like ORML tokens pallet in coming releases.
+
 ## License
 
 The source code in this repository is distributed under the Apache 2.0 license. See the [LICENSE](https://github.com/paritytech/asset-transfer-api/blob/main/LICENSE) file. This source code comes with absolutely no warranty. Use at your own risk.
