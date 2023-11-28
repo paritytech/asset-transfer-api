@@ -141,6 +141,9 @@ export type AssetTransferApiOpts = {
 
 /**
  * Types that the registry can be initialized as.
+ * 
+ * CDN - The registry will be initialized with the up to date version given the CDN
+ * NPM - The registry will be initialized with the NPM version which is updated less frequently.
  */
 export type RegistryTypes = 'CDN' | 'NPM';
 

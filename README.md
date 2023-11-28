@@ -131,6 +131,13 @@ type AssetTransferApiOpts = {
 	 * NOTE: It supports adding info for `polkadot`, `kusama`, and `westend`.
 	 */
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
+	/**
+	 * RegistryTypes is a string and can either be 'CDN' or 'NPM'.
+	 * 
+	 * CDN - The registry will be initialized with the up to date version given the CDN
+	 * NPM - The registry will be initialized with the NPM version which is updated less frequently.
+	 */
+	registryType?: RegistryTypes;
 };
 ```
 
