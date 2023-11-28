@@ -141,6 +141,8 @@ type AssetTransferApiOpts = {
 };
 ```
 
+NOTE: When using the CDN which is default, `node:fetch` is being used. It is advised to use NodeJS v21 or greater because `fetch` is stable in those versions.
+
 ```typescript
 // The TransferArgsOpts are options that give the possibility of adding certain customization to the transaction.
 
