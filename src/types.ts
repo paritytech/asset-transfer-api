@@ -124,10 +124,25 @@ export type Methods =
 	| 'transferMultiassets'
 	| 'transferMultiassetWithFee';
 
+/**
+ * Options that are appplied at initialization of the `AssetTransferApi`.
+ */
 export type AssetTransferApiOpts = {
+	/**
+	 * Option to inject chain information into the registry.
+	 */
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
-	assetHubApi?: ApiPromise;
+	/**
+	 * Whether or not to apply the registry from the npm package `asset-transfer-api-registry`,
+	 * or the hosted CDN which updates frequently.
+	 */
+	registryType?: RegistryTypes;
 };
+
+/**
+ * Types that the registry can be initialized as.
+ */
+export type RegistryTypes = 'CDN' | 'NPM';
 
 /**
  * The TxResult is the result of constructing a transaction.

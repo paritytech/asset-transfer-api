@@ -1,8 +1,13 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
+import reg from '@substrate/asset-transfer-api-registry';
+
 import { findRelayChain } from './findRelayChain';
 import { parseRegistry } from './parseRegistry';
+import { ChainInfoRegistry } from './types';
 
 describe('findRelayChain', () => {
-	const registry = parseRegistry({});
+	const registry = parseRegistry(reg as ChainInfoRegistry, {});
 	it('Should correctly discover the right relay chain', () => {
 		const findPolkadot = findRelayChain('statemint', registry);
 		const findKusama = findRelayChain('statemine', registry);

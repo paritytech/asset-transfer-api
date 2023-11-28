@@ -1,3 +1,7 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
+import registry from '@substrate/asset-transfer-api-registry';
+
 import {
 	ASSET_HUB_CHAIN_ID,
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
@@ -10,15 +14,17 @@ import type { ChainInfo, ChainInfoRegistry, ExpandedChainInfoKeys, ForeignAssets
 
 export class Registry {
 	readonly specName: string;
-	readonly registry: ChainInfoRegistry;
 	readonly relayChain: RelayChains;
 	readonly currentRelayRegistry: ChainInfo;
-	cache: ChainInfoRegistry;
-	specNameToIdCache: Map<string, string>;
+	readonly opts: AssetTransferApiOpts;
+	public specNameToIdCache: Map<string, string>;
+	public registry: ChainInfoRegistry;
+	public cache: ChainInfoRegistry;
 
 	constructor(specName: string, opts: AssetTransferApiOpts) {
+		this.opts = opts;
 		this.specName = specName;
-		this.registry = parseRegistry(opts);
+		this.registry = parseRegistry(registry as ChainInfoRegistry, opts);
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.specNameToIdCache = new Map<string, string>();
@@ -132,6 +138,15 @@ export class Registry {
 		const currentChainId = this.lookupChainIdBySpecName(this.specName);
 
 		this.cache[this.relayChain][currentChainId]['assetsInfo'][assetKey] = assetValue;
+	}
+
+	/**
+	 * Set the registry.
+	 *
+	 * @param reg Registry
+	 */
+	public set setRegistry(reg: ChainInfoRegistry) {
+		this.registry = parseRegistry(reg, this.opts);
 	}
 
 	/**

@@ -1,10 +1,13 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import reg from '@substrate/asset-transfer-api-registry';
+
 import { parseRegistry } from './parseRegistry';
+import { ChainInfoRegistry } from './types';
 
 describe('parseRegistry', () => {
 	it('Should return the correct object structure', () => {
-		const registry = parseRegistry({});
+		const registry = parseRegistry(reg as ChainInfoRegistry, {});
 
 		expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);
 		expect(registry.kusama['0'].tokens).toStrictEqual(['KSM']);
@@ -12,7 +15,7 @@ describe('parseRegistry', () => {
 		expect(registry.rococo['0'].tokens).toStrictEqual(['ROC']);
 	});
 	it('Should correctly overwrite rococos asset-hub specName', () => {
-		const registry = parseRegistry({});
+		const registry = parseRegistry(reg as ChainInfoRegistry, {});
 		expect(registry.rococo['1000'].specName).toEqual('asset-hub-rococo');
 	});
 	it('Should correctly inject an injectedRegsitry', () => {
@@ -31,7 +34,7 @@ describe('parseRegistry', () => {
 				},
 			},
 		};
-		const registry = parseRegistry(opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
 
 		expect(registry.polkadot['9876']).toStrictEqual({
 			tokens: ['TST'],

@@ -1,3 +1,5 @@
+// Copyright 2023 Parity Technologies (UK) Ltd.
+
 import {
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
