@@ -55,6 +55,11 @@ Note: System refers to System Parachains like Asset Hub.
 
 `yarn add @substrate/asset-transfer-api`
 
+### NodeJS Version
+
+Recommended: v21 or greater
+When the API is initalized using the `CDN`, `node:fetch` is being used and is stable in node v21. Therefore it is recommended to use v21 or greater. 
+
 ### Example Usage
 
 **NOTE:** For more practical usage, and specified examples please look through our `./examples` directory to see more use cases. To
@@ -140,8 +145,6 @@ type AssetTransferApiOpts = {
 	registryType?: RegistryTypes;
 };
 ```
-
-NOTE: When using the CDN which is default, `node:fetch` is being used. It is advised to use NodeJS v21 or greater because `fetch` is stable in those versions.
 
 ```typescript
 // The TransferArgsOpts are options that give the possibility of adding certain customization to the transaction.
