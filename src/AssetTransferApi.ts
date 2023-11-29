@@ -9,7 +9,7 @@ import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types
 import type { ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
-import { RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
+import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
 import * as assets from './createCalls/assets';
 import * as balances from './createCalls/balances';
 import * as foreignAssets from './createCalls/foreignAssets';
@@ -40,6 +40,7 @@ import {
 	checkXcmVersion,
 } from './errors';
 import { Registry } from './registry';
+import { ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetCallType,
@@ -50,6 +51,7 @@ import {
 	Format,
 	LocalTransferTypes,
 	Methods,
+	RegistryTypes,
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
@@ -81,14 +83,22 @@ export class AssetTransferApi {
 	readonly _opts: AssetTransferApiOpts;
 	readonly _specName: string;
 	readonly _safeXcmVersion: number;
-	readonly registry: Registry;
+	private registryConfig: {
+		registryInitialized: boolean;
+		registryType: RegistryTypes;
+	};
+	public registry: Registry;
 
 	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetTransferApiOpts = {}) {
 		this._api = api;
 		this._opts = opts;
 		this._specName = specName;
 		this._safeXcmVersion = safeXcmVersion;
-		this.registry = new Registry(specName, this._opts);
+		this.registry = new Registry(specName, opts);
+		this.registryConfig = {
+			registryInitialized: false,
+			registryType: opts.registryType ? opts.registryType : 'CDN',
+		};
 	}
 
 	/**
@@ -141,6 +151,11 @@ export class AssetTransferApi {
 			transferLiquidToken,
 			sendersAddr,
 		} = opts;
+
+		if (!this.registryConfig.registryInitialized) {
+			await this.initializeRegistry();
+		}
+
 		/**
 		 * Ensure that the options passed in are compatible with eachother.
 		 * It will throw an error if any are incorrect.
@@ -360,6 +375,27 @@ export class AssetTransferApi {
 			sendersAddr,
 		});
 	}
+
+	/**
+	 * Initialize the registry. This will only activate the registry for the CDN.
+	 * If the `registryType` is `NPM` the initalization will exit since the AssetTransferApi
+	 * initializes with the reigstry from the NPM package.
+	 */
+	public async initializeRegistry() {
+		// Before any initialization the registry is already set to NPM type,
+		// therefore we don't need to do any initialization.
+		if (this.registryConfig.registryType === 'NPM') {
+			this.registryConfig.registryInitialized = true;
+			return;
+		}
+
+		const data = await fetch(CDN_URL);
+		const fetchedRegistry = (await data.json()) as ChainInfoRegistry;
+		this.registry.setRegistry = fetchedRegistry;
+
+		this.registryConfig.registryInitialized = true;
+	}
+
 	/**
 	 * Fetch estimated fee information for an extrinsic
 	 *
