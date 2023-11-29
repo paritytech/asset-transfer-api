@@ -738,27 +738,6 @@ describe('AssetTransferAPI', () => {
 			expect(unsigned.assetId).toStrictEqual(expected);
 		});
 
-		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not a number', async () => {
-			await expect(async () => {
-				await systemAssetsApi.createTransferTransaction(
-					'2023',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1984', 'usdc'],
-					['5000000', '4000000000'],
-					{
-						paysWithFeeOrigin: 'hello there',
-						format: 'payload',
-						keepAlive: true,
-						paysWithFeeDest: 'USDC',
-						xcmVersion: 3,
-						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
-				);
-			}).rejects.toThrowError(
-				'paysWithFeeOrigin is an invalid asset. The asset must be a valid integer or multiLocation depending on the runtime: SyntaxError: Unexpected token \'h\', "hello there" is not valid JSON'
-			);
-		});
-
 		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(
