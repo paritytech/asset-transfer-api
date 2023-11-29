@@ -33,14 +33,11 @@
   "homepage": "https://github.com/paritytech/asset-transfer-api#readme",
   "packageManager": "yarn@3.6.4",
   "devDependencies": {
-    "@substrate/dev": "^0.6.7",
+    "@substrate/dev": "^0.7.1",
     "chalk": "4.1.2",
     "typedoc": "^0.24.8",
     "typedoc-plugin-missing-exports": "^1.0.0",
     "typedoc-theme-hierarchy": "^4.0.0"
-  },
-  "resolutions": {
-    "typescript": "4.9.4"
   },
   "dependencies": {
     "@polkadot/api": "^10.11.1",
