@@ -9,5 +9,9 @@ export const transfer = (
 	destAddr: string,
 	amount: string
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
-	return api.tx.balances.transfer(destAddr, amount);
+	if (api.tx.balances.transferAllowDeath) {
+		return api.tx.balances.transferAllowDeath(destAddr, amount);
+	} else {
+		return api.tx.balances.transfer(destAddr, amount);
+	}
 };

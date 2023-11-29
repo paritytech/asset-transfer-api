@@ -90,7 +90,7 @@ describe('AssetTransferAPI', () => {
 				direction: 'SystemToPara',
 				format: 'payload',
 				method: 'limitedReserveTransferAssets',
-				tx: '0xf81f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+				tx: '0xf81f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16010400000204320504009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 				xcmVersion: 2,
 			});
 		});
@@ -713,14 +713,15 @@ describe('AssetTransferAPI', () => {
 	});
 	describe('paysWithFeeOrigin', () => {
 		it('Should correctly assign the assedId field to an unsigned transaction when a valid sufficient paysWithFeeOrigin option is provided', async () => {
-			const expected = '1,984';
+			const expected = { parents: '0', interior: { X2: [{ PalletInstance: '50' }, { GeneralIndex: '1,984' }] } };
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				['1984', 'usdc'],
 				['5000000', '4000000000'],
 				{
-					paysWithFeeOrigin: '1984',
+					paysWithFeeOrigin:
+						'{"parents": "0", "interior": { "X2": [{"PalletInstance": "50"},{"GeneralIndex": "1984"}]}}',
 					format: 'payload',
 					keepAlive: true,
 					paysWithFeeDest: 'USDC',
@@ -734,26 +735,7 @@ describe('AssetTransferAPI', () => {
 			});
 			const unsigned = result.toHuman() as unknown as UnsignedTransaction;
 
-			expect(unsigned.assetId).toEqual(expected);
-		});
-
-		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not a number', async () => {
-			await expect(async () => {
-				await systemAssetsApi.createTransferTransaction(
-					'2023',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1984', 'usdc'],
-					['5000000', '4000000000'],
-					{
-						paysWithFeeOrigin: 'hello there',
-						format: 'payload',
-						keepAlive: true,
-						paysWithFeeDest: 'USDC',
-						xcmVersion: 3,
-						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
-				);
-			}).rejects.toThrowError('paysWithFeeOrigin value must be a valid number. Received: hello there');
+			expect(unsigned.assetId).toStrictEqual(expected);
 		});
 
 		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {

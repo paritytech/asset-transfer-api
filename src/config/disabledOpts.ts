@@ -26,8 +26,8 @@ export const disabledOpts: DisabledOptions = {
 		error: (opt: string, chain: string) => callError(opt, chain),
 	},
 	paysWithFeeOrigin: {
-		disabled: true,
-		chains: ['westmint'],
+		disabled: false,
+		chains: [],
 		error: (opt: string, chain: string) => callError(opt, chain),
 	},
 	paysWithFeeDest: {
