@@ -713,7 +713,7 @@ describe('AssetTransferAPI', () => {
 	});
 	describe('paysWithFeeOrigin', () => {
 		it('Should correctly assign the assedId field to an unsigned transaction when a valid sufficient paysWithFeeOrigin option is provided', async () => {
-			const expected = { parents: '0', interior: { X2: [{ PalletInstance: '50', GeneralIndex: '1984' }] } };
+			const expected = { parents: '0', interior: { X2: [{ PalletInstance: '50' }, { GeneralIndex: '1,984' }] } };
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -721,7 +721,7 @@ describe('AssetTransferAPI', () => {
 				['5000000', '4000000000'],
 				{
 					paysWithFeeOrigin:
-						'{"parents": "0", "interior": { "X2": [{"PalletInstance": "50", "GeneralIndex": "1984"}]}}',
+						'{"parents": "0", "interior": { "X2": [{"PalletInstance": "50"},{"GeneralIndex": "1984"}]}}',
 					format: 'payload',
 					keepAlive: true,
 					paysWithFeeDest: 'USDC',
