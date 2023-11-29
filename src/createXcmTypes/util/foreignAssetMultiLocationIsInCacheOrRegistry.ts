@@ -9,7 +9,7 @@ import { sanitizeKeys } from '../../util/sanitizeKeys';
 export const foreignAssetMultiLocationIsInCacheOrRegistry = (
 	multilocationStr: string,
 	registry: Registry,
-	xcmVersion: number
+	xcmVersion: number,
 ): boolean => {
 	// check if foreign asset exists in assets cache
 	const foreignAssetsCache = registry.cache[registry.relayChain][ASSET_HUB_CHAIN_ID].foreignAssetsInfo;
@@ -25,7 +25,7 @@ export const foreignAssetMultiLocationIsInCacheOrRegistry = (
 const checkForeignAssetExists = (
 	foreignAssetsInfo: ForeignAssetsInfo,
 	multiLocationStr: string,
-	xcmVersion: number
+	xcmVersion: number,
 ): boolean => {
 	const multiLocation = resolveMultiLocation(multiLocationStr, xcmVersion);
 

@@ -105,7 +105,7 @@ export const SystemToSystem: ICreateXcmType = {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts
+		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
 		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
 
@@ -117,7 +117,7 @@ export const SystemToSystem: ICreateXcmType = {
 			registry,
 			xcmVersion,
 			isForeignAssetsTransfer,
-			isLiquidTokenTransfer
+			isLiquidTokenTransfer,
 		);
 
 		if (xcmVersion === 2) {
@@ -171,7 +171,7 @@ export const SystemToSystem: ICreateXcmType = {
 				registry,
 				xcmVersion,
 				isForeignAssetsTransfer,
-				isLiquidTokenTransfer
+				isLiquidTokenTransfer,
 			);
 
 			const systemChainId = registry.lookupChainIdBySpecName(specName);
@@ -179,7 +179,7 @@ export const SystemToSystem: ICreateXcmType = {
 			if (!isSystemChain(systemChainId)) {
 				throw new BaseError(
 					`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`,
-					BaseErrorsEnum.InternalError
+					BaseErrorsEnum.InternalError,
 				);
 			}
 
@@ -190,7 +190,7 @@ export const SystemToSystem: ICreateXcmType = {
 				multiAssets,
 				specName,
 				xcmVersion,
-				opts.isForeignAssetsTransfer
+				opts.isForeignAssetsTransfer,
 			);
 
 			return assetIndex;
@@ -220,7 +220,7 @@ export const createSystemToSystemMultiAssets = async (
 	registry: Registry,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean
+	isLiquidTokenTransfer: boolean,
 ): Promise<FungibleStrMultiAsset[]> => {
 	let multiAssets: FungibleStrMultiAsset[] = [];
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
@@ -229,7 +229,7 @@ export const createSystemToSystemMultiAssets = async (
 	if (!isSystemChain(systemChainId)) {
 		throw new BaseError(
 			`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`,
-			BaseErrorsEnum.InternalError
+			BaseErrorsEnum.InternalError,
 		);
 	}
 
@@ -270,7 +270,7 @@ export const createSystemToSystemMultiAssets = async (
 					parents: assetIdMultiLocation.parents,
 					interior: JSON.parse(interiorMultiLocationStr) as RequireOnlyOne<XcmV3Junctions | XcmV2Junctions>,
 				},
-				xcmVersion
+				xcmVersion,
 			);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
@@ -284,7 +284,7 @@ export const createSystemToSystemMultiAssets = async (
 					parents,
 					interior,
 				},
-				xcmVersion
+				xcmVersion,
 			);
 		}
 

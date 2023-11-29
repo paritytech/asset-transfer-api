@@ -17,7 +17,7 @@ import type { XTokensBaseArgs } from './types';
  */
 export const transferMultiasset = async (
 	baseArgs: XTokensBaseArgs,
-	opts: CreateXcmCallOpts
+	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const { api, direction, destAddr, assetIds, amounts, destChainId, xcmVersion, specName, registry } = baseArgs;
 	const { isLimited, weightLimit, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;

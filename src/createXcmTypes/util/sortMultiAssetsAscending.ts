@@ -26,11 +26,11 @@ export const sortMultiAssetsAscending = (multiAssets: FungibleStrMultiAsset[] | 
 		let fungibleSortOrder = 0; // sort order based on fungible value
 		if (typeof a.fun.Fungible === 'string' && typeof b.fun.Fungible === 'string') {
 			fungibleSortOrder = (a as FungibleStrMultiAsset).fun.Fungible.localeCompare(
-				(b as FungibleStrMultiAsset).fun.Fungible
+				(b as FungibleStrMultiAsset).fun.Fungible,
 			);
 		} else {
 			fungibleSortOrder = (a as FungibleObjMultiAsset).fun.Fungible.Fungible.localeCompare(
-				(b as FungibleObjMultiAsset).fun.Fungible.Fungible
+				(b as FungibleObjMultiAsset).fun.Fungible.Fungible,
 			);
 		}
 
@@ -62,7 +62,7 @@ export const sortMultiAssetsAscending = (multiAssets: FungibleStrMultiAsset[] | 
 
 const getSameJunctionMultiLocationSortOrder = (
 	a: FungibleStrMultiAsset | FungibleObjMultiAsset,
-	b: FungibleStrMultiAsset | FungibleObjMultiAsset
+	b: FungibleStrMultiAsset | FungibleObjMultiAsset,
 ): number => {
 	let sortOrder = 0;
 
@@ -131,7 +131,7 @@ type MultiLocationJunctions =
 			UnionJunction,
 			UnionJunction,
 			UnionJunction,
-			UnionJunction
+			UnionJunction,
 	  ];
 
 enum MultiLocationJunctionType {

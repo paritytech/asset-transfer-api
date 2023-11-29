@@ -19,7 +19,7 @@ export const checkBaseInputOptions = (opts: TransferArgsOpts<Format>, specName: 
 		if (format === 'call' || format === 'submittable') {
 			throw new BaseError(
 				`PaysWithFeeOrigin is only compatible with the format type payload. Received: ${format}`,
-				BaseErrorsEnum.InvalidInput
+				BaseErrorsEnum.InvalidInput,
 			);
 		}
 	}
@@ -27,7 +27,7 @@ export const checkBaseInputOptions = (opts: TransferArgsOpts<Format>, specName: 
 	if (format === 'payload' && !sendersAddr) {
 		throw new BaseError(
 			`The 'sendersAddr' option must be present when constructing a 'payload' format.`,
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 

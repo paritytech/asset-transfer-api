@@ -138,7 +138,7 @@ export class AssetTransferApi {
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts: TransferArgsOpts<T> = {}
+		opts: TransferArgsOpts<T> = {},
 	): Promise<TxResult<T>> {
 		const {
 			format,
@@ -193,7 +193,7 @@ export class AssetTransferApi {
 			isDestSystemParachain,
 			isDestParachain,
 			isOriginSystemParachain,
-			isOriginParachain
+			isOriginParachain,
 		);
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, _specName, xcmDirection, assetIds[0]);
@@ -232,7 +232,7 @@ export class AssetTransferApi {
 				registry,
 				declaredXcmVersion,
 				isForeignAssetsTransfer,
-				isLiquidTokenTransfer
+				isLiquidTokenTransfer,
 			); // Throws an error when any of the inputs are incorrect.
 			const method = keepAlive ? 'transferKeepAlive' : 'transfer';
 
@@ -311,7 +311,7 @@ export class AssetTransferApi {
 			{
 				...baseOpts,
 				isPrimaryParachainNativeAsset,
-			}
+			},
 		);
 
 		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
@@ -323,7 +323,7 @@ export class AssetTransferApi {
 			assetType,
 			isForeignAssetsTransfer,
 			isPrimaryParachainNativeAsset,
-			registry
+			registry,
 		);
 
 		let txMethod: Methods;
@@ -409,7 +409,7 @@ export class AssetTransferApi {
 	 */
 	public async fetchFeeInfo<T extends Format>(
 		tx: ConstructedFormat<T>,
-		format: T
+		format: T,
 	): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
 		const { _api } = this;
 
@@ -421,7 +421,7 @@ export class AssetTransferApi {
 			const ext = _api.registry.createType(
 				'Extrinsic',
 				{ method: extrinsicPayload.method },
-				{ version: EXTRINSIC_VERSION }
+				{ version: EXTRINSIC_VERSION },
 			);
 			const u8a = ext.toU8a();
 
@@ -494,7 +494,7 @@ export class AssetTransferApi {
 		destIsSystemParachain: boolean,
 		destIsParachain: boolean,
 		originIsSystemParachain: boolean,
-		originIsParachain: boolean
+		originIsParachain: boolean,
 	): Direction {
 		if (isLocal) {
 			return Direction.Local;
@@ -563,7 +563,7 @@ export class AssetTransferApi {
 		method: Methods,
 		dest: string,
 		origin: string,
-		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string }
+		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string },
 	): Promise<TxResult<T>> {
 		const { format, paysWithFeeOrigin, sendersAddr } = opts;
 		const fmt = format ? format : 'payload';
@@ -627,7 +627,7 @@ export class AssetTransferApi {
 		assetType: AssetType,
 		isForeignAssetsTransfer: boolean,
 		isParachainPrimaryNativeAsset: boolean,
-		registry: Registry
+		registry: Registry,
 	): AssetCallType {
 		// relay to system -> teleport
 		// system to relay -> teleport
@@ -672,7 +672,7 @@ export class AssetTransferApi {
 		if (assetType === AssetType.Foreign && xcmDirection === Direction.SystemToSystem) {
 			throw new BaseError(
 				`Unable to send foreign assets in direction ${xcmDirection}`,
-				BaseErrorsEnum.InvalidDirection
+				BaseErrorsEnum.InvalidDirection,
 			);
 		}
 
@@ -733,7 +733,7 @@ export class AssetTransferApi {
 	 */
 	private createPayload = async (
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		opts: { paysWithFeeOrigin?: string; sendersAddr: string }
+		opts: { paysWithFeeOrigin?: string; sendersAddr: string },
 	): Promise<`0x${string}`> => {
 		const { paysWithFeeOrigin, sendersAddr } = opts;
 		let assetId: BN | AnyJson = new BN(0);
@@ -752,7 +752,7 @@ export class AssetTransferApi {
 				if (!isSufficient) {
 					throw new BaseError(
 						`asset with assetId ${assetId.toString()} is not a sufficient asset to pay for fees`,
-						BaseErrorsEnum.InvalidAsset
+						BaseErrorsEnum.InvalidAsset,
 					);
 				}
 			} else {
@@ -763,7 +763,7 @@ export class AssetTransferApi {
 						`paysWithFeeOrigin is an invalid asset. The asset must be a valid integer or multiLocation depending on the runtime: ${
 							e as string
 						}`,
-						BaseErrorsEnum.InvalidAsset
+						BaseErrorsEnum.InvalidAsset,
 					);
 				}
 			}
@@ -847,7 +847,7 @@ export class AssetTransferApi {
 		if (lookup.length === 0) {
 			throw new BaseError(
 				`Could not find any parachain information given the destId: ${destId}`,
-				BaseErrorsEnum.InvalidInput
+				BaseErrorsEnum.InvalidInput,
 			);
 		}
 

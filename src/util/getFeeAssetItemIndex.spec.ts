@@ -14,7 +14,7 @@ type Test = [
 	specName: string,
 	multiAssets: FungibleStrMultiAsset[],
 	api: ApiPromise,
-	expected: number
+	expected: number,
 ];
 
 describe('getFeeAssetItemIndex', () => {
@@ -107,7 +107,7 @@ describe('getFeeAssetItemIndex', () => {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
 			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, 2, false)).toEqual(
-				expected
+				expected,
 			);
 		}
 	});
@@ -210,7 +210,7 @@ describe('getFeeAssetItemIndex', () => {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
 			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, 2, false)).toEqual(
-				expected
+				expected,
 			);
 		}
 	});
@@ -244,7 +244,7 @@ describe('getFeeAssetItemIndex', () => {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
 			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, 2, true)).toEqual(
-				expected
+				expected,
 			);
 		}
 	});
@@ -283,7 +283,7 @@ describe('getFeeAssetItemIndex', () => {
 		await expect(async () => {
 			await getFeeAssetItemIndex(systemAssetsApi._api, registry, paysWithFeeDest, multiAssets, specName, 2, false);
 		}).rejects.toThrowError(
-			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1337"}]},{"Here":""}'
+			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1337"}]},{"Here":""}',
 		);
 	});
 });

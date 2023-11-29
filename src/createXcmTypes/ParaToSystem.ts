@@ -110,7 +110,7 @@ export const ParaToSystem: ICreateXcmType = {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts
+		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
 		const sortedAndDedupedMultiAssets = await createParaToSystemMultiAssets(
 			opts.api,
@@ -119,7 +119,7 @@ export const ParaToSystem: ICreateXcmType = {
 			assets,
 			xcmVersion,
 			opts.registry,
-			opts.isForeignAssetsTransfer
+			opts.isForeignAssetsTransfer,
 		);
 
 		if (xcmVersion === 2) {
@@ -163,7 +163,7 @@ export const ParaToSystem: ICreateXcmType = {
 				assetIds,
 				xcmVersion,
 				registry,
-				opts.isForeignAssetsTransfer
+				opts.isForeignAssetsTransfer,
 			);
 
 			const assetIndex = getFeeAssetItemIndex(
@@ -173,7 +173,7 @@ export const ParaToSystem: ICreateXcmType = {
 				multiAssets,
 				specName,
 				xcmVersion,
-				opts.isForeignAssetsTransfer
+				opts.isForeignAssetsTransfer,
 			);
 
 			return assetIndex;
@@ -191,7 +191,7 @@ export const ParaToSystem: ICreateXcmType = {
 	createXTokensBeneficiary: (
 		destChainId: string,
 		accountId: string,
-		xcmVersion: number
+		xcmVersion: number,
 	): XcmDestBenificiaryXcAssets => {
 		if (xcmVersion === 2) {
 			return {
@@ -227,7 +227,7 @@ export const ParaToSystem: ICreateXcmType = {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts
+		opts: CreateAssetsOpts,
 	): Promise<UnionXcAssetsMultiAssets> => {
 		return await createXTokensMultiAssets(amounts, xcmVersion, specName, assets, opts);
 	},
@@ -245,7 +245,7 @@ export const ParaToSystem: ICreateXcmType = {
 		xcmVersion: number,
 		specName: string,
 		assetId: string,
-		opts: CreateAssetsOpts
+		opts: CreateAssetsOpts,
 	): Promise<UnionXcAssetsMultiAsset> => {
 		const { registry, api } = opts;
 
@@ -254,7 +254,7 @@ export const ParaToSystem: ICreateXcmType = {
 			assetId,
 			specName,
 			xcmVersion,
-			registry
+			registry,
 		);
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
@@ -323,7 +323,7 @@ const createXTokensMultiAssets = async (
 	xcmVersion: number,
 	specName: string,
 	assets: string[],
-	opts: CreateAssetsOpts
+	opts: CreateAssetsOpts,
 ): Promise<UnionXcAssetsMultiAssets> => {
 	const { registry, api } = opts;
 	let multiAssets: FungibleObjMultiAsset[] = [];
@@ -337,7 +337,7 @@ const createXTokensMultiAssets = async (
 			assetId,
 			specName,
 			xcmVersion,
-			registry
+			registry,
 		);
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
@@ -386,7 +386,7 @@ const createParaToSystemMultiAssets = async (
 	assets: string[],
 	xcmVersion: number,
 	registry: Registry,
-	isForeignAssetsTransfer: boolean
+	isForeignAssetsTransfer: boolean,
 ): Promise<FungibleStrMultiAsset[]> => {
 	const palletId = fetchPalletInstanceId(api, false, isForeignAssetsTransfer);
 	let multiAssets: FungibleStrMultiAsset[] = [];
@@ -395,7 +395,7 @@ const createParaToSystemMultiAssets = async (
 		registry,
 		specName,
 		Direction.ParaToSystem,
-		assets[0]
+		assets[0],
 	);
 
 	if (isPrimaryParachainNativeAsset) {
@@ -404,7 +404,7 @@ const createParaToSystemMultiAssets = async (
 				parents: 0,
 				interior: { Here: '' },
 			},
-			xcmVersion
+			xcmVersion,
 		);
 
 		const multiAsset = {
@@ -427,7 +427,7 @@ const createParaToSystemMultiAssets = async (
 				assetId,
 				specName,
 				xcmVersion,
-				registry
+				registry,
 			);
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;

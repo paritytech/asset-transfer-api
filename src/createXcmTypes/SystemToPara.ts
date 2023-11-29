@@ -113,7 +113,7 @@ export const SystemToPara: ICreateXcmType = {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts
+		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
 		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
 		const sortedAndDedupedMultiAssets = await createSystemToParaMultiAssets(
@@ -124,7 +124,7 @@ export const SystemToPara: ICreateXcmType = {
 			registry,
 			xcmVersion,
 			isForeignAssetsTransfer,
-			isLiquidTokenTransfer
+			isLiquidTokenTransfer,
 		);
 
 		if (xcmVersion === 2) {
@@ -178,14 +178,14 @@ export const SystemToPara: ICreateXcmType = {
 				registry,
 				xcmVersion,
 				isForeignAssetsTransfer,
-				isLiquidTokenTransfer
+				isLiquidTokenTransfer,
 			);
 
 			const systemChainId = registry.lookupChainIdBySpecName(specName);
 			if (!isSystemChain(systemChainId)) {
 				throw new BaseError(
 					`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`,
-					BaseErrorsEnum.InternalError
+					BaseErrorsEnum.InternalError,
 				);
 			}
 
@@ -196,7 +196,7 @@ export const SystemToPara: ICreateXcmType = {
 				multiAssets,
 				specName,
 				xcmVersion,
-				isForeignAssetsTransfer
+				isForeignAssetsTransfer,
 			);
 
 			return assetIndex;
@@ -226,7 +226,7 @@ export const createSystemToParaMultiAssets = async (
 	registry: Registry,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean
+	isLiquidTokenTransfer: boolean,
 ): Promise<FungibleStrMultiAsset[]> => {
 	let multiAssets: FungibleStrMultiAsset[] = [];
 	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
@@ -235,7 +235,7 @@ export const createSystemToParaMultiAssets = async (
 	if (!isSystemChain(systemChainId)) {
 		throw new BaseError(
 			`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`,
-			BaseErrorsEnum.InternalError
+			BaseErrorsEnum.InternalError,
 		);
 	}
 

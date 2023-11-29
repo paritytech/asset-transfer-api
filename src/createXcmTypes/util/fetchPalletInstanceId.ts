@@ -14,7 +14,7 @@ export const fetchPalletInstanceId = (api: ApiPromise, isLiquidToken: boolean, i
 	if (isLiquidToken && isForeignAsset) {
 		throw new BaseError(
 			"Can't find the appropriate pallet when both liquid tokens and foreign assets",
-			BaseErrorsEnum.InternalError
+			BaseErrorsEnum.InternalError,
 		);
 	}
 
@@ -22,10 +22,10 @@ export const fetchPalletInstanceId = (api: ApiPromise, isLiquidToken: boolean, i
 		isLiquidToken && api.query.poolAssets
 			? 'PoolAssets'
 			: isForeignAsset && api.query.foreignAssets
-			? 'ForeignAssets'
-			: api.query.assets
-			? 'Assets'
-			: '';
+			  ? 'ForeignAssets'
+			  : api.query.assets
+			    ? 'Assets'
+			    : '';
 
 	// return early if assets pallet is not found and palletName is not PoolAssets or ForeignAssets
 	if (!api.query.assets && palletName.length === 0) {
@@ -37,7 +37,7 @@ export const fetchPalletInstanceId = (api: ApiPromise, isLiquidToken: boolean, i
 	if (pallet.length === 0) {
 		throw new BaseError(
 			`No ${palletName} pallet available, can't find a valid PalletInstance.`,
-			BaseErrorsEnum.PalletNotFound
+			BaseErrorsEnum.PalletNotFound,
 		);
 	}
 

@@ -30,7 +30,7 @@ const getHeader = (): Promise<Header> =>
 			stateRoot: mockMoonriverParachainApi.registry.createType('Hash'),
 			extrinsicsRoot: mockMoonriverParachainApi.registry.createType('Hash'),
 			digest: mockMoonriverParachainApi.registry.createType('Digest'),
-		})
+		}),
 	);
 // /**
 //  * Create a type registry for Moonriver.
@@ -46,7 +46,7 @@ function createMoonriverRegistry(specVersion: number): TypeRegistry {
 			ss58Format: 2,
 			tokenDecimals: 12,
 			tokenSymbol: 'MOVR',
-		})
+		}),
 	);
 
 	registry.register(getSpecTypes(registry, 'Moonriver', 'moonriver', specVersion));
@@ -63,19 +63,19 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcUsdtAssetInfo = {
 			owner: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			issuer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			admin: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			freezer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
@@ -92,19 +92,19 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcKsmAssetInfo = {
 			owner: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			issuer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			admin: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			freezer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
@@ -121,19 +121,19 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcBncAssetInfo = {
 			owner: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			issuer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			admin: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			freezer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
@@ -150,19 +150,19 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcvBncAssetInfo = {
 			owner: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			issuer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			admin: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			freezer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
@@ -179,19 +179,19 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcvMovrAssetInfo = {
 			owner: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			issuer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			admin: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			freezer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
@@ -209,19 +209,19 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcSDNAssetInfo = {
 			owner: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			issuer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			admin: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			freezer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
@@ -238,19 +238,19 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcRmrkAssetInfo = {
 			owner: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			issuer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			admin: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			freezer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
@@ -269,19 +269,19 @@ const asset = (assetId: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const xcTestInfo = {
 			owner: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			issuer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			admin: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			freezer: mockMoonriverParachainApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			supply: mockMoonriverParachainApi.registry.createType('u128', 100),
 			deposit: mockMoonriverParachainApi.registry.createType('u128', 100),
@@ -345,7 +345,7 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 		};
 		const xcvBNCMetadata = mockMoonriverParachainApi.registry.createType(
 			'PalletAssetsAssetMetadata',
-			rawXCVBNCMetadata
+			rawXCVBNCMetadata,
 		);
 		metadata.set('72145018963825376852137222787619937732', xcvBNCMetadata);
 
@@ -361,7 +361,7 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 		};
 		const xcvMOVRMetadata = mockMoonriverParachainApi.registry.createType(
 			'PalletAssetsAssetMetadata',
-			rawXCVMOVRMetadata
+			rawXCVMOVRMetadata,
 		);
 		metadata.set('203223821023327994093278529517083736593', xcvMOVRMetadata);
 
@@ -389,7 +389,7 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 		};
 		const xcUsdtMetadata = mockMoonriverParachainApi.registry.createType(
 			'PalletAssetsAssetMetadata',
-			rawXcUsdtMetadata
+			rawXcUsdtMetadata,
 		);
 		metadata.set('311091173110107856861649819128533077277', xcUsdtMetadata);
 
@@ -404,7 +404,7 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 		};
 		const xcRmrkMetadata = mockMoonriverParachainApi.registry.createType(
 			'PalletAssetsAssetMetadata',
-			rawXcRmrkMetadata
+			rawXcRmrkMetadata,
 		);
 		metadata.set('182365888117048807484804376330534607370', xcRmrkMetadata);
 
@@ -451,7 +451,7 @@ export const adjustedMockMoonriverParachainApi = {
 					};
 					const xcKsmMetadata = mockMoonriverParachainApi.registry.createType(
 						'PalletAssetsAssetMetadata',
-						rawXcKsmMetadata
+						rawXcKsmMetadata,
 					);
 					metadata.set('42259045809535163221576417993425387648', xcKsmMetadata);
 
@@ -467,7 +467,7 @@ export const adjustedMockMoonriverParachainApi = {
 					};
 					const xcBNCMetadata = mockMoonriverParachainApi.registry.createType(
 						'PalletAssetsAssetMetadata',
-						rawXCBNCMetadata
+						rawXCBNCMetadata,
 					);
 					metadata.set('319623561105283008236062145480775032445', xcBNCMetadata);
 
@@ -483,7 +483,7 @@ export const adjustedMockMoonriverParachainApi = {
 					};
 					const xcvBNCMetadata = mockMoonriverParachainApi.registry.createType(
 						'PalletAssetsAssetMetadata',
-						rawXCVBNCMetadata
+						rawXCVBNCMetadata,
 					);
 					metadata.set('72145018963825376852137222787619937732', xcvBNCMetadata);
 
@@ -499,7 +499,7 @@ export const adjustedMockMoonriverParachainApi = {
 					};
 					const xcvMOVRMetadata = mockMoonriverParachainApi.registry.createType(
 						'PalletAssetsAssetMetadata',
-						rawXCVMOVRMetadata
+						rawXCVMOVRMetadata,
 					);
 					metadata.set('203223821023327994093278529517083736593', xcvMOVRMetadata);
 
@@ -515,7 +515,7 @@ export const adjustedMockMoonriverParachainApi = {
 					};
 					const xcSDNMetadata = mockMoonriverParachainApi.registry.createType(
 						'PalletAssetsAssetMetadata',
-						rawXCSDNMetadata
+						rawXCSDNMetadata,
 					);
 					metadata.set('203223821023327994093278529517083736593', xcSDNMetadata);
 
@@ -531,7 +531,7 @@ export const adjustedMockMoonriverParachainApi = {
 					};
 					const xcUsdtMetadata = mockMoonriverParachainApi.registry.createType(
 						'PalletAssetsAssetMetadata',
-						rawXcUsdtMetadata
+						rawXcUsdtMetadata,
 					);
 					metadata.set('311091173110107856861649819128533077277', xcUsdtMetadata);
 
@@ -546,7 +546,7 @@ export const adjustedMockMoonriverParachainApi = {
 					};
 					const xcRmrkMetadata = mockMoonriverParachainApi.registry.createType(
 						'PalletAssetsAssetMetadata',
-						rawXcRmrkMetadata
+						rawXcRmrkMetadata,
 					);
 					metadata.set('182365888117048807484804376330534607370', xcRmrkMetadata);
 

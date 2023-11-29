@@ -20,7 +20,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format: 'call',
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -41,7 +41,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -61,7 +61,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format: 'call',
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -82,7 +82,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -102,7 +102,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format: 'call',
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'kusama',
@@ -123,7 +123,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'kusama',
@@ -143,7 +143,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format: 'call',
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -164,7 +164,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -185,7 +185,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						transferLiquidToken: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -207,7 +207,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						format: 'call',
 						keepAlive: true,
 						transferLiquidToken: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -226,7 +226,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -242,13 +242,13 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 						xcmVersion,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const nativeBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateXcmCallOpts
+				opts: CreateXcmCallOpts,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -261,13 +261,13 @@ describe('AssetTransferApi Integration Tests', () => {
 						weightLimit: opts.weightLimit,
 						isLimited: opts.isLimited,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const foreignAssetMultiLocationBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateXcmCallOpts
+				opts: CreateXcmCallOpts,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -280,14 +280,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						weightLimit: opts.weightLimit,
 						xcmVersion,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 
 			const foreignAssetMultiLocationBaseTeleportSystemCreateTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateXcmCallOpts
+				opts: CreateXcmCallOpts,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2125', // Since this is not `0` we know this is to a parachain
@@ -301,13 +301,13 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const liquidTokenTransferCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -323,7 +323,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 						xcmVersion,
 						transferLiquidToken: true,
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -847,7 +847,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'1001', // collectives system parachain
@@ -863,7 +863,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const nativeBaseSystemCreateTx = async <T extends Format>(
@@ -871,7 +871,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'1002', // bridge-hub system parachain
@@ -887,13 +887,13 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const foreignAssetMultiLocationBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateXcmCallOpts
+				opts: CreateXcmCallOpts,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -906,7 +906,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -1251,7 +1251,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await relayAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -1267,7 +1267,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -1393,7 +1393,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'0', // `0` indicating the dest chain is a relay chain.
@@ -1409,7 +1409,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -1535,7 +1535,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await relayAssetsApi.createTransferTransaction(
 					'1000', // `0` indicating the dest chain is a relay chain.
@@ -1551,7 +1551,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -1678,10 +1678,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						'0',
 						'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 						['1', '2'],
-						['100', '100']
+						['100', '100'],
 					);
 				}).rejects.toThrow(
-					'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1'
+					'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
 				);
 			});
 		});

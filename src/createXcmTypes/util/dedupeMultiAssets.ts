@@ -8,7 +8,7 @@ import type { FungibleObjMultiAsset, FungibleStrMultiAsset } from '../../createX
  * @param multiAssets MulitAsset[]
  */
 export const dedupeMultiAssets = (
-	multiAssets: FungibleStrMultiAsset[] | FungibleObjMultiAsset[]
+	multiAssets: FungibleStrMultiAsset[] | FungibleObjMultiAsset[],
 ): FungibleStrMultiAsset[] | FungibleObjMultiAsset[] => {
 	const dedupedAssets = [];
 

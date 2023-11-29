@@ -32,7 +32,7 @@ const main = async () => {
 				isLimited: false,
 				xcmVersion: 3,
 				paysWithFeeOrigin: '1984',
-			}
+			},
 		);
 
 		console.log(callInfo);
@@ -45,4 +45,6 @@ const main = async () => {
 	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
-main().finally(() => process.exit());
+main()
+	.catch((err) => console.error(err))
+	.finally(() => process.exit());

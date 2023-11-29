@@ -219,7 +219,7 @@ describe('Moonriver', () => {
 								},
 								isForeignAssetsTransfer: false,
 								isLiquidTokenTransfer: false,
-							}
+							},
 						);
 
 						expect(res).toEqual(expectedResult);
@@ -241,7 +241,7 @@ describe('Moonriver', () => {
 							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
-						}
+						},
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -313,7 +313,7 @@ describe('Moonriver', () => {
 								},
 								isForeignAssetsTransfer: false,
 								isLiquidTokenTransfer: false,
-							}
+							},
 						);
 
 						expect(res).toEqual(expectedResult);
@@ -335,7 +335,7 @@ describe('Moonriver', () => {
 							},
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
-						}
+						},
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -691,7 +691,7 @@ describe('Moonriver', () => {
 								},
 								isForeignAssetsTransfer: false,
 								isLiquidTokenTransfer: false,
-							}
+							},
 						);
 
 						expect(res).toEqual(expectedResult);
@@ -765,7 +765,7 @@ describe('Moonriver', () => {
 								},
 								isForeignAssetsTransfer: false,
 								isLiquidTokenTransfer: false,
-							}
+							},
 						);
 
 						expect(res).toEqual(expectedResult);

@@ -26,7 +26,7 @@ const getHeader = (): Promise<Header> =>
 			stateRoot: mockRelayApi.registry.createType('Hash'),
 			extrinsicsRoot: mockRelayApi.registry.createType('Hash'),
 			digest: mockRelayApi.registry.createType('Digest'),
-		})
+		}),
 	);
 
 const accountNextIndex = () => mockRelayApi.registry.createType('u32', 10);

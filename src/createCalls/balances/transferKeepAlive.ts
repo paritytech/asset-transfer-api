@@ -7,7 +7,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 export const transferKeepAlive = (
 	api: ApiPromise,
 	destAddr: string,
-	amount: string
+	amount: string,
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	return api.tx.balances.transferKeepAlive(destAddr, amount);
 };

@@ -23,7 +23,7 @@ export const establishXcmPallet = (
 	api: ApiPromise,
 	direction?: Direction,
 	isForeignAssetsTransfer?: boolean,
-	isParachainPrimaryNativeAsset?: boolean
+	isParachainPrimaryNativeAsset?: boolean,
 ): XcmPalletName => {
 	let xPallet: XcmPalletName | undefined;
 	if (api.tx.xTokens) {
@@ -48,7 +48,7 @@ export const establishXcmPallet = (
 	} else {
 		throw new BaseError(
 			"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API",
-			BaseErrorsEnum.PalletNotFound
+			BaseErrorsEnum.PalletNotFound,
 		);
 	}
 };
@@ -62,7 +62,7 @@ const isXTokensOriginNonForeignAssetsPalletTx = (
 	xPallet?: XcmPalletName,
 	direction?: Direction | string,
 	isForeignAssetsTransfer?: boolean,
-	isParachainPrimaryNativeAsset?: boolean
+	isParachainPrimaryNativeAsset?: boolean,
 ): boolean => {
 	if (
 		!isForeignAssetsTransfer &&

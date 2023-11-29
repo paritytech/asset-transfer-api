@@ -22,7 +22,7 @@ export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number)
 	if (xcmVersion < 3 && hasGlobalConsensus) {
 		throw new BaseError(
 			'XcmVersion must be version 2 for MultiLocations that contain a GlobalConsensus junction.',
-			BaseErrorsEnum.InvalidXcmVersion
+			BaseErrorsEnum.InvalidXcmVersion,
 		);
 	}
 
@@ -30,7 +30,7 @@ export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number)
 	if (xcmVersion != 2 && hasGeneralKey) {
 		throw new BaseError(
 			'XcmVersion must be version 2 for MultiLocations that contain a GeneralKey junction.',
-			BaseErrorsEnum.InvalidXcmVersion
+			BaseErrorsEnum.InvalidXcmVersion,
 		);
 	}
 

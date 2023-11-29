@@ -31,13 +31,13 @@ export const checkLocalTxInput = async (
 	registry: Registry,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean
+	isLiquidTokenTransfer: boolean,
 ): Promise<LocalTxType> => {
 	// Ensure the lengths in assetIds and amounts is correct
 	if (assetIds.length > 1 || amounts.length !== 1) {
 		throw new BaseError(
 			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 
@@ -45,7 +45,7 @@ export const checkLocalTxInput = async (
 		if (assetIds.length === 0) {
 			throw new BaseError(
 				'Local foreignAsset transactions must have the `assetIds` input be a length of 1',
-				BaseErrorsEnum.InvalidInput
+				BaseErrorsEnum.InvalidInput,
 			);
 		}
 
@@ -54,7 +54,7 @@ export const checkLocalTxInput = async (
 		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
 			multiLocationStr,
 			registry,
-			xcmVersion
+			xcmVersion,
 		);
 
 		if (foreignAssetIsInRegistry) {

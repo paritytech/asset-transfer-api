@@ -10,7 +10,7 @@ describe('ParaToPara', () => {
 		it('Should work for V2', () => {
 			const beneficiary = ParaToPara.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				2
+				2,
 			);
 
 			const expectedRes = {
@@ -51,7 +51,7 @@ describe('ParaToPara', () => {
 		it('Should work for V3', () => {
 			const beneficiary = ParaToPara.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				3
+				3,
 			);
 
 			const expectedRes = {
@@ -136,7 +136,7 @@ describe('ParaToPara', () => {
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
 					api: mockMoonriverParachainApi,
-				}
+				},
 			);
 
 			const expectedRes = {
@@ -183,7 +183,7 @@ describe('ParaToPara', () => {
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
 					api: mockMoonriverParachainApi,
-				}
+				},
 			);
 
 			const expectedRes = {
