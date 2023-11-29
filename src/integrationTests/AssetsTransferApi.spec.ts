@@ -69,7 +69,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					direction: 'local',
 					format: 'call',
 					method: 'balances::transfer',
-					tx: '0x0a070078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					tx: '0x0a000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
 					xcmVersion: null,
 				});
 			});
