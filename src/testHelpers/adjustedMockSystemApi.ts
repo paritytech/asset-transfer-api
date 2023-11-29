@@ -14,7 +14,7 @@ import { getSpecTypes } from '@polkadot/types-known';
 import BN from 'bn.js';
 
 import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
-import { assetHubWestendV9435 } from './metadata/assetHubWestendV9435';
+import { assetHubWestendV1004000 } from './metadata/assetHubWestendV1004000';
 import { mockSystemApi } from './mockSystemApi';
 import { mockWeightInfo } from './mockWeightInfo';
 /**
@@ -36,7 +36,7 @@ function createStatemineRegistry(specVersion: number): TypeRegistry {
 
 	registry.register(getSpecTypes(registry, 'Statemine', 'statemine', specVersion));
 
-	registry.setMetadata(new Metadata(registry, assetHubWestendV9435));
+	registry.setMetadata(new Metadata(registry, assetHubWestendV1004000));
 
 	return registry;
 }
@@ -57,7 +57,7 @@ const queryInfoCallAt = () =>
 	Promise.resolve().then(() => mockSystemApi.createType('RuntimeDispatchInfoV2', mockWeightInfo));
 
 const getMetadata = () =>
-	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV9435));
+	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1004000));
 
 const getHeader = (): Promise<Header> =>
 	Promise.resolve().then(() =>
