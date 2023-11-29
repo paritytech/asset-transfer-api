@@ -281,7 +281,7 @@ const mockApiAt = {
 
 export const adjustedMockSystemApi = {
 	createType: createType,
-	registry: createStatemineRegistry(9435),
+	registry: createStatemineRegistry(1004000),
 	rpc: {
 		state: {
 			getRuntimeVersion: getSystemRuntimeVersion,
