@@ -755,7 +755,7 @@ describe('AssetTransferAPI', () => {
 					}
 				);
 			}).rejects.toThrowError(
-				'paysWithFeeOrigin is an invalid asset. The asset must be a valid integer or multiLocation depending on the runtime: SyntaxError: Unexpected token \'h\', "hello there" is not valid JSON'
+				'paysWithFeeOrigin is an invalid asset. The asset must be a valid integer or multiLocation depending on the runtime: SyntaxError: Unexpected token h in JSON at position 0'
 			);
 		});
 
