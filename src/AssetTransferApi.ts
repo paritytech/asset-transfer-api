@@ -38,6 +38,7 @@ import {
 	checkLocalTxInput,
 	checkXcmTxInputs,
 	checkXcmVersion,
+	LocalTxType,
 } from './errors';
 import { Registry } from './registry';
 import { ChainInfoRegistry } from './registry/types';
@@ -240,19 +241,19 @@ export class AssetTransferApi {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 				let palletMethod: LocalTransferTypes;
 
-				if (localAssetType === 'Balances') {
+				if (localAssetType === LocalTxType.Balances) {
 					tx =
 						method === 'transferKeepAlive'
 							? balances.transferKeepAlive(_api, addr, amount)
 							: balances.transfer(_api, addr, amount);
 					palletMethod = `balances::${method}`;
-				} else if (localAssetType === 'Assets') {
+				} else if (localAssetType === LocalTxType.Assets) {
 					tx =
 						method === 'transferKeepAlive'
 							? assets.transferKeepAlive(_api, addr, assetId, amount)
 							: assets.transfer(_api, addr, assetId, amount);
 					palletMethod = `assets::${method}`;
-				} else if (localAssetType === 'PoolAssets') {
+				} else if (localAssetType === LocalTxType.PoolAssets) {
 					tx =
 						method === 'transferKeepAlive'
 							? poolAssets.transferKeepAlive(_api, addr, assetId, amount)

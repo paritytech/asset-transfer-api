@@ -9,7 +9,7 @@ import { checkLiquidTokenValidity } from '../errors/checkXcmTxInputs';
 import { Registry } from '../registry';
 import { BaseError, BaseErrorsEnum } from './BaseError';
 
-enum LocalTxType {
+export enum LocalTxType {
 	Assets = 'Assets',
 	Balances = 'Balances',
 	ForeignAssets = 'ForeignAssets',

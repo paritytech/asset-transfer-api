@@ -60,7 +60,7 @@ export const establishXcmPallet = (
  */
 const isXTokensOriginNonForeignAssetsPalletTx = (
 	xPallet?: XcmPalletName,
-	direction?: Direction | string,
+	direction?: Direction,
 	isForeignAssetsTransfer?: boolean,
 	isParachainPrimaryNativeAsset?: boolean,
 ): boolean => {

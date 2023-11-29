@@ -948,7 +948,7 @@ export const checkXcmVersionIsValidForPaysWithFeeDest = (
  * @param isLiquidTokenTransfer
  */
 export const checkLiquidTokenTransferDirectionValidity = (xcmDirection: Direction, isLiquidTokenTransfer: boolean) => {
-	if (xcmDirection !== 'SystemToPara' && isLiquidTokenTransfer) {
+	if (xcmDirection !== Direction.SystemToPara && isLiquidTokenTransfer) {
 		throw new BaseError(
 			`isLiquidTokenTransfer may not be true for the xcmDirection: ${xcmDirection}.`,
 			BaseErrorsEnum.InvalidInput,
