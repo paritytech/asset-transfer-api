@@ -6,7 +6,7 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types/interfaces';
-import type { ISubmittableResult } from '@polkadot/types/types';
+import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
 import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
@@ -736,7 +736,7 @@ export class AssetTransferApi {
 		opts: { paysWithFeeOrigin?: string; sendersAddr: string }
 	): Promise<`0x${string}`> => {
 		const { paysWithFeeOrigin, sendersAddr } = opts;
-		let assetId = new BN(0);
+		let assetId: BN | AnyJson = new BN(0);
 
 		// if a paysWithFeeOrigin is provided and the chain is of system origin
 		// we assign the assetId to the value of paysWithFeeOrigin
@@ -745,21 +745,27 @@ export class AssetTransferApi {
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
 			const isValidInt = validateNumber(paysWithFeeOrigin);
 
-			if (!isValidInt) {
-				throw new BaseError(
-					`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`,
-					BaseErrorsEnum.InvalidInput
-				);
-			}
+			if (isValidInt) {
+				assetId = new BN(paysWithFeeOrigin);
+				const isSufficient = await this.checkAssetIsSufficient(assetId);
 
-			assetId = new BN(paysWithFeeOrigin);
-			const isSufficient = await this.checkAssetIsSufficient(assetId);
-
-			if (!isSufficient) {
-				throw new BaseError(
-					`asset with assetId ${assetId.toString()} is not a sufficient asset to pay for fees`,
-					BaseErrorsEnum.InvalidAsset
-				);
+				if (!isSufficient) {
+					throw new BaseError(
+						`asset with assetId ${assetId.toString()} is not a sufficient asset to pay for fees`,
+						BaseErrorsEnum.InvalidAsset
+					);
+				}
+			} else {
+				try {
+					assetId = JSON.parse(paysWithFeeOrigin) as AnyJson;
+				} catch (e) {
+					throw new BaseError(
+						`paysWithFeeOrigin is an invalid asset. The asset must be a valid integer or multiLocation depending on the runtime: ${
+							e as string
+						}`,
+						BaseErrorsEnum.InvalidAsset
+					);
+				}
 			}
 		}
 

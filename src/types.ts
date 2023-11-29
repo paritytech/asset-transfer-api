@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
-import type { ISubmittableResult } from '@polkadot/types/types';
+import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
 import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
@@ -318,7 +318,7 @@ export interface UnsignedTransaction extends SignerPayloadJSON {
 	 *
 	 * @default 0
 	 */
-	assetId: BN;
+	assetId: BN | AnyJson;
 }
 
 export interface XcmBaseArgs {

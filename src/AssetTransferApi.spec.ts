@@ -720,7 +720,8 @@ describe('AssetTransferAPI', () => {
 				['1984', 'usdc'],
 				['5000000', '4000000000'],
 				{
-					paysWithFeeOrigin: '1984',
+					paysWithFeeOrigin:
+						'{"parents": "0", "interior": { "X2": [{"PalletInstance": "50", "GeneralIndex": "1984"}]}}',
 					format: 'payload',
 					keepAlive: true,
 					paysWithFeeDest: 'USDC',
@@ -753,7 +754,9 @@ describe('AssetTransferAPI', () => {
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					}
 				);
-			}).rejects.toThrowError('paysWithFeeOrigin value must be a valid number. Received: hello there');
+			}).rejects.toThrowError(
+				'paysWithFeeOrigin is an invalid asset. The asset must be a valid integer or multiLocation depending on the runtime: SyntaxError: Unexpected token \'h\', "hello there" is not valid JSON'
+			);
 		});
 
 		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {
