@@ -17,6 +17,9 @@
     "docs": "typedoc",
     "deploy": "yarn build && npm publish"
   },
+  "engines": {
+    "node": ">=18.14"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paritytech/asset-transfer-api.git"

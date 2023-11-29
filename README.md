@@ -55,6 +55,11 @@ Note: System refers to System Parachains like Asset Hub.
 
 `yarn add @substrate/asset-transfer-api`
 
+### NodeJS Version
+
+Recommended: v21 or greater
+When the API is initalized using the `CDN`, `node:fetch` is being used and is stable in node v21. Therefore it is recommended to use v21 or greater. 
+
 ### Example Usage
 
 **NOTE:** For more practical usage, and specified examples please look through our `./examples` directory to see more use cases. To
@@ -131,6 +136,13 @@ type AssetTransferApiOpts = {
 	 * NOTE: It supports adding info for `polkadot`, `kusama`, and `westend`.
 	 */
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
+	/**
+	 * RegistryTypes is a string and can either be 'CDN' or 'NPM'.
+	 * 
+	 * CDN - The registry will be initialized with the up to date version given the CDN
+	 * NPM - The registry will be initialized with the NPM version which is updated less frequently.
+	 */
+	registryType?: RegistryTypes;
 };
 ```
 
@@ -275,6 +287,8 @@ The api can also send native tokens as well. Similar to the above you would repl
 The api can also send local transactions for Relay chains. It is the same principal as above, the only difference being that the `destChainId` would need to be `'0'`.
 
 For more information, refer to the [docs](https://github.com/paritytech/asset-transfer-api/tree/main/docs) in the repository.
+
+Note: For other parachains, local transfers are currently supported via balances and assets pallets. The plan is to extend local transfer support to other pallets like ORML tokens pallet in coming releases.
 
 ## License
 
