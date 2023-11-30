@@ -24,7 +24,7 @@ const getHeader = (): Promise<Header> =>
 			stateRoot: mockBifrostParachainApi.registry.createType('Hash'),
 			extrinsicsRoot: mockBifrostParachainApi.registry.createType('Hash'),
 			digest: mockBifrostParachainApi.registry.createType('Digest'),
-		})
+		}),
 	);
 
 const accountNextIndex = () => mockBifrostParachainApi.registry.createType('u32', 10);

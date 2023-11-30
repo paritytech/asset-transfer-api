@@ -26,7 +26,7 @@ export const checkBaseInputTypes = (destChainId: string, destAddr: string, asset
 			if (typeof assetIds[i] !== 'string') {
 				throw new BaseError(
 					`All inputs in the 'assetIds' array must be strings: Received: a ${typeof assetIds[i]} at index ${i}`,
-					BaseErrorsEnum.InvalidInput
+					BaseErrorsEnum.InvalidInput,
 				);
 			}
 		}
@@ -39,7 +39,7 @@ export const checkBaseInputTypes = (destChainId: string, destAddr: string, asset
 			if (typeof amounts[i] !== 'string') {
 				throw new BaseError(
 					`All inputs in the 'amounts' array must be strings: Received: a ${typeof amounts[i]} at index ${i}`,
-					BaseErrorsEnum.InvalidInput
+					BaseErrorsEnum.InvalidInput,
 				);
 			}
 		}

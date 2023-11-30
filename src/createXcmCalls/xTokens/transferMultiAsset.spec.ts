@@ -29,7 +29,7 @@ describe('transferMultiasset', () => {
 			});
 
 			expect(ext.toHex()).toBe(
-				'0xf4046a010100010300a10f043205011f0002093d0001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
+				'0xf4046a010100010300a10f043205011f0002093d0001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V2', async () => {
@@ -44,7 +44,7 @@ describe('transferMultiasset', () => {
 			});
 
 			expect(ext.toHex()).toBe(
-				'0x0501046a010100010300a10f043205011f0002093d0001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
+				'0x0501046a010100010300a10f043205011f0002093d0001010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
 			);
 		});
 
@@ -55,11 +55,11 @@ describe('transferMultiasset', () => {
 					isLimited: false,
 					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
-				}
+				},
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xec046a010300010300a10f043205011f00910103010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00'
+				'0xec046a010300010300a10f043205011f00910103010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b00',
 			);
 		});
 		it('Should correctly construct a Limited transferMultiasset tx for V3', async () => {
@@ -73,11 +73,11 @@ describe('transferMultiasset', () => {
 					},
 					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
-				}
+				},
 			);
 
 			expect(ext.toHex()).toBe(
-				'0xe4046a01030001000002093d0003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f'
+				'0xe4046a01030001000002093d0003010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
 			);
 		});
 	});

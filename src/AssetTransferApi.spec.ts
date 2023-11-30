@@ -15,7 +15,7 @@ import { AssetType } from './types';
 
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',
-	'0xfc041f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000'
+	'0xfc041f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000',
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
 const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
@@ -62,7 +62,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2023',
 				'statemine',
-				{ format: 'call' }
+				{ format: 'call' },
 			);
 			expect(res).toEqual({
 				dest: 'moonriver',
@@ -82,7 +82,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2023',
 				'statemine',
-				{ format: 'payload' }
+				{ format: 'payload' },
 			);
 			expect(res).toEqual({
 				dest: 'moonriver',
@@ -102,7 +102,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2023',
 				'Statmine',
-				{ format: 'submittable' }
+				{ format: 'submittable' },
 			);
 			expect(res.tx.toRawType()).toEqual('Extrinsic');
 		});
@@ -162,7 +162,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Native,
 					false,
 					false,
-					relayAssetsApi.registry
+					relayAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Teleport');
@@ -178,7 +178,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Native,
 					false,
 					false,
-					relayAssetsApi.registry
+					relayAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Reserve');
@@ -194,7 +194,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Native,
 					false,
 					false,
-					systemAssetsApi.registry
+					systemAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Teleport');
@@ -210,7 +210,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Native,
 					false,
 					false,
-					systemAssetsApi.registry
+					systemAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Teleport');
@@ -225,7 +225,7 @@ describe('AssetTransferAPI', () => {
 						AssetType.Foreign,
 						true,
 						false,
-						systemAssetsApi.registry
+						systemAssetsApi.registry,
 					);
 
 				expect(err).toThrow('Unable to send foreign assets in direction SystemToSystem');
@@ -241,7 +241,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Foreign,
 					true,
 					false,
-					systemAssetsApi.registry
+					systemAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Teleport');
@@ -257,7 +257,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Foreign,
 					true,
 					false,
-					systemAssetsApi.registry
+					systemAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Reserve');
@@ -273,7 +273,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Foreign,
 					false,
 					false,
-					moonriverAssetsApi.registry
+					moonriverAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Reserve');
@@ -289,7 +289,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Foreign,
 					true,
 					false,
-					moonriverAssetsApi.registry
+					moonriverAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Teleport');
@@ -303,7 +303,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Foreign,
 					true,
 					true,
-					moonriverAssetsApi.registry
+					moonriverAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Teleport');
@@ -317,7 +317,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Foreign,
 					true,
 					false,
-					moonriverAssetsApi.registry
+					moonriverAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Reserve');
@@ -333,7 +333,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Foreign,
 					true,
 					false,
-					moonriverAssetsApi.registry
+					moonriverAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Reserve');
@@ -349,7 +349,7 @@ describe('AssetTransferAPI', () => {
 					AssetType.Native,
 					false,
 					false,
-					moonriverAssetsApi.registry
+					moonriverAssetsApi.registry,
 				);
 
 				expect(assetCallType).toEqual('Reserve');
@@ -392,7 +392,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2000',
 				'statemine',
-				{ format: 'payload' }
+				{ format: 'payload' },
 			);
 
 			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(payloadTexResult.tx, 'payload');
@@ -407,7 +407,7 @@ describe('AssetTransferAPI', () => {
 				'limitedReserveTransferAssets',
 				'2000',
 				'statmine',
-				{ format: 'call' }
+				{ format: 'call' },
 			);
 			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(callTxResult.tx, 'call');
 			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
@@ -428,7 +428,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'call',
 						keepAlive: false,
-					}
+					},
 				);
 
 				const decoded = moonriverAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
@@ -449,7 +449,7 @@ describe('AssetTransferAPI', () => {
 						format: 'payload',
 						keepAlive: false,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 
 				const decoded = moonriverAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
@@ -467,7 +467,7 @@ describe('AssetTransferAPI', () => {
 					['10000000000000'],
 					{
 						format: 'submittable',
-					}
+					},
 				);
 
 				const decoded = moonriverAssetsApi.decodeExtrinsic(callTxResult.tx.toHex(), 'submittable');
@@ -486,7 +486,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 
 				const decoded = relayAssetsApi.decodeExtrinsic(call.tx, 'call');
@@ -505,7 +505,7 @@ describe('AssetTransferAPI', () => {
 						format: 'payload',
 						keepAlive: true,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 
 				const decoded = relayAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
@@ -523,7 +523,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'submittable',
 						keepAlive: true,
-					}
+					},
 				);
 
 				const decoded = relayAssetsApi.decodeExtrinsic(submittableTxResult.tx.toHex(), 'submittable');
@@ -543,7 +543,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 
 				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
@@ -562,7 +562,7 @@ describe('AssetTransferAPI', () => {
 						format: 'payload',
 						keepAlive: true,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 
 				const decoded = systemAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
@@ -580,7 +580,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'submittable',
 						keepAlive: true,
-					}
+					},
 				);
 
 				const decoded = systemAssetsApi.decodeExtrinsic(submittableTxResult.tx.toHex(), 'submittable');
@@ -601,7 +601,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'call',
 						keepAlive: false,
-					}
+					},
 				);
 
 				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
@@ -621,7 +621,7 @@ describe('AssetTransferAPI', () => {
 						format: 'payload',
 						keepAlive: false,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 
 				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'payload');
@@ -639,7 +639,7 @@ describe('AssetTransferAPI', () => {
 					['10000000000000'],
 					{
 						format: 'submittable',
-					}
+					},
 				);
 
 				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx.toHex(), 'submittable');
@@ -659,7 +659,7 @@ describe('AssetTransferAPI', () => {
 						format: 'call',
 						xcmVersion: 3,
 						transferLiquidToken: true,
-					}
+					},
 				);
 
 				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
@@ -684,7 +684,7 @@ describe('AssetTransferAPI', () => {
 					format: 'call',
 					keepAlive: true,
 					paysWithFeeDest: 'usdt',
-				}
+				},
 			);
 
 			const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
@@ -704,7 +704,7 @@ describe('AssetTransferAPI', () => {
 					xcmVersion: 3,
 					format: 'call',
 					keepAlive: true,
-				}
+				},
 			);
 
 			const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'call');
@@ -727,7 +727,7 @@ describe('AssetTransferAPI', () => {
 					paysWithFeeDest: 'USDC',
 					xcmVersion: 3,
 					sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-				}
+				},
 			);
 
 			const result = mockSystemApi.registry.createType('ExtrinsicPayload', payload.tx, {
@@ -752,7 +752,7 @@ describe('AssetTransferAPI', () => {
 						paysWithFeeDest: 'USDC',
 						xcmVersion: 3,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			}).rejects.toThrowError('asset with assetId 100 is not a sufficient asset to pay for fees');
 		});

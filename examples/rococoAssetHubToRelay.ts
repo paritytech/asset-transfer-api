@@ -34,7 +34,7 @@ const main = async () => {
 				format: 'call',
 				isLimited: true,
 				xcmVersion: 2,
-			}
+			},
 		);
 
 		console.log(callInfo);
@@ -47,4 +47,6 @@ const main = async () => {
 	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
-main().finally(() => process.exit());
+main()
+	.catch((err) => console.error(err))
+	.finally(() => process.exit());

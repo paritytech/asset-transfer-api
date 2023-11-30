@@ -18,7 +18,7 @@ import type { PolkadotXcmBaseArgs } from './types';
  */
 export const limitedReserveTransferAssets = async (
 	baseArgs: PolkadotXcmBaseArgs,
-	opts: CreateXcmCallOpts
+	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const { api, direction, destAddr, assetIds, amounts, destChainId, xcmVersion, specName, registry } = baseArgs;
 	const { isLimited, weightLimit, paysWithFeeDest, isLiquidTokenTransfer, isForeignAssetsTransfer } = opts;

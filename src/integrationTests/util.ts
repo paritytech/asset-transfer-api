@@ -8,14 +8,14 @@ export type TestMultiassets = [
 	parachainId: string,
 	assetIds: string[],
 	amounts: string[],
-	expected: TxResult<'payload'>
+	expected: TxResult<'payload'>,
 ];
 
 export type TestMultiassetWithFormat = [
 	parachainId: string,
 	assetId: string,
 	format: string,
-	expected: TxResult<'payload'>
+	expected: TxResult<'payload'>,
 ];
 
 export type TestMultiassetsWithFormat = [
@@ -23,7 +23,7 @@ export type TestMultiassetsWithFormat = [
 	assetIds: string[],
 	amounts: string[],
 	format: string,
-	expected: TxResult<'payload'>
+	expected: TxResult<'payload'>,
 ];
 
 export const paraTransferMultiasset = async <T extends Format>(
@@ -32,7 +32,7 @@ export const paraTransferMultiasset = async <T extends Format>(
 	xcmVersion: number,
 	destChainId: string,
 	assetId: string,
-	opts: CreateXcmCallOpts
+	opts: CreateXcmCallOpts,
 ): Promise<TxResult<T>> => {
 	return await parachainATA.createTransferTransaction(
 		destChainId,
@@ -45,7 +45,7 @@ export const paraTransferMultiasset = async <T extends Format>(
 			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-		}
+		},
 	);
 };
 
@@ -56,7 +56,7 @@ export const paraTransferMultiassets = async <T extends Format>(
 	destChainId: string,
 	assetIds: string[],
 	amounts: string[],
-	opts: CreateXcmCallOpts
+	opts: CreateXcmCallOpts,
 ): Promise<TxResult<T>> => {
 	return await parachainATA.createTransferTransaction(
 		destChainId,
@@ -70,7 +70,7 @@ export const paraTransferMultiassets = async <T extends Format>(
 			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-		}
+		},
 	);
 };
 
@@ -80,7 +80,7 @@ export const paraTransferMultiassetWithFee = async <T extends Format>(
 	xcmVersion: number,
 	destChainId: string,
 	assetId: string,
-	opts: CreateXcmCallOpts
+	opts: CreateXcmCallOpts,
 ): Promise<TxResult<T>> => {
 	return await parachainATA.createTransferTransaction(
 		destChainId,
@@ -95,7 +95,7 @@ export const paraTransferMultiassetWithFee = async <T extends Format>(
 			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-		}
+		},
 	);
 };
 
@@ -104,7 +104,7 @@ export const paraTeleportNativeAsset = async <T extends Format>(
 	format: T,
 	nativeAssetId: string,
 	xcmVersion: number,
-	opts: CreateXcmCallOpts
+	opts: CreateXcmCallOpts,
 ): Promise<TxResult<T>> => {
 	return await parachainATA.createTransferTransaction(
 		'1000', // `1000` indicating the dest chain is a system chain.
@@ -117,6 +117,6 @@ export const paraTeleportNativeAsset = async <T extends Format>(
 			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-		}
+		},
 	);
 };

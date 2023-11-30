@@ -13,7 +13,7 @@ export const getXcAssetMultiLocationByAssetId = async (
 	assetId: string,
 	specName: string,
 	xcmVersion: number,
-	registry: Registry
+	registry: Registry,
 ): Promise<string> => {
 	// if symbol, get the integer or multilocation assetId
 	if (!validateNumber(assetId)) {
@@ -35,6 +35,6 @@ export const getXcAssetMultiLocationByAssetId = async (
 
 	throw new BaseError(
 		`assetId ${assetId} is not a valid symbol or integer asset id for ${specName}`,
-		BaseErrorsEnum.InvalidAsset
+		BaseErrorsEnum.InvalidAsset,
 	);
 };

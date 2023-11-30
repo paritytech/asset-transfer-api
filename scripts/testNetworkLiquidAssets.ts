@@ -135,10 +135,10 @@ const main = async () => {
 				chalk.blue(
 					`LP Token: ${Number(lpToken)}, Account: ${address.toString()}, Starting liquidty token balance: ${value
 						.unwrap()
-						.balance.toHuman()}`
-				)
+						.balance.toHuman()}`,
+				),
 			);
-		}
+		},
 	);
 
 	await delay(24000);
@@ -161,10 +161,10 @@ const main = async () => {
 				chalk.blue(
 					`LP Token: ${Number(lpToken)}, Account: ${address.toString()}, New liquidty token balance: ${value
 						.unwrap()
-						.balance.toHuman()}`
-				)
+						.balance.toHuman()}`,
+				),
 			);
-		}
+		},
 	);
 
 	await api.disconnect().then(() => {

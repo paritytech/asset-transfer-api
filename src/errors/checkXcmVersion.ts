@@ -12,7 +12,7 @@ export const checkXcmVersion = (version: number) => {
 	if (!SUPPORTED_XCM_VERSIONS.includes(version)) {
 		throw new BaseError(
 			`${version} is not a supported xcm version. Supported versions are: ${SUPPORTED_XCM_VERSIONS[0]} and ${SUPPORTED_XCM_VERSIONS[1]}`,
-			BaseErrorsEnum.InvalidXcmVersion
+			BaseErrorsEnum.InvalidXcmVersion,
 		);
 	}
 };

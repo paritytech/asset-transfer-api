@@ -32,11 +32,11 @@ const main = async () => {
 				format: 'submittable',
 				isLimited: true,
 				xcmVersion: 2,
-			}
+			},
 		);
 
 		console.log(
-			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(callInfo, null, 4)}${RESET}`
+			`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(callInfo, null, 4)}${RESET}`,
 		);
 	} catch (e) {
 		console.error(e);
@@ -51,4 +51,6 @@ const main = async () => {
 	await callInfo.tx.signAndSend(alice);
 };
 
-main().finally(() => process.exit());
+main()
+	.catch((err) => console.error(err))
+	.finally(() => process.exit());

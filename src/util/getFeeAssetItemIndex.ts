@@ -24,7 +24,7 @@ export const getFeeAssetItemIndex = async (
 	multiAssets: FungibleStrMultiAsset[],
 	specName: string,
 	xcmVersion: number,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer?: boolean,
 ): Promise<number> => {
 	let result = -1;
 
@@ -56,7 +56,7 @@ export const getFeeAssetItemIndex = async (
 						paysWithFeeDest,
 						specName,
 						xcmVersion,
-						isForeignAssetsTransfer
+						isForeignAssetsTransfer,
 					);
 					// if isForeignAssetsTransfer, compare the multiAsset interior to the the paysWithFeeDestGeneralIndex as a multilocation
 					if (isForeignAssetsTransfer) {
@@ -101,7 +101,7 @@ export const getFeeAssetItemIndex = async (
 			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets
 				.map((asset) => JSON.stringify(asset.id.Concrete.interior))
 				.join(',')}`,
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 

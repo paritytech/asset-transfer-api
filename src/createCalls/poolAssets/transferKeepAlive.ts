@@ -8,7 +8,7 @@ export const transferKeepAlive = (
 	api: ApiPromise,
 	destAddr: string,
 	assetId: string,
-	amount: string
+	amount: string,
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	return api.tx.poolAssets.transferKeepAlive(assetId, destAddr, amount);
 };

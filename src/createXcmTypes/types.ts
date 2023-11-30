@@ -49,7 +49,7 @@ export interface XcmV2Junctions {
 		XcmV2Junction,
 		XcmV2Junction,
 		XcmV2Junction,
-		XcmV2Junction
+		XcmV2Junction,
 	];
 }
 
@@ -91,7 +91,7 @@ export interface XcmV3Junctions {
 		XcmV3Junction,
 		XcmV3Junction,
 		XcmV3Junction,
-		XcmV3Junction
+		XcmV3Junction,
 	];
 }
 
@@ -287,7 +287,7 @@ export interface ICreateXcmType {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts
+		opts: CreateAssetsOpts,
 	) => Promise<UnionXcmMultiAssets>;
 	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
@@ -297,14 +297,14 @@ export interface ICreateXcmType {
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
-		opts: CreateAssetsOpts
+		opts: CreateAssetsOpts,
 	) => Promise<UnionXcAssetsMultiAssets>;
 	createXTokensAsset?: (
 		amount: string,
 		xcmVersion: number,
 		specName: string,
 		asset: string,
-		opts: CreateAssetsOpts
+		opts: CreateAssetsOpts,
 	) => Promise<UnionXcAssetsMultiAsset>;
 	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createXTokensFeeAssetItem?: (opts: CreateFeeAssetItemOpts) => UnionXcAssetsMultiLocation;

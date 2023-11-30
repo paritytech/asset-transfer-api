@@ -25,7 +25,7 @@ const main = async () => {
 				format: 'call',
 				keepAlive: true,
 				transferLiquidToken: true,
-			}
+			},
 		);
 
 		console.log(`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(callInfo, null, 4)}`);
@@ -38,4 +38,6 @@ const main = async () => {
 	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
-main().finally(() => process.exit());
+main()
+	.catch((err) => console.error(err))
+	.finally(() => process.exit());

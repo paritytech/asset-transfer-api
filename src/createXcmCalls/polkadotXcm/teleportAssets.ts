@@ -17,7 +17,7 @@ import type { PolkadotXcmBaseArgs } from './types';
  */
 export const teleportAssets = async (
 	baseArgs: PolkadotXcmBaseArgs,
-	opts: CreateXcmCallOpts
+	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const { api, direction, destAddr, assetIds, amounts, destChainId, xcmVersion, specName, registry } = baseArgs;
 	const { paysWithFeeDest, isForeignAssetsTransfer } = opts;
