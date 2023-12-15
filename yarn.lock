@@ -1347,7 +1347,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@substrate/asset-transfer-api@workspace:."
   dependencies:
-    "@babel/plugin-transform-modules-commonjs": "npm:^7.23.3"
     "@polkadot/api": "npm:^10.11.1"
     "@substrate/asset-transfer-api-registry": "npm:^0.2.11"
     "@substrate/dev": "npm:^0.7.1"
