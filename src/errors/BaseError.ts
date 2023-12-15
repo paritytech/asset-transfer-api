@@ -62,6 +62,10 @@ export enum BaseErrorsEnum {
 	 * The following option is disabled given the inputs.
 	 */
 	DisabledOption = 'DisabledOption',
+	/**
+	 * The provided paysWithFeeOrigin asset has no liquidity pool.
+	 */
+	NoFeeAssetLpFound = 'NoFeeAssetLpFound',
 }
 
 export class BaseError extends Error {

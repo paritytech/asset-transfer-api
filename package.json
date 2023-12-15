@@ -40,6 +40,7 @@
     "typedoc-theme-hierarchy": "^4.0.0"
   },
   "dependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.23.3",
     "@polkadot/api": "^10.11.1",
     "@substrate/asset-transfer-api-registry": "^0.2.11"
   }
