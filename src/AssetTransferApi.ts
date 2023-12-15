@@ -783,6 +783,8 @@ export class AssetTransferApi {
 			period: 64,
 		});
 
+		console.log('ASSET ID', assetId);
+
 		const nonce = await this._api.rpc.system.accountNextIndex(sendersAddr);
 		const unsignedPayload: UnsignedTransaction = {
 			specVersion: this._api.runtimeVersion.specVersion.toHex(),

@@ -729,11 +729,15 @@ describe('AssetTransferAPI', () => {
 				},
 			);
 
+			console.log('PAYLOAD', payload);
+
 			const result = mockSystemApi.registry.createType('ExtrinsicPayload', payload.tx, {
 				version: 4,
 			});
+			console.log('RESULT TO HUMAN', result.toHuman());
 			const unsigned = result.toHuman() as unknown as UnsignedTransaction;
 
+			console.log('UNSIGNED IN TEST', unsigned);
 			expect(unsigned.assetId).toStrictEqual(expected);
 		});
 
