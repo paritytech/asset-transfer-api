@@ -712,7 +712,7 @@ describe('AssetTransferAPI', () => {
 		});
 	});
 	describe('paysWithFeeOrigin', () => {
-		it('Should correctly assign the assedId field to an unsigned transaction when a valid sufficient paysWithFeeOrigin option is provided', async () => {
+		it('Should correctly assign the assedId field to an unsigned transaction when a valid paysWithFeeOrigin MultiLocation option is provided', async () => {
 			const expected = { parents: '0', interior: { X2: [{ PalletInstance: '50' }, { GeneralIndex: '1,984' }] } };
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
@@ -720,7 +720,8 @@ describe('AssetTransferAPI', () => {
 				['1984', 'usdc'],
 				['5000000', '4000000000'],
 				{
-					paysWithFeeOrigin: '1984',
+					paysWithFeeOrigin:
+						'{"parents": "0", "interior": {"X2": [{"PalletInstance": "50"},{"GeneralIndex": "1984"}]}}',
 					format: 'payload',
 					keepAlive: true,
 					paysWithFeeDest: 'USDC',
@@ -729,15 +730,11 @@ describe('AssetTransferAPI', () => {
 				},
 			);
 
-			console.log('PAYLOAD', payload);
-
 			const result = mockSystemApi.registry.createType('ExtrinsicPayload', payload.tx, {
 				version: 4,
 			});
-			console.log('RESULT TO HUMAN', result.toHuman());
 			const unsigned = result.toHuman() as unknown as UnsignedTransaction;
 
-			console.log('UNSIGNED IN TEST', unsigned);
 			expect(unsigned.assetId).toStrictEqual(expected);
 		});
 

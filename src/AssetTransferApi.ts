@@ -750,7 +750,6 @@ export class AssetTransferApi {
 
 			if (isValidInt) {
 				assetId = new BN(paysWithFeeOrigin);
-				console.log('WHAT IS ASSET ID', assetId.toString());
 				const isSufficient = await this.checkAssetIsSufficient(assetId);
 
 				if (!isSufficient) {
@@ -773,8 +772,6 @@ export class AssetTransferApi {
 			}
 		}
 
-		console.log('ASSET ID', assetId?.toString());
-
 		const lastHeader = await this._api.rpc.chain.getHeader();
 		const blockNumber = this._api.registry.createType('BlockNumber', lastHeader.number.toNumber());
 		const method = tx.method;
@@ -782,8 +779,6 @@ export class AssetTransferApi {
 			current: lastHeader.number.toNumber(),
 			period: 64,
 		});
-
-		console.log('ASSET ID', assetId);
 
 		const nonce = await this._api.rpc.system.accountNextIndex(sendersAddr);
 		const unsignedPayload: UnsignedTransaction = {
@@ -810,8 +805,6 @@ export class AssetTransferApi {
 			tip: this._api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,
 		};
-
-		console.log('UNSIGNED PAYLOAD', unsignedPayload);
 
 		const extrinsicPayload = this._api.registry.createType('ExtrinsicPayload', unsignedPayload, {
 			version: unsignedPayload.version,
@@ -903,33 +896,35 @@ export class AssetTransferApi {
 			);
 		}
 
-		try {
-			const poolAssetData = await this._api.query.assetConversion.pools.entries();
+		if (this._api.query.assetConversion !== undefined) {
+			try {
+				for (const poolPairsData of await this._api.query.assetConversion.pools.entries()) {
+					const poolStorageKeyData = poolPairsData[0];
 
-			for (let i = 0; i < poolAssetData.length; i++) {
-				const poolStorageKeyData = poolAssetData[i][0].toHuman();
+					// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
+					const poolAssetDataStr = JSON.stringify(poolStorageKeyData).replace(/(\d),/g, '$1');
+					const palletAssetConversionNativeOrAssetIdData = sanitizeKeys(
+						JSON.parse(poolAssetDataStr),
+					) as UnionXcmMultiLocation[];
 
-				// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
-				const poolAssetDataStr = JSON.stringify(poolStorageKeyData).replace(/(\d),/g, '$1');
+					const firstLpToken = palletAssetConversionNativeOrAssetIdData[0];
+					const secondLpToken = palletAssetConversionNativeOrAssetIdData[1];
 
-				const palletAssetConversionNativeOrAssetIdData = sanitizeKeys(
-					JSON.parse(poolAssetDataStr),
-				) as UnionXcmMultiLocation[][];
-
-				const firstLpToken = palletAssetConversionNativeOrAssetIdData[0][0];
-				const secondLpToken = palletAssetConversionNativeOrAssetIdData[0][1];
-
-				if (firstLpToken === feeAsset || secondLpToken === feeAsset) {
-					return [true, feeAsset];
+					if (
+						JSON.stringify(firstLpToken) == JSON.stringify(feeAsset) ||
+						JSON.stringify(secondLpToken) == JSON.stringify(feeAsset)
+					) {
+						return [true, feeAsset];
+					}
 				}
+			} catch (e) {
+				throw new BaseError(
+					`error querying ${this._specName} liquidity token pool assets: ${e as string}`,
+					BaseErrorsEnum.InternalError,
+				);
 			}
-
-			return [false, feeAsset];
-		} catch (e) {
-			throw new BaseError(
-				`error querying ${this._specName} liquidity token pool assets: ${e as string}`,
-				BaseErrorsEnum.InternalError,
-			);
 		}
+
+		return [false, feeAsset];
 	};
 }
