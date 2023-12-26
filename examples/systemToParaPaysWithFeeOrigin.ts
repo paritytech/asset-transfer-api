@@ -32,6 +32,7 @@ const main = async () => {
 				isLimited: false,
 				xcmVersion: 3,
 				paysWithFeeOrigin: '1984',
+				sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 			},
 		);
 
@@ -41,7 +42,7 @@ const main = async () => {
 		throw Error(e as string);
 	}
 
-	const decoded = assetApi.decodeExtrinsic(callInfo.tx, 'call');
+	const decoded = assetApi.decodeExtrinsic(callInfo.tx, 'payload');
 	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
