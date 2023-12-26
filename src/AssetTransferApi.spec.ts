@@ -712,7 +712,7 @@ describe('AssetTransferAPI', () => {
 		});
 	});
 	describe('paysWithFeeOrigin', () => {
-		it('Should correctly assign the assedId field to an unsigned transaction when a valid sufficient paysWithFeeOrigin option is provided', async () => {
+		it('Should correctly assign the assedId field to an unsigned transaction when a valid paysWithFeeOrigin MultiLocation option is provided', async () => {
 			const expected = { parents: '0', interior: { X2: [{ PalletInstance: '50' }, { GeneralIndex: '1,984' }] } };
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
@@ -721,7 +721,7 @@ describe('AssetTransferAPI', () => {
 				['5000000', '4000000000'],
 				{
 					paysWithFeeOrigin:
-						'{"parents": "0", "interior": { "X2": [{"PalletInstance": "50"},{"GeneralIndex": "1984"}]}}',
+						'{"parents": "0", "interior": {"X2": [{"PalletInstance": "50"},{"GeneralIndex": "1984"}]}}',
 					format: 'payload',
 					keepAlive: true,
 					paysWithFeeDest: 'USDC',
@@ -754,7 +754,47 @@ describe('AssetTransferAPI', () => {
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
 				);
-			}).rejects.toThrowError('asset with assetId 100 is not a sufficient asset to pay for fees');
+			}).rejects.toThrow('asset with assetId 100 is not a sufficient asset to pay for fees');
+		});
+
+		it('Should error during payload construction when a non integer paysWithFeeOrigin is provided that is not a valid MultiLocation', async () => {
+			await expect(async () => {
+				await systemAssetsApi.createTransferTransaction(
+					'2023',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['1984', 'usdc'],
+					['5000000', '4000000000'],
+					{
+						paysWithFeeOrigin: 'hello there',
+						format: 'payload',
+						keepAlive: true,
+						paysWithFeeDest: 'USDC',
+						xcmVersion: 3,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					},
+				);
+			}).rejects.toThrow('paysWithFeeOrigin value must be a valid MultiLocation. Received: hello there');
+		});
+
+		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not part of a valid lp token pair', async () => {
+			await expect(async () => {
+				await systemAssetsApi.createTransferTransaction(
+					'2023',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					['1984', 'usdc'],
+					['5000000', '4000000000'],
+					{
+						paysWithFeeOrigin: '{"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
+						format: 'payload',
+						keepAlive: true,
+						paysWithFeeDest: 'USDC',
+						xcmVersion: 3,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					},
+				);
+			}).rejects.toThrow(
+				'paysWithFeeOrigin value must be a valid MultiLocation. Received: {"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
+			);
 		});
 	});
 });

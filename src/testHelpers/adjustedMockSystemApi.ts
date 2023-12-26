@@ -251,9 +251,9 @@ const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
 
 const pools = (
 	_arg: ITuple<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionNativeOrAssetId]>,
-): Promise<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo]> =>
+): Promise<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo][]> =>
 	Promise.resolve().then(() => {
-		const palletAssetConversionNativeOrAssetId = mockSystemApi.registry.createType(
+		const palletAssetConversionNativeOrAssetId1 = mockSystemApi.registry.createType(
 			'PalletAssetConversionNativeOrAssetId',
 			[
 				{ parents: 0, interior: { Here: '' } },
@@ -264,11 +264,29 @@ const pools = (
 			],
 		);
 
-		const poolInfo = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo', {
+		const poolInfo1 = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo', {
 			lpToken: 0,
 		});
 
-		return [palletAssetConversionNativeOrAssetId, poolInfo];
+		const palletAssetConversionNativeOrAssetId2 = mockSystemApi.registry.createType(
+			'PalletAssetConversionNativeOrAssetId',
+			[
+				{ parents: 0, interior: { Here: '' } },
+				{
+					parents: 0,
+					interior: { X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }] },
+				},
+			],
+		);
+
+		const poolInfo2 = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo', {
+			lpToken: 1,
+		});
+
+		return [
+			[palletAssetConversionNativeOrAssetId1, poolInfo1],
+			[palletAssetConversionNativeOrAssetId2, poolInfo2],
+		];
 	});
 
 const mockApiAt = {
@@ -312,15 +330,54 @@ export const adjustedMockSystemApi = {
 		assetConversion: {
 			pools: Object.assign(pools, {
 				entries: () => {
-					const palletAssetConversionNativeOrAssetId = Object.assign(
+					const palletAssetConversionData = Object.assign(
 						[
-							{ parents: 0, interior: { Here: '' } },
-							{
-								parents: 0,
-								interior: {
-									X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }],
-								},
-							},
+							[
+								[
+									{ parents: '0', interior: { Here: '' } },
+									{
+										parents: '0',
+										interior: {
+											X2: [{ PalletInstance: '50' }, { GeneralIndex: '100' }],
+										},
+									},
+								],
+								Object.assign(
+									{
+										lpToken: mockSystemApi.registry.createType('u32', 0),
+									},
+									{
+										unwrap: () => {
+											return {
+												lpToken: mockSystemApi.registry.createType('u32', 0),
+											};
+										},
+									},
+								),
+							],
+							[
+								[
+									{ parents: '0', interior: { Here: '' } },
+									{
+										parents: '0',
+										interior: {
+											X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+										},
+									},
+								],
+								Object.assign(
+									{
+										lpToken: mockSystemApi.registry.createType('u32', 1),
+									},
+									{
+										unwrap: () => {
+											return {
+												lpToken: mockSystemApi.registry.createType('u32', 1),
+											};
+										},
+									},
+								),
+							],
 						],
 						{
 							toHuman: () => {
@@ -334,25 +391,21 @@ export const adjustedMockSystemApi = {
 											},
 										},
 									],
+									[
+										{ parents: '0', interior: { Here: '' } },
+										{
+											parents: '0',
+											interior: {
+												X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+											},
+										},
+									],
 								];
 							},
 						},
 					);
 
-					const poolInfo = Object.assign(
-						{
-							lpToken: mockSystemApi.registry.createType('u32', 0),
-						},
-						{
-							unwrap: () => {
-								return {
-									lpToken: mockSystemApi.registry.createType('u32', 0),
-								};
-							},
-						},
-					);
-
-					return [[palletAssetConversionNativeOrAssetId, poolInfo]];
+					return palletAssetConversionData;
 				},
 			}),
 		},

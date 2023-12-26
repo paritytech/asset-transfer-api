@@ -357,13 +357,12 @@ export const checkLiquidTokenValidity = async (
 	// query chain state
 	const poolAsset = await api.query.poolAssets.asset(assetId);
 	if (poolAsset.isSome) {
-		const poolAssets = await api.query.assetConversion.pools.entries();
+		// const poolAssets = await api.query.assetConversion.pools.entries();
 
-		for (let i = 0; i < poolAssets.length; i++) {
-			const poolAsset = poolAssets[i];
-			const poolAssetData = JSON.stringify(poolAsset[0].toHuman()).replace(/(\d),/g, '$1');
+		for (const poolPairsData of await api.query.assetConversion.pools.entries()) {
+			const poolAssetData = JSON.stringify(poolPairsData[0]).replace(/(\d),/g, '$1');
+			const poolAssetInfo = poolPairsData[1].unwrap();
 
-			const poolAssetInfo = poolAsset[1].unwrap();
 			if (poolAssetInfo.lpToken.toString() === assetId) {
 				const asset: {
 					lpToken: string;

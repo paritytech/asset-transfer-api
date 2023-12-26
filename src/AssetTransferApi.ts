@@ -24,6 +24,7 @@ import {
 	transferMultiassetWithFee,
 } from './createXcmCalls';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
+import { UnionXcmMultiLocation } from './createXcmTypes/types';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { isParachain } from './createXcmTypes/util/isParachain';
@@ -59,6 +60,7 @@ import {
 	XcmDirection,
 } from './types';
 import { resolveMultiLocation } from './util/resolveMultiLocation';
+import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
 
 /**
@@ -757,16 +759,16 @@ export class AssetTransferApi {
 					);
 				}
 			} else {
-				try {
-					assetId = JSON.parse(paysWithFeeOrigin) as AnyJson;
-				} catch (e) {
+				const [isValidLpToken, feeAsset] = await this.checkAssetLpTokenPairExists(paysWithFeeOrigin);
+
+				if (!isValidLpToken) {
 					throw new BaseError(
-						`paysWithFeeOrigin is an invalid asset. The asset must be a valid integer or multiLocation depending on the runtime: ${
-							e as string
-						}`,
-						BaseErrorsEnum.InvalidAsset,
+						`assetId ${JSON.stringify(feeAsset)} is not a valid liquidity pool token for ${this._specName}`,
+						BaseErrorsEnum.NoFeeAssetLpFound,
 					);
 				}
+
+				assetId = JSON.parse(paysWithFeeOrigin) as AnyJson;
 			}
 		}
 
@@ -873,4 +875,56 @@ export class AssetTransferApi {
 
 		return true;
 	}
+
+	/**
+	 * checks the chains state and determines whether a MultiLocation assetId is part of a lp token pair
+	 *
+	 * @param assetId UnionXcmMultiLocation
+	 * @returns Promise<boolean>
+	 */
+	private checkAssetLpTokenPairExists = async (
+		paysWithFeeOrigin: string,
+	): Promise<[boolean, UnionXcmMultiLocation]> => {
+		let feeAsset: UnionXcmMultiLocation;
+
+		try {
+			feeAsset = sanitizeKeys(JSON.parse(paysWithFeeOrigin)) as UnionXcmMultiLocation;
+		} catch (err: unknown) {
+			throw new BaseError(
+				`paysWithFeeOrigin value must be a valid MultiLocation. Received: ${paysWithFeeOrigin}`,
+				BaseErrorsEnum.InvalidInput,
+			);
+		}
+
+		if (this._api.query.assetConversion !== undefined) {
+			try {
+				for (const poolPairsData of await this._api.query.assetConversion.pools.entries()) {
+					const poolStorageKeyData = poolPairsData[0];
+
+					// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
+					const poolAssetDataStr = JSON.stringify(poolStorageKeyData).replace(/(\d),/g, '$1');
+					const palletAssetConversionNativeOrAssetIdData = sanitizeKeys(
+						JSON.parse(poolAssetDataStr),
+					) as UnionXcmMultiLocation[];
+
+					const firstLpToken = palletAssetConversionNativeOrAssetIdData[0];
+					const secondLpToken = palletAssetConversionNativeOrAssetIdData[1];
+
+					if (
+						JSON.stringify(firstLpToken) == JSON.stringify(feeAsset) ||
+						JSON.stringify(secondLpToken) == JSON.stringify(feeAsset)
+					) {
+						return [true, feeAsset];
+					}
+				}
+			} catch (e) {
+				throw new BaseError(
+					`error querying ${this._specName} liquidity token pool assets: ${e as string}`,
+					BaseErrorsEnum.InternalError,
+				);
+			}
+		}
+
+		return [false, feeAsset];
+	};
 }
