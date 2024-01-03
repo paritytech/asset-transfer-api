@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.1.5](https://github.com/paritytech/asset-transfer-api/compare/v0.1.4..v0.1.5)(2024-01-03)
+
+## Features
+
+- feat: give registry option between CDN and npm package ([#332](https://github.com/paritytech/asset-transfer-api/pull/332))
+- feat: add paysWithFeeOrigin support for MultiLocations ([#333](https://github.com/paritytech/asset-transfer-api/pull/333))
+
+## Fix
+
+- fix(internal): cleanup structure for args passed into calls ([#328](https://github.com/paritytech/asset-transfer-api/pull/328))
+- fix: check fee asset lp exists for paysWithFeeOrigin ([#336](https://github.com/paritytech/asset-transfer-api/pull/336))
+
+## Docs
+
+- docs(readme): Add explanation for local transfers in parachains ([#331](https://github.com/paritytech/asset-transfer-api/pull/331))
+
+## Chore
+
+- chore(deps): bump @babel/traverse from 7.21.4 to 7.23.4 ([#329](https://github.com/paritytech/asset-transfer-api/pull/329))
+- chore(substrate-dev): update @substrate/dev to 0.7.1 ([#334](https://github.com/paritytech/asset-transfer-api/pull/334))
+- chore(yarn): bump yarn to 4.0.2 ([#335](https://github.com/paritytech/asset-transfer-api/pull/335))
+- chore(pjs): update polkadot-js to 10.11.2 ([#339](https://github.com/paritytech/asset-transfer-api/pull/339))
+
 ## [0.1.4](https://github.com/paritytech/asset-transfer-api/compare/v0.1.3..v0.1.4)(2023-11-14)
 
 ## Features
