@@ -1,5 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { detectJsEnv } from './util/detectJsEvn';
+
 /**
  * List of all known relay chains.
  */
@@ -60,3 +62,8 @@ export const MAX_NUM_LENGTH = Number.MAX_SAFE_INTEGER.toString().length;
  * URL to reach the CDN endpoint.
  */
 export const CDN_URL = 'https://paritytech.github.io/asset-transfer-api-registry/registry.json';
+
+/**
+ * May result in either: `node` or `browser`.
+ */
+export const JS_ENV = detectJsEnv();

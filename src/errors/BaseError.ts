@@ -66,6 +66,10 @@ export enum BaseErrorsEnum {
 	 * The provided paysWithFeeOrigin asset has no liquidity pool.
 	 */
 	NoFeeAssetLpFound = 'NoFeeAssetLpFound',
+	/**
+	 * The provided JS enviornment is not supported, and the api will not run.
+	 */
+	UnsupportedEnviornment = 'UnsupportedEnviornment',
 }
 
 export class BaseError extends Error {
