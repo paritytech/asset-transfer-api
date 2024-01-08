@@ -13,7 +13,7 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 		parents: 1,
 		interior: {
 			X1: {
-				parachain: 1836,
+				parachain: 3000,
 			},
 		},
 	};
@@ -35,14 +35,14 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 		parents: 1,
 		interior: {
 			X1: {
-				parachain: 1836,
+				parachain: 3000,
 			},
 		},
 	};
 
 	const createTx = assetHubApi.tx.foreignAssets.create(
 		trappistMultiLocation,
-		'5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', // Sibling 1836 -> ParaId
+		'5Eg2fntDDP4P8TjqRg3Jq89y5boE26JUMM3D7VU3bCAp76nc', // Sibling 1836 -> ParaId
 		'100000000000'
 	);
 
@@ -58,7 +58,7 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 
 const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 	// Double encode the call
-	const xcmDoubleEncoded = trappistApi.createType('StagingXcmDoubleEncoded', {
+	const xcmDoubleEncoded = trappistApi.createType('XcmDoubleEncoded', {
 		encoded: call,
 	});
 
@@ -210,8 +210,8 @@ const main = async () => {
 
 	logWithDate(chalk.magenta('Sending funds to Trappist Sibling on Kusama AssetHub'));
 
-	await kusamaAssetHubApi.tx.balances
-		.transferKeepAlive('5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', 10000000000000)
+	await kusamaAssetHubApi.tx.balances // ParaID 3000
+		.transferKeepAlive('5Eg2fntDDP4P8TjqRg3Jq89y5boE26JUMM3D7VU3bCAp76nc', 10000000000000)
 		.signAndSend(bob);
 
 	const foreignAssetsCreateSudoXcmCall = createForeignAssetViaSudo(kusamaAssetHubApi, trappistApi);

@@ -1,5 +1,5 @@
 [relaychain]
-default_command = "./bin/polkadot"
+default_command = "./zombienet/bin/polkadot"
 default_args = [ "-lparachain=debug" ]
 chain = "rococo-local"
 
@@ -32,32 +32,50 @@ cumulus_based = true
 
   [[parachains.collators]]
   name = "statemine-collator01"
-  command = "./bin/polkadot-parachain"
+  command = "./zombienet/bin/polkadot-parachain"
   args = ["--log=xcm=trace,pallet-assets=trace"]
   ws_port = 9910
 
   [[parachains.collators]]
   name = "statemine-collator02"
-  command = "./bin/polkadot-parachain"
+  command = "./zombienet/bin/polkadot-parachain"
   ws_port = 9911
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
 [[parachains]]
-id = 1836
+id = 2500
 add_to_genesis = true
 cumulus_based = true
 chain = "trappist-local"
 
   [[parachains.collators]]
   name = "trappist-collator01"
-  command = "./bin/trappist-node"
+  command = "./zombienet/bin/trappist-node"
   ws_port = 9920
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
   [[parachains.collators]]
   name = "trappist-collator02"
-  command = "./bin/trappist-node"
+  command = "./zombienet/bin/trappist-node"
   ws_port = 9921
+  args = ["--log=xcm=trace,pallet-assets=trace"]
+
+[[parachains]]
+id = 2600
+add_to_genesis = true
+cumulus_based = true
+chain = "moonriver-local"
+
+  [[parachains.collators]]
+  name = "moonriver-collator01"
+  command = "./zombienet/bin/moonbeam"
+  ws_port = 9930
+  args = ["--log=xcm=trace,pallet-assets=trace"]
+
+  [[parachains.collators]]
+  name = "moonriver-collator02"
+  command = "./zombienet/bin/moonbeam"
+  ws_port = 9931
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
 [types.Header]
