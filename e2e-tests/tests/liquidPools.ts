@@ -6,20 +6,7 @@ import { AssetTransferApi } from '../../src';
 import { TxResult } from '../../src/types';
 
 const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: number): AssetTransferApi => {
-	const injectedRegistry = {
-		kusama: {
-			'3000': {
-				tokens: ['HOP'],
-				assetsInfo: {},
-				foreignAssetsInfo: {},
-				specName: 'trappist',
-				poolPairsInfo: {},
-			},
-		},
-	};
-	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, {
-		injectedRegistry,
-	});
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	return assetApi;
 };

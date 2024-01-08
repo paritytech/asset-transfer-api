@@ -71,7 +71,6 @@ export const balanceTracker = async (
 				for (const assetId of assetIds) {
 					accountInfo = await api.query.assets.account(assetId, address);
 					balances.final.push([assetId, accountInfo.unwrap().balance.toBn().toNumber()]);
-
 				}
 			}
 			return balances;
@@ -83,7 +82,6 @@ export const balanceTracker = async (
 						balances.initial.push([assetId, accountInfo.data.free.toBn().toNumber()]);
 					} else {
 						balances.initial.push([assetId, 0]);
-
 					}
 				}
 			} else {

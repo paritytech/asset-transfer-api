@@ -6,20 +6,7 @@ import { AssetTransferApi } from '../../src';
 import { TxResult } from '../../src/types';
 
 const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: number): AssetTransferApi => {
-	const injectedRegistry = {
-		rococo: {
-			'2500': {
-				tokens: ['HOP'],
-				assetsInfo: {},
-				foreignAssetsInfo: {},
-				specName: 'trappist-rococo',
-				poolPairsInfo: {},
-			},
-		},
-	};
-	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, {
-		injectedRegistry,
-	});
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	return assetApi;
 };
@@ -63,10 +50,13 @@ const createPayFeesTransaction = async (
 	let localTransfer: TxResult<'submittable'>;
 	try {
 		localTransfer = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
-		await localTransfer.tx.signAndSend(origin)
+		await localTransfer.tx.signAndSend(origin);
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);
 	}
 };
-export const assetTests: { [K: string]: Function } = { createLocalSystemAssetsTransferTransaction, createPayFeesTransaction };
+export const assetTests: { [K: string]: Function } = {
+	createLocalSystemAssetsTransferTransaction,
+	createPayFeesTransaction,
+};

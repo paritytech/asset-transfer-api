@@ -4,12 +4,12 @@ import { Keyring } from '@polkadot/keyring';
 // import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
+import { delay } from '../scripts/util';
 import { constructApiPromise } from '../src';
 import { balanceTracker, IBalance } from './balance';
 import { KUSAMA_ASSET_HUB_WS_URL, MOONRIVER_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
 import { assetTests, foreignAssetsTests, IndividualTest, liquidPoolsTests, localTests, tests } from './tests';
 import { verification } from './verification';
-import { delay } from '../scripts/util'
 
 const executor = async (testCase: string) => {
 	let originWsUrl = '';
@@ -52,7 +52,7 @@ const executor = async (testCase: string) => {
 			n = assetTests;
 			break;
 	}
-	console.log(n)
+	console.log(n);
 
 	let originChainId = '';
 	let destChainId = '';
@@ -63,14 +63,13 @@ const executor = async (testCase: string) => {
 	let opts: object = {};
 
 	for (const t of testData) {
-
 		originChainId = t.args[0];
 		destChainId = t.args[1];
 		originAddr = t.args[2];
 		destAddr = t.args[3];
 		assetIds = t.args[4].slice(1, -1).split(',');
 		amounts = t.args[5].slice(1, -1).split(',');
-		opts = JSON.parse(t.args[6]);
+		opts = JSON.parse(t.args[6]) as object;
 
 		switch (originChainId) {
 			case '0':
@@ -114,12 +113,12 @@ const executor = async (testCase: string) => {
 			originChainId == destChainId
 				? originApi
 				: await ApiPromise.create({
-					provider: new WsProvider(destWsUrl),
-					noInitWarn: true,
-				});
+						provider: new WsProvider(destWsUrl),
+						noInitWarn: true,
+				  });
 
 		await destinationApi.isReady;
-		let destInitialBalance: IBalance = await balanceTracker(destinationApi, testCase, destAddr, assetIds);
+		const destInitialBalance: IBalance = await balanceTracker(destinationApi, testCase, destAddr, assetIds);
 		const originKeyring = keyring.addFromUri(originAddr);
 
 		//eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -127,7 +126,7 @@ const executor = async (testCase: string) => {
 
 		await delay(24000);
 
-		let destFinalBalance: IBalance = await balanceTracker(
+		const destFinalBalance: IBalance = await balanceTracker(
 			destinationApi,
 			testCase,
 			destAddr,
@@ -147,10 +146,9 @@ const executor = async (testCase: string) => {
 
 		await delay(12000);
 
-		originApi.disconnect();
-		destinationApi.disconnect();
+		await originApi.disconnect();
+		await destinationApi.disconnect();
 	}
-
 };
 
 executor(process.argv[2]).finally(() => process.exit());

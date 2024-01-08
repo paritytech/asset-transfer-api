@@ -5,14 +5,12 @@ export const verification = (assetIds: string[], amounts: string[], destBalance:
 	const destInitialBalance: [string, number][] = destBalance.initial;
 	const destFinalBalance: [string, number][] = destBalance.final;
 	const correctlyReceived: [string, boolean][] = [];
-	console.log(destInitialBalance)
-	console.log(destFinalBalance)
+	console.log(destInitialBalance);
+	console.log(destFinalBalance);
 
-	let check: boolean = true;
+	let check = true;
 	for (let i = 0; i < assetIds.length; i++) {
-		check =
-			destInitialBalance[i][1] + Number(amounts[i]) ==
-			destFinalBalance[i][1];
+		check = destInitialBalance[i][1] + Number(amounts[i]) == destFinalBalance[i][1];
 		correctlyReceived.push([destInitialBalance[i][0], check]);
 	}
 
