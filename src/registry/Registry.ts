@@ -251,7 +251,8 @@ export class Registry {
 		if (
 			POLKADOT_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
 			KUSAMA_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
-			WESTEND_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase())
+			WESTEND_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
+			ROCOCO_ASSET_HUB_SPEC_NAME.includes(specName.toLocaleLowerCase())
 		) {
 			this.specNameToIdCache.set(specName, '1000');
 			return '1000';

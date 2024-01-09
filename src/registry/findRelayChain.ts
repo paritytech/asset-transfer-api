@@ -29,7 +29,7 @@ export const findRelayChain = (specName: string, registry: ChainInfoRegistry): R
 		return 'westend';
 
 	const rococoChains = Object.keys(registry.rococo).map((val) => registry.rococo[val].specName);
-	if (rococoChains.includes(specName.toLowerCase()) || ROCOCO_ASSET_HUB_SPEC_NAME) {
+	if (rococoChains.includes(specName.toLowerCase()) || ROCOCO_ASSET_HUB_SPEC_NAME.includes(specName.toLowerCase())) {
 		return 'rococo';
 	}
 
