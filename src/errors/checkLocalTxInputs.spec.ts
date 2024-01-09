@@ -31,14 +31,14 @@ describe('checkLocalTxInput', () => {
 		await expect(async () => {
 			await checkLocalTxInput(systemAssetsApi._api, ['1', '2'], ['10000'], specName, registry, 2, false, false);
 		}).rejects.toThrowError(
-			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1'
+			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
 		);
 	});
 	it('Should correctly throw an error for incorrect length on `amounts`', async () => {
 		await expect(async () => {
 			await checkLocalTxInput(systemAssetsApi._api, ['1'], ['10000', '20000'], specName, registry, 2, false, false);
 		}).rejects.toThrowError(
-			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1'
+			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
 		);
 	});
 	it('Should correctly throw an error with an incorrect assetId', async () => {
@@ -61,7 +61,7 @@ describe('checkLocalTxInput', () => {
 			registry,
 			2,
 			true,
-			false
+			false,
 		);
 		expect(res).toEqual('ForeignAssets');
 	});
@@ -79,7 +79,7 @@ describe('checkLocalTxInput', () => {
 				registry,
 				2,
 				true,
-				false
+				false,
 			);
 		}).rejects.toThrowError(expectedError);
 	});
@@ -97,7 +97,7 @@ describe('checkLocalTxInput', () => {
 				registry,
 				2,
 				true,
-				false
+				false,
 			);
 		}).rejects.toThrowError(expectedError);
 	});

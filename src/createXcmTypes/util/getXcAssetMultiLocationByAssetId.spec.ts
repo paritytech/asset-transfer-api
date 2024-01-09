@@ -49,7 +49,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 				assetId,
 				specName,
 				xcmVersion,
-				bifrostRegistry
+				bifrostRegistry,
 			);
 
 			expect(result).toStrictEqual(expected);
@@ -94,7 +94,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 				assetId,
 				specName,
 				xcmVersion,
-				moonriverRegistry
+				moonriverRegistry,
 			);
 
 			expect(result).toStrictEqual(expected);
@@ -111,7 +111,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 				assetId,
 				specName,
 				xcmVersion,
-				moonriverRegistry
+				moonriverRegistry,
 			);
 
 			expect(result).toStrictEqual(expected);

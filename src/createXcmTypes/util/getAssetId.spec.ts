@@ -91,7 +91,7 @@ describe('getAssetId', () => {
 				'42259045809535163221576417993425387648',
 				'moonriver',
 				2,
-				false
+				false,
 			);
 
 			expect(result).toEqual(expected);

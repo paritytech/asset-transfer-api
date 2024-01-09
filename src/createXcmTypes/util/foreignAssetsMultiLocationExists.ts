@@ -12,7 +12,7 @@ export const foreignAssetsMultiLocationExists = async (
 	assetHubApi: ApiPromise,
 	registry: Registry,
 	multilocationStr: string,
-	xcmVersion: number
+	xcmVersion: number,
 ): Promise<boolean> => {
 	try {
 		const multiLocation = resolveMultiLocation(multilocationStr, xcmVersion);
@@ -48,12 +48,12 @@ export const foreignAssetsMultiLocationExists = async (
 
 			throw new BaseError(
 				`Error creating MultiLocation type:${errorDetails}`,
-				BaseErrorsEnum.InvalidMultiLocationAsset
+				BaseErrorsEnum.InvalidMultiLocationAsset,
 			);
 		} else {
 			throw new BaseError(
 				`Error creating multilocation type: ${(error as Error).message}`,
-				BaseErrorsEnum.InvalidMultiLocationAsset
+				BaseErrorsEnum.InvalidMultiLocationAsset,
 			);
 		}
 	}

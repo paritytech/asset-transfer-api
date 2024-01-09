@@ -28,7 +28,7 @@ export const checkRelayAssetIdLength = (assetIds: string[]) => {
 	if (assetIds.length > 1) {
 		throw new BaseError(
 			"`assetIds` should be empty or length 1 when sending tx's to or from the relay chain.",
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 };
@@ -43,7 +43,7 @@ export const checkRelayAmountsLength = (amounts: string[]) => {
 	if (amounts.length !== 1) {
 		throw new BaseError(
 			'`amounts` should be of length 1 when sending to or from a relay chain',
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 };
@@ -57,7 +57,7 @@ export const checkParaPrimaryAssetAssetIdsLength = (assetIds: string[]) => {
 	if (assetIds.length > 1) {
 		throw new BaseError(
 			'`assetIds` should be of length 1 when sending a primary native parachain asset',
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 };
@@ -72,7 +72,7 @@ export const checkParaPrimaryAssetAmountsLength = (amounts: string[]) => {
 	if (amounts.length !== 1) {
 		throw new BaseError(
 			'`amounts` should be of length 1 when sending a primary native parachain asset',
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 };
@@ -108,12 +108,12 @@ export const checkMultiLocationAmountsLength = (amounts: string[]) => {
 export const checkAssetsAmountMatch = (
 	assetIds: string[],
 	amounts: string[],
-	isParachainPrimaryNativeAsset?: boolean
+	isParachainPrimaryNativeAsset?: boolean,
 ) => {
 	if (!isParachainPrimaryNativeAsset && assetIds.length !== amounts.length) {
 		throw new BaseError(
 			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.',
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 };
@@ -127,12 +127,12 @@ export const checkAssetsAmountMatch = (
 export const CheckXTokensPalletOriginIsNonForeignAssetTx = (
 	xcmDirection: Direction,
 	xcmPallet: XcmPalletName,
-	isForeignAssetsTransfer: boolean
+	isForeignAssetsTransfer: boolean,
 ) => {
 	if ((xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens) && isForeignAssetsTransfer) {
 		throw new BaseError(
 			`(${xcmDirection}) xTokens pallet does not support foreign asset transfers`,
-			BaseErrorsEnum.InvalidPallet
+			BaseErrorsEnum.InvalidPallet,
 		);
 	}
 };
@@ -188,7 +188,7 @@ export const checkIfNativeRelayChainAssetPresentInMultiAssetIdList = (assetIds: 
 	if (assetIds.length > 1 && containsNativeRelayAsset(assetIds, nativeRelayChainAsset)) {
 		throw new BaseError(
 			`Found the relay chains native asset in list [${assetIds.toString()}]. \`assetIds\` list must be empty or only contain the relay chain asset for direction SystemToSystem when sending the relay chains native asset.`,
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 };
@@ -206,7 +206,7 @@ export const checkIfNativeRelayChainAssetPresentInMultiAssetIdList = (assetIds: 
 export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
 	xcmDirection: Direction,
 	destChainId: string,
-	multiLocationAssetIds: string[]
+	multiLocationAssetIds: string[],
 ) => {
 	if (multiLocationAssetIds.length > 1) {
 		let foreignMultiLocationAssetFound = false;
@@ -225,7 +225,7 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
 			if (nativeMultiLocationAssetFound && foreignMultiLocationAssetFound) {
 				throw new BaseError(
 					`(${xcmDirection}) found both foreign and native multilocations in ${multiLocationAssetIds.toString()}. multilocation XCMs must only include either native or foreign assets of the destination chain.`,
-					BaseErrorsEnum.InvalidInput
+					BaseErrorsEnum.InvalidInput,
 				);
 			}
 		}
@@ -260,7 +260,7 @@ const checkRelayToSystemAssetId = (assetId: string, relayChainInfo: ChainInfo) =
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
 			`(RelayToSystem) asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`,
-			BaseErrorsEnum.InvalidAsset
+			BaseErrorsEnum.InvalidAsset,
 		);
 	}
 };
@@ -295,7 +295,7 @@ const checkRelayToParaAssetId = (assetId: string, relayChainInfo: ChainInfo) => 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
 			`(RelayToPara) asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`,
-			BaseErrorsEnum.InvalidAsset
+			BaseErrorsEnum.InvalidAsset,
 		);
 	}
 };
@@ -327,7 +327,7 @@ const checkSystemToRelayAssetId = (assetId: string, relayChainInfo: ChainInfo) =
 	if (!matchedRelayChainNativeToken) {
 		throw new BaseError(
 			`(SystemToRelay) assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`,
-			BaseErrorsEnum.InvalidAsset
+			BaseErrorsEnum.InvalidAsset,
 		);
 	}
 };
@@ -336,7 +336,7 @@ export const checkLiquidTokenValidity = async (
 	api: ApiPromise,
 	registry: Registry,
 	systemParachainInfo: ChainInfoKeys,
-	assetId: string
+	assetId: string,
 ) => {
 	const isValidInt = validateNumber(assetId);
 	if (!isValidInt) {
@@ -357,13 +357,12 @@ export const checkLiquidTokenValidity = async (
 	// query chain state
 	const poolAsset = await api.query.poolAssets.asset(assetId);
 	if (poolAsset.isSome) {
-		const poolAssets = await api.query.assetConversion.pools.entries();
+		// const poolAssets = await api.query.assetConversion.pools.entries();
 
-		for (let i = 0; i < poolAssets.length; i++) {
-			const poolAsset = poolAssets[i];
-			const poolAssetData = JSON.stringify(poolAsset[0].toHuman()).replace(/(\d),/g, '$1');
+		for (const poolPairsData of await api.query.assetConversion.pools.entries()) {
+			const poolAssetData = JSON.stringify(poolPairsData[0]).replace(/(\d),/g, '$1');
+			const poolAssetInfo = poolPairsData[1].unwrap();
 
-			const poolAssetInfo = poolAsset[1].unwrap();
 			if (poolAssetInfo.lpToken.toString() === assetId) {
 				const asset: {
 					lpToken: string;
@@ -383,7 +382,7 @@ export const checkLiquidTokenValidity = async (
 	// liquid token not found in cache, registry or chain state
 	throw new BaseError(
 		`No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.`,
-		BaseErrorsEnum.InvalidAsset
+		BaseErrorsEnum.InvalidAsset,
 	);
 };
 
@@ -396,7 +395,7 @@ const checkSystemAssets = async (
 	xcmDirection: string,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer?: boolean
+	isLiquidTokenTransfer?: boolean,
 ) => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 
@@ -435,7 +434,7 @@ const checkSystemAssets = async (
 				if (asset.isNone) {
 					throw new BaseError(
 						`(${xcmDirection}) integer assetId ${assetId} not found in ${specName}`,
-						BaseErrorsEnum.AssetNotFound
+						BaseErrorsEnum.AssetNotFound,
 					);
 				} else {
 					const assetSymbol = (await api.query.assets.metadata(assetId)).symbol.toHuman()?.toString();
@@ -517,7 +516,7 @@ const checkSystemAssets = async (
 			// if no native token for the system parachain was matched, throw an error
 			throw new BaseError(
 				`(${xcmDirection}) assetId ${assetId} not found for system parachain ${specName}`,
-				BaseErrorsEnum.AssetNotFound
+				BaseErrorsEnum.AssetNotFound,
 			);
 		}
 	}
@@ -528,7 +527,7 @@ export const checkParaAssets = async (
 	assetId: string,
 	specName: string,
 	registry: Registry,
-	xcmDirection: Direction
+	xcmDirection: Direction,
 ) => {
 	if (isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetId)) {
 		return;
@@ -546,7 +545,7 @@ export const checkParaAssets = async (
 				if (asset.isNone) {
 					throw new BaseError(
 						`(${xcmDirection}) integer assetId ${assetId} not found in ${specName}`,
-						BaseErrorsEnum.AssetNotFound
+						BaseErrorsEnum.AssetNotFound,
 					);
 				} else {
 					const assetSymbol = (await api.query.assets.metadata(assetId)).symbol.toHuman()?.toString();
@@ -562,7 +561,7 @@ export const checkParaAssets = async (
 			if (!paraXcAssets || paraXcAssets.length === 0) {
 				throw new BaseError(
 					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
-					BaseErrorsEnum.InvalidPallet
+					BaseErrorsEnum.InvalidPallet,
 				);
 			}
 
@@ -598,7 +597,7 @@ export const checkParaAssets = async (
 			if (!paraXcAssets || paraXcAssets.length === 0) {
 				throw new BaseError(
 					`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
-					BaseErrorsEnum.InvalidPallet
+					BaseErrorsEnum.InvalidPallet,
 				);
 			}
 
@@ -611,7 +610,7 @@ export const checkParaAssets = async (
 			// if no native token for the parachain was matched, throw an error
 			throw new BaseError(
 				`(${xcmDirection}) symbol assetId ${assetId} not found for parachain ${specName}`,
-				BaseErrorsEnum.AssetNotFound
+				BaseErrorsEnum.AssetNotFound,
 			);
 		}
 	} else {
@@ -622,7 +621,7 @@ export const checkParaAssets = async (
 		if (!paraXcAssets || paraXcAssets.length === 0) {
 			throw new BaseError(
 				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
-				BaseErrorsEnum.InvalidPallet
+				BaseErrorsEnum.InvalidPallet,
 			);
 		}
 		// if integer asset Id check if valid registry asset
@@ -644,7 +643,7 @@ export const checkParaAssets = async (
 		// if no native token for the parachain was matched, throw an error
 		throw new BaseError(
 			`(${xcmDirection}) symbol assetId ${assetId} not found for parachain ${specName}`,
-			BaseErrorsEnum.AssetNotFound
+			BaseErrorsEnum.AssetNotFound,
 		);
 	}
 };
@@ -665,7 +664,7 @@ const checkSystemToParaAssetId = async (
 	xcmDirection: Direction,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean
+	isLiquidTokenTransfer: boolean,
 ) => {
 	await checkIsValidSystemChainAssetId(
 		api,
@@ -676,7 +675,7 @@ const checkSystemToParaAssetId = async (
 		xcmDirection,
 		xcmVersion,
 		isForeignAssetsTransfer,
-		isLiquidTokenTransfer
+		isLiquidTokenTransfer,
 	);
 };
 
@@ -689,7 +688,7 @@ export const checkIsValidSystemChainAssetId = async (
 	xcmDirection: Direction,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean
+	isLiquidTokenTransfer: boolean,
 ) => {
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 	const systemParachainInfo = relayChainInfo[systemChainId];
@@ -704,7 +703,7 @@ export const checkIsValidSystemChainAssetId = async (
 			xcmDirection,
 			xcmVersion,
 			isForeignAssetsTransfer,
-			isLiquidTokenTransfer
+			isLiquidTokenTransfer,
 		);
 	}
 };
@@ -724,7 +723,7 @@ const checkParaOriginAssetId = async (api: ApiPromise, assetId: string, specName
 			if (!ethAddr) {
 				throw new BaseError(
 					`(ParaToSystem) assetId ${assetId}, is not a valid erc20 token.`,
-					BaseErrorsEnum.InvalidAsset
+					BaseErrorsEnum.InvalidAsset,
 				);
 			}
 
@@ -750,7 +749,7 @@ const checkSystemToSystemAssetId = async (
 	xcmDirection: Direction,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean
+	isLiquidTokenTransfer: boolean,
 ) => {
 	await checkIsValidSystemChainAssetId(
 		api,
@@ -761,7 +760,7 @@ const checkSystemToSystemAssetId = async (
 		xcmDirection,
 		xcmVersion,
 		isForeignAssetsTransfer,
-		isLiquidTokenTransfer
+		isLiquidTokenTransfer,
 	);
 };
 
@@ -809,7 +808,7 @@ const checkParaToRelayAssetId = (assetId: string, registry: Registry, specName: 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
 			"The current input for assetId's does not meet our specifications for ParaToRelay transfers.",
-			BaseErrorsEnum.InvalidAsset
+			BaseErrorsEnum.InvalidAsset,
 		);
 	}
 };
@@ -823,7 +822,7 @@ export const checkAssetIdsLengthIsValid = (assetIds: string[]) => {
 	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER) {
 		throw new BaseError(
 			`Maximum number of assets allowed for transfer is 2. Found ${assetIds.length} assetIds`,
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 };
@@ -856,13 +855,13 @@ export const checkAssetIdsHaveNoDuplicates = (assetIds: string[]) => {
 			if (assetIds[0] === '') {
 				throw new BaseError(
 					`AssetIds must be unique. Found duplicate native relay assets as empty strings`,
-					BaseErrorsEnum.InvalidInput
+					BaseErrorsEnum.InvalidInput,
 				);
 			}
 
 			throw new BaseError(
 				`AssetIds must be unique. Found duplicate assetId ${duplicateAssetIds[0]}`,
-				BaseErrorsEnum.InvalidInput
+				BaseErrorsEnum.InvalidInput,
 			);
 		}
 	}
@@ -899,21 +898,21 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 		if (relayDefaultValueFound && multiLocationAssetIdFound) {
 			throw new BaseError(
 				`Found both default relay native asset and foreign asset with assetId: ${multiLocationAssetIdFound}. Relay native asset and foreign assets can't be transferred within the same call.`,
-				BaseErrorsEnum.InvalidInput
+				BaseErrorsEnum.InvalidInput,
 			);
 		}
 
 		if (integerAssetIdFound && multiLocationAssetIdFound) {
 			throw new BaseError(
 				`Found both native asset with assetID ${integerAssetIdFound} and foreign asset with assetId ${multiLocationAssetIdFound}. Native assets and foreign assets can't be transferred within the same call.`,
-				BaseErrorsEnum.InvalidInput
+				BaseErrorsEnum.InvalidInput,
 			);
 		}
 
 		if (symbolAssetIdFound && multiLocationAssetIdFound) {
 			throw new BaseError(
 				`Found both symbol ${symbolAssetIdFound} and multilocation assetId ${multiLocationAssetIdFound}. Asset Ids must be symbol and integer or multilocation exclusively.`,
-				BaseErrorsEnum.InvalidInput
+				BaseErrorsEnum.InvalidInput,
 			);
 		}
 	}
@@ -928,7 +927,7 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 export const checkXcmVersionIsValidForPaysWithFeeDest = (
 	xcmDirection: Direction,
 	xcmVersion?: number,
-	paysWithFeeDest?: string
+	paysWithFeeDest?: string,
 ) => {
 	if (
 		xcmDirection != Direction.ParaToSystem &&
@@ -948,10 +947,10 @@ export const checkXcmVersionIsValidForPaysWithFeeDest = (
  * @param isLiquidTokenTransfer
  */
 export const checkLiquidTokenTransferDirectionValidity = (xcmDirection: Direction, isLiquidTokenTransfer: boolean) => {
-	if (xcmDirection !== 'SystemToPara' && isLiquidTokenTransfer) {
+	if (xcmDirection !== Direction.SystemToPara && isLiquidTokenTransfer) {
 		throw new BaseError(
 			`isLiquidTokenTransfer may not be true for the xcmDirection: ${xcmDirection}.`,
-			BaseErrorsEnum.InvalidInput
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 };
@@ -975,7 +974,7 @@ export const checkAssetIdInput = async (
 	registry: Registry,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean
+	isLiquidTokenTransfer: boolean,
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
@@ -1004,7 +1003,7 @@ export const checkAssetIdInput = async (
 				xcmDirection,
 				xcmVersion,
 				isForeignAssetsTransfer,
-				isLiquidTokenTransfer
+				isLiquidTokenTransfer,
 			);
 		}
 
@@ -1018,7 +1017,7 @@ export const checkAssetIdInput = async (
 				xcmDirection,
 				xcmVersion,
 				isForeignAssetsTransfer,
-				isLiquidTokenTransfer
+				isLiquidTokenTransfer,
 			);
 		}
 
@@ -1095,7 +1094,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		registry,
 		xcmVersion,
 		isForeignAssetsTransfer,
-		isLiquidTokenTransfer
+		isLiquidTokenTransfer,
 	);
 
 	if (direction === Direction.RelayToSystem) {

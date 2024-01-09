@@ -28,7 +28,7 @@ export const getAssetId = async (
 	asset: string,
 	specName: string,
 	xcmVersion: number,
-	isForeignAssetsTransfer?: boolean
+	isForeignAssetsTransfer?: boolean,
 ): Promise<string> => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
@@ -62,7 +62,7 @@ export const getAssetId = async (
 	} else {
 		// get the corresponding assetId index from the assets registry based on symbol
 		const registryAssetId = Object.keys(assetsInfo).find(
-			(key) => assetsInfo[key].toLowerCase() === asset.toLowerCase()
+			(key) => assetsInfo[key].toLowerCase() === asset.toLowerCase(),
 		);
 
 		if (registryAssetId) {
@@ -113,7 +113,7 @@ export const getAssetId = async (
 		} else {
 			throw new BaseError(
 				`assetId ${asset} is not a valid symbol or integer asset id for ${specName}`,
-				BaseErrorsEnum.InvalidAsset
+				BaseErrorsEnum.InvalidAsset,
 			);
 		}
 	} else if (isParachain) {
@@ -125,7 +125,7 @@ export const getAssetId = async (
 		if (!paraXcAssets || paraXcAssets.length === 0) {
 			throw new BaseError(
 				`unable to initialize xcAssets registry for ${currentRelayChainSpecName}`,
-				BaseErrorsEnum.InvalidPallet
+				BaseErrorsEnum.InvalidPallet,
 			);
 		}
 
@@ -165,7 +165,7 @@ export const getAssetId = async (
 				if (assetId.length === 0) {
 					throw new BaseError(
 						`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`,
-						BaseErrorsEnum.InvalidAsset
+						BaseErrorsEnum.InvalidAsset,
 					);
 				}
 			} else {
@@ -178,7 +178,7 @@ export const getAssetId = async (
 				} else {
 					throw new BaseError(
 						`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`,
-						BaseErrorsEnum.InvalidAsset
+						BaseErrorsEnum.InvalidAsset,
 					);
 				}
 			}
@@ -203,7 +203,7 @@ export const getAssetId = async (
 			if (assetId.length === 0) {
 				throw new BaseError(
 					`parachain assetId ${asset} is not a valid symbol assetId in ${specName}`,
-					BaseErrorsEnum.InvalidAsset
+					BaseErrorsEnum.InvalidAsset,
 				);
 			}
 		}

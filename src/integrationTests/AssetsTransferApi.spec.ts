@@ -20,7 +20,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format: 'call',
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -41,7 +41,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -61,7 +61,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format: 'call',
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -69,7 +69,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					direction: 'local',
 					format: 'call',
 					method: 'balances::transfer',
-					tx: '0x0a070078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
+					tx: '0x0a000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
 					xcmVersion: null,
 				});
 			});
@@ -82,7 +82,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -102,7 +102,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format: 'call',
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'kusama',
@@ -123,7 +123,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'kusama',
@@ -143,7 +143,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format: 'call',
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -164,7 +164,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						keepAlive: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -185,7 +185,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format: 'call',
 						transferLiquidToken: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -207,7 +207,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						format: 'call',
 						keepAlive: true,
 						transferLiquidToken: true,
-					}
+					},
 				);
 				expect(res).toEqual({
 					dest: 'statemine',
@@ -226,7 +226,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -242,13 +242,13 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 						xcmVersion,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const nativeBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateXcmCallOpts
+				opts: CreateXcmCallOpts,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -261,13 +261,13 @@ describe('AssetTransferApi Integration Tests', () => {
 						weightLimit: opts.weightLimit,
 						isLimited: opts.isLimited,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const foreignAssetMultiLocationBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateXcmCallOpts
+				opts: CreateXcmCallOpts,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -280,14 +280,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						weightLimit: opts.weightLimit,
 						xcmVersion,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 
 			const foreignAssetMultiLocationBaseTeleportSystemCreateTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateXcmCallOpts
+				opts: CreateXcmCallOpts,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2125', // Since this is not `0` we know this is to a parachain
@@ -301,13 +301,13 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const liquidTokenTransferCreateTx = async <T extends Format>(
 				format: T,
 				isLimited: boolean,
-				xcmVersion: number
+				xcmVersion: number,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -323,7 +323,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 						xcmVersion,
 						transferLiquidToken: true,
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -347,7 +347,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x31011f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x31011f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -375,7 +375,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
-						tx: '0x1d011f0201010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205040091010000020432050800910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x1d011f0201010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -409,7 +409,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
-						tx: '0xe41f0201010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010000910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xe41f0201010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -457,7 +457,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0xf81f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf81f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -510,7 +510,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x15011f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000001214e411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000001214e411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -560,7 +560,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x31011f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x31011f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -588,7 +588,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
-						tx: '0x1d011f0203010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205040091010000020432050800910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x1d011f0203010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -622,7 +622,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'reserveTransferAssets',
-						tx: '0xe41f0203010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010000910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xe41f0203010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -669,7 +669,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0xf81f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001214ee12e450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf81f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001214ee12e45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -721,7 +721,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x15011f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001214e411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001214e411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -773,7 +773,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0x15011f090301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001411f214e450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f090301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001411f214e45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -815,7 +815,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'teleportAssets',
-						tx: '0x01011f010301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001030435003521050000910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x01011f010301010035210300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -847,7 +847,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'1001', // collectives system parachain
@@ -863,7 +863,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const nativeBaseSystemCreateTx = async <T extends Format>(
@@ -871,7 +871,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'1002', // bridge-hub system parachain
@@ -887,13 +887,13 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			const foreignAssetMultiLocationBaseSystemCreateTx = async <T extends Format>(
 				format: T,
 				xcmVersion: number,
-				opts: CreateXcmCallOpts
+				opts: CreateXcmCallOpts,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
@@ -906,7 +906,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -930,7 +930,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0x31011f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x31011f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -958,7 +958,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'teleportAssets',
-						tx: '0x1d011f0101010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0108000002043205040091010000020432050800910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x1d011f0101010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -986,7 +986,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xf81f0901010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf81f0901010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -1014,7 +1014,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'teleportAssets',
-						tx: '0xe41f0101010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010000910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xe41f0101010100a90f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -1059,7 +1059,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x15011f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -1097,7 +1097,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0x31011f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x31011f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -1125,7 +1125,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'teleportAssets',
-						tx: '0x1d011f0103010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0308000002043205040091010000020432050800910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x1d011f0103010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -1153,7 +1153,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'teleportAssets',
-						tx: '0xe41f0103010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010000910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xe41f0103010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -1181,7 +1181,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xf81f0903010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xf81f0903010100a90f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -1226,7 +1226,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'payload',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x15011f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0x15011f08030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000103043500352105000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -1251,7 +1251,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await relayAssetsApi.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
@@ -1267,7 +1267,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -1393,7 +1393,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await systemAssetsApi.createTransferTransaction(
 					'0', // `0` indicating the dest chain is a relay chain.
@@ -1409,7 +1409,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -1433,7 +1433,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'teleportAssets',
-						tx: '0xd81f010101000100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010000910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xd81f010101000100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -1461,7 +1461,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xec1f090101000100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xec1f090101000100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 2,
 					});
 				});
@@ -1491,7 +1491,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'teleportAssets',
-						tx: '0xd81f010301000300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010000910100000000450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xd81f010301000300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -1519,7 +1519,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToRelay',
 						format: 'payload',
 						method: 'limitedTeleportAssets',
-						tx: '0xec1f090301000300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001a10f411f450228000100000000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						tx: '0xec1f090301000300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						xcmVersion: 3,
 					});
 				});
@@ -1535,7 +1535,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
-				proofSize?: string
+				proofSize?: string,
 			): Promise<TxResult<T>> => {
 				return await relayAssetsApi.createTransferTransaction(
 					'1000', // `0` indicating the dest chain is a relay chain.
@@ -1551,7 +1551,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							proofSize,
 						},
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					}
+					},
 				);
 			};
 			describe('V2', () => {
@@ -1678,10 +1678,10 @@ describe('AssetTransferApi Integration Tests', () => {
 						'0',
 						'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 						['1', '2'],
-						['100', '100']
+						['100', '100'],
 					);
 				}).rejects.toThrow(
-					'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1'
+					'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
 				);
 			});
 		});

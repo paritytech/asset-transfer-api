@@ -121,7 +121,7 @@ const main = async () => {
 			assetInfo.assetId,
 			assetInfo.assetName,
 			assetInfo.assetSymbol,
-			assetInfo.assetDecimals
+			assetInfo.assetDecimals,
 		),
 		kusamaAssetHubApi.tx.assets.mint(assetInfo.assetId, alice.address, 100000 * 120000000),
 	];
@@ -151,7 +151,7 @@ const main = async () => {
 							// Other, CannotLookup, BadOrigin, no extra info
 							console.log(error.toString());
 						}
-					}
+					},
 				);
 		}
 	});

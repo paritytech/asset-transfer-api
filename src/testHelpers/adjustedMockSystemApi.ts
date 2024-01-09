@@ -14,7 +14,7 @@ import { getSpecTypes } from '@polkadot/types-known';
 import BN from 'bn.js';
 
 import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
-import { assetHubWestendV9435 } from './metadata/assetHubWestendV9435';
+import { assetHubWestendV1004000 } from './metadata/assetHubWestendV1004000';
 import { mockSystemApi } from './mockSystemApi';
 import { mockWeightInfo } from './mockWeightInfo';
 /**
@@ -31,12 +31,12 @@ function createStatemineRegistry(specVersion: number): TypeRegistry {
 			ss58Format: 2,
 			tokenDecimals: 12,
 			tokenSymbol: 'KSM',
-		})
+		}),
 	);
 
 	registry.register(getSpecTypes(registry, 'Statemine', 'statemine', specVersion));
 
-	registry.setMetadata(new Metadata(registry, assetHubWestendV9435));
+	registry.setMetadata(new Metadata(registry, assetHubWestendV1004000));
 
 	return registry;
 }
@@ -44,7 +44,7 @@ const getSystemRuntimeVersion = () =>
 	Promise.resolve().then(() => {
 		return {
 			specName: mockSystemApi.registry.createType('Text', 'asset-hub-westend'),
-			specVersion: mockSystemApi.registry.createType('u32', 9435),
+			specVersion: mockSystemApi.registry.createType('u32', 1004000),
 		};
 	});
 
@@ -57,7 +57,7 @@ const queryInfoCallAt = () =>
 	Promise.resolve().then(() => mockSystemApi.createType('RuntimeDispatchInfoV2', mockWeightInfo));
 
 const getMetadata = () =>
-	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV9435));
+	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1004000));
 
 const getHeader = (): Promise<Header> =>
 	Promise.resolve().then(() =>
@@ -67,7 +67,7 @@ const getHeader = (): Promise<Header> =>
 			stateRoot: mockSystemApi.registry.createType('Hash'),
 			extrinsicsRoot: mockSystemApi.registry.createType('Hash'),
 			digest: mockSystemApi.registry.createType('Digest'),
-		})
+		}),
 	);
 
 const createType = mockSystemApi.registry.createType.bind(mockSystemApi);
@@ -76,19 +76,19 @@ const accountNextIndex = () => mockSystemApi.registry.createType('u32', 10);
 const multiLocationAssetInfo = {
 	owner: mockSystemApi.registry.createType(
 		'AccountId32',
-		'0x0987654309876543098765430987654309876543098765430987654309876543'
+		'0x0987654309876543098765430987654309876543098765430987654309876543',
 	),
 	issuer: mockSystemApi.registry.createType(
 		'AccountId32',
-		'0x0987654309876543098765430987654309876543098765430987654309876543'
+		'0x0987654309876543098765430987654309876543098765430987654309876543',
 	),
 	admin: mockSystemApi.registry.createType(
 		'AccountId32',
-		'0x0987654309876543098765430987654309876543098765430987654309876543'
+		'0x0987654309876543098765430987654309876543098765430987654309876543',
 	),
 	freezer: mockSystemApi.registry.createType(
 		'AccountId32',
-		'0x0987654309876543098765430987654309876543098765430987654309876543'
+		'0x0987654309876543098765430987654309876543098765430987654309876543',
 	),
 	supply: mockSystemApi.registry.createType('u128', 100),
 	deposit: mockSystemApi.registry.createType('u128', 100),
@@ -107,19 +107,19 @@ const asset = (assetId: number | string | BN): Promise<Option<PalletAssetsAssetD
 		const insufficientAssetInfo = {
 			owner: mockSystemApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			issuer: mockSystemApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			admin: mockSystemApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			freezer: mockSystemApi.registry.createType(
 				'AccountId32',
-				'0x0987654309876543098765430987654309876543098765430987654309876543'
+				'0x0987654309876543098765430987654309876543098765430987654309876543',
 			),
 			supply: mockSystemApi.registry.createType('u128', 100),
 			deposit: mockSystemApi.registry.createType('u128', 100),
@@ -139,12 +139,12 @@ const asset = (assetId: number | string | BN): Promise<Option<PalletAssetsAssetD
 		const adjAsset = BN.isBN(assetId)
 			? assetId.toNumber()
 			: typeof assetId === 'string'
-			? Number.parseInt(assetId)
-			: assetId;
+			  ? Number.parseInt(assetId)
+			  : assetId;
 		const maybeAsset = assets.has(adjAsset) ? assets.get(adjAsset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createStatemineRegistry(9435), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createStatemineRegistry(1004000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -169,8 +169,8 @@ const assetsMetadata = (assetId: number | string | BN): Promise<PalletAssetsAsse
 		const adjAsset = BN.isBN(assetId)
 			? assetId.toNumber()
 			: typeof assetId === 'string'
-			? Number.parseInt(assetId)
-			: assetId;
+			  ? Number.parseInt(assetId)
+			  : assetId;
 		const maybeMetadata = metadata.has(adjAsset) ? metadata.get(adjAsset) : undefined;
 
 		if (maybeMetadata) {
@@ -192,7 +192,7 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 		const maybeAsset = assets.has(assetsMutliLocation.toHex()) ? assets.get(assetsMutliLocation.toHex()) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createStatemineRegistry(9435), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createStatemineRegistry(1004000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -214,7 +214,7 @@ const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAs
 		};
 		const tnkrForeignAssetMetadata = mockSystemApi.registry.createType(
 			'PalletAssetsAssetMetadata',
-			rawTnkrMultiLocationMetadata
+			rawTnkrMultiLocationMetadata,
 		);
 		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', {
 			parents: '1',
@@ -243,17 +243,17 @@ const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const maybeAsset = assets.has(asset) ? assets.get(asset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createStatemineRegistry(9435), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createStatemineRegistry(1004000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
 	});
 
 const pools = (
-	_arg: ITuple<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionNativeOrAssetId]>
-): Promise<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo]> =>
+	_arg: ITuple<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionNativeOrAssetId]>,
+): Promise<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo][]> =>
 	Promise.resolve().then(() => {
-		const palletAssetConversionNativeOrAssetId = mockSystemApi.registry.createType(
+		const palletAssetConversionNativeOrAssetId1 = mockSystemApi.registry.createType(
 			'PalletAssetConversionNativeOrAssetId',
 			[
 				{ parents: 0, interior: { Here: '' } },
@@ -261,14 +261,32 @@ const pools = (
 					parents: 0,
 					interior: { X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }] },
 				},
-			]
+			],
 		);
 
-		const poolInfo = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo', {
+		const poolInfo1 = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo', {
 			lpToken: 0,
 		});
 
-		return [palletAssetConversionNativeOrAssetId, poolInfo];
+		const palletAssetConversionNativeOrAssetId2 = mockSystemApi.registry.createType(
+			'PalletAssetConversionNativeOrAssetId',
+			[
+				{ parents: 0, interior: { Here: '' } },
+				{
+					parents: 0,
+					interior: { X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }] },
+				},
+			],
+		);
+
+		const poolInfo2 = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo', {
+			lpToken: 1,
+		});
+
+		return [
+			[palletAssetConversionNativeOrAssetId1, poolInfo1],
+			[palletAssetConversionNativeOrAssetId2, poolInfo2],
+		];
 	});
 
 const mockApiAt = {
@@ -281,7 +299,7 @@ const mockApiAt = {
 
 export const adjustedMockSystemApi = {
 	createType: createType,
-	registry: createStatemineRegistry(9435),
+	registry: createStatemineRegistry(1004000),
 	rpc: {
 		state: {
 			getRuntimeVersion: getSystemRuntimeVersion,
@@ -312,15 +330,54 @@ export const adjustedMockSystemApi = {
 		assetConversion: {
 			pools: Object.assign(pools, {
 				entries: () => {
-					const palletAssetConversionNativeOrAssetId = Object.assign(
+					const palletAssetConversionData = Object.assign(
 						[
-							{ parents: 0, interior: { Here: '' } },
-							{
-								parents: 0,
-								interior: {
-									X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }],
-								},
-							},
+							[
+								[
+									{ parents: '0', interior: { Here: '' } },
+									{
+										parents: '0',
+										interior: {
+											X2: [{ PalletInstance: '50' }, { GeneralIndex: '100' }],
+										},
+									},
+								],
+								Object.assign(
+									{
+										lpToken: mockSystemApi.registry.createType('u32', 0),
+									},
+									{
+										unwrap: () => {
+											return {
+												lpToken: mockSystemApi.registry.createType('u32', 0),
+											};
+										},
+									},
+								),
+							],
+							[
+								[
+									{ parents: '0', interior: { Here: '' } },
+									{
+										parents: '0',
+										interior: {
+											X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+										},
+									},
+								],
+								Object.assign(
+									{
+										lpToken: mockSystemApi.registry.createType('u32', 1),
+									},
+									{
+										unwrap: () => {
+											return {
+												lpToken: mockSystemApi.registry.createType('u32', 1),
+											};
+										},
+									},
+								),
+							],
 						],
 						{
 							toHuman: () => {
@@ -334,25 +391,21 @@ export const adjustedMockSystemApi = {
 											},
 										},
 									],
+									[
+										{ parents: '0', interior: { Here: '' } },
+										{
+											parents: '0',
+											interior: {
+												X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+											},
+										},
+									],
 								];
 							},
-						}
-					);
-
-					const poolInfo = Object.assign(
-						{
-							lpToken: mockSystemApi.registry.createType('u32', 0),
 						},
-						{
-							unwrap: () => {
-								return {
-									lpToken: mockSystemApi.registry.createType('u32', 0),
-								};
-							},
-						}
 					);
 
-					return [[palletAssetConversionNativeOrAssetId, poolInfo]];
+					return palletAssetConversionData;
 				},
 			}),
 		},
@@ -374,6 +427,7 @@ export const adjustedMockSystemApi = {
 		},
 		balances: {
 			transfer: mockSystemApi.tx.balances.transfer,
+			transferAllowDeath: mockSystemApi.tx.balances.transferAllowDeath,
 			transferKeepAlive: mockSystemApi.tx.balances.transferKeepAlive,
 		},
 		poolAssets: {

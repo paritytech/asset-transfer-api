@@ -6,10 +6,10 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types/interfaces';
-import type { ISubmittableResult } from '@polkadot/types/types';
+import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
-import { RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
+import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
 import * as assets from './createCalls/assets';
 import * as balances from './createCalls/balances';
 import * as foreignAssets from './createCalls/foreignAssets';
@@ -24,6 +24,7 @@ import {
 	transferMultiassetWithFee,
 } from './createXcmCalls';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
+import { UnionXcmMultiLocation } from './createXcmTypes/types';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { isParachain } from './createXcmTypes/util/isParachain';
@@ -38,8 +39,10 @@ import {
 	checkLocalTxInput,
 	checkXcmTxInputs,
 	checkXcmVersion,
+	LocalTxType,
 } from './errors';
 import { Registry } from './registry';
+import { ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetCallType,
@@ -50,12 +53,14 @@ import {
 	Format,
 	LocalTransferTypes,
 	Methods,
+	RegistryTypes,
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
 	XcmDirection,
 } from './types';
 import { resolveMultiLocation } from './util/resolveMultiLocation';
+import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
 
 /**
@@ -81,14 +86,22 @@ export class AssetTransferApi {
 	readonly _opts: AssetTransferApiOpts;
 	readonly _specName: string;
 	readonly _safeXcmVersion: number;
-	readonly registry: Registry;
+	private registryConfig: {
+		registryInitialized: boolean;
+		registryType: RegistryTypes;
+	};
+	public registry: Registry;
 
 	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetTransferApiOpts = {}) {
 		this._api = api;
 		this._opts = opts;
 		this._specName = specName;
 		this._safeXcmVersion = safeXcmVersion;
-		this.registry = new Registry(specName, this._opts);
+		this.registry = new Registry(specName, opts);
+		this.registryConfig = {
+			registryInitialized: false,
+			registryType: opts.registryType ? opts.registryType : 'CDN',
+		};
 	}
 
 	/**
@@ -128,7 +141,7 @@ export class AssetTransferApi {
 		destAddr: string,
 		assetIds: string[],
 		amounts: string[],
-		opts: TransferArgsOpts<T> = {}
+		opts: TransferArgsOpts<T> = {},
 	): Promise<TxResult<T>> {
 		const {
 			format,
@@ -141,6 +154,11 @@ export class AssetTransferApi {
 			transferLiquidToken,
 			sendersAddr,
 		} = opts;
+
+		if (!this.registryConfig.registryInitialized) {
+			await this.initializeRegistry();
+		}
+
 		/**
 		 * Ensure that the options passed in are compatible with eachother.
 		 * It will throw an error if any are incorrect.
@@ -178,7 +196,7 @@ export class AssetTransferApi {
 			isDestSystemParachain,
 			isDestParachain,
 			isOriginSystemParachain,
-			isOriginParachain
+			isOriginParachain,
 		);
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, _specName, xcmDirection, assetIds[0]);
@@ -217,7 +235,7 @@ export class AssetTransferApi {
 				registry,
 				declaredXcmVersion,
 				isForeignAssetsTransfer,
-				isLiquidTokenTransfer
+				isLiquidTokenTransfer,
 			); // Throws an error when any of the inputs are incorrect.
 			const method = keepAlive ? 'transferKeepAlive' : 'transfer';
 
@@ -225,19 +243,19 @@ export class AssetTransferApi {
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 				let palletMethod: LocalTransferTypes;
 
-				if (localAssetType === 'Balances') {
+				if (localAssetType === LocalTxType.Balances) {
 					tx =
 						method === 'transferKeepAlive'
 							? balances.transferKeepAlive(_api, addr, amount)
 							: balances.transfer(_api, addr, amount);
 					palletMethod = `balances::${method}`;
-				} else if (localAssetType === 'Assets') {
+				} else if (localAssetType === LocalTxType.Assets) {
 					tx =
 						method === 'transferKeepAlive'
 							? assets.transferKeepAlive(_api, addr, assetId, amount)
 							: assets.transfer(_api, addr, assetId, amount);
 					palletMethod = `assets::${method}`;
-				} else if (localAssetType === 'PoolAssets') {
+				} else if (localAssetType === LocalTxType.PoolAssets) {
 					tx =
 						method === 'transferKeepAlive'
 							? poolAssets.transferKeepAlive(_api, addr, assetId, amount)
@@ -296,7 +314,7 @@ export class AssetTransferApi {
 			{
 				...baseOpts,
 				isPrimaryParachainNativeAsset,
-			}
+			},
 		);
 
 		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
@@ -308,7 +326,7 @@ export class AssetTransferApi {
 			assetType,
 			isForeignAssetsTransfer,
 			isPrimaryParachainNativeAsset,
-			registry
+			registry,
 		);
 
 		let txMethod: Methods;
@@ -360,6 +378,27 @@ export class AssetTransferApi {
 			sendersAddr,
 		});
 	}
+
+	/**
+	 * Initialize the registry. This will only activate the registry for the CDN.
+	 * If the `registryType` is `NPM` the initalization will exit since the AssetTransferApi
+	 * initializes with the reigstry from the NPM package.
+	 */
+	public async initializeRegistry() {
+		// Before any initialization the registry is already set to NPM type,
+		// therefore we don't need to do any initialization.
+		if (this.registryConfig.registryType === 'NPM') {
+			this.registryConfig.registryInitialized = true;
+			return;
+		}
+
+		const data = await fetch(CDN_URL);
+		const fetchedRegistry = (await data.json()) as ChainInfoRegistry;
+		this.registry.setRegistry = fetchedRegistry;
+
+		this.registryConfig.registryInitialized = true;
+	}
+
 	/**
 	 * Fetch estimated fee information for an extrinsic
 	 *
@@ -373,7 +412,7 @@ export class AssetTransferApi {
 	 */
 	public async fetchFeeInfo<T extends Format>(
 		tx: ConstructedFormat<T>,
-		format: T
+		format: T,
 	): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
 		const { _api } = this;
 
@@ -385,7 +424,7 @@ export class AssetTransferApi {
 			const ext = _api.registry.createType(
 				'Extrinsic',
 				{ method: extrinsicPayload.method },
-				{ version: EXTRINSIC_VERSION }
+				{ version: EXTRINSIC_VERSION },
 			);
 			const u8a = ext.toU8a();
 
@@ -458,7 +497,7 @@ export class AssetTransferApi {
 		destIsSystemParachain: boolean,
 		destIsParachain: boolean,
 		originIsSystemParachain: boolean,
-		originIsParachain: boolean
+		originIsParachain: boolean,
 	): Direction {
 		if (isLocal) {
 			return Direction.Local;
@@ -527,7 +566,7 @@ export class AssetTransferApi {
 		method: Methods,
 		dest: string,
 		origin: string,
-		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string }
+		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string },
 	): Promise<TxResult<T>> {
 		const { format, paysWithFeeOrigin, sendersAddr } = opts;
 		const fmt = format ? format : 'payload';
@@ -591,7 +630,7 @@ export class AssetTransferApi {
 		assetType: AssetType,
 		isForeignAssetsTransfer: boolean,
 		isParachainPrimaryNativeAsset: boolean,
-		registry: Registry
+		registry: Registry,
 	): AssetCallType {
 		// relay to system -> teleport
 		// system to relay -> teleport
@@ -636,7 +675,7 @@ export class AssetTransferApi {
 		if (assetType === AssetType.Foreign && xcmDirection === Direction.SystemToSystem) {
 			throw new BaseError(
 				`Unable to send foreign assets in direction ${xcmDirection}`,
-				BaseErrorsEnum.InvalidDirection
+				BaseErrorsEnum.InvalidDirection,
 			);
 		}
 
@@ -697,10 +736,10 @@ export class AssetTransferApi {
 	 */
 	private createPayload = async (
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		opts: { paysWithFeeOrigin?: string; sendersAddr: string }
+		opts: { paysWithFeeOrigin?: string; sendersAddr: string },
 	): Promise<`0x${string}`> => {
 		const { paysWithFeeOrigin, sendersAddr } = opts;
-		let assetId = new BN(0);
+		let assetId: BN | AnyJson = new BN(0);
 
 		// if a paysWithFeeOrigin is provided and the chain is of system origin
 		// we assign the assetId to the value of paysWithFeeOrigin
@@ -709,21 +748,27 @@ export class AssetTransferApi {
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
 			const isValidInt = validateNumber(paysWithFeeOrigin);
 
-			if (!isValidInt) {
-				throw new BaseError(
-					`paysWithFeeOrigin value must be a valid number. Received: ${paysWithFeeOrigin}`,
-					BaseErrorsEnum.InvalidInput
-				);
-			}
+			if (isValidInt) {
+				assetId = new BN(paysWithFeeOrigin);
+				const isSufficient = await this.checkAssetIsSufficient(assetId);
 
-			assetId = new BN(paysWithFeeOrigin);
-			const isSufficient = await this.checkAssetIsSufficient(assetId);
+				if (!isSufficient) {
+					throw new BaseError(
+						`asset with assetId ${assetId.toString()} is not a sufficient asset to pay for fees`,
+						BaseErrorsEnum.InvalidAsset,
+					);
+				}
+			} else {
+				const [isValidLpToken, feeAsset] = await this.checkAssetLpTokenPairExists(paysWithFeeOrigin);
 
-			if (!isSufficient) {
-				throw new BaseError(
-					`asset with assetId ${assetId.toString()} is not a sufficient asset to pay for fees`,
-					BaseErrorsEnum.InvalidAsset
-				);
+				if (!isValidLpToken) {
+					throw new BaseError(
+						`assetId ${JSON.stringify(feeAsset)} is not a valid liquidity pool token for ${this._specName}`,
+						BaseErrorsEnum.NoFeeAssetLpFound,
+					);
+				}
+
+				assetId = JSON.parse(paysWithFeeOrigin) as AnyJson;
 			}
 		}
 
@@ -805,7 +850,7 @@ export class AssetTransferApi {
 		if (lookup.length === 0) {
 			throw new BaseError(
 				`Could not find any parachain information given the destId: ${destId}`,
-				BaseErrorsEnum.InvalidInput
+				BaseErrorsEnum.InvalidInput,
 			);
 		}
 
@@ -830,4 +875,56 @@ export class AssetTransferApi {
 
 		return true;
 	}
+
+	/**
+	 * checks the chains state and determines whether a MultiLocation assetId is part of a lp token pair
+	 *
+	 * @param assetId UnionXcmMultiLocation
+	 * @returns Promise<boolean>
+	 */
+	private checkAssetLpTokenPairExists = async (
+		paysWithFeeOrigin: string,
+	): Promise<[boolean, UnionXcmMultiLocation]> => {
+		let feeAsset: UnionXcmMultiLocation;
+
+		try {
+			feeAsset = sanitizeKeys(JSON.parse(paysWithFeeOrigin)) as UnionXcmMultiLocation;
+		} catch (err: unknown) {
+			throw new BaseError(
+				`paysWithFeeOrigin value must be a valid MultiLocation. Received: ${paysWithFeeOrigin}`,
+				BaseErrorsEnum.InvalidInput,
+			);
+		}
+
+		if (this._api.query.assetConversion !== undefined) {
+			try {
+				for (const poolPairsData of await this._api.query.assetConversion.pools.entries()) {
+					const poolStorageKeyData = poolPairsData[0];
+
+					// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
+					const poolAssetDataStr = JSON.stringify(poolStorageKeyData).replace(/(\d),/g, '$1');
+					const palletAssetConversionNativeOrAssetIdData = sanitizeKeys(
+						JSON.parse(poolAssetDataStr),
+					) as UnionXcmMultiLocation[];
+
+					const firstLpToken = palletAssetConversionNativeOrAssetIdData[0];
+					const secondLpToken = palletAssetConversionNativeOrAssetIdData[1];
+
+					if (
+						JSON.stringify(firstLpToken) == JSON.stringify(feeAsset) ||
+						JSON.stringify(secondLpToken) == JSON.stringify(feeAsset)
+					) {
+						return [true, feeAsset];
+					}
+				}
+			} catch (e) {
+				throw new BaseError(
+					`error querying ${this._specName} liquidity token pool assets: ${e as string}`,
+					BaseErrorsEnum.InternalError,
+				);
+			}
+		}
+
+		return [false, feeAsset];
+	};
 }

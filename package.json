@@ -1,6 +1,6 @@
 {
   "name": "@substrate/asset-transfer-api",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -24,6 +24,9 @@
     "docs": "typedoc",
     "deploy": "yarn build && npm publish"
   },
+  "engines": {
+    "node": ">=18.14"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/paritytech/asset-transfer-api.git"
@@ -35,19 +38,16 @@
     "url": "https://github.com/paritytech/asset-transfer-api/issues"
   },
   "homepage": "https://github.com/paritytech/asset-transfer-api#readme",
-  "packageManager": "yarn@3.6.4",
+  "packageManager": "yarn@4.0.2",
   "devDependencies": {
-    "@substrate/dev": "^0.6.7",
+    "@substrate/dev": "^0.7.1",
     "chalk": "4.1.2",
-    "typedoc": "^0.24.8",
+    "typedoc": "^0.25.4",
     "typedoc-plugin-missing-exports": "^1.0.0",
     "typedoc-theme-hierarchy": "^4.0.0"
   },
-  "resolutions": {
-    "typescript": "4.9.4"
-  },
   "dependencies": {
-    "@polkadot/api": "^10.9.1",
+    "@polkadot/api": "^10.11.2",
     "@substrate/asset-transfer-api-registry": "^0.2.11"
   }
 }

@@ -10,7 +10,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 		it('Should work for V2', () => {
 			const beneficiary = RelayToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				2
+				2,
 			);
 
 			const expectedRes = {
@@ -32,7 +32,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 		it('Should work for V3', () => {
 			const beneficiary = RelayToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				3
+				3,
 			);
 
 			const expectedRes = {

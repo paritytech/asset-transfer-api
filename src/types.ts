@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
-import type { ISubmittableResult } from '@polkadot/types/types';
+import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
 import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
@@ -93,10 +93,10 @@ export type Format = 'payload' | 'call' | 'submittable';
 export type ConstructedFormat<T> = T extends 'payload'
 	? `0x${string}`
 	: T extends 'call'
-	? `0x${string}`
-	: T extends 'submittable'
-	? SubmittableExtrinsic<'promise', ISubmittableResult>
-	: never;
+	  ? `0x${string}`
+	  : T extends 'submittable'
+	    ? SubmittableExtrinsic<'promise', ISubmittableResult>
+	    : never;
 
 /**
  * The types of local transactions the api can construct.
@@ -124,10 +124,28 @@ export type Methods =
 	| 'transferMultiassets'
 	| 'transferMultiassetWithFee';
 
+/**
+ * Options that are appplied at initialization of the `AssetTransferApi`.
+ */
 export type AssetTransferApiOpts = {
+	/**
+	 * Option to inject chain information into the registry.
+	 */
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
-	assetHubApi?: ApiPromise;
+	/**
+	 * Whether or not to apply the registry from the npm package `asset-transfer-api-registry`,
+	 * or the hosted CDN which updates frequently.
+	 */
+	registryType?: RegistryTypes;
 };
+
+/**
+ * Types that the registry can be initialized as.
+ *
+ * CDN - The registry will be initialized with the up to date version given the CDN
+ * NPM - The registry will be initialized with the NPM version which is updated less frequently.
+ */
+export type RegistryTypes = 'CDN' | 'NPM';
 
 /**
  * The TxResult is the result of constructing a transaction.
@@ -300,7 +318,7 @@ export interface UnsignedTransaction extends SignerPayloadJSON {
 	 *
 	 * @default 0
 	 */
-	assetId: BN;
+	assetId: BN | AnyJson;
 }
 
 export interface XcmBaseArgs {

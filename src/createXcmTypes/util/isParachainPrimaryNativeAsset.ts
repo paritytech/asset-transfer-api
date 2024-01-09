@@ -7,7 +7,7 @@ export const isParachainPrimaryNativeAsset = (
 	registry: Registry,
 	specName: string,
 	xcmDirection: Direction,
-	assetId?: string
+	assetId?: string,
 ) => {
 	// check direction is origin Para
 	if (xcmDirection != Direction.ParaToSystem && xcmDirection != Direction.ParaToPara) {

@@ -17,7 +17,7 @@ import { resolveMultiLocation } from '../../util/resolveMultiLocation';
 export const constructForeignAssetMultiLocationFromAssetId = (
 	multiLocationAssetId: string,
 	foreignAssetsPalletInstance: string,
-	xcmVersion: number
+	xcmVersion: number,
 ): UnionXcmMultiLocation => {
 	const numberOfAdditionalJunctions = 1;
 	const assetIdMultiLocation = resolveMultiLocation(multiLocationAssetId, xcmVersion);

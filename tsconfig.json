@@ -5,6 +5,7 @@
       "outDir": "lib",
       "rootDirs": ["./src", "./scripts"],
       "suppressImplicitAnyIndexErrors": true,
+      "ignoreDeprecations": "5.0",
       "resolveJsonModule": true,
       "esModuleInterop": true,
     },
@@ -12,7 +13,9 @@
       "./node_modules/@types"
     ],
     "exclude": [
-      "node_modules"
+      "node_modules",
+      "./src/**/*.spec.ts",
+      "./src/testHelpers"
     ],
     "include": [
       "./src/**/*.ts",

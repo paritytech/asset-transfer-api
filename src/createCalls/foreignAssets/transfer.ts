@@ -10,7 +10,7 @@ export const transfer = (
 	api: ApiPromise,
 	destAddr: string,
 	assetId: UnionXcmMultiLocation,
-	amount: string
+	amount: string,
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
 	return api.tx.foreignAssets.transfer(assetId, destAddr, amount);
 };

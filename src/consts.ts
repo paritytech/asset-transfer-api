@@ -4,6 +4,7 @@
  * List of all known relay chains.
  */
 export const RELAY_CHAIN_NAMES = ['kusama', 'polkadot', 'westend'];
+
 /**
  * As of now all the known relay chains have an ID of 0.
  */
@@ -54,3 +55,8 @@ export const MAX_ASSETS_FOR_TRANSFER = 2;
  * This is the max length for a number before we need to use BigInt.
  */
 export const MAX_NUM_LENGTH = Number.MAX_SAFE_INTEGER.toString().length;
+
+/**
+ * URL to reach the CDN endpoint.
+ */
+export const CDN_URL = 'https://paritytech.github.io/asset-transfer-api-registry/registry.json';

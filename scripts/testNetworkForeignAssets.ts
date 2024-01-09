@@ -42,8 +42,8 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 
 	const createTx = assetHubApi.tx.foreignAssets.create(
 		trappistMultiLocation,
-		'5Eg2fntDDP4P8TjqRg3Jq89y5boE26JUMM3D7VU3bCAp76nc', // Sibling 1836 -> ParaId
-		'100000000000'
+		'5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', // Sibling 1836 -> ParaId
+		'100000000000',
 	);
 
 	const hexCall = assetHubApi.registry

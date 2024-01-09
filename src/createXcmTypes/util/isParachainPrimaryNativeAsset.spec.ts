@@ -24,7 +24,7 @@ describe('isParachainPrimaryNativeAsset', () => {
 				registry,
 				specName,
 				Direction.ParaToSystem,
-				primaryNativeAssetSymbol
+				primaryNativeAssetSymbol,
 			);
 
 			expect(result).toEqual(expected);
@@ -49,7 +49,7 @@ describe('isParachainPrimaryNativeAsset', () => {
 				registry,
 				specName,
 				Direction.ParaToSystem,
-				primaryNativeAssetSymbol
+				primaryNativeAssetSymbol,
 			);
 
 			expect(result).toEqual(expected);
@@ -72,7 +72,7 @@ describe('isParachainPrimaryNativeAsset', () => {
 				registry,
 				specName,
 				Direction.SystemToPara,
-				primaryNativeAssetSymbol
+				primaryNativeAssetSymbol,
 			);
 
 			expect(result).toEqual(expected);

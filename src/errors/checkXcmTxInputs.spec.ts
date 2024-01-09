@@ -42,7 +42,7 @@ const runTests = async (tests: Test[]) => {
 				registry,
 				2,
 				false,
-				false
+				false,
 			);
 		}).rejects.toThrowError(errorMessage);
 	}
@@ -68,7 +68,7 @@ describe('checkAssetsAmountMatch', () => {
 		const err = () => checkAssetsAmountMatch(['1'], ['10', '10']);
 
 		expect(err).toThrow(
-			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.'
+			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.',
 		);
 	});
 });
@@ -177,7 +177,7 @@ describe('checkAssetIds', () => {
 					registry,
 					2,
 					false,
-					false
+					false,
 				);
 			}).rejects.toThrowError(errorMessage);
 		}
@@ -220,7 +220,7 @@ describe('checkAssetIds', () => {
 					registry,
 					2,
 					false,
-					false
+					false,
 				);
 			}).rejects.toThrowError(errorMessage);
 		}
@@ -244,7 +244,7 @@ describe('checkAssetIds', () => {
 					registry,
 					2,
 					false,
-					false
+					false,
 				);
 			}).rejects.toThrowError(errorMessage);
 		}
@@ -287,7 +287,7 @@ describe('checkAssetIds', () => {
 					registry,
 					2,
 					false,
-					false
+					false,
 				);
 			}).rejects.toThrowError(errorMessage);
 		}
@@ -317,7 +317,7 @@ describe('checkAssetIds', () => {
 					registry,
 					2,
 					false,
-					false
+					false,
 				);
 			}).rejects.toThrowError(errorMessage);
 		}
@@ -346,7 +346,7 @@ describe('checkAssetIds', () => {
 					registry,
 					2,
 					false,
-					false
+					false,
 				);
 			}).rejects.toThrowError(errorMessage);
 		}
@@ -382,7 +382,7 @@ describe('checkAssetIds', () => {
 					registry,
 					2,
 					false,
-					false
+					false,
 				);
 			}).rejects.toThrowError(errorMessage);
 		}
@@ -401,7 +401,7 @@ describe('checkAssetIds', () => {
 				registry,
 				2,
 				false,
-				false
+				false,
 			);
 		}).rejects.toThrowError('(ParaToSystem) assetId 0x1234, is not a valid erc20 token.');
 	});
@@ -420,7 +420,7 @@ describe('checkAssetIds', () => {
 				registry,
 				2,
 				false,
-				isLiquidTokenTransfer
+				isLiquidTokenTransfer,
 			);
 		}).rejects.toThrowError('Liquid Tokens must be valid Integers');
 	});
@@ -439,10 +439,10 @@ describe('checkAssetIds', () => {
 				registry,
 				2,
 				false,
-				isLiquidTokenTransfer
+				isLiquidTokenTransfer,
 			);
 		}).rejects.toThrowError(
-			'No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.'
+			'No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.',
 		);
 	});
 	it('Should not error when a valid liquid token exists', async () => {
@@ -461,7 +461,7 @@ describe('checkAssetIds', () => {
 				registry,
 				2,
 				false,
-				isLiquidTokenTransfer
+				isLiquidTokenTransfer,
 			);
 		}).not.toThrow();
 	});
@@ -479,7 +479,7 @@ describe('checkAssetIds', () => {
 				registry,
 				2,
 				false,
-				false
+				false,
 			);
 		}).not.toThrow();
 		// eslint-disable-next-line @typescript-eslint/await-thenable
@@ -493,7 +493,7 @@ describe('checkAssetIds', () => {
 				registry,
 				2,
 				false,
-				false
+				false,
 			);
 		}).not.toThrow();
 		// eslint-disable-next-line @typescript-eslint/await-thenable
@@ -507,7 +507,7 @@ describe('checkAssetIds', () => {
 				registry,
 				2,
 				false,
-				false
+				false,
 			);
 		}).not.toThrow();
 		// eslint-disable-next-line @typescript-eslint/await-thenable
@@ -521,7 +521,7 @@ describe('checkAssetIds', () => {
 				registry,
 				2,
 				false,
-				false
+				false,
 			);
 		}).not.toThrow();
 	});
@@ -539,10 +539,10 @@ describe('checkAssetIds', () => {
 				registry,
 				2,
 				false,
-				false
+				false,
 			);
 		}).rejects.toThrowError(
-			"The current input for assetId's does not meet our specifications for ParaToRelay transfers."
+			"The current input for assetId's does not meet our specifications for ParaToRelay transfers.",
 		);
 	});
 });
@@ -654,7 +654,7 @@ describe('checkAssetIdsHaveNoDuplicates', () => {
 		const err = () => checkAssetIdsHaveNoDuplicates(assetIds);
 
 		expect(err).toThrow(
-			`AssetIds must be unique. Found duplicate assetId {"parents": "1", "interior":{"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}`
+			`AssetIds must be unique. Found duplicate assetId {"parents": "1", "interior":{"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}`,
 		);
 	});
 });
@@ -666,7 +666,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
 
 		expect(err).toThrow(
-			`Found both native asset with assetID 1984 and foreign asset with assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Native assets and foreign assets can't be transferred within the same call.`
+			`Found both native asset with assetID 1984 and foreign asset with assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Native assets and foreign assets can't be transferred within the same call.`,
 		);
 	});
 
@@ -676,7 +676,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
 
 		expect(err).toThrow(
-			'Found both symbol ksm and multilocation assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Asset Ids must be symbol and integer or multilocation exclusively.'
+			'Found both symbol ksm and multilocation assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Asset Ids must be symbol and integer or multilocation exclusively.',
 		);
 	});
 
@@ -686,7 +686,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
 
 		expect(err).toThrow(
-			`Found both default relay native asset and foreign asset with assetId: {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Relay native asset and foreign assets can't be transferred within the same call.`
+			`Found both default relay native asset and foreign asset with assetId: {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Relay native asset and foreign assets can't be transferred within the same call.`,
 		);
 	});
 });
@@ -827,7 +827,7 @@ describe('checkParaAssets', () => {
 				registry,
 				2,
 				false,
-				false
+				false,
 			);
 
 			expect(registry.cacheLookupAsset('1984')).toEqual('USDt');
@@ -853,7 +853,7 @@ describe('checkParaAssets', () => {
 				registry,
 				2,
 				false,
-				false
+				false,
 			);
 
 			expect(registry.cacheLookupAsset('xcUSDT')).toEqual('311091173110107856861649819128533077277');
@@ -892,7 +892,7 @@ describe('checkParaAssets', () => {
 				registry,
 				2,
 				true,
-				false
+				false,
 			);
 
 			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual({
@@ -935,13 +935,13 @@ describe('checkParaAssets', () => {
 				registry,
 				2,
 				false,
-				true
+				true,
 			);
 
 			expect(registry.cacheLookupPoolAsset('0')).toEqual({
 				lpToken: '0',
 				pairInfo:
-					'[[{"parents":"0","interior":{"Here":""}},{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"100"}]}}]]',
+					'[{"parents":"0","interior":{"Here":""}},{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"100"}]}}]',
 			});
 		});
 	});
