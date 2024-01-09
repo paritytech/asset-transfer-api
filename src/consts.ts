@@ -3,7 +3,7 @@
 /**
  * List of all known relay chains.
  */
-export const RELAY_CHAIN_NAMES = ['kusama', 'polkadot', 'westend'];
+export const RELAY_CHAIN_NAMES = ['kusama', 'polkadot', 'westend', 'rococo'];
 
 /**
  * As of now all the known relay chains have an ID of 0.
