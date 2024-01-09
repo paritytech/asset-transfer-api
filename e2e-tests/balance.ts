@@ -13,7 +13,7 @@ export const balanceTracker = async (
 	test: string,
 	address: string,
 	assetIds: string[],
-	balance?: IBalance
+	balance?: IBalance,
 ): Promise<IBalance> => {
 	let balances: IBalance = { initial: [], final: [] };
 	let accountInfo: FrameSystemAccountInfo | Option<PalletAssetsAssetAccount>;

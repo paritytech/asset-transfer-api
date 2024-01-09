@@ -20,7 +20,7 @@ const createTransferTransaction = async (
 	opts: object,
 	api: ApiPromise,
 	specName: string,
-	safeXcmVersion: number
+	safeXcmVersion: number,
 ) => {
 	const assetApi = createAssetApi(api, specName, safeXcmVersion);
 

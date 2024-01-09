@@ -20,7 +20,7 @@ const createLocalTransferTransaction = async (
 	opts: object,
 	api: ApiPromise,
 	specName: string,
-	safeXcmVersion: number
+	safeXcmVersion: number,
 ) => {
 	const assetApi = createAssetApi(api, specName, safeXcmVersion);
 
@@ -43,7 +43,7 @@ const createPayFeesTransaction = async (
 	opts: object,
 	api: ApiPromise,
 	specName: string,
-	safeXcmVersion: number
+	safeXcmVersion: number,
 ) => {
 	const assetApi = createAssetApi(api, specName, safeXcmVersion);
 

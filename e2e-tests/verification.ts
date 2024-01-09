@@ -1,5 +1,5 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
-import { IBalance } from 'balance';
+import { IBalance } from './balance';
 
 export const verification = (assetIds: string[], amounts: string[], destBalance: IBalance) => {
 	const destInitialBalance: [string, number][] = destBalance.initial;

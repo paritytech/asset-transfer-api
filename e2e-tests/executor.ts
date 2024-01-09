@@ -131,7 +131,7 @@ const executor = async (testCase: string) => {
 			testCase,
 			destAddr,
 			assetIds,
-			destInitialBalance
+			destInitialBalance,
 		);
 
 		const correctlyReceived = verification(assetIds, amounts, destFinalBalance);
@@ -151,4 +151,6 @@ const executor = async (testCase: string) => {
 	}
 };
 
-executor(process.argv[2]).finally(() => process.exit());
+executor(process.argv[2])
+	.catch((err) => console.error(err))
+	.finally(() => process.exit());
