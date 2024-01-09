@@ -1,6 +1,6 @@
 #!/bin/sh
 test=$1
-yarn run build:e2e &&
+yarn run build:e2e
 if [ $test = '--assets' ]; then
   script=post
 elif [ $test = '--local' ]; then

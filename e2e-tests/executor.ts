@@ -16,6 +16,7 @@ const executor = async (testCase: string) => {
 	let destWsUrl = '';
 
 	let testData: IndividualTest[] = [];
+	console.log(testCase)
 
 	await cryptoWaitReady();
 
@@ -78,10 +79,10 @@ const executor = async (testCase: string) => {
 			case '1000':
 				originWsUrl = KUSAMA_ASSET_HUB_WS_URL;
 				break;
-			case '2500':
+			case '1836':
 				originWsUrl = TRAPPIST_WS_URL;
 				break;
-			case '2600':
+			case '4000':
 				originWsUrl = MOONRIVER_WS_URL;
 				break;
 		}
@@ -96,16 +97,18 @@ const executor = async (testCase: string) => {
 				case '1000':
 					destWsUrl = KUSAMA_ASSET_HUB_WS_URL;
 					break;
-				case '2500':
+				case '1836':
 					destWsUrl = TRAPPIST_WS_URL;
 					break;
-				case '2600':
+				case '4000':
 					destWsUrl = MOONRIVER_WS_URL;
 					break;
 			}
 		}
 		const { api, specName, safeXcmVersion } = await constructApiPromise(originWsUrl);
 
+		let sanitizedSpecName = originChainId === '1836' ? 'asset-hub-rococo' : specName;
+		console.log(sanitizedSpecName)
 		await api.isReady;
 
 		const originApi = api;
@@ -122,7 +125,7 @@ const executor = async (testCase: string) => {
 		const originKeyring = keyring.addFromUri(originAddr);
 
 		//eslint-disable-next-line @typescript-eslint/no-unsafe-call
-		await n[t.test](originKeyring, destChainId, destAddr, assetIds, amounts, opts, api, specName, safeXcmVersion);
+		await n[t.test](originKeyring, destChainId, destAddr, assetIds, amounts, opts, api, sanitizedSpecName, safeXcmVersion);
 
 		await delay(24000);
 

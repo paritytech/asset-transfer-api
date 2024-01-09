@@ -43,25 +43,25 @@ cumulus_based = true
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
 [[parachains]]
-id = 2500
+id = 1836
 add_to_genesis = true
 cumulus_based = true
-chain = "trappist-local"
+chain = "asset-hub-rococo-local"
 
   [[parachains.collators]]
-  name = "trappist-collator01"
-  command = "./zombienet/bin/trappist-node"
+  name = "rockmine-collator01"
+  command = "./zombienet/bin/polkadot-parachain"
   ws_port = 9920
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
   [[parachains.collators]]
-  name = "trappist-collator02"
-  command = "./zombienet/bin/trappist-node"
+  name = "rockmine-collator02"
+  command = "./zombienet/bin/polkadot-parachain"
   ws_port = 9921
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
 [[parachains]]
-id = 2600
+id = 4000
 add_to_genesis = true
 cumulus_based = true
 chain = "moonriver-local"

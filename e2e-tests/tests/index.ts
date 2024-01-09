@@ -26,7 +26,7 @@ export const tests: TestGroups = {
 			test: 'createTransferTransactionCall',
 			// This will be all the args for the above call
 			args: [
-				'2500',
+				'1836',
 				'1000',
 				'//Alice',
 				BOB_KAH_ADDR,
@@ -76,17 +76,51 @@ export const tests: TestGroups = {
 		},
 	],
 	local: [
+		// {
+		// 	// This will declare the call to use
+		// 	test: 'createSystemLocalTransferTransaction',
+		// 	// This will be all the args for the above call
+		// 	args: [
+		// 		'1000',
+		// 		'1000',
+		// 		'//Alice',
+		// 		BOB_KAH_ADDR,
+		// 		'[]',
+		// 		'[10000000000000]',
+		// 		'{ "format": "submittable", "keepAlive": true }',
+		// 	],
+		// 	// This will be a tuple that will allow us to verify if the xcm message
+		// 	// succesfully went through on the other end
+		// 	verification: ['[0]', '[10000000000000]'],
+		// },
+		// {
+		// 	// This will declare the call to use
+		// 	test: 'createSystemLocalTransferTransaction',
+		// 	// This will be all the args for the above call
+		// 	args: [
+		// 		'1836',
+		// 		'1836',
+		// 		'//Alice',
+		// 		BOB_KAH_ADDR,
+		// 		'[]',
+		// 		'[100000000000000000]',
+		// 		'{ "format": "submittable", "keepAlive": true }',
+		// 	],
+		// 	// This will be a tuple that will allow us to verify if the xcm message
+		// 	// succesfully went through on the other end
+		// 	verification: ['[0]', '[10000000000000]'],
+		// },
 		{
 			// This will declare the call to use
 			test: 'createSystemLocalTransferTransaction',
 			// This will be all the args for the above call
 			args: [
-				'1000',
-				'1000',
+				'0',
+				'0',
 				'//Alice',
 				BOB_KAH_ADDR,
 				'[]',
-				'[10000000000000]',
+				'[100000000000000000]',
 				'{ "format": "submittable", "keepAlive": true }',
 			],
 			// This will be a tuple that will allow us to verify if the xcm message

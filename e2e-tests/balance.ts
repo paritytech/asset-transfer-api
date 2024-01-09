@@ -49,11 +49,11 @@ export const balanceTracker = async (
 		case '--local':
 			if (!balance) {
 				accountInfo = await api.query.system.account(address);
-				balances.initial.push(['0', accountInfo.data.free.toBn().toNumber()]);
+				balances.initial.push(['0', Number(accountInfo.data.free)]);
 			} else {
 				balances = balance;
 				accountInfo = await api.query.system.account(address);
-				balances.final.push(['0', accountInfo.data.free.toBn().toNumber()]);
+				balances.final.push(['0', Number(accountInfo.data.free)]);
 			}
 			return balances;
 		case '--assets':
