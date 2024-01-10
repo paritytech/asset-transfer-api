@@ -9,7 +9,7 @@ import { TxResult } from '../../src/types';
 const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: number): AssetTransferApi => {
 
 	const injectedRegistry = {
-		kusama: {
+		rococo: {
 			'1836': {
 				tokens: ['ROC'],
 				assetsInfo: {},
@@ -27,54 +27,7 @@ const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: numbe
 	return assetApi;
 };
 
-const createSystemLocalTransferTransaction = async (
-	origin: KeyringPair,
-	destChainId: string,
-	destAddr: string,
-	assetIds: string[],
-	amounts: string[],
-	opts: object,
-	api: ApiPromise,
-	specName: string,
-	safeXcmVersion: number,
-) => {
-	const assetApi = createAssetApi(api, specName, safeXcmVersion);
-
-	let localTransferInfo: TxResult<'submittable'>;
-	try {
-		localTransferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
-		console.log(localTransferInfo.direction)
-		await localTransferInfo.tx.signAndSend(origin);
-	} catch (e) {
-		console.error(e);
-		throw Error(e as string);
-	}
-};
-
-const createRelayLocalTransferTransaction = async (
-	origin: KeyringPair,
-	destChainId: string,
-	destAddr: string,
-	assetIds: string[],
-	amounts: string[],
-	opts: object,
-	api: ApiPromise,
-	specName: string,
-	safeXcmVersion: number,
-) => {
-	const assetApi = createAssetApi(api, specName, safeXcmVersion);
-
-	let localTransferInfo: TxResult<'submittable'>;
-	try {
-		localTransferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
-		await localTransferInfo.tx.signAndSend(origin);
-	} catch (e) {
-		console.error(e);
-		throw Error(e as string);
-	}
-};
-
-const createRelayToSystemTransferTransaction = async (
+const createLocalTransferTransaction = async (
 	origin: KeyringPair,
 	destChainId: string,
 	destAddr: string,
@@ -98,7 +51,5 @@ const createRelayToSystemTransferTransaction = async (
 };
 
 export const localTests: { [K: string]: Function } = {
-	createSystemLocalTransferTransaction,
-	createRelayLocalTransferTransaction,
-	createRelayToSystemTransferTransaction,
+	createLocalTransferTransaction,
 };

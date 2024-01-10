@@ -6,7 +6,21 @@ import { AssetTransferApi } from '../../src';
 import { TxResult } from '../../src/types';
 
 const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: number): AssetTransferApi => {
-	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
+	const injectedRegistry = {
+		rococo: {
+			'1836': {
+				tokens: ['ROC'],
+				assetsInfo: {},
+				foreignAssetsInfo: {},
+				specName: 'asset-hub-rococo',
+				poolPairsInfo: {},
+			},
+		},
+	};
+
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion,
+		{ injectedRegistry });
+
 
 	return assetApi;
 };

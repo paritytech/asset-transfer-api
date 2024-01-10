@@ -7,7 +7,7 @@ import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { delay } from '../scripts/util';
 import { constructApiPromise } from '../src';
 import { balanceTracker, IBalance } from './balance';
-import { KUSAMA_ASSET_HUB_WS_URL, MOONRIVER_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, MOONRIVER_WS_URL, ROCOCO_ALICE_WS_URL, ROCOCO_ASSET_HUB_WS_URL } from './consts';
 import { assetTests, foreignAssetsTests, IndividualTest, liquidPoolsTests, localTests, tests } from './tests';
 import { verification } from './verification';
 
@@ -70,7 +70,10 @@ const executor = async (testCase: string) => {
 		destAddr = t.args[3];
 		assetIds = t.args[4].slice(1, -1).split(',');
 		amounts = t.args[5].slice(1, -1).split(',');
-		opts = JSON.parse(t.args[6]) as object;
+		opts = JSON.parse(t.args[6], (key, value) => {
+		return key === "paysWithFeeOrigin" ? JSON.stringify(value) : value;
+	}) as object;
+
 
 		switch (originChainId) {
 			case '0':
@@ -80,7 +83,7 @@ const executor = async (testCase: string) => {
 				originWsUrl = KUSAMA_ASSET_HUB_WS_URL;
 				break;
 			case '1836':
-				originWsUrl = TRAPPIST_WS_URL;
+				originWsUrl = ROCOCO_ASSET_HUB_WS_URL;
 				break;
 			case '4000':
 				originWsUrl = MOONRIVER_WS_URL;
@@ -98,7 +101,7 @@ const executor = async (testCase: string) => {
 					destWsUrl = KUSAMA_ASSET_HUB_WS_URL;
 					break;
 				case '1836':
-					destWsUrl = TRAPPIST_WS_URL;
+					destWsUrl = ROCOCO_ASSET_HUB_WS_URL;
 					break;
 				case '4000':
 					destWsUrl = MOONRIVER_WS_URL;
@@ -108,7 +111,6 @@ const executor = async (testCase: string) => {
 		const { api, specName, safeXcmVersion } = await constructApiPromise(originWsUrl);
 
 		let sanitizedSpecName = originChainId === '1836' ? 'asset-hub-rococo' : specName;
-		console.log(sanitizedSpecName)
 		await api.isReady;
 
 		const originApi = api;

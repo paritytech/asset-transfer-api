@@ -5,20 +5,20 @@ import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
-import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL, ROCOCO_ASSET_HUB_WS_URL } from './consts';
 import { awaitBlockProduction, awaitEpochChange, delay, logWithDate } from './util';
 
 const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
-	const trappistMultiLocation = {
+	const rockmineMultilocatino = {
 		parents: 1,
 		interior: {
 			X1: {
-				parachain: 3000,
+				parachain: 1836,
 			},
 		},
 	};
 
-	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(trappistMultiLocation, 'Trappist Hop', 'Hop', 12);
+	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(rockmineMultilocatino, 'Asset Hub Rococo Hop', 'Hop', 12);
 
 	const hexCall = assetHubApi.registry
 		.createType('Call', {
@@ -31,7 +31,7 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 };
 
 const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
-	const trappistMultiLocation = {
+	const rockmineMultilocatino = {
 		parents: 1,
 		interior: {
 			X1: {
@@ -41,7 +41,7 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 	};
 
 	const createTx = assetHubApi.tx.foreignAssets.create(
-		trappistMultiLocation,
+		rockmineMultilocatino,
 		'5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', // Sibling 1836 -> ParaId
 		'100000000000',
 	);
@@ -56,13 +56,13 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 	return hexCall;
 };
 
-const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
+const sudoCallWrapper = (rockmineApi: ApiPromise, call: `0x${string}`) => {
 	// Double encode the call
-	const xcmDoubleEncoded = trappistApi.createType('XcmDoubleEncoded', {
+	const xcmDoubleEncoded = rockmineApi.createType('XcmDoubleEncoded', {
 		encoded: call,
 	});
 
-	const xcmOriginType = trappistApi.createType('XcmOriginKind', 'Xcm');
+	const xcmOriginType = rockmineApi.createType('XcmOriginKind', 'Xcm');
 	const xcmDestMultiLocation = {
 		V3: {
 			parents: 1,
@@ -140,8 +140,8 @@ const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 			},
 		],
 	};
-	const xcmMsg = trappistApi.tx.polkadotXcm.send(xcmDestMultiLocation, xcmMessage);
-	const xcmCall = trappistApi.createType('Call', {
+	const xcmMsg = rockmineApi.tx.polkadotXcm.send(xcmDestMultiLocation, xcmMessage);
+	const xcmCall = rockmineApi.createType('Call', {
 		callIndex: xcmMsg.callIndex,
 		args: xcmMsg.args,
 	});
@@ -149,14 +149,14 @@ const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 	return xcmCall;
 };
 
-const createForeignAssetViaSudo = (assetHubApi: ApiPromise, trappistApi: ApiPromise) => {
+const createForeignAssetViaSudo = (assetHubApi: ApiPromise, rockmineApi: ApiPromise) => {
 	const foreignAssetCreateCall = fAssetCreateCall(assetHubApi);
-	return sudoCallWrapper(trappistApi, foreignAssetCreateCall);
+	return sudoCallWrapper(rockmineApi, foreignAssetCreateCall);
 };
 
-const setMetadataForeignAssetViaSudo = (assetHubApi: ApiPromise, trappistApi: ApiPromise) => {
+const setMetadataForeignAssetViaSudo = (assetHubApi: ApiPromise, rockmineApi: ApiPromise) => {
 	const setMetadataCall = fAssetSetMetadataCall(assetHubApi);
-	return sudoCallWrapper(trappistApi, setMetadataCall);
+	return sudoCallWrapper(rockmineApi, setMetadataCall);
 };
 
 const openHrmpChannels = (api: ApiPromise, sender: number, receiver: number) => {
@@ -179,13 +179,13 @@ const main = async () => {
 	await kusamaAssetHubApi.isReady;
 	logWithDate(chalk.green('Created a connection to Kusama AssetHub'));
 
-	const trappistApi = await ApiPromise.create({
-		provider: new WsProvider(TRAPPIST_WS_URL),
+	const rockmineApi = await ApiPromise.create({
+		provider: new WsProvider(ROCOCO_ASSET_HUB_WS_URL),
 		noInitWarn: true,
 	});
 
-	await trappistApi.isReady;
-	logWithDate(chalk.green('Created a connection to Trappist'));
+	await rockmineApi.isReady;
+	logWithDate(chalk.green('Created a connection to Rococo Asset Hub'));
 
 	const relayApi = await ApiPromise.create({
 		provider: new WsProvider(ROCOCO_ALICE_WS_URL),
@@ -208,23 +208,23 @@ const main = async () => {
 	await awaitEpochChange(relayApi);
 	logWithDate(chalk.magenta('HRMP channels open'));
 
-	logWithDate(chalk.magenta('Sending funds to Trappist Sibling on Kusama AssetHub'));
+	logWithDate(chalk.magenta('Sending funds to Rococo Asset Hub Sibling on Kusama AssetHub'));
 
-	await kusamaAssetHubApi.tx.balances // ParaID 3000
-		.transferKeepAlive('5Eg2fntDDP4P8TjqRg3Jq89y5boE26JUMM3D7VU3bCAp76nc', 10000000000000)
+	await kusamaAssetHubApi.tx.balances
+		.transferKeepAlive('5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', 10000000000000)
 		.signAndSend(bob);
 
-	const foreignAssetsCreateSudoXcmCall = createForeignAssetViaSudo(kusamaAssetHubApi, trappistApi);
+	const foreignAssetsCreateSudoXcmCall = createForeignAssetViaSudo(kusamaAssetHubApi, rockmineApi);
 
 	logWithDate('Sending Sudo XCM message from relay chain to execute create foreign asset call on Kusama AssetHub');
-	await trappistApi.tx.sudo.sudo(foreignAssetsCreateSudoXcmCall).signAndSend(alice);
+	await rockmineApi.tx.sudo.sudo(foreignAssetsCreateSudoXcmCall).signAndSend(alice);
 
 	await delay(24000);
 
-	const foreignAssetsSetMetadataSudoXcmCall = setMetadataForeignAssetViaSudo(kusamaAssetHubApi, trappistApi);
+	const foreignAssetsSetMetadataSudoXcmCall = setMetadataForeignAssetViaSudo(kusamaAssetHubApi, rockmineApi);
 
 	logWithDate('Sending Sudo XCM message from relay chain to execute setMetadata call on Kusama AssetHub');
-	await trappistApi.tx.sudo.sudo(foreignAssetsSetMetadataSudoXcmCall).signAndSend(alice);
+	await rockmineApi.tx.sudo.sudo(foreignAssetsSetMetadataSudoXcmCall).signAndSend(alice);
 
 	await delay(24000);
 
@@ -232,13 +232,13 @@ const main = async () => {
 		logWithDate(chalk.blue('Polkadot-js successfully disconnected from asset-hub'));
 	});
 
-	await trappistApi.disconnect().then(() => {
-		logWithDate(chalk.blue('Polkadot-js successfully disconnected from trappist'));
+	await rockmineApi.disconnect().then(() => {
+		logWithDate(chalk.blue('Polkadot-js successfully disconnected from Rococo Asset Hub'));
 	});
 };
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
-awaitBlockProduction(TRAPPIST_WS_URL).then(async () => {
+awaitBlockProduction(ROCOCO_ASSET_HUB_WS_URL).then(async () => {
 	await main()
 		.catch(console.error)
 		.finally(() => process.exit());

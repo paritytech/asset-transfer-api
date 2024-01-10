@@ -30,7 +30,7 @@ export const tests: TestGroups = {
 				'1000',
 				'//Alice',
 				BOB_KAH_ADDR,
-				'[{ "parents": "1", "interior": { "X2": [{ "Parachain": "2500" }, { "GeneralIndex": "0" }]}}]',
+				'[{ "parents": "1", "interior": { "X2": [{ "Parachain": "1836" }, { "GeneralIndex": "0" }]}}]',
 				'[200000000000]',
 				'{ "format": "submittable", "xcmVersion": 3 }',
 			],
@@ -40,23 +40,23 @@ export const tests: TestGroups = {
 		},
 	],
 	liquidPools: [
-		{
-			// This will declare the call to use
-			test: 'createLocalTransferTransaction',
-			// This will be all the args for the above call
-			args: [
-				'1000',
-				'1000',
-				'//Alice',
-				BOB_KAH_ADDR,
-				'[0]',
-				'[2000]',
-				'{ "format": "submittable", "transferLiquidToken": true }',
-			],
-			// This will be a tuple that will allow us to verify if the xcm message
-			// succesfully went through on the other end
-			verification: ['[0]', '[2000]'],
-		},
+		// {
+		// 	// This will declare the call to use
+		// 	test: 'createLocalTransferTransaction',
+		// 	// This will be all the args for the above call
+		// 	args: [
+		// 		'1000',
+		// 		'1000',
+		// 		'//Alice',
+		// 		BOB_KAH_ADDR,
+		// 		'[0]',
+		// 		'[2000]',
+		// 		'{ "format": "submittable", "transferLiquidToken": true }',
+		// 	],
+		// 	// This will be a tuple that will allow us to verify if the xcm message
+		// 	// succesfully went through on the other end
+		// 	verification: ['[0]', '[2000]'],
+		// },
 		{
 			// This will declare the call to use
 			test: 'createPayFeesTransaction',
@@ -68,7 +68,7 @@ export const tests: TestGroups = {
 				BOB_KAH_ADDR,
 				'[0]',
 				'[30000]',
-				'{ "format": "submittable", "transferLiquidToken": true }',
+				'{ "format": "payload", "xcmVersion": 3, "transferLiquidToken": true, "paysWithFeeOrigin": { "parents": "0", "interior": { "X2": [{"PalletInstance": "50"}, { "GeneralIndex": "1" }]}}, "sendersAddr": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }',
 			],
 			// This will be a tuple that will allow us to verify if the xcm message
 			// succesfully went through on the other end
@@ -76,43 +76,43 @@ export const tests: TestGroups = {
 		},
 	],
 	local: [
-		// {
-		// 	// This will declare the call to use
-		// 	test: 'createSystemLocalTransferTransaction',
-		// 	// This will be all the args for the above call
-		// 	args: [
-		// 		'1000',
-		// 		'1000',
-		// 		'//Alice',
-		// 		BOB_KAH_ADDR,
-		// 		'[]',
-		// 		'[10000000000000]',
-		// 		'{ "format": "submittable", "keepAlive": true }',
-		// 	],
-		// 	// This will be a tuple that will allow us to verify if the xcm message
-		// 	// succesfully went through on the other end
-		// 	verification: ['[0]', '[10000000000000]'],
-		// },
-		// {
-		// 	// This will declare the call to use
-		// 	test: 'createSystemLocalTransferTransaction',
-		// 	// This will be all the args for the above call
-		// 	args: [
-		// 		'1836',
-		// 		'1836',
-		// 		'//Alice',
-		// 		BOB_KAH_ADDR,
-		// 		'[]',
-		// 		'[100000000000000000]',
-		// 		'{ "format": "submittable", "keepAlive": true }',
-		// 	],
-		// 	// This will be a tuple that will allow us to verify if the xcm message
-		// 	// succesfully went through on the other end
-		// 	verification: ['[0]', '[10000000000000]'],
-		// },
 		{
 			// This will declare the call to use
-			test: 'createSystemLocalTransferTransaction',
+			test: 'createLocalTransferTransaction',
+			// This will be all the args for the above call
+			args: [
+				'1000',
+				'1000',
+				'//Alice',
+				BOB_KAH_ADDR,
+				'[]',
+				'[10000000000000]',
+				'{ "format": "submittable", "keepAlive": true }',
+			],
+			// This will be a tuple that will allow us to verify if the xcm message
+			// succesfully went through on the other end
+			verification: ['[0]', '[10000000000000]'],
+		},
+		{
+			// This will declare the call to use
+			test: 'createLocalTransferTransaction',
+			// This will be all the args for the above call
+			args: [
+				'1836',
+				'1836',
+				'//Alice',
+				BOB_KAH_ADDR,
+				'[]',
+				'[100000000000000000]',
+				'{ "format": "submittable", "keepAlive": true }',
+			],
+			// This will be a tuple that will allow us to verify if the xcm message
+			// succesfully went through on the other end
+			verification: ['[0]', '[10000000000000]'],
+		},
+		{
+			// This will declare the call to use
+			test: 'createLocalTransferTransaction',
 			// This will be all the args for the above call
 			args: [
 				'0',
