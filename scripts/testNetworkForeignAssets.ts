@@ -18,7 +18,12 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 		},
 	};
 
-	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(rockmineMultilocatino, 'Asset Hub Rococo Hop', 'Hop', 12);
+	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(
+		rockmineMultilocatino,
+		'Asset Hub Rococo Hop',
+		'Hop',
+		12,
+	);
 
 	const hexCall = assetHubApi.registry
 		.createType('Call', {

@@ -46,17 +46,17 @@ cumulus_based = true
 id = 1836
 add_to_genesis = true
 cumulus_based = true
-chain = "asset-hub-rococo-local"
+chain = "trappist-local"
 
   [[parachains.collators]]
   name = "rockmine-collator01"
-  command = "./zombienet/bin/polkadot-parachain"
+  command = "./zombienet/bin/trappist-node"
   ws_port = 9920
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
   [[parachains.collators]]
   name = "rockmine-collator02"
-  command = "./zombienet/bin/polkadot-parachain"
+  command = "./zombienet/bin/trappist-node"
   ws_port = 9921
   args = ["--log=xcm=trace,pallet-assets=trace"]
 

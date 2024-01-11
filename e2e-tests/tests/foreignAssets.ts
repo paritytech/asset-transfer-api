@@ -18,9 +18,7 @@ const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: numbe
 		},
 	};
 
-	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion,
-		{ injectedRegistry });
-
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, { injectedRegistry });
 
 	return assetApi;
 };

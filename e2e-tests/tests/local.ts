@@ -7,7 +7,6 @@ import { AssetTransferApi } from '../../src';
 import { TxResult } from '../../src/types';
 
 const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: number): AssetTransferApi => {
-
 	const injectedRegistry = {
 		rococo: {
 			'1836': {
@@ -20,9 +19,7 @@ const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: numbe
 		},
 	};
 
-	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion,
-		{ injectedRegistry });
-
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, { injectedRegistry });
 
 	return assetApi;
 };

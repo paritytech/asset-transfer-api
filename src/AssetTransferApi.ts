@@ -800,7 +800,7 @@ export class AssetTransferApi {
 				'CheckMortality',
 				'CheckNonce',
 				'CheckWeight',
-				'ChargeTransactionPayment',
+				'ChargeAssetTxPayment',
 			],
 			tip: this._api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,
@@ -898,20 +898,16 @@ export class AssetTransferApi {
 
 		if (this._api.query.assetConversion !== undefined) {
 			try {
-				for (const poolPairsData of await this._api.query.assetConversion.pools.keys()) {
-					const poolStorageKeyData = poolPairsData.toHuman();
+				for (const poolPairsData of await this._api.query.assetConversion.pools.entries()) {
+					const tokenPairs = poolPairsData[0];
 
 					// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
-					const poolAssetDataStr = JSON.stringify(poolStorageKeyData).replace(/(\d),/g, '$1');
-					const firstLpTokenSlice = poolAssetDataStr.slice(2, -2).slice(0, poolAssetDataStr.indexOf('},{"p') -1);
-					const secondLpTokenSlice = poolAssetDataStr.slice(2, -2).slice(poolAssetDataStr.indexOf('},{"p'));
-					
-					const firstLpToken = sanitizeKeys(
-						JSON.parse(firstLpTokenSlice),
-					) as UnionXcmMultiLocation;
-					const secondLpToken = sanitizeKeys(
-						JSON.parse(secondLpTokenSlice),
-					) as UnionXcmMultiLocation;
+					const sanitizedTokenPairs = JSON.stringify(tokenPairs).replace(/(\d),/g, '$1');
+					const firstLpTokenSlice = sanitizedTokenPairs.slice(1, -1).slice(0, sanitizedTokenPairs.indexOf('},{"p'));
+					const secondLpTokenSlice = sanitizedTokenPairs.slice(1, -1).slice(sanitizedTokenPairs.indexOf(',{"p'));
+
+					const firstLpToken = sanitizeKeys(JSON.parse(firstLpTokenSlice)) as UnionXcmMultiLocation;
+					const secondLpToken = sanitizeKeys(JSON.parse(secondLpTokenSlice)) as UnionXcmMultiLocation;
 
 					if (
 						JSON.stringify(firstLpToken) == JSON.stringify(feeAsset) ||

@@ -18,9 +18,7 @@ const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: numbe
 		},
 	};
 
-	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion,
-		{ injectedRegistry });
-
+	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, { injectedRegistry });
 
 	return assetApi;
 };
@@ -61,36 +59,17 @@ const createPayFeesTransaction = async (
 ) => {
 	const assetApi = createAssetApi(api, specName, safeXcmVersion);
 
-	let localTransferInfo: TxResult<'payload'>;
+	let transferInfo: TxResult<'payload'>;
 	try {
-		let sender: string;
-		if (opts["sendersAddr"] === undefined) {
-			sender = ''
-		} else {
-			sender = opts["sendersAddr"];
-		}
+		transferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
 
-		localTransferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
-		console.log(localTransferInfo.tx)
-
-		const payload = api.createType('ExtrinsicPayload', localTransferInfo.tx, {
+		const payload = api.createType('ExtrinsicPayload', transferInfo.tx, {
 			version: 4,
-		})
+		});
 
-		const message = payload.toU8a({ method: true });
+		const extrinsic = api.registry.createType('Extrinsic', { method: payload.method }, { version: 4 });
 
-		const signat = origin.sign(message, { withType: true });
-
-		const extrinsic = api.createType(
-			'Extrinsic',
-			{ method: localTransferInfo.method },
-			{ version: 4 }
-		).addSignature(sender, signat, localTransferInfo.tx);
-
-		const tx = extrinsic.toHex()
-
-		await api.rpc.author.submitExtrinsic(tx);
-
+		await api.tx(extrinsic).signAndSend(origin);
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);
