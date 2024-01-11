@@ -889,7 +889,6 @@ export class AssetTransferApi {
 
 		try {
 			feeAsset = sanitizeKeys(JSON.parse(paysWithFeeOrigin)) as UnionXcmMultiLocation;
-			console.log(feeAsset)
 		} catch (err: unknown) {
 			throw new BaseError(
 				`paysWithFeeOrigin value must be a valid MultiLocation. Received: ${paysWithFeeOrigin}`,
@@ -899,23 +898,20 @@ export class AssetTransferApi {
 
 		if (this._api.query.assetConversion !== undefined) {
 			try {
-				for (const poolPairsData of await this._api.query.assetConversion.pools.entries()) {
-					const poolStorageKeyData = poolPairsData[0];
-					console.log('poolAssetDataStr '  + poolStorageKeyData);
-
+				for (const poolPairsData of await this._api.query.assetConversion.pools.keys()) {
+					const poolStorageKeyData = poolPairsData.toHuman();
 
 					// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
 					const poolAssetDataStr = JSON.stringify(poolStorageKeyData).replace(/(\d),/g, '$1');
-					console.log('poolAssetDataStr '  + poolAssetDataStr);
-					const palletAssetConversionNativeOrAssetIdData = sanitizeKeys(
-						JSON.parse(poolAssetDataStr),
-					) as UnionXcmMultiLocation[];
-
-
-					const firstLpToken = palletAssetConversionNativeOrAssetIdData[0];
-					console.log('first '  + firstLpToken)
-					const secondLpToken = palletAssetConversionNativeOrAssetIdData[1];
-					console.log('second ' + secondLpToken)
+					const firstLpTokenSlice = poolAssetDataStr.slice(2, -2).slice(0, poolAssetDataStr.indexOf('},{"p') -1);
+					const secondLpTokenSlice = poolAssetDataStr.slice(2, -2).slice(poolAssetDataStr.indexOf('},{"p'));
+					
+					const firstLpToken = sanitizeKeys(
+						JSON.parse(firstLpTokenSlice),
+					) as UnionXcmMultiLocation;
+					const secondLpToken = sanitizeKeys(
+						JSON.parse(secondLpTokenSlice),
+					) as UnionXcmMultiLocation;
 
 					if (
 						JSON.stringify(firstLpToken) == JSON.stringify(feeAsset) ||

@@ -64,8 +64,8 @@ export const tests: TestGroups = {
 			args: [
 				'1000',
 				'1000',
-				'//Alice',
-				BOB_KAH_ADDR,
+				'//Bob',
+				FERDE_KAH_ADDR,
 				'[0]',
 				'[30000]',
 				'{ "format": "payload", "xcmVersion": 3, "transferLiquidToken": true, "paysWithFeeOrigin": { "parents": "0", "interior": { "X2": [{"PalletInstance": "50"}, { "GeneralIndex": "1" }]}}, "sendersAddr": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }',

@@ -63,19 +63,6 @@ const createPayFeesTransaction = async (
 
 	let localTransferInfo: TxResult<'payload'>;
 	try {
-		localTransferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
-		const signature = api.registry
-			.createType('ExtrinsicPayload', localTransferInfo, {
-				version: 4,
-			})
-			.sign(origin).signature as unknown as `0x${string}`;
-
-		const extrinsic = api.registry.createType(
-			'Extrinsic',
-			{ method: localTransferInfo.method },
-			{ version: 4 }
-		);
-
 		let sender: string;
 		if (opts["sendersAddr"] === undefined) {
 			sender = ''
@@ -83,9 +70,26 @@ const createPayFeesTransaction = async (
 			sender = opts["sendersAddr"];
 		}
 
-		const signed = extrinsic.addSignature(sender, signature, localTransferInfo as unknown as `0x${string}`).toHex()
+		localTransferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
+		console.log(localTransferInfo.tx)
 
-		await api.rpc.author.submitExtrinsic(signed)
+		const payload = api.createType('ExtrinsicPayload', localTransferInfo.tx, {
+			version: 4,
+		})
+
+		const message = payload.toU8a({ method: true });
+
+		const signat = origin.sign(message, { withType: true });
+
+		const extrinsic = api.createType(
+			'Extrinsic',
+			{ method: localTransferInfo.method },
+			{ version: 4 }
+		).addSignature(sender, signat, localTransferInfo.tx);
+
+		const tx = extrinsic.toHex()
+
+		await api.rpc.author.submitExtrinsic(tx);
 
 	} catch (e) {
 		console.error(e);

@@ -22,7 +22,11 @@ export const balanceTracker = async (
 			if (!balance) {
 				for (const assetId of assetIds) {
 					accountInfo = (await api.query.foreignAssets.account(assetId, address)) as Option<PalletAssetsAssetAccount>;
-					balances.initial.push([assetId, accountInfo.unwrap().balance.toBn().toNumber()]);
+					if (accountInfo.valueOf() === null) {
+						balances.initial.push([assetId, 0]);
+					} else {
+						balances.initial.push([assetId, accountInfo.unwrap().balance.toBn().toNumber()]);
+					}
 				}
 			} else {
 				balances = balance;
@@ -36,7 +40,12 @@ export const balanceTracker = async (
 			if (!balance) {
 				for (const assetId of assetIds) {
 					accountInfo = await api.query.poolAssets.account(assetId, address);
-					balances.initial.push([assetId, accountInfo.unwrap().balance.toBn().toNumber()]);
+					console.log(accountInfo.value.toHuman())
+					if (accountInfo.isNone) {
+						balances.initial.push([assetId, 0]);
+					} else {
+						balances.initial.push([assetId, accountInfo.unwrap().balance.toBn().toNumber()]);
+					}
 				}
 			} else {
 				balances = balance;
@@ -49,7 +58,11 @@ export const balanceTracker = async (
 		case '--local':
 			if (!balance) {
 				accountInfo = await api.query.system.account(address);
-				balances.initial.push(['0', Number(accountInfo.data.free)]);
+				if (accountInfo === null) {
+					balances.initial.push(['0', 0]);
+				} else {
+					balances.initial.push(['0', Number(accountInfo.data.free)]);
+				}
 			} else {
 				balances = balance;
 				accountInfo = await api.query.system.account(address);
@@ -60,7 +73,7 @@ export const balanceTracker = async (
 			if (!balance) {
 				for (const assetId of assetIds) {
 					accountInfo = await api.query.assets.account(assetId, address);
-					if (accountInfo.valueOf() == null) {
+					if (accountInfo === null) {
 						balances.initial.push([assetId, 0]);
 					} else {
 						balances.initial.push([assetId, accountInfo.unwrap().balance.toBn().toNumber()]);
