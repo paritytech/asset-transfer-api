@@ -323,3 +323,7 @@ From the root directory run `./<zombienet_binary_name> -p native spawn ./zombien
 ### Create an asset
 
 From the root directory run `yarn start:zombienet-post-script`. You can run this right after running your zombienet network.
+
+## E2E Testing
+
+You can access the E2E tests and its documentation [here](./e2e-tests/).

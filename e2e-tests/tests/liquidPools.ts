@@ -4,15 +4,16 @@ import { KeyringPair } from '@polkadot/keyring/types';
 
 import { AssetTransferApi } from '../../src';
 import { TxResult } from '../../src/types';
+import { EXTRINSIC_VERSION } from '../consts';
 
 const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: number): AssetTransferApi => {
 	const injectedRegistry = {
 		rococo: {
 			'1836': {
-				tokens: ['ROC'],
+				tokens: ['HOP'],
 				assetsInfo: {},
 				foreignAssetsInfo: {},
-				specName: 'asset-hub-rococo',
+				specName: 'trappist-rococo',
 				poolPairsInfo: {},
 			},
 		},
@@ -36,10 +37,17 @@ const createLocalTransferTransaction = async (
 ) => {
 	const assetApi = createAssetApi(api, specName, safeXcmVersion);
 
-	let localTransferInfo: TxResult<'submittable'>;
+	let localTransferInfo: TxResult<'payload'>;
 	try {
 		localTransferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
-		await localTransferInfo.tx.signAndSend(origin);
+
+		const payload = api.createType('ExtrinsicPayload', localTransferInfo.tx, {
+			version: EXTRINSIC_VERSION,
+		});
+
+		const extrinsic = api.registry.createType('Extrinsic', { method: payload.method }, { version: 4 });
+
+		await api.tx(extrinsic).signAndSend(origin);
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);
@@ -59,12 +67,12 @@ const createPayFeesTransaction = async (
 ) => {
 	const assetApi = createAssetApi(api, specName, safeXcmVersion);
 
-	let transferInfo: TxResult<'payload'>;
+	let transferWithFeesInfo: TxResult<'payload'>;
 	try {
-		transferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
+		transferWithFeesInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
 
-		const payload = api.createType('ExtrinsicPayload', transferInfo.tx, {
-			version: 4,
+		const payload = api.createType('ExtrinsicPayload', transferWithFeesInfo.tx, {
+			version: EXTRINSIC_VERSION,
 		});
 
 		const extrinsic = api.registry.createType('Extrinsic', { method: payload.method }, { version: 4 });

@@ -22,28 +22,41 @@ export interface TestGroups {
 export const tests: TestGroups = {
 	foreignAssets: [
 		{
-			// This will declare the call to use
-			test: 'createTransferTransactionCall',
-			// This will be all the args for the above call
+			test: 'createForeignTransferTransaction',
 			args: [
-				'1836',
 				'1000',
+				'1836',
 				'//Alice',
 				BOB_ADDR,
 				'[{ "parents": "1", "interior": { "X2": [{ "Parachain": "1836" }, { "GeneralIndex": "0" }]}}]',
-				'[200000000000]',
-				'{ "format": "submittable", "xcmVersion": 3 }',
+				'[200000000]',
+				'{ "format": "payload", "xcmVersion": 3, "sendersAddr": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }',
 			],
-			// This will be a tuple that will allow us to verify if the xcm message
-			// succesfully went through on the other end
-			verification: ['<dest_addr>', '<dest_chain_id>'],
+			verification: [
+				'[{ "parents": "1", "interior": { "X2": [{ "Parachain": "1836" }, { "GeneralIndex": "0" }]}}]',
+				'[200000000]',
+			],
+		},
+		{
+			test: 'createLocalForeignTransferTransaction',
+			args: [
+				'1000',
+				'1000',
+				'//Alice',
+				FERDE_ADDR,
+				'[{ "parents": "1", "interior": { "X2": [{ "Parachain": "1836" }, { "GeneralIndex": "0" }]}}]',
+				'[200000000000]',
+				'{ "format": "payload", "xcmVersion": 3, "sendersAddr": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }',
+			],
+			verification: [
+				'[{ "parents": "1", "interior": { "X2": [{ "Parachain": "1836" }, { "GeneralIndex": "0" }]}}]',
+				'[200000000000]',
+			],
 		},
 	],
 	liquidPools: [
 		{
-			// This will declare the call to use
 			test: 'createLocalTransferTransaction',
-			// This will be all the args for the above call
 			args: [
 				'1000',
 				'1000',
@@ -51,16 +64,12 @@ export const tests: TestGroups = {
 				BOB_ADDR,
 				'[0]',
 				'[20000]',
-				'{ "format": "submittable", "transferLiquidToken": true }',
+				'{ "format": "payload", "keepAlive": true, "transferLiquidToken": true, "sendersAddr": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }',
 			],
-			// This will be a tuple that will allow us to verify if the xcm message
-			// succesfully went through on the other end
-			verification: ['[0]', '[2000]'],
+			verification: ['[0]', '[20000]'],
 		},
 		{
-			// This will declare the call to use
 			test: 'createPayFeesTransaction',
-			// This will be all the args for the above call
 			args: [
 				'1000',
 				'1000',
@@ -68,18 +77,14 @@ export const tests: TestGroups = {
 				FERDE_ADDR,
 				'[0]',
 				'[3000000]',
-				'{ "format": "payload", "xcmVersion": 3, "transferLiquidToken": true, "paysWithFeeOrigin": { "parents": "0", "interior": { "X2": [{"PalletInstance": "50"}, { "GeneralIndex": "1" }]}}, "sendersAddr": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty" }',
+				'{ "format": "payload", "keepAlive": true, "transferLiquidToken": true, "paysWithFeeOrigin": { "parents": "0", "interior": { "X2": [{"PalletInstance": "50"}, { "GeneralIndex": "1" }]}}, "sendersAddr": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty" }',
 			],
-			// This will be a tuple that will allow us to verify if the xcm message
-			// succesfully went through on the other end
 			verification: ['[0]', '[3000000]'],
 		},
 	],
 	local: [
 		{
-			// This will declare the call to use
 			test: 'createLocalTransferTransaction',
-			// This will be all the args for the above call
 			args: [
 				'1000',
 				'1000',
@@ -87,16 +92,12 @@ export const tests: TestGroups = {
 				BOB_ADDR,
 				'[]',
 				'[100000000000]',
-				'{ "format": "submittable", "keepAlive": true }',
+				'{ "format": "payload", "keepAlive": true, "sendersAddr": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }',
 			],
-			// This will be a tuple that will allow us to verify if the xcm message
-			// succesfully went through on the other end
-			verification: ['[0]', '[10000000000000]'],
+			verification: ['[]', '[100000000000]'],
 		},
 		{
-			// This will declare the call to use
-			test: 'createLocalTransferTransaction',
-			// This will be all the args for the above call
+			test: 'createLocalTransferTransactionWithFees',
 			args: [
 				'0',
 				'0',
@@ -104,18 +105,40 @@ export const tests: TestGroups = {
 				BOB_ADDR,
 				'[]',
 				'[100000000000000000]',
-				'{ "format": "submittable", "keepAlive": true }',
+				'{ "format": "payload", "keepAlive": true, "sendersAddr": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "paysWithFeeOrigin": { "parents": "0", "interior": { "X2": [{"PalletInstance": "50"}, { "GeneralIndex": "1" }]}} }',
 			],
-			// This will be a tuple that will allow us to verify if the xcm message
-			// succesfully went through on the other end
-			verification: ['[0]', '[10000000000000]'],
+			verification: ['[]', '[10000000000000]'],
+		},
+		{
+			test: 'createLimitedNativeTransferToRelay',
+			args: [
+				'1000',
+				'0',
+				'//Alice',
+				BOB_ADDR,
+				'[]',
+				'[1000000000000000]',
+				'{ "format": "payload", "keepAlive": true, "xcmVersion": 3, "isLimited": true, "sendersAddr": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "paysWithFeeOrigin": { "parents": "0", "interior": { "X2": [{"PalletInstance": "50"}, { "GeneralIndex": "1" }]}} }',
+			],
+			verification: ['[]', '[1000000000000000]'],
+		},
+		{
+			test: 'createLimitedNativeTransferToSystem',
+			args: [
+				'0',
+				'1000',
+				'//Bob',
+				FERDE_ADDR,
+				'[]',
+				'[210000000000000]',
+				'{ "format": "payload", "keepAlive": true, "xcmVersion": 3, "isLimited": true, "weightLimit": {"refTime": "10000" , "proofSize": "3000"}, "sendersAddr": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "paysWithFeeOrigin": { "parents": "0", "interior": { "X2": [{"PalletInstance": "50"}, { "GeneralIndex": "1" }]}} }',
+			],
+			verification: ['[]', '[210000000000000]'],
 		},
 	],
 	assets: [
 		{
-			// This will declare the call to use
 			test: 'createLocalSystemAssetsTransferTransaction',
-			// This will be all the args for the above call
 			args: [
 				'1000',
 				'1000',
@@ -123,16 +146,12 @@ export const tests: TestGroups = {
 				BOB_ADDR,
 				'[1]',
 				'[3000000000000]',
-				'{ "format": "submittable", "keepAlive": true }',
+				'{ "format": "payload", "keepAlive": true, "sendersAddr": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }',
 			],
-			// This will be a tuple that will allow us to verify if the xcm message
-			// succesfully went through on the other end
-			verification: ['[1]', '[30000]'],
+			verification: ['[1]', '[3000000000000]'],
 		},
 		{
-			// This will declare the call to use
 			test: 'createPayFeesTransaction',
-			// This will be all the args for the above call
 			args: [
 				'1000',
 				'1000',
@@ -140,11 +159,9 @@ export const tests: TestGroups = {
 				FERDE_ADDR,
 				'[1]',
 				'[200000000000]',
-				'{ "format": "submittable", "keepAlive": true }',
+				'{ "format": "payload", "keepAlive": false, "sendersAddr": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", "paysWithFeeOrigin": { "parents": "0", "interior": { "X2": [{"PalletInstance": "50"}, { "GeneralIndex": "1" }]}} }',
 			],
-			// This will be a tuple that will allow us to verify if the xcm message
-			// succesfully went through on the other end
-			verification: ['[1]', '[2000]'],
+			verification: ['[1]', '[200000000000]'],
 		},
 	],
 };

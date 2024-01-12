@@ -60,24 +60,6 @@ chain = "trappist-local"
   ws_port = 9921
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
-[[parachains]]
-id = 4000
-add_to_genesis = true
-cumulus_based = true
-chain = "moonriver-local"
-
-  [[parachains.collators]]
-  name = "moonriver-collator01"
-  command = "./zombienet/bin/moonbeam"
-  ws_port = 9930
-  args = ["--log=xcm=trace,pallet-assets=trace"]
-
-  [[parachains.collators]]
-  name = "moonriver-collator02"
-  command = "./zombienet/bin/moonbeam"
-  ws_port = 9931
-  args = ["--log=xcm=trace,pallet-assets=trace"]
-
 [types.Header]
 number = "u64"
 parent_hash = "Hash"

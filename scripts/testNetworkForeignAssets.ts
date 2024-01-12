@@ -5,11 +5,11 @@ import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
-import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL, ROCOCO_ASSET_HUB_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
 import { awaitBlockProduction, awaitEpochChange, delay, logWithDate } from './util';
 
 const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
-	const rockmineMultilocatino = {
+	const trappistMultilocation = {
 		parents: 1,
 		interior: {
 			X1: {
@@ -19,7 +19,7 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 	};
 
 	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(
-		rockmineMultilocatino,
+		trappistMultilocation,
 		'Asset Hub Rococo Hop',
 		'Hop',
 		12,
@@ -36,17 +36,17 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 };
 
 const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
-	const rockmineMultilocatino = {
+	const trappistMultilocation = {
 		parents: 1,
 		interior: {
 			X1: {
-				parachain: 3000,
+				parachain: 1836,
 			},
 		},
 	};
 
 	const createTx = assetHubApi.tx.foreignAssets.create(
-		rockmineMultilocatino,
+		trappistMultilocation,
 		'5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', // Sibling 1836 -> ParaId
 		'100000000000',
 	);
@@ -61,13 +61,13 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 	return hexCall;
 };
 
-const sudoCallWrapper = (rockmineApi: ApiPromise, call: `0x${string}`) => {
+const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 	// Double encode the call
-	const xcmDoubleEncoded = rockmineApi.createType('XcmDoubleEncoded', {
+	const xcmDoubleEncoded = trappistApi.createType('XcmDoubleEncoded', {
 		encoded: call,
 	});
 
-	const xcmOriginType = rockmineApi.createType('XcmOriginKind', 'Xcm');
+	const xcmOriginType = trappistApi.createType('XcmOriginKind', 'Xcm');
 	const xcmDestMultiLocation = {
 		V3: {
 			parents: 1,
@@ -145,8 +145,8 @@ const sudoCallWrapper = (rockmineApi: ApiPromise, call: `0x${string}`) => {
 			},
 		],
 	};
-	const xcmMsg = rockmineApi.tx.polkadotXcm.send(xcmDestMultiLocation, xcmMessage);
-	const xcmCall = rockmineApi.createType('Call', {
+	const xcmMsg = trappistApi.tx.polkadotXcm.send(xcmDestMultiLocation, xcmMessage);
+	const xcmCall = trappistApi.createType('Call', {
 		callIndex: xcmMsg.callIndex,
 		args: xcmMsg.args,
 	});
@@ -154,14 +154,14 @@ const sudoCallWrapper = (rockmineApi: ApiPromise, call: `0x${string}`) => {
 	return xcmCall;
 };
 
-const createForeignAssetViaSudo = (assetHubApi: ApiPromise, rockmineApi: ApiPromise) => {
+const createForeignAssetViaSudo = (assetHubApi: ApiPromise, trappistApi: ApiPromise) => {
 	const foreignAssetCreateCall = fAssetCreateCall(assetHubApi);
-	return sudoCallWrapper(rockmineApi, foreignAssetCreateCall);
+	return sudoCallWrapper(trappistApi, foreignAssetCreateCall);
 };
 
-const setMetadataForeignAssetViaSudo = (assetHubApi: ApiPromise, rockmineApi: ApiPromise) => {
+const setMetadataForeignAssetViaSudo = (assetHubApi: ApiPromise, trappistApi: ApiPromise) => {
 	const setMetadataCall = fAssetSetMetadataCall(assetHubApi);
-	return sudoCallWrapper(rockmineApi, setMetadataCall);
+	return sudoCallWrapper(trappistApi, setMetadataCall);
 };
 
 const openHrmpChannels = (api: ApiPromise, sender: number, receiver: number) => {
@@ -184,13 +184,13 @@ const main = async () => {
 	await kusamaAssetHubApi.isReady;
 	logWithDate(chalk.green('Created a connection to Kusama AssetHub'));
 
-	const rockmineApi = await ApiPromise.create({
-		provider: new WsProvider(ROCOCO_ASSET_HUB_WS_URL),
+	const trappistApi = await ApiPromise.create({
+		provider: new WsProvider(TRAPPIST_WS_URL),
 		noInitWarn: true,
 	});
 
-	await rockmineApi.isReady;
-	logWithDate(chalk.green('Created a connection to Rococo Asset Hub'));
+	await trappistApi.isReady;
+	logWithDate(chalk.green('Created a connection to Trappist'));
 
 	const relayApi = await ApiPromise.create({
 		provider: new WsProvider(ROCOCO_ALICE_WS_URL),
@@ -213,23 +213,23 @@ const main = async () => {
 	await awaitEpochChange(relayApi);
 	logWithDate(chalk.magenta('HRMP channels open'));
 
-	logWithDate(chalk.magenta('Sending funds to Rococo Asset Hub Sibling on Kusama AssetHub'));
+	logWithDate(chalk.magenta('Sending funds to Trappist Sibling on Kusama AssetHub'));
 
 	await kusamaAssetHubApi.tx.balances
 		.transferKeepAlive('5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', 10000000000000)
 		.signAndSend(bob);
 
-	const foreignAssetsCreateSudoXcmCall = createForeignAssetViaSudo(kusamaAssetHubApi, rockmineApi);
+	const foreignAssetsCreateSudoXcmCall = createForeignAssetViaSudo(kusamaAssetHubApi, trappistApi);
 
 	logWithDate('Sending Sudo XCM message from relay chain to execute create foreign asset call on Kusama AssetHub');
-	await rockmineApi.tx.sudo.sudo(foreignAssetsCreateSudoXcmCall).signAndSend(alice);
+	await trappistApi.tx.sudo.sudo(foreignAssetsCreateSudoXcmCall).signAndSend(alice);
 
 	await delay(24000);
 
-	const foreignAssetsSetMetadataSudoXcmCall = setMetadataForeignAssetViaSudo(kusamaAssetHubApi, rockmineApi);
+	const foreignAssetsSetMetadataSudoXcmCall = setMetadataForeignAssetViaSudo(kusamaAssetHubApi, trappistApi);
 
 	logWithDate('Sending Sudo XCM message from relay chain to execute setMetadata call on Kusama AssetHub');
-	await rockmineApi.tx.sudo.sudo(foreignAssetsSetMetadataSudoXcmCall).signAndSend(alice);
+	await trappistApi.tx.sudo.sudo(foreignAssetsSetMetadataSudoXcmCall).signAndSend(alice);
 
 	await delay(24000);
 
@@ -237,13 +237,13 @@ const main = async () => {
 		logWithDate(chalk.blue('Polkadot-js successfully disconnected from asset-hub'));
 	});
 
-	await rockmineApi.disconnect().then(() => {
-		logWithDate(chalk.blue('Polkadot-js successfully disconnected from Rococo Asset Hub'));
+	await trappistApi.disconnect().then(() => {
+		logWithDate(chalk.blue('Polkadot-js successfully disconnected from Trappist'));
 	});
 };
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
-awaitBlockProduction(ROCOCO_ASSET_HUB_WS_URL).then(async () => {
+awaitBlockProduction(TRAPPIST_WS_URL).then(async () => {
 	await main()
 		.catch(console.error)
 		.finally(() => process.exit());

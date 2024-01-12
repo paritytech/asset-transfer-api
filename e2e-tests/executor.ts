@@ -7,7 +7,7 @@ import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { delay } from '../scripts/util';
 import { constructApiPromise } from '../src';
 import { balanceTracker, IBalance } from './balance';
-import { KUSAMA_ASSET_HUB_WS_URL, MOONRIVER_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
 import { startProgressBar, startTestLogger, terminateProgressBar, testResultLogger, updateProgressBar } from './logger';
 import { assetTests, foreignAssetsTests, IndividualTest, liquidPoolsTests, localTests, tests } from './tests';
 import { verification } from './verification';
@@ -54,13 +54,6 @@ const executor = async (testCase: string) => {
 			break;
 	}
 
-	let originChainId = '';
-	let destChainId = '';
-	let originAddr = '';
-	let destAddr = '';
-	let assetIds: string[] = [];
-	let amounts: string[] = [];
-	let opts: object = {};
 	let counter: number = 0;
 
 	startTestLogger(testCase);
@@ -70,13 +63,13 @@ const executor = async (testCase: string) => {
 	const results: [string, string, string, boolean][] = [];
 
 	for (const t of testData) {
-		originChainId = t.args[0];
-		destChainId = t.args[1];
-		originAddr = t.args[2];
-		destAddr = t.args[3];
-		assetIds = t.args[4].slice(1, -1).split(',');
-		amounts = t.args[5].slice(1, -1).split(',');
-		opts = JSON.parse(t.args[6], (key: string, value: string) => {
+		const originChainId: string = t.args[0];
+		const destChainId: string = t.args[1];
+		const originAddr: string = t.args[2];
+		const destAddr: string = t.args[3];
+		const assetIds: string[] = t.args[4].slice(1, -1).split(',');
+		const amounts: string[] = t.args[5].slice(1, -1).split(',');
+		const opts: object = JSON.parse(t.args[6], (key: string, value: string) => {
 			return key === 'paysWithFeeOrigin' ? JSON.stringify(value) : value;
 		}) as object;
 		let chainName: string = '';
@@ -94,10 +87,6 @@ const executor = async (testCase: string) => {
 				originWsUrl = TRAPPIST_WS_URL;
 				chainName = 'Trappist';
 				break;
-			case '4000':
-				originWsUrl = MOONRIVER_WS_URL;
-				chainName = 'Moonriver';
-				break;
 		}
 		if (originChainId == destChainId) {
 			destWsUrl = originWsUrl;
@@ -114,10 +103,6 @@ const executor = async (testCase: string) => {
 				case '1836':
 					destWsUrl = TRAPPIST_WS_URL;
 					chainName = 'Trappist';
-					break;
-				case '4000':
-					destWsUrl = MOONRIVER_WS_URL;
-					chainName = 'Moonriver';
 					break;
 			}
 		}
@@ -152,9 +137,10 @@ const executor = async (testCase: string) => {
 			destInitialBalance,
 		);
 
-		const correctlyReceived = verification(assetIds, amounts, destFinalBalance);
+		const verificationAssetIds: string[] = t.verification[0].slice(1, -1).split(',');
+		const verificationAmounts: string[] = t.verification[1].slice(1, -1).split(',');
 
-		await delay(12000);
+		const correctlyReceived = verification(verificationAssetIds, verificationAmounts, destFinalBalance);
 
 		await originApi.disconnect();
 		await destinationApi.disconnect();

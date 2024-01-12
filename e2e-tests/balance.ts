@@ -8,6 +8,16 @@ export interface IBalance {
 	final: [string, number][];
 }
 
+/**
+ *
+ * @param api api instance
+ * @param test name of the test currently being ran
+ * @param address address of the account whose balance is being queried
+ * @param assetIds Ids of the assets being queried
+ * @param balance initial balance for the account queried
+ * @returns instance of IBalance containing the initial and optionally the final
+ * balance of the account queried
+ */
 export const balanceTracker = async (
 	api: ApiPromise,
 	test: string,
@@ -72,7 +82,7 @@ export const balanceTracker = async (
 			if (!balance) {
 				for (const assetId of assetIds) {
 					accountInfo = await api.query.assets.account(assetId, address);
-					if (accountInfo === null) {
+					if (accountInfo.isNone) {
 						balances.initial.push([assetId, 0]);
 					} else {
 						balances.initial.push([assetId, accountInfo.unwrap().balance.toBn().toNumber()]);

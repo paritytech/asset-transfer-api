@@ -81,11 +81,7 @@ const main = async () => {
 	const hrmpChannelCalls = [];
 
 	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1000), Number(1836)));
-	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1000), Number(4000)));
 	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1836), Number(1000)));
-	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1836), Number(4000)));
-	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(4000), Number(1000)));
-	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(4000), Number(1836)));
 
 	await relayApi.tx.sudo.sudo(relayApi.tx.utility.batchAll(hrmpChannelCalls)).signAndSend(alice);
 
