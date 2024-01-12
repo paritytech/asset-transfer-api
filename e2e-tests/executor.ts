@@ -8,6 +8,7 @@ import { delay } from '../scripts/util';
 import { constructApiPromise } from '../src';
 import { balanceTracker, IBalance } from './balance';
 import { KUSAMA_ASSET_HUB_WS_URL, MOONRIVER_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
+import { startProgressBar, startTestLogger, terminateProgressBar, testResultLogger, updateProgressBar } from './logger';
 import { assetTests, foreignAssetsTests, IndividualTest, liquidPoolsTests, localTests, tests } from './tests';
 import { verification } from './verification';
 
@@ -16,7 +17,6 @@ const executor = async (testCase: string) => {
 	let destWsUrl = '';
 
 	let testData: IndividualTest[] = [];
-	console.log(testCase);
 
 	await cryptoWaitReady();
 
@@ -53,7 +53,6 @@ const executor = async (testCase: string) => {
 			n = assetTests;
 			break;
 	}
-	console.log(n);
 
 	let originChainId = '';
 	let destChainId = '';
@@ -62,6 +61,13 @@ const executor = async (testCase: string) => {
 	let assetIds: string[] = [];
 	let amounts: string[] = [];
 	let opts: object = {};
+	let counter: number = 0;
+
+	startTestLogger(testCase);
+
+	const progressBar = startProgressBar(testData, testCase);
+
+	const results: [string, string, string, boolean][] = [];
 
 	for (const t of testData) {
 		originChainId = t.args[0];
@@ -73,40 +79,49 @@ const executor = async (testCase: string) => {
 		opts = JSON.parse(t.args[6], (key: string, value: string) => {
 			return key === 'paysWithFeeOrigin' ? JSON.stringify(value) : value;
 		}) as object;
+		let chainName: string = '';
 
 		switch (originChainId) {
 			case '0':
 				originWsUrl = ROCOCO_ALICE_WS_URL;
+				chainName = 'Rococo';
 				break;
 			case '1000':
 				originWsUrl = KUSAMA_ASSET_HUB_WS_URL;
+				chainName = 'Kusama Asset Hub';
 				break;
 			case '1836':
 				originWsUrl = TRAPPIST_WS_URL;
+				chainName = 'Trappist';
 				break;
 			case '4000':
 				originWsUrl = MOONRIVER_WS_URL;
+				chainName = 'Moonriver';
 				break;
 		}
-
 		if (originChainId == destChainId) {
 			destWsUrl = originWsUrl;
 		} else {
 			switch (destChainId) {
 				case '0':
 					destWsUrl = ROCOCO_ALICE_WS_URL;
+					chainName = 'Rococo';
 					break;
 				case '1000':
 					destWsUrl = KUSAMA_ASSET_HUB_WS_URL;
+					chainName = 'Kusama Asset Hub';
 					break;
 				case '1836':
 					destWsUrl = TRAPPIST_WS_URL;
+					chainName = 'Trappist';
 					break;
 				case '4000':
 					destWsUrl = MOONRIVER_WS_URL;
+					chainName = 'Moonriver';
 					break;
 			}
 		}
+
 		const { api, specName, safeXcmVersion } = await constructApiPromise(originWsUrl);
 
 		await api.isReady;
@@ -139,19 +154,25 @@ const executor = async (testCase: string) => {
 
 		const correctlyReceived = verification(assetIds, amounts, destFinalBalance);
 
-		for (let i = 0; i < assetIds.length; i++) {
-			if (correctlyReceived[i][1]) {
-				console.log('all good');
-			} else {
-				console.log('badd');
-			}
-		}
-
 		await delay(12000);
 
 		await originApi.disconnect();
 		await destinationApi.disconnect();
+
+		counter += 1;
+
+		updateProgressBar(counter, progressBar);
+
+		for (let i = 0; i < assetIds.length; i++) {
+			results.push([t.test, assetIds[i], chainName, correctlyReceived[i][1]]);
+		}
 	}
+
+	for (let i = 0; i < results.length; i++) {
+		testResultLogger(results[i][0], results[i][1], results[i][2], results[i][3]);
+	}
+
+	terminateProgressBar(progressBar, testCase);
 };
 
 executor(process.argv[2])

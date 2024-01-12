@@ -5,8 +5,6 @@ export const verification = (assetIds: string[], amounts: string[], destBalance:
 	const destInitialBalance: [string, number][] = destBalance.initial;
 	const destFinalBalance: [string, number][] = destBalance.final;
 	const correctlyReceived: [string, boolean][] = [];
-	console.log(destInitialBalance);
-	console.log(destFinalBalance);
 
 	let check = true;
 	for (let i = 0; i < assetIds.length; i++) {

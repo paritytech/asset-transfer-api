@@ -40,7 +40,6 @@ export const balanceTracker = async (
 			if (!balance) {
 				for (const assetId of assetIds) {
 					accountInfo = await api.query.poolAssets.account(assetId, address);
-					console.log(accountInfo.value.toHuman());
 					if (accountInfo.isNone) {
 						balances.initial.push([assetId, 0]);
 					} else {
