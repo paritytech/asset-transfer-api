@@ -49,13 +49,13 @@ cumulus_based = true
 chain = "trappist-local"
 
   [[parachains.collators]]
-  name = "rockmine-collator01"
+  name = "trappist-collator01"
   command = "./zombienet/bin/trappist-node"
   ws_port = 9920
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
   [[parachains.collators]]
-  name = "rockmine-collator02"
+  name = "trappist-collator02"
   command = "./zombienet/bin/trappist-node"
   ws_port = 9921
   args = ["--log=xcm=trace,pallet-assets=trace"]
