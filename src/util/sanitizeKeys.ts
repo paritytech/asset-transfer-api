@@ -18,7 +18,8 @@ const isPlainObject = (input: unknown) => {
 };
 
 /**
- * Set all keys in an object with the first key being capitalized
+ * Set all keys in an object with the first key being capitalized.
+ * When a keys value is an integer it will convert that integer into a string.
  *
  * @param xcmObj
  */
@@ -30,7 +31,9 @@ export const sanitizeKeys = <T extends AnyObj>(xcmObj: T): T => {
 		if (Array.isArray(value)) {
 			final[mapKey(key)] = value.map(sanitizeKeys);
 		} else if (!isPlainObject(value)) {
-			final[mapKey(key)] = value;
+			// Ensure when the value is an integer that it is sanitized to a string.
+			const sanitizedValue = Number.isInteger(value) ? Number(value).toString() : value;
+			final[mapKey(key)] = sanitizedValue;
 		} else {
 			final[mapKey(key)] = sanitizeKeys(value as AnyObj);
 		}
