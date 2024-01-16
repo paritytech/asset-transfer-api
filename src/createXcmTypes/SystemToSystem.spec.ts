@@ -104,7 +104,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: 0,
+								Parents: '0',
 								Interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 								},
@@ -132,7 +132,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: 1,
+								Parents: '1',
 								Interior: {
 									Here: '',
 								},
@@ -173,7 +173,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: 0,
+								Parents: '0',
 								Interior: {
 									X2: [{ PalletInstance: '55' }, { GeneralIndex: '11' }],
 								},

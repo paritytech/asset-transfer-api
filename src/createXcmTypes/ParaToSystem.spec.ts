@@ -107,7 +107,7 @@ describe('ParaToSystem', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: 1,
+								Parents: '1',
 								Interior: {
 									Here: null,
 								},
@@ -120,9 +120,9 @@ describe('ParaToSystem', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: 1,
+								Parents: '1',
 								Interior: {
-									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
+									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
 								},
 							},
 						},
@@ -154,9 +154,9 @@ describe('ParaToSystem', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: 1,
+								Parents: '1',
 								Interior: {
-									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 8 }],
+									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
 								},
 							},
 						},
@@ -167,9 +167,9 @@ describe('ParaToSystem', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: 1,
+								Parents: '1',
 								Interior: {
-									X3: [{ Parachain: 1000 }, { PalletInstance: 50 }, { GeneralIndex: 1984 }],
+									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
 								},
 							},
 						},
