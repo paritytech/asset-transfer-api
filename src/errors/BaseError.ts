@@ -71,7 +71,7 @@ export enum BaseErrorsEnum {
 	/**
 	 * The provided JS enviornment is not supported, and the api will not run.
 	 */
-	UnsupportedEnviornment = 'UnsupportedEnviornment',
+	UnsupportedEnvironment = 'UnsupportedEnvironment',
 }
 
 export class BaseError extends Error {
