@@ -69,7 +69,7 @@ export enum BaseErrorsEnum {
 	 */
 	NoFeeAssetLpFound = 'NoFeeAssetLpFound',
 	/**
-	 * The provided JS enviornment is not supported, and the api will not run.
+	 * The provided JS environment is not supported, and the api will not run.
 	 */
 	UnsupportedEnvironment = 'UnsupportedEnvironment',
 }
