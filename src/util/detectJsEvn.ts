@@ -3,7 +3,7 @@
 import { BaseError, BaseErrorsEnum } from '../errors';
 
 /**
- * Returns the specific enviornment the api is running in.
+ * Returns the specific environment the api is running in.
  * It will throw an error when the enviornment is not supported.
  */
 export const detectJsEnv = (): string => {
