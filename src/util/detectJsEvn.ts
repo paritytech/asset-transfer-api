@@ -4,7 +4,7 @@ import { BaseError, BaseErrorsEnum } from '../errors';
 
 /**
  * Returns the specific environment the api is running in.
- * It will throw an error when the enviornment is not supported.
+ * It will throw an error when the environment is not supported.
  */
 export const detectJsEnv = (): string => {
 	const isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
