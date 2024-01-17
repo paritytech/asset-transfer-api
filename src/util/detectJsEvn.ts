@@ -14,7 +14,7 @@ export const detectJsEnv = (): string => {
 	if (isBrowser) return 'browser';
 
 	throw new BaseError(
-		'The following JS enviornment is not supported. Currently only the browser, and NodeJS have support.',
+		'The following JS environment is not supported. Currently only the browser, and NodeJS have support.',
 		BaseErrorsEnum.UnsupportedEnviornment,
 	);
 };
