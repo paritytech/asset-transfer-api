@@ -17,7 +17,7 @@ describe('resolveMultiLocation', () => {
 	});
 	it('Should correctly return a resolved multilocation object given a correct value', () => {
 		const str = `{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x0001"}]}}`;
-		const exp = { Parents: 1, Interior: { X2: [{ Parachain: 2001 }, { GeneralKey: '0x0001' }] } };
+		const exp = { Parents: '1', Interior: { X2: [{ Parachain: '2001' }, { GeneralKey: '0x0001' }] } };
 
 		expect(resolveMultiLocation(str, 2)).toStrictEqual(exp);
 	});
