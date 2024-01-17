@@ -1,5 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
+import { JS_ENV } from '../consts';
+
 /**
  * Errors that may be returned by the API.
  */
@@ -66,12 +68,19 @@ export enum BaseErrorsEnum {
 	 * The provided paysWithFeeOrigin asset has no liquidity pool.
 	 */
 	NoFeeAssetLpFound = 'NoFeeAssetLpFound',
+	/**
+	 * The provided JS environment is not supported, and the api will not run.
+	 */
+	UnsupportedEnvironment = 'UnsupportedEnvironment',
 }
 
 export class BaseError extends Error {
 	constructor(message: string, error?: BaseErrorsEnum) {
 		super(message);
 		this.name = error || this.constructor.name;
-		Error.captureStackTrace(this, this.constructor);
+		// Only runtimes built on v8 will have `Error.captureStackTrace`.
+		if (JS_ENV === 'node') {
+			Error.captureStackTrace(this, this.constructor);
+		}
 	}
 }
