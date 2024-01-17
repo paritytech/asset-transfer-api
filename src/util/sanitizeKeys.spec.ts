@@ -16,4 +16,13 @@ describe('sanitizeKeys', () => {
 		const exp = { OnlyChild: { PalletInstance: '' }, GlobalConsensus: { Key1: '' } };
 		expect(sanitizeKeys(obj)).toStrictEqual(exp);
 	});
+	it('Should correctly sanitize values that are integers', () => {
+		const obj = { OnlyChild: { PalletInstance: 10 }, GlobalConsensus: { Key1: '' } };
+		const exp = { OnlyChild: { PalletInstance: '10' }, GlobalConsensus: { Key1: '' } };
+		expect(sanitizeKeys(obj)).toStrictEqual(exp);
+
+		const obj2 = { key1: { key2: { key3: [{ key6: 111, key7: 222 }, { key8: null }], key4: 333 } }, key5: 444 };
+		const exp2 = { Key1: { Key2: { Key3: [{ Key6: '111', Key7: '222' }, { Key8: null }], Key4: '333' } }, Key5: '444' };
+		expect(sanitizeKeys(obj2)).toStrictEqual(exp2);
+	});
 });
