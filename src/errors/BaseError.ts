@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { JS_ENV } from '../consts';
-import { WindowChrome } from './types';
 
 /**
  * Errors that may be returned by the API.
@@ -80,7 +79,7 @@ export class BaseError extends Error {
 		super(message);
 		this.name = error || this.constructor.name;
 		// Only runtimes built on v8 will have `Error.captureStackTrace`.
-		if (JS_ENV === 'node' || (window && (window as WindowChrome).chrome)) {
+		if (JS_ENV === 'node') {
 			Error.captureStackTrace(this, this.constructor);
 		}
 	}

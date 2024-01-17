@@ -8,7 +8,3 @@ export interface CheckXcmTxInputsOpts {
 	isLimited?: boolean;
 	weightLimit?: { refTime?: string; proofSize?: string };
 }
-
-export interface WindowChrome extends Window {
-	chrome?: unknown;
-}
