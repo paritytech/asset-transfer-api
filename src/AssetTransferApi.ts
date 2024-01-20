@@ -396,7 +396,7 @@ export class AssetTransferApi {
 			data = await fetch(CDN_URL);
 		} catch (e) {
 			throw new BaseError(
-				'Failed fetching the registry the from CDN. If the issue persists, you may set the registryType to `NPM`',
+				'Failed fetching the registry from the CDN. If the issue persists, you may set the registryType to `NPM`',
 				BaseErrorsEnum.InternalError,
 			);
 		}
