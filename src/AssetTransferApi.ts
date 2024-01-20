@@ -391,8 +391,15 @@ export class AssetTransferApi {
 			this.registryConfig.registryInitialized = true;
 			return;
 		}
-
-		const data = await fetch(CDN_URL);
+		let data;
+		try {
+			data = await fetch(CDN_URL);
+		} catch (e) {
+			throw new BaseError(
+				'Failed fetching the registry from the CDN. If the issue persists, you may set the registryType to `NPM`',
+				BaseErrorsEnum.InternalError,
+			);
+		}
 		const fetchedRegistry = (await data.json()) as ChainInfoRegistry;
 		this.registry.setRegistry = fetchedRegistry;
 
