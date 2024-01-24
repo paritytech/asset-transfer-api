@@ -14,6 +14,7 @@ import * as assets from './createCalls/assets';
 import * as balances from './createCalls/balances';
 import * as foreignAssets from './createCalls/foreignAssets';
 import * as poolAssets from './createCalls/poolAssets';
+import * as tokens from './createCalls/tokens';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
@@ -188,7 +189,8 @@ export class AssetTransferApi {
 
 		const isLocalSystemTx = isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId;
 		const isLocalRelayTx = destChainId === '0' && RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
-		const isLocalTx = isLocalRelayTx || isLocalSystemTx;
+		const isLocalParachainTx = isOriginParachain && isDestParachain && originChainId === destChainId;
+		const isLocalTx = isLocalRelayTx || isLocalSystemTx || isLocalParachainTx;
 		const nativeRelayChainAsset = registry.currentRelayRegistry[relayChainID].tokens[0];
 		const xcmDirection = this.establishDirection(
 			isLocalTx,
@@ -205,9 +207,9 @@ export class AssetTransferApi {
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
 		/**
-		 * Create a local asset transfer on a system parachain
+		 * Create a local asset transfer
 		 */
-		if (isLocalSystemTx || isLocalRelayTx) {
+		if (isLocalSystemTx || isLocalRelayTx || isLocalParachainTx) {
 			let assetId = assetIds[0];
 			const amount = amounts[0];
 			const isValidNumber = validateNumber(assetId);
@@ -226,6 +228,8 @@ export class AssetTransferApi {
 			/**
 			 * This will throw a BaseError if the inputs are incorrect and don't
 			 * fit the constraints for creating a local asset transfer.
+			 *
+			 * TODO: This should be checked per type of local tx input, and unique to the type of node (ie: parachain, system, relay);
 			 */
 			const localAssetType = await checkLocalTxInput(
 				_api,
@@ -274,6 +278,33 @@ export class AssetTransferApi {
 					format,
 					paysWithFeeOrigin,
 				});
+			} else if (isLocalParachainTx) {
+				if (_api.tx.balances) {
+					const palletMethod: LocalTransferTypes = `balances::${method}`;
+					const tx =
+						method === 'transferKeepAlive'
+							? balances.transferKeepAlive(_api, addr, amount)
+							: balances.transfer(_api, addr, amount);
+					return this.constructFormat(tx, 'local', null, palletMethod, destChainId, _specName, {
+						format,
+						paysWithFeeOrigin,
+					});
+				} else if (_api.tx.tokens) {
+					const palletMethod: LocalTransferTypes = `tokens::${method}`;
+					const tx =
+						method === 'transferKeepAlive'
+							? tokens.transferKeepAlive(_api, addr, assetIds[0], amount)
+							: tokens.transfer(_api, addr, assetIds[0], amount);
+					return this.constructFormat(tx, 'local', null, palletMethod, destChainId, _specName, {
+						format,
+						paysWithFeeOrigin,
+					});
+				} else {
+					throw new BaseError(
+						'No supported pallets were found for local transfers. Supported pallets include: balances, tokens.',
+						BaseErrorsEnum.PalletNotFound,
+					);
+				}
 			} else {
 				/**
 				 * By default local transaction on a relay chain will always be from the balances pallet

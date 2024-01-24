@@ -109,7 +109,9 @@ export type LocalTransferTypes =
 	| 'balances::transfer'
 	| 'balances::transferKeepAlive'
 	| 'poolAssets::transfer'
-	| 'poolAssets::transferKeepAlive';
+	| 'poolAssets::transferKeepAlive'
+	| 'tokens::transfer'
+	| 'tokens::transferKeepAlive';
 
 /**
  * The Methods are the collections of methods the API will use to construct a transaction.
