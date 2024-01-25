@@ -6,6 +6,8 @@ import { MAX_NUM_LENGTH } from '../consts';
  * @param val
  */
 export const validateNumber = (val: string): boolean => {
+	if (!val) return false;
+
 	if (val.length < MAX_NUM_LENGTH) {
 		const isNum = Number.parseInt(val);
 
