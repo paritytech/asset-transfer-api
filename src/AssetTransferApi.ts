@@ -37,11 +37,13 @@ import {
 	BaseErrorsEnum,
 	checkBaseInputOptions,
 	checkBaseInputTypes,
-	checkLocalTxInput,
+	checkLocalParachainInput,
+	checkLocalRelayInput,
+	checkLocalSystemParachainInput,
 	checkXcmTxInputs,
 	checkXcmVersion,
-	LocalTxType,
 } from './errors';
+import { LocalTxType } from './errors/checkLocalTxInput/types';
 import { Registry } from './registry';
 import { ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
@@ -224,26 +226,19 @@ export class AssetTransferApi {
 				// throws an error if the general index is not found
 				assetId = await getAssetId(_api, registry, assetId, _specName, declaredXcmVersion, isForeignAssetsTransfer);
 			}
-
-			/**
-			 * This will throw a BaseError if the inputs are incorrect and don't
-			 * fit the constraints for creating a local asset transfer.
-			 *
-			 * TODO: This should be checked per type of local tx input, and unique to the type of node (ie: parachain, system, relay);
-			 */
-			const localAssetType = await checkLocalTxInput(
-				_api,
-				assetIds,
-				amounts,
-				_specName,
-				registry,
-				declaredXcmVersion,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-			); // Throws an error when any of the inputs are incorrect.
 			const method = keepAlive ? 'transferKeepAlive' : 'transfer';
 
 			if (isLocalSystemTx) {
+				const localAssetType = await checkLocalSystemParachainInput(
+					_api,
+					assetIds,
+					amounts,
+					_specName,
+					registry,
+					declaredXcmVersion,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+				); // Throws an error when any of the inputs are incorrect.
 				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 				let palletMethod: LocalTransferTypes;
 
@@ -279,7 +274,12 @@ export class AssetTransferApi {
 					paysWithFeeOrigin,
 				});
 			} else if (isLocalParachainTx) {
-				if (_api.tx.balances) {
+				const localAssetType = checkLocalParachainInput(_api, assetIds, amounts);
+				/**
+				 * If no asset is passed in then it's assumed that its a balance transfer.
+				 * If an asset is passed in then it's a token transfer.
+				 */
+				if (localAssetType === LocalTxType.Balances) {
 					const palletMethod: LocalTransferTypes = `balances::${method}`;
 					const tx =
 						method === 'transferKeepAlive'
@@ -289,7 +289,7 @@ export class AssetTransferApi {
 						format,
 						paysWithFeeOrigin,
 					});
-				} else if (_api.tx.tokens) {
+				} else if (localAssetType === LocalTxType.Tokens) {
 					const palletMethod: LocalTransferTypes = `tokens::${method}`;
 					const tx =
 						method === 'transferKeepAlive'
@@ -306,6 +306,7 @@ export class AssetTransferApi {
 					);
 				}
 			} else {
+				checkLocalRelayInput(assetIds, amounts);
 				/**
 				 * By default local transaction on a relay chain will always be from the balances pallet
 				 */
