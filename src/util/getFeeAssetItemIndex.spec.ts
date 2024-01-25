@@ -53,7 +53,7 @@ describe('getFeeAssetItemIndex', () => {
 						},
 					},
 				],
-				systemAssetsApi._api,
+				systemAssetsApi.api,
 				1,
 			],
 			[
@@ -98,7 +98,7 @@ describe('getFeeAssetItemIndex', () => {
 						},
 					},
 				],
-				systemAssetsApi._api,
+				systemAssetsApi.api,
 				2,
 			],
 		];
@@ -156,7 +156,7 @@ describe('getFeeAssetItemIndex', () => {
 						},
 					},
 				],
-				relayAssetsApi._api,
+				relayAssetsApi.api,
 				1,
 			],
 			[
@@ -201,7 +201,7 @@ describe('getFeeAssetItemIndex', () => {
 						},
 					},
 				],
-				relayAssetsApi._api,
+				relayAssetsApi.api,
 				1,
 			],
 		];
@@ -235,7 +235,7 @@ describe('getFeeAssetItemIndex', () => {
 						},
 					},
 				],
-				systemAssetsApi._api,
+				systemAssetsApi.api,
 				0,
 			],
 		];
@@ -281,7 +281,7 @@ describe('getFeeAssetItemIndex', () => {
 		];
 
 		await expect(async () => {
-			await getFeeAssetItemIndex(systemAssetsApi._api, registry, paysWithFeeDest, multiAssets, specName, 2, false);
+			await getFeeAssetItemIndex(systemAssetsApi.api, registry, paysWithFeeDest, multiAssets, specName, 2, false);
 		}).rejects.toThrowError(
 			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1337"}]},{"Here":""}',
 		);

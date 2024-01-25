@@ -374,7 +374,7 @@ describe('AssetTransferAPI', () => {
 				injectedRegistry,
 			});
 
-			expect(mockSystemAssetsApi._opts.injectedRegistry).toStrictEqual(injectedRegistry);
+			expect(mockSystemAssetsApi.opts.injectedRegistry).toStrictEqual(injectedRegistry);
 		});
 	});
 
