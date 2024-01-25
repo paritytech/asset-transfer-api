@@ -79,6 +79,26 @@ export enum AssetCallType {
 	Teleport = 'Teleport',
 }
 
+export enum LocalTxChainType {
+	Parachain = 'Parachain',
+	System = 'System',
+	Relay = 'Relay',
+	None = 'None',
+}
+
+export interface ChainOriginDestInfo {
+	isDestRelayChain: boolean;
+	isDestSystemParachain: boolean;
+	isDestParachain: boolean;
+	isOriginSystemParachain: boolean;
+	isOriginParachain: boolean;
+}
+
+export interface LocalTxOpts extends TransferArgsOpts<Format> {
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
+}
+
 /**
  * AssetTransferApi supports three formats to be returned:
  * - payload: This returns a Polkadot-js `ExtrinsicPayload` as a hex.
