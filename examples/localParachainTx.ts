@@ -8,7 +8,9 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- *
+ * The following example demonstrates a local transaction on a parachain. It is important to note that
+ * if any token and or asset is passed in, the api will resolve to using the tokens pallet. When there
+ * is no asset passed in it will resort to using the balances pallet.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://wss.api.moonbeam.network');
@@ -19,7 +21,7 @@ const main = async () => {
 		callInfo = await assetApi.createTransferTransaction(
 			'2004',
 			'0xF977814e90dA44bFA03b6295A0616a897441aceC',
-			['GLMR'],
+			[],
 			['100000'],
 			{
 				format: 'call',
