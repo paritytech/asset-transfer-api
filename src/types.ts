@@ -79,6 +79,12 @@ export enum AssetCallType {
 	Teleport = 'Teleport',
 }
 
+export enum OriginChainType {
+	Parachain = 'Parachain',
+	Relay = 'Relay',
+	System = 'System',
+}
+
 /**
  * AssetTransferApi supports three formats to be returned:
  * - payload: This returns a Polkadot-js `ExtrinsicPayload` as a hex.
