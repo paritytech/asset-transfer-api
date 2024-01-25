@@ -93,6 +93,7 @@ export class AssetTransferApi {
 	readonly _specName: string;
 	readonly _safeXcmVersion: number;
 	readonly _nativeRelayChainAsset: string;
+	readonly _originChainId: string;
 	private registryConfig: {
 		registryInitialized: boolean;
 		registryType: RegistryTypes;
@@ -110,6 +111,7 @@ export class AssetTransferApi {
 			registryType: opts.registryType ? opts.registryType : 'CDN',
 		};
 		this._nativeRelayChainAsset = this.registry.currentRelayRegistry[RELAY_CHAIN_IDS[0]].tokens[0];
+		this._originChainId = this.registry.lookupChainIdBySpecName(this._specName);
 	}
 
 	/**
@@ -177,12 +179,11 @@ export class AssetTransferApi {
 		 */
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
-		const { _api, _specName, _safeXcmVersion, registry } = this;
-		const originChainId = registry.lookupChainIdBySpecName(_specName);
+		const { _api, _specName, _safeXcmVersion, _originChainId, registry } = this;
 		const isLiquidTokenTransfer = transferLiquidToken === true;
 		const chainOriginDestInfo = {
 			isOriginSystemParachain: SYSTEM_PARACHAINS_NAMES.includes(_specName.toLowerCase()),
-			isOriginParachain: isParachain(originChainId),
+			isOriginParachain: isParachain(_originChainId),
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
 			isDestSystemParachain: isSystemChain(destChainId),
 			isDestParachain: isParachain(destChainId),
@@ -194,7 +195,7 @@ export class AssetTransferApi {
 		 */
 		const addr = sanitizeAddress(destAddr);
 
-		const localTxChainType = this.establishLocalTxChainType(originChainId, destChainId, chainOriginDestInfo);
+		const localTxChainType = this.establishLocalTxChainType(_originChainId, destChainId, chainOriginDestInfo);
 		const isLocalTx = localTxChainType !== LocalTxChainType.None;
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
@@ -254,7 +255,7 @@ export class AssetTransferApi {
 
 		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
 		const assetCallType = this.fetchCallType(
-			originChainId,
+			_originChainId,
 			destChainId,
 			assetIds,
 			xcmDirection,
