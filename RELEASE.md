@@ -55,7 +55,7 @@ NOTE:
 
 3. Tada! You should have now received a message saying that the package has been released. You can go to https://www.npmjs.com/package/@substrate/asset-transfer-api to double check the release's success.
 
-### Creating a Github release.
+### Creating a Github release
 
 1. Right after you have released the NPM package, we are going to set a tag that will match the version of the release:
 
