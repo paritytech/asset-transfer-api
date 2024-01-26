@@ -53,7 +53,7 @@ NOTE:
 - Ensure the logging provided by NPM says the current version that is going to get released is correct before you enter your OTP.
 - If you are on node version 18 or below, it will ask you for your OTP in the terminal. But if you are on node 20 or greater it will redirect you to the browser to input the OTP. 
 
-3. Tada! You should have now recieved a message saying the package is released. You can go to https://www.npmjs.com/package/@substrate/asset-transfer-api to double check the releases success.
+3. Tada! You should have now received a message saying that the package has been released. You can go to https://www.npmjs.com/package/@substrate/asset-transfer-api to double check the release's success.
 
 ### Creating a Github release.
 
