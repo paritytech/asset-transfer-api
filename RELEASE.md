@@ -4,9 +4,12 @@ The following will cover releasing the `asset-transfer-api` to both github and N
 
 ### Creating The Release Branch
 
-1. Ensure you are in your `main` branch.
-    - `git pull origin main`
-    - `git checkout -b <name>-vXX-XX-XX`
+1. Ensure you are in your `main` branch then run:
+
+```bash
+$ git pull origin main
+$ git checkout -b <name>-vXX-XX-XX
+```
 
 2. In your new release branch update the version inside of the `package.json` to match the version we are releasing. This is super important as it will be the source of truth for updating to NPM. 
 
@@ -21,6 +24,8 @@ $ git add .
 $ git commit -m 'chore(release): vXX.XX.XX'
 $ git push
 ```
+
+Then create a PR with the same title as the commit message.
 
 6. When approved merge the PR into main.
 
