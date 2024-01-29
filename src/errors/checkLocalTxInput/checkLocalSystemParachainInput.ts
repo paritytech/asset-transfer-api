@@ -2,7 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { Registry } from '../../registry';
+import type { Registry } from '../../registry';
 import { checkLocalTxInput } from './checkLocalTxInput';
 import { LocalTxType } from './types';
 
