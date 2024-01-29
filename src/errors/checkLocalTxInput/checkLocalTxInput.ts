@@ -5,7 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getAssetId } from '../../createXcmTypes/util/getAssetId';
-import { Registry } from '../../registry';
+import type { Registry } from '../../registry';
 import { BaseError, BaseErrorsEnum } from '../BaseError';
 import { checkLiquidTokenValidity } from '../checkXcmTxInputs';
 import { LocalTxType } from './types';
