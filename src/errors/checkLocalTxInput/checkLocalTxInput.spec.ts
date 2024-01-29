@@ -1,9 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetTransferApi } from '../AssetTransferApi';
-import { Registry } from '../registry';
-import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
-import { checkLocalTxInput } from './checkLocalTxInputs';
+import { AssetTransferApi } from '../../AssetTransferApi';
+import { Registry } from '../../registry';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
+import { checkLocalTxInput } from './checkLocalTxInput';
 
 describe('checkLocalTxInput', () => {
 	const registry = new Registry('statemine', {});

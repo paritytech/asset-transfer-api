@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Format, TransferArgsOpts } from '../types';
+import type { Format, TransferArgsOpts } from '../types';
 import { validateAddress } from '../validate';
 import { BaseError, BaseErrorsEnum } from './BaseError';
 import { disableOpts } from './disableOpts';

@@ -1,20 +1,14 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 
-import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
-import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
-import { getAssetId } from '../createXcmTypes/util/getAssetId';
-import { checkLiquidTokenValidity } from '../errors/checkXcmTxInputs';
-import { Registry } from '../registry';
-import { BaseError, BaseErrorsEnum } from './BaseError';
-
-export enum LocalTxType {
-	Assets = 'Assets',
-	Balances = 'Balances',
-	ForeignAssets = 'ForeignAssets',
-	PoolAssets = 'PoolAssets',
-}
+import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
+import { foreignAssetsMultiLocationExists } from '../../createXcmTypes/util/foreignAssetsMultiLocationExists';
+import { getAssetId } from '../../createXcmTypes/util/getAssetId';
+import type { Registry } from '../../registry';
+import { BaseError, BaseErrorsEnum } from '../BaseError';
+import { checkLiquidTokenValidity } from '../checkXcmTxInputs';
+import { LocalTxType } from './types';
 
 /**
  * Check a local transactions inputs to ensure they are correct.
