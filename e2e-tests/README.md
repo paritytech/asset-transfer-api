@@ -12,7 +12,7 @@ You also need to have the latest `zombienet` executable in the `../zombienet/` f
  
 ### Launching zombienet
 
-To launch the zombienet, all you need to do is run the following commands:
+To launch the zombienet run the following commands:
 ```bash
 $ yarn build && yarn e2e:build
 ```
