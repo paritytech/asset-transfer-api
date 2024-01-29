@@ -88,12 +88,12 @@ import { validateNumber } from './validate';
  * @constructor opts AssetTransferApiOpts
  */
 export class AssetTransferApi {
-	readonly _api: ApiPromise;
-	readonly _opts: AssetTransferApiOpts;
-	readonly _specName: string;
-	readonly _safeXcmVersion: number;
-	readonly _nativeRelayChainAsset: string;
-	readonly _originChainId: string;
+	readonly api: ApiPromise;
+	readonly opts: AssetTransferApiOpts;
+	readonly specName: string;
+	readonly safeXcmVersion: number;
+	readonly nativeRelayChainAsset: string;
+	readonly originChainId: string;
 	private registryConfig: {
 		registryInitialized: boolean;
 		registryType: RegistryTypes;
@@ -101,17 +101,17 @@ export class AssetTransferApi {
 	public registry: Registry;
 
 	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetTransferApiOpts = {}) {
-		this._api = api;
-		this._opts = opts;
-		this._specName = specName;
-		this._safeXcmVersion = safeXcmVersion;
+		this.api = api;
+		this.opts = opts;
+		this.specName = specName;
+		this.safeXcmVersion = safeXcmVersion;
 		this.registry = new Registry(specName, opts);
 		this.registryConfig = {
 			registryInitialized: false,
 			registryType: opts.registryType ? opts.registryType : 'CDN',
 		};
-		this._nativeRelayChainAsset = this.registry.currentRelayRegistry[RELAY_CHAIN_IDS[0]].tokens[0];
-		this._originChainId = this.registry.lookupChainIdBySpecName(this._specName);
+		this.nativeRelayChainAsset = this.registry.currentRelayRegistry[RELAY_CHAIN_IDS[0]].tokens[0];
+		this.originChainId = this.registry.lookupChainIdBySpecName(this.specName);
 	}
 
 	/**
@@ -172,18 +172,18 @@ export class AssetTransferApi {
 		 * Ensure that the options passed in are compatible with eachother.
 		 * It will throw an error if any are incorrect.
 		 */
-		checkBaseInputOptions(opts, this._specName);
+		checkBaseInputOptions(opts, this.specName);
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
 		 */
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
-		const { _api, _specName, _safeXcmVersion, _originChainId, registry } = this;
+		const { api, specName, safeXcmVersion, originChainId, registry } = this;
 		const isLiquidTokenTransfer = transferLiquidToken === true;
 		const chainOriginDestInfo = {
-			isOriginSystemParachain: SYSTEM_PARACHAINS_NAMES.includes(_specName.toLowerCase()),
-			isOriginParachain: isParachain(_originChainId),
+			isOriginSystemParachain: SYSTEM_PARACHAINS_NAMES.includes(specName.toLowerCase()),
+			isOriginParachain: isParachain(originChainId),
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
 			isDestSystemParachain: isSystemChain(destChainId),
 			isDestParachain: isParachain(destChainId),
@@ -195,13 +195,13 @@ export class AssetTransferApi {
 		 */
 		const addr = sanitizeAddress(destAddr);
 
-		const localTxChainType = this.establishLocalTxChainType(_originChainId, destChainId, chainOriginDestInfo);
+		const localTxChainType = this.establishLocalTxChainType(originChainId, destChainId, chainOriginDestInfo);
 		const isLocalTx = localTxChainType !== LocalTxChainType.None;
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
-		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, _specName, xcmDirection, assetIds[0]);
-		const xcmPallet = establishXcmPallet(_api, xcmDirection, isForeignAssetsTransfer, isPrimaryParachainNativeAsset);
-		const declaredXcmVersion = xcmVersion === undefined ? _safeXcmVersion : xcmVersion;
+		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
+		const xcmPallet = establishXcmPallet(api, xcmDirection, isForeignAssetsTransfer, isPrimaryParachainNativeAsset);
+		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
 		/**
@@ -226,14 +226,14 @@ export class AssetTransferApi {
 		}
 
 		const baseArgs = {
-			api: _api,
+			api: api,
 			direction: xcmDirection as XcmDirection,
 			destAddr: addr,
 			assetIds,
 			amounts,
 			destChainId,
 			xcmVersion: declaredXcmVersion,
-			specName: _specName,
+			specName: specName,
 			registry: this.registry,
 		};
 
@@ -255,7 +255,7 @@ export class AssetTransferApi {
 
 		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
 		const assetCallType = this.fetchCallType(
-			_originChainId,
+			originChainId,
 			destChainId,
 			assetIds,
 			xcmDirection,
@@ -308,7 +308,7 @@ export class AssetTransferApi {
 			}
 		}
 
-		return this.constructFormat<T>(transaction, xcmDirection, declaredXcmVersion, txMethod, destChainId, _specName, {
+		return this.constructFormat<T>(transaction, xcmDirection, declaredXcmVersion, txMethod, destChainId, specName, {
 			format,
 			paysWithFeeOrigin,
 			sendersAddr,
@@ -357,33 +357,33 @@ export class AssetTransferApi {
 		tx: ConstructedFormat<T>,
 		format: T,
 	): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
-		const { _api } = this;
+		const { api } = this;
 
 		if (format === 'payload') {
-			const extrinsicPayload = _api.registry.createType('ExtrinsicPayload', tx, {
+			const extrinsicPayload = api.registry.createType('ExtrinsicPayload', tx, {
 				version: EXTRINSIC_VERSION,
 			});
 
-			const ext = _api.registry.createType(
+			const ext = api.registry.createType(
 				'Extrinsic',
 				{ method: extrinsicPayload.method },
 				{ version: EXTRINSIC_VERSION },
 			);
 			const u8a = ext.toU8a();
 
-			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+			return await api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
 		} else if (format === 'call') {
-			const ext = _api.registry.createType('Extrinsic', { method: tx }, { version: EXTRINSIC_VERSION });
+			const ext = api.registry.createType('Extrinsic', { method: tx }, { version: EXTRINSIC_VERSION });
 			const u8a = ext.toU8a();
 
-			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+			return await api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
 		} else if (format === 'submittable') {
-			const ext = _api.registry.createType('Extrinsic', tx, {
+			const ext = api.registry.createType('Extrinsic', tx, {
 				version: EXTRINSIC_VERSION,
 			});
 			const u8a = ext.toU8a();
 
-			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+			return await api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
 		}
 
 		return null;
@@ -400,26 +400,26 @@ export class AssetTransferApi {
 	 * @param format The format the tx is in
 	 */
 	public decodeExtrinsic<T extends Format>(encodedTransaction: string, format: T): string {
-		const { _api } = this;
+		const { api } = this;
 		const fmt = format ? format : 'payload';
 
 		if (fmt === 'payload') {
-			const extrinsicPayload = _api.registry.createType('ExtrinsicPayload', encodedTransaction, {
+			const extrinsicPayload = api.registry.createType('ExtrinsicPayload', encodedTransaction, {
 				version: EXTRINSIC_VERSION,
 			});
 
-			const call = _api.registry.createType('Call', extrinsicPayload.method);
+			const call = api.registry.createType('Call', extrinsicPayload.method);
 			const decodedMethodInfo = JSON.stringify(call.toHuman());
 
 			return decodedMethodInfo;
 		} else if (fmt === 'call') {
-			const call = _api.registry.createType('Call', encodedTransaction);
+			const call = api.registry.createType('Call', encodedTransaction);
 
 			const decodedMethodInfo = JSON.stringify(call.toHuman());
 
 			return decodedMethodInfo;
 		} else if (fmt === 'submittable') {
-			const extrinsic = _api.registry.createType('Extrinsic', encodedTransaction);
+			const extrinsic = api.registry.createType('Extrinsic', encodedTransaction);
 
 			const decodedMethodInfo = JSON.stringify(extrinsic.method.toHuman());
 
@@ -437,7 +437,7 @@ export class AssetTransferApi {
 	private establishDirection(isLocal: boolean, chainOriginDestInfo: ChainOriginDestInfo): Direction {
 		if (isLocal) return Direction.Local;
 
-		const { _api } = this;
+		const { api } = this;
 		const { isDestParachain, isDestRelayChain, isDestSystemParachain, isOriginParachain, isOriginSystemParachain } =
 			chainOriginDestInfo;
 
@@ -459,11 +459,11 @@ export class AssetTransferApi {
 		/**
 		 * Check if the origin is a Relay Chain
 		 */
-		if (_api.query.paras && isDestSystemParachain) {
+		if (api.query.paras && isDestSystemParachain) {
 			return Direction.RelayToSystem;
 		}
 
-		if (_api.query.paras && isDestParachain) {
+		if (api.query.paras && isDestParachain) {
 			return Direction.RelayToPara;
 		}
 
@@ -679,7 +679,7 @@ export class AssetTransferApi {
 
 		// if a paysWithFeeOrigin is provided and the chain is of system origin
 		// we assign the assetId to the value of paysWithFeeOrigin
-		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(this._specName.toLowerCase());
+		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(this.specName.toLowerCase());
 
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
 			const isValidInt = validateNumber(paysWithFeeOrigin);
@@ -699,7 +699,7 @@ export class AssetTransferApi {
 
 				if (!isValidLpToken) {
 					throw new BaseError(
-						`assetId ${JSON.stringify(feeAsset)} is not a valid liquidity pool token for ${this._specName}`,
+						`assetId ${JSON.stringify(feeAsset)} is not a valid liquidity pool token for ${this.specName}`,
 						BaseErrorsEnum.NoFeeAssetLpFound,
 					);
 				}
@@ -708,24 +708,24 @@ export class AssetTransferApi {
 			}
 		}
 
-		const lastHeader = await this._api.rpc.chain.getHeader();
-		const blockNumber = this._api.registry.createType('BlockNumber', lastHeader.number.toNumber());
+		const lastHeader = await this.api.rpc.chain.getHeader();
+		const blockNumber = this.api.registry.createType('BlockNumber', lastHeader.number.toNumber());
 		const method = tx.method;
-		const era = this._api.registry.createType('ExtrinsicEra', {
+		const era = this.api.registry.createType('ExtrinsicEra', {
 			current: lastHeader.number.toNumber(),
 			period: 64,
 		});
 
-		const nonce = await this._api.rpc.system.accountNextIndex(sendersAddr);
+		const nonce = await this.api.rpc.system.accountNextIndex(sendersAddr);
 		const unsignedPayload: UnsignedTransaction = {
-			specVersion: this._api.runtimeVersion.specVersion.toHex(),
-			transactionVersion: this._api.runtimeVersion.transactionVersion.toHex(),
+			specVersion: this.api.runtimeVersion.specVersion.toHex(),
+			transactionVersion: this.api.runtimeVersion.transactionVersion.toHex(),
 			assetId,
 			address: sendersAddr,
 			blockHash: lastHeader.hash.toHex(),
 			blockNumber: blockNumber.toHex(),
 			era: era.toHex(),
-			genesisHash: this._api.genesisHash.toHex(),
+			genesisHash: this.api.genesisHash.toHex(),
 			method: method.toHex(),
 			nonce: nonce.toHex(),
 			signedExtensions: [
@@ -738,11 +738,11 @@ export class AssetTransferApi {
 				'CheckWeight',
 				'ChargeTransactionPayment',
 			],
-			tip: this._api.registry.createType('Compact<Balance>', 0).toHex(),
+			tip: this.api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,
 		};
 
-		const extrinsicPayload = this._api.registry.createType('ExtrinsicPayload', unsignedPayload, {
+		const extrinsicPayload = this.api.registry.createType('ExtrinsicPayload', unsignedPayload, {
 			version: unsignedPayload.version,
 		});
 
@@ -758,7 +758,7 @@ export class AssetTransferApi {
 	 */
 	private checkAssetIsSufficient = async (assetId: BN): Promise<boolean> => {
 		try {
-			const asset = (await this._api.query.assets.asset(assetId)).unwrap();
+			const asset = (await this.api.query.assets.asset(assetId)).unwrap();
 
 			if (asset.isSufficient.toString().toLowerCase() === 'true') {
 				return true;
@@ -832,9 +832,9 @@ export class AssetTransferApi {
 			);
 		}
 
-		if (this._api.query.assetConversion !== undefined) {
+		if (this.api.query.assetConversion !== undefined) {
 			try {
-				for (const poolPairsData of await this._api.query.assetConversion.pools.entries()) {
+				for (const poolPairsData of await this.api.query.assetConversion.pools.entries()) {
 					const poolStorageKeyData = poolPairsData[0];
 
 					// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
@@ -855,7 +855,7 @@ export class AssetTransferApi {
 				}
 			} catch (e) {
 				throw new BaseError(
-					`error querying ${this._specName} liquidity token pool assets: ${e as string}`,
+					`error querying ${this.specName} liquidity token pool assets: ${e as string}`,
 					BaseErrorsEnum.InternalError,
 				);
 			}
@@ -873,7 +873,7 @@ export class AssetTransferApi {
 
 		if (isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId) {
 			return LocalTxChainType.System;
-		} else if (destChainId === '0' && RELAY_CHAIN_NAMES.includes(this._specName.toLowerCase())) {
+		} else if (destChainId === '0' && RELAY_CHAIN_NAMES.includes(this.specName.toLowerCase())) {
 			return LocalTxChainType.Relay;
 		} else if (isOriginParachain && isDestParachain && originChainId === destChainId) {
 			return LocalTxChainType.Parachain;
@@ -892,12 +892,12 @@ export class AssetTransferApi {
 		localTxChainType: LocalTxChainType,
 		opts: LocalTxOpts,
 	) {
-		const { _api, _specName } = this;
+		const { api, specName } = this;
 		let assetId = assetIds[0];
 		const amount = amounts[0];
 		const isValidNumber = validateNumber(assetId);
 		let isNativeRelayChainAsset = false;
-		if (assetIds.length === 0 || this._nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()) {
+		if (assetIds.length === 0 || this.nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()) {
 			isNativeRelayChainAsset = true;
 		}
 
@@ -906,10 +906,10 @@ export class AssetTransferApi {
 			// check for the general index of the assetId and assign the correct value for the local tx
 			// throws an error if the general index is not found
 			assetId = await getAssetId(
-				this._api,
+				this.api,
 				this.registry,
 				assetId,
-				this._specName,
+				this.specName,
 				declaredXcmVersion,
 				opts.isForeignAssetsTransfer,
 			);
@@ -918,10 +918,10 @@ export class AssetTransferApi {
 
 		if (localTxChainType === LocalTxChainType.System) {
 			const localAssetType = await checkLocalSystemParachainInput(
-				this._api,
+				this.api,
 				assetIds,
 				amounts,
-				this._specName,
+				this.specName,
 				this.registry,
 				declaredXcmVersion,
 				opts.isForeignAssetsTransfer,
@@ -933,35 +933,35 @@ export class AssetTransferApi {
 			if (localAssetType === LocalTxType.Balances) {
 				tx =
 					method === 'transferKeepAlive'
-						? balances.transferKeepAlive(_api, addr, amount)
-						: balances.transfer(_api, addr, amount);
+						? balances.transferKeepAlive(api, addr, amount)
+						: balances.transfer(api, addr, amount);
 				palletMethod = `balances::${method}`;
 			} else if (localAssetType === LocalTxType.Assets) {
 				tx =
 					method === 'transferKeepAlive'
-						? assets.transferKeepAlive(_api, addr, assetId, amount)
-						: assets.transfer(_api, addr, assetId, amount);
+						? assets.transferKeepAlive(api, addr, assetId, amount)
+						: assets.transfer(api, addr, assetId, amount);
 				palletMethod = `assets::${method}`;
 			} else if (localAssetType === LocalTxType.PoolAssets) {
 				tx =
 					method === 'transferKeepAlive'
-						? poolAssets.transferKeepAlive(_api, addr, assetId, amount)
-						: poolAssets.transfer(_api, addr, assetId, amount);
+						? poolAssets.transferKeepAlive(api, addr, assetId, amount)
+						: poolAssets.transfer(api, addr, assetId, amount);
 				palletMethod = `poolAssets::${method}`;
 			} else {
 				const multiLocation = resolveMultiLocation(assetId, declaredXcmVersion);
 				tx =
 					method === 'transferKeepAlive'
-						? foreignAssets.transferKeepAlive(_api, addr, multiLocation, amount)
-						: foreignAssets.transfer(_api, addr, multiLocation, amount);
+						? foreignAssets.transferKeepAlive(api, addr, multiLocation, amount)
+						: foreignAssets.transfer(api, addr, multiLocation, amount);
 				palletMethod = `foreignAssets::${method}`;
 			}
 
-			return await this.constructFormat(tx, 'local', null, palletMethod, destChainId, this._specName, {
+			return await this.constructFormat(tx, 'local', null, palletMethod, destChainId, this.specName, {
 				...opts,
 			});
 		} else if (localTxChainType === LocalTxChainType.Parachain) {
-			const localAssetType = checkLocalParachainInput(_api, assetIds, amounts);
+			const localAssetType = checkLocalParachainInput(api, assetIds, amounts);
 			/**
 			 * If no asset is passed in then it's assumed that its a balance transfer.
 			 * If an asset is passed in then it's a token transfer.
@@ -970,18 +970,18 @@ export class AssetTransferApi {
 				const palletMethod: LocalTransferTypes = `balances::${method}`;
 				const tx =
 					method === 'transferKeepAlive'
-						? balances.transferKeepAlive(_api, addr, amount)
-						: balances.transfer(_api, addr, amount);
-				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, _specName, {
+						? balances.transferKeepAlive(api, addr, amount)
+						: balances.transfer(api, addr, amount);
+				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
 					...opts,
 				});
 			} else if (localAssetType === LocalTxType.Tokens) {
 				const palletMethod: LocalTransferTypes = `tokens::${method}`;
 				const tx =
 					method === 'transferKeepAlive'
-						? tokens.transferKeepAlive(_api, addr, assetIds[0], amount)
-						: tokens.transfer(_api, addr, assetIds[0], amount);
-				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, _specName, {
+						? tokens.transferKeepAlive(api, addr, assetIds[0], amount)
+						: tokens.transfer(api, addr, assetIds[0], amount);
+				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
 					...opts,
 				});
 			} else {
@@ -998,9 +998,9 @@ export class AssetTransferApi {
 			const palletMethod: LocalTransferTypes = `balances::${method}`;
 			const tx =
 				method === 'transferKeepAlive'
-					? balances.transferKeepAlive(_api, addr, amount)
-					: balances.transfer(_api, addr, amount);
-			return this.constructFormat(tx, 'local', null, palletMethod, destChainId, _specName, {
+					? balances.transferKeepAlive(api, addr, amount)
+					: balances.transfer(api, addr, amount);
+			return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
 				...opts,
 			});
 		}
