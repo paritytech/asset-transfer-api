@@ -27,7 +27,7 @@ chain = "rococo-local"
 [[parachains]]
 id = 1000
 addToGenesis = true
-chain = "statemine-local"
+chain = "asset-hub-rococo-local"
 cumulus_based = true
 
   [[parachains.collators]]
