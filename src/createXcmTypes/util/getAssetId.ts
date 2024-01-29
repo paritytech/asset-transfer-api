@@ -23,7 +23,7 @@ import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationEx
  * @param isForeignAssetsTransfer boolean
  */
 export const getAssetId = async (
-	_api: ApiPromise,
+	api: ApiPromise,
 	registry: Registry,
 	asset: string,
 	specName: string,
@@ -81,7 +81,7 @@ export const getAssetId = async (
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
 		} else {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(_api, registry, asset, xcmVersion);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, asset, xcmVersion);
 
 			if (!isValidForeignAsset) {
 				throw new BaseError(`MultiLocation ${asset} not found`, BaseErrorsEnum.AssetNotFound);
@@ -96,11 +96,11 @@ export const getAssetId = async (
 
 			assetId = tokens[0];
 		} else if (assetIsValidInt) {
-			const maybeAsset = await _api.query.assets.asset(asset);
+			const maybeAsset = await api.query.assets.asset(asset);
 
 			if (maybeAsset.isSome) {
 				assetId = asset;
-				const assetMetadata = await _api.query.assets.metadata(asset);
+				const assetMetadata = await api.query.assets.metadata(asset);
 				const assetSymbol = assetMetadata.symbol.toHuman()?.toString();
 
 				if (assetSymbol) {
@@ -129,16 +129,16 @@ export const getAssetId = async (
 			);
 		}
 
-		if (_api.query.assets) {
+		if (api.query.assets) {
 			if (!assetIsValidInt) {
 				// if not assetHub and assetId isnt a number, query the parachain for the asset symbol
-				const parachainAssets = await _api.query.assets.asset.entries();
+				const parachainAssets = await api.query.assets.asset.entries();
 
 				for (let i = 0; i < parachainAssets.length; i++) {
 					const parachainAsset = parachainAssets[i];
 					const id = parachainAsset[0].args[0];
 
-					const metadata = await _api.query.assets.metadata(id);
+					const metadata = await api.query.assets.metadata(id);
 					if (metadata.symbol.toHuman()?.toString().toLowerCase() === asset.toLowerCase()) {
 						assetId = id.toString();
 						// add queried asset to registry
@@ -170,7 +170,7 @@ export const getAssetId = async (
 				}
 			} else {
 				// if not assetHub and assetId is a number, query the parachain for the asset
-				const parachainAsset = await _api.query.assets.asset(asset);
+				const parachainAsset = await api.query.assets.asset(asset);
 				if (parachainAsset.isSome) {
 					assetId = asset;
 					// add queried asset to registry
