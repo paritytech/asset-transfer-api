@@ -66,7 +66,7 @@ describe('getAssetId', () => {
 		it('Should correctly error when given an invalid xcAsset symbol', async () => {
 			await expect(async () => {
 				await getAssetId(bifrostAssetsApi.api, registry, 'TEST', 'bifrost', 2, true);
-			}).rejects.toThrowError(`parachain assetId TEST is not a valid symbol assetId in bifrost`);
+			}).rejects.toThrow(`parachain assetId TEST is not a valid symbol assetId in bifrost`);
 		});
 	});
 
