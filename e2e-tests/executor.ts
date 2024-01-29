@@ -15,7 +15,6 @@ import { verification } from './verification';
 const executor = async (testCase: string) => {
 	let originWsUrl = '';
 	let destWsUrl = '';
-
 	let testData: IndividualTest[] = [];
 
 	await cryptoWaitReady();
