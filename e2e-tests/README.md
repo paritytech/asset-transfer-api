@@ -31,6 +31,6 @@ For testing, we provide 4 options:
 * Testing local transferss with the command `yarn e2e:local`.
 * Testing assets transfers with the command `yarn e2e:assets`.
 
-Each of these commands will run the appropiate script to setup the basics, located in `../scripts/`, wait for it to finish setting up the testing environment, and then go through the tests indicated in the `./tests/index.ts` file for the chosen option.
+Each of these commands will run the appropiate script to setup the basics, located in `../scripts/`. Wait for it to finish setting up the testing environment, and then go through the tests indicated in the `./tests/index.ts` file for the chosen option.
 
 After each testing suite has been completed, it's recommended to restart the zombienet before running another test suite.
