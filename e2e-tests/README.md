@@ -16,7 +16,7 @@ To launch the zombienet run the following commands:
 ```bash
 $ yarn build && yarn e2e:build
 ```
-Then you need to run:
+Then run:
 ```bash
 $ yarn e2e:zombienet
 ```
