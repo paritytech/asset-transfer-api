@@ -47,7 +47,7 @@ describe('getAssetId', () => {
 
 			await expect(async () => {
 				await getAssetId(systemAssetsApi.api, registry, multiLocation, 'statemine', 2, true);
-			}).rejects.toThrowError(`MultiLocation ${multiLocation} not found`);
+			}).rejects.toThrow(`MultiLocation ${multiLocation} not found`);
 		});
 	});
 
