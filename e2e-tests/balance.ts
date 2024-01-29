@@ -3,6 +3,7 @@
 import { ApiPromise } from '@polkadot/api';
 import type { FrameSystemAccountInfo, PalletAssetsAssetAccount } from '@polkadot/types/lookup';
 import type { Option } from '@polkadot/types-codec';
+
 export interface IBalance {
 	initial: [string, number][];
 	final: [string, number][];
