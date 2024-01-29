@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../../createXcmTypes/util/foreignAssetsMultiLocationExists';

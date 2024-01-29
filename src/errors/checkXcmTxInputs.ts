@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
