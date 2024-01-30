@@ -736,7 +736,7 @@ export class AssetTransferApi {
 				'CheckMortality',
 				'CheckNonce',
 				'CheckWeight',
-				'ChargeTransactionPayment',
+				'ChargeAssetTxPayment',
 			],
 			tip: this.api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,
@@ -835,16 +835,15 @@ export class AssetTransferApi {
 		if (this.api.query.assetConversion !== undefined) {
 			try {
 				for (const poolPairsData of await this.api.query.assetConversion.pools.entries()) {
-					const poolStorageKeyData = poolPairsData[0];
+					const tokenPairs = poolPairsData[0];
 
 					// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
-					const poolAssetDataStr = JSON.stringify(poolStorageKeyData).replace(/(\d),/g, '$1');
-					const palletAssetConversionNativeOrAssetIdData = sanitizeKeys(
-						JSON.parse(poolAssetDataStr),
-					) as UnionXcmMultiLocation[];
+					const sanitizedTokenPairs = JSON.stringify(tokenPairs).replace(/(\d),/g, '$1');
+					const firstLpTokenSlice = sanitizedTokenPairs.slice(1, -1).slice(0, sanitizedTokenPairs.indexOf('},{"p'));
+					const secondLpTokenSlice = sanitizedTokenPairs.slice(1, -1).slice(sanitizedTokenPairs.indexOf(',{"p'));
 
-					const firstLpToken = palletAssetConversionNativeOrAssetIdData[0];
-					const secondLpToken = palletAssetConversionNativeOrAssetIdData[1];
+					const firstLpToken = sanitizeKeys(JSON.parse(firstLpTokenSlice)) as UnionXcmMultiLocation;
+					const secondLpToken = sanitizeKeys(JSON.parse(secondLpTokenSlice)) as UnionXcmMultiLocation;
 
 					if (
 						JSON.stringify(firstLpToken) == JSON.stringify(feeAsset) ||

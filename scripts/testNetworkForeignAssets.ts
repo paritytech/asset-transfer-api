@@ -9,7 +9,7 @@ import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from '.
 import { awaitBlockProduction, awaitEpochChange, delay, logWithDate } from './util';
 
 const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
-	const trappistMultiLocation = {
+	const trappistMultilocation = {
 		parents: 1,
 		interior: {
 			X1: {
@@ -18,7 +18,12 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 		},
 	};
 
-	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(trappistMultiLocation, 'Trappist Hop', 'Hop', 12);
+	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(
+		trappistMultilocation,
+		'Asset Hub Rococo Hop',
+		'Hop',
+		12,
+	);
 
 	const hexCall = assetHubApi.registry
 		.createType('Call', {
@@ -31,7 +36,7 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 };
 
 const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
-	const trappistMultiLocation = {
+	const trappistMultilocation = {
 		parents: 1,
 		interior: {
 			X1: {
@@ -41,7 +46,7 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 	};
 
 	const createTx = assetHubApi.tx.foreignAssets.create(
-		trappistMultiLocation,
+		trappistMultilocation,
 		'5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', // Sibling 1836 -> ParaId
 		'100000000000',
 	);
@@ -58,7 +63,7 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 
 const sudoCallWrapper = (trappistApi: ApiPromise, call: `0x${string}`) => {
 	// Double encode the call
-	const xcmDoubleEncoded = trappistApi.createType('StagingXcmDoubleEncoded', {
+	const xcmDoubleEncoded = trappistApi.createType('XcmDoubleEncoded', {
 		encoded: call,
 	});
 
@@ -233,7 +238,7 @@ const main = async () => {
 	});
 
 	await trappistApi.disconnect().then(() => {
-		logWithDate(chalk.blue('Polkadot-js successfully disconnected from trappist'));
+		logWithDate(chalk.blue('Polkadot-js successfully disconnected from Trappist'));
 	});
 };
 

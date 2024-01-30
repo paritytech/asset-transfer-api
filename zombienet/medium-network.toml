@@ -1,5 +1,5 @@
 [relaychain]
-default_command = "./bin/polkadot"
+default_command = "./zombienet/bin/polkadot"
 default_args = [ "-lparachain=debug" ]
 chain = "rococo-local"
 
@@ -32,13 +32,13 @@ cumulus_based = true
 
   [[parachains.collators]]
   name = "asset-hub-rococo-collator01"
-  command = "./bin/polkadot-parachain"
+  command = "./zombienet/bin/polkadot-parachain"
   args = ["--log=xcm=trace,pallet-assets=trace"]
   ws_port = 9910
 
   [[parachains.collators]]
   name = "asset-hub-rococo-collator02"
-  command = "./bin/polkadot-parachain"
+  command = "./zombienet/bin/polkadot-parachain"
   ws_port = 9911
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
@@ -50,13 +50,13 @@ chain = "trappist-local"
 
   [[parachains.collators]]
   name = "trappist-collator01"
-  command = "./bin/trappist-node"
+  command = "./zombienet/bin/trappist-node"
   ws_port = 9920
   args = ["--log=xcm=trace,pallet-assets=trace"]
 
   [[parachains.collators]]
   name = "trappist-collator02"
-  command = "./bin/trappist-node"
+  command = "./zombienet/bin/trappist-node"
   ws_port = 9921
   args = ["--log=xcm=trace,pallet-assets=trace"]
 

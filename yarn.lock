@@ -1350,7 +1350,10 @@ __metadata:
     "@polkadot/api": "npm:^10.11.2"
     "@substrate/asset-transfer-api-registry": "npm:^0.2.13"
     "@substrate/dev": "npm:^0.7.1"
+    "@types/cli-progress": "npm:^3"
+    ansi-colors: "npm:^4.1.3"
     chalk: "npm:4.1.2"
+    cli-progress: "npm:^3.12.0"
     typedoc: "npm:^0.25.4"
     typedoc-plugin-missing-exports: "npm:^1.0.0"
     typedoc-theme-hierarchy: "npm:^4.0.0"
@@ -1464,6 +1467,15 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 9719330c86aeae0a6a447c974cf0f853ba3660ede20de61f435b03d699e30e6d8b35bf71a8dc9fdc8317784438e83177644ba068ed653d0ae0106e1ecbfe289e
+  languageName: node
+  linkType: hard
+
+"@types/cli-progress@npm:^3":
+  version: 3.11.5
+  resolution: "@types/cli-progress@npm:3.11.5"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: cb19187637b0a9b92219eab8d3d42250f1773328c24cb265d1bc677e3017f512e95e834e4846bcf0964efc232a13f86f7ef01843be804daa5433cc655c375bb3
   languageName: node
   linkType: hard
 
@@ -1748,6 +1760,13 @@ __metadata:
     json-schema-traverse: "npm:^0.4.1"
     uri-js: "npm:^4.2.2"
   checksum: 48d6ad21138d12eb4d16d878d630079a2bda25a04e745c07846a4ad768319533031e28872a9b3c5790fa1ec41aabdf2abed30a56e5a03ebc2cf92184b8ee306c
+  languageName: node
+  linkType: hard
+
+"ansi-colors@npm:^4.1.3":
+  version: 4.1.3
+  resolution: "ansi-colors@npm:4.1.3"
+  checksum: 43d6e2fc7b1c6e4dc373de708ee76311ec2e0433e7e8bd3194e7ff123ea6a747428fc61afdcf5969da5be3a5f0fd054602bec56fc0ebe249ce2fcde6e649e3c2
   languageName: node
   linkType: hard
 
@@ -2152,6 +2171,15 @@ __metadata:
   version: 2.2.0
   resolution: "clean-stack@npm:2.2.0"
   checksum: 2ac8cd2b2f5ec986a3c743935ec85b07bc174d5421a5efc8017e1f146a1cf5f781ae962618f416352103b32c9cd7e203276e8c28241bbe946160cab16149fb68
+  languageName: node
+  linkType: hard
+
+"cli-progress@npm:^3.12.0":
+  version: 3.12.0
+  resolution: "cli-progress@npm:3.12.0"
+  dependencies:
+    string-width: "npm:^4.2.3"
+  checksum: a6a549919a7461f5e798b18a4a19f83154bab145d3ec73d7f3463a8db8e311388c545ace1105557760a058cc4999b7f28c9d8d24d9783ee2912befb32544d4b8
   languageName: node
   linkType: hard
 

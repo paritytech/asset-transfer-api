@@ -123,7 +123,7 @@ const main = async () => {
 			assetInfo.assetSymbol,
 			assetInfo.assetDecimals,
 		),
-		kusamaAssetHubApi.tx.assets.mint(assetInfo.assetId, alice.address, 1000 * 120000000),
+		kusamaAssetHubApi.tx.assets.mint(assetInfo.assetId, alice.address, 100000 * 120000000),
 	];
 	const batch = kusamaAssetHubApi.tx.utility.batchAll(txs);
 

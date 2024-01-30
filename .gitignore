@@ -18,6 +18,7 @@ zombienet-macos
 zombienet-linux-arm64
 zombienet-linux-x64
 zombienet.log
+zombienet/bin/*
 
 # Binaries
 /bin/*
