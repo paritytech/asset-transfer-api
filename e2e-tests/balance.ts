@@ -1,15 +1,34 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { ApiPromise } from '@polkadot/api';
+import type { ApiPromise } from '@polkadot/api';
 import type { FrameSystemAccountInfo, PalletAssetsAssetAccount } from '@polkadot/types/lookup';
 import type { Option } from '@polkadot/types-codec';
 
+/**
+ * Initial and final balances for a specific assetId, used by `balanceTracker`
+ * to validate the evolution of a particular account's balance
+ * 
+ * @interface IBalance
+ * 
+ * @property {[string, number][]} IBalance.initial Account's initial balance
+ * for the given assetIds
+ * @property {[string, number][]} IBalance.final Account's final balance for 
+ * the given assetIds
+ */
 export interface IBalance {
 	initial: [string, number][];
 	final: [string, number][];
 }
 
 /**
+ * Function to keep track of the evolution of the balances for specific assetIds
+ * for a given account, used to validate the correct processing of the tests'
+ * transactions.
+ * It queries the node for the appropiate pallet's balance for the given test
+ * suite, and stores it as either `initial`, if no previous value is stored, 
+ * or `final`. Both properties consist of an array of tuples containing an assetId
+ * and its balance for the account for the moment the value was queried, either
+ * before or after running the test.
  *
  * @param api api instance
  * @param test name of the test currently being ran

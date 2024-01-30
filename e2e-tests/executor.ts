@@ -20,35 +20,23 @@ const executor = async (testCase: string) => {
 	await cryptoWaitReady();
 
 	const keyring = new Keyring({ type: 'sr25519' });
-
-	switch (testCase) {
-		case '--foreign-assets':
-			testData = tests.foreignAssets;
-			break;
-		case '--liquidity-assets':
-			testData = tests.liquidPools;
-			break;
-		case '--local':
-			testData = tests.local;
-			break;
-		case '--assets':
-			testData = tests.assets;
-			break;
-	}
-
 	let n: { [K: string]: Function } = {};
 
 	switch (testCase) {
 		case '--foreign-assets':
+			testData = tests.foreignAssets;
 			n = foreignAssetsTests;
 			break;
 		case '--liquidity-assets':
+			testData = tests.liquidPools;
 			n = liquidPoolsTests;
 			break;
 		case '--local':
+			testData = tests.local;
 			n = localTests;
 			break;
 		case '--assets':
+			testData = tests.assets;
 			n = assetTests;
 			break;
 	}
