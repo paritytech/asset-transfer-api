@@ -834,7 +834,7 @@ export class AssetTransferApi {
 
 		if (this.api.query.assetConversion !== undefined) {
 			try {
-				for (const poolPairsData of await this._api.query.assetConversion.pools.entries()) {
+				for (const poolPairsData of await this.api.query.assetConversion.pools.entries()) {
 					const tokenPairs = poolPairsData[0];
 
 					// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
