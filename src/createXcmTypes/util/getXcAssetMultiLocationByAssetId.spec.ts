@@ -45,7 +45,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 			const expected =
 				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}';
 			const result = await getXcAssetMultiLocationByAssetId(
-				bifrostApi._api,
+				bifrostApi.api,
 				assetId,
 				specName,
 				xcmVersion,
@@ -61,7 +61,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 			const specName = 'bifrost';
 
 			await expect(async () => {
-				await getXcAssetMultiLocationByAssetId(bifrostApi._api, assetId, specName, xcmVersion, bifrostRegistry);
+				await getXcAssetMultiLocationByAssetId(bifrostApi.api, assetId, specName, xcmVersion, bifrostRegistry);
 			}).rejects.toThrowError(`parachain assetId vmover is not a valid symbol assetId in bifrost`);
 		});
 	});
@@ -90,7 +90,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 
 			const expected = '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x010a"}]}}}';
 			const result = await getXcAssetMultiLocationByAssetId(
-				moonriverApi._api,
+				moonriverApi.api,
 				assetId,
 				specName,
 				xcmVersion,
@@ -107,7 +107,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 
 			const expected = '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x0101"}]}}}';
 			const result = await getXcAssetMultiLocationByAssetId(
-				moonriverApi._api,
+				moonriverApi.api,
 				assetId,
 				specName,
 				xcmVersion,
@@ -123,7 +123,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 			const specName = 'moonriver';
 
 			await expect(async () => {
-				await getXcAssetMultiLocationByAssetId(moonriverApi._api, assetId, specName, xcmVersion, moonriverRegistry);
+				await getXcAssetMultiLocationByAssetId(moonriverApi.api, assetId, specName, xcmVersion, moonriverRegistry);
 			}).rejects.toThrowError(`parachain assetId mover is not a valid symbol assetIid in moonriver`);
 		});
 
@@ -133,7 +133,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 			const specName = 'moonriver';
 
 			await expect(async () => {
-				await getXcAssetMultiLocationByAssetId(moonriverApi._api, assetId, specName, xcmVersion, moonriverRegistry);
+				await getXcAssetMultiLocationByAssetId(moonriverApi.api, assetId, specName, xcmVersion, moonriverRegistry);
 			}).rejects.toThrowError(`assetId 242424332422323423424 is not a valid symbol or integer asset id for moonriver`);
 		});
 	});

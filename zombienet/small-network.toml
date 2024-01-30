@@ -31,13 +31,13 @@ chain = "asset-hub-rococo-local"
 cumulus_based = true
 
   [[parachains.collators]]
-  name = "statemine-collator01"
+  name = "asset-hub-rococo-collator01"
   command = "./bin/polkadot-parachain"
   args = ["--log=xcm=trace,pallet-assets=trace"]
   ws_port = 9910
 
   [[parachains.collators]]
-  name = "statemine-collator02"
+  name = "asset-hub-rococo-collator02"
   command = "./bin/polkadot-parachain"
   ws_port = 9911
   args = ["--log=xcm=trace,pallet-assets=trace"]

@@ -34,7 +34,7 @@ const runTests = async (tests: Test[]) => {
 
 		await expect(async () => {
 			await checkAssetIdInput(
-				parachainAssetsApi._api,
+				parachainAssetsApi.api,
 				testInputs,
 				currentRegistry,
 				specName,
@@ -236,7 +236,7 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
-					parachainAssetsApi._api,
+					parachainAssetsApi.api,
 					testInputs,
 					currentRegistry,
 					specName,
@@ -338,7 +338,7 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 			await expect(async () => {
 				await checkAssetIdInput(
-					parachainAssetsApi._api,
+					parachainAssetsApi.api,
 					testInputs,
 					currentRegistry,
 					specName,
@@ -374,7 +374,7 @@ describe('checkAssetIds', () => {
 
 			await expect(async () => {
 				await checkAssetIdInput(
-					parachainAssetsApi._api,
+					parachainAssetsApi.api,
 					testInputs,
 					currentRegistry,
 					specName,
@@ -393,7 +393,7 @@ describe('checkAssetIds', () => {
 
 		await expect(async () => {
 			await checkAssetIdInput(
-				parachainAssetsApi._api,
+				parachainAssetsApi.api,
 				['0x1234'],
 				currentRegistry,
 				'moonriver',

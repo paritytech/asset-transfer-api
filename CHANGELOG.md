@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.1.6](https://github.com/paritytech/asset-transfer-api/compare/v0.1.5..v0.1.6)(2024-01-22)
+
+## Features
+
+- feat: add browser compatibility ([#341](https://github.com/paritytech/asset-transfer-api/pull/341))
+
+## Fix
+
+- fix: add rococo to RELAY_CHAIN_NAMES ([#344](https://github.com/paritytech/asset-transfer-api/pull/344))
+- fix(internal): ensure all sanitizeKeys int values are sanitized to str ([#346](https://github.com/paritytech/asset-transfer-api/pull/346))
+- fix: add catch try for CDN_URL fetching ([#350](https://github.com/paritytech/asset-transfer-api/pull/350))
+
+## Build
+
+- build: remove .spec files from lib ([#342](https://github.com/paritytech/asset-transfer-api/pull/342))
+
+## Chore
+
+- chore(registry): update registry package ([#347](https://github.com/paritytech/asset-transfer-api/pull/347))
+- chore(deps): bump actions/cache from 3 to 4 ([#349](https://github.com/paritytech/asset-transfer-api/pull/349))
+
+## Docs
+
+- docs: fix readme nit for spacing ([#348](https://github.com/paritytech/asset-transfer-api/pull/348))
+
 ## [0.1.5](https://github.com/paritytech/asset-transfer-api/compare/v0.1.4..v0.1.5)(2024-01-03)
 
 ## Features

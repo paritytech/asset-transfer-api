@@ -183,7 +183,7 @@ interface TransferArgsOpts<T extends Format> {
 	 * will be queried, and if there is no supported version a safe version will be queried.
 	 */
 	xcmVersion?: number;
-    /**
+	/**
 	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
 	 * to a `transfer`.
 	 */
@@ -288,7 +288,7 @@ The api can also send local transactions for Relay chains. It is the same princi
 
 For more information, refer to the [docs](https://github.com/paritytech/asset-transfer-api/tree/main/docs) in the repository.
 
-Note: For other parachains, local transfers are currently supported via balances and assets pallets. The plan is to extend local transfer support to other pallets like ORML tokens pallet in coming releases.
+Note: For other parachains, local transfers are currently supported via the balances and tokens pallets. For local parachain transactions, if an asset id is not passed in it will resolve to the balances pallet, and if a asset id is passed in it will resolve to the tokens pallet.
 
 ## License
 

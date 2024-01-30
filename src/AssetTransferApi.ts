@@ -14,6 +14,7 @@ import * as assets from './createCalls/assets';
 import * as balances from './createCalls/balances';
 import * as foreignAssets from './createCalls/foreignAssets';
 import * as poolAssets from './createCalls/poolAssets';
+import * as tokens from './createCalls/tokens';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
@@ -36,11 +37,13 @@ import {
 	BaseErrorsEnum,
 	checkBaseInputOptions,
 	checkBaseInputTypes,
-	checkLocalTxInput,
+	checkLocalParachainInput,
+	checkLocalRelayInput,
+	checkLocalSystemParachainInput,
 	checkXcmTxInputs,
 	checkXcmVersion,
-	LocalTxType,
 } from './errors';
+import { LocalTxType } from './errors/checkLocalTxInput/types';
 import { Registry } from './registry';
 import { ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
@@ -48,10 +51,13 @@ import {
 	AssetCallType,
 	AssetTransferApiOpts,
 	AssetType,
+	ChainOriginDestInfo,
 	ConstructedFormat,
 	Direction,
 	Format,
 	LocalTransferTypes,
+	LocalTxChainType,
+	LocalTxOpts,
 	Methods,
 	RegistryTypes,
 	TransferArgsOpts,
@@ -82,10 +88,12 @@ import { validateNumber } from './validate';
  * @constructor opts AssetTransferApiOpts
  */
 export class AssetTransferApi {
-	readonly _api: ApiPromise;
-	readonly _opts: AssetTransferApiOpts;
-	readonly _specName: string;
-	readonly _safeXcmVersion: number;
+	readonly api: ApiPromise;
+	readonly opts: AssetTransferApiOpts;
+	readonly specName: string;
+	readonly safeXcmVersion: number;
+	readonly nativeRelayChainAsset: string;
+	readonly originChainId: string;
 	private registryConfig: {
 		registryInitialized: boolean;
 		registryType: RegistryTypes;
@@ -93,15 +101,17 @@ export class AssetTransferApi {
 	public registry: Registry;
 
 	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetTransferApiOpts = {}) {
-		this._api = api;
-		this._opts = opts;
-		this._specName = specName;
-		this._safeXcmVersion = safeXcmVersion;
+		this.api = api;
+		this.opts = opts;
+		this.specName = specName;
+		this.safeXcmVersion = safeXcmVersion;
 		this.registry = new Registry(specName, opts);
 		this.registryConfig = {
 			registryInitialized: false,
 			registryType: opts.registryType ? opts.registryType : 'CDN',
 		};
+		this.nativeRelayChainAsset = this.registry.currentRelayRegistry[RELAY_CHAIN_IDS[0]].tokens[0];
+		this.originChainId = this.registry.lookupChainIdBySpecName(this.specName);
 	}
 
 	/**
@@ -150,7 +160,6 @@ export class AssetTransferApi {
 			isLimited,
 			weightLimit,
 			xcmVersion,
-			keepAlive,
 			transferLiquidToken,
 			sendersAddr,
 		} = opts;
@@ -163,22 +172,22 @@ export class AssetTransferApi {
 		 * Ensure that the options passed in are compatible with eachother.
 		 * It will throw an error if any are incorrect.
 		 */
-		checkBaseInputOptions(opts, this._specName);
+		checkBaseInputOptions(opts, this.specName);
 		/**
 		 * Ensure all the inputs are the corrects primitive and or object types.
 		 * It will throw an error if any are incorrect.
 		 */
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
-		const { _api, _specName, _safeXcmVersion, registry } = this;
-		const originChainId = registry.lookupChainIdBySpecName(_specName);
-		const relayChainID = RELAY_CHAIN_IDS[0];
-		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(_specName.toLowerCase());
-		const isOriginParachain = isParachain(originChainId);
-		const isDestRelayChain = destChainId === relayChainID;
-		const isDestSystemParachain = isSystemChain(destChainId);
-		const isDestParachain = isParachain(destChainId);
+		const { api, specName, safeXcmVersion, originChainId, registry } = this;
 		const isLiquidTokenTransfer = transferLiquidToken === true;
+		const chainOriginDestInfo = {
+			isOriginSystemParachain: SYSTEM_PARACHAINS_NAMES.includes(specName.toLowerCase()),
+			isOriginParachain: isParachain(originChainId),
+			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
+			isDestSystemParachain: isSystemChain(destChainId),
+			isDestParachain: isParachain(destChainId),
+		};
 
 		/**
 		 * Sanitize the address to a hex, and ensure that the passed in SS58, or publickey
@@ -186,118 +195,45 @@ export class AssetTransferApi {
 		 */
 		const addr = sanitizeAddress(destAddr);
 
-		const isLocalSystemTx = isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId;
-		const isLocalRelayTx = destChainId === '0' && RELAY_CHAIN_NAMES.includes(_specName.toLowerCase());
-		const isLocalTx = isLocalRelayTx || isLocalSystemTx;
-		const nativeRelayChainAsset = registry.currentRelayRegistry[relayChainID].tokens[0];
-		const xcmDirection = this.establishDirection(
-			isLocalTx,
-			isDestRelayChain,
-			isDestSystemParachain,
-			isDestParachain,
-			isOriginSystemParachain,
-			isOriginParachain,
-		);
+		const localTxChainType = this.establishLocalTxChainType(originChainId, destChainId, chainOriginDestInfo);
+		const isLocalTx = localTxChainType !== LocalTxChainType.None;
+		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
-		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, _specName, xcmDirection, assetIds[0]);
-		const xcmPallet = establishXcmPallet(_api, xcmDirection, isForeignAssetsTransfer, isPrimaryParachainNativeAsset);
-		const declaredXcmVersion = xcmVersion === undefined ? _safeXcmVersion : xcmVersion;
+		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
+		const xcmPallet = establishXcmPallet(api, xcmDirection, isForeignAssetsTransfer, isPrimaryParachainNativeAsset);
+		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
 		/**
-		 * Create a local asset transfer on a system parachain
+		 * Create a local asset transfer
 		 */
-		if (isLocalSystemTx || isLocalRelayTx) {
-			let assetId = assetIds[0];
-			const amount = amounts[0];
-			const isValidNumber = validateNumber(assetId);
-			let isNativeRelayChainAsset = false;
-			if (assetIds.length === 0 || nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()) {
-				isNativeRelayChainAsset = true;
-			}
-
-			if (xcmDirection === Direction.SystemToSystem && !isValidNumber && !isNativeRelayChainAsset) {
-				// for SystemToSystem, assetId is not the native relayChains asset and is not a number
-				// check for the general index of the assetId and assign the correct value for the local tx
-				// throws an error if the general index is not found
-				assetId = await getAssetId(_api, registry, assetId, _specName, declaredXcmVersion, isForeignAssetsTransfer);
-			}
-
-			/**
-			 * This will throw a BaseError if the inputs are incorrect and don't
-			 * fit the constraints for creating a local asset transfer.
-			 */
-			const localAssetType = await checkLocalTxInput(
-				_api,
-				assetIds,
-				amounts,
-				_specName,
-				registry,
-				declaredXcmVersion,
+		if (isLocalTx) {
+			const LocalTxOpts = {
+				...opts,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-			); // Throws an error when any of the inputs are incorrect.
-			const method = keepAlive ? 'transferKeepAlive' : 'transfer';
-
-			if (isLocalSystemTx) {
-				let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
-				let palletMethod: LocalTransferTypes;
-
-				if (localAssetType === LocalTxType.Balances) {
-					tx =
-						method === 'transferKeepAlive'
-							? balances.transferKeepAlive(_api, addr, amount)
-							: balances.transfer(_api, addr, amount);
-					palletMethod = `balances::${method}`;
-				} else if (localAssetType === LocalTxType.Assets) {
-					tx =
-						method === 'transferKeepAlive'
-							? assets.transferKeepAlive(_api, addr, assetId, amount)
-							: assets.transfer(_api, addr, assetId, amount);
-					palletMethod = `assets::${method}`;
-				} else if (localAssetType === LocalTxType.PoolAssets) {
-					tx =
-						method === 'transferKeepAlive'
-							? poolAssets.transferKeepAlive(_api, addr, assetId, amount)
-							: poolAssets.transfer(_api, addr, assetId, amount);
-					palletMethod = `poolAssets::${method}`;
-				} else {
-					const multiLocation = resolveMultiLocation(assetId, declaredXcmVersion);
-					tx =
-						method === 'transferKeepAlive'
-							? foreignAssets.transferKeepAlive(_api, addr, multiLocation, amount)
-							: foreignAssets.transfer(_api, addr, multiLocation, amount);
-					palletMethod = `foreignAssets::${method}`;
-				}
-
-				return await this.constructFormat(tx, 'local', null, palletMethod, destChainId, _specName, {
-					format,
-					paysWithFeeOrigin,
-				});
-			} else {
-				/**
-				 * By default local transaction on a relay chain will always be from the balances pallet
-				 */
-				const palletMethod: LocalTransferTypes = `balances::${method}`;
-				const tx =
-					method === 'transferKeepAlive'
-						? balances.transferKeepAlive(_api, addr, amount)
-						: balances.transfer(_api, addr, amount);
-				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, _specName, {
-					format,
-					paysWithFeeOrigin,
-				});
-			}
+			};
+			return this.createLocalTx(
+				addr,
+				assetIds,
+				amounts,
+				destChainId,
+				declaredXcmVersion,
+				xcmDirection,
+				localTxChainType,
+				LocalTxOpts,
+			);
 		}
+
 		const baseArgs = {
-			api: _api,
+			api: api,
 			direction: xcmDirection as XcmDirection,
 			destAddr: addr,
 			assetIds,
 			amounts,
 			destChainId,
 			xcmVersion: declaredXcmVersion,
-			specName: _specName,
+			specName: specName,
 			registry: this.registry,
 		};
 
@@ -372,7 +308,7 @@ export class AssetTransferApi {
 			}
 		}
 
-		return this.constructFormat<T>(transaction, xcmDirection, declaredXcmVersion, txMethod, destChainId, _specName, {
+		return this.constructFormat<T>(transaction, xcmDirection, declaredXcmVersion, txMethod, destChainId, specName, {
 			format,
 			paysWithFeeOrigin,
 			sendersAddr,
@@ -391,8 +327,15 @@ export class AssetTransferApi {
 			this.registryConfig.registryInitialized = true;
 			return;
 		}
-
-		const data = await fetch(CDN_URL);
+		let data;
+		try {
+			data = await fetch(CDN_URL);
+		} catch (e) {
+			throw new BaseError(
+				'Failed fetching the registry from the CDN. If the issue persists, you may set the registryType to `NPM`',
+				BaseErrorsEnum.InternalError,
+			);
+		}
 		const fetchedRegistry = (await data.json()) as ChainInfoRegistry;
 		this.registry.setRegistry = fetchedRegistry;
 
@@ -414,33 +357,33 @@ export class AssetTransferApi {
 		tx: ConstructedFormat<T>,
 		format: T,
 	): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
-		const { _api } = this;
+		const { api } = this;
 
 		if (format === 'payload') {
-			const extrinsicPayload = _api.registry.createType('ExtrinsicPayload', tx, {
+			const extrinsicPayload = api.registry.createType('ExtrinsicPayload', tx, {
 				version: EXTRINSIC_VERSION,
 			});
 
-			const ext = _api.registry.createType(
+			const ext = api.registry.createType(
 				'Extrinsic',
 				{ method: extrinsicPayload.method },
 				{ version: EXTRINSIC_VERSION },
 			);
 			const u8a = ext.toU8a();
 
-			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+			return await api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
 		} else if (format === 'call') {
-			const ext = _api.registry.createType('Extrinsic', { method: tx }, { version: EXTRINSIC_VERSION });
+			const ext = api.registry.createType('Extrinsic', { method: tx }, { version: EXTRINSIC_VERSION });
 			const u8a = ext.toU8a();
 
-			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+			return await api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
 		} else if (format === 'submittable') {
-			const ext = _api.registry.createType('Extrinsic', tx, {
+			const ext = api.registry.createType('Extrinsic', tx, {
 				version: EXTRINSIC_VERSION,
 			});
 			const u8a = ext.toU8a();
 
-			return await _api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+			return await api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
 		}
 
 		return null;
@@ -457,26 +400,26 @@ export class AssetTransferApi {
 	 * @param format The format the tx is in
 	 */
 	public decodeExtrinsic<T extends Format>(encodedTransaction: string, format: T): string {
-		const { _api } = this;
+		const { api } = this;
 		const fmt = format ? format : 'payload';
 
 		if (fmt === 'payload') {
-			const extrinsicPayload = _api.registry.createType('ExtrinsicPayload', encodedTransaction, {
+			const extrinsicPayload = api.registry.createType('ExtrinsicPayload', encodedTransaction, {
 				version: EXTRINSIC_VERSION,
 			});
 
-			const call = _api.registry.createType('Call', extrinsicPayload.method);
+			const call = api.registry.createType('Call', extrinsicPayload.method);
 			const decodedMethodInfo = JSON.stringify(call.toHuman());
 
 			return decodedMethodInfo;
 		} else if (fmt === 'call') {
-			const call = _api.registry.createType('Call', encodedTransaction);
+			const call = api.registry.createType('Call', encodedTransaction);
 
 			const decodedMethodInfo = JSON.stringify(call.toHuman());
 
 			return decodedMethodInfo;
 		} else if (fmt === 'submittable') {
-			const extrinsic = _api.registry.createType('Extrinsic', encodedTransaction);
+			const extrinsic = api.registry.createType('Extrinsic', encodedTransaction);
 
 			const decodedMethodInfo = JSON.stringify(extrinsic.method.toHuman());
 
@@ -491,61 +434,54 @@ export class AssetTransferApi {
 	 * @param destChainId
 	 * @param specName
 	 */
-	private establishDirection(
-		isLocal: boolean,
-		destIsRelayChain: boolean,
-		destIsSystemParachain: boolean,
-		destIsParachain: boolean,
-		originIsSystemParachain: boolean,
-		originIsParachain: boolean,
-	): Direction {
-		if (isLocal) {
-			return Direction.Local;
-		}
+	private establishDirection(isLocal: boolean, chainOriginDestInfo: ChainOriginDestInfo): Direction {
+		if (isLocal) return Direction.Local;
 
-		const { _api } = this;
+		const { api } = this;
+		const { isDestParachain, isDestRelayChain, isDestSystemParachain, isOriginParachain, isOriginSystemParachain } =
+			chainOriginDestInfo;
 
 		/**
 		 * Check if the origin is a System Parachain
 		 */
-		if (originIsSystemParachain && destIsRelayChain) {
+		if (isOriginSystemParachain && isDestRelayChain) {
 			return Direction.SystemToRelay;
 		}
 
-		if (originIsSystemParachain && destIsSystemParachain) {
+		if (isOriginSystemParachain && isDestSystemParachain) {
 			return Direction.SystemToSystem;
 		}
 
-		if (originIsSystemParachain && destIsParachain) {
+		if (isOriginSystemParachain && isDestParachain) {
 			return Direction.SystemToPara;
 		}
 
 		/**
 		 * Check if the origin is a Relay Chain
 		 */
-		if (_api.query.paras && destIsSystemParachain) {
+		if (api.query.paras && isDestSystemParachain) {
 			return Direction.RelayToSystem;
 		}
 
-		if (_api.query.paras && destIsParachain) {
+		if (api.query.paras && isDestParachain) {
 			return Direction.RelayToPara;
 		}
 
 		/**
 		 * Check if the origin is a Parachain or Parathread
 		 */
-		if (originIsParachain && destIsRelayChain) {
+		if (isOriginParachain && isDestRelayChain) {
 			return Direction.ParaToRelay;
 		}
 
 		/**
 		 * Check if the origin is a parachain, and the destination is a system parachain.
 		 */
-		if (originIsParachain && destIsSystemParachain) {
+		if (isOriginParachain && isDestSystemParachain) {
 			return Direction.ParaToSystem;
 		}
 
-		if (originIsParachain && destIsParachain) {
+		if (isOriginParachain && isDestParachain) {
 			return Direction.ParaToPara;
 		}
 
@@ -743,7 +679,7 @@ export class AssetTransferApi {
 
 		// if a paysWithFeeOrigin is provided and the chain is of system origin
 		// we assign the assetId to the value of paysWithFeeOrigin
-		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(this._specName.toLowerCase());
+		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(this.specName.toLowerCase());
 
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
 			const isValidInt = validateNumber(paysWithFeeOrigin);
@@ -763,7 +699,7 @@ export class AssetTransferApi {
 
 				if (!isValidLpToken) {
 					throw new BaseError(
-						`assetId ${JSON.stringify(feeAsset)} is not a valid liquidity pool token for ${this._specName}`,
+						`assetId ${JSON.stringify(feeAsset)} is not a valid liquidity pool token for ${this.specName}`,
 						BaseErrorsEnum.NoFeeAssetLpFound,
 					);
 				}
@@ -772,24 +708,24 @@ export class AssetTransferApi {
 			}
 		}
 
-		const lastHeader = await this._api.rpc.chain.getHeader();
-		const blockNumber = this._api.registry.createType('BlockNumber', lastHeader.number.toNumber());
+		const lastHeader = await this.api.rpc.chain.getHeader();
+		const blockNumber = this.api.registry.createType('BlockNumber', lastHeader.number.toNumber());
 		const method = tx.method;
-		const era = this._api.registry.createType('ExtrinsicEra', {
+		const era = this.api.registry.createType('ExtrinsicEra', {
 			current: lastHeader.number.toNumber(),
 			period: 64,
 		});
 
-		const nonce = await this._api.rpc.system.accountNextIndex(sendersAddr);
+		const nonce = await this.api.rpc.system.accountNextIndex(sendersAddr);
 		const unsignedPayload: UnsignedTransaction = {
-			specVersion: this._api.runtimeVersion.specVersion.toHex(),
-			transactionVersion: this._api.runtimeVersion.transactionVersion.toHex(),
+			specVersion: this.api.runtimeVersion.specVersion.toHex(),
+			transactionVersion: this.api.runtimeVersion.transactionVersion.toHex(),
 			assetId,
 			address: sendersAddr,
 			blockHash: lastHeader.hash.toHex(),
 			blockNumber: blockNumber.toHex(),
 			era: era.toHex(),
-			genesisHash: this._api.genesisHash.toHex(),
+			genesisHash: this.api.genesisHash.toHex(),
 			method: method.toHex(),
 			nonce: nonce.toHex(),
 			signedExtensions: [
@@ -802,11 +738,11 @@ export class AssetTransferApi {
 				'CheckWeight',
 				'ChargeAssetTxPayment',
 			],
-			tip: this._api.registry.createType('Compact<Balance>', 0).toHex(),
+			tip: this.api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,
 		};
 
-		const extrinsicPayload = this._api.registry.createType('ExtrinsicPayload', unsignedPayload, {
+		const extrinsicPayload = this.api.registry.createType('ExtrinsicPayload', unsignedPayload, {
 			version: unsignedPayload.version,
 		});
 
@@ -822,7 +758,7 @@ export class AssetTransferApi {
 	 */
 	private checkAssetIsSufficient = async (assetId: BN): Promise<boolean> => {
 		try {
-			const asset = (await this._api.query.assets.asset(assetId)).unwrap();
+			const asset = (await this.api.query.assets.asset(assetId)).unwrap();
 
 			if (asset.isSufficient.toString().toLowerCase() === 'true') {
 				return true;
@@ -896,7 +832,7 @@ export class AssetTransferApi {
 			);
 		}
 
-		if (this._api.query.assetConversion !== undefined) {
+		if (this.api.query.assetConversion !== undefined) {
 			try {
 				for (const poolPairsData of await this._api.query.assetConversion.pools.entries()) {
 					const tokenPairs = poolPairsData[0];
@@ -918,7 +854,7 @@ export class AssetTransferApi {
 				}
 			} catch (e) {
 				throw new BaseError(
-					`error querying ${this._specName} liquidity token pool assets: ${e as string}`,
+					`error querying ${this.specName} liquidity token pool assets: ${e as string}`,
 					BaseErrorsEnum.InternalError,
 				);
 			}
@@ -926,4 +862,146 @@ export class AssetTransferApi {
 
 		return [false, feeAsset];
 	};
+
+	private establishLocalTxChainType(
+		originChainId: string,
+		destChainId: string,
+		chainOriginDestInfo: ChainOriginDestInfo,
+	): LocalTxChainType {
+		const { isDestParachain, isDestSystemParachain, isOriginParachain, isOriginSystemParachain } = chainOriginDestInfo;
+
+		if (isOriginSystemParachain && isDestSystemParachain && originChainId === destChainId) {
+			return LocalTxChainType.System;
+		} else if (destChainId === '0' && RELAY_CHAIN_NAMES.includes(this.specName.toLowerCase())) {
+			return LocalTxChainType.Relay;
+		} else if (isOriginParachain && isDestParachain && originChainId === destChainId) {
+			return LocalTxChainType.Parachain;
+		}
+
+		return LocalTxChainType.None;
+	}
+
+	private async createLocalTx(
+		addr: string,
+		assetIds: string[],
+		amounts: string[],
+		destChainId: string,
+		declaredXcmVersion: number,
+		xcmDirection: Direction,
+		localTxChainType: LocalTxChainType,
+		opts: LocalTxOpts,
+	) {
+		const { api, specName } = this;
+		let assetId = assetIds[0];
+		const amount = amounts[0];
+		const isValidNumber = validateNumber(assetId);
+		let isNativeRelayChainAsset = false;
+		if (assetIds.length === 0 || this.nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()) {
+			isNativeRelayChainAsset = true;
+		}
+
+		if (xcmDirection === Direction.SystemToSystem && !isValidNumber && !isNativeRelayChainAsset) {
+			// for SystemToSystem, assetId is not the native relayChains asset and is not a number
+			// check for the general index of the assetId and assign the correct value for the local tx
+			// throws an error if the general index is not found
+			assetId = await getAssetId(
+				this.api,
+				this.registry,
+				assetId,
+				this.specName,
+				declaredXcmVersion,
+				opts.isForeignAssetsTransfer,
+			);
+		}
+		const method = opts.keepAlive ? 'transferKeepAlive' : 'transfer';
+
+		if (localTxChainType === LocalTxChainType.System) {
+			const localAssetType = await checkLocalSystemParachainInput(
+				this.api,
+				assetIds,
+				amounts,
+				this.specName,
+				this.registry,
+				declaredXcmVersion,
+				opts.isForeignAssetsTransfer,
+				opts.isLiquidTokenTransfer,
+			); // Throws an error when any of the inputs are incorrect.
+			let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
+			let palletMethod: LocalTransferTypes;
+
+			if (localAssetType === LocalTxType.Balances) {
+				tx =
+					method === 'transferKeepAlive'
+						? balances.transferKeepAlive(api, addr, amount)
+						: balances.transfer(api, addr, amount);
+				palletMethod = `balances::${method}`;
+			} else if (localAssetType === LocalTxType.Assets) {
+				tx =
+					method === 'transferKeepAlive'
+						? assets.transferKeepAlive(api, addr, assetId, amount)
+						: assets.transfer(api, addr, assetId, amount);
+				palletMethod = `assets::${method}`;
+			} else if (localAssetType === LocalTxType.PoolAssets) {
+				tx =
+					method === 'transferKeepAlive'
+						? poolAssets.transferKeepAlive(api, addr, assetId, amount)
+						: poolAssets.transfer(api, addr, assetId, amount);
+				palletMethod = `poolAssets::${method}`;
+			} else {
+				const multiLocation = resolveMultiLocation(assetId, declaredXcmVersion);
+				tx =
+					method === 'transferKeepAlive'
+						? foreignAssets.transferKeepAlive(api, addr, multiLocation, amount)
+						: foreignAssets.transfer(api, addr, multiLocation, amount);
+				palletMethod = `foreignAssets::${method}`;
+			}
+
+			return await this.constructFormat(tx, 'local', null, palletMethod, destChainId, this.specName, {
+				...opts,
+			});
+		} else if (localTxChainType === LocalTxChainType.Parachain) {
+			const localAssetType = checkLocalParachainInput(api, assetIds, amounts);
+			/**
+			 * If no asset is passed in then it's assumed that its a balance transfer.
+			 * If an asset is passed in then it's a token transfer.
+			 */
+			if (localAssetType === LocalTxType.Balances) {
+				const palletMethod: LocalTransferTypes = `balances::${method}`;
+				const tx =
+					method === 'transferKeepAlive'
+						? balances.transferKeepAlive(api, addr, amount)
+						: balances.transfer(api, addr, amount);
+				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
+					...opts,
+				});
+			} else if (localAssetType === LocalTxType.Tokens) {
+				const palletMethod: LocalTransferTypes = `tokens::${method}`;
+				const tx =
+					method === 'transferKeepAlive'
+						? tokens.transferKeepAlive(api, addr, assetIds[0], amount)
+						: tokens.transfer(api, addr, assetIds[0], amount);
+				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
+					...opts,
+				});
+			} else {
+				throw new BaseError(
+					'No supported pallets were found for local transfers. Supported pallets include: balances, tokens.',
+					BaseErrorsEnum.PalletNotFound,
+				);
+			}
+		} else {
+			checkLocalRelayInput(assetIds, amounts);
+			/**
+			 * By default local transaction on a relay chain will always be from the balances pallet
+			 */
+			const palletMethod: LocalTransferTypes = `balances::${method}`;
+			const tx =
+				method === 'transferKeepAlive'
+					? balances.transferKeepAlive(api, addr, amount)
+					: balances.transfer(api, addr, amount);
+			return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
+				...opts,
+			});
+		}
+	}
 }

@@ -25,31 +25,80 @@ const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainAp
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
 		it('Should correctly determine direction for SystemToSystem', () => {
-			const res = systemAssetsApi['establishDirection'](false, false, true, false, true, false);
+			const info = {
+				isDestRelayChain: false,
+				isDestSystemParachain: true,
+				isDestParachain: false,
+				isOriginSystemParachain: true,
+				isOriginParachain: false,
+			};
+			const res = systemAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('SystemToSystem');
 		});
 		it('Should correctly determine direction for SystemToPara', () => {
-			const res = systemAssetsApi['establishDirection'](false, false, false, true, true, false);
+			const info = {
+				isDestRelayChain: false,
+				isDestSystemParachain: false,
+				isDestParachain: true,
+				isOriginSystemParachain: true,
+				isOriginParachain: false,
+			};
+			const res = systemAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('SystemToPara');
 		});
 		it('Should correctly determine direction for SystemToRelay', () => {
-			const res = systemAssetsApi['establishDirection'](false, true, false, false, true, false);
+			const info = {
+				isDestRelayChain: true,
+				isDestSystemParachain: false,
+				isDestParachain: false,
+				isOriginSystemParachain: true,
+				isOriginParachain: false,
+			};
+			const res = systemAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('SystemToRelay');
 		});
 		it('Should correctly determine direction for RelayToPara', () => {
-			const res = relayAssetsApi['establishDirection'](false, false, false, true, false, false);
+			const info = {
+				isDestRelayChain: false,
+				isDestSystemParachain: false,
+				isDestParachain: true,
+				isOriginSystemParachain: false,
+				isOriginParachain: false,
+			};
+			const res = relayAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('RelayToPara');
 		});
 		it('Should correctly determine direction for RelayToSystem', () => {
-			const res = relayAssetsApi['establishDirection'](false, false, true, false, false, false);
+			const info = {
+				isDestRelayChain: false,
+				isDestSystemParachain: true,
+				isDestParachain: false,
+				isOriginSystemParachain: false,
+				isOriginParachain: false,
+			};
+			const res = relayAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('RelayToSystem');
 		});
 		it('Should correctly determine direction for ParaToSystem', () => {
-			const res = moonriverAssetsApi['establishDirection'](false, false, true, false, false, true);
+			const info = {
+				isDestRelayChain: false,
+				isDestSystemParachain: true,
+				isDestParachain: false,
+				isOriginSystemParachain: false,
+				isOriginParachain: true,
+			};
+			const res = moonriverAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('ParaToSystem');
 		});
 		it('Should correctly determine direction for ParaToPara', () => {
-			const res = moonriverAssetsApi['establishDirection'](false, false, false, true, false, true);
+			const info = {
+				isDestRelayChain: false,
+				isDestSystemParachain: false,
+				isDestParachain: true,
+				isOriginSystemParachain: false,
+				isOriginParachain: true,
+			};
+			const res = moonriverAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('ParaToPara');
 		});
 	});
@@ -374,7 +423,7 @@ describe('AssetTransferAPI', () => {
 				injectedRegistry,
 			});
 
-			expect(mockSystemAssetsApi._opts.injectedRegistry).toStrictEqual(injectedRegistry);
+			expect(mockSystemAssetsApi.opts.injectedRegistry).toStrictEqual(injectedRegistry);
 		});
 	});
 

@@ -11,7 +11,14 @@ import {
 } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
 import { findRelayChain, parseRegistry } from './';
-import type { ChainInfo, ChainInfoRegistry, ExpandedChainInfoKeys, ForeignAssetsData, RelayChains } from './types';
+import type {
+	ChainInfo,
+	ChainInfoKeys,
+	ChainInfoRegistry,
+	ExpandedChainInfoKeys,
+	ForeignAssetsData,
+	RelayChains,
+} from './types';
 
 export class Registry {
 	readonly specName: string;
@@ -199,7 +206,9 @@ export class Registry {
 	 *
 	 * @param id AssetId to lookup
 	 */
-	public lookupAssetId(id: string) {
+	public lookupAssetId(id: string): (ChainInfoKeys & {
+		chainId: string;
+	})[] {
 		const chainIds = Object.keys(this.currentRelayRegistry);
 		const result = [];
 
