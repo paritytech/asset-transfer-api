@@ -46,4 +46,32 @@ describe('parseRegistry', () => {
 		// Ensure nothing was overwritten
 		expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);
 	});
+	it('Should correctly update the registry with an injectedRegsitry', () => {
+		const assetsInfo = {};
+		const foreignAssetsInfo = {};
+		const opts = {
+			injectedRegistry: {
+				westend: {
+					'0': {
+						tokens: ['WND', 'WND2'],
+						assetsInfo,
+						foreignAssetsInfo,
+						specName: 'westmint',
+						poolPairsInfo: {},
+					},
+				},
+			},
+		};
+		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+
+		expect(registry.westend['0']).toStrictEqual({
+			tokens: ['WND', 'WND2'],
+			assetsInfo: {},
+			foreignAssetsInfo: {},
+			specName: 'westmint',
+			poolPairsInfo: {},
+		});
+		// Ensure nothing was overwritten
+		// expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);
+	});
 });

@@ -12,10 +12,37 @@ export const parseRegistry = (registry: ChainInfoRegistry, assetsOpts: AssetTran
 		const westend = injectedRegistry.westend;
 		const rococo = injectedRegistry.rococo;
 
-		if (polkadot) Object.assign(registry.polkadot, polkadot);
-		if (kusama) Object.assign(registry.kusama, kusama);
-		if (westend) Object.assign(registry.westend, westend);
-		if (rococo) Object.assign(registry.rococo, rococo);
+		if (polkadot) {
+			for (const key of Object.keys(polkadot)) {
+				registry.polkadot[key] !== undefined
+					? Object.assign(registry.polkadot[key], polkadot[key])
+					: Object.assign(registry.polkadot, polkadot);
+			}
+		}
+
+		if (kusama) {
+			for (const key of Object.keys(kusama)) {
+				registry.kusama[key] !== undefined
+					? Object.assign(registry.kusama[key], kusama[key])
+					: Object.assign(registry.kusama, kusama);
+			}
+		}
+
+		if (westend) {
+			for (const key of Object.keys(westend)) {
+				registry.westend[key] !== undefined
+					? Object.assign(registry.westend[key], westend[key])
+					: Object.assign(registry.westend, westend);
+			}
+		}
+
+		if (rococo) {
+			for (const key of Object.keys(rococo)) {
+				registry.rococo[key] !== undefined
+					? Object.assign(registry.rococo[key], rococo[key])
+					: Object.assign(registry.rococo, rococo);
+			}
+		}
 	}
 
 	/**
