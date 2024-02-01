@@ -72,6 +72,5 @@ describe('parseRegistry', () => {
 			poolPairsInfo: {},
 		});
 		// Ensure nothing was overwritten
-		// expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);
 	});
 });
