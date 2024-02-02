@@ -117,6 +117,31 @@ describe('parseRegistry', () => {
 		const err = () => parseRegistry(reg as ChainInfoRegistry, opts);
 		expect(err).toThrow(expectedErrorMessage);
 	});
+	it('Should correctly override the registry\'s token entry with an injectedRegsitry', () => {
+		const assetsInfo = {};
+		const foreignAssetsInfo = {};
+		const opts = {
+			injectedRegistry: {
+				westend: {
+					'0': {
+						tokens: ['WOP'],
+						assetsInfo,
+						foreignAssetsInfo,
+						poolPairsInfo: {},
+					},
+				},
+			},
+		};
+		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+
+		expect(registry.westend['0']).toStrictEqual({
+			tokens: ['WOP'],
+			assetsInfo: {},
+			foreignAssetsInfo: {},
+			specName: 'totoro',
+			poolPairsInfo: {},
+		});
+	});
 	it('Should correctly add a previously missing injectedRegsitry without assetsInfo', () => {
 		const foreignAssetsInfo = {};
 		const opts = {
