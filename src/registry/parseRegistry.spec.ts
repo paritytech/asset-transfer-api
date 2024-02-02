@@ -166,4 +166,26 @@ describe('parseRegistry', () => {
 			poolPairsInfo: {},
 		});
 	});
+	it('Should correctly add an injectedRegistry only with tokens and specName', () => {
+		const opts = {
+			injectedRegistry: {
+				westend: {
+					'4000': {
+						tokens: ['GRN'],
+						specName: 'guarani',
+					},
+				},
+			},
+		};
+
+		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+
+		expect(registry.westend['4000']).toStrictEqual({
+			tokens: ['GRN'],
+			assetsInfo: {},
+			foreignAssetsInfo: {},
+			specName: 'guarani',
+			poolPairsInfo: {},
+		});
+	});
 });
