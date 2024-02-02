@@ -43,6 +43,26 @@ export type ChainInfoRegistry = {
 	rococo: ChainInfo;
 };
 
+export interface InjectedChainInfoKeys {
+	specName?: string;
+	tokens?: string[];
+	assetsInfo?: AssetsInfo;
+	foreignAssetsInfo?: ForeignAssetsInfo;
+	poolPairsInfo?: PoolPairsData;
+	xcAssetsData?: SanitizedXcAssetsData[];
+}
+
+export type InjectedChainInfo = {
+	[x: string]: InjectedChainInfoKeys;
+};
+
+export type InjectedChainInfoRegistry = {
+	polkadot: InjectedChainInfo;
+	kusama: InjectedChainInfo;
+	westend: InjectedChainInfo;
+	rococo: InjectedChainInfo;
+};
+
 export type RelayChains = 'polkadot' | 'kusama' | 'westend' | 'rococo';
 
 export type InterMultiLocationJunctionType = 'here' | 'x1' | 'x2' | 'x3' | 'x4' | 'x5' | 'x6' | 'x7' | 'x8';

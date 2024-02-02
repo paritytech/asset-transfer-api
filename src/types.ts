@@ -8,7 +8,7 @@ import BN from 'bn.js';
 
 import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import type { Registry } from './registry';
-import type { ChainInfoRegistry } from './registry/types';
+import type { ChainInfoRegistry, InjectedChainInfoRegistry } from './registry/types';
 
 export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
 	{
@@ -154,6 +154,18 @@ export type AssetTransferApiOpts = {
 	 * Option to inject chain information into the registry.
 	 */
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
+	/**
+	 * Whether or not to apply the registry from the npm package `asset-transfer-api-registry`,
+	 * or the hosted CDN which updates frequently.
+	 */
+	registryType?: RegistryTypes;
+};
+
+export type AssetTransferApiInjectedOpts = {
+	/**
+	 * Option to inject chain information into the registry.
+	 */
+	injectedRegistry?: RequireAtLeastOne<InjectedChainInfoRegistry>;
 	/**
 	 * Whether or not to apply the registry from the npm package `asset-transfer-api-registry`,
 	 * or the hosted CDN which updates frequently.

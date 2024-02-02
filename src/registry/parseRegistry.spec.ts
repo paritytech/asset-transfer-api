@@ -46,7 +46,7 @@ describe('parseRegistry', () => {
 		// Ensure nothing was overwritten
 		expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);
 	});
-	it('Should correctly update the registry with an injectedRegsitry', () => {
+	it('Should correctly update the registry with an injectedRegsitry without specName', () => {
 		const assetsInfo = {};
 		const foreignAssetsInfo = {};
 		const opts = {
@@ -56,7 +56,6 @@ describe('parseRegistry', () => {
 						tokens: ['WND', 'WND2'],
 						assetsInfo,
 						foreignAssetsInfo,
-						specName: 'westmint',
 						poolPairsInfo: {},
 					},
 				},
@@ -68,9 +67,78 @@ describe('parseRegistry', () => {
 			tokens: ['WND', 'WND2'],
 			assetsInfo: {},
 			foreignAssetsInfo: {},
-			specName: 'westmint',
+			specName: 'westend',
 			poolPairsInfo: {},
 		});
-		// Ensure nothing was overwritten
+	});
+	it('Should correctly update the registry with an injectedRegsitry without tokens', () => {
+		const assetsInfo = {};
+		const foreignAssetsInfo = {};
+		const opts = {
+			injectedRegistry: {
+				westend: {
+					'0': {
+						assetsInfo,
+						foreignAssetsInfo,
+						poolPairsInfo: {},
+						specName: 'totoro',
+					},
+				},
+			},
+		};
+		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+
+		expect(registry.westend['0']).toStrictEqual({
+			tokens: ['WND', 'WND2'],
+			assetsInfo: {},
+			foreignAssetsInfo: {},
+			specName: 'totoro',
+			poolPairsInfo: {},
+		});
+	});
+	it('Should correctly error when a previously missing injectedRegsitry is added without a token', () => {
+		const expectedErrorMessage = `Must define the tokens property`;
+
+		const assetsInfo = {};
+		const foreignAssetsInfo = {};
+		const opts = {
+			injectedRegistry: {
+				westend: {
+					'3000': {
+						assetsInfo,
+						foreignAssetsInfo,
+						poolPairsInfo: {},
+						specName: 'totoro',
+					},
+				},
+			},
+		};
+
+		const err = () => parseRegistry(reg as ChainInfoRegistry, opts);
+		expect(err).toThrow(expectedErrorMessage);
+	});
+	it('Should correctly add a previously missing injectedRegsitry without assetsInfo', () => {
+		const foreignAssetsInfo = {};
+		const opts = {
+			injectedRegistry: {
+				rococo: {
+					'2000': {
+						foreignAssetsInfo,
+						tokens: ['TST'],
+						poolPairsInfo: {},
+						specName: 'testy',
+					},
+				},
+			},
+		};
+		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+
+		expect(registry.rococo['2000']).toStrictEqual({
+			tokens: ['TST'],
+			assetsInfo: {},
+			foreignAssetsInfo: {},
+			specName: 'testy',
+			poolPairsInfo: {},
+		});
 	});
 });

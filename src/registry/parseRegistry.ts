@@ -1,10 +1,33 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
+// Copyright 2023-2024 Parity Technologies (UK) Ltd.
 
 import { ASSET_HUB_CHAIN_ID } from '../consts';
-import type { AssetTransferApiOpts } from '../types';
-import type { ChainInfoRegistry } from './types';
+import type { AssetTransferApiInjectedOpts } from '../types';
+import type { ChainInfo, ChainInfoRegistry, InjectedChainInfo } from './types';
 
-export const parseRegistry = (registry: ChainInfoRegistry, assetsOpts: AssetTransferApiOpts): ChainInfoRegistry => {
+const updateRegistry = (injectedChain: InjectedChainInfo, registry: ChainInfoRegistry, registryChain: string) => {
+	for (const key of Object.keys(injectedChain)) {
+		const info = registry[registryChain] as unknown as ChainInfo;
+		if (info[key] !== undefined) {
+			Object.assign(info[key], injectedChain[key]);
+		} else {
+			for (const property of Object.keys(info[0])) {
+				if (injectedChain[key][property] === undefined) {
+					if (property === 'specName' || property === 'tokens') {
+						throw Error(`Must define the ${property} property`);
+					} else {
+						injectedChain[key][property] = {};
+					}
+				}
+				Object.assign(info, injectedChain);
+			}
+		}
+	}
+};
+
+export const parseRegistry = (
+	registry: ChainInfoRegistry,
+	assetsOpts: AssetTransferApiInjectedOpts,
+): ChainInfoRegistry => {
 	if (assetsOpts.injectedRegistry) {
 		const { injectedRegistry } = assetsOpts;
 		const polkadot = injectedRegistry.polkadot;
@@ -12,37 +35,10 @@ export const parseRegistry = (registry: ChainInfoRegistry, assetsOpts: AssetTran
 		const westend = injectedRegistry.westend;
 		const rococo = injectedRegistry.rococo;
 
-		if (polkadot) {
-			for (const key of Object.keys(polkadot)) {
-				registry.polkadot[key] !== undefined
-					? Object.assign(registry.polkadot[key], polkadot[key])
-					: Object.assign(registry.polkadot, polkadot);
-			}
-		}
-
-		if (kusama) {
-			for (const key of Object.keys(kusama)) {
-				registry.kusama[key] !== undefined
-					? Object.assign(registry.kusama[key], kusama[key])
-					: Object.assign(registry.kusama, kusama);
-			}
-		}
-
-		if (westend) {
-			for (const key of Object.keys(westend)) {
-				registry.westend[key] !== undefined
-					? Object.assign(registry.westend[key], westend[key])
-					: Object.assign(registry.westend, westend);
-			}
-		}
-
-		if (rococo) {
-			for (const key of Object.keys(rococo)) {
-				registry.rococo[key] !== undefined
-					? Object.assign(registry.rococo[key], rococo[key])
-					: Object.assign(registry.rococo, rococo);
-			}
-		}
+		if (polkadot) updateRegistry(polkadot, registry, 'polkadot');
+		if (kusama) updateRegistry(kusama, registry, 'kusama');
+		if (westend) updateRegistry(westend, registry, 'westend');
+		if (rococo) updateRegistry(rococo, registry, 'rococo');
 	}
 
 	/**

@@ -191,7 +191,7 @@ export class Registry {
 
 		for (let i = 0; i < chainIds.length; i++) {
 			const chainInfo = this.currentRelayRegistry[chainIds[i]];
-			if (chainInfo.tokens.includes(symbol)) {
+			if (chainInfo.tokens !== undefined && chainInfo.tokens.includes(symbol)) {
 				result.push(Object.assign({}, chainInfo, { chainId: chainIds[i] }));
 			}
 		}
@@ -271,7 +271,7 @@ export class Registry {
 		for (let i = 0; i < paraIds.length; i++) {
 			const id = paraIds[i];
 			const chain = this.currentRelayRegistry[id];
-			if (chain.specName.toLowerCase() === specName.toLowerCase()) {
+			if (chain.specName !== undefined && chain.specName.toLowerCase() === specName.toLowerCase()) {
 				this.specNameToIdCache.set(specName, id);
 				return id;
 			}
