@@ -117,7 +117,7 @@ describe('parseRegistry', () => {
 		const err = () => parseRegistry(reg as ChainInfoRegistry, opts);
 		expect(err).toThrow(expectedErrorMessage);
 	});
-	it('Should correctly override the registry\'s token entry with an injectedRegsitry', () => {
+	it("Should correctly override the registry's token entry with an injectedRegsitry", () => {
 		const assetsInfo = {};
 		const foreignAssetsInfo = {};
 		const opts = {
