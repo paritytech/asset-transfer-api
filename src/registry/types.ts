@@ -30,19 +30,6 @@ export interface ChainInfoKeys {
 	xcAssetsData?: SanitizedXcAssetsData[];
 }
 
-export type ExpandedChainInfoKeys = { chainId: string } & ChainInfoKeys;
-
-export type ChainInfo = {
-	[x: string]: ChainInfoKeys;
-};
-
-export type ChainInfoRegistry = {
-	polkadot: ChainInfo;
-	kusama: ChainInfo;
-	westend: ChainInfo;
-	rococo: ChainInfo;
-};
-
 export interface InjectedChainInfoKeys {
 	specName?: string;
 	tokens?: string[];
@@ -51,16 +38,17 @@ export interface InjectedChainInfoKeys {
 	poolPairsInfo?: PoolPairsData;
 	xcAssetsData?: SanitizedXcAssetsData[];
 }
+export type ExpandedChainInfoKeys = { chainId: string } & ChainInfoKeys;
 
-export type InjectedChainInfo = {
-	[x: string]: InjectedChainInfoKeys;
+export type ChainInfo<T extends ChainInfoKeys | InjectedChainInfoKeys> = {
+	[x: string]: T;
 };
 
-export type InjectedChainInfoRegistry = {
-	polkadot: InjectedChainInfo;
-	kusama: InjectedChainInfo;
-	westend: InjectedChainInfo;
-	rococo: InjectedChainInfo;
+export type ChainInfoRegistry<T extends ChainInfoKeys | InjectedChainInfoKeys> = {
+	polkadot: ChainInfo<T>;
+	kusama: ChainInfo<T>;
+	westend: ChainInfo<T>;
+	rococo: ChainInfo<T>;
 };
 
 export type RelayChains = 'polkadot' | 'kusama' | 'westend' | 'rococo';

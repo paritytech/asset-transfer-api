@@ -3,11 +3,11 @@
 import reg from '@substrate/asset-transfer-api-registry';
 
 import { parseRegistry } from './parseRegistry';
-import { ChainInfoRegistry } from './types';
+import { ChainInfoKeys, ChainInfoRegistry } from './types';
 
 describe('parseRegistry', () => {
 	it('Should return the correct object structure', () => {
-		const registry = parseRegistry(reg as ChainInfoRegistry, {});
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, {});
 
 		expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);
 		expect(registry.kusama['0'].tokens).toStrictEqual(['KSM']);
@@ -15,7 +15,7 @@ describe('parseRegistry', () => {
 		expect(registry.rococo['0'].tokens).toStrictEqual(['ROC']);
 	});
 	it('Should correctly overwrite rococos asset-hub specName', () => {
-		const registry = parseRegistry(reg as ChainInfoRegistry, {});
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, {});
 		expect(registry.rococo['1000'].specName).toEqual('asset-hub-rococo');
 	});
 	it('Should correctly inject an injectedRegsitry', () => {
@@ -34,7 +34,7 @@ describe('parseRegistry', () => {
 				},
 			},
 		};
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.polkadot['9876']).toStrictEqual({
 			tokens: ['TST'],
@@ -61,7 +61,7 @@ describe('parseRegistry', () => {
 				},
 			},
 		};
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.westend['0']).toStrictEqual({
 			tokens: ['WND', 'WND2'],
@@ -86,7 +86,7 @@ describe('parseRegistry', () => {
 				},
 			},
 		};
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.westend['0']).toStrictEqual({
 			tokens: ['WND', 'WND2'],
@@ -111,7 +111,7 @@ describe('parseRegistry', () => {
 				},
 			},
 		};
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.westend['0']).toStrictEqual({
 			tokens: ['WND', 'WND2', 'WOP'],
@@ -135,7 +135,7 @@ describe('parseRegistry', () => {
 				},
 			},
 		};
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.rococo['2000']).toStrictEqual({
 			tokens: ['TST'],
@@ -157,7 +157,7 @@ describe('parseRegistry', () => {
 			},
 		};
 
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.westend['4000']).toStrictEqual({
 			tokens: ['GRN'],
@@ -189,7 +189,7 @@ describe('parseRegistry', () => {
 			},
 		};
 
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.kusama['1000'].assetsInfo).toStrictEqual({
 			'0': 'DOG',
@@ -371,7 +371,7 @@ describe('parseRegistry', () => {
 			},
 		};
 
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.kusama['1000'].tokens).toStrictEqual(['KSM', 'GRN']);
 
@@ -439,7 +439,7 @@ describe('parseRegistry', () => {
 			},
 		};
 
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.kusama['1000'].poolPairsInfo).toStrictEqual({
 			'0': {
@@ -501,7 +501,7 @@ describe('parseRegistry', () => {
 			},
 		};
 
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.kusama['1000'].poolPairsInfo).toStrictEqual({
 			'0': {
@@ -561,7 +561,7 @@ describe('parseRegistry', () => {
 				},
 			},
 		};
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.rococo['0']).toStrictEqual({
 			tokens: ['ROC'],
@@ -583,7 +583,7 @@ describe('parseRegistry', () => {
 				},
 			},
 		};
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.rococo['4000']).toStrictEqual({
 			tokens: ['TRM'],
@@ -612,7 +612,7 @@ describe('parseRegistry', () => {
 				},
 			},
 		};
-		const registry = parseRegistry(reg as ChainInfoRegistry, opts);
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.rococo['4000']).toStrictEqual({
 			tokens: ['TRM'],

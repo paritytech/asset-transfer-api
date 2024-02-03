@@ -23,16 +23,16 @@ import type {
 export class Registry {
 	readonly specName: string;
 	readonly relayChain: RelayChains;
-	readonly currentRelayRegistry: ChainInfo;
-	readonly opts: AssetTransferApiOpts;
+	readonly currentRelayRegistry: ChainInfo<ChainInfoKeys>;
+	readonly opts: AssetTransferApiOpts<ChainInfoKeys>;
 	public specNameToIdCache: Map<string, string>;
-	public registry: ChainInfoRegistry;
-	public cache: ChainInfoRegistry;
+	public registry: ChainInfoRegistry<ChainInfoKeys>;
+	public cache: ChainInfoRegistry<ChainInfoKeys>;
 
-	constructor(specName: string, opts: AssetTransferApiOpts) {
+	constructor(specName: string, opts: AssetTransferApiOpts<ChainInfoKeys>) {
 		this.opts = opts;
 		this.specName = specName;
-		this.registry = parseRegistry(registry as ChainInfoRegistry, opts);
+		this.registry = parseRegistry(registry as ChainInfoRegistry<ChainInfoKeys>, opts);
 		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.specNameToIdCache = new Map<string, string>();
@@ -153,7 +153,7 @@ export class Registry {
 	 *
 	 * @param reg Registry
 	 */
-	public set setRegistry(reg: ChainInfoRegistry) {
+	public set setRegistry(reg: ChainInfoRegistry<ChainInfoKeys>) {
 		this.registry = parseRegistry(reg, this.opts);
 	}
 

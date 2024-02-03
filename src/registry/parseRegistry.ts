@@ -1,11 +1,15 @@
 // Copyright 2023-2024 Parity Technologies (UK) Ltd.
 
 import { ASSET_HUB_CHAIN_ID } from '../consts';
-import type { AssetTransferApiInjectedOpts } from '../types';
-import type { ChainInfo, ChainInfoRegistry, InjectedChainInfo } from './types';
+import type { AssetTransferApiOpts } from '../types';
+import type { ChainInfo, ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './types';
 
-const updateRegistry = (injectedChain: InjectedChainInfo, registry: ChainInfoRegistry, registryChain: string) => {
-	const chain = registry[registryChain] as unknown as ChainInfo;
+const updateRegistry = (
+	injectedChain: ChainInfo<InjectedChainInfoKeys>,
+	registry: ChainInfoRegistry<ChainInfoKeys>,
+	registryChain: string,
+) => {
+	const chain = registry[registryChain] as unknown as ChainInfo<ChainInfoKeys>;
 	const defect = {
 		assetsInfo: {},
 		foreignAssetsInfo: {},
@@ -40,9 +44,9 @@ const updateRegistry = (injectedChain: InjectedChainInfo, registry: ChainInfoReg
 };
 
 export const parseRegistry = (
-	registry: ChainInfoRegistry,
-	assetsOpts: AssetTransferApiInjectedOpts,
-): ChainInfoRegistry => {
+	registry: ChainInfoRegistry<ChainInfoKeys>,
+	assetsOpts: AssetTransferApiOpts<InjectedChainInfoKeys>,
+): ChainInfoRegistry<ChainInfoKeys> => {
 	if (assetsOpts.injectedRegistry) {
 		const { injectedRegistry } = assetsOpts;
 		const polkadot = injectedRegistry.polkadot;
