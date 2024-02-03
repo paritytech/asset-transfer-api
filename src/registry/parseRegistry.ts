@@ -5,21 +5,36 @@ import type { AssetTransferApiInjectedOpts } from '../types';
 import type { ChainInfo, ChainInfoRegistry, InjectedChainInfo } from './types';
 
 const updateRegistry = (injectedChain: InjectedChainInfo, registry: ChainInfoRegistry, registryChain: string) => {
-	for (const key of Object.keys(injectedChain)) {
-		const info = registry[registryChain] as unknown as ChainInfo;
-		if (info[key] !== undefined) {
-			Object.assign(info[key], injectedChain[key]);
-		} else {
-			for (const property of Object.keys(info[0])) {
-				if (injectedChain[key][property] === undefined) {
-					if (property === 'specName' || property === 'tokens') {
-						throw Error(`Must define the ${property} property`);
-					} else {
-						injectedChain[key][property] = {};
+	const chain = registry[registryChain] as unknown as ChainInfo;
+	const defect = {
+		assetsInfo: {},
+		foreignAssetsInfo: {},
+		poolPairsInfo: {},
+	};
+	for (const id of Object.keys(injectedChain)) {
+		if (chain[id]) {
+			for (const [property, value] of Object.entries(injectedChain[id])) {
+				if (property === 'tokens') {
+					for (const v of value) {
+						if (!chain[id][property].includes(v as string)) {
+							chain[id][property].push(v as string);
+						}
+					}
+				} else if (property !== 'specName') {
+					for (const [member, value] of Object.entries(injectedChain[id][property] as string[])) {
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+						if (chain[id][property][member]) {
+							continue;
+						} else {
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+							chain[id][property][member] = value;
+						}
 					}
 				}
-				Object.assign(info, injectedChain);
 			}
+		} else {
+			Object.assign(injectedChain[id], defect);
+			Object.assign(chain, defect, injectedChain);
 		}
 	}
 };
