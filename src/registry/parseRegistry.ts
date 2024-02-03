@@ -16,29 +16,28 @@ const updateRegistry = (
 		poolPairsInfo: {},
 	};
 	for (const id of Object.keys(injectedChain)) {
-		if (chain[id]) {
-			for (const [property, value] of Object.entries(injectedChain[id])) {
-				if (property === 'tokens') {
-					for (const v of value) {
-						if (!chain[id][property].includes(v as string)) {
-							chain[id][property].push(v as string);
-						}
+		if (!chain[id]) {
+			Object.assign(injectedChain[id], defect);
+			Object.assign(chain, defect, injectedChain);
+		}
+		for (const [property, value] of Object.entries(injectedChain[id])) {
+			if (property === 'tokens') {
+				for (const v of value) {
+					if (!chain[id][property].includes(v as string)) {
+						chain[id][property].push(v as string);
 					}
-				} else if (property !== 'specName') {
-					for (const [member, value] of Object.entries(injectedChain[id][property] as string[])) {
+				}
+			} else if (property !== 'specName') {
+				for (const [member, value] of Object.entries(injectedChain[id][property] as string[])) {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					if (chain[id][property][member]) {
+						continue;
+					} else {
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-						if (chain[id][property][member]) {
-							continue;
-						} else {
-							// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-							chain[id][property][member] = value;
-						}
+						chain[id][property][member] = value;
 					}
 				}
 			}
-		} else {
-			Object.assign(injectedChain[id], defect);
-			Object.assign(chain, defect, injectedChain);
 		}
 	}
 };
