@@ -16,6 +16,7 @@ const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: st
 				tmp.forEach((v) => {
 					 if (JSON.stringify(v) === toStringVal) exists = true;
 				});
+				if (!exists) chain[id][key].push(value);
 			}
 		} else if (property && property !== 'specName' && !chain[id][property][key]) {
 			chain[id][property][key] = value as string;
