@@ -11,9 +11,12 @@ const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: st
 			if (typeof value === 'string' && !chain[id][key].includes(value)) {
 				chain[id][key].push(value);
 			} else if (typeof value === 'object') {
-				// We need to do a deep check here to see if the value object already exists in the array
-				// An example would be xcAssets
-				chain[id][key].push(value);
+				const toStringVal = JSON.stringify(value);
+				let tmp = chain[id][key] as Array<object>;
+				let exists = false;
+				tmp.forEach((v) => {
+					 if (JSON.stringify(v) === toStringVal) exists = true;
+				});
 			}
 		} else if (property && property !== 'specName' && !chain[id][property][key]) {
 			chain[id][property][key] = value as string;
