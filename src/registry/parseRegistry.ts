@@ -4,7 +4,6 @@ import { ASSET_HUB_CHAIN_ID } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
 import type { ChainInfo, ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './types';
 
-// Question what if the input is an array filled with object that we need to deep check.
 const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property?: string) => {
 	for (const [key, value] of Object.entries(input)) {
 		if (Array.isArray(chain[id][key])) {
