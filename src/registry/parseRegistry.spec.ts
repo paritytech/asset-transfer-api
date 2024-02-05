@@ -268,9 +268,9 @@ describe('parseRegistry', () => {
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.westend['4000'].poolPairsInfo['8']).toStrictEqual({
-				lpToken: '8',
-				pairInfo:
-					'[[{"parents":"1","interior":"Here"},{"parents":"1","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"2511"}]}}]]',
+			lpToken: '8',
+			pairInfo:
+				'[[{"parents":"1","interior":"Here"},{"parents":"1","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"2511"}]}}]]',
 		});
 	});
 	it('Should correctly ignore existing entries for poolPairsInfo', () => {
@@ -294,10 +294,9 @@ describe('parseRegistry', () => {
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
 		expect(registry.westend['4000'].poolPairsInfo['8']).toStrictEqual({
-
-				lpToken: '8',
-				pairInfo:
-					'[[{"parents":"1","interior":"Here"},{"parents":"1","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"2511"}]}}]]',
+			lpToken: '8',
+			pairInfo:
+				'[[{"parents":"1","interior":"Here"},{"parents":"1","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"2511"}]}}]]',
 		});
 	});
 
