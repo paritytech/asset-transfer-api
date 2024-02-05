@@ -894,7 +894,6 @@ describe('checkParaAssets', () => {
 				true,
 				false,
 			);
-			console.log(registry.registry.kusama['1000'].foreignAssetsInfo)
 
 			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual({
 				multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
