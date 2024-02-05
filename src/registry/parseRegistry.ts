@@ -11,7 +11,7 @@ const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: st
 				chain[id]['tokens'].push(value as string);
 			}
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		} else if (property !== 'specName' && !chain[id][property][key]) {
+		} else if (property !== 'specName' && chain[id][property] && !chain[id][property][key]) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			chain[id][property][key] = value as string;
 		} else if (property === '') {
