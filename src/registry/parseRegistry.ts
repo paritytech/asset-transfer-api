@@ -4,11 +4,6 @@ import { ASSET_HUB_CHAIN_ID } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
 import type { ChainInfo, ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './types';
 
-/**
- * check if it's array, if it is, it's token
- * if not && !== 'specName'
- */
-
 const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property: string) => {
 	for (const [key, value] of Object.entries(input)) {
 		if (property === 'tokens') {
