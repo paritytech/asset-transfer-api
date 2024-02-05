@@ -9,7 +9,7 @@ describe('checkLocalTxInput', () => {
 	const registry = new Registry('statemine', {});
 	const specName = 'statemine';
 
-	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
+	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
 
 	it('Should correctly return Balances with an empty assetIds', async () => {
 		const res = await checkLocalTxInput(systemAssetsApi.api, [], ['10000'], specName, registry, 2, false, false);

@@ -7,10 +7,10 @@ import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMoc
 import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId';
 
 const bifrostRegistry = new Registry('bifrost', {});
-const bifrostApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 3);
+const bifrostApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 3, { registryType: 'NPM' });
 
 const moonriverRegistry = new Registry('moonriver', {});
-const moonriverApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
+const moonriverApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, { registryType: 'NPM' });
 
 describe('getXcAssetMultiLocationByAssetId', () => {
 	describe('Bifrost', () => {

@@ -18,9 +18,11 @@ const mockSubmittableExt = mockSystemApi.registry.createType(
 	'0xfc041f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000',
 ) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
-const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
-const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
-const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
+const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
+const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, { registryType: 'NPM' });
+const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, {
+	registryType: 'NPM',
+});
 
 describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
@@ -421,6 +423,7 @@ describe('AssetTransferAPI', () => {
 			};
 			const mockSystemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, {
 				injectedRegistry,
+				registryType: 'NPM',
 			});
 
 			expect(mockSystemAssetsApi.opts.injectedRegistry).toStrictEqual(injectedRegistry);
