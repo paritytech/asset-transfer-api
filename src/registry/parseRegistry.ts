@@ -4,17 +4,20 @@ import { ASSET_HUB_CHAIN_ID } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
 import type { ChainInfo, ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './types';
 
-const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property: string) => {
+// Question what if the input is an array filled with object that we need to deep check.
+const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property?: string) => {
 	for (const [key, value] of Object.entries(input)) {
-		if (property === 'tokens') {
-			if (!chain[id]['tokens'].includes(value as string)) {
-				chain[id]['tokens'].push(value as string);
+		if (Array.isArray(chain[id][key])) {
+			if (typeof value === 'string' && !chain[id][key].includes(value)) {
+				chain[id][key].push(value);
+			} else if (typeof value === 'object') {
+				// We need to do a deep check here to see if the value object already exists in the array
+				// An example would be xcAssets
+				chain[id][key].push(value);
 			}
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		} else if (property !== 'specName' && !chain[id][property][key]) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		} else if (property && property !== 'specName' && !chain[id][property][key]) {
 			chain[id][property][key] = value as string;
-		} else if (property === '') {
+		} else if (!property) {
 			propertyIterator(value as object, chain, id, key);
 		}
 	}
@@ -26,6 +29,7 @@ const updateRegistry = (
 	registryChain: string,
 ) => {
 	const chain = registry[registryChain] as unknown as ChainInfo<ChainInfoKeys>;
+	// I dont think defect is accurate here, what if the user passes in assetsInfo, and not tokens.
 	const defect = {
 		assetsInfo: {},
 		foreignAssetsInfo: {},
@@ -36,7 +40,7 @@ const updateRegistry = (
 			Object.assign(injectedChain[id], defect);
 			Object.assign(chain, injectedChain);
 		}
-		propertyIterator(injectedChain[id], chain, id, '');
+		propertyIterator(injectedChain[id], chain, id);
 	}
 };
 
