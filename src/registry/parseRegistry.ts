@@ -6,7 +6,7 @@ import type { ChainInfo, ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys
 
 const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property: string) => {
 	for (const [key, value] of Object.entries(input)) {
-		if (property === 'tokens') {
+		if (property === 'tokens' && chain[id][property]) {
 			if (!chain[id]['tokens'].includes(value as string)) {
 				chain[id]['tokens'].push(value as string);
 			}
