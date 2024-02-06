@@ -38,7 +38,7 @@
     "url": "https://github.com/paritytech/asset-transfer-api/issues"
   },
   "homepage": "https://github.com/paritytech/asset-transfer-api#readme",
-  "packageManager": "yarn@4.0.2",
+  "packageManager": "yarn@4.1.0",
   "devDependencies": {
     "@substrate/dev": "^0.7.1",
     "@types/cli-progress": "^3",
@@ -51,6 +51,6 @@
   },
   "dependencies": {
     "@polkadot/api": "^10.11.2",
-    "@substrate/asset-transfer-api-registry": "^0.2.13"
+    "@substrate/asset-transfer-api-registry": "^0.2.14"
   }
 }

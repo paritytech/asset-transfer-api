@@ -65,6 +65,7 @@ import {
 	UnsignedTransaction,
 	XcmDirection,
 } from './types';
+import { deepEqual } from './util/deepEqual';
 import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
@@ -850,10 +851,7 @@ export class AssetTransferApi {
 					const firstLpToken = sanitizeKeys(JSON.parse(firstLpTokenSlice)) as UnionXcmMultiLocation;
 					const secondLpToken = sanitizeKeys(JSON.parse(secondLpTokenSlice)) as UnionXcmMultiLocation;
 
-					if (
-						JSON.stringify(firstLpToken) == JSON.stringify(feeAsset) ||
-						JSON.stringify(secondLpToken) == JSON.stringify(feeAsset)
-					) {
+					if (deepEqual(firstLpToken, feeAsset) || deepEqual(secondLpToken, feeAsset)) {
 						return [true, feeAsset];
 					}
 				}
