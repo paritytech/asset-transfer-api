@@ -15,9 +15,9 @@ import type {
 /**
  * Function to iterate over the properties of an object in order to check whether
  * the information is already present in the registry, and if it's not, to update
- * the registry with the new data. It only adds data, and ignores changes to the 
+ * the registry with the new data. It only adds data, and ignores changes to the
  * `specName`.
- * 
+ *
  * @param input object over which to iterate
  * @param chain registry entry of the relay chain corresponding to the object we are iterating
  * @param id specName of the relay chain
@@ -56,7 +56,7 @@ const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: st
 
 /**
  * Function to update the current chain registry with injected information.
- * 
+ *
  * @param injectedChain chain information to add to the registry
  * @param registry current chain registry
  * @param registryChain chain information currently present on the registry
