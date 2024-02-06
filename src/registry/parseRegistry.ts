@@ -78,7 +78,7 @@ const updateRegistry = (
 	};
 	for (const id of Object.keys(injectedChain)) {
 		if (!chain[id] && !injectedChain[id].specName) {
-			throw new BaseError('<error_message>', BaseErrorsEnum.SpecNameNotProvided);
+			throw new BaseError('A specName must be provided when adding a new chain', BaseErrorsEnum.SpecNameNotProvided);
 		} else if (!chain[id]) {
 			Object.assign(buffer, injectedChain[id]);
 			Object.assign(injectedChain[id], buffer);

@@ -360,7 +360,7 @@ describe('parseRegistry', () => {
 		};
 		const err = () => parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(err).toThrow('SpecNameNotProvided');
+		expect(err).toThrow('A specName must be provided when adding a new chain');
 	});
 	it('Should correctly add a new foreignAsset ignoring the specName', () => {
 		const specName = 'prorrata';
