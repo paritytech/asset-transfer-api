@@ -2,6 +2,7 @@
 import { AnyJson } from '@polkadot/types/types';
 
 import { ASSET_HUB_CHAIN_ID } from '../consts';
+import { BaseErrorsEnum } from '../errors';
 import type { AssetTransferApiOpts } from '../types';
 import { deepEqual } from '../util/deepEqual';
 import type {
@@ -55,7 +56,7 @@ const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: st
 };
 
 /**
- * Function to update the current chain registry with injected information. It 
+ * Function to update the current chain registry with injected information. It
  * errors out when adding a new chain without defining a specName
  *
  * @param injectedChain chain information to add to the registry
@@ -77,7 +78,7 @@ const updateRegistry = (
 	};
 	for (const id of Object.keys(injectedChain)) {
 		if (!chain[id] && !injectedChain[id].specName) {
-			throw Error('Must include specName when adding new chain to the registry');
+			throw Error(BaseErrorsEnum.SpecNameNotProvided);
 		} else if (!chain[id]) {
 			Object.assign(buffer, injectedChain[id]);
 			Object.assign(injectedChain[id], buffer);

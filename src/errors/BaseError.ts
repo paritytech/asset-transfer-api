@@ -29,6 +29,10 @@ export enum BaseErrorsEnum {
 	 */
 	PalletNotFound = 'PalletNotFound',
 	/**
+	 * The specName was not provided when injecting a new chain in the registry.
+	 */
+	SpecNameNotProvided = 'SpecNameNotProvided',
+	/**
 	 * The direction in which these assets are going to be sent is incorrect.
 	 */
 	InvalidDirection = 'InvalidDirection',
