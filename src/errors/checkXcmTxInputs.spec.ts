@@ -885,7 +885,7 @@ describe('checkParaAssets', () => {
 
 			await checkAssetIdInput(
 				adjustedMockSystemApi,
-				['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
+				['{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}'],
 				chainInfo,
 				'statemine',
 				Direction.SystemToPara,
@@ -895,10 +895,10 @@ describe('checkParaAssets', () => {
 				false,
 			);
 
-			expect(registry.cacheLookupForeignAsset('TNKR')).toEqual({
-				multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
-				name: 'Tinkernet',
-				symbol: 'TNKR',
+			expect(registry.cacheLookupForeignAsset('GDZ')).toEqual({
+				multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}',
+				name: 'Godzilla',
+				symbol: 'GDZ',
 			});
 		});
 
