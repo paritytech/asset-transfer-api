@@ -238,7 +238,7 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
  * @param assetId
  * @param relayChainInfo
  */
-const checkRelayToSystemAssetId = (assetId: string, relayChainInfo: ChainInfo) => {
+const checkRelayToSystemAssetId = (assetId: string, relayChainInfo: ChainInfo<ChainInfoKeys>) => {
 	const relayChainId = RELAY_CHAIN_IDS[0];
 	const relayChain = relayChainInfo[relayChainId];
 	const relayChainNativeAsset = relayChain.tokens[0];
@@ -271,7 +271,7 @@ const checkRelayToSystemAssetId = (assetId: string, relayChainInfo: ChainInfo) =
  * @param assetId
  * @param relayChainInfo
  */
-const checkRelayToParaAssetId = (assetId: string, relayChainInfo: ChainInfo) => {
+const checkRelayToParaAssetId = (assetId: string, relayChainInfo: ChainInfo<ChainInfoKeys>) => {
 	const relayChainId = RELAY_CHAIN_IDS[0];
 	const relayChain = relayChainInfo[relayChainId];
 	const relayChainNativeAsset = relayChain.tokens[0];
@@ -305,7 +305,7 @@ const checkRelayToParaAssetId = (assetId: string, relayChainInfo: ChainInfo) => 
  * @param assetId
  * @param relayChainInfo
  */
-const checkSystemToRelayAssetId = (assetId: string, relayChainInfo: ChainInfo) => {
+const checkSystemToRelayAssetId = (assetId: string, relayChainInfo: ChainInfo<ChainInfoKeys>) => {
 	const relayChainId = RELAY_CHAIN_IDS[0];
 	const relayChain = relayChainInfo[relayChainId];
 	const relayChainNativeAsset = relayChain.tokens[0];
@@ -659,7 +659,7 @@ const checkSystemToParaAssetId = async (
 	api: ApiPromise,
 	assetId: string,
 	specName: string,
-	relayChainInfo: ChainInfo,
+	relayChainInfo: ChainInfo<ChainInfoKeys>,
 	registry: Registry,
 	xcmDirection: Direction,
 	xcmVersion: number,
@@ -683,7 +683,7 @@ export const checkIsValidSystemChainAssetId = async (
 	api: ApiPromise,
 	assetId: string,
 	specName: string,
-	relayChainInfo: ChainInfo,
+	relayChainInfo: ChainInfo<ChainInfoKeys>,
 	registry: Registry,
 	xcmDirection: Direction,
 	xcmVersion: number,
@@ -744,7 +744,7 @@ const checkSystemToSystemAssetId = async (
 	api: ApiPromise,
 	assetId: string,
 	specName: string,
-	relayChainInfo: ChainInfo,
+	relayChainInfo: ChainInfo<ChainInfoKeys>,
 	registry: Registry,
 	xcmDirection: Direction,
 	xcmVersion: number,
@@ -968,7 +968,7 @@ export const checkLiquidTokenTransferDirectionValidity = (xcmDirection: Directio
 export const checkAssetIdInput = async (
 	api: ApiPromise,
 	assetIds: string[],
-	relayChainInfo: ChainInfo,
+	relayChainInfo: ChainInfo<ChainInfoKeys>,
 	specName: string,
 	xcmDirection: Direction,
 	registry: Registry,

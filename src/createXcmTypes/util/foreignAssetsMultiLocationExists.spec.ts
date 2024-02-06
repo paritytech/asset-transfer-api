@@ -9,7 +9,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 
 	it('Should return true for an existing foreign asset multilocation', async () => {
 		const expected = true;
-		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
+		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"1103"}, {"GeneralIndex": "0"}]}}';
 
 		const isValid = await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
 
@@ -58,16 +58,16 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 				},
 			},
 		});
-		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
+		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"1103"}, {"GeneralIndex": "0"}]}}';
 
 		await foreignAssetsMultiLocationExists(adjustedMockSystemApi, emptyRegistry, multiLocation, 2);
 
-		const result = emptyRegistry.cacheLookupForeignAsset('TNKR');
+		const result = emptyRegistry.cacheLookupForeignAsset('GDZ');
 
 		expect(result).toEqual({
-			multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}',
-			name: 'Tinkernet',
-			symbol: 'TNKR',
+			multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}',
+			name: 'Godzilla',
+			symbol: 'GDZ',
 		});
 	});
 });

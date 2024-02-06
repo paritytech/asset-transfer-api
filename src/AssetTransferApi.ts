@@ -45,7 +45,7 @@ import {
 } from './errors';
 import { LocalTxType } from './errors/checkLocalTxInput/types';
 import { Registry } from './registry';
-import { ChainInfoRegistry } from './registry/types';
+import { ChainInfoKeys, ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
 import {
 	AssetCallType,
@@ -90,7 +90,7 @@ import { validateNumber } from './validate';
  */
 export class AssetTransferApi {
 	readonly api: ApiPromise;
-	readonly opts: AssetTransferApiOpts;
+	readonly opts: AssetTransferApiOpts<ChainInfoKeys>;
 	readonly specName: string;
 	readonly safeXcmVersion: number;
 	readonly nativeRelayChainAsset: string;
@@ -101,7 +101,12 @@ export class AssetTransferApi {
 	};
 	public registry: Registry;
 
-	constructor(api: ApiPromise, specName: string, safeXcmVersion: number, opts: AssetTransferApiOpts = {}) {
+	constructor(
+		api: ApiPromise,
+		specName: string,
+		safeXcmVersion: number,
+		opts: AssetTransferApiOpts<ChainInfoKeys> = {},
+	) {
 		this.api = api;
 		this.opts = opts;
 		this.specName = specName;
@@ -337,7 +342,7 @@ export class AssetTransferApi {
 				BaseErrorsEnum.InternalError,
 			);
 		}
-		const fetchedRegistry = (await data.json()) as ChainInfoRegistry;
+		const fetchedRegistry = (await data.json()) as ChainInfoRegistry<ChainInfoKeys>;
 		this.registry.setRegistry = fetchedRegistry;
 
 		this.registryConfig.registryInitialized = true;

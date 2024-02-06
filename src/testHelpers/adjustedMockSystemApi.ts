@@ -184,7 +184,7 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 	Promise.resolve().then(() => {
 		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
 		const assetsMutliLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', asset);
-		const multiLocationStr = '{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}';
+		const multiLocationStr = '{"parents":"1","interior":{"X2": [{"Parachain":"1103"}, {"GeneralIndex": "0"}]}}';
 		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', JSON.parse(multiLocationStr));
 		const multiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
 		assets.set(multiLocation.toHex(), multiLocationAsset);
@@ -205,9 +205,9 @@ const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAs
 
 		const rawTnkrMultiLocationMetadata = {
 			deposit: mockSystemApi.registry.createType('u128', 6693666633),
-			name: mockSystemApi.registry.createType('Bytes', '0x54696e6b65726e6574'),
-			symbol: Object.assign(mockSystemApi.registry.createType('Bytes', '0x544e4b52'), {
-				toHuman: () => 'TNKR',
+			name: mockSystemApi.registry.createType('Bytes', '0x476f647a696c6c61'),
+			symbol: Object.assign(mockSystemApi.registry.createType('Bytes', '0x47445a'), {
+				toHuman: () => 'GDZ',
 			}),
 			decimals: mockSystemApi.registry.createType('u8', 12),
 			isFrozen: mockSystemApi.registry.createType('bool', false),
@@ -218,7 +218,7 @@ const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAs
 		);
 		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', {
 			parents: '1',
-			interior: { X2: [{ Parachain: '2125' }, { GeneralIndex: '0' }] },
+			interior: { X2: [{ Parachain: '1103' }, { GeneralIndex: '0' }] },
 		});
 		metadata.set(multiLocation.toHex(), tnkrForeignAssetMetadata);
 
