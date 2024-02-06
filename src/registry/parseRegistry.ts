@@ -2,7 +2,7 @@
 import { AnyJson } from '@polkadot/types/types';
 
 import { ASSET_HUB_CHAIN_ID } from '../consts';
-import { BaseErrorsEnum } from '../errors';
+import { BaseError, BaseErrorsEnum } from '../errors';
 import type { AssetTransferApiOpts } from '../types';
 import { deepEqual } from '../util/deepEqual';
 import type {
@@ -78,7 +78,7 @@ const updateRegistry = (
 	};
 	for (const id of Object.keys(injectedChain)) {
 		if (!chain[id] && !injectedChain[id].specName) {
-			throw Error(BaseErrorsEnum.SpecNameNotProvided);
+			throw new BaseError('<error_message>', BaseErrorsEnum.SpecNameNotProvided);
 		} else if (!chain[id]) {
 			Object.assign(buffer, injectedChain[id]);
 			Object.assign(injectedChain[id], buffer);
