@@ -152,6 +152,9 @@ describe('parseRegistry', () => {
 					'4000': {
 						tokens: ['GRN'],
 						specName: 'guarani',
+						assetsInfo: {
+							'5000': 'POTATO',
+						},
 					},
 				},
 			},
@@ -161,7 +164,9 @@ describe('parseRegistry', () => {
 
 		expect(registry.westend['4000']).toStrictEqual({
 			tokens: ['GRN'],
-			assetsInfo: {},
+			assetsInfo: {
+				'5000': 'POTATO',
+			},
 			foreignAssetsInfo: {},
 			specName: 'guarani',
 			poolPairsInfo: {},
@@ -378,4 +383,141 @@ describe('parseRegistry', () => {
 			specName: 'termo',
 		});
 	});
+	it('Should correctly add a new xcAsset ignoring the specName', () => {
+		const specName = 'prorrata';
+		const xcAssetsData = [{
+			paraID: 1000,
+			symbol: 'RMRK',
+			decimals: 10,
+			xcmV1MultiLocation:
+				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
+			asset: {
+				Token: 'RMRK',
+			},
+		},
+		{
+			paraID: 1000,
+			symbol: 'USDT',
+			decimals: 6,
+			xcmV1MultiLocation:
+				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+			asset: {
+				Token2: '0',
+			},
+		},];
+		const opts = {
+			injectedRegistry: {
+				rococo: {
+					'4000': {
+						specName,
+						xcAssetsData,
+					},
+				},
+			},
+		};
+		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
+
+		expect(registry.rococo['4000']).toStrictEqual({
+			tokens: ['TRM'],
+			assetsInfo: {},
+			foreignAssetsInfo: {
+				TESTY: {
+					symbol: 'TSTY',
+					name: 'Testy',
+					multiLocation: '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Testy"}}}',
+				},
+			},
+			poolPairsInfo: {},
+			xcAssetsData: [
+				{
+					paraID: 1000,
+					symbol: 'RMRK',
+					decimals: 10,
+					xcmV1MultiLocation:
+						'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
+					asset: {
+						Token: 'RMRK',
+					},
+				},
+				{
+					paraID: 1000,
+					symbol: 'USDT',
+					decimals: 6,
+					xcmV1MultiLocation:
+						'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+					asset: {
+						Token2: '0',
+					},
+				},
+			],
+			specName: 'termo',
+		});
+	});
+});
+it('Should correctly add a new xcAsset ignoring the existing one', () => {
+	const specName = 'prorrata';
+	const xcAssetsData = [{
+		paraID: 1000,
+		symbol: 'RMRK',
+		decimals: 10,
+		xcmV1MultiLocation:
+			'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
+		asset: {
+			Token: 'RMRK',
+		},
+	},
+	{
+		paraID: 1230,
+		symbol: 'USDT',
+		decimals: 7,
+		xcmV1MultiLocation:
+			'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+		asset: {
+			Token2: '0',
+		},
+	},];
+	const opts = {
+		injectedRegistry: {
+			rococo: {
+				'4000': {
+					specName,
+					xcAssetsData,
+				},
+			},
+		},
+	};
+	const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
+
+	expect(registry.rococo['4000'].xcAssetsData).toStrictEqual([
+		{
+			paraID: 1000,
+			symbol: 'RMRK',
+			decimals: 10,
+			xcmV1MultiLocation:
+				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
+			asset: {
+				Token: 'RMRK',
+			},
+		},
+		{
+			paraID: 1000,
+			symbol: 'USDT',
+			decimals: 6,
+			xcmV1MultiLocation:
+				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+			asset: {
+				Token2: '0',
+			},
+		},
+		{
+			paraID: 1230,
+			symbol: 'USDT',
+			decimals: 7,
+			xcmV1MultiLocation:
+				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+			asset: {
+				Token2: '0',
+			},
+		}
+	],);
 });

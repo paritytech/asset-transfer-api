@@ -1,21 +1,55 @@
 // Copyright 2023-2024 Parity Technologies (UK) Ltd.
-
+import { AnyJson } from '@polkadot/types/types';
 import { ASSET_HUB_CHAIN_ID } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
-import type { ChainInfo, ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './types';
+import type {
+	ChainInfo,
+	ChainInfoKeys,
+	ChainInfoRegistry,
+	InjectedChainInfoKeys,
+	SanitizedXcAssetsData,
+} from './types';
 
-const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property: string) => {
+function deepEqual(x: AnyJson, y: AnyJson): boolean {
+	const ok = Object.keys,
+		tx = typeof x,
+		ty = typeof y;
+	return x && y && tx === 'object' && tx === ty
+		? ok(x).length === ok(y).length && ok(x).every((key) => deepEqual(x[key], y[key]))
+		: x === y;
+}
+
+const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property?: string) => {
 	for (const [key, value] of Object.entries(input)) {
-		if (property === 'tokens' && chain[id][property]) {
-			if (!chain[id]['tokens'].includes(value as string)) {
-				chain[id]['tokens'].push(value as string);
+		if (!property) {
+			propertyIterator(value as object, chain, id, key);
+		} else if (property === 'tokens' && chain[id][property] && typeof value === 'string') {
+			if (!chain[id]['tokens'].includes(value)) {
+				chain[id]['tokens'].push(value);
 			}
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		} else if (property === 'xcAssetsData') {
+			if (!chain[id]['xcAssetsData']) {
+				const injectedBufferArray: SanitizedXcAssetsData[] = [];
+				injectedBufferArray.push(value);
+				Object.assign(chain[id], { xcAssetsData: injectedBufferArray });
+			} else {
+				let hit = false;
+				for (const chainObj of (chain[id]['xcAssetsData'] as SanitizedXcAssetsData[]).values()) {
+					if (deepEqual(value, chainObj)) {
+						console.log(value);
+						console.log(chainObj)
+						hit = true
+					}
+				}
+				if (!hit) {
+					chain[id]['xcAssetsData']?.push(value);
+				}
+			};
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		} else if (property !== 'specName' && chain[id][property] && !chain[id][property][key]) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			chain[id][property][key] = value as string;
-		} else if (property === '') {
-			propertyIterator(value as object, chain, id, key);
+			chain[id][property][key] = value as object;
 		}
 	}
 };
@@ -26,17 +60,20 @@ const updateRegistry = (
 	registryChain: string,
 ) => {
 	const chain = registry[registryChain] as unknown as ChainInfo<ChainInfoKeys>;
-	const defect = {
+	const buffer: ChainInfoKeys = {
+		tokens: [],
 		assetsInfo: {},
 		foreignAssetsInfo: {},
 		poolPairsInfo: {},
+		specName: '',
 	};
 	for (const id of Object.keys(injectedChain)) {
 		if (!chain[id]) {
-			Object.assign(injectedChain[id], defect);
+			Object.assign(buffer, injectedChain[id]);
+			Object.assign(injectedChain[id], buffer);
 			Object.assign(chain, injectedChain);
 		}
-		propertyIterator(injectedChain[id], chain, id, '');
+		propertyIterator(injectedChain[id], chain, id);
 	}
 };
 
