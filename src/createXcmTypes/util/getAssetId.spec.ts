@@ -10,7 +10,7 @@ import { getAssetId } from './getAssetId';
 describe('getAssetId', () => {
 	describe('Statemine', () => {
 		const registry = new Registry('statemine', {});
-		const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
+		const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
 		it('Should correctly return the integer assetId when given a valid native system chain token symbol', async () => {
 			const expected = '10';
 
@@ -53,7 +53,9 @@ describe('getAssetId', () => {
 
 	describe('Bifrost', () => {
 		const registry = new Registry('bifrost', {});
-		const bifrostAssetsApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2);
+		const bifrostAssetsApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2, {
+			registryType: 'NPM',
+		});
 
 		it('Should correctly return the xcAsset multilocation when given a valid asset symbol', async () => {
 			const expected = '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2023},{"palletInstance":10}]}}}';
@@ -72,7 +74,9 @@ describe('getAssetId', () => {
 
 	describe('Moonriver', () => {
 		const registry = new Registry('moonriver', {});
-		const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'bifrost', 2);
+		const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'bifrost', 2, {
+			registryType: 'NPM',
+		});
 
 		it('Should correctly return the xcAsset integer assetId when given a valid xcAsset symbol', async () => {
 			const expected = '42259045809535163221576417993425387648';

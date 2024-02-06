@@ -9,7 +9,7 @@ import { paraTransferMultiassets as bifrostTransferMultiassets } from '../util';
 import { paraTransferMultiassetWithFee as bifrostTransferMultiassetWithFee } from '../util';
 import { paraTeleportNativeAsset as bifrsotTeleportNativeAsset } from '../util';
 
-const bifrostATA = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2);
+const bifrostATA = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2, { registryType: 'NPM' });
 
 describe('Bifrost', () => {
 	describe('ParaToPara', () => {

@@ -18,8 +18,8 @@ type Test = [
 ];
 
 describe('getFeeAssetItemIndex', () => {
-	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
-	const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
+	const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
+	const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, { registryType: 'NPM' });
 	const registry = new Registry('statemine', {});
 
 	it('Should select and return the index of the correct multiassets when given their token symbols', async () => {

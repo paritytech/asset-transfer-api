@@ -6,8 +6,8 @@ import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
 import type { Format, TxResult } from '../types';
 
-const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2);
-const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2);
+const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, { registryType: 'NPM' });
+const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
 
 describe('AssetTransferApi Integration Tests', () => {
 	describe('createTransferTransaction', () => {

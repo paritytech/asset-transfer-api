@@ -9,7 +9,7 @@ import { paraTransferMultiassets as moonriverTransferMultiassets } from '../util
 import { paraTransferMultiassetWithFee as moonriverTransferMultiassetWithFee } from '../util';
 import { paraTeleportNativeAsset as moonriverTeleportNativeAsset } from '../util';
 
-const moonriverATA = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2);
+const moonriverATA = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, { registryType: 'NPM' });
 
 describe('Moonriver', () => {
 	describe('ParaToPara', () => {
