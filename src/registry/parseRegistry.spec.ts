@@ -385,26 +385,28 @@ describe('parseRegistry', () => {
 	});
 	it('Should correctly add a new xcAsset ignoring the specName', () => {
 		const specName = 'prorrata';
-		const xcAssetsData = [{
-			paraID: 1000,
-			symbol: 'RMRK',
-			decimals: 10,
-			xcmV1MultiLocation:
-				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
-			asset: {
-				Token: 'RMRK',
+		const xcAssetsData = [
+			{
+				paraID: 1000,
+				symbol: 'RMRK',
+				decimals: 10,
+				xcmV1MultiLocation:
+					'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
+				asset: {
+					Token: 'RMRK',
+				},
 			},
-		},
-		{
-			paraID: 1000,
-			symbol: 'USDT',
-			decimals: 6,
-			xcmV1MultiLocation:
-				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
-			asset: {
-				Token2: '0',
+			{
+				paraID: 1000,
+				symbol: 'USDT',
+				decimals: 6,
+				xcmV1MultiLocation:
+					'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+				asset: {
+					Token2: '0',
+				},
 			},
-		},];
+		];
 		const opts = {
 			injectedRegistry: {
 				rococo: {
@@ -456,26 +458,28 @@ describe('parseRegistry', () => {
 });
 it('Should correctly add a new xcAsset ignoring the existing one', () => {
 	const specName = 'prorrata';
-	const xcAssetsData = [{
-		paraID: 1000,
-		symbol: 'RMRK',
-		decimals: 10,
-		xcmV1MultiLocation:
-			'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
-		asset: {
-			Token: 'RMRK',
+	const xcAssetsData = [
+		{
+			paraID: 1000,
+			symbol: 'RMRK',
+			decimals: 10,
+			xcmV1MultiLocation:
+				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":8}]}}}',
+			asset: {
+				Token: 'RMRK',
+			},
 		},
-	},
-	{
-		paraID: 1230,
-		symbol: 'USDT',
-		decimals: 7,
-		xcmV1MultiLocation:
-			'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
-		asset: {
-			Token2: '0',
+		{
+			paraID: 1230,
+			symbol: 'USDT',
+			decimals: 7,
+			xcmV1MultiLocation:
+				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}',
+			asset: {
+				Token2: '0',
+			},
 		},
-	},];
+	];
 	const opts = {
 		injectedRegistry: {
 			rococo: {
@@ -518,6 +522,6 @@ it('Should correctly add a new xcAsset ignoring the existing one', () => {
 			asset: {
 				Token2: '0',
 			},
-		}
-	],);
+		},
+	]);
 });

@@ -1,7 +1,9 @@
 // Copyright 2023-2024 Parity Technologies (UK) Ltd.
 import { AnyJson } from '@polkadot/types/types';
+
 import { ASSET_HUB_CHAIN_ID } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
+import { deepEqual } from '../util/deepEqual';
 import type {
 	ChainInfo,
 	ChainInfoKeys,
@@ -9,15 +11,6 @@ import type {
 	InjectedChainInfoKeys,
 	SanitizedXcAssetsData,
 } from './types';
-
-function deepEqual(x: AnyJson, y: AnyJson): boolean {
-	const ok = Object.keys,
-		tx = typeof x,
-		ty = typeof y;
-	return x && y && tx === 'object' && tx === ty
-		? ok(x).length === ok(y).length && ok(x).every((key) => deepEqual(x[key], y[key]))
-		: x === y;
-}
 
 const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property?: string) => {
 	for (const [key, value] of Object.entries(input)) {
@@ -31,21 +24,19 @@ const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: st
 		} else if (property === 'xcAssetsData') {
 			if (!chain[id]['xcAssetsData']) {
 				const injectedBufferArray: SanitizedXcAssetsData[] = [];
-				injectedBufferArray.push(value);
+				injectedBufferArray.push(value as SanitizedXcAssetsData);
 				Object.assign(chain[id], { xcAssetsData: injectedBufferArray });
 			} else {
 				let hit = false;
 				for (const chainObj of (chain[id]['xcAssetsData'] as SanitizedXcAssetsData[]).values()) {
-					if (deepEqual(value, chainObj)) {
-						console.log(value);
-						console.log(chainObj)
-						hit = true
+					if (deepEqual(value as AnyJson, chainObj as AnyJson)) {
+						hit = true;
 					}
 				}
 				if (!hit) {
-					chain[id]['xcAssetsData']?.push(value);
+					chain[id]['xcAssetsData']?.push(value as SanitizedXcAssetsData);
 				}
-			};
+			}
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		} else if (property !== 'specName' && chain[id][property] && !chain[id][property][key]) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
