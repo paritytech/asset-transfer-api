@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.1.7](https://github.com/paritytech/asset-transfer-api/compare/v0.1.6..v0.1.7)(2024-02-07)
+
+### Feat
+
+- feat: ensure the injectedRegsitry opt does deep comparisons ([#359](https://github.com/paritytech/asset-transfer-api/pull/359)) ([724a89d](https://github.com/paritytech/asset-transfer-api/commit/724a89d7e2728a2a42604dc4e5e2d9b535926213))
+- feat: add local transfers for orml, and parachains ([#352](https://github.com/paritytech/asset-transfer-api/pull/352)) ([57cc037](https://github.com/paritytech/asset-transfer-api/commit/57cc037190e8ca14beb1e56485e2782a34523596))
+
+### Fix
+
+- fix(internal): add deepEqual functionality for comparing two objects ([#365](https://github.com/paritytech/asset-transfer-api/pull/365)) ([e305138](https://github.com/paritytech/asset-transfer-api/commit/e305138f79ecf7cbd118869db2429c3f2726d0a1))
+- fix(internal-refactor): adjust naming to be more conventional ([#358](https://github.com/paritytech/asset-transfer-api/pull/358)) ([6b42fdb](https://github.com/paritytech/asset-transfer-api/commit/6b42fdba43b02fb924fb824b3898d74d27ea2caa))
+- fix: renaming statemine in zombienet toml files ([#356](https://github.com/paritytech/asset-transfer-api/pull/356)) ([f653810](https://github.com/paritytech/asset-transfer-api/commit/f653810154321d349adbce7ea0b3a69efa1c9334))
+
+### Chore
+
+- chore(yarn): update berry to 4.1.0 ([#362](https://github.com/paritytech/asset-transfer-api/pull/362)) ([46a4d07](https://github.com/paritytech/asset-transfer-api/commit/46a4d07100a89b59725946f8dae19c660de13584))
+- chore(registry): update registry dep ([#360](https://github.com/paritytech/asset-transfer-api/pull/360)) ([d71af0f](https://github.com/paritytech/asset-transfer-api/commit/d71af0fbbeacbc53221afd8ed646b51cf8c16b77))
+
+### Docs
+
+- docs: add `RELEASE.md` ([#355](https://github.com/paritytech/asset-transfer-api/pull/355)) ([550e76f](https://github.com/paritytech/asset-transfer-api/commit/550e76f44f99458e899acb888cec38ffb3cdd000))
+
+### Test
+
+- test: set registries to NPM for AssetTransferApi ([#363](https://github.com/paritytech/asset-transfer-api/pull/363)) ([94d6c31](https://github.com/paritytech/asset-transfer-api/commit/94d6c31e74a4d32a072c455d2f8dcbeddb605122))
+- test: e2e tests ([#343](https://github.com/paritytech/asset-transfer-api/pull/343)) ([7d5de87](https://github.com/paritytech/asset-transfer-api/commit/7d5de8726328728edca8be63eb79ce25b8439d1e))
+
+
 ## [0.1.6](https://github.com/paritytech/asset-transfer-api/compare/v0.1.5..v0.1.6)(2024-01-22)
 
 ## Features
