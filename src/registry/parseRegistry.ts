@@ -16,13 +16,16 @@ import type {
 /**
  * Function to iterate over the properties of an object in order to check whether
  * the information is already present in the registry, and if it's not, to update
- * the registry with the new data. It only adds data, and ignores changes to the
- * `specName`.
+ * the registry with the new data. If override is false or undefined, it only adds
+ * data, and ignores changes to the `specName`. If override is true, it overrides
+ * existing data and adds data not already present in the registry, it also enables
+ * updating the `specName`.
  *
  * @param input object over which to iterate
  * @param chain registry entry of the relay chain corresponding to the object we are iterating
  * @param id specName of the relay chain
  * @param property optional name of the property we are passing to the function a an object
+ * @param override optional boolean to define if we aim to override the existing registry
  */
 const propertyIterator = (
 	input: object,
@@ -82,6 +85,7 @@ const propertyIterator = (
  * @param injectedChain chain information to add to the registry
  * @param registry current chain registry
  * @param registryChain chain information currently present on the registry
+ * @param override boolean to define whether we want to override the current registry
  */
 const updateRegistry = (
 	injectedChain: ChainInfo<InjectedChainInfoKeys>,
