@@ -38,44 +38,40 @@ const propertyIterator = (
 	const xcAssetsBuffer: SanitizedXcAssetsData[] = [];
 	if (property === 'specName' && override) {
 		chain[id]['specName'] = input as unknown as string;
-	}
-	for (const [key, value] of Object.entries(input)) {
-		if (!property) {
-			propertyIterator(value as object, chain, id, key, override);
-		} else if (property === 'tokens' && chain[id][property] && typeof value === 'string') {
-			if (override) {
-				tokenBuffer.push(value);
-			}
-			if (!override && !chain[id]['tokens'].includes(value)) {
-				chain[id]['tokens'].push(value);
-			}
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		} else if (property === 'xcAssetsData') {
-			if (!chain[id]['xcAssetsData'] || override) {
-				xcAssetsBuffer.push(value as SanitizedXcAssetsData);
-				Object.assign(chain[id], { xcAssetsData: xcAssetsBuffer });
-			} else {
-				let hit = false;
-				for (const chainObj of (chain[id]['xcAssetsData'] as SanitizedXcAssetsData[]).values()) {
-					if (deepEqual(value as AnyJson, chainObj as AnyJson)) {
-						hit = true;
-					}
+	} else if (property !== 'specName') {
+		for (const [key, value] of Object.entries(input)) {
+			if (!property) {
+				propertyIterator(value as object, chain, id, key, override);
+			} else if (property === 'tokens' && chain[id][property] && typeof value === 'string') {
+				if (override) {
+					tokenBuffer.push(value);
+				} else if (!chain[id]['tokens'].includes(value)) {
+					chain[id]['tokens'].push(value);
 				}
-				if (!hit) chain[id]['xcAssetsData']?.push(value as SanitizedXcAssetsData);
+			} else if (property === 'xcAssetsData') {
+				if (!chain[id]['xcAssetsData'] || override) {
+					xcAssetsBuffer.push(value as SanitizedXcAssetsData);
+					Object.assign(chain[id], { xcAssetsData: xcAssetsBuffer });
+				} else {
+					let hit = false;
+					for (const chainObj of (chain[id]['xcAssetsData'] as SanitizedXcAssetsData[]).values()) {
+						if (deepEqual(value as AnyJson, chainObj as AnyJson)) hit = true;
+					}
+					if (!hit) chain[id]['xcAssetsData']?.push(value as SanitizedXcAssetsData);
+				}
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			} else if (chain[id][property] && !chain[id][property][key]) {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				chain[id][property][key] = value as object;
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			} else if (chain[id][property] && chain[id][property][key] && override) {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				chain[id][property][key] = value as object;
 			}
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		} else if (property !== 'specName' && chain[id][property] && !chain[id][property][key]) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			chain[id][property][key] = value as object;
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		} else if (property !== 'specName' && chain[id][property] && chain[id][property][key] && override) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			chain[id][property][key] = value as object;
 		}
 	}
-	if (tokenBuffer.length !== 0) {
-		chain[id]['tokens'] = tokenBuffer;
-	}
+
+	if (tokenBuffer.length !== 0) chain[id]['tokens'] = tokenBuffer;
 };
 
 /**
