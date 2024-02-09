@@ -24,20 +24,33 @@ import type {
  * @param id specName of the relay chain
  * @param property optional name of the property we are passing to the function a an object
  */
-const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property?: string) => {
+const propertyIterator = (
+	input: object,
+	chain: ChainInfo<ChainInfoKeys>,
+	id: string,
+	property?: string,
+	override?: boolean,
+) => {
+	const tokenBuffer = [];
+	const xcAssetsBuffer: SanitizedXcAssetsData[] = [];
+	if (property === 'specName' && override) {
+		chain[id]['specName'] = input as unknown as string;
+	}
 	for (const [key, value] of Object.entries(input)) {
 		if (!property) {
-			propertyIterator(value as object, chain, id, key);
+			propertyIterator(value as object, chain, id, key, override);
 		} else if (property === 'tokens' && chain[id][property] && typeof value === 'string') {
-			if (!chain[id]['tokens'].includes(value)) {
+			if (override) {
+				tokenBuffer.push(value);
+			}
+			if (!override && !chain[id]['tokens'].includes(value)) {
 				chain[id]['tokens'].push(value);
 			}
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		} else if (property === 'xcAssetsData') {
-			if (!chain[id]['xcAssetsData']) {
-				const injectedBufferArray: SanitizedXcAssetsData[] = [];
-				injectedBufferArray.push(value as SanitizedXcAssetsData);
-				Object.assign(chain[id], { xcAssetsData: injectedBufferArray });
+			if (!chain[id]['xcAssetsData'] || override) {
+				xcAssetsBuffer.push(value as SanitizedXcAssetsData);
+				Object.assign(chain[id], { xcAssetsData: xcAssetsBuffer });
 			} else {
 				let hit = false;
 				for (const chainObj of (chain[id]['xcAssetsData'] as SanitizedXcAssetsData[]).values()) {
@@ -51,7 +64,14 @@ const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: st
 		} else if (property !== 'specName' && chain[id][property] && !chain[id][property][key]) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			chain[id][property][key] = value as object;
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		} else if (property !== 'specName' && chain[id][property] && chain[id][property][key] && override) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			chain[id][property][key] = value as object;
 		}
+	}
+	if (tokenBuffer.length !== 0) {
+		chain[id]['tokens'] = tokenBuffer;
 	}
 };
 
@@ -67,6 +87,7 @@ const updateRegistry = (
 	injectedChain: ChainInfo<InjectedChainInfoKeys>,
 	registry: ChainInfoRegistry<ChainInfoKeys>,
 	registryChain: string,
+	override?: boolean,
 ) => {
 	const chain = registry[registryChain] as unknown as ChainInfo<ChainInfoKeys>;
 	const buffer: ChainInfoKeys = {
@@ -84,7 +105,7 @@ const updateRegistry = (
 			Object.assign(injectedChain[id], buffer);
 			Object.assign(chain, injectedChain);
 		}
-		propertyIterator(injectedChain[id], chain, id);
+		propertyIterator(injectedChain[id], chain, id, undefined, override);
 	}
 };
 
@@ -103,6 +124,18 @@ export const parseRegistry = (
 		if (kusama) updateRegistry(kusama, registry, 'kusama');
 		if (westend) updateRegistry(westend, registry, 'westend');
 		if (rococo) updateRegistry(rococo, registry, 'rococo');
+	}
+	if (assetsOpts.overridingRegistry) {
+		const { overridingRegistry } = assetsOpts;
+		const polkadot = overridingRegistry.polkadot;
+		const kusama = overridingRegistry.kusama;
+		const westend = overridingRegistry.westend;
+		const rococo = overridingRegistry.rococo;
+
+		if (polkadot) updateRegistry(polkadot, registry, 'polkadot', true);
+		if (kusama) updateRegistry(kusama, registry, 'kusama', true);
+		if (westend) updateRegistry(westend, registry, 'westend', true);
+		if (rococo) updateRegistry(rococo, registry, 'rococo', true);
 	}
 
 	/**
