@@ -706,7 +706,6 @@ describe('parseRegistry', () => {
 					},
 				},
 			},
-
 		};
 
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
@@ -743,19 +742,14 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.rococo['4000'].tokens).toStrictEqual(
-			['TRM']
-		);
+		expect(registry.rococo['4000'].tokens).toStrictEqual(['TRM']);
 		expect(registry.rococo['4000'].foreignAssetsInfo).toStrictEqual({
 			TESTY: {
 				symbol: 'TSTY',
 				name: 'Testy',
 				multiLocation: '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Testy"}}}',
-			}
-		})
-		expect(registry.rococo['4000'].specName).toStrictEqual(
-			'prorrata'
-		)
+			},
+		});
+		expect(registry.rococo['4000'].specName).toStrictEqual('prorrata');
 	});
-
 });
