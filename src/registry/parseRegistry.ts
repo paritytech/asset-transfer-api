@@ -100,6 +100,11 @@ const updateRegistry = (
 	for (const id of Object.keys(injectedChain)) {
 		if (!chain[id] && !injectedChain[id].specName) {
 			throw new BaseError('A specName must be provided when adding a new chain', BaseErrorsEnum.SpecNameNotProvided);
+		} else if (!chain[id] && !injectedChain[id].tokens) {
+			throw new BaseError(
+				'An array of tokens must be provided when adding a new chain',
+				BaseErrorsEnum.TokensNotProvided,
+			);
 		} else if (!chain[id]) {
 			Object.assign(buffer, injectedChain[id]);
 			Object.assign(injectedChain[id], buffer);

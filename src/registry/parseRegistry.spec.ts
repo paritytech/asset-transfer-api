@@ -362,6 +362,20 @@ describe('parseRegistry', () => {
 
 		expect(err).toThrow('A specName must be provided when adding a new chain');
 	});
+	it('Should error when adding a new chain without tokens', () => {
+		const opts = {
+			injectedRegistry: {
+				rococo: {
+					'6666': {
+						specName: 'termo',
+					},
+				},
+			},
+		};
+		const err = () => parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
+
+		expect(err).toThrow('An array of tokens must be provided when adding a new chain');
+	});
 	it('Should correctly add a new foreignAsset ignoring the specName', () => {
 		const specName = 'prorrata';
 		const foreignAssetsInfo = {
