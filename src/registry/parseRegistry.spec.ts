@@ -567,20 +567,6 @@ describe('parseRegistry', () => {
 
 		expect(registry.westend['0'].tokens).toStrictEqual(['WOP', 'WER']);
 	});
-	it("Should correctly override the registry's token entry", () => {
-		const opts = {
-			overridingRegistry: {
-				westend: {
-					'0': {
-						tokens: ['WOP', 'WER'],
-					},
-				},
-			},
-		};
-		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
-
-		expect(registry.westend['0'].tokens).toStrictEqual(['WOP', 'WER']);
-	});
 	it('Should correctly override xcAsset', () => {
 		const xcAssetsData = [
 			{
