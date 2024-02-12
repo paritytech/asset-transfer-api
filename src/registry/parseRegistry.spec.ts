@@ -304,7 +304,6 @@ describe('parseRegistry', () => {
 				'[[{"parents":"1","interior":"Here"},{"parents":"1","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"2511"}]}}]]',
 		});
 	});
-
 	it('Should correctly ignore the new specName', () => {
 		const specName = 'termo';
 		const opts = {
