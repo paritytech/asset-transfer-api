@@ -130,12 +130,12 @@ export const parseRegistry = (
 		if (westend) updateRegistry(westend, registry, 'westend');
 		if (rococo) updateRegistry(rococo, registry, 'rococo');
 	}
-	if (assetsOpts.overridingRegistry) {
-		const { overridingRegistry } = assetsOpts;
-		const polkadot = overridingRegistry.polkadot;
-		const kusama = overridingRegistry.kusama;
-		const westend = overridingRegistry.westend;
-		const rococo = overridingRegistry.rococo;
+	if (assetsOpts.overrideRegistry) {
+		const { overrideRegistry } = assetsOpts;
+		const polkadot = overrideRegistry.polkadot;
+		const kusama = overrideRegistry.kusama;
+		const westend = overrideRegistry.westend;
+		const rococo = overrideRegistry.rococo;
 
 		if (polkadot) updateRegistry(polkadot, registry, 'polkadot', true);
 		if (kusama) updateRegistry(kusama, registry, 'kusama', true);

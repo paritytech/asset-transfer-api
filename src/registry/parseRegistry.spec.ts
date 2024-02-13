@@ -554,7 +554,7 @@ describe('parseRegistry', () => {
 	});
 	it("Should correctly override the registry's token entry", () => {
 		const opts = {
-			overridingRegistry: {
+			overrideRegistry: {
 				westend: {
 					'0': {
 						tokens: ['WOP', 'WER'],
@@ -590,7 +590,7 @@ describe('parseRegistry', () => {
 			},
 		];
 		const opts = {
-			overridingRegistry: {
+			overrideRegistry: {
 				rococo: {
 					'4000': {
 						xcAssetsData,
@@ -634,7 +634,7 @@ describe('parseRegistry', () => {
 		};
 		const tokens = ['RTK'];
 		const opts = {
-			overridingRegistry: {
+			overrideRegistry: {
 				kusama: {
 					'1000': {
 						tokens: tokens,
@@ -660,7 +660,7 @@ describe('parseRegistry', () => {
 			},
 		};
 		const opts = {
-			overridingRegistry: {
+			overrideRegistry: {
 				westend: {
 					'4000': {
 						poolPairsInfo,
@@ -698,7 +698,7 @@ describe('parseRegistry', () => {
 					},
 				},
 			},
-			overridingRegistry: {
+			overrideRegistry: {
 				westend: {
 					'4000': {
 						poolPairsInfo,
@@ -730,7 +730,7 @@ describe('parseRegistry', () => {
 			},
 		};
 		const opts = {
-			overridingRegistry: {
+			overrideRegistry: {
 				rococo: {
 					'4000': {
 						specName,
