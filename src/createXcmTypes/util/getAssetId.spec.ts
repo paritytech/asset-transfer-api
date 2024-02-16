@@ -4,7 +4,7 @@ import { AssetTransferApi } from '../../AssetTransferApi';
 import { Registry } from '../../registry';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
 import { getAssetId } from './getAssetId';
 
 describe('getAssetId', () => {

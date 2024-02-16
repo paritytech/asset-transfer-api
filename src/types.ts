@@ -138,6 +138,7 @@ export type LocalTransferTypes =
  */
 export type Methods =
 	| LocalTransferTypes
+	| 'transferAssets'
 	| 'reserveTransferAssets'
 	| 'limitedReserveTransferAssets'
 	| 'teleportAssets'
@@ -383,4 +384,9 @@ export type AssetMetadata = {
 	symbol: string;
 	decimals: string;
 	isFrozen: boolean;
+};
+
+export type ResolvedCallData = {
+	txMethod: Methods;
+	transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
 };

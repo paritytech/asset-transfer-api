@@ -7,7 +7,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import { AssetTransferApi } from './AssetTransferApi';
 import { adjustedMockMoonriverParachainApi } from './testHelpers/adjustedMockMoonriverParachainApi';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApi';
-import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApi';
+import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { Direction, UnsignedTransaction } from './types';

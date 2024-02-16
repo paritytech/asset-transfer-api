@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
 import { fetchSafeXcmVersion } from './fetchSafeXcmVersion';
 
 describe('fetchSafeXcmVersion', () => {

@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
 import { Direction, XcmDirection } from '../../types';
 import { reserveTransferAssets } from './reserveTransferAssets';
 
