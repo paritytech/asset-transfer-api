@@ -31,7 +31,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 
 		await expect(async () => {
 			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
-		}).rejects.toThrowError(expectedError);
+		}).rejects.toThrow(expectedError);
 	});
 
 	it('Should throw an error when a comma is found in a multilocation keys value', async () => {
@@ -41,7 +41,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 
 		await expect(async () => {
 			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
-		}).rejects.toThrowError(expectedError);
+		}).rejects.toThrow(expectedError);
 	});
 
 	it('Should correctly cache a valid foreign asset not found in the cache or registry', async () => {

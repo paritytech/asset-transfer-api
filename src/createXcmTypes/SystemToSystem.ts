@@ -13,6 +13,8 @@ import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	CreateWeightLimitOpts,
+	FungibleStrAsset,
+	FungibleStrAssetType,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
@@ -22,12 +24,12 @@ import {
 	XcmV3Junctions,
 	XcmWeight,
 } from './types';
-import { dedupeMultiAssets } from './util/dedupeMultiAssets';
+import { dedupeAssets } from './util/dedupeAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
-import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
+import { sortAssetsAscending } from './util/sortAssetsAscending';
 
 export const SystemToSystem: ICreateXcmType = {
 	/**
@@ -48,8 +50,19 @@ export const SystemToSystem: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1: { AccountId32: { id: accountId } },
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 0,
 				interior: {
 					X1: { AccountId32: { id: accountId } },
@@ -76,12 +89,26 @@ export const SystemToSystem: ICreateXcmType = {
 				},
 			};
 		}
-		/**
-		 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
-		 * from a system parachain to a sovereign parachain.
-		 */
+
+		if (xcmVersion === 3) {
+			/**
+			 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
+			 * from a system parachain to a sovereign parachain.
+			 */
+			return {
+				V3: {
+					parents: 1,
+					interior: {
+						X1: {
+							Parachain: destId,
+						},
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 1,
 				interior: {
 					X1: {
@@ -122,11 +149,15 @@ export const SystemToSystem: ICreateXcmType = {
 
 		if (xcmVersion === 2) {
 			return Promise.resolve({
-				V2: sortedAndDedupedMultiAssets,
+				V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
+			});
+		} else if (xcmVersion === 3) {
+			return Promise.resolve({
+				V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
 			});
 		} else {
 			return Promise.resolve({
-				V3: sortedAndDedupedMultiAssets,
+				V4: sortedAndDedupedMultiAssets as FungibleStrAsset[],
 			});
 		}
 	},
@@ -221,8 +252,9 @@ export const createSystemToSystemMultiAssets = async (
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
-): Promise<FungibleStrMultiAsset[]> => {
-	let multiAssets: FungibleStrMultiAsset[] = [];
+): Promise<FungibleStrAssetType[]> => {
+	let multiAssets: FungibleStrAssetType[] = [];
+	let multiAsset: FungibleStrAssetType;
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
 
@@ -288,21 +320,30 @@ export const createSystemToSystemMultiAssets = async (
 			);
 		}
 
-		const multiAsset = {
-			id: {
-				Concrete: concreteMultiLocation,
-			},
-			fun: {
-				Fungible: amount,
-			},
-		};
+		if (xcmVersion < 4) {
+			multiAsset = {
+				id: {
+					Concrete: concreteMultiLocation,
+				},
+				fun: {
+					Fungible: amount,
+				},
+			};
+		} else {
+			multiAsset = {
+				id: concreteMultiLocation,
+				fun: {
+					Fungible: amount,
+				},
+			};
+		}
 
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleStrMultiAsset[];
+	multiAssets = sortAssetsAscending(multiAssets) as FungibleStrAssetType[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleStrMultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleStrAssetType[];
 
 	return sortedAndDedupedMultiAssets;
 };

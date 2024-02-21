@@ -4,10 +4,12 @@ import type { ApiPromise } from '@polkadot/api';
 
 import {
 	CreateWeightLimitOpts,
+	FungibleStrAsset,
+	FungibleStrAssetType,
+	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
 	XcmDestBenificiary,
-	XcmMultiAsset,
 	XcmWeight,
 } from './types';
 
@@ -35,8 +37,23 @@ export const SystemToRelay: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1: {
+							AccountId32: {
+								id: accountId,
+							},
+						},
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 0,
 				interior: {
 					X1: {
@@ -66,8 +83,19 @@ export const SystemToRelay: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 1,
+					interior: {
+						Here: null,
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 1,
 				interior: {
 					Here: null,
@@ -82,32 +110,52 @@ export const SystemToRelay: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
-		const multiAssets: XcmMultiAsset[] = [];
+		const multiAssets: FungibleStrAssetType[] = [];
+		let multiAsset: FungibleStrAssetType;
 
 		const amount = amounts[0];
-		const multiAsset = {
-			fun: {
-				Fungible: amount,
-			},
-			id: {
-				Concrete: {
+
+		if (xcmVersion < 4) {
+			multiAsset = {
+				fun: {
+					Fungible: amount,
+				},
+				id: {
+					Concrete: {
+						interior: {
+							Here: '',
+						},
+						parents: 1,
+					},
+				},
+			};
+		} else {
+			multiAsset = {
+				fun: {
+					Fungible: amount,
+				},
+				id: {
 					interior: {
 						Here: '',
 					},
 					parents: 1,
 				},
-			},
-		} as XcmMultiAsset;
+			};
+		}
 
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
 			return Promise.resolve({
-				V2: multiAssets,
+				V2: multiAssets as FungibleStrMultiAsset[],
+			});
+		} else if (xcmVersion === 3) {
+			return Promise.resolve({
+				V3: multiAssets as FungibleStrMultiAsset[],
 			});
 		} else {
 			return Promise.resolve({
-				V3: multiAssets,
+				V4: multiAssets as FungibleStrAsset[],
 			});
 		}
 	},

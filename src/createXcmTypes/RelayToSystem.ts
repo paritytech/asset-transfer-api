@@ -4,10 +4,12 @@ import type { ApiPromise } from '@polkadot/api';
 
 import {
 	CreateWeightLimitOpts,
+	FungibleStrAsset,
+	FungibleStrAssetType,
+	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
 	XcmDestBenificiary,
-	XcmMultiAsset,
 	XcmWeight,
 } from './types';
 /**
@@ -37,8 +39,23 @@ export const RelayToSystem: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1: {
+							AccountId32: {
+								id: accountId,
+							},
+						},
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 0,
 				interior: {
 					X1: {
@@ -70,8 +87,21 @@ export const RelayToSystem: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1: {
+							Parachain: destId,
+						},
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 0,
 				interior: {
 					X1: {
@@ -91,29 +121,49 @@ export const RelayToSystem: ICreateXcmType = {
 		const multiAssets = [];
 
 		const amount = amounts[0];
-		const multiAsset = {
-			fun: {
-				Fungible: amount,
-			},
-			id: {
-				Concrete: {
+		let multiAsset: FungibleStrAssetType;
+
+		if (xcmVersion < 4) {
+			multiAsset = {
+				fun: {
+					Fungible: amount,
+				},
+				id: {
+					Concrete: {
+						interior: {
+							Here: '',
+						},
+						parents: 0,
+					},
+				},
+			};
+		} else {
+			multiAsset = {
+				fun: {
+					Fungible: amount,
+				},
+				id: {
 					interior: {
 						Here: '',
 					},
 					parents: 0,
 				},
-			},
-		} as XcmMultiAsset;
+			};
+		}
 
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
 			return Promise.resolve({
-				V2: multiAssets,
+				V2: multiAssets as FungibleStrMultiAsset[],
+			});
+		} else if (xcmVersion === 3) {
+			return Promise.resolve({
+				V3: multiAssets as FungibleStrMultiAsset[],
 			});
 		} else {
 			return Promise.resolve({
-				V3: multiAssets,
+				V4: multiAssets as FungibleStrAsset[],
 			});
 		}
 	},

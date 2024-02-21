@@ -46,7 +46,7 @@ export const DEFAULT_XCM_VERSION = 2;
  * There should only ever be two supported versions.
  * Therefore supported xcm versions should have a fixed length of 2
  */
-export const SUPPORTED_XCM_VERSIONS: [number, number] = [2, 3];
+export const SUPPORTED_XCM_VERSIONS: [number, number, number] = [2, 3, 4];
 /**
  * The current maximum number of assets that can be transferred in an extrinsic
  * https://github.com/paritytech/polkadot/blob/e0ed7e862c8c8b6c75eda1731c449543642176ef/xcm/pallet-xcm/src/lib.rs#L1131

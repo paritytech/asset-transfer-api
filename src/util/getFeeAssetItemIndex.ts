@@ -2,7 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { FungibleStrMultiAsset } from '../createXcmTypes/types';
+import { FungibleStrAssetType } from '../createXcmTypes/types';
 import { getAssetId } from '../createXcmTypes/util/getAssetId';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
@@ -21,7 +21,7 @@ export const getFeeAssetItemIndex = async (
 	api: ApiPromise,
 	registry: Registry,
 	paysWithFeeDest: string,
-	multiAssets: FungibleStrMultiAsset[],
+	multiAssets: FungibleStrAssetType[],
 	specName: string,
 	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean,
@@ -36,11 +36,14 @@ export const getFeeAssetItemIndex = async (
 
 		for (let i = 0; i < multiAssets.length; i++) {
 			const multiAsset = multiAssets[i];
-			const multiAssetInterior = multiAsset.id.Concrete.interior || multiAsset.id.Concrete['Interior'];
+			const multiAssetInterior =
+				'Concrete' in multiAsset.id
+					? multiAsset.id.Concrete.interior || multiAsset.id.Concrete['Interior']
+					: multiAsset.id.interior || multiAsset.id['Interior'];
 
 			if (isRelayFeeAsset) {
 				// if the asset id is a relay asset, match Here interior
-				if (multiAsset.id.Concrete.interior.Here || multiAsset.id.Concrete.interior['here']) {
+				if (multiAssetInterior.Here || multiAssetInterior['here']) {
 					result = i;
 					break;
 				}
@@ -97,10 +100,18 @@ export const getFeeAssetItemIndex = async (
 	}
 
 	if (result === -1) {
+		const assets = multiAssets
+			.map((asset) => {
+				if ('Concrete' in asset.id) {
+					return JSON.stringify(asset.id.Concrete.interior);
+				} else {
+					return JSON.stringify(asset.id.interior);
+				}
+			})
+			.join(',');
+
 		throw new BaseError(
-			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${multiAssets
-				.map((asset) => JSON.stringify(asset.id.Concrete.interior))
-				.join(',')}`,
+			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${assets}`,
 			BaseErrorsEnum.InvalidInput,
 		);
 	}

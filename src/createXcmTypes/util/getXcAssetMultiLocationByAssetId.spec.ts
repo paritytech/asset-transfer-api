@@ -62,7 +62,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 
 			await expect(async () => {
 				await getXcAssetMultiLocationByAssetId(bifrostApi.api, assetId, specName, xcmVersion, bifrostRegistry);
-			}).rejects.toThrowError(`parachain assetId vmover is not a valid symbol assetId in bifrost`);
+			}).rejects.toThrow(`parachain assetId vmover is not a valid symbol assetId in bifrost`);
 		});
 	});
 
@@ -124,7 +124,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 
 			await expect(async () => {
 				await getXcAssetMultiLocationByAssetId(moonriverApi.api, assetId, specName, xcmVersion, moonriverRegistry);
-			}).rejects.toThrowError(`parachain assetId mover is not a valid symbol assetIid in moonriver`);
+			}).rejects.toThrow(`parachain assetId mover is not a valid symbol assetIid in moonriver`);
 		});
 
 		it('Should correctly error when given an invalid integer assetId ', async () => {
@@ -134,7 +134,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 
 			await expect(async () => {
 				await getXcAssetMultiLocationByAssetId(moonriverApi.api, assetId, specName, xcmVersion, moonriverRegistry);
-			}).rejects.toThrowError(`assetId 242424332422323423424 is not a valid symbol or integer asset id for moonriver`);
+			}).rejects.toThrow(`assetId 242424332422323423424 is not a valid symbol or integer asset id for moonriver`);
 		});
 	});
 });

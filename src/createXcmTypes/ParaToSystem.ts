@@ -14,7 +14,11 @@ import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	CreateWeightLimitOpts,
+	FungibleObjAsset,
+	FungibleObjAssetType,
 	FungibleObjMultiAsset,
+	FungibleStrAsset,
+	FungibleStrAssetType,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
@@ -24,14 +28,15 @@ import type {
 	XcmDestBenificiary,
 	XcmDestBenificiaryXcAssets,
 	XcmV3MultiLocation,
+	XcmV4Location,
 	XcmWeight,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
-import { dedupeMultiAssets } from './util/dedupeMultiAssets';
+import { dedupeAssets } from './util/dedupeAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
-import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
+import { sortAssetsAscending } from './util/sortAssetsAscending';
 
 export const ParaToSystem: ICreateXcmType = {
 	/**
@@ -52,8 +57,19 @@ export const ParaToSystem: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1: { AccountId32: { id: accountId } },
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 0,
 				interior: {
 					X1: { AccountId32: { id: accountId } },
@@ -81,12 +97,29 @@ export const ParaToSystem: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			/**
+			 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
+			 * from a system parachain to a sovereign parachain.
+			 */
+			return {
+				V3: {
+					parents: 1,
+					interior: {
+						X1: {
+							Parachain: destId,
+						},
+					},
+				},
+			};
+		}
+
 		/**
 		 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
 		 * from a system parachain to a sovereign parachain.
 		 */
 		return {
-			V3: {
+			V4: {
 				parents: 1,
 				interior: {
 					X1: {
@@ -124,11 +157,15 @@ export const ParaToSystem: ICreateXcmType = {
 
 		if (xcmVersion === 2) {
 			return Promise.resolve({
-				V2: sortedAndDedupedMultiAssets,
+				V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
+			});
+		} else if (xcmVersion === 3) {
+			return Promise.resolve({
+				V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
 			});
 		} else {
 			return Promise.resolve({
-				V3: sortedAndDedupedMultiAssets,
+				V4: sortedAndDedupedMultiAssets as FungibleStrAsset[],
 			});
 		}
 	},
@@ -155,7 +192,7 @@ export const ParaToSystem: ICreateXcmType = {
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion } = opts;
-		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
+		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createParaToSystemMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
@@ -204,8 +241,19 @@ export const ParaToSystem: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 1,
+					interior: {
+						X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 1,
 				interior: {
 					X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
@@ -261,19 +309,32 @@ export const ParaToSystem: ICreateXcmType = {
 
 		const concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
 
-		const multiAsset = {
-			id: {
-				Concrete: concreteMultiLocation,
-			},
-			fun: {
-				Fungible: { Fungible: amount },
-			},
-		};
+		let multiAsset: FungibleObjAssetType;
+
+		if (xcmVersion < 4) {
+			multiAsset = {
+				id: {
+					Concrete: concreteMultiLocation,
+				},
+				fun: {
+					Fungible: { Fungible: amount },
+				},
+			};
+		} else {
+			multiAsset = {
+				id: concreteMultiLocation,
+				fun: {
+					Fungible: { Fungible: amount },
+				},
+			};
+		}
 
 		if (xcmVersion === 2) {
-			return { V2: multiAsset };
+			return { V2: multiAsset as FungibleObjMultiAsset };
+		} else if (xcmVersion === 3) {
+			return { V3: multiAsset as FungibleObjMultiAsset };
 		} else {
-			return { V3: multiAsset };
+			return { V4: multiAsset as FungibleObjAsset };
 		}
 	},
 	/**
@@ -297,11 +358,19 @@ export const ParaToSystem: ICreateXcmType = {
 				};
 			}
 
-			return {
-				V3: {
-					id: {
-						Concrete: paysWithFeeMultiLocation as XcmV3MultiLocation,
+			if (xcmVersion === 3) {
+				return {
+					V3: {
+						id: {
+							Concrete: paysWithFeeMultiLocation as XcmV3MultiLocation,
+						},
 					},
+				};
+			}
+
+			return {
+				V4: {
+					id: paysWithFeeMultiLocation as XcmV4Location,
 				},
 			};
 		}
@@ -326,7 +395,8 @@ const createXTokensMultiAssets = async (
 	opts: CreateAssetsOpts,
 ): Promise<UnionXcAssetsMultiAssets> => {
 	const { registry, api } = opts;
-	let multiAssets: FungibleObjMultiAsset[] = [];
+	let multiAssets: FungibleObjAssetType[] = [];
+	let multiAsset: FungibleObjAssetType;
 
 	for (let i = 0; i < assets.length; i++) {
 		const amount = amounts[i];
@@ -344,27 +414,40 @@ const createXTokensMultiAssets = async (
 
 		const concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
 
-		const multiAsset = {
-			id: {
-				Concrete: concreteMultiLocation,
-			},
-			fun: {
-				Fungible: { Fungible: amount },
-			},
-		};
+		if (xcmVersion < 4) {
+			multiAsset = {
+				id: {
+					Concrete: concreteMultiLocation,
+				},
+				fun: {
+					Fungible: { Fungible: amount },
+				},
+			};
+		} else {
+			multiAsset = {
+				id: concreteMultiLocation,
+				fun: {
+					Fungible: { Fungible: amount },
+				},
+			};
+		}
 
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleObjMultiAsset[];
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleObjMultiAsset[];
+	multiAssets = sortAssetsAscending(multiAssets) as FungibleObjAssetType[];
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleObjAssetType[];
 	if (xcmVersion === 2) {
 		return Promise.resolve({
-			V2: sortedAndDedupedMultiAssets,
+			V2: sortedAndDedupedMultiAssets as FungibleObjMultiAsset[],
+		});
+	} else if (xcmVersion === 3) {
+		return Promise.resolve({
+			V3: sortedAndDedupedMultiAssets as FungibleObjMultiAsset[],
 		});
 	} else {
 		return Promise.resolve({
-			V3: sortedAndDedupedMultiAssets,
+			V4: sortedAndDedupedMultiAssets as FungibleObjAsset[],
 		});
 	}
 };
@@ -387,9 +470,10 @@ const createParaToSystemMultiAssets = async (
 	xcmVersion: number,
 	registry: Registry,
 	isForeignAssetsTransfer: boolean,
-): Promise<FungibleStrMultiAsset[]> => {
+): Promise<FungibleStrAssetType[]> => {
 	const palletId = fetchPalletInstanceId(api, false, isForeignAssetsTransfer);
-	let multiAssets: FungibleStrMultiAsset[] = [];
+	let multiAssets: FungibleStrAssetType[] = [];
+	let multiAsset: FungibleStrAssetType;
 	let concreteMultiLocation;
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 		registry,
@@ -407,14 +491,23 @@ const createParaToSystemMultiAssets = async (
 			xcmVersion,
 		);
 
-		const multiAsset = {
-			id: {
-				Concrete: concreteMultiLocation,
-			},
-			fun: {
-				Fungible: amounts[0],
-			},
-		};
+		if (xcmVersion < 4) {
+			multiAsset = {
+				id: {
+					Concrete: concreteMultiLocation,
+				},
+				fun: {
+					Fungible: amounts[0],
+				},
+			};
+		} else {
+			multiAsset = {
+				id: concreteMultiLocation,
+				fun: {
+					Fungible: amounts[0],
+				},
+			};
+		}
 
 		multiAssets.push(multiAsset);
 	} else {
@@ -438,20 +531,30 @@ const createParaToSystemMultiAssets = async (
 				concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
 			}
 
-			const multiAsset = {
-				id: {
-					Concrete: concreteMultiLocation,
-				},
-				fun: {
-					Fungible: amount,
-				},
-			};
+			if (xcmVersion < 4) {
+				multiAsset = {
+					id: {
+						Concrete: concreteMultiLocation,
+					},
+					fun: {
+						Fungible: amount,
+					},
+				};
+			} else {
+				multiAsset = {
+					id: concreteMultiLocation,
+					fun: {
+						Fungible: amount,
+					},
+				};
+			}
+
 			multiAssets.push(multiAsset);
 		}
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleStrMultiAsset[];
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleStrMultiAsset[];
+	multiAssets = sortAssetsAscending(multiAssets) as FungibleStrAssetType[];
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleStrAssetType[];
 
 	return sortedAndDedupedMultiAssets;
 };
