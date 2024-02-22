@@ -61,11 +61,13 @@ export const ParaToRelay: ICreateXcmType = {
 			V4: {
 				parents: 0,
 				interior: {
-					X1: {
-						AccountId32: {
-							id: accountId,
+					X1: [
+						{
+							AccountId32: {
+								id: accountId,
+							},
 						},
-					},
+					],
 				},
 			},
 		};

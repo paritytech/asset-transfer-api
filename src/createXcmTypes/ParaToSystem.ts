@@ -72,7 +72,7 @@ export const ParaToSystem: ICreateXcmType = {
 			V4: {
 				parents: 0,
 				interior: {
-					X1: { AccountId32: { id: accountId } },
+					X1: [{ AccountId32: { id: accountId } }],
 				},
 			},
 		};
@@ -122,9 +122,11 @@ export const ParaToSystem: ICreateXcmType = {
 			V4: {
 				parents: 1,
 				interior: {
-					X1: {
-						Parachain: destId,
-					},
+					X1: [
+						{
+							Parachain: destId,
+						},
+					],
 				},
 			},
 		};

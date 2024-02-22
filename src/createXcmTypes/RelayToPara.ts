@@ -39,9 +39,11 @@ export const RelayToPara: ICreateXcmType = {
 			};
 		}
 
-		const X1 = isEthereumAddress(accountId) ? { AccountKey20: { key: accountId } } : { AccountId32: { id: accountId } };
-
 		if (xcmVersion === 3) {
+			const X1 = isEthereumAddress(accountId)
+				? { AccountKey20: { key: accountId } }
+				: { AccountId32: { id: accountId } };
+
 			return {
 				V3: {
 					parents: 0,
@@ -51,6 +53,10 @@ export const RelayToPara: ICreateXcmType = {
 				},
 			};
 		}
+
+		const X1 = isEthereumAddress(accountId)
+			? [{ AccountKey20: { key: accountId } }]
+			: [{ AccountId32: { id: accountId } }];
 
 		return {
 			V4: {
@@ -98,9 +104,11 @@ export const RelayToPara: ICreateXcmType = {
 			V4: {
 				parents: 0,
 				interior: {
-					X1: {
-						Parachain: destId,
-					},
+					X1: [
+						{
+							Parachain: destId,
+						},
+					],
 				},
 			},
 		};

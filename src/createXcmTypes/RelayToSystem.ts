@@ -58,11 +58,13 @@ export const RelayToSystem: ICreateXcmType = {
 			V4: {
 				parents: 0,
 				interior: {
-					X1: {
-						AccountId32: {
-							id: accountId,
+					X1: [
+						{
+							AccountId32: {
+								id: accountId,
+							},
 						},
-					},
+					],
 				},
 			},
 		};
@@ -104,9 +106,11 @@ export const RelayToSystem: ICreateXcmType = {
 			V4: {
 				parents: 0,
 				interior: {
-					X1: {
-						Parachain: destId,
-					},
+					X1: [
+						{
+							Parachain: destId,
+						},
+					],
 				},
 			},
 		};

@@ -10,7 +10,7 @@ export type XcmDestBenificiary = {
 	[x: string]: {
 		parents: number;
 		interior: {
-			[x: string]: RequireOnlyOne<XcmJunctionDestBeneficiary> | null;
+			[x: string]: RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary | null;
 		};
 	};
 };
@@ -26,6 +26,23 @@ export type XcmJunctionDestBeneficiary = {
 	};
 	Parachain: string;
 };
+
+export type XcmV4JunctionDestBeneficiary =
+	| {
+			AccountId32: {
+				network?: string;
+				id: string;
+			};
+	  }[]
+	| {
+			Parachain: string;
+	  }[]
+	| {
+			AccountKey20: {
+				network?: string;
+				key: string;
+			};
+	  }[];
 
 export type XcmV2MultiLocation = {
 	parents: number;

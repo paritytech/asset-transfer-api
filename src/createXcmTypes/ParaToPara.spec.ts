@@ -97,11 +97,13 @@ describe('ParaToPara', () => {
 				V4: {
 					parents: 0,
 					interior: {
-						X1: {
-							AccountId32: {
-								id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+						X1: [
+							{
+								AccountId32: {
+									id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								},
 							},
-						},
+						],
 					},
 				},
 			};
@@ -115,11 +117,13 @@ describe('ParaToPara', () => {
 				V4: {
 					parents: 0,
 					interior: {
-						X1: {
-							AccountKey20: {
-								key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
+						X1: [
+							{
+								AccountKey20: {
+									key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
+								},
 							},
-						},
+						],
 					},
 				},
 			};
@@ -167,9 +171,11 @@ describe('ParaToPara', () => {
 				V4: {
 					parents: 1,
 					interior: {
-						X1: {
-							Parachain: '100',
-						},
+						X1: [
+							{
+								Parachain: '100',
+							},
+						],
 					},
 				},
 			};
@@ -274,7 +280,7 @@ describe('ParaToPara', () => {
 
 			expect(assets).toStrictEqual(expectedRes);
 		});
-		it('Testing Should work for V4', async () => {
+		it('Should work for V4', async () => {
 			const assets = await ParaToPara.createAssets(
 				['1000000', '20000000000'],
 				4,
