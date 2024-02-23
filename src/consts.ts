@@ -43,8 +43,8 @@ export const ROCOCO_ASSET_HUB_SPEC_NAME = ['asset-hub-rococo'];
  */
 export const DEFAULT_XCM_VERSION = 2;
 /**
- * There should only ever be two supported versions.
- * Therefore supported xcm versions should have a fixed length of 2
+ * There should only ever be three supported versions.
+ * Therefore supported xcm versions will always have a fixed length of 3.
  */
 export const SUPPORTED_XCM_VERSIONS: [number, number, number] = [2, 3, 4];
 /**
