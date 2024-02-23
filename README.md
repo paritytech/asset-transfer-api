@@ -31,13 +31,13 @@ The below chart is focusing on what directions are supported for constructing as
 
 | Direction              | V2                 | V3                 | V4                 |
 | ---------------------  | ------------------ | ------------------ | ------------------ |
-| System to Parachain    |         ✅         |      ✅            |          ❌		  |
+| System to Parachain    |         ✅         |      ✅            |          ✅		  |
 | System to Relay        |         ✅         |      ✅            |          ✅         |
-| Relay to Parachain     |         ✅         |      ✅            |          ❌         |    
+| Relay to Parachain     |         ✅         |      ✅            |          ✅         |    
 | Relay to System        |         ✅         |      ✅            |          ✅         |
-| Parachain to Parachain |         ✅         |      ✅            |          ❌         |
-| Parachain to Relay     |         ✅         |      ✅            |          ❌         |
-| Parachain to System    |         ✅         |      ✅            |          ❌         |
+| Parachain to Parachain |         ✅         |      ✅            |          ✅         |
+| Parachain to Relay     |         ✅         |      ✅            |          ✅         |
+| Parachain to System    |         ✅         |      ✅            |          ✅         |
 | System to System       |         ✅         |      ✅            |          ✅         |
 
 ## Note on Parachain to Parachain Support
