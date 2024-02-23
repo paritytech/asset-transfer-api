@@ -26,8 +26,8 @@ import type {
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
-	XcmDestBenificiary,
-	XcmDestBenificiaryXcAssets,
+	XcmDestBeneficiary,
+	XcmDestBeneficiaryXcAssets,
 	XcmV3MultiLocation,
 	XcmV4Location,
 	XcmWeight,
@@ -46,7 +46,7 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
+	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			const X1 = isEthereumAddress(accountId)
 				? { AccountKey20: { network: 'Any', key: accountId } }
@@ -96,7 +96,7 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion?: number): XcmDestBenificiary => {
+	createDest: (destId: string, xcmVersion?: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -238,7 +238,7 @@ export const ParaToPara: ICreateXcmType = {
 		destChainId: string,
 		accountId: string,
 		xcmVersion: number,
-	): XcmDestBenificiaryXcAssets => {
+	): XcmDestBeneficiaryXcAssets => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {

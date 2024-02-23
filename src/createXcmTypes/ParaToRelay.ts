@@ -13,8 +13,8 @@ import {
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcmMultiAssets,
-	XcmDestBenificiary,
-	XcmDestBenificiaryXcAssets,
+	XcmDestBeneficiary,
+	XcmDestBeneficiaryXcAssets,
 	XcmWeight,
 } from './types';
 
@@ -25,7 +25,7 @@ export const ParaToRelay: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBenificiary => {
+	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -78,7 +78,7 @@ export const ParaToRelay: ICreateXcmType = {
 	 * @param destId The destId in this case, which is the relay chain.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (_: string, xcmVersion: number): XcmDestBenificiary => {
+	createDest: (_: string, xcmVersion: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -189,7 +189,7 @@ export const ParaToRelay: ICreateXcmType = {
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
 		return await Promise.resolve(0);
 	},
-	createXTokensBeneficiary: (_: string, accountId: string, xcmVersion: number): XcmDestBenificiaryXcAssets => {
+	createXTokensBeneficiary: (_: string, accountId: string, xcmVersion: number): XcmDestBeneficiaryXcAssets => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -216,7 +216,7 @@ export const ParaToRelay: ICreateXcmType = {
 			V4: {
 				parents: 1,
 				interior: {
-					X1: { AccountId32: { id: accountId } },
+					X1: [{ AccountId32: { id: accountId } }],
 				},
 			},
 		};

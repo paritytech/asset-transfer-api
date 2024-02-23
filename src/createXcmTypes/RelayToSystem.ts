@@ -9,7 +9,7 @@ import {
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
-	XcmDestBenificiary,
+	XcmDestBeneficiary,
 	XcmWeight,
 } from './types';
 /**
@@ -22,7 +22,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBenificiary => {
+	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -75,7 +75,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (destId: string, xcmVersion: number): XcmDestBenificiary => {
+	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {

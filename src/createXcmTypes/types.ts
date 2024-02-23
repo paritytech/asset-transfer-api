@@ -6,7 +6,7 @@ import type { AnyJson } from '@polkadot/types/types';
 import type { Registry } from '../registry';
 import type { RequireOnlyOne } from '../types';
 
-export type XcmDestBenificiary = {
+export type XcmDestBeneficiary = {
 	[x: string]: {
 		parents: number;
 		interior: {
@@ -303,7 +303,7 @@ export interface XcAssetsV4Location {
 	};
 }
 
-export interface XcmV2DestBenificiary {
+export interface XcmV2DestBeneficiary {
 	V2: {
 		parents: string | number;
 		interior: {
@@ -312,7 +312,7 @@ export interface XcmV2DestBenificiary {
 	};
 }
 
-export interface XcmV3DestBenificiary {
+export interface XcmV3DestBeneficiary {
 	V3: {
 		parents: string | number;
 		interior: {
@@ -321,16 +321,16 @@ export interface XcmV3DestBenificiary {
 	};
 }
 
-export interface XcmV4DestBenificiary {
+export interface XcmV4DestBeneficiary {
 	V4: {
 		parents: string | number;
 		interior: {
-			X1: { AccountId32: { id: string } };
+			X1: [{ AccountId32: { id: string } }];
 		};
 	};
 }
 
-export interface XcmV2ParachainDestBenificiary {
+export interface XcmV2ParachainDestBeneficiary {
 	V2: {
 		parents: string | number;
 		interior: {
@@ -341,7 +341,7 @@ export interface XcmV2ParachainDestBenificiary {
 	};
 }
 
-export interface XcmV3ParachainDestBenificiary {
+export interface XcmV3ParachainDestBeneficiary {
 	V3: {
 		parents: string | number;
 		interior: {
@@ -352,7 +352,7 @@ export interface XcmV3ParachainDestBenificiary {
 	};
 }
 
-export interface XcmV4ParachainDestBenificiary {
+export interface XcmV4ParachainDestBeneficiary {
 	V4: {
 		parents: string | number;
 		interior: {
@@ -363,13 +363,13 @@ export interface XcmV4ParachainDestBenificiary {
 	};
 }
 
-export type XcmDestBenificiaryXcAssets =
-	| XcmV4DestBenificiary
-	| XcmV3DestBenificiary
-	| XcmV2DestBenificiary
-	| XcmV2ParachainDestBenificiary
-	| XcmV3ParachainDestBenificiary
-	| XcmV4ParachainDestBenificiary;
+export type XcmDestBeneficiaryXcAssets =
+	| XcmV4DestBeneficiary
+	| XcmV3DestBeneficiary
+	| XcmV2DestBeneficiary
+	| XcmV2ParachainDestBeneficiary
+	| XcmV3ParachainDestBeneficiary
+	| XcmV4ParachainDestBeneficiary;
 
 export interface XcmWeightUnlimited {
 	Unlimited: null | undefined;
@@ -408,8 +408,8 @@ export interface CreateWeightLimitOpts {
 }
 
 export interface ICreateXcmType {
-	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBenificiary;
-	createDest: (destId: string, xcmVersion: number) => XcmDestBenificiary;
+	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;
+	createDest: (destId: string, xcmVersion: number) => XcmDestBeneficiary;
 	createAssets: (
 		amounts: string[],
 		xcmVersion: number,
@@ -419,7 +419,7 @@ export interface ICreateXcmType {
 	) => Promise<UnionXcmMultiAssets>;
 	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
-	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBenificiaryXcAssets;
+	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBeneficiaryXcAssets;
 	createXTokensAssets?: (
 		amounts: string[],
 		xcmVersion: number,

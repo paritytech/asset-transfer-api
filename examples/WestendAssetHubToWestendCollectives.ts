@@ -8,25 +8,24 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a `limitedTeleportAssets` call to send 1 WND from a Westend (Relay Chain) account
- * to a Westend AssetHub (System Parachain) account, where the `xcmVersion` is set to `4`, `isLimited` is set to true and no `weightLimit` value is given declaring that
- * we will allow `unlimited` weight to be used for the tx.
+ * In this example we are creating a `teleportAssets` call to send 1 WND from a Westend AssetHub (System Parachain) account
+ * to a Westend Collectives (System Parachain) account, where the `xcmVersion` is set to `4` and `isLimited` is set to false.
  *
  * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westend-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westend-asset-hub-rpc.polkadot.io');
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'1000',
+			'1001',
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			['WND'],
 			['1000000000000'],
 			{
 				format: 'call',
-				isLimited: true,
+				isLimited: false,
 				xcmVersion: 4,
 			},
 		);

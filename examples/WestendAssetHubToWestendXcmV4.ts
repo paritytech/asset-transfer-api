@@ -8,7 +8,7 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a limitedTeleportAssets call to send 1 WND from a Westend AssetHub (System Parachain) account
+ * In this example we are creating a `limitedTeleportAssets` call to send 1 WND from a Westend AssetHub (System Parachain) account
  * to a Westend (Relay Chain) account, where the `xcmVersion` is set to `4`, `isLimited` is set to true and no `weightLimit` value is given declaring that
  * we will allow `unlimited` weight to be used for the tx.
  *
