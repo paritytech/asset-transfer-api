@@ -4,7 +4,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import type { XcmDestBenificiaryXcAssets } from '../../createXcmTypes/types';
+import type { XcmDestBeneficiaryXcAssets } from '../../createXcmTypes/types';
 import { UnionXcAssetsMultiAssets } from '../../createXcmTypes/types';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import type { CreateXcmCallOpts } from '../types';
@@ -32,7 +32,7 @@ export const transferMultiassets = async (
 	});
 
 	let assets: UnionXcAssetsMultiAssets;
-	let beneficiary: XcmDestBenificiaryXcAssets;
+	let beneficiary: XcmDestBeneficiaryXcAssets;
 
 	if (
 		typeCreator.createXTokensAssets &&

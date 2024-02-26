@@ -30,26 +30,26 @@ describe('checkLocalTxInput', () => {
 	it('Should correctly throw an error for incorrect length on `assetIds`', async () => {
 		await expect(async () => {
 			await checkLocalTxInput(systemAssetsApi.api, ['1', '2'], ['10000'], specName, registry, 2, false, false);
-		}).rejects.toThrowError(
+		}).rejects.toThrow(
 			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
 		);
 	});
 	it('Should correctly throw an error for incorrect length on `amounts`', async () => {
 		await expect(async () => {
 			await checkLocalTxInput(systemAssetsApi.api, ['1'], ['10000', '20000'], specName, registry, 2, false, false);
-		}).rejects.toThrowError(
+		}).rejects.toThrow(
 			'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
 		);
 	});
 	it('Should correctly throw an error with an incorrect assetId', async () => {
 		await expect(async () => {
 			await checkLocalTxInput(systemAssetsApi.api, ['TST'], ['10000'], specName, registry, 2, false, false);
-		}).rejects.toThrowError('assetId TST is not a valid symbol or integer asset id for statemine');
+		}).rejects.toThrow('assetId TST is not a valid symbol or integer asset id for statemine');
 	});
 	it("Should correctly throw an error when the integer assetId doesn't exist", async () => {
 		await expect(async () => {
 			await checkLocalTxInput(systemAssetsApi.api, ['9876111'], ['10000'], specName, registry, 2, false, false);
-		}).rejects.toThrowError('general index for assetId 9876111 was not found');
+		}).rejects.toThrow('general index for assetId 9876111 was not found');
 	});
 
 	it('Should correctly return ForeignAssets when given a valid multilocation', async () => {
@@ -81,7 +81,7 @@ describe('checkLocalTxInput', () => {
 				true,
 				false,
 			);
-		}).rejects.toThrowError(expectedError);
+		}).rejects.toThrow(expectedError);
 	});
 	it("Should correctly throw an error when the given multilocation doesn't exist", async () => {
 		const nonExistentMultiLocationStr =
@@ -99,7 +99,7 @@ describe('checkLocalTxInput', () => {
 				true,
 				false,
 			);
-		}).rejects.toThrowError(expectedError);
+		}).rejects.toThrow(expectedError);
 	});
 
 	it('Should correctly throw an error when the given multilocation assetIds is empty', async () => {
@@ -107,6 +107,6 @@ describe('checkLocalTxInput', () => {
 
 		await expect(async () => {
 			await checkLocalTxInput(systemAssetsApi.api, [], ['10000'], specName, registry, 2, true, false);
-		}).rejects.toThrowError(expectedError);
+		}).rejects.toThrow(expectedError);
 	});
 });

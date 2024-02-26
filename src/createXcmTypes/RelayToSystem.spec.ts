@@ -50,6 +50,29 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
+		it('Should work for V4', () => {
+			const beneficiary = RelayToSystem.createBeneficiary(
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				4,
+			);
+
+			const expectedRes = {
+				V4: {
+					parents: 0,
+					interior: {
+						X1: [
+							{
+								AccountId32: {
+									id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								},
+							},
+						],
+					},
+				},
+			};
+
+			expect(beneficiary).toStrictEqual(expectedRes);
+		});
 	});
 
 	describe('Destination', () => {
@@ -79,6 +102,24 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 						X1: {
 							Parachain: '100',
 						},
+					},
+				},
+			};
+
+			expect(destination).toStrictEqual(expectedRes);
+		});
+		it('Should work for V4', () => {
+			const destination = RelayToSystem.createDest('100', 4);
+
+			const expectedRes = {
+				V4: {
+					parents: 0,
+					interior: {
+						X1: [
+							{
+								Parachain: '100',
+							},
+						],
 					},
 				},
 			};
@@ -138,6 +179,32 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 								},
 								parents: 0,
 							},
+						},
+					},
+				],
+			};
+
+			expect(assets).toStrictEqual(expectedRes);
+		});
+		it('Should work for V4', async () => {
+			const assets = await RelayToSystem.createAssets(['100'], 4, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+				api: mockRelayApi,
+			});
+
+			const expectedRes = {
+				V4: [
+					{
+						fun: {
+							Fungible: '100',
+						},
+						id: {
+							interior: {
+								Here: '',
+							},
+							parents: 0,
 						},
 					},
 				],

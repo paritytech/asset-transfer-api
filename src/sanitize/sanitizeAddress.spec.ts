@@ -14,7 +14,7 @@ describe('sanitizeAddress', () => {
 		);
 	});
 	it('Should error with an invalid address', () => {
-		expect(() => sanitizeAddress('5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDwU')).toThrowError(
+		expect(() => sanitizeAddress('5GoKvZWG5ZPYL1WUovuHW3zJBWBP5eT8CbqjdRY4Q6iMaDwU')).toThrow(
 			'Invalid decoded address checksum',
 		);
 	});

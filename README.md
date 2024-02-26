@@ -29,16 +29,16 @@ Find the full documentation [here](https://paritytech.github.io/asset-transfer-a
 The below chart is focusing on what directions are supported for constructing asset transfers and in what XCM version. The goal is to have everything in green checkmarks. Note that local transfers (intra-chain) are not visualized here.
 
 
-| Direction              | V2                 | V3                 |
-| ---------------------  | ------------------ | ------------------ |
-| System to Parachain    |         ✅         |      ✅            |
-| System to Relay        |         ✅         |      ✅            |
-| Relay to Parachain     |         ✅         |      ✅            |
-| Relay to System        |         ✅         |      ✅            |
-| Parachain to Parachain |         ✅         |      ✅            |
-| Parachain to Relay     |         ✅         |      ✅            |
-| Parachain to System    |         ✅         |      ✅            |
-| System to System       |         ✅         |      ✅            |
+| Direction              | V2                 | V3                 | V4                 |
+| ---------------------  | ------------------ | ------------------ | ------------------ |
+| System to Parachain    |         ✅         |      ✅            |          ✅		  |
+| System to Relay        |         ✅         |      ✅            |          ✅         |
+| Relay to Parachain     |         ✅         |      ✅            |          ✅         |    
+| Relay to System        |         ✅         |      ✅            |          ✅         |
+| Parachain to Parachain |         ✅         |      ✅            |          ✅         |
+| Parachain to Relay     |         ✅         |      ✅            |          ✅         |
+| Parachain to System    |         ✅         |      ✅            |          ✅         |
+| System to System       |         ✅         |      ✅            |          ✅         |
 
 ## Note on Parachain to Parachain Support
 Parachain To Parachain support is currently limited to XCM V2, with the exception of Parachain primary asset tx construction (e.g. MOVR, SDN, etc.).
@@ -121,6 +121,7 @@ type AssetTransferApiOpts = {
 	/**
 	 * The injectedRegistry allows you to add custom values to the predefined initialized registry.
 	 * If you would like to see the registry you may visit https://github.com/paritytech/asset-transfer-api-registry/blob/main/registry.json
+	 * When adding a new chain, the `specName` and `tokens` fields are mandatory.
 	 * 
 	 * An example input of the registry would be:
 	 * {
@@ -133,9 +134,31 @@ type AssetTransferApiOpts = {
 	 *     }
 	 * }
 	 * 
-	 * NOTE: It supports adding info for `polkadot`, `kusama`, and `westend`.
+	 * NOTE: It supports adding info for `polkadot`, `kusama`, `westend` and `rococo`.
 	 */
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
+	/**
+	 * The overrideRegistry option allows you to modify chain data already present in the registry,
+	 * either overriding fields' values or adding new information. If the chain of which data is
+	 * being overriden is not present in the registry, it will be treated as if it were
+	 * and injectedRegistry and added following the same logic.
+	 * 
+	 * If the chain is present in the registry, it will override only the fields
+	 * present in the passed overrideRegistry, leaving the remaining as is.
+	 * 
+	 * An example input for overrideRegistry would be:
+	 * {
+	 *     westend: {
+	 *         '0': {
+	 *             tokens: ['WER'],
+	 *         }
+	 *     }
+	 * }
+	 * 
+	 * This would override the existing native token for the Westend Relay Chain
+	 * to WER instead of WND.
+	 */
+	overrideRegistry?: RequireAtLeastOne<ChainInfoRegistry<InjectedChainInfoKeys>>;
 	/**
 	 * RegistryTypes is a string and can either be 'CDN' or 'NPM'.
 	 * 

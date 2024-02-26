@@ -33,6 +33,10 @@ export enum BaseErrorsEnum {
 	 */
 	SpecNameNotProvided = 'SpecNameNotProvided',
 	/**
+	 * The tokens were not provided when injecting a new chain in the registry.
+	 */
+	TokensNotProvided = 'TokensNotProvided',
+	/**
 	 * The direction in which these assets are going to be sent is incorrect.
 	 */
 	InvalidDirection = 'InvalidDirection',

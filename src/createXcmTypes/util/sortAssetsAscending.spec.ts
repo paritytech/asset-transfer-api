@@ -1,11 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { FungibleObjMultiAsset, FungibleStrMultiAsset } from '../../createXcmTypes/types';
-import { sortMultiAssetsAscending } from './sortMultiAssetsAscending';
+import { FungibleObjAssetType, FungibleStrAssetType } from '../types';
+import { sortAssetsAscending } from './sortAssetsAscending';
 
-describe('sortMultiAssetsAscending', () => {
+describe('sortAssetsAscending', () => {
 	it('Should sort an unsorted multi asset array in ascending order', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '300000000',
@@ -47,7 +47,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -89,7 +89,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -98,7 +98,7 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should sort an unsorted multi foreign asset array of X1s in ascending order', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -146,7 +146,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -194,7 +194,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -203,7 +203,7 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should correctly sort an unsorted multi asset array with the same `parents` and `Junction`type based on their `Junction` keys', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -236,7 +236,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -269,7 +269,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -278,7 +278,7 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should correctly sort an unsorted multiasset array with in ascending order when parents values are different', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -326,7 +326,22 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
+			{
+				fun: {
+					Fungible: '100000',
+				},
+				id: {
+					Concrete: {
+						parents: 0,
+						interior: {
+							X1: {
+								GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
+							},
+						},
+					},
+				},
+			},
 			{
 				fun: {
 					Fungible: '100000',
@@ -357,33 +372,18 @@ describe('sortMultiAssetsAscending', () => {
 					},
 				},
 			},
-			{
-				fun: {
-					Fungible: '100000',
-				},
-				id: {
-					Concrete: {
-						parents: 0,
-						interior: {
-							X1: {
-								GeneralKey: '0xA83397cEfcCFdE9re7B23F3g0C462eF099E9E995',
-							},
-						},
-					},
-				},
-			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		sortAssetsAscending(Assets);
 
-		expect(res.length).toEqual(expected.length);
-		expect(res[0].id).toEqual(expected[0].id);
-		expect(res[res.length - 1].fun).toEqual(expected[expected.length - 1].fun);
-		expect(JSON.stringify(res)).toEqual(JSON.stringify(expected));
+		expect(Assets.length).toEqual(expected.length);
+		expect(Assets[0].id).toEqual(expected[0].id);
+		expect(Assets[Assets.length - 1].fun).toEqual(expected[expected.length - 1].fun);
+		expect(JSON.stringify(Assets)).toEqual(JSON.stringify(expected));
 	});
 
 	it('Should correctly sort based on differing first Junction key value for X2s when other fields are the same', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -412,7 +412,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -441,7 +441,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -450,7 +450,7 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should correctly sort based on differing third Junction key value for X3s when all other fields are the same', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -479,7 +479,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -508,7 +508,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -517,7 +517,7 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should correctly sort different X2 MultiLocations', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -559,7 +559,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -601,7 +601,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -610,7 +610,7 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should correctly sort based on differing GeneralIndex values for X3s when all other fields are the same', () => {
-		const multiAssets: FungibleObjMultiAsset[] = [
+		const Assets: FungibleObjAssetType[] = [
 			{
 				fun: {
 					Fungible: { Fungible: '200000000' },
@@ -639,7 +639,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleObjMultiAsset[] = [
+		const expected: FungibleObjAssetType[] = [
 			{
 				fun: {
 					Fungible: { Fungible: '200000000' },
@@ -668,7 +668,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets) as FungibleObjMultiAsset[];
+		const res = sortAssetsAscending(Assets) as FungibleObjAssetType[];
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -677,7 +677,7 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should correctly sort based on differing third Junction keys for X3s when all other fields are the same', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -710,7 +710,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -743,7 +743,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -752,7 +752,7 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should sort an unsorted multi foreign asset array of Here, X1s and X2s in ascending order', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -904,7 +904,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -1056,7 +1056,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -1065,7 +1065,7 @@ describe('sortMultiAssetsAscending', () => {
 	});
 
 	it('Should correctly sort an unsorted multiasset array based on fungible value when all other values are the same', () => {
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000',
@@ -1098,7 +1098,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleStrAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -1131,7 +1131,7 @@ describe('sortMultiAssetsAscending', () => {
 			},
 		];
 
-		const res = sortMultiAssetsAscending(multiAssets);
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);

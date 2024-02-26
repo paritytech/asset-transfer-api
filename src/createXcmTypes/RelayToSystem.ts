@@ -4,10 +4,12 @@ import type { ApiPromise } from '@polkadot/api';
 
 import {
 	CreateWeightLimitOpts,
+	FungibleStrAsset,
+	FungibleStrAssetType,
+	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
-	XcmDestBenificiary,
-	XcmMultiAsset,
+	XcmDestBeneficiary,
 	XcmWeight,
 } from './types';
 /**
@@ -20,7 +22,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBenificiary => {
+	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -37,15 +39,32 @@ export const RelayToSystem: ICreateXcmType = {
 			};
 		}
 
-		return {
-			V3: {
-				parents: 0,
-				interior: {
-					X1: {
-						AccountId32: {
-							id: accountId,
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1: {
+							AccountId32: {
+								id: accountId,
+							},
 						},
 					},
+				},
+			};
+		}
+
+		return {
+			V4: {
+				parents: 0,
+				interior: {
+					X1: [
+						{
+							AccountId32: {
+								id: accountId,
+							},
+						},
+					],
 				},
 			},
 		};
@@ -56,7 +75,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest: (destId: string, xcmVersion: number): XcmDestBenificiary => {
+	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -70,13 +89,28 @@ export const RelayToSystem: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1: {
+							Parachain: destId,
+						},
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 0,
 				interior: {
-					X1: {
-						Parachain: destId,
-					},
+					X1: [
+						{
+							Parachain: destId,
+						},
+					],
 				},
 			},
 		};
@@ -91,29 +125,49 @@ export const RelayToSystem: ICreateXcmType = {
 		const multiAssets = [];
 
 		const amount = amounts[0];
-		const multiAsset = {
-			fun: {
-				Fungible: amount,
-			},
-			id: {
-				Concrete: {
+		let multiAsset: FungibleStrAssetType;
+
+		if (xcmVersion < 4) {
+			multiAsset = {
+				fun: {
+					Fungible: amount,
+				},
+				id: {
+					Concrete: {
+						interior: {
+							Here: '',
+						},
+						parents: 0,
+					},
+				},
+			};
+		} else {
+			multiAsset = {
+				fun: {
+					Fungible: amount,
+				},
+				id: {
 					interior: {
 						Here: '',
 					},
 					parents: 0,
 				},
-			},
-		} as XcmMultiAsset;
+			};
+		}
 
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
 			return Promise.resolve({
-				V2: multiAssets,
+				V2: multiAssets as FungibleStrMultiAsset[],
+			});
+		} else if (xcmVersion === 3) {
+			return Promise.resolve({
+				V3: multiAssets as FungibleStrMultiAsset[],
 			});
 		} else {
 			return Promise.resolve({
-				V3: multiAssets,
+				V4: multiAssets as FungibleStrAsset[],
 			});
 		}
 	},

@@ -53,7 +53,7 @@ describe('reserveTransferAssets', () => {
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
 				});
-			}).rejects.toThrowError("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
+			}).rejects.toThrow("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
 		});
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V2', async () => {

@@ -156,6 +156,10 @@ export type AssetTransferApiOpts<T extends ChainInfoKeys | InjectedChainInfoKeys
 	 */
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry<T>>;
 	/**
+	 * Option to override the registry with the supplied chain information.
+	 */
+	overrideRegistry?: RequireAtLeastOne<ChainInfoRegistry<InjectedChainInfoKeys>>;
+	/**
 	 * Whether or not to apply the registry from the npm package `asset-transfer-api-registry`,
 	 * or the hosted CDN which updates frequently.
 	 */

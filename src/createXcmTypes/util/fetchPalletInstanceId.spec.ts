@@ -23,7 +23,7 @@ describe('fetchPalletInstanceId', () => {
 	it('Should correctly error when both foreign assets and pool assets are true', () => {
 		const err = () => fetchPalletInstanceId(mockSystemApi, true, true);
 
-		expect(err).toThrowError("Can't find the appropriate pallet when both liquid tokens and foreign assets");
+		expect(err).toThrow("Can't find the appropriate pallet when both liquid tokens and foreign assets");
 	});
 	it('Should correctly return an empty string when the assets pallet is not found', () => {
 		const res = fetchPalletInstanceId(mockBifrostParachainApi, false, false);

@@ -16,43 +16,62 @@ import type {
 /**
  * Function to iterate over the properties of an object in order to check whether
  * the information is already present in the registry, and if it's not, to update
- * the registry with the new data. It only adds data, and ignores changes to the
- * `specName`.
+ * the registry with the new data. If override is false or undefined, it only adds
+ * data, and ignores changes to the `specName`. If override is true, it overrides
+ * existing data and adds data not already present in the registry, it also enables
+ * updating the `specName`.
  *
  * @param input object over which to iterate
  * @param chain registry entry of the relay chain corresponding to the object we are iterating
  * @param id specName of the relay chain
  * @param property optional name of the property we are passing to the function a an object
+ * @param override optional boolean to define if we aim to override the existing registry
  */
-const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: string, property?: string) => {
-	for (const [key, value] of Object.entries(input)) {
-		if (!property) {
-			propertyIterator(value as object, chain, id, key);
-		} else if (property === 'tokens' && chain[id][property] && typeof value === 'string') {
-			if (!chain[id]['tokens'].includes(value)) {
-				chain[id]['tokens'].push(value);
-			}
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		} else if (property === 'xcAssetsData') {
-			if (!chain[id]['xcAssetsData']) {
-				const injectedBufferArray: SanitizedXcAssetsData[] = [];
-				injectedBufferArray.push(value as SanitizedXcAssetsData);
-				Object.assign(chain[id], { xcAssetsData: injectedBufferArray });
-			} else {
-				let hit = false;
-				for (const chainObj of (chain[id]['xcAssetsData'] as SanitizedXcAssetsData[]).values()) {
-					if (deepEqual(value as AnyJson, chainObj as AnyJson)) {
-						hit = true;
-					}
+const propertyIterator = (
+	input: object,
+	chain: ChainInfo<ChainInfoKeys>,
+	id: string,
+	property?: string,
+	override?: boolean,
+) => {
+	const tokenBuffer = [];
+	const xcAssetsBuffer: SanitizedXcAssetsData[] = [];
+	if (property === 'specName' && override) {
+		chain[id]['specName'] = input as unknown as string;
+	} else if (property !== 'specName') {
+		for (const [key, value] of Object.entries(input)) {
+			if (!property) {
+				propertyIterator(value as object, chain, id, key, override);
+			} else if (property === 'tokens' && chain[id][property] && typeof value === 'string') {
+				if (override) {
+					tokenBuffer.push(value);
+				} else if (!chain[id]['tokens'].includes(value)) {
+					chain[id]['tokens'].push(value);
 				}
-				if (!hit) chain[id]['xcAssetsData']?.push(value as SanitizedXcAssetsData);
+			} else if (property === 'xcAssetsData') {
+				if (!chain[id]['xcAssetsData'] || override) {
+					xcAssetsBuffer.push(value as SanitizedXcAssetsData);
+					Object.assign(chain[id], { xcAssetsData: xcAssetsBuffer });
+				} else {
+					let hit = false;
+					for (const chainObj of (chain[id]['xcAssetsData'] as SanitizedXcAssetsData[]).values()) {
+						if (deepEqual(value as AnyJson, chainObj as AnyJson)) hit = true;
+					}
+					if (!hit) chain[id]['xcAssetsData']?.push(value as SanitizedXcAssetsData);
+				}
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			} else if (chain[id][property] && !chain[id][property][key]) {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				chain[id][property][key] = value as object;
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			} else if (chain[id][property] && chain[id][property][key] && override) {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				chain[id][property][key] = value as object;
 			}
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		} else if (property !== 'specName' && chain[id][property] && !chain[id][property][key]) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-			chain[id][property][key] = value as object;
 		}
 	}
+
+	if (tokenBuffer.length !== 0) chain[id]['tokens'] = tokenBuffer;
 };
 
 /**
@@ -62,11 +81,13 @@ const propertyIterator = (input: object, chain: ChainInfo<ChainInfoKeys>, id: st
  * @param injectedChain chain information to add to the registry
  * @param registry current chain registry
  * @param registryChain chain information currently present on the registry
+ * @param override boolean to define whether we want to override the current registry
  */
 const updateRegistry = (
 	injectedChain: ChainInfo<InjectedChainInfoKeys>,
 	registry: ChainInfoRegistry<ChainInfoKeys>,
 	registryChain: string,
+	override?: boolean,
 ) => {
 	const chain = registry[registryChain] as unknown as ChainInfo<ChainInfoKeys>;
 	const buffer: ChainInfoKeys = {
@@ -79,12 +100,17 @@ const updateRegistry = (
 	for (const id of Object.keys(injectedChain)) {
 		if (!chain[id] && !injectedChain[id].specName) {
 			throw new BaseError('A specName must be provided when adding a new chain', BaseErrorsEnum.SpecNameNotProvided);
+		} else if (!chain[id] && !injectedChain[id].tokens) {
+			throw new BaseError(
+				'An array of tokens must be provided when adding a new chain',
+				BaseErrorsEnum.TokensNotProvided,
+			);
 		} else if (!chain[id]) {
 			Object.assign(buffer, injectedChain[id]);
 			Object.assign(injectedChain[id], buffer);
 			Object.assign(chain, injectedChain);
 		}
-		propertyIterator(injectedChain[id], chain, id);
+		propertyIterator(injectedChain[id], chain, id, undefined, override);
 	}
 };
 
@@ -103,6 +129,18 @@ export const parseRegistry = (
 		if (kusama) updateRegistry(kusama, registry, 'kusama');
 		if (westend) updateRegistry(westend, registry, 'westend');
 		if (rococo) updateRegistry(rococo, registry, 'rococo');
+	}
+	if (assetsOpts.overrideRegistry) {
+		const { overrideRegistry } = assetsOpts;
+		const polkadot = overrideRegistry.polkadot;
+		const kusama = overrideRegistry.kusama;
+		const westend = overrideRegistry.westend;
+		const rococo = overrideRegistry.rococo;
+
+		if (polkadot) updateRegistry(polkadot, registry, 'polkadot', true);
+		if (kusama) updateRegistry(kusama, registry, 'kusama', true);
+		if (westend) updateRegistry(westend, registry, 'westend', true);
+		if (rococo) updateRegistry(rococo, registry, 'rococo', true);
 	}
 
 	/**

@@ -55,7 +55,7 @@ describe('limitedTeleportAssets', () => {
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
 				});
-			}).rejects.toThrowError("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
+			}).rejects.toThrow("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
 		});
 	});
 });
