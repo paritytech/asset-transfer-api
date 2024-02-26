@@ -5,45 +5,115 @@
 import { stringToHex } from '@polkadot/util';
 import { BN } from 'bn.js';
 
-import type {
-	FungibleObjMultiAsset,
-	FungibleStrMultiAsset,
-	XcmV2Junction,
-	XcmV3Junction,
-} from '../../createXcmTypes/types';
+import { BaseError, BaseErrorsEnum } from '../../errors';
+import type { RequireOnlyOne } from '../../types';
 import { validateNumber } from '../../validate';
+import type {
+	FungibleObjAssetType,
+	FungibleStrAssetType,
+	XcmV2Junction,
+	XcmV2Junctions,
+	XcmV3Junction,
+	XcmV3Junctions,
+	XcmV4Junction,
+	XcmV4Junctions,
+} from '../types';
 
 /**
  * This sorts a list of multiassets in ascending order based on their id.
  *
- * @param multiAssets MultiAsset[]
+ * @param assets FungibleStrAssetType[] | FungibleObjAssetType[]
  */
-export const sortMultiAssetsAscending = (multiAssets: FungibleStrMultiAsset[] | FungibleObjMultiAsset[]) => {
-	return multiAssets.sort((a, b) => {
+export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObjAssetType[]) => {
+	return assets.sort((a, b) => {
 		let parentSortOrder = 0; // sort order based on parents value
 		let interiorMultiLocationTypeSortOrder = 0; // sort order based on interior multilocation type value (e.g. X1 < X2)
 		let interiorMultiLocationSortOrder = 0; // sort order based on multilocation junction values
 		let fungibleSortOrder = 0; // sort order based on fungible value
 		if (typeof a.fun.Fungible === 'string' && typeof b.fun.Fungible === 'string') {
-			fungibleSortOrder = (a as FungibleStrMultiAsset).fun.Fungible.localeCompare(
-				(b as FungibleStrMultiAsset).fun.Fungible,
-			);
+			fungibleSortOrder = a.fun.Fungible.localeCompare(b.fun.Fungible);
+		} else if (typeof a.fun.Fungible === 'object' && typeof b.fun.Fungible === 'object') {
+			fungibleSortOrder = a.fun.Fungible.Fungible.localeCompare(b.fun.Fungible.Fungible);
+		}
+		let aParents: string | number | undefined = undefined;
+		let bParents: string | number | undefined = undefined;
+		if ('Concrete' in a.id && 'Concrete' in b.id) {
+			if ('Parents' in a.id.Concrete && 'Parents' in b.id.Concrete) {
+				aParents = a.id.Concrete['Parents'] as string | number;
+				bParents = b.id.Concrete['Parents'] as string | number;
+			} else {
+				aParents = a.id.Concrete.parents as string | number;
+				bParents = b.id.Concrete.parents as string | number;
+			}
+		} else if ('parents' in a.id && 'parents' in b.id) {
+			aParents = a.id.parents as string | number;
+			bParents = b.id.parents as string | number;
 		} else {
-			fungibleSortOrder = (a as FungibleObjMultiAsset).fun.Fungible.Fungible.localeCompare(
-				(b as FungibleObjMultiAsset).fun.Fungible.Fungible,
+			aParents = a.id['Parents'] as string | number;
+			bParents = b.id['Parents'] as string | number;
+		}
+
+		// Should never hit this, this exists to make the typescript compiler happy.
+		if (aParents === undefined || bParents === undefined) {
+			throw new BaseError(
+				`Unable to determine parents value for assets ${JSON.stringify(a)} and ${JSON.stringify(b)}`,
+				BaseErrorsEnum.InternalError,
 			);
 		}
 
-		const aParents = (a.id.Concrete.parents || a.id.Concrete['Parents']) as string | number;
-		const bParents = (b.id.Concrete.parents || b.id.Concrete['Parents']) as string | number;
 		if (aParents < bParents) {
 			parentSortOrder = -1;
 		} else if (aParents > bParents) {
 			parentSortOrder = 1;
 		}
 
-		const aInterior = a.id.Concrete.interior || a.id.Concrete['Interior'];
-		const bInterior = b.id.Concrete.interior || b.id.Concrete['Interior'];
+		let aInterior:
+			| RequireOnlyOne<XcmV2Junctions>
+			| RequireOnlyOne<XcmV3Junctions>
+			| RequireOnlyOne<XcmV4Junctions>
+			| undefined = undefined;
+		let bInterior:
+			| RequireOnlyOne<XcmV2Junctions>
+			| RequireOnlyOne<XcmV3Junctions>
+			| RequireOnlyOne<XcmV4Junctions>
+			| undefined = undefined;
+
+		if ('Concrete' in a.id && 'Concrete' in b.id) {
+			if ('Interior' in a.id.Concrete && 'Interior' in b.id.Concrete) {
+				aInterior = a.id.Concrete['Interior'] as
+					| RequireOnlyOne<XcmV2Junctions>
+					| RequireOnlyOne<XcmV3Junctions>
+					| RequireOnlyOne<XcmV4Junctions>;
+				bInterior = b.id.Concrete['Interior'] as
+					| RequireOnlyOne<XcmV2Junctions>
+					| RequireOnlyOne<XcmV3Junctions>
+					| RequireOnlyOne<XcmV4Junctions>;
+			} else {
+				aInterior = a.id.Concrete.interior;
+				bInterior = b.id.Concrete.interior;
+			}
+		} else if ('interior' in a.id && 'interior' in b.id) {
+			aInterior = a.id.interior;
+			bInterior = b.id.interior;
+		} else if ('Interior' in a.id && 'Interior' in b.id) {
+			aInterior = a.id['Interior'] as
+				| RequireOnlyOne<XcmV2Junctions>
+				| RequireOnlyOne<XcmV3Junctions>
+				| RequireOnlyOne<XcmV4Junctions>;
+			bInterior = b.id['Interior'] as
+				| RequireOnlyOne<XcmV2Junctions>
+				| RequireOnlyOne<XcmV3Junctions>
+				| RequireOnlyOne<XcmV4Junctions>;
+		}
+
+		// Should never hit this, this exists to make the typescript compiler happy.
+		if (aInterior === undefined || bInterior === undefined) {
+			throw new BaseError(
+				`Unable to determine interior values for locations ${JSON.stringify(a)} and ${JSON.stringify(b)}`,
+				BaseErrorsEnum.InternalError,
+			);
+		}
+
 		const aInteriorType = Object.keys(aInterior)[0];
 		const bInteriorType = Object.keys(bInterior)[0];
 		if (aInteriorType < bInteriorType) {
@@ -61,13 +131,58 @@ export const sortMultiAssetsAscending = (multiAssets: FungibleStrMultiAsset[] | 
 };
 
 const getSameJunctionMultiLocationSortOrder = (
-	a: FungibleStrMultiAsset | FungibleObjMultiAsset,
-	b: FungibleStrMultiAsset | FungibleObjMultiAsset,
+	a: FungibleStrAssetType | FungibleObjAssetType,
+	b: FungibleStrAssetType | FungibleObjAssetType,
 ): number => {
 	let sortOrder = 0;
 
-	const aInterior = a.id.Concrete.interior || a.id.Concrete['Interior'];
-	const bInterior = b.id.Concrete.interior || b.id.Concrete['Interior'];
+	let aInterior:
+		| RequireOnlyOne<XcmV2Junctions>
+		| RequireOnlyOne<XcmV3Junctions>
+		| RequireOnlyOne<XcmV4Junctions>
+		| undefined = undefined;
+	let bInterior:
+		| RequireOnlyOne<XcmV2Junctions>
+		| RequireOnlyOne<XcmV3Junctions>
+		| RequireOnlyOne<XcmV4Junctions>
+		| undefined = undefined;
+
+	if ('Concrete' in a.id && 'Concrete' in b.id) {
+		if ('Interior' in a.id.Concrete && 'Interior' in b.id.Concrete) {
+			aInterior = a.id.Concrete['Interior'] as
+				| RequireOnlyOne<XcmV2Junctions>
+				| RequireOnlyOne<XcmV3Junctions>
+				| RequireOnlyOne<XcmV4Junctions>;
+			bInterior = b.id.Concrete['Interior'] as
+				| RequireOnlyOne<XcmV2Junctions>
+				| RequireOnlyOne<XcmV3Junctions>
+				| RequireOnlyOne<XcmV4Junctions>;
+		} else {
+			aInterior = a.id.Concrete.interior;
+			bInterior = b.id.Concrete.interior;
+		}
+	} else if ('interior' in a.id && 'interior' in b.id) {
+		aInterior = a.id.interior;
+		bInterior = b.id.interior;
+	} else if ('Interior' in a.id && 'Interior' in b.id) {
+		aInterior = a.id['Interior'] as
+			| RequireOnlyOne<XcmV2Junctions>
+			| RequireOnlyOne<XcmV3Junctions>
+			| RequireOnlyOne<XcmV4Junctions>;
+		bInterior = b.id['Interior'] as
+			| RequireOnlyOne<XcmV2Junctions>
+			| RequireOnlyOne<XcmV3Junctions>
+			| RequireOnlyOne<XcmV4Junctions>;
+	}
+
+	// Should never hit this, this exists to make the typescript compiler happy.
+	if (aInterior === undefined || bInterior === undefined) {
+		throw new BaseError(
+			`Unable to determine interior values for locations ${JSON.stringify(a)} and ${JSON.stringify(b)}`,
+			BaseErrorsEnum.InternalError,
+		);
+	}
+
 	switch (Object.keys(aInterior)[0]) {
 		case 'X1':
 			const aX1Type = Object.keys(aInterior.X1!)[0];
@@ -114,7 +229,7 @@ const getSameJunctionMultiLocationSortOrder = (
 	return sortOrder;
 };
 
-type UnionJunction = XcmV3Junction | XcmV2Junction;
+type UnionJunction = XcmV4Junction | XcmV3Junction | XcmV2Junction;
 
 type MultiLocationJunctions =
 	| [UnionJunction, UnionJunction]

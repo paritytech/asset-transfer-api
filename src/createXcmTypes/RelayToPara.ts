@@ -5,10 +5,12 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import {
 	CreateWeightLimitOpts,
+	FungibleStrAsset,
+	FungibleStrAssetType,
+	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
-	XcmDestBenificiary,
-	XcmMultiAsset,
+	XcmDestBeneficiary,
 	XcmWeight,
 } from './types';
 
@@ -22,7 +24,7 @@ export const RelayToPara: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
+	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			const X1 = isEthereumAddress(accountId)
 				? { AccountKey20: { network: 'Any', key: accountId } }
@@ -37,10 +39,27 @@ export const RelayToPara: ICreateXcmType = {
 			};
 		}
 
-		const X1 = isEthereumAddress(accountId) ? { AccountKey20: { key: accountId } } : { AccountId32: { id: accountId } };
+		if (xcmVersion === 3) {
+			const X1 = isEthereumAddress(accountId)
+				? { AccountKey20: { key: accountId } }
+				: { AccountId32: { id: accountId } };
+
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1,
+					},
+				},
+			};
+		}
+
+		const X1 = isEthereumAddress(accountId)
+			? [{ AccountKey20: { key: accountId } }]
+			: [{ AccountId32: { id: accountId } }];
 
 		return {
-			V3: {
+			V4: {
 				parents: 0,
 				interior: {
 					X1,
@@ -54,7 +73,7 @@ export const RelayToPara: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion?: number): XcmDestBenificiary => {
+	createDest: (destId: string, xcmVersion?: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -68,13 +87,28 @@ export const RelayToPara: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1: {
+							Parachain: destId,
+						},
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 0,
 				interior: {
-					X1: {
-						Parachain: destId,
-					},
+					X1: [
+						{
+							Parachain: destId,
+						},
+					],
 				},
 			},
 		};
@@ -87,31 +121,50 @@ export const RelayToPara: ICreateXcmType = {
 	 */
 	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
 		const multiAssets = [];
+		let multiAsset: FungibleStrAssetType;
 
 		const amount = amounts[0];
-		const multiAsset = {
-			fun: {
-				Fungible: amount,
-			},
-			id: {
-				Concrete: {
+		if (xcmVersion < 4) {
+			multiAsset = {
+				fun: {
+					Fungible: amount,
+				},
+				id: {
+					Concrete: {
+						interior: {
+							Here: '',
+						},
+						parents: 0,
+					},
+				},
+			};
+		} else {
+			multiAsset = {
+				fun: {
+					Fungible: amount,
+				},
+				id: {
 					interior: {
 						Here: '',
 					},
 					parents: 0,
 				},
-			},
-		} as XcmMultiAsset;
+			};
+		}
 
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {
 			return Promise.resolve({
-				V2: multiAssets,
+				V2: multiAssets as FungibleStrMultiAsset[],
+			});
+		} else if (xcmVersion === 3) {
+			return Promise.resolve({
+				V3: multiAssets as FungibleStrMultiAsset[],
 			});
 		} else {
 			return Promise.resolve({
-				V3: multiAssets,
+				V4: multiAssets as FungibleStrAsset[],
 			});
 		}
 	},

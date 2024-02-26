@@ -15,24 +15,29 @@ import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	CreateWeightLimitOpts,
+	FungibleObjAsset,
+	FungibleObjAssetType,
 	FungibleObjMultiAsset,
+	FungibleStrAsset,
+	FungibleStrAssetType,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
-	XcmDestBenificiary,
-	XcmDestBenificiaryXcAssets,
+	XcmDestBeneficiary,
+	XcmDestBeneficiaryXcAssets,
 	XcmV3MultiLocation,
+	XcmV4Location,
 	XcmWeight,
 } from './types';
 import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
-import { dedupeMultiAssets } from './util/dedupeMultiAssets';
+import { dedupeAssets } from './util/dedupeAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
-import { sortMultiAssetsAscending } from './util/sortMultiAssetsAscending';
+import { sortAssetsAscending } from './util/sortAssetsAscending';
 
 export const ParaToPara: ICreateXcmType = {
 	/**
@@ -41,8 +46,8 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBenificiary => {
-		if (xcmVersion == 2) {
+	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBeneficiary => {
+		if (xcmVersion === 2) {
 			const X1 = isEthereumAddress(accountId)
 				? { AccountKey20: { network: 'Any', key: accountId } }
 				: { AccountId32: { network: 'Any', id: accountId } };
@@ -57,10 +62,27 @@ export const ParaToPara: ICreateXcmType = {
 			};
 		}
 
-		const X1 = isEthereumAddress(accountId) ? { AccountKey20: { key: accountId } } : { AccountId32: { id: accountId } };
+		if (xcmVersion === 3) {
+			const X1 = isEthereumAddress(accountId)
+				? { AccountKey20: { key: accountId } }
+				: { AccountId32: { id: accountId } };
+
+			return {
+				V3: {
+					parents: 0,
+					interior: {
+						X1,
+					},
+				},
+			};
+		}
+
+		const X1 = isEthereumAddress(accountId)
+			? [{ AccountKey20: { key: accountId } }]
+			: [{ AccountId32: { id: accountId } }];
 
 		return {
-			V3: {
+			V4: {
 				parents: 0,
 				interior: {
 					X1,
@@ -74,7 +96,7 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion?: number): XcmDestBenificiary => {
+	createDest: (destId: string, xcmVersion?: number): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -88,17 +110,28 @@ export const ParaToPara: ICreateXcmType = {
 			};
 		}
 
-		/**
-		 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
-		 * from a system parachain to a sovereign parachain.
-		 */
+		if (xcmVersion === 3) {
+			/**
+			 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
+			 * from a system parachain to a sovereign parachain.
+			 */
+			return {
+				V3: {
+					parents: 1,
+					interior: {
+						X1: {
+							Parachain: destId,
+						},
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 1,
 				interior: {
-					X1: {
-						Parachain: destId,
-					},
+					X1: [{ Parachain: destId }],
 				},
 			},
 		};
@@ -133,11 +166,15 @@ export const ParaToPara: ICreateXcmType = {
 
 		if (xcmVersion === 2) {
 			return Promise.resolve({
-				V2: sortedAndDedupedMultiAssets,
+				V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
+			});
+		} else if (xcmVersion === 3) {
+			return Promise.resolve({
+				V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
 			});
 		} else {
 			return Promise.resolve({
-				V3: sortedAndDedupedMultiAssets,
+				V4: sortedAndDedupedMultiAssets as FungibleStrAsset[],
 			});
 		}
 	},
@@ -164,7 +201,7 @@ export const ParaToPara: ICreateXcmType = {
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isForeignAssetsTransfer } = opts;
-		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
+		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createParaToParaMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
@@ -201,7 +238,7 @@ export const ParaToPara: ICreateXcmType = {
 		destChainId: string,
 		accountId: string,
 		xcmVersion: number,
-	): XcmDestBenificiaryXcAssets => {
+	): XcmDestBeneficiaryXcAssets => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
@@ -215,8 +252,21 @@ export const ParaToPara: ICreateXcmType = {
 			};
 		}
 
+		if (xcmVersion === 3) {
+			return {
+				V3: {
+					parents: 1,
+					interior: {
+						X2: isEthereumAddress(accountId)
+							? [{ Parachain: destChainId }, { AccountKey20: { key: accountId } }]
+							: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
+					},
+				},
+			};
+		}
+
 		return {
-			V3: {
+			V4: {
 				parents: 1,
 				interior: {
 					X2: isEthereumAddress(accountId)
@@ -274,19 +324,32 @@ export const ParaToPara: ICreateXcmType = {
 
 		const concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
 
-		const multiAsset = {
-			id: {
-				Concrete: concreteMultiLocation,
-			},
-			fun: {
-				Fungible: { Fungible: amount },
-			},
-		};
+		let multiAsset: FungibleObjAssetType | undefined = undefined;
+
+		if (xcmVersion < 4) {
+			multiAsset = {
+				id: {
+					Concrete: concreteMultiLocation,
+				},
+				fun: {
+					Fungible: { Fungible: amount },
+				},
+			};
+		} else {
+			multiAsset = {
+				id: concreteMultiLocation,
+				fun: {
+					Fungible: { Fungible: amount },
+				},
+			};
+		}
 
 		if (xcmVersion === 2) {
-			return { V2: multiAsset };
+			return { V2: multiAsset as FungibleObjMultiAsset };
+		} else if (xcmVersion === 3) {
+			return { V3: multiAsset as FungibleObjMultiAsset };
 		} else {
-			return { V3: multiAsset };
+			return { V4: multiAsset as FungibleObjAsset };
 		}
 	},
 	/**
@@ -310,11 +373,19 @@ export const ParaToPara: ICreateXcmType = {
 				};
 			}
 
-			return {
-				V3: {
-					id: {
-						Concrete: paysWithFeeMultiLocation as XcmV3MultiLocation,
+			if (xcmVersion === 3) {
+				return {
+					V3: {
+						id: {
+							Concrete: paysWithFeeMultiLocation as XcmV3MultiLocation,
+						},
 					},
+				};
+			}
+
+			return {
+				V4: {
+					id: paysWithFeeMultiLocation as XcmV4Location,
 				},
 			};
 		}
@@ -340,7 +411,8 @@ const createXTokensMultiAssets = async (
 	opts: CreateAssetsOpts,
 ): Promise<UnionXcAssetsMultiAssets> => {
 	const { registry, api } = opts;
-	let multiAssets: FungibleObjMultiAsset[] = [];
+	let multiAssets: FungibleObjAssetType[] = [];
+	let multiAsset: FungibleObjAssetType;
 
 	for (let i = 0; i < assets.length; i++) {
 		const amount = amounts[i];
@@ -358,27 +430,40 @@ const createXTokensMultiAssets = async (
 
 		const concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
 
-		const multiAsset = {
-			id: {
-				Concrete: concreteMultiLocation,
-			},
-			fun: {
-				Fungible: { Fungible: amount },
-			},
-		};
+		if (xcmVersion < 4) {
+			multiAsset = {
+				id: {
+					Concrete: concreteMultiLocation,
+				},
+				fun: {
+					Fungible: { Fungible: amount },
+				},
+			};
+		} else {
+			multiAsset = {
+				id: concreteMultiLocation,
+				fun: {
+					Fungible: { Fungible: amount },
+				},
+			};
+		}
 
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleObjMultiAsset[];
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleObjMultiAsset[];
+	multiAssets = sortAssetsAscending(multiAssets) as FungibleObjAssetType[];
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleObjAssetType[];
 	if (xcmVersion === 2) {
 		return Promise.resolve({
-			V2: sortedAndDedupedMultiAssets,
+			V2: sortedAndDedupedMultiAssets as FungibleObjMultiAsset[],
+		});
+	} else if (xcmVersion === 3) {
+		return Promise.resolve({
+			V3: sortedAndDedupedMultiAssets as FungibleObjMultiAsset[],
 		});
 	} else {
 		return Promise.resolve({
-			V3: sortedAndDedupedMultiAssets,
+			V4: sortedAndDedupedMultiAssets as FungibleObjAsset[],
 		});
 	}
 };
@@ -402,9 +487,10 @@ const createParaToParaMultiAssets = async (
 	xcmVersion: number,
 	registry: Registry,
 	isForeignAssetsTransfer: boolean,
-): Promise<FungibleStrMultiAsset[]> => {
+): Promise<FungibleStrAssetType[]> => {
 	const palletId = fetchPalletInstanceId(api, false, isForeignAssetsTransfer);
-	let multiAssets: FungibleStrMultiAsset[] = [];
+	let multiAssets: FungibleStrAssetType[] = [];
+	let multiAsset: FungibleStrAssetType | undefined = undefined;
 	let concreteMultiLocation;
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 		registry,
@@ -422,14 +508,23 @@ const createParaToParaMultiAssets = async (
 			xcmVersion,
 		);
 
-		const multiAsset = {
-			id: {
-				Concrete: concreteMultiLocation,
-			},
-			fun: {
-				Fungible: amounts[0],
-			},
-		};
+		if (xcmVersion < 4) {
+			multiAsset = {
+				id: {
+					Concrete: concreteMultiLocation,
+				},
+				fun: {
+					Fungible: amounts[0],
+				},
+			};
+		} else {
+			multiAsset = {
+				id: concreteMultiLocation,
+				fun: {
+					Fungible: amounts[0],
+				},
+			};
+		}
 
 		multiAssets.push(multiAsset);
 	} else {
@@ -452,22 +547,31 @@ const createParaToParaMultiAssets = async (
 			} else {
 				concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
 			}
+			if (xcmVersion < 4) {
+				multiAsset = {
+					id: {
+						Concrete: concreteMultiLocation,
+					},
+					fun: {
+						Fungible: amount,
+					},
+				};
+			} else {
+				multiAsset = {
+					id: concreteMultiLocation,
+					fun: {
+						Fungible: amount,
+					},
+				};
+			}
 
-			const multiAsset = {
-				id: {
-					Concrete: concreteMultiLocation,
-				},
-				fun: {
-					Fungible: amount,
-				},
-			};
 			multiAssets.push(multiAsset);
 		}
 	}
 
-	multiAssets = sortMultiAssetsAscending(multiAssets) as FungibleStrMultiAsset[];
+	multiAssets = sortAssetsAscending(multiAssets) as FungibleStrAssetType[];
 
-	const sortedAndDedupedMultiAssets = dedupeMultiAssets(multiAssets) as FungibleStrMultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleStrMultiAsset[];
 
 	return sortedAndDedupedMultiAssets;
 };

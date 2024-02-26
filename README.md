@@ -29,16 +29,16 @@ Find the full documentation [here](https://paritytech.github.io/asset-transfer-a
 The below chart is focusing on what directions are supported for constructing asset transfers and in what XCM version. The goal is to have everything in green checkmarks. Note that local transfers (intra-chain) are not visualized here.
 
 
-| Direction              | V2                 | V3                 |
-| ---------------------  | ------------------ | ------------------ |
-| System to Parachain    |         ✅         |      ✅            |
-| System to Relay        |         ✅         |      ✅            |
-| Relay to Parachain     |         ✅         |      ✅            |
-| Relay to System        |         ✅         |      ✅            |
-| Parachain to Parachain |         ✅         |      ✅            |
-| Parachain to Relay     |         ✅         |      ✅            |
-| Parachain to System    |         ✅         |      ✅            |
-| System to System       |         ✅         |      ✅            |
+| Direction              | V2                 | V3                 | V4                 |
+| ---------------------  | ------------------ | ------------------ | ------------------ |
+| System to Parachain    |         ✅         |      ✅            |          ✅		  |
+| System to Relay        |         ✅         |      ✅            |          ✅         |
+| Relay to Parachain     |         ✅         |      ✅            |          ✅         |    
+| Relay to System        |         ✅         |      ✅            |          ✅         |
+| Parachain to Parachain |         ✅         |      ✅            |          ✅         |
+| Parachain to Relay     |         ✅         |      ✅            |          ✅         |
+| Parachain to System    |         ✅         |      ✅            |          ✅         |
+| System to System       |         ✅         |      ✅            |          ✅         |
 
 ## Note on Parachain to Parachain Support
 Parachain To Parachain support is currently limited to XCM V2, with the exception of Parachain primary asset tx construction (e.g. MOVR, SDN, etc.).
