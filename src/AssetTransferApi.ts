@@ -62,7 +62,7 @@ import {
 	LocalTxOpts,
 	Methods,
 	RegistryTypes,
-	ResolvedCallData,
+	ResolvedCallInfo,
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
@@ -275,7 +275,7 @@ export class AssetTransferApi {
 			registry,
 		);
 
-		const { txMethod, transaction } = await this.resolveCall(
+		const [txMethod, transaction] = await this.resolveCall(
 			this.api,
 			assetIds,
 			xcmPallet,
@@ -991,7 +991,7 @@ export class AssetTransferApi {
 		baseOpts: CreateXcmCallOpts,
 		isLimited?: boolean,
 		paysWithFeeDest?: string,
-	): Promise<ResolvedCallData> {
+	): Promise<ResolvedCallInfo> {
 		let txMethod: Methods | undefined = undefined;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult> | undefined = undefined;
 
@@ -1004,6 +1004,7 @@ export class AssetTransferApi {
 				txMethod = 'transferMultiassetWithFee';
 				transaction = await transferMultiassetWithFee({ ...baseArgs, xcmPallet }, baseOpts);
 			} else {
+				console.log('WHAT IS PAYS WITH FEE DEST', paysWithFeeDest);
 				txMethod = 'transferMultiassets';
 				transaction = await transferMultiassets({ ...baseArgs, xcmPallet }, baseOpts);
 			}
@@ -1038,51 +1039,7 @@ export class AssetTransferApi {
 			throw new BaseError('Failed to resolve the correct runtime call`', BaseErrorsEnum.InternalError);
 		}
 
-		return {
-			txMethod,
-			transaction,
-		} as ResolvedCallData;
-
-		// if (
-		// 	(xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens) &&
-		// 	(xcmDirection === Direction.ParaToSystem ||
-		// 		xcmDirection === Direction.ParaToPara ||
-		// 		xcmDirection === Direction.ParaToRelay)
-		// ) {
-		// 	// This ensures paraToRelay always uses `transferMultiAsset`.
-		// 	if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
-		// 		txMethod = 'transferMultiasset';
-		// 		transaction = await transferMultiasset({ ...baseArgs, xcmPallet }, baseOpts);
-		// 	} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
-		// 		txMethod = 'transferMultiassetWithFee';
-		// 		transaction = await transferMultiassetWithFee({ ...baseArgs, xcmPallet }, baseOpts);
-		// 	} else {
-		// 		txMethod = 'transferMultiassets';
-		// 		transaction = await transferMultiassets({ ...baseArgs, xcmPallet }, baseOpts);
-		// 	}
-		// } else if (assetCallType === AssetCallType.Reserve) {
-		// 	if (isLimited) {
-		// 		txMethod = 'limitedReserveTransferAssets';
-		// 		transaction = await limitedReserveTransferAssets(baseArgs, baseOpts);
-		// 	} else {
-		// 		txMethod = 'reserveTransferAssets';
-		// 		transaction = await reserveTransferAssets(baseArgs, baseOpts);
-		// 	}
-		// } else {
-		// 	if (isLimited) {
-		// 		txMethod = 'limitedTeleportAssets';
-		// 		transaction = await limitedTeleportAssets(baseArgs, {
-		// 			...baseOpts,
-		// 			isLiquidTokenTransfer: false,
-		// 		});
-		// 	} else {
-		// 		txMethod = 'teleportAssets';
-		// 		transaction = await teleportAssets(baseArgs, {
-		// 			...baseOpts,
-		// 			isLiquidTokenTransfer: false,
-		// 		});
-		// 	}
-		// }
+		return [txMethod, transaction];
 	}
 }
 

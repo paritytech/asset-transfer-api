@@ -300,7 +300,7 @@ const mockApiAt = {
 	},
 };
 
-export const adjustedMockSystemApi = {
+export const adjustedMockSystemApiV1007000 = {
 	createType: createType,
 	registry: createStatemineRegistry(1007000),
 	rpc: {

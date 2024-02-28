@@ -4,6 +4,7 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Direction } from '../../types';
+import { SUPPORTED_XCM_PALLETS } from '../../consts';
 
 export enum XcmPalletName {
 	xcmPallet = 'xcmPallet',
@@ -26,6 +27,8 @@ export const establishXcmPallet = (
 	isParachainPrimaryNativeAsset?: boolean,
 ): XcmPalletName => {
 	let xPallet: XcmPalletName | undefined;
+
+	// default to xTokens
 	if (api.tx.xTokens) {
 		xPallet = XcmPalletName.xTokens;
 	} else if (api.tx.xtokens) {
@@ -45,12 +48,18 @@ export const establishXcmPallet = (
 		return XcmPalletName.polkadotXcm;
 	} else if (api.tx.xcmPallet) {
 		return XcmPalletName.xcmPallet;
-	} else {
-		throw new BaseError(
-			"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API",
-			BaseErrorsEnum.PalletNotFound,
-		);
-	}
+	} 
+
+	const supportedPallets = SUPPORTED_XCM_PALLETS
+		.map((pallet) => {
+			return pallet;
+		})
+		.join(', ');
+
+	throw new BaseError(
+		`No supported pallet found in the current runtime. Supported pallets are ${supportedPallets}.`,
+		BaseErrorsEnum.PalletNotFound,
+	);
 };
 
 /**

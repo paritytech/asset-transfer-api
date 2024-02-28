@@ -117,6 +117,7 @@ export const getAssetId = async (
 			);
 		}
 	} else if (isParachain) {
+		console.log('ASSET IS PARACHAIN')
 		const paraId = registry.lookupChainIdBySpecName(specName);
 
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
@@ -183,6 +184,7 @@ export const getAssetId = async (
 				}
 			}
 		} else {
+			console.log('IN ELSE STATEMENT')
 			// Pallet Assets isn't supported, check symbol or integer assetId against asset registry
 			if (assetIsValidInt) {
 				for (const info of paraXcAssets) {
@@ -192,7 +194,9 @@ export const getAssetId = async (
 					}
 				}
 			} else {
+				console.log('WHAT IS ASSET', asset.toLowerCase());
 				for (const info of paraXcAssets) {
+					console.log('info.symbol.toLowerCase()', info.symbol.toLowerCase());
 					if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === asset.toLowerCase()) {
 						assetId = info.xcmV1MultiLocation;
 						registry.setAssetInCache(asset, assetId);

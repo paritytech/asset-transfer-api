@@ -390,7 +390,4 @@ export type AssetMetadata = {
 	isFrozen: boolean;
 };
 
-export type ResolvedCallData = {
-	txMethod: Methods;
-	transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-};
+export type ResolvedCallInfo = [txMethod: Methods, transaction: SubmittableExtrinsic<'promise', ISubmittableResult>];

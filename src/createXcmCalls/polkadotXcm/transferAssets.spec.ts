@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1007000';
+import { adjustedMockSystemApiV1007000 } from '../../testHelpers/adjustedMockSystemApiV1007000';
 import { Direction, XcmBaseArgs, XcmDirection } from '../../types';
 import { transferAssets } from './transferAssets';
 
@@ -13,7 +13,7 @@ describe('transferAssets', () => {
 	describe('SystemToPara', () => {
 		const isLiquidTokenTransfer = false;
 		const baseArgs: XcmBaseArgs = {
-			api: adjustedMockSystemApi,
+			api: adjustedMockSystemApiV1007000,
 			direction: Direction.SystemToPara as XcmDirection,
 			destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 			assetIds: ['1'],
@@ -46,7 +46,7 @@ describe('transferAssets', () => {
 			});
 
 			expect(ext.toHex()).toBe(
-				'0x0d01041f0b030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043205040091010000000001a10f411f',
+				'0x0901041f0b040101009d1f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b04040002043205040091010000000001a10f411f',
 			);
 		});
 		it('Should correctly construct a tx when a weightLimit is available', async () => {
@@ -68,7 +68,7 @@ describe('transferAssets', () => {
 			});
 
 			expect(ext.toHex()).toBe(
-				'0x1501041f0b030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400000204320504009101000000000102286bee411f',
+				'0x1101041f0b040101009d1f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404000204320504009101000000000102286bee411f',
 			);
 		});
 
@@ -92,7 +92,7 @@ describe('transferAssets', () => {
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
 				});
-			}).rejects.toThrow("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
+			}).rejects.toThrow("No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.");
 		});
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V4', async () => {
@@ -105,7 +105,7 @@ describe('transferAssets', () => {
 			});
 
 			expect(ext.toHex()).toBe(
-				'0x0901041f0b030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001030435003d1105000091010000000000',
+				'0x0501041f0b040101009d1f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b040401030435003d1105000091010000000000',
 			);
 		});
 
@@ -128,7 +128,7 @@ describe('transferAssets', () => {
 			});
 
 			expect(ext.toHex()).toBe(
-				'0x2101041f0b030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001030435003d110500009101000000000102286bee411f',
+				'0x1d01041f0b040101009d1f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b040401030435003d110500009101000000000102286bee411f',
 			);
 		});
 	});
