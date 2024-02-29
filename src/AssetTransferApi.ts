@@ -210,7 +210,9 @@ export class AssetTransferApi {
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
-		const xcmPallet = establishXcmPallet(api, xcmDirection, isForeignAssetsTransfer, isPrimaryParachainNativeAsset);
+		const xcmPallet = establishXcmPallet(api, xcmDirection, 
+			// isForeignAssetsTransfer, isPrimaryParachainNativeAsset
+			);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 

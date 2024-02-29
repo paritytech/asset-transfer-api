@@ -23,8 +23,8 @@ export enum XcmPalletName {
 export const establishXcmPallet = (
 	api: ApiPromise,
 	direction?: Direction,
-	isForeignAssetsTransfer?: boolean,
-	isParachainPrimaryNativeAsset?: boolean,
+	// isForeignAssetsTransfer?: boolean,
+	// isParachainPrimaryNativeAsset?: boolean,
 ): XcmPalletName => {
 	let xPallet: XcmPalletName | undefined;
 
@@ -36,10 +36,9 @@ export const establishXcmPallet = (
 	}
 
 	// checks for the existence of the xTokens pallet
-	// for direction ParaToSystem or ParaToPara, if it exists and the tx is
-	// not a foreign assets transfer we return the xTokens pallet
+	// checks that current origin is a parachain
 	if (
-		isXTokensOriginNonForeignAssetsPalletTx(xPallet, direction, isForeignAssetsTransfer, isParachainPrimaryNativeAsset)
+		isValidXTokensDirection(xPallet, direction)
 	) {
 		return xPallet as XcmPalletName;
 	}
@@ -67,19 +66,17 @@ export const establishXcmPallet = (
  *
  * @param api ApiPromise
  */
-const isXTokensOriginNonForeignAssetsPalletTx = (
+const isValidXTokensDirection = (
 	xPallet?: XcmPalletName,
 	direction?: Direction,
-	isForeignAssetsTransfer?: boolean,
-	isParachainPrimaryNativeAsset?: boolean,
 ): boolean => {
 	if (
-		!isForeignAssetsTransfer &&
-		!isParachainPrimaryNativeAsset &&
 		direction &&
-		(direction === Direction.ParaToSystem ||
+		(
+			direction === Direction.ParaToSystem ||
 			direction === Direction.ParaToPara ||
-			direction === Direction.ParaToRelay) &&
+			direction === Direction.ParaToRelay
+		) &&
 		xPallet
 	) {
 		return true;

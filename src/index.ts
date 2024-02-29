@@ -21,7 +21,8 @@ const main = async () => {
 	const provider = new WsProvider(
 		// `wss://westend-rpc.polkadot.io`,
         // `wss://westend-asset-hub-rpc.polkadot.io`
-		`wss://moonriver.api.onfinality.io/public-ws`
+		// `wss://moonriver.api.onfinality.io/public-ws`
+		`wss://moonriver.public.blastapi.io`
 		// `wss://bifrost-rpc.liebi.com/ws`
 		// `wss://rpc.shiden.astar.network`
 	);
@@ -35,11 +36,11 @@ const main = async () => {
 	const payload = await assetTransferApi.createTransferTransaction(
 		'1000',
 		'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-		['xcusdt'],
+		['movr'],
 		['1000000000000000000'],
 		{
 			format: 'payload',
-			xcmVersion: 3,
+			xcmVersion: 2,
 			isLimited: false,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 		},

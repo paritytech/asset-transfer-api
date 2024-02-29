@@ -4,7 +4,7 @@ import { Registry } from '../registry';
 import { mockMoonriverParachainApi } from '../testHelpers/mockMoonriverParachainApi';
 import { ParaToPara } from './ParaToPara';
 
-describe('ParaToPara', () => {
+describe('ParaToPara test', () => {
 	const registry = new Registry('kusama', {});
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {

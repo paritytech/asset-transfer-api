@@ -6,7 +6,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { AssetTransferApi } from './AssetTransferApi';
 import { adjustedMockMoonriverParachainApi } from './testHelpers/adjustedMockMoonriverParachainApi';
-import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApi';
+import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
 import { adjustedMockBifrostParachainApi } from './testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverNoXTokensParachainApi } from './testHelpers/adjustedMockMoonriverParachainNoXTokens';
@@ -976,7 +976,7 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['transferAssets', await transferAssets(mockBaseArgs, mockBaseOpts)];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await westmintAssetsApi['resolveCall'](
 					westmintAssetsApi.api,
 					['usdt'],
 					'polkadotXcm' as XcmPalletName,
@@ -1020,7 +1020,7 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['teleportAssets', await teleportAssets(mockBaseArgs, mockBaseOpts)];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await systemAssetsApi['resolveCall'](
 					systemAssetsApi.api,
 					['ksm'],
 					'polkadotXcm' as XcmPalletName,
@@ -1064,48 +1064,7 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['teleportAssets', await teleportAssets(mockBaseArgs, mockBaseOpts)];
 
-				const result = await moonriverAssetsApi['resolveCall'](
-					systemAssetsApi.api,
-					['ksm'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.SystemToRelay,
-					'Teleport' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-					false,
-				);
-
-				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
-			});
-						it('Should correctly resolve to a `teleportAssets` call', async () => {
-				const specName = 'statemine';
-				const registry = new Registry(specName, {});
-
-				const mockBaseArgs: XcmBaseArgs = {
-					api: systemAssetsApi.api,
-					direction: Direction.SystemToRelay as XcmDirection,
-					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					assetIds: ['ksm'],
-					amounts: ['10000000000'],
-					destChainId: '1001',
-					xcmVersion: 2,
-					specName: 'statemine',
-					registry: registry,
-				};
-				
-				const mockBaseOpts = {
-					isLimited: false,
-					weightLimit: {
-						refTime: '3000',
-						proofSize: '10000',
-					},
-					isLiquidTokenTransfer: false,
-					isForeignAssetsTransfer: false,
-				};
-
-				const expected: ResolvedCallInfo = ['teleportAssets', await teleportAssets(mockBaseArgs, mockBaseOpts)];
-
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await systemAssetsApi['resolveCall'](
 					systemAssetsApi.api,
 					['ksm'],
 					'polkadotXcm' as XcmPalletName,
@@ -1150,8 +1109,8 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['transferMultiasset', await transferMultiasset(mockBaseArgs, mockBaseOpts)];
 
-				const result = await moonriverAssetsApi['resolveCall'](
-					moonriverAssetsApi.api,
+				const result = await bifrostAssetsApi['resolveCall'](
+					bifrostAssetsApi.api,
 					['usdt'],
 					'xTokens' as XcmPalletName,
 					Direction.ParaToSystem,
@@ -1210,6 +1169,7 @@ describe('AssetTransferAPI', () => {
 			it('Should correctly resolve to a `transferMultiAssetWithFee` call for a parachain runtime which includes the `xTokens` pallet', async () => {
 				const specName = 'moonriver';
 				const registry = new Registry(specName, {});
+				const paysWithFeeDest = '{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}';
 
 				const mockBaseArgs: XTokensBaseArgs = {
 					api: moonriverAssetsApi.api,
@@ -1230,7 +1190,7 @@ describe('AssetTransferAPI', () => {
 						refTime: '3000',
 						proofSize: '10000',
 					},
-					paysWithFeeDest: '1984',
+					paysWithFeeDest,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -1246,7 +1206,7 @@ describe('AssetTransferAPI', () => {
 					mockBaseArgs,
 					mockBaseOpts,
 					true,
-					'{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}'
+					paysWithFeeDest,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1277,7 +1237,7 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['reserveTransferAssets', await reserveTransferAssets(mockBaseArgs, mockBaseOpts)];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
 					moonriverAssetsNoXTokensApi.api,
 					['usdt'],
 					'polkadotXcm' as XcmPalletName,
@@ -1320,7 +1280,7 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['limitedReserveTransferAssets', await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts)];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
 					moonriverAssetsNoXTokensApi.api,
 					['usdt'],
 					'polkadotXcm' as XcmPalletName,
@@ -1340,22 +1300,26 @@ describe('AssetTransferAPI', () => {
 				const specName = 'bifrost';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.xTokens;
-
+				const assetCallType = AssetCallType.Reserve;
+				const direction = Direction.ParaToRelay;
+				const assetIds = ['ksm'];
+				const isLimited = true;
+				
 				const mockBaseArgs: XTokensBaseArgs = {
-					api: moonriverAssetsNoXTokensApi.api,
-					direction: Direction.ParaToSystem as XcmDirection,
+					api: bifrostAssetsApi.api,
+					direction,
 					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					assetIds: ['ksm'],
+					assetIds,
 					amounts: ['10000000000'],
 					destChainId: '0',
 					xcmVersion: 2,
-					specName: 'bifrost',
+					specName,
 					registry: registry,
 					xcmPallet,
 				};
 				
 				const mockBaseOpts = {
-					isLimited: true,
+					isLimited,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1367,20 +1331,388 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['transferMultiasset', await transferMultiasset(mockBaseArgs, mockBaseOpts)];
 
-				const result = await moonriverAssetsApi['resolveCall'](
-					moonriverAssetsNoXTokensApi.api,
-					['usdt'],
-					'xTokens' as XcmPalletName,
-					Direction.ParaToSystem,
-					'Reserve' as AssetCallType,
+				const result = await bifrostAssetsApi['resolveCall'](
+					bifrostAssetsApi.api,
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					true,
+					isLimited,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+
+			it('Should correctly resolve to `reserveTransferAssets` for a parachain runtime which includes the `polkadotXcm` pallet and does not include the `xTokens` pallet', async () => {
+				const specName = 'moonriver';
+				const registry = new Registry(specName, {});
+				const xcmPallet = XcmPalletName.polkadotXcm;
+				const assetCallType = AssetCallType.Reserve;
+				const direction = Direction.ParaToRelay;
+				const assetIds = ['ksm'];
+				const isLimited = false;
+
+				const mockBaseArgs: XcmBaseArgs = {
+					api: moonriverAssetsNoXTokensApi.api,
+					direction,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					amounts: ['10000000000'],
+					destChainId: '0',
+					xcmVersion: 2,
+					specName,
+					registry: registry,
+				};
+				
+				const mockBaseOpts = {
+					isLimited,
+					paysWithFeeDest: '1984',
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = ['reserveTransferAssets', await reserveTransferAssets(mockBaseArgs, mockBaseOpts)];
+
+				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
+					moonriverAssetsNoXTokensApi.api,
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					isLimited,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+
+			it('Should correctly resolve to `limitedReserveTransferAssets` for a parachain runtime which includes the `polkadotXcm` pallet and does not include the `xTokens` pallet', async () => {
+				const api = moonriverAssetsNoXTokensApi.api;
+				const specName = 'moonriver';
+				const registry = new Registry(specName, {});
+				const xcmPallet = XcmPalletName.polkadotXcm;
+				const assetCallType = AssetCallType.Reserve;
+				const direction = Direction.ParaToRelay;
+				const assetIds = ['ksm'];
+				const isLimited = true;
+
+				const mockBaseArgs: XcmBaseArgs = {
+					api,
+					direction,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					amounts: ['10000000000'],
+					destChainId: '0',
+					xcmVersion: 2,
+					specName,
+					registry: registry,
+				};
+				
+				const mockBaseOpts = {
+					isLimited,
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = ['limitedReserveTransferAssets', await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts)];
+
+				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
+					api,
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					isLimited,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+		});
+
+		describe('ParaToPara', () => {
+			it('Should correctly resolve to `transferMultiasset` for parachain runtime which includes the `xTokens` pallet', async () => {
+				const api = moonriverAssetsApi.api;
+				const specName = 'moonriver';
+				const registry = new Registry(specName, {});
+				const xcmPallet = XcmPalletName.xTokens;
+				const assetCallType = AssetCallType.Reserve;
+				const direction = Direction.ParaToPara;
+				const assetIds = ['movr'];
+				const isLimited = false;
+
+				const mockBaseArgs: XTokensBaseArgs = {
+					api,
+					direction,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					amounts: ['10000000000'],
+					destChainId: '2001',
+					xcmVersion: 2,
+					specName,
+					registry: registry,
+					xcmPallet,
+				};
+				
+				const mockBaseOpts = {
+					isLimited,
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = ['transferMultiasset', await transferMultiasset(mockBaseArgs, mockBaseOpts)];
+
+				const result = await moonriverAssetsApi['resolveCall'](
+					api,
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					isLimited,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+
+			it('Should correctly resolve to `transferMultiassets` for parachain runtime which includes the `xTokens` pallet', async () => {
+				const api = moonriverAssetsApi.api;
+				const specName = 'moonriver';
+				const registry = new Registry(specName, {});
+				const xcmPallet = XcmPalletName.xTokens;
+				const assetCallType = AssetCallType.Reserve;
+				const direction = Direction.ParaToPara;
+				const assetIds = ['vmovr', 'xcbnc'];
+				const isLimited = false;
+
+				const mockBaseArgs: XTokensBaseArgs = {
+					api,
+					direction,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					amounts: ['10000000000', '10000000000'],
+					destChainId: '2001',
+					xcmVersion: 2,
+					specName,
+					registry: registry,
+					xcmPallet,
+				};
+				
+				const mockBaseOpts = {
+					isLimited,
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = ['transferMultiassets', await transferMultiassets(mockBaseArgs, mockBaseOpts)];
+
+				const result = await moonriverAssetsApi['resolveCall'](
+					api,
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					isLimited,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+
+
+			it('Should correctly resolve to `transferMultiassetWithFee` for parachain runtime which includes the `xTokens` pallet', async () => {
+				const api = moonriverAssetsApi.api;
+				const specName = 'moonriver';
+				const registry = new Registry(specName, {});
+				const xcmPallet = XcmPalletName.xTokens;
+				const assetCallType = AssetCallType.Reserve;
+				const direction = Direction.ParaToPara;
+				const assetIds = ['vmovr', 'usdt'];
+				const isLimited = false;
+				const paysWithFeeDest = '{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":10}]}}';
+
+				const mockBaseArgs: XTokensBaseArgs = {
+					api,
+					direction,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					amounts: ['10000000000', '10000000000'],
+					destChainId: '2001',
+					xcmVersion: 2,
+					specName,
+					registry: registry,
+					xcmPallet,
+				};
+				
+				const mockBaseOpts = {
+					isLimited,
+					paysWithFeeDest,
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = ['transferMultiassetWithFee', await transferMultiassetWithFee(mockBaseArgs, mockBaseOpts)];
+
+				const result = await moonriverAssetsApi['resolveCall'](
+					api,
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					isLimited,
+					paysWithFeeDest,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
 		})
+		describe('RelayToSystem', () => {
+			it('Should correctly resolve to a `teleportAssets` call', async () => {
+				const api = relayAssetsApi.api;
+				const specName = 'kusama';
+				const registry = new Registry(specName, {});
+				const xcmPallet = XcmPalletName.xcmPallet;
+				const assetCallType = AssetCallType.Teleport;
+				const direction = Direction.RelayToSystem;
+				const assetIds = ['ksm'];
+				const isLimited = false;
+
+				const mockBaseArgs: XcmBaseArgs = {
+					api,
+					direction,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					amounts: ['10000000000'],
+					destChainId: '1000',
+					xcmVersion: 3,
+					specName,
+					registry: registry,
+				};
+				
+				const mockBaseOpts = {
+					isLimited,
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = ['teleportAssets', await teleportAssets(mockBaseArgs, mockBaseOpts)];
+
+				const result = await moonriverAssetsApi['resolveCall'](
+					api,
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					isLimited,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+		});
+
+		describe('RelayToPara', () => {
+			it('Should correctly resolve to a `reserveTransferAssets` call', async () => {
+				const api = relayAssetsApi.api;
+				const specName = 'kusama';
+				const registry = new Registry(specName, {});
+				const xcmPallet = XcmPalletName.xcmPallet;
+				const assetCallType = AssetCallType.Reserve;
+				const direction = Direction.RelayToSystem;
+				const assetIds = ['ksm'];
+				const isLimited = false;
+
+				const mockBaseArgs: XcmBaseArgs = {
+					api,
+					direction,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					amounts: ['10000000000'],
+					destChainId: '2001',
+					xcmVersion: 3,
+					specName,
+					registry: registry,
+				};
+				
+				const mockBaseOpts = {
+					isLimited,
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = ['reserveTransferAssets', await reserveTransferAssets(mockBaseArgs, mockBaseOpts)];
+
+				const result = await moonriverAssetsApi['resolveCall'](
+					api,
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					isLimited,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+
+			it('Should correctly resolve to a `limitedReserveTransferAssets` call', async () => {
+				const api = relayAssetsApi.api;
+				const specName = 'kusama';
+				const registry = new Registry(specName, {});
+				const xcmPallet = XcmPalletName.xcmPallet;
+				const assetCallType = AssetCallType.Reserve;
+				const direction = Direction.RelayToSystem;
+				const assetIds = ['ksm'];
+				const isLimited = true;
+
+				const mockBaseArgs: XcmBaseArgs = {
+					api,
+					direction,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					amounts: ['10000000000'],
+					destChainId: '2001',
+					xcmVersion: 3,
+					specName,
+					registry: registry,
+				};
+				
+				const mockBaseOpts = {
+					isLimited,
+					weightLimit: {
+						refTime: '3000',
+						proofSize: '10000',
+					},
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = ['limitedReserveTransferAssets', await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts)];
+
+				const result = await moonriverAssetsApi['resolveCall'](
+					api,
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					isLimited,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+		});
 	});
 });
 

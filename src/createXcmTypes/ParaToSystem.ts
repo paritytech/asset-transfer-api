@@ -25,6 +25,7 @@ import type {
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
+	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
 	XcmV3MultiLocation,
@@ -300,38 +301,80 @@ export const ParaToSystem: ICreateXcmType = {
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcAssetsMultiAsset> => {
 		const { registry, api } = opts;
+		let multiAsset: FungibleObjAssetType | undefined = undefined;
+		let concreteMultiLocation: UnionXcmMultiLocation;
 
-		const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
-			api,
-			assetId,
-			specName,
-			xcmVersion,
+		// check if asset is the parachains primary native asset
+		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 			registry,
+			specName,
+			Direction.ParaToPara,
+			assetId,
 		);
-		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
-		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
+	
+		console.log('IS PARACHAIN PRIMARY', isParachainPrimaryNativeAsset);
+	
+		if (isPrimaryParachainNativeAsset) {
 
-		const concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
+			const multiLocation = xcmVersion < 4 ?
+			{ parents: 0, interior: { Here: '' } } :
+			{ parents: 0, interior: { X1: [{ Here: '' }] } };
 
-		let multiAsset: FungibleObjAssetType;
-
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: concreteMultiLocation,
-				},
-				fun: {
-					Fungible: { Fungible: amount },
-				},
-			};
+			concreteMultiLocation = resolveMultiLocation(
+				multiLocation,
+				xcmVersion,
+			);
+	
+			if (xcmVersion < 4) {
+				multiAsset = {
+					id: {
+						Concrete: concreteMultiLocation,
+					},
+					fun: {
+						Fungible: { Fungible: amount },
+					},
+				};
+			} else {
+				multiAsset = {
+					id: concreteMultiLocation,
+					fun: {
+						Fungible: { Fungible: amount },
+					},
+				};
+			}
 		} else {
-			multiAsset = {
-				id: concreteMultiLocation,
-				fun: {
-					Fungible: { Fungible: amount },
-				},
-			};
+			const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
+				api,
+				assetId,
+				specName,
+				xcmVersion,
+				registry,
+			);
+			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
+			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
+	
+			concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
+		
+			if (xcmVersion < 4) {
+				multiAsset = {
+					id: {
+						Concrete: concreteMultiLocation,
+					},
+					fun: {
+						Fungible: { Fungible: amount },
+					},
+				};
+			} else {
+				multiAsset = {
+					id: concreteMultiLocation,
+					fun: {
+						Fungible: { Fungible: amount },
+					},
+				};
+			}
+
 		}
+
 
 		if (xcmVersion === 2) {
 			return { V2: multiAsset as FungibleObjMultiAsset };

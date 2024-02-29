@@ -119,6 +119,8 @@ export const getAssetId = async (
 	} else if (isParachain) {
 		console.log('ASSET IS PARACHAIN')
 		const paraId = registry.lookupChainIdBySpecName(specName);
+		console.log('SPEC NAME', specName);
+		console.log('PARA ID', paraId);
 
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
 		const currentRelayChainSpecName = registry.relayChain;
@@ -150,7 +152,11 @@ export const getAssetId = async (
 
 				// if assetId length is 0, check xcAssets for symbol
 				if (assetId.length === 0) {
+					console.log('WHAT IS THE ASSET', asset);
 					for (const info of paraXcAssets) {
+						console.log('ASSET INFO', info.asset)
+						console.log('ASSET SYMBOL', info.symbol)
+
 						if (
 							typeof info.asset === 'string' &&
 							typeof info.symbol === 'string' &&
