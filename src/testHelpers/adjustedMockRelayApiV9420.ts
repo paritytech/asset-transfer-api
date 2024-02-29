@@ -20,7 +20,7 @@ const getRelayRuntimeVersion = () =>
 
 const getHeader = (): Promise<Header> =>
 	Promise.resolve().then(() =>
-	mockRelayApiV9420.registry.createType('Header', {
+		mockRelayApiV9420.registry.createType('Header', {
 			number: mockRelayApiV9420.registry.createType('Compact<BlockNumber>', 100),
 			parentHash: mockRelayApiV9420.registry.createType('Hash'),
 			stateRoot: mockRelayApiV9420.registry.createType('Hash'),

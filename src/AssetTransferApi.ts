@@ -20,7 +20,6 @@ import {
 	limitedTeleportAssets,
 	reserveTransferAssets,
 	teleportAssets,
-	transferAssets,
 	transferMultiasset,
 	transferMultiassets,
 	transferMultiassetWithFee,
@@ -210,9 +209,7 @@ export class AssetTransferApi {
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
-		const xcmPallet = establishXcmPallet(api, xcmDirection, 
-			// isForeignAssetsTransfer, isPrimaryParachainNativeAsset
-			);
+		const xcmPallet = establishXcmPallet(api, xcmDirection);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
@@ -278,7 +275,6 @@ export class AssetTransferApi {
 		);
 
 		const [txMethod, transaction] = await this.resolveCall(
-			this.api,
 			assetIds,
 			xcmPallet,
 			xcmDirection,
@@ -984,7 +980,6 @@ export class AssetTransferApi {
 	}
 
 	private async resolveCall(
-		api: ApiPromise,
 		assetIds: string[],
 		xcmPallet: XcmPalletName,
 		xcmDirection: Direction,
@@ -997,7 +992,13 @@ export class AssetTransferApi {
 		let txMethod: Methods | undefined = undefined;
 		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult> | undefined = undefined;
 
-		if (isXtokensPallet(xcmPallet) && isValidXtokensXCMDirection(xcmDirection)) {
+		const isXtokensPallet = xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
+		const isValidXtokensXCMDirection =
+			xcmDirection === Direction.ParaToSystem ||
+			xcmDirection === Direction.ParaToPara ||
+			xcmDirection === Direction.ParaToRelay;
+
+		if (isXtokensPallet && isValidXtokensXCMDirection) {
 			// This ensures paraToRelay always uses `transferMultiAsset`.
 			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
 				txMethod = 'transferMultiasset';
@@ -1010,9 +1011,6 @@ export class AssetTransferApi {
 				txMethod = 'transferMultiassets';
 				transaction = await transferMultiassets({ ...baseArgs, xcmPallet }, baseOpts);
 			}
-		} else if (api.tx[xcmPallet] && api.tx[xcmPallet].transferAssets) {
-			txMethod = 'transferAssets';
-			transaction = await transferAssets(baseArgs, baseOpts);
 		} else if (assetCallType === AssetCallType.Reserve) {
 			if (isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
@@ -1044,13 +1042,3 @@ export class AssetTransferApi {
 		return [txMethod, transaction];
 	}
 }
-
-const isXtokensPallet = (xcmPallet: XcmPalletName): boolean =>
-	xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
-const isValidXtokensXCMDirection = (xcmDirection: Direction): boolean => {
-	return (
-		xcmDirection === Direction.ParaToSystem ||
-		xcmDirection === Direction.ParaToPara ||
-		xcmDirection === Direction.ParaToRelay
-	);
-};

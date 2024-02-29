@@ -45,11 +45,7 @@ export const getFeeAssetItemIndex = async (
 				console.log('IS RELAY ASSET SHOULD BE TRUE');
 				console.log('MULTI ASSET INTERIOR', JSON.stringify(multiAssetInterior));
 				// if the asset id is a relay asset, match Here interior
-				if (
-					multiAssetInterior.Here || 
-					'Here' in multiAssetInterior || 
-					'here' in multiAssetInterior
-				) {
+				if (multiAssetInterior.Here || 'Here' in multiAssetInterior || 'here' in multiAssetInterior) {
 					result = i;
 					console.log('WHAT IS RESULT', result);
 					break;
@@ -118,7 +114,7 @@ export const getFeeAssetItemIndex = async (
 			})
 			.join(',');
 
-			console.log('ASSETS ARE!!!!', assets);
+		console.log('ASSETS ARE!!!!', assets);
 
 		throw new BaseError(
 			`Invalid paysWithFeeDest value. ${paysWithFeeDest} did not match any asset in assets: ${assets}`,

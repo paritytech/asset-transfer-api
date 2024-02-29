@@ -311,20 +311,15 @@ export const ParaToSystem: ICreateXcmType = {
 			Direction.ParaToPara,
 			assetId,
 		);
-	
+
 		console.log('IS PARACHAIN PRIMARY', isParachainPrimaryNativeAsset);
-	
+
 		if (isPrimaryParachainNativeAsset) {
+			const multiLocation =
+				xcmVersion < 4 ? { parents: 0, interior: { Here: '' } } : { parents: 0, interior: { X1: [{ Here: '' }] } };
 
-			const multiLocation = xcmVersion < 4 ?
-			{ parents: 0, interior: { Here: '' } } :
-			{ parents: 0, interior: { X1: [{ Here: '' }] } };
+			concreteMultiLocation = resolveMultiLocation(multiLocation, xcmVersion);
 
-			concreteMultiLocation = resolveMultiLocation(
-				multiLocation,
-				xcmVersion,
-			);
-	
 			if (xcmVersion < 4) {
 				multiAsset = {
 					id: {
@@ -352,9 +347,9 @@ export const ParaToSystem: ICreateXcmType = {
 			);
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
-	
+
 			concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
-		
+
 			if (xcmVersion < 4) {
 				multiAsset = {
 					id: {
@@ -372,9 +367,7 @@ export const ParaToSystem: ICreateXcmType = {
 					},
 				};
 			}
-
 		}
-
 
 		if (xcmVersion === 2) {
 			return { V2: multiAsset as FungibleObjMultiAsset };

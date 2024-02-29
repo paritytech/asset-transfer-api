@@ -117,7 +117,7 @@ export const getAssetId = async (
 			);
 		}
 	} else if (isParachain) {
-		console.log('ASSET IS PARACHAIN')
+		console.log('ASSET IS PARACHAIN');
 		const paraId = registry.lookupChainIdBySpecName(specName);
 		console.log('SPEC NAME', specName);
 		console.log('PARA ID', paraId);
@@ -154,8 +154,8 @@ export const getAssetId = async (
 				if (assetId.length === 0) {
 					console.log('WHAT IS THE ASSET', asset);
 					for (const info of paraXcAssets) {
-						console.log('ASSET INFO', info.asset)
-						console.log('ASSET SYMBOL', info.symbol)
+						console.log('ASSET INFO', info.asset);
+						console.log('ASSET SYMBOL', info.symbol);
 
 						if (
 							typeof info.asset === 'string' &&
@@ -190,7 +190,7 @@ export const getAssetId = async (
 				}
 			}
 		} else {
-			console.log('IN ELSE STATEMENT')
+			console.log('IN ELSE STATEMENT');
 			// Pallet Assets isn't supported, check symbol or integer assetId against asset registry
 			if (assetIsValidInt) {
 				for (const info of paraXcAssets) {
