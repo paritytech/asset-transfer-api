@@ -22,7 +22,7 @@ const main = async () => {
 		callInfo = await assetApi.createTransferTransaction(
 			'2001',
 			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
-			['vmovr', 'xcbnc'],
+			['vMOVR', '72145018963825376852137222787619937732'],
 			['1000000', '10000000000'],
 			{
 				format: 'call',
