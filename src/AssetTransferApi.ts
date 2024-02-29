@@ -1007,7 +1007,6 @@ export class AssetTransferApi {
 				txMethod = 'transferMultiassetWithFee';
 				transaction = await transferMultiassetWithFee({ ...baseArgs, xcmPallet }, baseOpts);
 			} else {
-				console.log('WHAT IS PAYS WITH FEE DEST', paysWithFeeDest);
 				txMethod = 'transferMultiassets';
 				transaction = await transferMultiassets({ ...baseArgs, xcmPallet }, baseOpts);
 			}
