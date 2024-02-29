@@ -19,6 +19,7 @@ import { Registry } from './registry';
 import { adjustedMockBifrostParachainApi } from './testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from './testHelpers/adjustedMockMoonriverParachainApi';
 import { adjustedMockMoonriverNoXTokensParachainApi } from './testHelpers/adjustedMockMoonriverParachainNoXTokens';
+import { adjustedMockRelayApiNoLimitedReserveTransferAssets } from './testHelpers/adjustedMockRelayApiNoLimitedReserveTransferAssets';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
@@ -33,6 +34,12 @@ const mockSubmittableExt = mockSystemApi.registry.createType(
 
 const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
 const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, { registryType: 'NPM' });
+const relayAssetsApiNoLimitedReserveTransferAssets = new AssetTransferApi(
+	adjustedMockRelayApiNoLimitedReserveTransferAssets,
+	'kusama',
+	2,
+	{ registryType: 'NPM' },
+);
 const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, {
 	registryType: 'NPM',
 });
@@ -1692,6 +1699,51 @@ describe('AssetTransferAPI', () => {
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
+		});
+
+		it('Should correctly error when the resolved call is not found in the current runtime', async () => {
+			const api = relayAssetsApiNoLimitedReserveTransferAssets.api;
+			const specName = 'kusama';
+			const registry = new Registry(specName, {});
+			const xcmPallet = XcmPalletName.xcmPallet;
+			const assetCallType = AssetCallType.Reserve;
+			const direction = Direction.RelayToSystem;
+			const assetIds = ['ksm'];
+			const isLimited = true;
+
+			const mockBaseArgs: XcmBaseArgs = {
+				api,
+				direction,
+				destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				assetIds,
+				amounts: ['10000000000'],
+				destChainId: '1000',
+				xcmVersion: 3,
+				specName,
+				registry: registry,
+			};
+
+			const mockBaseOpts = {
+				isLimited,
+				weightLimit: {
+					refTime: '3000',
+					proofSize: '10000',
+				},
+				isLiquidTokenTransfer: false,
+				isForeignAssetsTransfer: false,
+			};
+
+			await expect(async () => {
+				await relayAssetsApiNoLimitedReserveTransferAssets['resolveCall'](
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					isLimited,
+				);
+			}).rejects.toThrow('Did not find limitedReserveTransferAssets from pallet xcmPallet in the current runtime');
 		});
 	});
 });

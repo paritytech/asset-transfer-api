@@ -26,6 +26,7 @@ import {
 } from './createXcmCalls';
 import { CreateXcmCallOpts } from './createXcmCalls/types';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
+import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
 import { UnionXcmMultiLocation } from './createXcmTypes/types';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
@@ -67,7 +68,12 @@ import {
 	UnsignedTransaction,
 	XcmBaseArgs,
 	XcmDirection,
+	XcmPalletCallSignature,
+	XcmPalletTxMethodTransactionMap,
+	XTokensCallSignature,
+	XTokensTxMethodTransactionMap,
 } from './types';
+import { callExistsInRuntime } from './util/callExistsInRuntime';
 import { deepEqual } from './util/deepEqual';
 import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
@@ -984,13 +990,14 @@ export class AssetTransferApi {
 		xcmPallet: XcmPalletName,
 		xcmDirection: Direction,
 		assetCallType: AssetCallType,
-		baseArgs: XcmBaseArgs,
+		baseArgs: XcmBaseArgs | XTokensBaseArgs,
 		baseOpts: CreateXcmCallOpts,
 		isLimited?: boolean,
 		paysWithFeeDest?: string,
 	): Promise<ResolvedCallInfo> {
+		const { api } = baseArgs;
+
 		let txMethod: Methods | undefined = undefined;
-		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult> | undefined = undefined;
 
 		const isXtokensPallet = xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
 		const isValidXtokensXCMDirection =
@@ -1002,40 +1009,56 @@ export class AssetTransferApi {
 			// This ensures paraToRelay always uses `transferMultiAsset`.
 			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
 				txMethod = 'transferMultiasset';
-				transaction = await transferMultiasset({ ...baseArgs, xcmPallet }, baseOpts);
 			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
 				txMethod = 'transferMultiassetWithFee';
-				transaction = await transferMultiassetWithFee({ ...baseArgs, xcmPallet }, baseOpts);
 			} else {
 				txMethod = 'transferMultiassets';
-				transaction = await transferMultiassets({ ...baseArgs, xcmPallet }, baseOpts);
 			}
 		} else if (assetCallType === AssetCallType.Reserve) {
 			if (isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
-				transaction = await limitedReserveTransferAssets(baseArgs, baseOpts);
 			} else {
 				txMethod = 'reserveTransferAssets';
-				transaction = await reserveTransferAssets(baseArgs, baseOpts);
 			}
 		} else {
 			if (isLimited) {
 				txMethod = 'limitedTeleportAssets';
-				transaction = await limitedTeleportAssets(baseArgs, {
-					...baseOpts,
-					isLiquidTokenTransfer: false,
-				});
 			} else {
 				txMethod = 'teleportAssets';
-				transaction = await teleportAssets(baseArgs, {
-					...baseOpts,
-					isLiquidTokenTransfer: false,
-				});
 			}
 		}
 
-		if (txMethod === undefined || transaction === undefined) {
-			throw new BaseError('Failed to resolve the correct runtime call`', BaseErrorsEnum.InternalError);
+		if (!callExistsInRuntime(api, txMethod, xcmPallet)) {
+			throw new BaseError(
+				`Did not find ${txMethod} from pallet ${xcmPallet} in the current runtime`,
+				BaseErrorsEnum.RuntimeCallNotFound,
+			);
+		}
+
+		const xTokensTxMethodToTransaction: XTokensTxMethodTransactionMap = {
+			transferMultiasset: [transferMultiasset, [baseArgs, baseOpts]],
+			transferMultiassetWithFee: [transferMultiassetWithFee, [baseArgs, baseOpts]],
+			transferMultiassets: [transferMultiassets, [baseArgs, baseOpts]],
+		};
+
+		const xcmPalletTxMethodToTransaction: XcmPalletTxMethodTransactionMap = {
+			limitedReserveTransferAssets: [limitedReserveTransferAssets, [baseArgs, baseOpts]],
+			reserveTransferAssets: [reserveTransferAssets, [baseArgs, baseOpts]],
+			limitedTeleportAssets: [limitedTeleportAssets, [baseArgs, baseOpts]],
+			teleportAssets: [teleportAssets, [baseArgs, baseOpts]],
+		};
+
+		let call: XTokensCallSignature | XcmPalletCallSignature;
+		let args: XTokensBaseArgs | XcmBaseArgs;
+		let opts: CreateXcmCallOpts;
+		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
+
+		if (isXtokensPallet) {
+			[call, [args, opts]] = xTokensTxMethodToTransaction[txMethod];
+			transaction = await call({ ...args, xcmPallet } as XTokensBaseArgs, opts);
+		} else {
+			[call, [args, opts]] = xcmPalletTxMethodToTransaction[txMethod];
+			transaction = await (call as XcmPalletCallSignature)(args as XcmBaseArgs, opts);
 		}
 
 		return [txMethod, transaction];

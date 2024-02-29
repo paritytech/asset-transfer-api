@@ -80,6 +80,11 @@ export enum BaseErrorsEnum {
 	 * The provided JS environment is not supported, and the api will not run.
 	 */
 	UnsupportedEnvironment = 'UnsupportedEnvironment',
+
+	/**
+	 * Did not find the correct call in the current runtime.
+	 */
+	RuntimeCallNotFound = 'RuntimeCallNotFound',
 }
 
 export class BaseError extends Error {

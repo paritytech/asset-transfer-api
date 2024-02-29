@@ -20,10 +20,10 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'1000',
+			'2001',
 			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
-			['movr'],
-			['1000000'],
+			['vmovr', 'xcbnc'],
+			['1000000', '10000000000'],
 			{
 				format: 'call',
 				isLimited: false,
