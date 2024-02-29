@@ -20,10 +20,7 @@ export enum XcmPalletName {
  *
  * @param api ApiPromise
  */
-export const establishXcmPallet = (
-	api: ApiPromise,
-	direction?: Direction,
-): XcmPalletName => {
+export const establishXcmPallet = (api: ApiPromise, direction?: Direction): XcmPalletName => {
 	let xPallet: XcmPalletName | undefined;
 
 	// default to xTokens
