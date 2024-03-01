@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../../registry';
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
 
 describe('foreignMultiAssetMultiLocationExists', () => {

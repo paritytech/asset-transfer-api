@@ -4,7 +4,7 @@ import { AssetTransferApi } from '../AssetTransferApi';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';
 import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi';
-import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
+import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {

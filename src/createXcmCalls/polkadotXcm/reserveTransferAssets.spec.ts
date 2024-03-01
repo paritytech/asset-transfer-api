@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
 import { Direction, XcmDirection } from '../../types';
 import { reserveTransferAssets } from './reserveTransferAssets';
 
@@ -53,7 +53,9 @@ describe('reserveTransferAssets', () => {
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
 				});
-			}).rejects.toThrow("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
+			}).rejects.toThrow(
+				'No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.',
+			);
 		});
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V2', async () => {

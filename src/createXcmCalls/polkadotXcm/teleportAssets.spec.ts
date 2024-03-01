@@ -46,7 +46,9 @@ describe('teleportAssets', () => {
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
 				});
-			}).rejects.toThrow("Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API");
+			}).rejects.toThrow(
+				'No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.',
+			);
 		});
 	});
 });

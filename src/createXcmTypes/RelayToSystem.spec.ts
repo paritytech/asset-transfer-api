@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
-import { mockRelayApi } from '../testHelpers/mockRelayApi';
+import { mockRelayApiV9420 } from '../testHelpers/mockRelayApiV9420';
 import { RelayToSystem } from './RelayToSystem';
 
 describe('RelayToSystem XcmVersioned Generation', () => {
@@ -135,7 +135,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockRelayApi,
+				api: mockRelayApiV9420,
 			});
 
 			const expectedRes = {
@@ -163,7 +163,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockRelayApi,
+				api: mockRelayApiV9420,
 			});
 
 			const expectedRes = {
@@ -191,7 +191,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockRelayApi,
+				api: mockRelayApiV9420,
 			});
 
 			const expectedRes = {

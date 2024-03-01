@@ -2,7 +2,7 @@
 
 import { AssetTransferApi } from '../../AssetTransferApi';
 import { Registry } from '../../registry';
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApi';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
 import { checkLocalTxInput } from './checkLocalTxInput';
 
 describe('checkLocalTxInput', () => {

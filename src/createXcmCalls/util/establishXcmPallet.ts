@@ -2,6 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
+import { SUPPORTED_XCM_PALLETS } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Direction } from '../../types';
 
@@ -19,25 +20,16 @@ export enum XcmPalletName {
  *
  * @param api ApiPromise
  */
-export const establishXcmPallet = (
-	api: ApiPromise,
-	direction?: Direction,
-	isForeignAssetsTransfer?: boolean,
-	isParachainPrimaryNativeAsset?: boolean,
-): XcmPalletName => {
+export const establishXcmPallet = (api: ApiPromise, direction?: Direction): XcmPalletName => {
 	let xPallet: XcmPalletName | undefined;
+
 	if (api.tx.xTokens) {
 		xPallet = XcmPalletName.xTokens;
 	} else if (api.tx.xtokens) {
 		xPallet = XcmPalletName.xtokens;
 	}
 
-	// checks for the existence of the xTokens pallet
-	// for direction ParaToSystem or ParaToPara, if it exists and the tx is
-	// not a foreign assets transfer we return the xTokens pallet
-	if (
-		isXTokensOriginNonForeignAssetsPalletTx(xPallet, direction, isForeignAssetsTransfer, isParachainPrimaryNativeAsset)
-	) {
+	if (isValidXTokensDirection(xPallet, direction)) {
 		return xPallet as XcmPalletName;
 	}
 
@@ -45,12 +37,16 @@ export const establishXcmPallet = (
 		return XcmPalletName.polkadotXcm;
 	} else if (api.tx.xcmPallet) {
 		return XcmPalletName.xcmPallet;
-	} else {
-		throw new BaseError(
-			"Can't find the `polkadotXcm` or `xcmPallet` pallet with the given API",
-			BaseErrorsEnum.PalletNotFound,
-		);
 	}
+
+	const supportedPallets = SUPPORTED_XCM_PALLETS.map((pallet) => {
+		return pallet;
+	}).join(', ');
+
+	throw new BaseError(
+		`No supported pallet found in the current runtime. Supported pallets are ${supportedPallets}.`,
+		BaseErrorsEnum.PalletNotFound,
+	);
 };
 
 /**
@@ -58,15 +54,8 @@ export const establishXcmPallet = (
  *
  * @param api ApiPromise
  */
-const isXTokensOriginNonForeignAssetsPalletTx = (
-	xPallet?: XcmPalletName,
-	direction?: Direction,
-	isForeignAssetsTransfer?: boolean,
-	isParachainPrimaryNativeAsset?: boolean,
-): boolean => {
+const isValidXTokensDirection = (xPallet?: XcmPalletName, direction?: Direction): boolean => {
 	if (
-		!isForeignAssetsTransfer &&
-		!isParachainPrimaryNativeAsset &&
 		direction &&
 		(direction === Direction.ParaToSystem ||
 			direction === Direction.ParaToPara ||

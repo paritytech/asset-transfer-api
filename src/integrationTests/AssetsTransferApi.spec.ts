@@ -2,8 +2,8 @@
 
 import { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
-import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApi';
-import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApi';
+import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
+import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
 import type { Format, TxResult } from '../types';
 
 const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, { registryType: 'NPM' });

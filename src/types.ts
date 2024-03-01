@@ -6,7 +6,9 @@ import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
+import { CreateXcmCallOpts } from './createXcmCalls/types';
 import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
+import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
 import type { Registry } from './registry';
 import type { ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './registry/types';
 
@@ -387,4 +389,23 @@ export type AssetMetadata = {
 	symbol: string;
 	decimals: string;
 	isFrozen: boolean;
+};
+
+export type ResolvedCallInfo = [Methods, SubmittableExtrinsic<'promise', ISubmittableResult>];
+
+export type XTokensCallSignature = (
+	baseArgs: XTokensBaseArgs,
+	opts: CreateXcmCallOpts,
+) => Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+export type XcmPalletCallSignature = (
+	baseArgs: XcmBaseArgs,
+	opts: CreateXcmCallOpts,
+) => Promise<SubmittableExtrinsic<'promise', ISubmittableResult>>;
+export type CallArgs = [XcmBaseArgs | XTokensBaseArgs, CreateXcmCallOpts];
+
+export type XTokensTxMethodTransactionMap = {
+	[x: string]: [XTokensCallSignature, CallArgs];
+};
+export type XcmPalletTxMethodTransactionMap = {
+	[x: string]: [XcmPalletCallSignature, CallArgs];
 };

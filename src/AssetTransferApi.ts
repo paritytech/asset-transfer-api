@@ -24,7 +24,9 @@ import {
 	transferMultiassets,
 	transferMultiassetWithFee,
 } from './createXcmCalls';
+import { CreateXcmCallOpts } from './createXcmCalls/types';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
+import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
 import { UnionXcmMultiLocation } from './createXcmTypes/types';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
@@ -60,11 +62,18 @@ import {
 	LocalTxOpts,
 	Methods,
 	RegistryTypes,
+	ResolvedCallInfo,
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
+	type XcmBaseArgs,
 	XcmDirection,
+	type XcmPalletCallSignature,
+	type XcmPalletTxMethodTransactionMap,
+	type XTokensCallSignature,
+	type XTokensTxMethodTransactionMap,
 } from './types';
+import { callExistsInRuntime } from './util/callExistsInRuntime';
 import { deepEqual } from './util/deepEqual';
 import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
@@ -206,7 +215,7 @@ export class AssetTransferApi {
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
 		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
-		const xcmPallet = establishXcmPallet(api, xcmDirection, isForeignAssetsTransfer, isPrimaryParachainNativeAsset);
+		const xcmPallet = establishXcmPallet(api, xcmDirection);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
@@ -231,7 +240,7 @@ export class AssetTransferApi {
 			);
 		}
 
-		const baseArgs = {
+		const baseArgs: XcmBaseArgs = {
 			api: api,
 			direction: xcmDirection as XcmDirection,
 			destAddr: addr,
@@ -271,48 +280,16 @@ export class AssetTransferApi {
 			registry,
 		);
 
-		let txMethod: Methods;
-		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
-		if (
-			(xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens) &&
-			(xcmDirection === Direction.ParaToSystem ||
-				xcmDirection === Direction.ParaToPara ||
-				xcmDirection === Direction.ParaToRelay)
-		) {
-			// This ensures paraToRelay always uses `transferMultiAsset`.
-			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
-				txMethod = 'transferMultiasset';
-				transaction = await transferMultiasset({ ...baseArgs, xcmPallet }, baseOpts);
-			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
-				txMethod = 'transferMultiassetWithFee';
-				transaction = await transferMultiassetWithFee({ ...baseArgs, xcmPallet }, baseOpts);
-			} else {
-				txMethod = 'transferMultiassets';
-				transaction = await transferMultiassets({ ...baseArgs, xcmPallet }, baseOpts);
-			}
-		} else if (assetCallType === AssetCallType.Reserve) {
-			if (isLimited) {
-				txMethod = 'limitedReserveTransferAssets';
-				transaction = await limitedReserveTransferAssets(baseArgs, baseOpts);
-			} else {
-				txMethod = 'reserveTransferAssets';
-				transaction = await reserveTransferAssets(baseArgs, baseOpts);
-			}
-		} else {
-			if (isLimited) {
-				txMethod = 'limitedTeleportAssets';
-				transaction = await limitedTeleportAssets(baseArgs, {
-					...baseOpts,
-					isLiquidTokenTransfer: false,
-				});
-			} else {
-				txMethod = 'teleportAssets';
-				transaction = await teleportAssets(baseArgs, {
-					...baseOpts,
-					isLiquidTokenTransfer: false,
-				});
-			}
-		}
+		const [txMethod, transaction] = await this.resolveCall(
+			assetIds,
+			xcmPallet,
+			xcmDirection,
+			assetCallType,
+			baseArgs,
+			baseOpts,
+			isLimited,
+			paysWithFeeDest,
+		);
 
 		return this.constructFormat<T>(transaction, xcmDirection, declaredXcmVersion, txMethod, destChainId, specName, {
 			format,
@@ -1006,5 +983,84 @@ export class AssetTransferApi {
 				...opts,
 			});
 		}
+	}
+
+	private async resolveCall(
+		assetIds: string[],
+		xcmPallet: XcmPalletName,
+		xcmDirection: Direction,
+		assetCallType: AssetCallType,
+		baseArgs: XcmBaseArgs | XTokensBaseArgs,
+		baseOpts: CreateXcmCallOpts,
+		isLimited?: boolean,
+		paysWithFeeDest?: string,
+	): Promise<ResolvedCallInfo> {
+		const { api } = baseArgs;
+
+		let txMethod: Methods | undefined = undefined;
+
+		const isXtokensPallet = xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
+		const isValidXtokensXCMDirection =
+			xcmDirection === Direction.ParaToSystem ||
+			xcmDirection === Direction.ParaToPara ||
+			xcmDirection === Direction.ParaToRelay;
+
+		if (isXtokensPallet && isValidXtokensXCMDirection) {
+			// This ensures paraToRelay always uses `transferMultiAsset`.
+			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
+				txMethod = 'transferMultiasset';
+			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
+				txMethod = 'transferMultiassetWithFee';
+			} else {
+				txMethod = 'transferMultiassets';
+			}
+		} else if (assetCallType === AssetCallType.Reserve) {
+			if (isLimited) {
+				txMethod = 'limitedReserveTransferAssets';
+			} else {
+				txMethod = 'reserveTransferAssets';
+			}
+		} else {
+			if (isLimited) {
+				txMethod = 'limitedTeleportAssets';
+			} else {
+				txMethod = 'teleportAssets';
+			}
+		}
+
+		if (!callExistsInRuntime(api, txMethod, xcmPallet)) {
+			throw new BaseError(
+				`Did not find ${txMethod} from pallet ${xcmPallet} in the current runtime`,
+				BaseErrorsEnum.RuntimeCallNotFound,
+			);
+		}
+
+		const xTokensTxMethodToTransaction: XTokensTxMethodTransactionMap = {
+			transferMultiasset: [transferMultiasset, [baseArgs, baseOpts]],
+			transferMultiassetWithFee: [transferMultiassetWithFee, [baseArgs, baseOpts]],
+			transferMultiassets: [transferMultiassets, [baseArgs, baseOpts]],
+		};
+
+		const xcmPalletTxMethodToTransaction: XcmPalletTxMethodTransactionMap = {
+			limitedReserveTransferAssets: [limitedReserveTransferAssets, [baseArgs, baseOpts]],
+			reserveTransferAssets: [reserveTransferAssets, [baseArgs, baseOpts]],
+			limitedTeleportAssets: [limitedTeleportAssets, [baseArgs, baseOpts]],
+			teleportAssets: [teleportAssets, [baseArgs, baseOpts]],
+		};
+
+		let call: XTokensCallSignature | XcmPalletCallSignature;
+		let args: XTokensBaseArgs | XcmBaseArgs;
+		let opts: CreateXcmCallOpts;
+		let transaction: SubmittableExtrinsic<'promise', ISubmittableResult>;
+
+		if (isXtokensPallet) {
+			[call, [args, opts]] = xTokensTxMethodToTransaction[txMethod];
+			transaction = await call({ ...args, xcmPallet } as XTokensBaseArgs, opts);
+		} else {
+			[call, [args, opts]] = xcmPalletTxMethodToTransaction[txMethod];
+			transaction = await (call as XcmPalletCallSignature)(args as XcmBaseArgs, opts);
+		}
+
+		return [txMethod, transaction];
 	}
 }
