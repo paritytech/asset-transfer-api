@@ -3,33 +3,33 @@
  *
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetTransferApi, constructApiPromise } from '../src';
-import { TxResult } from '../src/types';
-import { GREEN, PURPLE, RESET } from './colors';
+import { AssetTransferApi, constructApiPromise } from '../../../../../src';
+import { TxResult } from '../../../../../src/types';
+import { GREEN, PURPLE, RESET } from '../../../../colors';
 
 /**
- * In this example we are creating a call to send foreign asset '{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'
- * from a Kusama Asset Hub (System Parachain) account
- * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` declaring that
- * it will be `unlimited` since there is no `weightLimit` option as well.
+ * In this example we are creating a `polkadotXcm` pallet `limitedTeleportAssets` call to send EQ (foreign asset with location `{"parents":"1","interior":{"X1":{"Parachain":"2011"}}}`)
+ * from a Polkadot Asset Hub (System Parachain) account
+ * to an Equilibrium (ParaChain) account, where the `xcmVersion` is set to 3, the `isLimited` option is set to true and there is no
+ * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  *
  * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://polkadot-asset-hub-rpc.polkadot.io');
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'1000', // NOTE: The destination id is `1000` and matches the origin chain making this a local transfer
+			'2011', // Note: Parachain ID 2011 (Equilibrium) is identical to the asset location's `Parachain` Id, making this a `teleportAssets` call
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
-			['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
+			['{"parents":"1","interior":{"X1":{"Parachain":"2011"}}}'],
 			['1000000000000'],
 			{
 				format: 'call',
 				isLimited: true,
-				xcmVersion: 2,
+				xcmVersion: 3,
 			},
 		);
 

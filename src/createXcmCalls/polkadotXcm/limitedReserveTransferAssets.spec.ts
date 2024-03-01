@@ -91,7 +91,9 @@ describe('limitedReserveTransferAssets', () => {
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
 				});
-			}).rejects.toThrow("No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.");
+			}).rejects.toThrow(
+				'No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.',
+			);
 		});
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V2', async () => {
@@ -104,7 +106,7 @@ describe('limitedReserveTransferAssets', () => {
 			});
 
 			expect(ext.toHex()).toBe(
-				'0x0901041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000103043500352105000091010000000000',
+				'0x0101041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200352105000091010000000000',
 			);
 		});
 
@@ -127,7 +129,7 @@ describe('limitedReserveTransferAssets', () => {
 			});
 
 			expect(ext.toHex()).toBe(
-				'0x2101041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010304350035210500009101000000000102286bee411f',
+				'0x1901041f08010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001020035210500009101000000000102286bee411f',
 			);
 		});
 	});

@@ -31,7 +31,7 @@ const getHeader = (): Promise<Header> =>
 
 const accountNextIndex = () => mockRelayApiV9420.registry.createType('u32', 10);
 
-export const adjustedMockRelayApi = {
+export const adjustedMockRelayApiNoLimitedReserveTransferAssets = {
 	registry: mockRelayApiV9420.registry,
 	rpc: {
 		state: {
@@ -52,7 +52,6 @@ export const adjustedMockRelayApi = {
 	},
 	tx: {
 		xcmPallet: {
-			limitedReserveTransferAssets: mockRelayApiV9420.tx['xcmPallet'].limitedReserveTransferAssets,
 			reserveTransferAssets: mockRelayApiV9420.tx['xcmPallet'].reserveTransferAssets,
 			teleportAssets: mockRelayApiV9420.tx['xcmPallet'].teleportAssets,
 			limitedTeleportAssets: mockRelayApiV9420.tx['xcmPallet'].limitedTeleportAssets,

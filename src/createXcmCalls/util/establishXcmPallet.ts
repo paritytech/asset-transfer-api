@@ -20,26 +20,16 @@ export enum XcmPalletName {
  *
  * @param api ApiPromise
  */
-export const establishXcmPallet = (
-	api: ApiPromise,
-	direction?: Direction,
-	// isForeignAssetsTransfer?: boolean,
-	// isParachainPrimaryNativeAsset?: boolean,
-): XcmPalletName => {
+export const establishXcmPallet = (api: ApiPromise, direction?: Direction): XcmPalletName => {
 	let xPallet: XcmPalletName | undefined;
 
-	// default to xTokens
 	if (api.tx.xTokens) {
 		xPallet = XcmPalletName.xTokens;
 	} else if (api.tx.xtokens) {
 		xPallet = XcmPalletName.xtokens;
 	}
 
-	// checks for the existence of the xTokens pallet
-	// checks that current origin is a parachain
-	if (
-		isValidXTokensDirection(xPallet, direction)
-	) {
+	if (isValidXTokensDirection(xPallet, direction)) {
 		return xPallet as XcmPalletName;
 	}
 
@@ -47,13 +37,11 @@ export const establishXcmPallet = (
 		return XcmPalletName.polkadotXcm;
 	} else if (api.tx.xcmPallet) {
 		return XcmPalletName.xcmPallet;
-	} 
+	}
 
-	const supportedPallets = SUPPORTED_XCM_PALLETS
-		.map((pallet) => {
-			return pallet;
-		})
-		.join(', ');
+	const supportedPallets = SUPPORTED_XCM_PALLETS.map((pallet) => {
+		return pallet;
+	}).join(', ');
 
 	throw new BaseError(
 		`No supported pallet found in the current runtime. Supported pallets are ${supportedPallets}.`,
@@ -66,10 +54,7 @@ export const establishXcmPallet = (
  *
  * @param api ApiPromise
  */
-const isValidXTokensDirection = (
-	xPallet?: XcmPalletName,
-	direction?: Direction,
-): boolean => {
+const isValidXTokensDirection = (xPallet?: XcmPalletName, direction?: Direction): boolean => {
 	if (
 		direction &&
 		(

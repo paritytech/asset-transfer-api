@@ -33,9 +33,7 @@ import type {
 	XcmV4Location,
 	XcmWeight,
 } from './types';
-import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeAssets } from './util/dedupeAssets';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
@@ -153,7 +151,7 @@ export const ParaToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		const { registry, isForeignAssetsTransfer } = opts;
+		const { registry } = opts;
 
 		const sortedAndDedupedMultiAssets = await createParaToParaMultiAssets(
 			opts.api,
@@ -162,7 +160,6 @@ export const ParaToPara: ICreateXcmType = {
 			assets,
 			xcmVersion,
 			registry,
-			isForeignAssetsTransfer,
 		);
 
 		if (xcmVersion === 2) {
@@ -210,7 +207,6 @@ export const ParaToPara: ICreateXcmType = {
 				assetIds,
 				xcmVersion,
 				registry,
-				isForeignAssetsTransfer,
 			);
 
 			const assetIndex = getFeeAssetItemIndex(
@@ -312,7 +308,7 @@ export const ParaToPara: ICreateXcmType = {
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcAssetsMultiAsset> => {
 		const { registry, api } = opts;
-		let multiAsset: FungibleObjAssetType | undefined = undefined;
+		let multiAsset: FungibleObjAssetType | undefined;
 		let concreteMultiLocation: UnionXcmMultiLocation;
 
 		// check if asset is the parachains primary native asset
@@ -322,20 +318,13 @@ export const ParaToPara: ICreateXcmType = {
 			Direction.ParaToPara,
 			assetId,
 		);
-	
-		console.log('IS PARACHAIN PRIMARY', isParachainPrimaryNativeAsset);
-	
+
 		if (isPrimaryParachainNativeAsset) {
+			const multiLocation =
+				xcmVersion < 4 ? { parents: 0, interior: { Here: '' } } : { parents: 0, interior: { X1: [{ Here: '' }] } };
 
-			const multiLocation = xcmVersion < 4 ?
-			{ parents: 0, interior: { Here: '' } } :
-			{ parents: 0, interior: { X1: [{ Here: '' }] } };
+			concreteMultiLocation = resolveMultiLocation(multiLocation, xcmVersion);
 
-			concreteMultiLocation = resolveMultiLocation(
-				multiLocation,
-				xcmVersion,
-			);
-	
 			if (xcmVersion < 4) {
 				multiAsset = {
 					id: {
@@ -363,9 +352,9 @@ export const ParaToPara: ICreateXcmType = {
 			);
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
-	
+
 			concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
-	
+
 			if (xcmVersion < 4) {
 				multiAsset = {
 					id: {
@@ -529,9 +518,7 @@ const createParaToParaMultiAssets = async (
 	assets: string[],
 	xcmVersion: number,
 	registry: Registry,
-	isForeignAssetsTransfer: boolean,
 ): Promise<FungibleStrAssetType[]> => {
-	const palletId = fetchPalletInstanceId(api, false, isForeignAssetsTransfer);
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType | undefined = undefined;
 	let concreteMultiLocation;
@@ -587,11 +574,8 @@ const createParaToParaMultiAssets = async (
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
-			if (isForeignAssetsTransfer) {
-				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(assetId, palletId, xcmVersion);
-			} else {
-				concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
-			}
+			concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
+
 			if (xcmVersion < 4) {
 				multiAsset = {
 					id: {
