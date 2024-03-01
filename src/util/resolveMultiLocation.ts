@@ -21,7 +21,7 @@ export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number)
 		multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
 	if (xcmVersion < 3 && hasGlobalConsensus) {
 		throw new BaseError(
-			'XcmVersion must be version 2 for MultiLocations that contain a GlobalConsensus junction.',
+			'XcmVersion must be greater than 2 for MultiLocations that contain a GlobalConsensus junction.',
 			BaseErrorsEnum.InvalidXcmVersion,
 		);
 	}

@@ -33,9 +33,7 @@ import type {
 	XcmV4Location,
 	XcmWeight,
 } from './types';
-import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeAssets } from './util/dedupeAssets';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
@@ -153,7 +151,7 @@ export const ParaToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		const { registry, isForeignAssetsTransfer } = opts;
+		const { registry } = opts;
 
 		const sortedAndDedupedMultiAssets = await createParaToParaMultiAssets(
 			opts.api,
@@ -162,7 +160,6 @@ export const ParaToPara: ICreateXcmType = {
 			assets,
 			xcmVersion,
 			registry,
-			isForeignAssetsTransfer,
 		);
 
 		if (xcmVersion === 2) {
@@ -210,7 +207,6 @@ export const ParaToPara: ICreateXcmType = {
 				assetIds,
 				xcmVersion,
 				registry,
-				isForeignAssetsTransfer,
 			);
 
 			const assetIndex = getFeeAssetItemIndex(
@@ -520,9 +516,7 @@ const createParaToParaMultiAssets = async (
 	assets: string[],
 	xcmVersion: number,
 	registry: Registry,
-	isForeignAssetsTransfer: boolean,
 ): Promise<FungibleStrAssetType[]> => {
-	const palletId = fetchPalletInstanceId(api, false, isForeignAssetsTransfer);
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType | undefined = undefined;
 	let concreteMultiLocation;
@@ -576,11 +570,8 @@ const createParaToParaMultiAssets = async (
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
-			if (isForeignAssetsTransfer) {
-				concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(assetId, palletId, xcmVersion);
-			} else {
-				concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
-			}
+			concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
+
 			if (xcmVersion < 4) {
 				multiAsset = {
 					id: {
