@@ -16,7 +16,9 @@
       ],
       "include": [
         "./*",
+        "./kusama/**/*.ts",
+        "./polkadot/**/*.ts",
         "../src/**/*.ts",
-        "../src/**/*.json", "assetHubToMoonriverPaysWithFeeOrigin.ts",
+        "../src/**/*.json",
       ]
 }

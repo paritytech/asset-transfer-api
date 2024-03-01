@@ -21,4 +21,12 @@ describe('resolveMultiLocation', () => {
 
 		expect(resolveMultiLocation(str, 2)).toStrictEqual(exp);
 	});
+	it('Should correctly error when xcmVersion is less than 3 and the asset location contains a GlobalConsensus junction', () => {
+		const str = `{"parents":1,"interior":{"x1":{"GlobalConsensus":"Kusama"}}}`;
+		const err = () => resolveMultiLocation(str, 2);
+
+		expect(err).toThrow(
+			'XcmVersion must be greater than 2 for MultiLocations that contain a GlobalConsensus junction.',
+		);
+	});
 });

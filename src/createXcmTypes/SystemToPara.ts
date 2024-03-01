@@ -8,6 +8,7 @@ import type { Registry } from '../registry';
 import type { RequireOnlyOne } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
+import { resolveMultiLocation } from '../util/resolveMultiLocation';
 import { validateNumber } from '../validate';
 import type {
 	CreateAssetsOpts,
@@ -31,7 +32,6 @@ import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
-import { resolveMultiLocation } from '../util/resolveMultiLocation';
 
 export const SystemToPara: ICreateXcmType = {
 	/**

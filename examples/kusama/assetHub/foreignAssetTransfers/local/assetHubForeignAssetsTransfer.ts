@@ -10,8 +10,7 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
 /**
  * In this example we are creating a `foreignAssets` pallet `transfer` call to send TNKR (foreign asset with location `{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}`)
  * from a Kusama Asset Hub (System Parachain) account
- * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` declaring that
- * it will be `unlimited` since there is no `weightLimit` option as well.
+ * to a Kusama Asset Hub (System Parachain) account.
  *
  * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
  */
@@ -28,8 +27,6 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				isLimited: true,
-				xcmVersion: 2,
 			},
 		);
 

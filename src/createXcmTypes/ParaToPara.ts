@@ -570,9 +570,8 @@ const createParaToParaMultiAssets = async (
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
-
 			concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
-			
+
 			if (xcmVersion < 4) {
 				multiAsset = {
 					id: {
