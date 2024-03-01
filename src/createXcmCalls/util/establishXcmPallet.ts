@@ -23,15 +23,12 @@ export enum XcmPalletName {
 export const establishXcmPallet = (api: ApiPromise, direction?: Direction): XcmPalletName => {
 	let xPallet: XcmPalletName | undefined;
 
-	// default to xTokens
 	if (api.tx.xTokens) {
 		xPallet = XcmPalletName.xTokens;
 	} else if (api.tx.xtokens) {
 		xPallet = XcmPalletName.xtokens;
 	}
 
-	// checks for the existence of the xTokens pallet
-	// checks that current origin is a parachain
 	if (isValidXTokensDirection(xPallet, direction)) {
 		return xPallet as XcmPalletName;
 	}

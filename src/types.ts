@@ -391,7 +391,7 @@ export type AssetMetadata = {
 	isFrozen: boolean;
 };
 
-export type ResolvedCallInfo = [txMethod: Methods, transaction: SubmittableExtrinsic<'promise', ISubmittableResult>];
+export type ResolvedCallInfo = [Methods, SubmittableExtrinsic<'promise', ISubmittableResult>];
 
 export type XTokensCallSignature = (
 	baseArgs: XTokensBaseArgs,
@@ -404,8 +404,8 @@ export type XcmPalletCallSignature = (
 export type CallArgs = [XcmBaseArgs | XTokensBaseArgs, CreateXcmCallOpts];
 
 export type XTokensTxMethodTransactionMap = {
-	[x: string]: [runtimeCall: XTokensCallSignature, args: CallArgs];
+	[x: string]: [XTokensCallSignature, CallArgs];
 };
 export type XcmPalletTxMethodTransactionMap = {
-	[x: string]: [runtimeCall: XcmPalletCallSignature, args: CallArgs];
+	[x: string]: [XcmPalletCallSignature, CallArgs];
 };

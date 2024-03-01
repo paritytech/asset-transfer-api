@@ -66,12 +66,12 @@ import {
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
-	XcmBaseArgs,
+	type XcmBaseArgs,
 	XcmDirection,
-	XcmPalletCallSignature,
-	XcmPalletTxMethodTransactionMap,
-	XTokensCallSignature,
-	XTokensTxMethodTransactionMap,
+	type XcmPalletCallSignature,
+	type XcmPalletTxMethodTransactionMap,
+	type XTokensCallSignature,
+	type XTokensTxMethodTransactionMap,
 } from './types';
 import { callExistsInRuntime } from './util/callExistsInRuntime';
 import { deepEqual } from './util/deepEqual';

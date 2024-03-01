@@ -299,7 +299,7 @@ export const ParaToSystem: ICreateXcmType = {
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcAssetsMultiAsset> => {
 		const { registry, api } = opts;
-		let multiAsset: FungibleObjAssetType | undefined = undefined;
+		let multiAsset: FungibleObjAssetType | undefined;
 		let concreteMultiLocation: UnionXcmMultiLocation;
 
 		// check if asset is the parachains primary native asset
