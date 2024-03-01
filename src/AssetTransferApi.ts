@@ -906,8 +906,8 @@ export class AssetTransferApi {
 				opts.isForeignAssetsTransfer,
 				opts.isLiquidTokenTransfer,
 			); // Throws an error when any of the inputs are incorrect.
-			let tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
-			let palletMethod: LocalTransferTypes;
+			let tx: SubmittableExtrinsic<'promise', ISubmittableResult> | undefined;
+			let palletMethod: LocalTransferTypes | undefined;
 
 			if (localAssetType === LocalTxType.Balances) {
 				tx =
@@ -927,13 +927,18 @@ export class AssetTransferApi {
 						? poolAssets.transferKeepAlive(api, addr, assetId, amount)
 						: poolAssets.transfer(api, addr, assetId, amount);
 				palletMethod = `poolAssets::${method}`;
-			} else {
+			} else if (localAssetType === LocalTxType.ForeignAssets) {
 				const multiLocation = resolveMultiLocation(assetId, declaredXcmVersion);
 				tx =
 					method === 'transferKeepAlive'
 						? foreignAssets.transferKeepAlive(api, addr, multiLocation, amount)
 						: foreignAssets.transfer(api, addr, multiLocation, amount);
 				palletMethod = `foreignAssets::${method}`;
+			} else {
+				throw new BaseError(
+					'No supported pallets were found for local transfers. Supported pallets include: balances, tokens.',
+					BaseErrorsEnum.PalletNotFound,
+				);
 			}
 
 			return await this.constructFormat(tx, 'local', null, palletMethod, destChainId, this.specName, {

@@ -8,7 +8,7 @@ import { TxResult } from '../../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../../colors';
 
 /**
- * In this example we are creating a `foreignAssets` pallet `transfer` call to send KSM (foreign asset with location {"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`)
+ * In this example we are creating a `foreignAssets` pallet `transfer` call to send EQD (foreign asset with location `{"parents":"1","interior":{"X2":[{"Parachain":"2011"},{"GeneralKey":{"length":"3","data":"0x6571640000000000000000000000000000000000000000000000000000000000"}}]}}`)
  * from a Polkadot Asset Hub (System Parachain) account
  * to a Polkadot Asset Hub (System Parachain) account.
  *
@@ -23,7 +23,9 @@ const main = async () => {
 		callInfo = await assetApi.createTransferTransaction(
 			'1000', // NOTE: The destination id is `1000` and matches the origin chain making this a local transfer
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
-			['{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}'],
+			[
+				'{"parents":"1","interior":{"X2":[{"Parachain":"2011"},{"GeneralKey":{"length":"3","data":"0x6571640000000000000000000000000000000000000000000000000000000000"}}]}}',
+			],
 			['1000000000000'],
 			{
 				format: 'call',
