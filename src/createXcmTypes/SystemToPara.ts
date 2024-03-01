@@ -25,13 +25,13 @@ import type {
 	XcmV4Junctions,
 	XcmWeight,
 } from './types';
-import { constructForeignAssetMultiLocationFromAssetId } from './util/constructForeignAssetMultiLocationFromAssetId';
 import { dedupeAssets } from './util/dedupeAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
+import { resolveMultiLocation } from '../util/resolveMultiLocation';
 
 export const SystemToPara: ICreateXcmType = {
 	/**
@@ -295,7 +295,7 @@ export const createSystemToParaMultiAssets = async (
 		let concreteMultiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			concreteMultiLocation = constructForeignAssetMultiLocationFromAssetId(assetId, palletId, xcmVersion);
+			concreteMultiLocation = resolveMultiLocation(assetId, xcmVersion);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative

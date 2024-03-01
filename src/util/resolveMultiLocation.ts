@@ -17,14 +17,14 @@ import { sanitizeKeys } from './sanitizeKeys';
 export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number): UnionXcmMultiLocation => {
 	const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
 	// Ensure we check this first since the main difference between v2, and v3 is `globalConsensus`
-	const hasGlobalConsensus =
-		multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
-	if (xcmVersion < 3 && hasGlobalConsensus) {
-		throw new BaseError(
-			'XcmVersion must be version 2 for MultiLocations that contain a GlobalConsensus junction.',
-			BaseErrorsEnum.InvalidXcmVersion,
-		);
-	}
+	// const hasGlobalConsensus =
+	// 	multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
+	// if (xcmVersion > 2 && hasGlobalConsensus) {
+	// 	throw new BaseError(
+	// 		'XcmVersion must be version 2 for MultiLocations that contain a GlobalConsensus junction.',
+	// 		BaseErrorsEnum.InvalidXcmVersion,
+	// 	);
+	// }
 
 	const hasGeneralKey = multiLocationStr.includes('generalKey') || multiLocationStr.includes('GeneralKey');
 	if (xcmVersion != 2 && hasGeneralKey) {
