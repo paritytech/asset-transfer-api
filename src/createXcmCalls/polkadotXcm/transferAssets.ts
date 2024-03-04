@@ -9,6 +9,12 @@ import type { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
 import type { PolkadotXcmBaseArgs } from './types';
 
+/**
+ * Build a Polkadot-js SubmittableExtrinsic for a `transferAssets` call.
+ *
+ * @param baseArgs The base args needed to construct this call.
+ * @param opts CreateXcmCallOpts
+ */
 export const transferAssets = async (
 	baseArgs: PolkadotXcmBaseArgs,
 	opts: CreateXcmCallOpts,
