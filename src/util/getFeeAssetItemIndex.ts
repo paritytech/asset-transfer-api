@@ -43,7 +43,7 @@ export const getFeeAssetItemIndex = async (
 
 			if (isRelayFeeAsset) {
 				// if the asset id is a relay asset, match Here interior
-				if (multiAssetInterior.Here || 'Here' in multiAssetInterior || 'here' in multiAssetInterior) {
+				if (multiAssetInterior.Here || multiAssetInterior['here']) {
 					result = i;
 					break;
 				}
