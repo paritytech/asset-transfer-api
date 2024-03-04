@@ -297,21 +297,6 @@ describe('AssetTransferAPI', () => {
 
 				expect(assetCallType).toEqual('Teleport');
 			});
-			it('Should correctly throw an error when sending a foreign asset to a system chain', () => {
-				const err = () =>
-					systemAssetsApi['fetchCallType'](
-						'1000',
-						'1001',
-						[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
-						Direction.SystemToSystem,
-						AssetType.Foreign,
-						true,
-						false,
-						systemAssetsApi.registry,
-					);
-
-				expect(err).toThrow('Unable to send foreign assets in direction SystemToSystem');
-			});
 		});
 		describe('SystemToPara', () => {
 			it('Should correctly return Teleport when sending to origin Parachain', () => {

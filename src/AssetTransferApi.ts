@@ -591,14 +591,6 @@ export class AssetTransferApi {
 			return AssetCallType.Teleport;
 		}
 
-		// system to system foreign asset -> not allowed
-		if (assetType === AssetType.Foreign && xcmDirection === Direction.SystemToSystem) {
-			throw new BaseError(
-				`Unable to send foreign assets in direction ${xcmDirection}`,
-				BaseErrorsEnum.InvalidDirection,
-			);
-		}
-
 		// system to para native asset -> reserve
 		if (assetType === AssetType.Native && xcmDirection === Direction.SystemToPara) {
 			return AssetCallType.Reserve;
