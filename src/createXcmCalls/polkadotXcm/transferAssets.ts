@@ -36,7 +36,7 @@ export const transferAssets = async (
 		? await typeCreator.createFeeAssetItem(api, {
 				registry,
 				isForeignAssetsTransfer,
-				isLiquidTokenTransfer: false,
+				isLiquidTokenTransfer,
 		  })
 		: 0;
 
