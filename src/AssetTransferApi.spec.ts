@@ -5,21 +5,29 @@ import type { Weight } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { AssetTransferApi } from './AssetTransferApi';
+import {
+	limitedReserveTransferAssets,
+	reserveTransferAssets,
+	teleportAssets,
+	transferAssets,
+	transferMultiasset,
+	transferMultiassets,
+	transferMultiassetWithFee,
+} from './createXcmCalls';
+import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
+import type { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
+import { Registry } from './registry';
 import { adjustedMockBifrostParachainApi } from './testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from './testHelpers/adjustedMockMoonriverParachainApi';
 import { adjustedMockMoonriverNoXTokensParachainApi } from './testHelpers/adjustedMockMoonriverParachainNoXTokens';
 import { adjustedMockRelayApiNoLimitedReserveTransferAssets } from './testHelpers/adjustedMockRelayApiNoLimitedReserveTransferAssets';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
-import { adjustedMockSystemApiV1007000 } from './testHelpers/adjustedMockSystemApiV1007000'
+import { adjustedMockSystemApiV1007000 } from './testHelpers/adjustedMockSystemApiV1007000';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { AssetCallType, Direction, ResolvedCallInfo, UnsignedTransaction, XcmBaseArgs, XcmDirection } from './types';
 import { AssetType } from './types';
-import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
-import { limitedReserveTransferAssets, reserveTransferAssets, teleportAssets, transferAssets, transferMultiasset, transferMultiassetWithFee, transferMultiassets } from './createXcmCalls';
-import type { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
-import { Registry } from './registry';
 
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',
@@ -874,7 +882,7 @@ describe('AssetTransferAPI', () => {
 	});
 	describe('resolveCall', () => {
 		describe('SystemToPara', () => {
-			it('Should correctly resolve to a `transferAssets` call for runtime with `transferAssets` call', async () => {
+			it('Should correctly resolve to a `transferAssets` call for runtime with the `transferAssets` call', async () => {
 				const specName = 'westmint';
 				const registry = new Registry(specName, {});
 
@@ -889,7 +897,7 @@ describe('AssetTransferAPI', () => {
 					specName: 'westmint',
 					registry: registry,
 				};
-				
+
 				const mockBaseOpts = {
 					isLimited: true,
 					weightLimit: {
@@ -914,7 +922,7 @@ describe('AssetTransferAPI', () => {
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
-			
+
 			it('Should correctly resolve to a `reserveTransferAssets` call', async () => {
 				const specName = 'statemine';
 				const registry = new Registry(specName, {});

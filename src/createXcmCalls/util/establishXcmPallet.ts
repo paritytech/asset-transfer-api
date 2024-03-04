@@ -2,9 +2,9 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
+import { SUPPORTED_XCM_PALLETS } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Direction } from '../../types';
-import { SUPPORTED_XCM_PALLETS } from '../../consts';
 
 export enum XcmPalletName {
 	xcmPallet = 'xcmPallet',
@@ -57,11 +57,9 @@ export const establishXcmPallet = (api: ApiPromise, direction?: Direction): XcmP
 const isValidXTokensDirection = (xPallet?: XcmPalletName, direction?: Direction): boolean => {
 	if (
 		direction &&
-		(
-			direction === Direction.ParaToSystem ||
+		(direction === Direction.ParaToSystem ||
 			direction === Direction.ParaToPara ||
-			direction === Direction.ParaToRelay
-		) &&
+			direction === Direction.ParaToRelay) &&
 		xPallet
 	) {
 		return true;

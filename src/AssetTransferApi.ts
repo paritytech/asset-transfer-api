@@ -1073,4 +1073,3 @@ export class AssetTransferApi {
 		return [txMethod, transaction];
 	}
 }
-

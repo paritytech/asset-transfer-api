@@ -202,8 +202,6 @@ export const ParaToSystem: ICreateXcmType = {
 				registry,
 			);
 
-			console.log('ALL MULTI ASSETS', JSON.stringify(multiAssets));
-
 			const assetIndex = getFeeAssetItemIndex(
 				api,
 				registry,
@@ -363,7 +361,6 @@ export const ParaToSystem: ICreateXcmType = {
 			}
 		}
 
-
 		if (xcmVersion === 2) {
 			return { V2: multiAsset as FungibleObjMultiAsset };
 		} else if (xcmVersion === 3) {
@@ -379,9 +376,6 @@ export const ParaToSystem: ICreateXcmType = {
 	 */
 	createXTokensFeeAssetItem: (opts: CreateFeeAssetItemOpts): UnionXcAssetsMultiLocation => {
 		const { paysWithFeeDest, xcmVersion } = opts;
-
-		console.log('PAYS WITH FEE DEST', paysWithFeeDest);
-		console.log('XCM VERSION', xcmVersion);
 
 		if (xcmVersion && paysWithFeeDest) {
 			const paysWithFeeMultiLocation = resolveMultiLocation(paysWithFeeDest, xcmVersion);

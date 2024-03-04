@@ -170,7 +170,9 @@ describe('transferAssets', () => {
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
 				});
-			}).rejects.toThrow("No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.");
+			}).rejects.toThrow(
+				'No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.',
+			);
 		});
 	});
 
@@ -258,7 +260,9 @@ describe('transferAssets', () => {
 					isLiquidTokenTransfer,
 					isForeignAssetsTransfer,
 				});
-			}).rejects.toThrow("No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.");
+			}).rejects.toThrow(
+				'No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.',
+			);
 		});
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V4', async () => {

@@ -374,7 +374,6 @@ export const ParaToPara: ICreateXcmType = {
 			}
 		}
 
-
 		if (xcmVersion === 2) {
 			return { V2: multiAsset as FungibleObjMultiAsset };
 		} else if (xcmVersion === 3) {
@@ -390,7 +389,6 @@ export const ParaToPara: ICreateXcmType = {
 	 */
 	createXTokensFeeAssetItem: (opts: CreateFeeAssetItemOpts): UnionXcAssetsMultiLocation => {
 		const { paysWithFeeDest, xcmVersion } = opts;
-		console.log('PAYS WITH FEE DEST', paysWithFeeDest);
 
 		if (xcmVersion && paysWithFeeDest) {
 			const paysWithFeeMultiLocation = resolveMultiLocation(paysWithFeeDest, xcmVersion);
@@ -528,8 +526,6 @@ const createParaToParaMultiAssets = async (
 		Direction.ParaToPara,
 		assets[0],
 	);
-
-	console.log('IS PARACHAIN PRIMARY', isParachainPrimaryNativeAsset);
 
 	if (isPrimaryParachainNativeAsset) {
 		concreteMultiLocation = resolveMultiLocation(
