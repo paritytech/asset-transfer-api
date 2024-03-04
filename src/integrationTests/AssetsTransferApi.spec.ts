@@ -931,8 +931,6 @@ describe('AssetTransferApi Integration Tests', () => {
 			const statemineForeignAssetIdArr = [
 				`{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}`,
 			];
-			// const westmintNativeAssetIdArr = ['WND'];
-			// const westmintForeignAssetIdArr = ['{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}'];
 
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
