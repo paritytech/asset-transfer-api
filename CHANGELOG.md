@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.1.8](https://github.com/paritytech/asset-transfer-api/compare/v0.1.7..v0.1.8)(2024-03-04)
+## [0.1.8](https://github.com/paritytech/asset-transfer-api/compare/v0.1.7..v0.1.8)(2024-03-05)
 
 ### Feat
 
