@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.1.8](https://github.com/paritytech/asset-transfer-api/compare/v0.1.7..v0.1.8)(2024-03-05)
+
+### Feat
+
+- feat: add transfer assets call ([#378](https://github.com/paritytech/asset-transfer-api/pull/378))([1273b7d](https://github.com/paritytech/asset-transfer-api/commit/1273b7d18facad98589e923c14ff9fb7b352dc62))
+- feat: allow for registry override ([#369](https://github.com/paritytech/asset-transfer-api/pull/369)([856a638](https://github.com/paritytech/asset-transfer-api/commit/856a6387c0a8ddf21e5b098934884aef78b006f8)))
+
+### Fix
+
+- fix: update foreign asset location construction ([#377](https://github.com/paritytech/asset-transfer-api/pull/377))([9c6cbc1](https://github.com/paritytech/asset-transfer-api/commit/9c6cbc14448689feabfd73a8a6e5d46b0daebbb0))
+
+- fix: resolve tx calls based on current runtime ([#375](https://github.com/paritytech/asset-transfer-api/pull/375))([d55fa29](https://github.com/paritytech/asset-transfer-api/commit/d55fa29a7beb8305fab628a3a5d094d835d0182d))
+- fix: add support for xcmv4 types ([#372](https://github.com/paritytech/asset-transfer-api/pull/372))([0e5c545](https://github.com/paritytech/asset-transfer-api/commit/0e5c54552e85913cde178b5bc6c0dcbe7fe7ef9a))
+
+### Chore
+
+- chore(deps): update polkadot-js ([#379](https://github.com/paritytech/asset-transfer-api/pull/379))([db1c22e](https://github.com/paritytech/asset-transfer-api/commit/db1c22e718231bbfcc3e8511bf82e8f3dd505bef))
+- chore(deps): bump ip from 2.0.0 to 2.0.1 ([#374](https://github.com/paritytech/asset-transfer-api/pull/374))([424b788](https://github.com/paritytech/asset-transfer-api/commit/424b78848db3c04c4a6df06183fa12f52887b822))
+
 ## [0.1.7](https://github.com/paritytech/asset-transfer-api/compare/v0.1.6..v0.1.7)(2024-02-07)
 
 ### Feat
