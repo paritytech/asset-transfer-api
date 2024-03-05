@@ -20,6 +20,7 @@ import {
 	limitedTeleportAssets,
 	reserveTransferAssets,
 	teleportAssets,
+	transferAssets,
 	transferMultiasset,
 	transferMultiassets,
 	transferMultiassetWithFee,
@@ -590,14 +591,6 @@ export class AssetTransferApi {
 			return AssetCallType.Teleport;
 		}
 
-		// system to system foreign asset -> not allowed
-		if (assetType === AssetType.Foreign && xcmDirection === Direction.SystemToSystem) {
-			throw new BaseError(
-				`Unable to send foreign assets in direction ${xcmDirection}`,
-				BaseErrorsEnum.InvalidDirection,
-			);
-		}
-
 		// system to para native asset -> reserve
 		if (assetType === AssetType.Native && xcmDirection === Direction.SystemToPara) {
 			return AssetCallType.Reserve;
@@ -1019,6 +1012,8 @@ export class AssetTransferApi {
 			} else {
 				txMethod = 'transferMultiassets';
 			}
+		} else if (api.tx[xcmPallet] && api.tx[xcmPallet].transferAssets) {
+			txMethod = 'transferAssets';
 		} else if (assetCallType === AssetCallType.Reserve) {
 			if (isLimited) {
 				txMethod = 'limitedReserveTransferAssets';
@@ -1051,6 +1046,7 @@ export class AssetTransferApi {
 			reserveTransferAssets: [reserveTransferAssets, [baseArgs, baseOpts]],
 			limitedTeleportAssets: [limitedTeleportAssets, [baseArgs, baseOpts]],
 			teleportAssets: [teleportAssets, [baseArgs, baseOpts]],
+			transferAssets: [transferAssets, [baseArgs, baseOpts]],
 		};
 
 		let call: XTokensCallSignature | XcmPalletCallSignature;

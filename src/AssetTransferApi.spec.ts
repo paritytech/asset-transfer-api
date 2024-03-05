@@ -9,12 +9,13 @@ import {
 	limitedReserveTransferAssets,
 	reserveTransferAssets,
 	teleportAssets,
+	transferAssets,
 	transferMultiasset,
 	transferMultiassets,
 	transferMultiassetWithFee,
 } from './createXcmCalls';
 import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
-import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
+import type { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
 import { Registry } from './registry';
 import { adjustedMockBifrostParachainApi } from './testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from './testHelpers/adjustedMockMoonriverParachainApi';
@@ -22,6 +23,7 @@ import { adjustedMockMoonriverNoXTokensParachainApi } from './testHelpers/adjust
 import { adjustedMockRelayApiNoLimitedReserveTransferAssets } from './testHelpers/adjustedMockRelayApiNoLimitedReserveTransferAssets';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
+import { adjustedMockSystemApiV1007000 } from './testHelpers/adjustedMockSystemApiV1007000';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { AssetCallType, Direction, ResolvedCallInfo, UnsignedTransaction, XcmBaseArgs, XcmDirection } from './types';
@@ -47,6 +49,9 @@ const bifrostAssetsApi = new AssetTransferApi(adjustedMockBifrostParachainApi, '
 	registryType: 'NPM',
 });
 const moonriverAssetsNoXTokensApi = new AssetTransferApi(adjustedMockMoonriverNoXTokensParachainApi, 'moonriver', 2, {
+	registryType: 'NPM',
+});
+const westmintAssetsApi = new AssetTransferApi(adjustedMockSystemApiV1007000, 'westmint', 4, {
 	registryType: 'NPM',
 });
 
@@ -291,21 +296,6 @@ describe('AssetTransferAPI', () => {
 				);
 
 				expect(assetCallType).toEqual('Teleport');
-			});
-			it('Should correctly throw an error when sending a foreign asset to a system chain', () => {
-				const err = () =>
-					systemAssetsApi['fetchCallType'](
-						'1000',
-						'1001',
-						[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
-						Direction.SystemToSystem,
-						AssetType.Foreign,
-						true,
-						false,
-						systemAssetsApi.registry,
-					);
-
-				expect(err).toThrow('Unable to send foreign assets in direction SystemToSystem');
 			});
 		});
 		describe('SystemToPara', () => {
@@ -875,9 +865,49 @@ describe('AssetTransferAPI', () => {
 			);
 		});
 	});
-
 	describe('resolveCall', () => {
 		describe('SystemToPara', () => {
+			it('Should correctly resolve to a `transferAssets` call for runtime with the `transferAssets` call', async () => {
+				const specName = 'westmint';
+				const registry = new Registry(specName, {});
+
+				const mockBaseArgs: XcmBaseArgs = {
+					api: westmintAssetsApi.api,
+					direction: Direction.SystemToPara as XcmDirection,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds: ['usdt'],
+					amounts: ['10000000000'],
+					destChainId: '2023',
+					xcmVersion: 4,
+					specName: 'westmint',
+					registry: registry,
+				};
+
+				const mockBaseOpts = {
+					isLimited: true,
+					weightLimit: {
+						refTime: '3000',
+						proofSize: '10000',
+					},
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = ['transferAssets', await transferAssets(mockBaseArgs, mockBaseOpts)];
+
+				const result = await westmintAssetsApi['resolveCall'](
+					['usdt'],
+					'polkadotXcm' as XcmPalletName,
+					Direction.SystemToPara,
+					'Reserve' as AssetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+					true,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+
 			it('Should correctly resolve to a `reserveTransferAssets` call', async () => {
 				const specName = 'statemine';
 				const registry = new Registry(specName, {});
@@ -893,7 +923,6 @@ describe('AssetTransferAPI', () => {
 					specName: 'statemine',
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited: false,
 					isLiquidTokenTransfer: false,
@@ -933,7 +962,6 @@ describe('AssetTransferAPI', () => {
 					specName: 'statemine',
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited: true,
 					weightLimit: {
@@ -979,7 +1007,6 @@ describe('AssetTransferAPI', () => {
 					specName: 'statemine',
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited: false,
 					weightLimit: {
@@ -1022,7 +1049,6 @@ describe('AssetTransferAPI', () => {
 					specName: 'statemine',
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited: false,
 					weightLimit: {
@@ -1066,7 +1092,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 					xcmPallet: 'xTokens' as XcmPalletName,
 				};
-
 				const mockBaseOpts = {
 					isLimited: true,
 					weightLimit: {
@@ -1108,7 +1133,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 					xcmPallet: 'xTokens' as XcmPalletName,
 				};
-
 				const mockBaseOpts = {
 					isLimited: true,
 					weightLimit: {
@@ -1155,7 +1179,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 					xcmPallet: 'xTokens' as XcmPalletName,
 				};
-
 				const mockBaseOpts = {
 					isLimited: true,
 					weightLimit: {
@@ -1201,7 +1224,6 @@ describe('AssetTransferAPI', () => {
 					specName: 'moonriver',
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited: false,
 					paysWithFeeDest: '1984',
@@ -1242,7 +1264,6 @@ describe('AssetTransferAPI', () => {
 					specName: 'moonriver',
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited: true,
 					weightLimit: {
@@ -1282,7 +1303,6 @@ describe('AssetTransferAPI', () => {
 				const direction = Direction.ParaToRelay;
 				const assetIds = ['ksm'];
 				const isLimited = true;
-
 				const mockBaseArgs: XTokensBaseArgs = {
 					api: bifrostAssetsApi.api,
 					direction,
@@ -1295,7 +1315,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 					xcmPallet,
 				};
-
 				const mockBaseOpts = {
 					isLimited,
 					weightLimit: {
@@ -1342,7 +1361,6 @@ describe('AssetTransferAPI', () => {
 					specName,
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited,
 					paysWithFeeDest: '1984',
@@ -1389,7 +1407,6 @@ describe('AssetTransferAPI', () => {
 					specName,
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited,
 					isLiquidTokenTransfer: false,
@@ -1438,7 +1455,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 					xcmPallet,
 				};
-
 				const mockBaseOpts = {
 					isLimited,
 					isLiquidTokenTransfer: false,
@@ -1482,7 +1498,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 					xcmPallet,
 				};
-
 				const mockBaseOpts = {
 					isLimited,
 					isLiquidTokenTransfer: false,
@@ -1531,7 +1546,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 					xcmPallet,
 				};
-
 				const mockBaseOpts = {
 					isLimited,
 					paysWithFeeDest,
@@ -1580,7 +1594,6 @@ describe('AssetTransferAPI', () => {
 					specName,
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited,
 					isLiquidTokenTransfer: false,
@@ -1625,7 +1638,6 @@ describe('AssetTransferAPI', () => {
 					specName,
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited,
 					isLiquidTokenTransfer: false,
@@ -1671,7 +1683,6 @@ describe('AssetTransferAPI', () => {
 					specName,
 					registry: registry,
 				};
-
 				const mockBaseOpts = {
 					isLimited,
 					weightLimit: {

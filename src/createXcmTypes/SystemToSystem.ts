@@ -4,7 +4,6 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
-import { RequireOnlyOne } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
@@ -20,8 +19,6 @@ import {
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
-	XcmV2Junctions,
-	XcmV3Junctions,
 	XcmWeight,
 } from './types';
 import { dedupeAssets } from './util/dedupeAssets';
@@ -279,29 +276,7 @@ export const createSystemToSystemMultiAssets = async (
 		let concreteMultiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			const assetIdMultiLocation = resolveMultiLocation(assetId, xcmVersion);
-
-			// start of the junctions values of the assetId. + 1 to ignore the '['
-			const junctionsStartIndex = assetId.indexOf('[') + 1;
-			// end index of the junctions values of the assetId
-			const junctionsEndIndex = assetId.indexOf(']');
-			// e.g. {"Parachain": "2125"}, {"GeneralIndex": "0"}
-			const junctions = assetId.slice(junctionsStartIndex + 1, junctionsEndIndex);
-			// number of junctions found in the assetId. used to determine the number of junctions
-			// after adding the PalletInstance (e.g. 2 junctions becomes X3)
-			const junctionCount = junctions.split('},').length + 1;
-
-			const numberOfJunctions = `"X${junctionCount}"`;
-			const palletInstanceJunctionStr = `{"PalletInstance":"${palletId}"},`;
-			const interiorMultiLocationStr = `{${numberOfJunctions}:[${palletInstanceJunctionStr}${junctions}]}`;
-
-			concreteMultiLocation = resolveMultiLocation(
-				{
-					parents: assetIdMultiLocation.parents,
-					interior: JSON.parse(interiorMultiLocationStr) as RequireOnlyOne<XcmV3Junctions | XcmV2Junctions>,
-				},
-				xcmVersion,
-			);
+			concreteMultiLocation = resolveMultiLocation(assetId, xcmVersion);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior = isRelayNative

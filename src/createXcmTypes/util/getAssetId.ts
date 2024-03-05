@@ -118,7 +118,6 @@ export const getAssetId = async (
 		}
 	} else if (isParachain) {
 		const paraId = registry.lookupChainIdBySpecName(specName);
-
 		const paraXcAssets = registry.getRelaysRegistry[paraId].xcAssetsData;
 		const currentRelayChainSpecName = registry.relayChain;
 

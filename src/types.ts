@@ -140,6 +140,7 @@ export type LocalTransferTypes =
  */
 export type Methods =
 	| LocalTransferTypes
+	| 'transferAssets'
 	| 'reserveTransferAssets'
 	| 'limitedReserveTransferAssets'
 	| 'teleportAssets'
