@@ -16,7 +16,7 @@
 
 ### Chore
 
--chore(deps): update polkadot-js ([#379](https://github.com/paritytech/asset-transfer-api/pull/379))([db1c22e](https://github.com/paritytech/asset-transfer-api/commit/db1c22e718231bbfcc3e8511bf82e8f3dd505bef))
+- chore(deps): update polkadot-js ([#379](https://github.com/paritytech/asset-transfer-api/pull/379))([db1c22e](https://github.com/paritytech/asset-transfer-api/commit/db1c22e718231bbfcc3e8511bf82e8f3dd505bef))
 - chore(deps): bump ip from 2.0.0 to 2.0.1 ([#374](https://github.com/paritytech/asset-transfer-api/pull/374))([424b788](https://github.com/paritytech/asset-transfer-api/commit/424b78848db3c04c4a6df06183fa12f52887b822))
 
 ## [0.1.7](https://github.com/paritytech/asset-transfer-api/compare/v0.1.6..v0.1.7)(2024-02-07)
