@@ -37,7 +37,6 @@ export const POLKADOT_ASSET_HUB_SPEC_NAMES = ['statemint', 'asset-hub-polkadot']
 export const KUSAMA_ASSET_HUB_SPEC_NAMES = ['statemine', 'asset-hub-kusama'];
 export const WESTEND_ASSET_HUB_SPEC_NAMES = ['westmint', 'asset-hub-westend'];
 export const ROCOCO_ASSET_HUB_SPEC_NAME = ['asset-hub-rococo'];
-export const ETHEREUM_CHAIN_NAMES = ['sepolia', 'ethereum'];
 
 /**
  * The default xcm version to construct a xcm message.

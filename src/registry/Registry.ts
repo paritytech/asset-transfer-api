@@ -4,7 +4,6 @@ import registry from '@substrate/asset-transfer-api-registry';
 
 import {
 	ASSET_HUB_CHAIN_ID,
-	ETHEREUM_CHAIN_NAMES,
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
 	ROCOCO_ASSET_HUB_SPEC_NAME,
@@ -256,10 +255,6 @@ export class Registry {
 	public lookupChainIdBySpecName(specName: string): string {
 		if (this.specNameToIdCache.has(specName)) {
 			return this.specNameToIdCache.get(specName) as string;
-		}
-
-		if (ETHEREUM_CHAIN_NAMES.includes(specName.toLowerCase())) {
-			this.specNameToIdCache.set(specName, '1000');
 		}
 
 		if (
