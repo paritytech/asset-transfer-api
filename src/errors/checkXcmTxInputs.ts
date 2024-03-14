@@ -924,14 +924,12 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
  * @param xcmDirection
  * @param xcmVersion
  */
-export const checkXcmVersionIsValidForSystemToBridge = (
-	xcmVersion: number,
-) => {
-	if (
-		xcmVersion &&
-		xcmVersion < 3
-	) {
-		throw new BaseError('SystemToBridge transactions require XCM version 3 or greater', BaseErrorsEnum.InvalidXcmVersion);
+export const checkXcmVersionIsValidForSystemToBridge = (xcmVersion: number) => {
+	if (xcmVersion && xcmVersion < 3) {
+		throw new BaseError(
+			'SystemToBridge transactions require XCM version 3 or greater',
+			BaseErrorsEnum.InvalidXcmVersion,
+		);
 	}
 };
 
@@ -1141,7 +1139,6 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 
 	if (direction === Direction.SystemToSystem) {
 		if (isForeignAssetsTransfer) {
-			
 			checkAssetsAmountMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}

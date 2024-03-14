@@ -30,12 +30,10 @@ export const getAssetId = async (
 	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean,
 ): Promise<string> => {
-	console.log("IM REACHED");
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
 	const isParachain = new BN(currentChainId).gte(new BN(2000));
 
-	console.log("IM REACHED ALSO??");
 	// if assets pallet, check the cache and return the cached assetId if found
 	if (!isForeignAssetsTransfer) {
 		const cachedAsset = registry.cacheLookupAsset(asset);
@@ -55,7 +53,6 @@ export const getAssetId = async (
 			throw new BaseError(`${specName} has no associated token symbol ${asset}`, BaseErrorsEnum.InvalidAsset);
 		}
 	}
-	console.log("IM REACHED AS WELL?");
 	// check number assetId in registry
 	if (assetIsValidInt) {
 		// if assetId index is valid, return the assetId
@@ -74,8 +71,6 @@ export const getAssetId = async (
 		}
 	}
 
-	console.log("THIS ALSO?");
-
 	let assetId = '';
 	const isAssetHub = currentChainId === ASSET_HUB_CHAIN_ID;
 
@@ -86,7 +81,6 @@ export const getAssetId = async (
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
 		} else {
-			console.log('ARE WE REACHING THIS');
 			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, asset);
 
 			if (!isValidForeignAsset) {

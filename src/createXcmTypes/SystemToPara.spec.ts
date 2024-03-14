@@ -204,7 +204,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: 0,
+								parents: 0,
 								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 								},

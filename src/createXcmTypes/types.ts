@@ -6,16 +6,17 @@ import type { AnyJson } from '@polkadot/types/types';
 import type { Registry } from '../registry';
 import type { RequireOnlyOne } from '../types';
 
-
-export type InteriorKeyValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
+export type InteriorValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
 
 export type XcmDestBeneficiary = {
 	[x: string]: {
 		parents: number;
-		interior: {
-			[x: string]: InteriorKeyValue
-		};
+		interior: InteriorKey;
 	};
+};
+
+export type InteriorKey = {
+	[x: string]: InteriorValue;
 };
 
 export type XcmJunctionDestBeneficiary = {
@@ -31,8 +32,8 @@ export type XcmJunctionDestBeneficiary = {
 	GlobalConsensus: string | AnyJson;
 };
 
-export type XcmV4JunctionDestBeneficiary = 
-	 {
+export type XcmV4JunctionDestBeneficiary =
+	| {
 			AccountId32: {
 				network?: string;
 				id: string;
@@ -48,8 +49,8 @@ export type XcmV4JunctionDestBeneficiary =
 			};
 	  }
 	| {
-		GlobalConsensus: string | AnyJson;
-  	};
+			GlobalConsensus: string | AnyJson;
+	  };
 
 export type XcmV2MultiLocation = {
 	parents: number;
@@ -174,6 +175,8 @@ export type XcmV4JunctionBase = {
 	Plurality: { id: AnyJson; part: AnyJson };
 	GlobalConsensus: string | AnyJson;
 };
+
+export type UnionJunction = XcmV4Junction | XcmV3Junction | XcmV2Junction;
 
 export type UnionXcmMultiLocation = XcmV4Location | XcmV3MultiLocation | XcmV2MultiLocation;
 

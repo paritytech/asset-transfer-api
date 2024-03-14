@@ -74,6 +74,6 @@ export const CDN_URL = 'https://paritytech.github.io/asset-transfer-api-registry
 export const JS_ENV = detectJsEnv();
 
 /**
- * Supported consensus system chain names 
+ * Supported consensus system chain names
  */
 export const KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES = ['polkadot', 'kusama', 'westend', 'rococo', 'ethereum'];

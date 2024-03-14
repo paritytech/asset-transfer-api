@@ -242,10 +242,7 @@ export class Registry {
 	 */
 	public lookupParachainInfo(id: string): ExpandedChainInfoKeys[] {
 		const chainIds = Object.keys(this.currentRelayRegistry);
-		console.log('CHAIN IDS', chainIds);
-		console.log('ID ARG', id);
 		if (chainIds.includes(id)) {
-			console.log('ID IS IN FACT INCLUDED');
 			return [Object.assign({}, this.currentRelayRegistry[id], { chainId: id })];
 		}
 		return [];

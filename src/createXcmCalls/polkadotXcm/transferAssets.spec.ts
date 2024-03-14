@@ -191,9 +191,10 @@ describe('transferAssets', () => {
 			specName: 'westmint',
 			registry,
 		};
+
 		const FAbaseArgs = {
 			...baseArgs,
-			assetIds: ['{"parents":"1","interior":{ "X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}'],
+			assetIds: ['{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}'],
 		};
 		it('Should correctly construct a tx for a system parachain with V4', async () => {
 			const isLimited = true;

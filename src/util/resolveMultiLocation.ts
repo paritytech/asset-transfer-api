@@ -5,7 +5,7 @@ import type { AnyJson } from '@polkadot/types/types';
 import { SUPPORTED_XCM_VERSIONS } from '../consts';
 import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { BaseError, BaseErrorsEnum } from '../errors/BaseError';
-// import { sanitizeKeys } from './sanitizeKeys';
+import { sanitizeKeys } from './sanitizeKeys';
 
 /**
  * This ensures that the given multiLocation does not have certain junctions depending on the xcm version.
@@ -38,5 +38,9 @@ export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number)
 		throw new BaseError(`Invalid XcmVersion for mulitLocation construction`, BaseErrorsEnum.InternalError);
 	}
 
-	return JSON.parse(multiLocationStr) as UnionXcmMultiLocation;
+	if (!hasGlobalConsensus) {
+		return sanitizeKeys(JSON.parse(multiLocationStr) as UnionXcmMultiLocation);
+	} else {
+		return JSON.parse(multiLocationStr) as UnionXcmMultiLocation;
+	}
 };

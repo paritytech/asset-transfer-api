@@ -25,7 +25,6 @@ describe('findRelayChain', () => {
 		const findWestend = findRelayChain('asset-hub-westend', registry);
 		const findRococo = findRelayChain('asset-hub-rococo', registry, 'Rococo Asset Hub');
 
-
 		expect(findPolkadot).toEqual('polkadot');
 		expect(findKusama).toEqual('kusama');
 		expect(findWestend).toEqual('westend');

@@ -228,6 +228,37 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 			});
 		});
+		describe('SystemToBridge', () => {
+			// const bridgeBaseSystemCreateTx = async <T extends Format>(
+			// 	ataAPI: AssetTransferApi,
+			// 	format: T,
+			// 	isLimited: boolean,
+			// 	xcmVersion: number,
+			// 	refTime?: string,
+			// 	proofSize?: string,
+			// ): Promise<TxResult<T>> => {
+			// 	return await ataAPI.createTransferTransaction(
+			// 		`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`, // Since this is not `0` we know this is to a parachain
+			// 		'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+			// 		[`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`],
+			// 		['1000000000'],
+			// 		{
+			// 			format,
+			// 			isLimited,
+			// 			weightLimit: {
+			// 				refTime,
+			// 				proofSize,
+			// 			},
+			// 			xcmVersion,
+			// 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+			// 		},
+			// 	);
+			// };
+
+			describe('V4', () => {
+				// TODO
+			});
+		});
 		describe('SystemToPara', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(
 				ataAPI: AssetTransferApi,

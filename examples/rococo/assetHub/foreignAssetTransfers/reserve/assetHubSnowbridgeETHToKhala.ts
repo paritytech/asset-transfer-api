@@ -25,13 +25,13 @@ const main = async () => {
 			'2004',
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			[
-                `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`
+				`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
 			],
 			['1000000000000'],
 			{
 				format: 'call',
-                xcmVersion: 4,
-                isLimited: true,
+				xcmVersion: 4,
+				isLimited: true,
 			},
 		);
 

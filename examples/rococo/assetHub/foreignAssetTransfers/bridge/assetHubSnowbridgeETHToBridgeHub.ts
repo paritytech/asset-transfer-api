@@ -16,8 +16,9 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
  * NOTE: When `isLimited` is true it will use the `limited` version of either `reserveTransferAssets`, or `teleportAssets`.
  */
 const main = async () => {
-	const { api, specName, chainName, safeXcmVersion } = await constructApiPromise('wss://rococo-asset-hub-rpc.polkadot.io');
-    console.log('SPECNAME', specName);
+	const { api, specName, chainName, safeXcmVersion } = await constructApiPromise(
+		'wss://rococo-asset-hub-rpc.polkadot.io',
+	);
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, {
 		chainName,
 	});
@@ -28,13 +29,13 @@ const main = async () => {
 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`,
 			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
 			[
-                `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`
+				`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
 			],
 			['1000000000000'],
 			{
 				format: 'call',
-                xcmVersion: 4,
-                isLimited: true,
+				xcmVersion: 4,
+				isLimited: true,
 			},
 		);
 

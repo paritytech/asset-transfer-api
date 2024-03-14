@@ -5,10 +5,10 @@ import { adjustedMockSystemApiV1007000 } from '../testHelpers/adjustedMockSystem
 import { SystemToBridge } from './SystemToBridge';
 
 describe('SystemToBridge', () => {
-    const registry = new Registry('asset-hub-rococo', {});
-    const isForeignAssetsTransfer = true;
-    const isLiquidTokenTransfer = false;
-    describe('Beneficiary', () => {
+	const registry = new Registry('asset-hub-rococo', {});
+	const isForeignAssetsTransfer = true;
+	const isLiquidTokenTransfer = false;
+	describe('Beneficiary', () => {
 		it('Should work for V3', () => {
 			const beneficiary = SystemToBridge.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -91,22 +91,24 @@ describe('SystemToBridge', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
-    });
-    describe('Destination', () => {
-        it('Should work for V3', () => {
-            const assetIds = [`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`];
+	});
+	describe('Destination', () => {
+		it('Should work for V3', () => {
+			const assetIds = [
+				`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
+			];
 			const destination = SystemToBridge.createDest('100', 3, assetIds);
 
 			const expectedRes = {
 				V3: {
-					parents: 1,
+					parents: 2,
 					interior: {
 						X1: {
 							GlobalConsensus: {
-                                Ethereum: {
-                                    chainId: '11155111'
-                                }
-                            },
+								Ethereum: {
+									chainId: '11155111',
+								},
+							},
 						},
 					},
 				},
@@ -115,13 +117,13 @@ describe('SystemToBridge', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-            const assetIds = [`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`];
+			const assetIds = [`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`];
 
 			const destination = SystemToBridge.createDest('100', 4, assetIds);
 
 			const expectedRes = {
 				V4: {
-					parents: 1,
+					parents: 2,
 					interior: {
 						X1: [
 							{
@@ -134,23 +136,29 @@ describe('SystemToBridge', () => {
 
 			expect(destination).toStrictEqual(expectedRes);
 		});
-    });
-    describe('Assets', () => {
-        it('Should work for V3', async () => {
-			const assets = await SystemToBridge.createAssets(['10000000000'], 3, 'asset-hub-westend', [`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`], {
-				registry,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-				api: adjustedMockSystemApiV1007000,
-			});
+	});
+	describe('Assets', () => {
+		it('Should work for V3', async () => {
+			const assets = await SystemToBridge.createAssets(
+				['10000000000'],
+				3,
+				'asset-hub-westend',
+				[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+					api: adjustedMockSystemApiV1007000,
+				},
+			);
 
 			const expectedRes = {
 				V3: [
 					{
 						id: {
 							Concrete: {
-								Parents: '2',
-								Interior: {
+								parents: '2',
+								interior: {
 									X1: { GlobalConsensus: 'Rococo' },
 								},
 							},
@@ -165,43 +173,52 @@ describe('SystemToBridge', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await SystemToBridge.createAssets(['10000000000'], 4, 'asset-hub-westend', [`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`], {
-				registry,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-				api: adjustedMockSystemApiV1007000,
-			});
+			const assets = await SystemToBridge.createAssets(
+				['10000000000'],
+				4,
+				'asset-hub-westend',
+				[
+					`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
+				],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+					api: adjustedMockSystemApiV1007000,
+				},
+			);
 
 			const expectedRes = {
 				V4: [
 					{
 						id: {
-							Parents: '2',
-							Interior: {
+							parents: '2',
+							interior: {
 								X2: [
-                                    { 
-                                        GlobalConsensus: {
-                                            Ethereum: {
-                                                Chainid: '11155111',
-                                            }
-                                        }
-                                    }, 
-                                    { 
-                                        AccountKey20: {
-                                            Network: null,
-                                            Key: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14'
-                                        }
-                                    }],
+									{
+										GlobalConsensus: {
+											Ethereum: {
+												chainId: '11155111',
+											},
+										},
+									},
+									{
+										AccountKey20: {
+											network: null,
+											key: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
+										},
+									},
+								],
 							},
 						},
 						fun: {
 							Fungible: '10000000000',
 						},
 					},
-                ]
+				],
 			};
 
 			expect(assets).toStrictEqual(expectedRes);
 		});
-    });
+	});
 });

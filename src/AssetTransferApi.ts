@@ -29,12 +29,14 @@ import { CreateXcmCallOpts } from './createXcmCalls/types';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
 import { UnionXcmMultiLocation } from './createXcmTypes/types';
+import { assetDestIsBridge } from './createXcmTypes/util/assetDestIsBridge';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
+import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
+import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName';
 import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
-import { assetDestIsBridge } from './createXcmTypes/util/assetDestIsBridge';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import {
 	BaseError,
@@ -80,8 +82,6 @@ import { deepEqual } from './util/deepEqual';
 // import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
-import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
-import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -206,7 +206,7 @@ export class AssetTransferApi {
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
 			isDestSystemParachain: isSystemChain(destChainId),
 			isDestParachain: isParachain(destChainId),
-			isDestBridge: assetDestIsBridge(assetIds), // check the asset is going to another consensus system 
+			isDestBridge: assetDestIsBridge(assetIds), // check the asset is going to another consensus system
 		};
 
 		/**
@@ -426,8 +426,14 @@ export class AssetTransferApi {
 		if (isLocal) return Direction.Local;
 
 		const { api } = this;
-		const { isDestParachain, isDestRelayChain, isDestSystemParachain, isOriginParachain, isOriginSystemParachain, isDestBridge } =
-			chainOriginDestInfo;
+		const {
+			isDestParachain,
+			isDestRelayChain,
+			isDestSystemParachain,
+			isOriginParachain,
+			isOriginSystemParachain,
+			isDestBridge,
+		} = chainOriginDestInfo;
 
 		/**
 		 * Check if the origin is a System Parachain
@@ -494,7 +500,7 @@ export class AssetTransferApi {
 		method: Methods,
 		dest: string,
 		origin: string,
-		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string},
+		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string },
 	): Promise<TxResult<T>> {
 		const { format, paysWithFeeOrigin, sendersAddr } = opts;
 		const fmt = format ? format : 'payload';
@@ -771,8 +777,7 @@ export class AssetTransferApi {
 		}
 
 		const lookup = registry.lookupParachainInfo(destId);
-		console.log('LOOKUP VALUE', lookup);
-		console.log('WHAT IS THE RELAY CHAIN', registry.relayChain);
+
 		if (lookup.length === 0) {
 			throw new BaseError(
 				`Could not find any parachain information given the destId: ${destId}`,
@@ -878,7 +883,7 @@ export class AssetTransferApi {
 		localTxChainType: LocalTxChainType,
 		opts: LocalTxOpts,
 	) {
-		console.log("IM HERE", localTxChainType);
+		console.log('IM HERE', localTxChainType);
 		const { api, specName } = this;
 		let assetId = assetIds[0];
 		const amount = amounts[0];
@@ -887,10 +892,6 @@ export class AssetTransferApi {
 		if (assetIds.length === 0 || this.nativeRelayChainAsset.toLowerCase() === assetId.toLowerCase()) {
 			isNativeRelayChainAsset = true;
 		}
-
-		console.log('XCM DIRECTION', xcmDirection);
-		console.log('NOT IS VALID NUMBER', !isValidNumber);
-		console.log('NOT IS RELAY CHAIN NATIVE ASSET', !isNativeRelayChainAsset);
 
 		if (xcmDirection === Direction.SystemToSystem && !isValidNumber && !isNativeRelayChainAsset) {
 			// for SystemToSystem, assetId is not the native relayChains asset and is not a number
@@ -904,8 +905,6 @@ export class AssetTransferApi {
 				declaredXcmVersion,
 				opts.isForeignAssetsTransfer,
 			);
-
-			console.log('ASSET ID IS', assetId);
 		}
 		const method = opts.keepAlive ? 'transferKeepAlive' : 'transfer';
 
@@ -920,7 +919,6 @@ export class AssetTransferApi {
 				opts.isForeignAssetsTransfer,
 				opts.isLiquidTokenTransfer,
 			); // Throws an error when any of the inputs are incorrect.
-			console.log('WHAT IS LOCAL ASSET TYPE', localAssetType);
 			let tx: SubmittableExtrinsic<'promise', ISubmittableResult> | undefined;
 			let palletMethod: LocalTransferTypes | undefined;
 
@@ -943,9 +941,7 @@ export class AssetTransferApi {
 						: poolAssets.transfer(api, addr, assetId, amount);
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				console.log('MULTILOCATION', assetId);
 				const location = JSON.parse(assetId) as UnionXcmMultiLocation;
-				console.log('RESOLVED', JSON.stringify(location));
 				tx =
 					method === 'transferKeepAlive'
 						? foreignAssets.transferKeepAlive(api, addr, location, amount)

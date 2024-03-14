@@ -1,13 +1,14 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
+import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
-// import type { Registry } from '../registry';
+import type { Registry } from '../registry';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
-// import { validateNumber } from '../validate';
+import { validateNumber } from '../validate';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -23,14 +24,15 @@ import {
 	XcmWeight,
 } from './types';
 import { dedupeAssets } from './util/dedupeAssets';
+import { getAssetId } from './util/getAssetId';
+// import { assetDestIsBridge } from './util/assetDestIsBridge';
+import { getGlobalConsensusDestFromAssetLocation } from './util/getGlobalConsensusDestFromAssetLocation';
+import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 // import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 // import { getAssetId } from './util/getAssetId';
 // import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
-import { isEthereumAddress } from '@polkadot/util-crypto';
-// import { assetDestIsBridge } from './util/assetDestIsBridge';
-import { getGlobalConsensusDestFromAssetLocation } from './util/getGlobalConsensusDestFromAssetLocation';
 
 export const SystemToBridge: ICreateXcmType = {
 	/**
@@ -79,7 +81,7 @@ export const SystemToBridge: ICreateXcmType = {
 			throw new BaseError(`assetId arg must provided for Bridge transactions`);
 		}
 
-		const destination = getGlobalConsensusDestFromAssetLocation(assetIds[0], xcmVersion);		
+		const destination = getGlobalConsensusDestFromAssetLocation(assetIds[0], xcmVersion);
 
 		if (xcmVersion === 3) {
 			/**
@@ -119,20 +121,20 @@ export const SystemToBridge: ICreateXcmType = {
 	createAssets: async (
 		amounts: string[],
 		xcmVersion: number,
-		_specName: string,
+		specName: string,
 		assets: string[],
-		_opts: CreateAssetsOpts,
+		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		// const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
+		const { registry, isForeignAssetsTransfer, api } = opts;
 
 		const sortedAndDedupedMultiAssets = await createSystemToBridgeAssets(
-			// api,
+			api,
 			amounts,
-			// specName,
+			specName,
 			assets,
-			// registry,
+			registry,
 			xcmVersion,
-			// isForeignAssetsTransfer,
+			isForeignAssetsTransfer,
 			// isLiquidTokenTransfer,
 		);
 
@@ -175,18 +177,18 @@ export const SystemToBridge: ICreateXcmType = {
 			assetIds,
 			amounts,
 			xcmVersion,
-			// isForeignAssetsTransfer,
+			isForeignAssetsTransfer,
 			// isLiquidTokenTransfer,
 		} = opts;
 		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createSystemToBridgeAssets(
-				// api,
+				api,
 				normalizeArrToStr(amounts),
-				// specName,
+				specName,
 				assetIds,
-				// registry,
+				registry,
 				xcmVersion,
-				// isForeignAssetsTransfer,
+				isForeignAssetsTransfer,
 				// isLiquidTokenTransfer,
 			);
 
@@ -229,18 +231,18 @@ export const SystemToBridge: ICreateXcmType = {
  * @param isLiquidTokenTransfer Whether this transfer is a liquid pool assets transfer.
  */
 export const createSystemToBridgeAssets = async (
-	// api: ApiPromise,
+	api: ApiPromise,
 	amounts: string[],
-	// specName: string,
+	specName: string,
 	assets: string[],
-	// registry: Registry,
+	registry: Registry,
 	xcmVersion: number,
-	// isForeignAssetsTransfer: boolean,
+	isForeignAssetsTransfer: boolean,
 	// isLiquidTokenTransfer: boolean,
 ): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
-	// const bridgeChainId = registry.lookupChainIdBySpecName(specName);
+	const systemChainId = registry.lookupChainIdBySpecName(specName);
 
 	// if (!assetDestIsBridge(assets)) {
 	// 	throw new BaseError(
@@ -253,8 +255,16 @@ export const createSystemToBridgeAssets = async (
 		let assetId: string = assets[i];
 		const amount = amounts[i];
 
-		let assetLocation = resolveMultiLocation(assetId, xcmVersion);
-		console.log('CONCRETE MULTILOCATION', assetLocation);
+		const { tokens } = registry.currentRelayRegistry[systemChainId];
+
+		const isValidInt = validateNumber(assetId);
+		const isRelayNative = isRelayNativeAsset(tokens, assetId);
+
+		if (!isRelayNative && !isValidInt) {
+			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
+		}
+
+		const assetLocation = resolveMultiLocation(assetId, xcmVersion);
 
 		if (xcmVersion < 4) {
 			multiAsset = {
