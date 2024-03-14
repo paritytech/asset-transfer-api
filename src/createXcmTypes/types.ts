@@ -6,11 +6,14 @@ import type { AnyJson } from '@polkadot/types/types';
 import type { Registry } from '../registry';
 import type { RequireOnlyOne } from '../types';
 
+
+export type InteriorKeyValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
+
 export type XcmDestBeneficiary = {
 	[x: string]: {
 		parents: number;
 		interior: {
-			[x: string]: RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary | null;
+			[x: string]: InteriorKeyValue
 		};
 	};
 };
@@ -25,24 +28,28 @@ export type XcmJunctionDestBeneficiary = {
 		key: string;
 	};
 	Parachain: string;
+	GlobalConsensus: string | AnyJson;
 };
 
-export type XcmV4JunctionDestBeneficiary =
-	| {
+export type XcmV4JunctionDestBeneficiary = 
+	 {
 			AccountId32: {
 				network?: string;
 				id: string;
 			};
-	  }[]
+	  }
 	| {
 			Parachain: string;
-	  }[]
+	  }
 	| {
 			AccountKey20: {
 				network?: string;
 				key: string;
 			};
-	  }[];
+	  }
+	| {
+		GlobalConsensus: string | AnyJson;
+  	};
 
 export type XcmV2MultiLocation = {
 	parents: number;
@@ -409,7 +416,7 @@ export interface CreateWeightLimitOpts {
 
 export interface ICreateXcmType {
 	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;
-	createDest: (destId: string, xcmVersion: number) => XcmDestBeneficiary;
+	createDest: (destId: string, xcmVersion: number, assetIds?: string[]) => XcmDestBeneficiary;
 	createAssets: (
 		amounts: string[],
 		xcmVersion: number,

@@ -6,22 +6,21 @@ import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
 import type { ForeignAssetsData } from '../../registry/types';
 import type { AssetMetadata } from '../../types';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation';
+import { UnionXcAssetsMultiLocation } from '../types';
 
 export const foreignAssetsMultiLocationExists = async (
 	assetHubApi: ApiPromise,
 	registry: Registry,
 	multilocationStr: string,
-	xcmVersion: number,
 ): Promise<boolean> => {
 	try {
-		const multiLocation = resolveMultiLocation(multilocationStr, xcmVersion);
-
-		const foreignAsset = await assetHubApi.query.foreignAssets.asset(multiLocation);
+		const rawMultiLocation = JSON.parse(multilocationStr) as UnionXcAssetsMultiLocation;
+		const foreignAsset = await assetHubApi.query.foreignAssets.asset(JSON.parse(multilocationStr) as UnionXcAssetsMultiLocation);
+		console.log('FOREIGN ASSET', JSON.stringify(foreignAsset));
 
 		// check if foreign asset exists
 		if (foreignAsset.toString().length > 0) {
-			const foreignAssetMetadata = (await assetHubApi.query.foreignAssets.metadata(multiLocation)).toHuman();
+			const foreignAssetMetadata = (await assetHubApi.query.foreignAssets.metadata(rawMultiLocation)).toHuman();
 
 			if (foreignAssetMetadata) {
 				const metadata = foreignAssetMetadata as AssetMetadata;
@@ -30,7 +29,7 @@ export const foreignAssetsMultiLocationExists = async (
 				const asset: ForeignAssetsData = {
 					symbol: assetSymbol,
 					name: assetName,
-					multiLocation: JSON.stringify(multiLocation),
+					multiLocation: JSON.stringify(rawMultiLocation),
 				};
 
 				// cache the foreign asset

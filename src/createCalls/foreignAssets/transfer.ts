@@ -12,5 +12,6 @@ export const transfer = (
 	assetId: UnionXcmMultiLocation,
 	amount: string,
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {
+	console.log('TRANSFER ASSET ID', JSON.stringify(assetId));
 	return api.tx.foreignAssets.transfer(assetId, destAddr, amount);
 };

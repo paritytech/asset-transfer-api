@@ -186,13 +186,21 @@ const assetsMetadata = (assetId: number | string | BN): Promise<PalletAssetsAsse
 const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
 		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
-		const assetsMutliLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', asset);
-		const multiLocationStr = '{"parents":"1","interior":{"X2": [{"Parachain":"1103"}, {"GeneralIndex": "0"}]}}';
-		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', JSON.parse(multiLocationStr));
-		const multiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
-		assets.set(multiLocation.toHex(), multiLocationAsset);
+		const assetsMutliLocation = JSON.stringify(asset);
 
-		const maybeAsset = assets.has(assetsMutliLocation.toHex()) ? assets.get(assetsMutliLocation.toHex()) : undefined;
+		const multiLocationStr = '{"parents":"1","interior":{"X2": [{"Parachain":"1103"}, {"GeneralIndex": "0"}]}}';
+		const multiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
+		assets.set(multiLocationStr, multiLocationAsset);
+
+		const bridgedRococoMultiLocation1Str = '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}';
+		const bridgedRococoMultiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
+		assets.set(bridgedRococoMultiLocation1Str, bridgedRococoMultiLocationAsset);
+
+		const bridgedEthereumMultiLocationStr = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`;
+		const bridgedEthereumMultiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
+		assets.set(bridgedEthereumMultiLocationStr, bridgedEthereumMultiLocationAsset);
+
+		const maybeAsset = assets.has(assetsMutliLocation) ? assets.get(JSON.stringify(assetsMutliLocation)) : undefined;
 
 		if (maybeAsset) {
 			return new Option(createWestmintRegistry(1007000), 'PalletAssetsAssetDetails', maybeAsset);

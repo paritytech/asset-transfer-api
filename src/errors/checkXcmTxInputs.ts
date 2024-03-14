@@ -404,7 +404,7 @@ const checkSystemAssets = async (
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmVersion);
 
 		if (!multiLocationIsInRegistry) {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId, xcmVersion);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId);
 
 			if (!isValidForeignAsset) {
 				throw new BaseError(`MultiLocation ${assetId} not found`, BaseErrorsEnum.AssetNotFound);
@@ -921,6 +921,23 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 /**
  * Checks to ensure that the xcmVersion is at least 3 if paysWithFeeDest is provided
  *
+ * @param xcmDirection
+ * @param xcmVersion
+ */
+export const checkXcmVersionIsValidForSystemToBridge = (
+	xcmVersion: number,
+) => {
+	if (
+		xcmVersion &&
+		xcmVersion < 3
+	) {
+		throw new BaseError('SystemToBridge transactions require XCM version 3 or greater', BaseErrorsEnum.InvalidXcmVersion);
+	}
+};
+
+/**
+ * Checks to ensure that the xcmVersion is at least 3 if paysWithFeeDest is provided
+ *
  * @param xcmVersion
  * @param paysWithFeeDest
  */
@@ -1117,7 +1134,6 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkAssetsAmountMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
 		checkAssetsAmountMatch(assetIds, amounts);
@@ -1125,12 +1141,19 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 
 	if (direction === Direction.SystemToSystem) {
 		if (isForeignAssetsTransfer) {
-			checkMultiLocationIdLength(assetIds);
-			checkMultiLocationAmountsLength(amounts);
+			
 			checkAssetsAmountMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
+	}
+
+	if (direction === Direction.SystemToBridge) {
+		checkMultiLocationIdLength(assetIds);
+		checkMultiLocationAmountsLength(amounts);
+		checkAssetsAmountMatch(assetIds, amounts);
+		checkXcmVersionIsValidForSystemToBridge(xcmVersion);
+		// check asset is ...
 	}
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {

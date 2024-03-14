@@ -37,6 +37,7 @@ export const POLKADOT_ASSET_HUB_SPEC_NAMES = ['statemint', 'asset-hub-polkadot']
 export const KUSAMA_ASSET_HUB_SPEC_NAMES = ['statemine', 'asset-hub-kusama'];
 export const WESTEND_ASSET_HUB_SPEC_NAMES = ['westmint', 'asset-hub-westend'];
 export const ROCOCO_ASSET_HUB_SPEC_NAME = ['asset-hub-rococo'];
+export const ETHEREUM_CHAIN_NAMES = ['sepolia', 'ethereum'];
 
 /**
  * The default xcm version to construct a xcm message.
@@ -71,3 +72,8 @@ export const CDN_URL = 'https://paritytech.github.io/asset-transfer-api-registry
  * May result in either: `node` or `browser`.
  */
 export const JS_ENV = detectJsEnv();
+
+/**
+ * Supported consensus system chain names 
+ */
+export const KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES = ['polkadot', 'kusama', 'westend', 'rococo', 'ethereum'];

@@ -4,6 +4,7 @@ import registry from '@substrate/asset-transfer-api-registry';
 
 import {
 	ASSET_HUB_CHAIN_ID,
+	ETHEREUM_CHAIN_NAMES,
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
 	ROCOCO_ASSET_HUB_SPEC_NAME,
@@ -33,7 +34,7 @@ export class Registry {
 		this.opts = opts;
 		this.specName = specName;
 		this.registry = parseRegistry(registry as ChainInfoRegistry<ChainInfoKeys>, opts);
-		this.relayChain = findRelayChain(this.specName, this.registry);
+		this.relayChain = findRelayChain(this.specName, this.registry, this.opts.chainName);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.specNameToIdCache = new Map<string, string>();
 		this.cache = {
@@ -241,20 +242,27 @@ export class Registry {
 	 */
 	public lookupParachainInfo(id: string): ExpandedChainInfoKeys[] {
 		const chainIds = Object.keys(this.currentRelayRegistry);
+		console.log('CHAIN IDS', chainIds);
+		console.log('ID ARG', id);
 		if (chainIds.includes(id)) {
+			console.log('ID IS IN FACT INCLUDED');
 			return [Object.assign({}, this.currentRelayRegistry[id], { chainId: id })];
 		}
 		return [];
 	}
 
 	/**
-	 * Return the Id of a parachain given its specName.
+	 * Return the Id of a chain given its specName.
 	 *
 	 * @param specName
 	 */
 	public lookupChainIdBySpecName(specName: string): string {
 		if (this.specNameToIdCache.has(specName)) {
 			return this.specNameToIdCache.get(specName) as string;
+		}
+
+		if (ETHEREUM_CHAIN_NAMES.includes(specName.toLowerCase())) {
+			this.specNameToIdCache.set(specName, '1000');
 		}
 
 		if (

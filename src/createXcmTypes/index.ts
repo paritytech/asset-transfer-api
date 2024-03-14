@@ -9,6 +9,7 @@ import { RelayToSystem } from './RelayToSystem';
 import { SystemToPara } from './SystemToPara';
 import { SystemToRelay } from './SystemToRelay';
 import { SystemToSystem } from './SystemToSystem';
+import { SystemToBridge } from './SystemToBridge';
 import { ICreateXcmType } from './types';
 
 type ICreateXcmTypeLookup = {
@@ -18,8 +19,9 @@ type ICreateXcmTypeLookup = {
 export const createXcmTypes: ICreateXcmTypeLookup = {
 	SystemToSystem,
 	SystemToPara,
-	RelayToPara,
 	SystemToRelay,
+	SystemToBridge,
+	RelayToPara,
 	RelayToSystem,
 	ParaToPara,
 	ParaToRelay,
