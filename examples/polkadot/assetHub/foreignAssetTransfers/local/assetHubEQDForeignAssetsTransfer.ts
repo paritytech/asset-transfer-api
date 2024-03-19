@@ -21,7 +21,7 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'2004', // NOTE: The destination id is `1000` and matches the origin chain making this a local transfer
+			'1000', // NOTE: The destination id is `1000` and matches the origin chain making this a local transfer
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			[
 				'{"parents":"1","interior":{"X2":[{"Parachain":"2011"},{"GeneralKey":{"length":"3","data":"0x6571640000000000000000000000000000000000000000000000000000000000"}}]}}',
@@ -29,7 +29,6 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				xcmVersion: 3,
 			},
 		);
 
