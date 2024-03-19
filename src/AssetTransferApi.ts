@@ -79,7 +79,6 @@ import {
 } from './types';
 import { callExistsInRuntime } from './util/callExistsInRuntime';
 import { deepEqual } from './util/deepEqual';
-// import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
 
@@ -206,7 +205,7 @@ export class AssetTransferApi {
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
 			isDestSystemParachain: isSystemChain(destChainId),
 			isDestParachain: isParachain(destChainId),
-			isDestBridge: assetDestIsBridge(assetIds), // check the asset is going to another consensus system
+			isDestBridge: assetDestIsBridge(assetIds),
 		};
 
 		/**

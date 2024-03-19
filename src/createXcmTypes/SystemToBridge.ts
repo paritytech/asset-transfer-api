@@ -76,8 +76,8 @@ export const SystemToBridge: ICreateXcmType = {
 
 		if (xcmVersion === 3) {
 			/**
-			 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
-			 * from a system parachain to a sovereign parachain.
+			 * Ensure that the `parents` field is `2` when sending
+			 * from a system parachain to a GlobalConsensus system.
 			 */
 			return {
 				V3: {

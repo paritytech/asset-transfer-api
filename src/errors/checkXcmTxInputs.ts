@@ -920,7 +920,7 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 };
 
 /**
- * Checks to ensure that the xcmVersion is at least 3 if paysWithFeeDest is provided
+ * Checks to ensure that the xcmVersion is at least 3 for a SystemToBridge transaction
  *
  * @param xcmDirection
  * @param xcmVersion
