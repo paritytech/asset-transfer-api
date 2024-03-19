@@ -938,8 +938,7 @@ export const checkXcmVersionIsValidForSystemToBridge = (xcmVersion: number) => {
 export const checkAssetLocationsAreValidGlobalConsensusLocations = (assetIds: string[]) => {
 	if (!assetDestIsBridge(assetIds)) {
 		throw new BaseError(
-			`SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received ${
-				assetIds.toString()}`,
+			`SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received ${assetIds.toString()}`,
 			BaseErrorsEnum.InvalidAsset,
 		);
 	}
