@@ -1,3 +1,4 @@
+// [{"parents":"1","interior":{"X1":{"Parachain":"1,836"}}}]
 /**
  * When importing from @substrate/asset-transfer-api it would look like the following
  *
@@ -8,28 +9,28 @@ import { TxResult } from '../../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../../colors';
 
 /**
- * In this example we are creating a `foreignAssets` pallet `transfer` call to send EQD (foreign asset with location `{"parents":"1","interior":{"X2":[{"Parachain":"2011"},{"GeneralKey":{"length":"3","data":"0x6571640000000000000000000000000000000000000000000000000000000000"}}]}}`)
- * from a Polkadot Asset Hub (System Parachain) account
- * to a Polkadot Asset Hub (System Parachain) account.
+ * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send HOP (foreign asset with location `{"parents":"1","interior":{"X1":{"Parachain":"1,836"}}}`)
+ * from a Rococo Asset Hub (System Parachain) account
+ * to a Rhala Testnet (ParaChain) account, where the `xcmVersion` is set to 4, the `isLimited` option is set to true and there is no
+ * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  *
  * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://polkadot-asset-hub-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://rococo-asset-hub-rpc.polkadot.io');
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'2004', // NOTE: The destination id is `1000` and matches the origin chain making this a local transfer
+			'2004', // Note: Parachain ID 1836 (Equilibrium) is identical to the asset location's `Parachain` Id, making this a `teleportAssets` call
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
-			[
-				'{"parents":"1","interior":{"X2":[{"Parachain":"2011"},{"GeneralKey":{"length":"3","data":"0x6571640000000000000000000000000000000000000000000000000000000000"}}]}}',
-			],
+			['{"parents":"1","interior":{"X1":{"Parachain":"1836"}}}'],
 			['1000000000000'],
 			{
 				format: 'call',
-				xcmVersion: 3,
+				isLimited: true,
+				xcmVersion: 4,
 			},
 		);
 

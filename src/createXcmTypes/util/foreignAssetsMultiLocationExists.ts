@@ -19,13 +19,10 @@ export const foreignAssetsMultiLocationExists = async (
 			JSON.parse(multilocationStr) as UnionXcAssetsMultiLocation,
 		);
 
-		console.log('FOREIGN ASSET IS', JSON.stringify(foreignAsset));
-		console.log('LENGTH', foreignAsset.toString().length > 0);
 		// check if foreign asset exists
 		if (foreignAsset.toString().length > 0) {
 			const foreignAssetMetadata = (await assetHubApi.query.foreignAssets.metadata(rawMultiLocation)).toHuman();
 
-			console.log('DOES METADATA EXIST', JSON.stringify(foreignAssetMetadata));
 			if (foreignAssetMetadata) {
 				const metadata = foreignAssetMetadata as AssetMetadata;
 				const assetSymbol = metadata.symbol;

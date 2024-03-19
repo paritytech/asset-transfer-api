@@ -18,19 +18,14 @@ import {
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
-	// UnionXcmMultiLocation,
 	XcmDestBeneficiary,
 	XcmV4JunctionDestBeneficiary,
 	XcmWeight,
 } from './types';
 import { dedupeAssets } from './util/dedupeAssets';
 import { getAssetId } from './util/getAssetId';
-// import { assetDestIsBridge } from './util/assetDestIsBridge';
-import { getGlobalConsensusDestFromAssetLocation } from './util/getGlobalConsensusDestFromAssetLocation';
+import { getGlobalConsensusDestFromLocation } from './util/getGlobalConsensusDestFromLocation';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
-// import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-// import { getAssetId } from './util/getAssetId';
-// import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
 
@@ -76,12 +71,8 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param destId The chainId of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (_: string, xcmVersion: number, assetIds?: string[]): XcmDestBeneficiary => {
-		if (!assetIds) {
-			throw new BaseError(`assetId arg must provided for Bridge transactions`);
-		}
-
-		const destination = getGlobalConsensusDestFromAssetLocation(assetIds[0], xcmVersion);
+	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
+		const destination = getGlobalConsensusDestFromLocation(destId, xcmVersion);
 
 		if (xcmVersion === 3) {
 			/**
@@ -135,7 +126,6 @@ export const SystemToBridge: ICreateXcmType = {
 			registry,
 			xcmVersion,
 			isForeignAssetsTransfer,
-			// isLiquidTokenTransfer,
 		);
 
 		if (xcmVersion === 3) {
@@ -170,16 +160,7 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
-		const {
-			registry,
-			paysWithFeeDest,
-			specName,
-			assetIds,
-			amounts,
-			xcmVersion,
-			isForeignAssetsTransfer,
-			// isLiquidTokenTransfer,
-		} = opts;
+		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isForeignAssetsTransfer } = opts;
 		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createSystemToBridgeAssets(
 				api,
@@ -189,7 +170,6 @@ export const SystemToBridge: ICreateXcmType = {
 				registry,
 				xcmVersion,
 				isForeignAssetsTransfer,
-				// isLiquidTokenTransfer,
 			);
 
 			const systemChainId = registry.lookupChainIdBySpecName(specName);
@@ -228,7 +208,6 @@ export const SystemToBridge: ICreateXcmType = {
  * @param xcmVersion The accepted xcm version.
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
- * @param isLiquidTokenTransfer Whether this transfer is a liquid pool assets transfer.
  */
 export const createSystemToBridgeAssets = async (
 	api: ApiPromise,
@@ -238,18 +217,10 @@ export const createSystemToBridgeAssets = async (
 	registry: Registry,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
-	// isLiquidTokenTransfer: boolean,
 ): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
-
-	// if (!assetDestIsBridge(assets)) {
-	// 	throw new BaseError(
-	// 		`specName ${specName} did not match a valid Ethereum chain ID. Found ID ${bridgeChainId}`,
-	// 		BaseErrorsEnum.InternalError,
-	// 	);
-	// }
 
 	for (let i = 0; i < assets.length; i++) {
 		let assetId: string = assets[i];

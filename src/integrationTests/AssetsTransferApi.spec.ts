@@ -229,34 +229,151 @@ describe('AssetTransferApi Integration Tests', () => {
 			});
 		});
 		describe('SystemToBridge', () => {
-			// const bridgeBaseSystemCreateTx = async <T extends Format>(
-			// 	ataAPI: AssetTransferApi,
-			// 	format: T,
-			// 	isLimited: boolean,
-			// 	xcmVersion: number,
-			// 	refTime?: string,
-			// 	proofSize?: string,
-			// ): Promise<TxResult<T>> => {
-			// 	return await ataAPI.createTransferTransaction(
-			// 		`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`, // Since this is not `0` we know this is to a parachain
-			// 		'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-			// 		[`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`],
-			// 		['1000000000'],
-			// 		{
-			// 			format,
-			// 			isLimited,
-			// 			weightLimit: {
-			// 				refTime,
-			// 				proofSize,
-			// 			},
-			// 			xcmVersion,
-			// 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-			// 		},
-			// 	);
-			// };
+			const bridgeBaseSystemCreateTx = async <T extends Format>(
+				ataAPI: AssetTransferApi,
+				destination: string,
+				assetIds: string[],
+				format: T,
+				isLimited: boolean,
+				xcmVersion: number,
+				refTime?: string,
+				proofSize?: string,
+			): Promise<TxResult<T>> => {
+				return await ataAPI.createTransferTransaction(
+					destination,
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					['1000000000'],
+					{
+						format,
+						isLimited,
+						weightLimit: {
+							refTime,
+							proofSize,
+						},
+						xcmVersion,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					},
+				);
+			};
+
+			describe('V3', () => {
+				it('Should correctly build a transferAssets call for V3', async () => {
+					const res = await bridgeBaseSystemCreateTx(
+						systemAssetsApiV100700,
+						`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`,
+						[
+							`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
+						],
+						'call',
+						true,
+						3,
+						'1000',
+						'2000',
+					);
+					expect(res).toEqual({
+						dest: 'ethereum',
+						origin: 'westmint',
+						direction: 'SystemToBridge',
+						format: 'call',
+						method: 'transferAssets',
+						tx: '0x1f0b03020109079edaa8020300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400020209079edaa8020300fff9976782d46cc05630d1f6ebab18b2324d6b140002286bee0000000001a10f411f',
+						xcmVersion: 3,
+					});
+				});
+
+				it('Should correctly build a payload for a transferAssets for V3', async () => {
+					const res = await bridgeBaseSystemCreateTx(
+						systemAssetsApiV100700,
+						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
+						'payload',
+						true,
+						3,
+						'1000',
+						'2000',
+					);
+					expect(res).toEqual({
+						dest: 'polkadot',
+						origin: 'westmint',
+						direction: 'SystemToBridge',
+						format: 'payload',
+						method: 'transferAssets',
+						tx: '0x05011f0b03020109020300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400020109020002286bee0000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 3,
+					});
+				});
+				it('Should correctly build a submittable extrinsic for a transferAssets for V3', async () => {
+					const res = await bridgeBaseSystemCreateTx(
+						systemAssetsApiV100700,
+						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						'submittable',
+						true,
+						3,
+						'1000',
+						'2000',
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
 
 			describe('V4', () => {
-				// TODO
+				it('Should correctly build a `transferAssets` call extrinsic for V4', async () => {
+					const res = await bridgeBaseSystemCreateTx(
+						systemAssetsApiV100700,
+						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
+						'call',
+						true,
+						4,
+						'1000',
+						'2000',
+					);
+					expect(res).toEqual({
+						dest: 'polkadot',
+						origin: 'westmint',
+						direction: 'SystemToBridge',
+						format: 'call',
+						method: 'transferAssets',
+						tx: '0x1f0b04020109020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404020109020002286bee0000000001a10f411f',
+						xcmVersion: 4,
+					});
+				});
+				it('Should correctly build a `transferAssets` payload for V4', async () => {
+					const res = await bridgeBaseSystemCreateTx(
+						systemAssetsApiV100700,
+						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						'payload',
+						true,
+						4,
+						'1000',
+						'2000',
+					);
+					expect(res).toEqual({
+						dest: 'rococo',
+						origin: 'westmint',
+						direction: 'SystemToBridge',
+						format: 'payload',
+						method: 'transferAssets',
+						tx: '0x01011f0b04020109050400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404020109050002286bee0000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						xcmVersion: 4,
+					});
+				});
+				it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
+					const res = await bridgeBaseSystemCreateTx(
+						systemAssetsApiV100700,
+						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						'submittable',
+						true,
+						4,
+						'1000',
+						'2000',
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
 			});
 		});
 		describe('SystemToPara', () => {

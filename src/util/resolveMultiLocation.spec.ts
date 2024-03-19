@@ -15,6 +15,12 @@ describe('resolveMultiLocation', () => {
 
 		expect(resolveMultiLocation(str, 2)).toStrictEqual(exp);
 	});
+	it('Should correctly return a resolved V4 X1 location object given a correct value', () => {
+		const str = `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`;
+		const exp = { parents: '2', interior: { X1: [{ GlobalConsensus: 'Polkadot' }] } };
+
+		expect(resolveMultiLocation(str, 4)).toStrictEqual(exp);
+	});
 	it('Should correctly error when xcmVersion is less than 3 and the asset location contains a GlobalConsensus junction', () => {
 		const str = `{"parents":1,"interior":{"x1":{"GlobalConsensus":"Kusama"}}}`;
 		const err = () => resolveMultiLocation(str, 2);

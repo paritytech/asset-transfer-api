@@ -199,6 +199,13 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 		);
 		assets.set(bridgedRococoMultiLocation1Str, bridgedRococoMultiLocationAsset);
 
+		const bridgedPolkadotMultiLocation1Str = '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}';
+		const bridgedPolkadotMultiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo,
+		);
+		assets.set(bridgedPolkadotMultiLocation1Str, bridgedPolkadotMultiLocationAsset);
+
 		const bridgedEthereumMultiLocationStr = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`;
 		const bridgedEthereumMultiLocationAsset = mockSystemApi.registry.createType(
 			'PalletAssetsAssetDetails',

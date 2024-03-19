@@ -142,7 +142,7 @@ export type XcmV4Location = {
 
 export interface XcmV4Junctions {
 	Here: '' | null;
-	X1: XcmV4Junction;
+	X1: [XcmV4Junction];
 	X2: [XcmV4Junction, XcmV4Junction];
 	X3: [XcmV4Junction, XcmV4Junction, XcmV4Junction];
 	X4: [XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction];
@@ -176,7 +176,7 @@ export type XcmV4JunctionBase = {
 	GlobalConsensus: string | AnyJson;
 };
 
-export type UnionJunction = XcmV4Junction | XcmV3Junction | XcmV2Junction;
+export type UnionJunction = XcmV2Junction | XcmV3Junction | XcmV4Junction;
 
 export type UnionXcmMultiLocation = XcmV4Location | XcmV3MultiLocation | XcmV2MultiLocation;
 
@@ -419,7 +419,7 @@ export interface CreateWeightLimitOpts {
 
 export interface ICreateXcmType {
 	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;
-	createDest: (destId: string, xcmVersion: number, assetIds?: string[]) => XcmDestBeneficiary;
+	createDest: (destId: string, xcmVersion: number) => XcmDestBeneficiary;
 	createAssets: (
 		amounts: string[],
 		xcmVersion: number,

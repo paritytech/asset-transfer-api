@@ -1150,7 +1150,6 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkMultiLocationAmountsLength(amounts);
 		checkAssetsAmountMatch(assetIds, amounts);
 		checkXcmVersionIsValidForSystemToBridge(xcmVersion);
-		// check asset is ...
 	}
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {

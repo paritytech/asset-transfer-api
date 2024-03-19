@@ -94,10 +94,8 @@ describe('SystemToBridge', () => {
 	});
 	describe('Destination', () => {
 		it('Should work for V3', () => {
-			const assetIds = [
-				`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
-			];
-			const destination = SystemToBridge.createDest('100', 3, assetIds);
+			const destId = `{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`;
+			const destination = SystemToBridge.createDest(destId, 3);
 
 			const expectedRes = {
 				V3: {
@@ -117,9 +115,9 @@ describe('SystemToBridge', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const assetIds = [`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`];
+			const destId = `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`;
 
-			const destination = SystemToBridge.createDest('100', 4, assetIds);
+			const destination = SystemToBridge.createDest(destId, 4);
 
 			const expectedRes = {
 				V4: {

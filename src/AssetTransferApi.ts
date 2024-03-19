@@ -883,7 +883,6 @@ export class AssetTransferApi {
 		localTxChainType: LocalTxChainType,
 		opts: LocalTxOpts,
 	) {
-		console.log('IM HERE', localTxChainType);
 		const { api, specName } = this;
 		let assetId = assetIds[0];
 		const amount = amounts[0];

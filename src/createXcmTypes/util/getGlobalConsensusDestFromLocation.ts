@@ -5,18 +5,15 @@ import type { AnyJson } from '@polkadot/types/types';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { InteriorKey, InteriorValue, UnionXcmMultiLocation } from '../types';
 
-export const getGlobalConsensusDestFromAssetLocation = (
-	assetLocationStr: string,
-	xcmVersion: number,
-): InteriorValue => {
-	if (!assetLocationStr.toLowerCase().includes('globalconsensus')) {
+export const getGlobalConsensusDestFromLocation = (locationStr: string, xcmVersion: number): InteriorValue => {
+	if (!locationStr.toLowerCase().includes('globalconsensus')) {
 		throw new BaseError(
-			`Bridge transaction asset location ${assetLocationStr} does not contain a GlobalConsensus Junction`,
+			`Bridge transaction location ${locationStr} does not contain a GlobalConsensus Junction`,
 			BaseErrorsEnum.InternalError,
 		);
 	}
 
-	const assetLocation = JSON.parse(assetLocationStr) as UnionXcmMultiLocation;
+	const assetLocation = JSON.parse(locationStr) as UnionXcmMultiLocation;
 	let globalConsensusDest: AnyJson | undefined;
 
 	if (assetLocation.interior.X1) {
@@ -27,7 +24,7 @@ export const getGlobalConsensusDestFromAssetLocation = (
 
 		if (!JSON.stringify(globalConsensusDest).toLowerCase().includes('globalconsensus')) {
 			throw new BaseError(
-				`Bridge transaction asset location interior ${JSON.stringify(
+				`Bridge transaction location interior ${JSON.stringify(
 					assetLocation.interior,
 				)} does not contain a GlobalConsensus Junction in the first index`,
 				BaseErrorsEnum.InternalError,
