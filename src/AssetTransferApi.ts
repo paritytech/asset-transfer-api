@@ -29,7 +29,6 @@ import { CreateXcmCallOpts } from './createXcmCalls/types';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
 import { UnionXcmMultiLocation } from './createXcmTypes/types';
-import { assetDestIsBridge } from './createXcmTypes/util/assetDestIsBridge';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
@@ -205,7 +204,7 @@ export class AssetTransferApi {
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
 			isDestSystemParachain: isSystemChain(destChainId),
 			isDestParachain: isParachain(destChainId),
-			isDestBridge: assetDestIsBridge(assetIds),
+			isDestBridge: chainDestIsBridge(destChainId),
 		};
 
 		/**

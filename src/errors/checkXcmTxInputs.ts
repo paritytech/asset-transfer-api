@@ -6,6 +6,7 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
+import { assetDestIsBridge } from '../createXcmTypes/util/assetDestIsBridge';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
@@ -934,6 +935,16 @@ export const checkXcmVersionIsValidForSystemToBridge = (xcmVersion: number) => {
 	}
 };
 
+export const checkAssetLocationsAreValidGlobalConsensusLocations = (assetIds: string[]) => {
+	if (!assetDestIsBridge(assetIds)) {
+		throw new BaseError(
+			`SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received ${
+				assetIds.toString()}`,
+			BaseErrorsEnum.InvalidAsset,
+		);
+	}
+};
+
 /**
  * Checks to ensure that the xcmVersion is at least 3 if paysWithFeeDest is provided
  *
@@ -1152,6 +1163,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkAssetsAmountMatch(assetIds, amounts);
 		checkXcmVersionIsValidForSystemToBridge(xcmVersion);
 		getGlobalConsensusSystemName(destChainId);
+		checkAssetLocationsAreValidGlobalConsensusLocations(assetIds);
 	}
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {

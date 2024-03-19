@@ -1,8 +1,8 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 /**
- * Determines if the dest chain is a Global Consensus origin based on the value of its assetId/location
- * @param assetId
+ * Determines if assetId locations are valid bridge transaction asset locations
+ * @param assetIds
  * @returns boolean
  */
 export const assetDestIsBridge = (assetIds: string[]): boolean => {
@@ -10,5 +10,11 @@ export const assetDestIsBridge = (assetIds: string[]): boolean => {
 		return false;
 	}
 
-	return assetIds[0].toLowerCase().includes('globalconsensus');
+	for (const assetId of assetIds) {
+		if (!assetId.toLowerCase().includes('globalconsensus')) {
+			return false;
+		}
+	}
+
+	return true;
 };
