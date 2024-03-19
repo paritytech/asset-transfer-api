@@ -8,6 +8,7 @@ import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
+import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
@@ -1150,6 +1151,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkMultiLocationAmountsLength(amounts);
 		checkAssetsAmountMatch(assetIds, amounts);
 		checkXcmVersionIsValidForSystemToBridge(xcmVersion);
+		getGlobalConsensusSystemName(destChainId);
 	}
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {

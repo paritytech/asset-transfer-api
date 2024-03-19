@@ -4,14 +4,14 @@ import { getGlobalConsensusSystemName } from './getGlobalConsensusSystemName';
 
 describe('getGlobalConsensusSystemName', () => {
 	it('Should correctly return the consensus system name for Polkadot', () => {
-		const destLocation = `{"parents":"2","interior":{"X1":"Polkadot"}}}`;
+		const destLocation = `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`;
 
 		const result = getGlobalConsensusSystemName(destLocation);
 
 		expect(result).toEqual('polkadot');
 	});
 	it('Should correctly return the consensus system name for Kusama', () => {
-		const destLocation = `{"parents":"2","interior":{"X1":"Kusama"}}}`;
+		const destLocation = `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`;
 
 		const result = getGlobalConsensusSystemName(destLocation);
 

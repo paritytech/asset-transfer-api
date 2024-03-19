@@ -50,7 +50,7 @@ describe('getGlobalConsensusDestFromLocation', () => {
 		const err = () => getGlobalConsensusDestFromLocation(locationStr, xcmVersion);
 
 		expect(err).toThrow(
-			`Bridge transaction location {"parents":"1","interior":{"X1":{"Parachain":"2030"}}} does not contain a GlobalConsensus Junction`,
+			`Bridge transaction location {"parents":"1","interior":{"X1":{"Parachain":"2030"}}} must contain a valid GlobalConsensus Junction`,
 		);
 	});
 	it('Should correctly throw an error when a location is provided that does not contain a valid GlobalConsensus at the 0 index', () => {

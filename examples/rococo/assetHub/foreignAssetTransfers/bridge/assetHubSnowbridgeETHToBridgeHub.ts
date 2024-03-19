@@ -27,7 +27,7 @@ const main = async () => {
 	try {
 		callInfo = await assetApi.createTransferTransaction(
 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`,
-			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
+			'0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B',
 			[
 				`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
 			],

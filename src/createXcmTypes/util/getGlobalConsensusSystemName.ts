@@ -2,10 +2,13 @@
 
 import { KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
+import { UnionXcmMultiLocation } from '../types';
 
 export const getGlobalConsensusSystemName = (destLocation: string): string => {
+	const location = JSON.parse(destLocation) as UnionXcmMultiLocation;
+
 	for (const systemName of KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES) {
-		if (destLocation.toLowerCase().includes(systemName)) {
+		if (location.interior.X1 && JSON.stringify(location.interior.X1).toLowerCase().includes(systemName)) {
 			return systemName;
 		}
 	}

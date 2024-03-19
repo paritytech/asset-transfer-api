@@ -8,7 +8,7 @@ import { InteriorKey, InteriorValue, UnionXcmMultiLocation } from '../types';
 export const getGlobalConsensusDestFromLocation = (locationStr: string, xcmVersion: number): InteriorValue => {
 	if (!locationStr.toLowerCase().includes('globalconsensus')) {
 		throw new BaseError(
-			`Bridge transaction location ${locationStr} does not contain a GlobalConsensus Junction`,
+			`Bridge transaction location ${locationStr} must contain a valid GlobalConsensus Junction`,
 			BaseErrorsEnum.InternalError,
 		);
 	}

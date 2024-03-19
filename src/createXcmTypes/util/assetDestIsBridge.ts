@@ -6,7 +6,7 @@
  * @returns boolean
  */
 export const assetDestIsBridge = (assetIds: string[]): boolean => {
-	if (assetIds.length === 0 || assetIds.length > 1) {
+	if (assetIds.length === 0) {
 		return false;
 	}
 
