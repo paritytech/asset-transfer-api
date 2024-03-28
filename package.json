@@ -51,6 +51,6 @@
   },
   "dependencies": {
     "@polkadot/api": "^10.12.1",
-    "@substrate/asset-transfer-api-registry": "^0.2.14"
+    "@substrate/asset-transfer-api-registry": "^0.2.15"
   }
 }
