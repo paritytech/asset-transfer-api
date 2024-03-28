@@ -186,13 +186,34 @@ const assetsMetadata = (assetId: number | string | BN): Promise<PalletAssetsAsse
 const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
 		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
-		const assetsMutliLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', asset);
-		const multiLocationStr = '{"parents":"1","interior":{"X2": [{"Parachain":"1103"}, {"GeneralIndex": "0"}]}}';
-		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', JSON.parse(multiLocationStr));
-		const multiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
-		assets.set(multiLocation.toHex(), multiLocationAsset);
+		const assetMultiLocation = JSON.stringify(asset);
 
-		const maybeAsset = assets.has(assetsMutliLocation.toHex()) ? assets.get(assetsMutliLocation.toHex()) : undefined;
+		const multiLocationStr = '{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}';
+		const multiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
+		assets.set(multiLocationStr, multiLocationAsset);
+
+		const bridgedRococoMultiLocation1Str = '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}';
+		const bridgedRococoMultiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo,
+		);
+		assets.set(bridgedRococoMultiLocation1Str, bridgedRococoMultiLocationAsset);
+
+		const bridgedPolkadotMultiLocation1Str = '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}';
+		const bridgedPolkadotMultiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo,
+		);
+		assets.set(bridgedPolkadotMultiLocation1Str, bridgedPolkadotMultiLocationAsset);
+
+		const bridgedEthereumMultiLocationStr = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`;
+		const bridgedEthereumMultiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo,
+		);
+		assets.set(bridgedEthereumMultiLocationStr, bridgedEthereumMultiLocationAsset);
+
+		const maybeAsset = assets.has(assetMultiLocation) ? assets.get(assetMultiLocation) : undefined;
 
 		if (maybeAsset) {
 			return new Option(createWestmintRegistry(1007000), 'PalletAssetsAssetDetails', maybeAsset);
@@ -204,7 +225,7 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAssetsAssetMetadata> =>
 	Promise.resolve().then(() => {
 		const metadata: Map<string, PalletAssetsAssetMetadata> = new Map();
-		const assetIdMultiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', assetId);
+		const assetIdMultiLocation = JSON.stringify(assetId);
 
 		const rawTnkrMultiLocationMetadata = {
 			deposit: mockSystemApi.registry.createType('u128', 6693666633),
@@ -219,15 +240,10 @@ const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAs
 			'PalletAssetsAssetMetadata',
 			rawTnkrMultiLocationMetadata,
 		);
-		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', {
-			parents: '1',
-			interior: { X2: [{ Parachain: '1103' }, { GeneralIndex: '0' }] },
-		});
-		metadata.set(multiLocation.toHex(), tnkrForeignAssetMetadata);
+		const multiLocation = `{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}`;
+		metadata.set(multiLocation, tnkrForeignAssetMetadata);
 
-		const maybeMetadata = metadata.has(assetIdMultiLocation.toHex())
-			? metadata.get(assetIdMultiLocation.toHex())
-			: undefined;
+		const maybeMetadata = metadata.has(assetIdMultiLocation) ? metadata.get(assetIdMultiLocation) : undefined;
 
 		if (maybeMetadata) {
 			return maybeMetadata;

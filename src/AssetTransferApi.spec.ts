@@ -64,6 +64,7 @@ describe('AssetTransferAPI', () => {
 				isDestParachain: false,
 				isOriginSystemParachain: true,
 				isOriginParachain: false,
+				isDestBridge: false,
 			};
 			const res = systemAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('SystemToSystem');
@@ -75,6 +76,7 @@ describe('AssetTransferAPI', () => {
 				isDestParachain: true,
 				isOriginSystemParachain: true,
 				isOriginParachain: false,
+				isDestBridge: false,
 			};
 			const res = systemAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('SystemToPara');
@@ -86,6 +88,7 @@ describe('AssetTransferAPI', () => {
 				isDestParachain: false,
 				isOriginSystemParachain: true,
 				isOriginParachain: false,
+				isDestBridge: false,
 			};
 			const res = systemAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('SystemToRelay');
@@ -97,6 +100,7 @@ describe('AssetTransferAPI', () => {
 				isDestParachain: true,
 				isOriginSystemParachain: false,
 				isOriginParachain: false,
+				isDestBridge: false,
 			};
 			const res = relayAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('RelayToPara');
@@ -108,6 +112,7 @@ describe('AssetTransferAPI', () => {
 				isDestParachain: false,
 				isOriginSystemParachain: false,
 				isOriginParachain: false,
+				isDestBridge: false,
 			};
 			const res = relayAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('RelayToSystem');
@@ -119,6 +124,7 @@ describe('AssetTransferAPI', () => {
 				isDestParachain: false,
 				isOriginSystemParachain: false,
 				isOriginParachain: true,
+				isDestBridge: false,
 			};
 			const res = moonriverAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('ParaToSystem');
@@ -130,6 +136,7 @@ describe('AssetTransferAPI', () => {
 				isDestParachain: true,
 				isOriginSystemParachain: false,
 				isOriginParachain: true,
+				isDestBridge: false,
 			};
 			const res = moonriverAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('ParaToPara');

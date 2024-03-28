@@ -81,7 +81,7 @@ export const getAssetId = async (
 		if (multiLocationIsInRegistry) {
 			assetId = asset;
 		} else {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, asset, xcmVersion);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, asset);
 
 			if (!isValidForeignAsset) {
 				throw new BaseError(`MultiLocation ${asset} not found`, BaseErrorsEnum.AssetNotFound);

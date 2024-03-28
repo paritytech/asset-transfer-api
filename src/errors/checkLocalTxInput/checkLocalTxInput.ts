@@ -54,7 +54,7 @@ export const checkLocalTxInput = async (
 		if (foreignAssetIsInRegistry) {
 			return LocalTxType.ForeignAssets;
 		} else {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, multiLocationStr, xcmVersion);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, multiLocationStr);
 			if (isValidForeignAsset) {
 				return LocalTxType.ForeignAssets;
 			} else {

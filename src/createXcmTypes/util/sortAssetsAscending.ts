@@ -11,11 +11,9 @@ import { validateNumber } from '../../validate';
 import type {
 	FungibleObjAssetType,
 	FungibleStrAssetType,
-	XcmV2Junction,
+	UnionJunction,
 	XcmV2Junctions,
-	XcmV3Junction,
 	XcmV3Junctions,
-	XcmV4Junction,
 	XcmV4Junctions,
 } from '../types';
 
@@ -228,8 +226,6 @@ const getSameJunctionMultiLocationSortOrder = (
 
 	return sortOrder;
 };
-
-type UnionJunction = XcmV4Junction | XcmV3Junction | XcmV2Junction;
 
 type MultiLocationJunctions =
 	| [UnionJunction, UnionJunction]

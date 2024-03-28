@@ -11,7 +11,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		const expected = true;
 		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"1103"}, {"GeneralIndex": "0"}]}}';
 
-		const isValid = await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
+		const isValid = await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation);
 
 		expect(isValid).toEqual(expected);
 	});
@@ -20,7 +20,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		const expected = false;
 		const multiLocation = '{"parents":"1","interior":{"X1": {"Parachain":"21252525"}}}';
 
-		const isValid = await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
+		const isValid = await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation);
 
 		expect(isValid).toEqual(expected);
 	});
@@ -30,7 +30,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		const multiLocation = '{"parents":"1","interior":{"X1": {"Parachain":"g2125"}}}';
 
 		await expect(async () => {
-			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
+			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation);
 		}).rejects.toThrow(expectedError);
 	});
 
@@ -40,7 +40,7 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		const multiLocation = '{"parents":"2","interior":{"X1": {"Parachain":"2,125"}}}';
 
 		await expect(async () => {
-			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation, 2);
+			await foreignAssetsMultiLocationExists(adjustedMockSystemApi, registry, multiLocation);
 		}).rejects.toThrow(expectedError);
 	});
 
@@ -60,12 +60,12 @@ describe('foreignMultiAssetMultiLocationExists', () => {
 		});
 		const multiLocation = '{"parents":"1","interior":{"X2": [{"Parachain":"1103"}, {"GeneralIndex": "0"}]}}';
 
-		await foreignAssetsMultiLocationExists(adjustedMockSystemApi, emptyRegistry, multiLocation, 2);
+		await foreignAssetsMultiLocationExists(adjustedMockSystemApi, emptyRegistry, multiLocation);
 
 		const result = emptyRegistry.cacheLookupForeignAsset('GDZ');
 
 		expect(result).toEqual({
-			multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}',
+			multiLocation: '{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}',
 			name: 'Godzilla',
 			symbol: 'GDZ',
 		});

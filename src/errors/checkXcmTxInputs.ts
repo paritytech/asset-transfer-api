@@ -6,8 +6,10 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
+import { assetDestIsBridge } from '../createXcmTypes/util/assetDestIsBridge';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
+import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
@@ -404,7 +406,7 @@ const checkSystemAssets = async (
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmVersion);
 
 		if (!multiLocationIsInRegistry) {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId, xcmVersion);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId);
 
 			if (!isValidForeignAsset) {
 				throw new BaseError(`MultiLocation ${assetId} not found`, BaseErrorsEnum.AssetNotFound);
@@ -919,6 +921,30 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 };
 
 /**
+ * Checks to ensure that the xcmVersion is at least 3 for a SystemToBridge transaction
+ *
+ * @param xcmDirection
+ * @param xcmVersion
+ */
+export const checkXcmVersionIsValidForSystemToBridge = (xcmVersion: number) => {
+	if (xcmVersion && xcmVersion < 3) {
+		throw new BaseError(
+			'SystemToBridge transactions require XCM version 3 or greater',
+			BaseErrorsEnum.InvalidXcmVersion,
+		);
+	}
+};
+
+export const checkAssetLocationsAreValidGlobalConsensusLocations = (assetIds: string[]) => {
+	if (!assetDestIsBridge(assetIds)) {
+		throw new BaseError(
+			`SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received ${assetIds.toString()}`,
+			BaseErrorsEnum.InvalidAsset,
+		);
+	}
+};
+
+/**
  * Checks to ensure that the xcmVersion is at least 3 if paysWithFeeDest is provided
  *
  * @param xcmVersion
@@ -1117,7 +1143,6 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkAssetsAmountMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
 		checkAssetsAmountMatch(assetIds, amounts);
@@ -1125,12 +1150,19 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 
 	if (direction === Direction.SystemToSystem) {
 		if (isForeignAssetsTransfer) {
-			checkMultiLocationIdLength(assetIds);
-			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
+	}
+
+	if (direction === Direction.SystemToBridge) {
+		checkMultiLocationIdLength(assetIds);
+		checkMultiLocationAmountsLength(amounts);
+		checkAssetsAmountMatch(assetIds, amounts);
+		checkXcmVersionIsValidForSystemToBridge(xcmVersion);
+		getGlobalConsensusSystemName(destChainId);
+		checkAssetLocationsAreValidGlobalConsensusLocations(assetIds);
 	}
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {

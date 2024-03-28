@@ -33,7 +33,7 @@ export class Registry {
 		this.opts = opts;
 		this.specName = specName;
 		this.registry = parseRegistry(registry as ChainInfoRegistry<ChainInfoKeys>, opts);
-		this.relayChain = findRelayChain(this.specName, this.registry);
+		this.relayChain = findRelayChain(this.specName, this.registry, this.opts.chainName);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.specNameToIdCache = new Map<string, string>();
 		this.cache = {
@@ -248,7 +248,7 @@ export class Registry {
 	}
 
 	/**
-	 * Return the Id of a parachain given its specName.
+	 * Return the Id of a chain given its specName.
 	 *
 	 * @param specName
 	 */

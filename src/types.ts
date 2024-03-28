@@ -45,6 +45,10 @@ export enum Direction {
 	 */
 	SystemToSystem = 'SystemToSystem',
 	/**
+	 * System parachain to an external `GlobalConsensus` chain.
+	 */
+	SystemToBridge = 'SystemToBridge',
+	/**
 	 * Parachain to Parachain.
 	 */
 	ParaToPara = 'ParaToPara',
@@ -94,6 +98,7 @@ export interface ChainOriginDestInfo {
 	isDestParachain: boolean;
 	isOriginSystemParachain: boolean;
 	isOriginParachain: boolean;
+	isDestBridge: boolean;
 }
 
 export interface LocalTxOpts extends TransferArgsOpts<Format> {
@@ -166,6 +171,10 @@ export type AssetTransferApiOpts<T extends ChainInfoKeys | InjectedChainInfoKeys
 	 * or the hosted CDN which updates frequently.
 	 */
 	registryType?: RegistryTypes;
+	/**
+	 * Chain name of the chain which the api is connected to.
+	 */
+	chainName?: string;
 };
 
 /**

@@ -30,7 +30,9 @@ import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establi
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
 import { UnionXcmMultiLocation } from './createXcmTypes/types';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
+import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
+import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName';
 import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
@@ -76,7 +78,6 @@ import {
 } from './types';
 import { callExistsInRuntime } from './util/callExistsInRuntime';
 import { deepEqual } from './util/deepEqual';
-import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
 
@@ -203,6 +204,7 @@ export class AssetTransferApi {
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
 			isDestSystemParachain: isSystemChain(destChainId),
 			isDestParachain: isParachain(destChainId),
+			isDestBridge: chainDestIsBridge(destChainId),
 		};
 
 		/**
@@ -422,8 +424,14 @@ export class AssetTransferApi {
 		if (isLocal) return Direction.Local;
 
 		const { api } = this;
-		const { isDestParachain, isDestRelayChain, isDestSystemParachain, isOriginParachain, isOriginSystemParachain } =
-			chainOriginDestInfo;
+		const {
+			isDestParachain,
+			isDestRelayChain,
+			isDestSystemParachain,
+			isOriginParachain,
+			isOriginSystemParachain,
+			isDestBridge,
+		} = chainOriginDestInfo;
 
 		/**
 		 * Check if the origin is a System Parachain
@@ -438,6 +446,10 @@ export class AssetTransferApi {
 
 		if (isOriginSystemParachain && isDestParachain) {
 			return Direction.SystemToPara;
+		}
+
+		if (isOriginSystemParachain && isDestBridge) {
+			return Direction.SystemToBridge;
 		}
 
 		/**
@@ -758,7 +770,12 @@ export class AssetTransferApi {
 			return registry.relayChain;
 		}
 
+		if (chainDestIsBridge(destId)) {
+			return getGlobalConsensusSystemName(destId);
+		}
+
 		const lookup = registry.lookupParachainInfo(destId);
+
 		if (lookup.length === 0) {
 			throw new BaseError(
 				`Could not find any parachain information given the destId: ${destId}`,
@@ -770,7 +787,7 @@ export class AssetTransferApi {
 	}
 
 	/**
-	 * Returns if assetIds contains a values for a foreign asset transfer
+	 * Returns if assetIds are a part of a foreign asset transfer
 	 *
 	 * @param assetIds string[]
 	 * @returns boolean
@@ -921,11 +938,11 @@ export class AssetTransferApi {
 						: poolAssets.transfer(api, addr, assetId, amount);
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				const multiLocation = resolveMultiLocation(assetId, declaredXcmVersion);
+				const location = JSON.parse(assetId) as UnionXcmMultiLocation;
 				tx =
 					method === 'transferKeepAlive'
-						? foreignAssets.transferKeepAlive(api, addr, multiLocation, amount)
-						: foreignAssets.transfer(api, addr, multiLocation, amount);
+						? foreignAssets.transferKeepAlive(api, addr, location, amount)
+						: foreignAssets.transfer(api, addr, location, amount);
 				palletMethod = `foreignAssets::${method}`;
 			} else {
 				throw new BaseError(

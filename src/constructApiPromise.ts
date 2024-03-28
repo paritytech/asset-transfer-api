@@ -19,6 +19,10 @@ export interface ApiInfo {
 	 */
 	specName: string;
 	/**
+	 * Chain name of the chain which the api is connected to.
+	 */
+	chainName: string;
+	/**
 	 * SafeXcmVersion for the chain which the api is connected too.
 	 */
 	safeXcmVersion: number;
@@ -45,11 +49,13 @@ export const constructApiPromise = async (wsUrl: string, opts: ApiOptions = {}):
 	await api.isReady;
 
 	const { specName } = await api.rpc.state.getRuntimeVersion();
+	const chainName = await api.rpc.system.chain();
 	const safeXcmVersion = await fetchSafeXcmVersion(api);
 
 	return {
 		api,
 		specName: specName.toString(),
+		chainName: chainName.toString(),
 		safeXcmVersion: safeXcmVersion,
 	};
 };

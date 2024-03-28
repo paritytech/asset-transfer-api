@@ -12,6 +12,7 @@ import {
 	checkAssetIdsAreOfSameAssetIdType,
 	checkAssetIdsHaveNoDuplicates,
 	checkAssetIdsLengthIsValid,
+	checkAssetLocationsAreValidGlobalConsensusLocations,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkLiquidTokenTransferDirectionValidity,
@@ -22,6 +23,7 @@ import {
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
 	checkXcmVersionIsValidForPaysWithFeeDest,
+	checkXcmVersionIsValidForSystemToBridge,
 	CheckXTokensPalletOriginIsNonForeignAssetTx,
 } from './checkXcmTxInputs';
 
@@ -748,6 +750,30 @@ describe('checkLiquidTokenTransferDirectionValidity', () => {
 	});
 });
 
+describe('checkXcmVersionIsValidForSystemToBridge', () => {
+	it('Should correctly throw an error when the xcm version is less than 3 for SystemToBridge direction', () => {
+		const xcmVersion = 2;
+		const err = () => checkXcmVersionIsValidForSystemToBridge(xcmVersion);
+
+		expect(err).toThrow('SystemToBridge transactions require XCM version 3 or greater');
+	});
+});
+
+describe('checkAssetLocationsAreValidGlobalConsensusLocations', () => {
+	it('Should correctly throw an error when asset locations are found without a global consens junction', () => {
+		const assetIds = [
+			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
+			`{"parents":"1","interior":{"X1":{"Parachain":"1836"}}}`,
+		];
+
+		const err = () => checkAssetLocationsAreValidGlobalConsensusLocations(assetIds);
+
+		expect(err).toThrow(
+			'SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received {"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}},{"parents":"1","interior":{"X1":{"Parachain":"1836"}}',
+		);
+	});
+});
+
 describe('checkParaAssets', () => {
 	it('Should correctly resolve when a valid symbol assetId is provided', async () => {
 		const assetId = 'xcUSDt';
@@ -896,7 +922,7 @@ describe('checkParaAssets', () => {
 			);
 
 			expect(registry.cacheLookupForeignAsset('GDZ')).toEqual({
-				multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}',
+				multiLocation: '{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}',
 				name: 'Godzilla',
 				symbol: 'GDZ',
 			});
