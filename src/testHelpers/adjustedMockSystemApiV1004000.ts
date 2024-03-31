@@ -4,7 +4,7 @@ import type { ApiPromise } from '@polkadot/api';
 import { Metadata, Option, TypeRegistry } from '@polkadot/types';
 import type { Header } from '@polkadot/types/interfaces';
 import type {
-	PalletAssetConversionNativeOrAssetId,
+	PalletAssetConversionEvent,
 	PalletAssetConversionPoolInfo,
 	PalletAssetsAssetDetails,
 	PalletAssetsAssetMetadata,
@@ -250,11 +250,11 @@ const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
 	});
 
 const pools = (
-	_arg: ITuple<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionNativeOrAssetId]>,
-): Promise<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo][]> =>
+	_arg: ITuple<[PalletAssetConversionEvent, PalletAssetConversionEvent]>,
+): Promise<[PalletAssetConversionEvent, PalletAssetConversionPoolInfo][]> =>
 	Promise.resolve().then(() => {
 		const palletAssetConversionNativeOrAssetId1 = mockSystemApi.registry.createType(
-			'PalletAssetConversionNativeOrAssetId',
+			'PalletAssetConversionEvent',
 			[
 				{ parents: 0, interior: { Here: '' } },
 				{
@@ -269,7 +269,7 @@ const pools = (
 		});
 
 		const palletAssetConversionNativeOrAssetId2 = mockSystemApi.registry.createType(
-			'PalletAssetConversionNativeOrAssetId',
+			'PalletAssetConversionEvent',
 			[
 				{ parents: 0, interior: { Here: '' } },
 				{
