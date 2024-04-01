@@ -789,9 +789,9 @@ export class AssetTransferApi {
 	}
 
 	/**
-	 * checks the chains state and determines whether a MultiLocation assetId is part of a lp token pair
+	 * checks the chains state and determines whether an asset location is a part of a valid token liquidity pool pair
 	 *
-	 * @param assetId UnionXcmMultiLocation
+	 * @param paysWithFeeOrigin UnionXcmMultiLocation
 	 * @returns Promise<boolean>
 	 */
 	private checkAssetLpTokenPairExists = async (
@@ -803,25 +803,29 @@ export class AssetTransferApi {
 			feeAsset = sanitizeKeys(JSON.parse(paysWithFeeOrigin)) as UnionXcmMultiLocation;
 		} catch (err: unknown) {
 			throw new BaseError(
-				`paysWithFeeOrigin value must be a valid MultiLocation. Received: ${paysWithFeeOrigin}`,
+				`paysWithFeeOrigin value must be a valid asset location. Received: ${paysWithFeeOrigin}`,
 				BaseErrorsEnum.InvalidInput,
 			);
 		}
 
 		if (this.api.query.assetConversion !== undefined) {
 			try {
-				for (const poolPairsData of await this.api.query.assetConversion.pools.entries()) {
-					const tokenPairs = poolPairsData[0];
+				const liquidityPools = await this.api.query.assetConversion.pools.entries();
 
-					// remove any commas from multilocation key values e.g. Parachain: 2,125 -> Parachain: 2125
-					const sanitizedTokenPairs = JSON.stringify(tokenPairs).replace(/(\d),/g, '$1');
-					const firstLpTokenSlice = sanitizedTokenPairs.slice(1, -1).slice(0, sanitizedTokenPairs.indexOf('},{"p'));
-					const secondLpTokenSlice = sanitizedTokenPairs.slice(1, -1).slice(sanitizedTokenPairs.indexOf(',{"p'));
+				for (const poolPairsData of liquidityPools) {
+					const lpTokens = poolPairsData[0].toHuman(); // get asset location tuple
+					const lpTokenLocations = lpTokens as UnionXcmMultiLocation[];
 
-					const firstLpToken = sanitizeKeys(JSON.parse(firstLpTokenSlice)) as UnionXcmMultiLocation;
-					const secondLpToken = sanitizeKeys(JSON.parse(secondLpTokenSlice)) as UnionXcmMultiLocation;
+					// convert json into locations
+					const firstLpToken = JSON.parse(
+						JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
+					) as UnionXcmMultiLocation;
+					const secondLpToken = JSON.parse(
+						JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
+					) as UnionXcmMultiLocation;
 
-					if (deepEqual(firstLpToken, feeAsset) || deepEqual(secondLpToken, feeAsset)) {
+					// check locations match paysWithFeeOrigin feeAsset
+					if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {
 						return [true, feeAsset];
 					}
 				}
