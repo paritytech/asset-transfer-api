@@ -3,8 +3,8 @@
 import '@polkadot/api-augment';
 
 import type { ApiPromise } from '@polkadot/api';
-import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';

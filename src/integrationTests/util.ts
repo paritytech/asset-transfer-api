@@ -4,19 +4,9 @@ import type { Format, TxResult } from '../types';
 
 export type TestMultiasset = [parachainId: string, assetId: string, expected: `0x${string}`];
 
-export type TestMultiassets = [
-	parachainId: string,
-	assetIds: string[],
-	amounts: string[],
-	expected: `0x${string}`,
-];
+export type TestMultiassets = [parachainId: string, assetIds: string[], amounts: string[], expected: `0x${string}`];
 
-export type TestMultiassetWithFormat = [
-	parachainId: string,
-	assetId: string,
-	format: string,
-	expected: `0x${string}`,
-];
+export type TestMultiassetWithFormat = [parachainId: string, assetId: string, format: string, expected: `0x${string}`];
 
 export type TestMultiassetsWithFormat = [
 	parachainId: string,

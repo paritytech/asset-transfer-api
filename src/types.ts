@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
