@@ -166,15 +166,10 @@ describe('AssetTransferAPI', () => {
 				'statemine',
 				{ format: 'payload' },
 			);
-			expect(res).toEqual({
-				dest: 'moonriver',
-				origin: 'statemine',
-				direction: 'SystemToPara',
-				format: 'payload',
-				method: 'limitedReserveTransferAssets',
-				tx: '0xf81f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16010400000204320504009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
-				xcmVersion: 2,
-			});
+			expect(res.format).toEqual('payload');
+			expect(res.tx.toHex()).toEqual(
+				'0xf81f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16010400000204320504009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+			);
 		});
 		it('Should construct the correct submittable', async () => {
 			const res = await systemAssetsApi['constructFormat'](
@@ -520,7 +515,7 @@ describe('AssetTransferAPI', () => {
 					},
 				);
 
-				const decoded = moonriverAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
+				const decoded = moonriverAssetsApi.decodeExtrinsic(payloadTxResult.tx.toHex(), 'payload');
 				expect(decoded).toEqual(expected);
 			});
 
@@ -576,7 +571,7 @@ describe('AssetTransferAPI', () => {
 					},
 				);
 
-				const decoded = relayAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
+				const decoded = relayAssetsApi.decodeExtrinsic(payloadTxResult.tx.toHex(), 'payload');
 				expect(decoded).toEqual(expected);
 			});
 
@@ -633,7 +628,7 @@ describe('AssetTransferAPI', () => {
 					},
 				);
 
-				const decoded = systemAssetsApi.decodeExtrinsic(payloadTxResult.tx, 'payload');
+				const decoded = systemAssetsApi.decodeExtrinsic(payloadTxResult.tx.toHex(), 'payload');
 				expect(decoded).toEqual(expected);
 			});
 
@@ -692,7 +687,7 @@ describe('AssetTransferAPI', () => {
 					},
 				);
 
-				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx, 'payload');
+				const decoded = systemAssetsApi.decodeExtrinsic(callTxResult.tx.toHex(), 'payload');
 				expect(decoded).toEqual(expected);
 			});
 

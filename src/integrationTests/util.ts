@@ -2,28 +2,18 @@ import type { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import type { Format, TxResult } from '../types';
 
-export type TestMultiasset = [parachainId: string, assetId: string, expected: TxResult<'payload'>];
+export type TestMultiasset = [parachainId: string, assetId: string, expected: `0x${string}`];
 
-export type TestMultiassets = [
-	parachainId: string,
-	assetIds: string[],
-	amounts: string[],
-	expected: TxResult<'payload'>,
-];
+export type TestMultiassets = [parachainId: string, assetIds: string[], amounts: string[], expected: `0x${string}`];
 
-export type TestMultiassetWithFormat = [
-	parachainId: string,
-	assetId: string,
-	format: string,
-	expected: TxResult<'payload'>,
-];
+export type TestMultiassetWithFormat = [parachainId: string, assetId: string, format: string, expected: `0x${string}`];
 
 export type TestMultiassetsWithFormat = [
 	parachainId: string,
 	assetIds: string[],
 	amounts: string[],
 	format: string,
-	expected: TxResult<'payload'>,
+	expected: `0x${string}`,
 ];
 
 export const paraTransferMultiasset = async <T extends Format>(
