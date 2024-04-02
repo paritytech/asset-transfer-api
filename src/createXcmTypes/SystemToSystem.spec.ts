@@ -257,13 +257,11 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		});
 	});
 	describe('WeightLimit', () => {
-		it('Should work when isLimited is true', () => {
-			const isLimited = true;
+		it('Should work when weightLimit option is provided', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
 			const weightLimit = SystemToSystem.createWeightLimit({
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -276,7 +274,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				},
 			});
 		});
-		it('Should work when isLimited is falsy', () => {
+		it('Should work when weightLimit option is not provided', () => {
 			const weightLimit = SystemToSystem.createWeightLimit({});
 
 			expect(weightLimit).toStrictEqual({

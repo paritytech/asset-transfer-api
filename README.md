@@ -83,7 +83,6 @@ const call = assetsApi.createTransferTransaction(
   ['1000000000', '2000000000'], // Array of amounts of each token to transfer
   {
     format: 'call',
-    isLimited: true,
     xcmVersion: 1
   } // Options
 )
@@ -192,12 +191,7 @@ interface TransferArgsOpts<T extends Format> {
 	 */
 	paysWithFeeDest?: string;
 	/**
-	 * Boolean to declare if this will be with limited XCM transfers.
-	 * Deafult is unlimited.
-	 */
-	isLimited?: boolean;
-	/**
-	 * When isLimited is true, the option for applying a weightLimit is possible.
+	 * Option for applying a custome weightLimit.
 	 * If not inputted it will default to `Unlimited`.
 	 */
 	weightLimit?: { refTime?: string, proofSize?: string };
@@ -236,7 +230,6 @@ api.createTransferTransaction(
 	['1000000'],
 	{
 		format: 'call',
-		isLimited: false,
 		xcmVersion: 2,
 	}
 );
@@ -257,7 +250,6 @@ api.createTransferTransaction(
 	['1000000000000'],
 	{
 		format: 'call',
-		isLimited: true,
 		xcmVersion: 3,
 	}
 )
@@ -278,7 +270,6 @@ api.createTransferTransaction(
 	['100000'],
 	{
 		format: 'call',
-		isLimited: true,
 		xcmVersion: 2,
 		transferLiquidToken: true,
 	}

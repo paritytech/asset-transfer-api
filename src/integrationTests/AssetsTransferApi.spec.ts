@@ -232,7 +232,6 @@ describe('AssetTransferApi Integration Tests', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(
 				ataAPI: AssetTransferApi,
 				format: T,
-				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
 				proofSize?: string,
@@ -244,7 +243,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100', '100'],
 					{
 						format,
-						isLimited,
 						weightLimit: {
 							refTime,
 							proofSize,
@@ -269,7 +267,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						xcmVersion,
 						weightLimit: opts.weightLimit,
-						isLimited: opts.isLimited,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
 				);
@@ -290,7 +287,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						xcmVersion,
 						weightLimit: opts.weightLimit,
-						isLimited: opts.isLimited,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
 				);
@@ -311,7 +307,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						format,
 						xcmVersion,
 						weightLimit: opts.weightLimit,
-						isLimited: opts.isLimited,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
 				);
@@ -329,7 +324,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format,
-						isLimited: opts.isLimited,
 						weightLimit: opts.weightLimit,
 						xcmVersion,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
@@ -352,7 +346,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format,
 						xcmVersion,
-						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
@@ -361,7 +354,6 @@ describe('AssetTransferApi Integration Tests', () => {
 			const liquidTokenTransferCreateTx = async <T extends Format>(
 				ataAPI: AssetTransferApi,
 				format: T,
-				isLimited: boolean,
 				xcmVersion: number,
 			): Promise<TxResult<T>> => {
 				return await ataAPI.createTransferTransaction(
@@ -371,7 +363,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format,
-						isLimited,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '1000',
@@ -383,7 +374,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', true, 2, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -395,7 +386,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', true, 2, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -407,11 +398,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', true, 2, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', 2, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedReserveTransferAssets for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', false, 2);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', 2);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -423,7 +414,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAssets for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', false, 2);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 2);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -435,7 +426,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', false, 2);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedReserveTransferAssets for V2 when its a native token', async () => {
@@ -477,7 +468,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a call for limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -497,7 +487,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a payload for limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -518,7 +507,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -531,7 +519,6 @@ describe('AssetTransferApi Integration Tests', () => {
 
 				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(systemAssetsApi, 'call', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '5000',
 							proofSize: '2000',
@@ -551,7 +538,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(systemAssetsApi, 'payload', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '5000',
 							proofSize: '2000',
@@ -571,7 +557,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(systemAssetsApi, 'submittable', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '5000',
 							proofSize: '2000',
@@ -582,7 +567,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a liquid token transfer call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await liquidTokenTransferCreateTx(systemAssetsApi, 'call', true, 2);
+					const res = await liquidTokenTransferCreateTx(systemAssetsApi, 'call', 2);
 					expect(res).toStrictEqual({
 						dest: 'karura',
 						direction: 'SystemToPara',
@@ -595,7 +580,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly construct a paysWithFeeOrigin tx for V2 using an assets location', async () => {
 					const res = await nativeBaseSystemPaysWithFeeOriginAssetLocationCreateTx(systemAssetsApi, 'payload', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -615,7 +599,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly construct a paysWithFeeOrigin tx for V2 using an assets id', async () => {
 					const res = await nativeBaseSystemPaysWithFeeOriginAssetIdCreateTx(systemAssetsApi, 'payload', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -636,7 +619,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			});
 			describe('V3', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', true, 3, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -648,7 +631,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', true, 3, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -660,11 +643,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', true, 3, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', 3, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedReserveTransferAssets for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', false, 3);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', 3);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -676,7 +659,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAssets for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', false, 3);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 3);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'statemine',
@@ -688,7 +671,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', false, 3);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedReserveTransferAssets for V3 when the token is native', async () => {
@@ -730,7 +713,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a call for limitedReserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '5000',
 							proofSize: '3000',
@@ -750,7 +732,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a payload for limitedReserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '5000',
 							proofSize: '3000',
@@ -770,7 +751,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '5000',
 							proofSize: '3000',
@@ -782,7 +762,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM call for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(systemAssetsApi, 'call', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '5000',
 							proofSize: '2000',
@@ -802,7 +781,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM payload for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(systemAssetsApi, 'payload', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '5000',
 							proofSize: '2000',
@@ -822,7 +800,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseSystemCreateTx(systemAssetsApi, 'submittable', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '5000',
 							proofSize: '2000',
@@ -834,7 +811,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM call limitedTeleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(systemAssetsApi, 'call', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '2000',
 							proofSize: '5000',
@@ -854,7 +830,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM payload limitedTeleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(systemAssetsApi, 'payload', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '2000',
 							proofSize: '5000',
@@ -874,7 +849,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM submittable limitedTeleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(systemAssetsApi, 'submittable', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '2000',
 							proofSize: '5000',
@@ -922,7 +896,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a liquid token transfer call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await liquidTokenTransferCreateTx(systemAssetsApi, 'call', true, 3);
+					const res = await liquidTokenTransferCreateTx(systemAssetsApi, 'call', 3);
 					expect(res).toStrictEqual({
 						dest: 'karura',
 						direction: 'SystemToPara',
@@ -936,7 +910,6 @@ describe('AssetTransferApi Integration Tests', () => {
 			});
 			it('Should correctly construct a paysWithFeeOrigin tx for V3 using an assets id', async () => {
 				const res = await nativeBaseSystemPaysWithFeeOriginAssetIdCreateTx(systemAssetsApi, 'payload', 3, {
-					isLimited: true,
 					weightLimit: {
 						refTime: '1000',
 						proofSize: '2000',
@@ -956,7 +929,6 @@ describe('AssetTransferApi Integration Tests', () => {
 			});
 			it('Should correctly construct a paysWithFeeOrigin tx for V3 using an assets location', async () => {
 				const res = await nativeBaseSystemPaysWithFeeOriginAssetLocationCreateTx(systemAssetsApi, 'payload', 3, {
-					isLimited: true,
 					weightLimit: {
 						refTime: '1000',
 						proofSize: '2000',
@@ -980,7 +952,6 @@ describe('AssetTransferApi Integration Tests', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(
 				ataAPI: AssetTransferApi,
 				format: T,
-				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
 				proofSize?: string,
@@ -992,7 +963,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100', '100'],
 					{
 						format,
-						isLimited,
 						xcmVersion,
 						weightLimit: {
 							refTime,
@@ -1006,7 +976,6 @@ describe('AssetTransferApi Integration Tests', () => {
 				ataAPI: AssetTransferApi,
 				assetId: string[],
 				format: T,
-				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
 				proofSize?: string,
@@ -1018,7 +987,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format,
-						isLimited,
 						xcmVersion,
 						weightLimit: {
 							refTime,
@@ -1043,7 +1011,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					{
 						format,
 						xcmVersion,
-						isLimited: opts?.isLimited,
 						weightLimit: opts.weightLimit,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
@@ -1056,7 +1023,7 @@ describe('AssetTransferApi Integration Tests', () => {
 
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', true, 2, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
@@ -1068,7 +1035,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', true, 2, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
@@ -1080,11 +1047,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', true, 2, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', 2, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedTeleportAssets for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', false, 2);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', 2);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
@@ -1096,7 +1063,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedReserveTransferAssets payload for for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', false, 2);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 2);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
@@ -1108,7 +1075,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', false, 2);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedTeleportAssets for V2 when its a native token', async () => {
@@ -1116,7 +1083,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						systemAssetsApi,
 						statemineNativeAssetIdArr,
 						'call',
-						true,
 						2,
 						'1000',
 						'2000',
@@ -1136,7 +1102,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						systemAssetsApi,
 						statemineNativeAssetIdArr,
 						'payload',
-						true,
 						2,
 						'1000',
 						'2000',
@@ -1156,7 +1121,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						systemAssetsApi,
 						statemineNativeAssetIdArr,
 						'submittable',
-						true,
 						2,
 						'1000',
 						'2000',
@@ -1164,7 +1128,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for limitedTeleportAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'call', false, 2);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'call', 2);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
 						origin: 'statemine',
@@ -1176,7 +1140,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for limitedTeleportAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'payload', false, 2);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'payload', 2);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
 						origin: 'statemine',
@@ -1188,13 +1152,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V2 when its a native token', async () => {
-					const res = await nativeBaseSystemCreateTx(
-						systemAssetsApi,
-						statemineNativeAssetIdArr,
-						'submittable',
-						false,
-						2,
-					);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'submittable', 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 
@@ -1205,7 +1163,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						'call',
 						2,
 						{
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1231,7 +1188,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						'payload',
 						2,
 						{
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1257,7 +1213,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						'submittable',
 						2,
 						{
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1271,7 +1226,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			});
 			describe('V3', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', true, 3, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
@@ -1283,7 +1238,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', true, 3, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
@@ -1295,11 +1250,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', true, 3, '1000', '2000');
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', 3, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedTeleportAssets for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', false, 3);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'call', 3);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
@@ -1311,7 +1266,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedTeleportAssets for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', false, 3);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 3);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
 						origin: 'statemine',
@@ -1323,11 +1278,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3', async () => {
-					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', false, 3);
+					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'submittable', 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedTeleportAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'call', false, 3);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'call', 3);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
 						origin: 'statemine',
@@ -1339,7 +1294,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedTeleportAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'payload', false, 3);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'payload', 3);
 					expect(res).toEqual({
 						dest: 'bridge-hub-kusama',
 						origin: 'statemine',
@@ -1351,13 +1306,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V3 when the token is native', async () => {
-					const res = await nativeBaseSystemCreateTx(
-						systemAssetsApi,
-						statemineNativeAssetIdArr,
-						'submittable',
-						false,
-						3,
-					);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, statemineNativeAssetIdArr, 'submittable', 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for limitedTeleportAssets for V3 when the token is native', async () => {
@@ -1365,7 +1314,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						systemAssetsApi,
 						statemineNativeAssetIdArr,
 						'call',
-						true,
 						3,
 						'1000',
 						'2000',
@@ -1385,7 +1333,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						systemAssetsApi,
 						statemineNativeAssetIdArr,
 						'payload',
-						true,
 						3,
 						'1000',
 						'2000',
@@ -1405,7 +1352,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						systemAssetsApi,
 						statemineNativeAssetIdArr,
 						'submittable',
-						true,
 						3,
 						'1000',
 						'2000',
@@ -1420,7 +1366,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						'call',
 						3,
 						{
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1446,7 +1391,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						'payload',
 						3,
 						{
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1472,7 +1416,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						'submittable',
 						3,
 						{
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1489,7 +1432,6 @@ describe('AssetTransferApi Integration Tests', () => {
 		describe('RelayToPara', () => {
 			const baseRelayCreateTx = async <T extends Format>(
 				format: T,
-				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
 				proofSize?: string,
@@ -1501,7 +1443,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format,
-						isLimited,
+
 						xcmVersion,
 						weightLimit: {
 							refTime,
@@ -1513,7 +1455,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			};
 			describe('V2', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('call', true, 2, '1000', '2000');
+					const res = await baseRelayCreateTx('call', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
@@ -1525,7 +1467,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('payload', true, 2, '1000', '2000');
+					const res = await baseRelayCreateTx('payload', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
@@ -1537,11 +1479,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V2', async () => {
-					const res = await baseRelayCreateTx('submittable', true, 2, '1000', '2000');
+					const res = await baseRelayCreateTx('submittable', 2, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a limitedReserveTransferAssets call for V2', async () => {
-					const res = await baseRelayCreateTx('call', false, 2);
+					const res = await baseRelayCreateTx('call', 2);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
@@ -1553,7 +1495,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAssets for V2', async () => {
-					const res = await baseRelayCreateTx('payload', false, 2);
+					const res = await baseRelayCreateTx('payload', 2);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
@@ -1565,13 +1507,13 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedReserveTransferAssets submittable extrinsic for V2', async () => {
-					const res = await baseRelayCreateTx('submittable', false, 2);
+					const res = await baseRelayCreateTx('submittable', 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V3', () => {
 				it('Should correctly build a call for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('call', true, 3, '1000', '2000');
+					const res = await baseRelayCreateTx('call', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
@@ -1583,7 +1525,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('payload', true, 3, '1000', '2000');
+					const res = await baseRelayCreateTx('payload', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
@@ -1595,11 +1537,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAsset for V3', async () => {
-					const res = await baseRelayCreateTx('submittable', true, 3, '1000', '2000');
+					const res = await baseRelayCreateTx('submittable', 3, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a call for a limitedReserveTransferAssets for V3', async () => {
-					const res = await baseRelayCreateTx('call', false, 3);
+					const res = await baseRelayCreateTx('call', 3);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
@@ -1611,7 +1553,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAssets for V3', async () => {
-					const res = await baseRelayCreateTx('payload', false, 3);
+					const res = await baseRelayCreateTx('payload', 3);
 					expect(res).toEqual({
 						dest: 'karura',
 						origin: 'kusama',
@@ -1623,7 +1565,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3', async () => {
-					const res = await baseRelayCreateTx('submittable', false, 3);
+					const res = await baseRelayCreateTx('submittable', 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
@@ -1632,7 +1574,6 @@ describe('AssetTransferApi Integration Tests', () => {
 			const nativeBaseSystemCreateTx = async <T extends Format>(
 				ataAPI: AssetTransferApi,
 				format: T,
-				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
 				proofSize?: string,
@@ -1644,7 +1585,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format,
-						isLimited,
+
 						xcmVersion,
 						weightLimit: {
 							refTime,
@@ -1656,7 +1597,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			};
 			describe('V2', () => {
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', false, 2);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', 2);
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
@@ -1668,7 +1609,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets payload for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', false, 2);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', 2);
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
@@ -1680,11 +1621,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', false, 2);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', true, 2, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
@@ -1696,7 +1637,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets payload for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', true, 2, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
@@ -1708,13 +1649,13 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', true, 2, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', 2, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V3', () => {
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', false, 3);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', 3);
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
@@ -1726,7 +1667,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets payload for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', false, 3);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', 3);
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
@@ -1738,11 +1679,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', false, 3);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', true, 3, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
@@ -1754,7 +1695,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets payload for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', true, 3, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'kusama',
 						origin: 'statemine',
@@ -1766,13 +1707,13 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', true, 3, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', 3, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V4', () => {
 				it('Should correctly build a transferAssets call for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'call', false, 4);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'call', 4);
 					expect(res).toEqual({
 						dest: 'westend',
 						origin: 'westmint',
@@ -1784,7 +1725,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a transferAssets payload for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'payload', false, 4);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'payload', 4);
 					expect(res).toEqual({
 						dest: 'westend',
 						origin: 'westmint',
@@ -1796,11 +1737,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a transferAssets for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'submittable', false, 3);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'submittable', 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a transferAssets call for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'call', true, 4, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'call', 4, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'westend',
 						origin: 'westmint',
@@ -1812,7 +1753,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a transferAssets payload for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'payload', true, 4, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'payload', 4, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'westend',
 						origin: 'westmint',
@@ -1824,7 +1765,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a transferAssets for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'submittable', true, 4, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'submittable', 4, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
@@ -1833,7 +1774,6 @@ describe('AssetTransferApi Integration Tests', () => {
 			const nativeBaseSystemCreateTx = async <T extends Format>(
 				ataAPI: AssetTransferApi,
 				format: T,
-				isLimited: boolean,
 				xcmVersion: number,
 				refTime?: string,
 				proofSize?: string,
@@ -1845,7 +1785,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					['100'],
 					{
 						format,
-						isLimited,
+
 						xcmVersion,
 						weightLimit: {
 							refTime,
@@ -1857,7 +1797,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			};
 			describe('V2', () => {
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'call', false, 2);
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'call', 2);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
@@ -1869,7 +1809,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets payload for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'payload', false, 2);
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'payload', 2);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
@@ -1881,11 +1821,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'submittable', false, 2);
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'submittable', 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'call', true, 2, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'call', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
@@ -1897,7 +1837,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets call for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'payload', true, 2, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'payload', 2, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
@@ -1909,13 +1849,13 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V2', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'submittable', true, 2, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'submittable', 2, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V3', () => {
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'call', false, 3);
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'call', 3);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
@@ -1927,7 +1867,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets payload for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'payload', false, 3);
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'payload', 3);
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
@@ -1939,11 +1879,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'submittable', false, 3);
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'submittable', 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'call', true, 3, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'call', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
@@ -1955,7 +1895,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a limitedTeleportAssets call for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'payload', true, 3, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'payload', 3, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'statemine',
 						origin: 'kusama',
@@ -1967,13 +1907,13 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a limitedTeleportAssets for V3', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'submittable', true, 3, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(relayAssetsApi, 'submittable', 3, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 			describe('V4', () => {
 				it('Should correctly build a transferAssets call for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'call', false, 4);
+					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'call', 4);
 					expect(res).toEqual({
 						dest: 'westmint',
 						origin: 'westend',
@@ -1985,7 +1925,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a transferAssets payload for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'payload', false, 4);
+					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'payload', 4);
 					expect(res).toEqual({
 						dest: 'westmint',
 						origin: 'westend',
@@ -1997,11 +1937,11 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a transferAssets for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'submittable', false, 4);
+					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'submittable', 4);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a transferAssets call for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'call', true, 4, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'call', 4, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'westmint',
 						origin: 'westend',
@@ -2013,7 +1953,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a transferAssets call for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'payload', true, 4, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'payload', 4, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'westmint',
 						origin: 'westend',
@@ -2025,7 +1965,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a submittable extrinsic for a transferAssets for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'submittable', true, 4, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(relayAssetsApiV1007001, 'submittable', 4, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});

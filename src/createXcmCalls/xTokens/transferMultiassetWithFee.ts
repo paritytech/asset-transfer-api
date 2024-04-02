@@ -20,11 +20,10 @@ export const transferMultiassetWithFee = async (
 	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const { api, direction, destAddr, assetIds, amounts, destChainId, xcmVersion, specName, registry } = baseArgs;
-	const { isLimited, weightLimit, paysWithFeeDest, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
+	const { weightLimit, paysWithFeeDest, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
 	const ext = api.tx[baseArgs.xcmPallet].transferMultiassetWithFee;
 	const typeCreator = createXcmTypes[direction];
 	const destWeightLimit = typeCreator.createWeightLimit({
-		isLimited,
 		weightLimit,
 	});
 

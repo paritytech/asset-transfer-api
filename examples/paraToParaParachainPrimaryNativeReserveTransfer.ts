@@ -9,10 +9,10 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a call to send PHA from a Phala Network (Parachain) account
- * to a Moonbeam (Parachain) account, where the `xcmVersion` is set to 3, and the `isLimited` option is false declaring that
+ * to a Moonbeam (Parachain) account, where the `xcmVersion` is set to 3 and no `weightLimit` option is provided declaring that
  * the tx will allow `unlimited` weight to be used.
  *
- * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://phala.api.onfinality.io/public-ws');
@@ -26,7 +26,6 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				isLimited: false,
 				xcmVersion: 3,
 			},
 		);

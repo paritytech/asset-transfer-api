@@ -747,7 +747,6 @@ describe('AssetTransferAPI', () => {
 				{
 					xcmVersion: 3,
 					weightLimit: { refTime: '1000', proofSize: '1000' },
-					isLimited: true,
 					format: 'call',
 					keepAlive: true,
 					paysWithFeeDest: 'usdt',
@@ -883,7 +882,6 @@ describe('AssetTransferAPI', () => {
 				};
 
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -922,7 +920,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: false,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -960,7 +957,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1004,7 +1000,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: false,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1048,7 +1043,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: false,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1093,7 +1087,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet: 'xTokens' as XcmPalletName,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1133,7 +1126,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet: 'xTokens' as XcmPalletName,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1178,7 +1170,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet: 'xTokens' as XcmPalletName,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1222,7 +1213,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: false,
 					paysWithFeeDest: '1984',
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
@@ -1261,7 +1251,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1297,7 +1286,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToRelay;
 				const assetIds = ['ksm'];
-				const isLimited = true;
 				const mockBaseArgs: XTokensBaseArgs = {
 					api: bifrostAssetsApi.api,
 					direction,
@@ -1311,7 +1299,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1342,7 +1329,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToRelay;
 				const assetIds = ['ksm'];
-				const isLimited = false;
 
 				const mockBaseArgs: XcmBaseArgs = {
 					api: moonriverAssetsNoXTokensApi.api,
@@ -1356,7 +1342,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					paysWithFeeDest: '1984',
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
@@ -1387,7 +1372,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToRelay;
 				const assetIds = ['ksm'];
-				const isLimited = true;
 
 				const mockBaseArgs: XcmBaseArgs = {
 					api,
@@ -1401,7 +1385,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -1433,7 +1416,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToPara;
 				const assetIds = ['movr'];
-				const isLimited = false;
 
 				const mockBaseArgs: XTokensBaseArgs = {
 					api,
@@ -1448,7 +1430,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -1475,7 +1456,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToPara;
 				const assetIds = ['vmovr', 'xcbnc'];
-				const isLimited = false;
 
 				const mockBaseArgs: XTokensBaseArgs = {
 					api,
@@ -1490,7 +1470,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -1520,7 +1499,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToPara;
 				const assetIds = ['vmovr', 'usdt'];
-				const isLimited = false;
 				const paysWithFeeDest =
 					'{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":10}]}}';
 
@@ -1537,7 +1515,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					paysWithFeeDest,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
@@ -1570,7 +1547,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Teleport;
 				const direction = Direction.RelayToSystem;
 				const assetIds = ['ksm'];
-				const isLimited = false;
 
 				const mockBaseArgs: XcmBaseArgs = {
 					api,
@@ -1584,7 +1560,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -1616,7 +1591,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.RelayToSystem;
 				const assetIds = ['ksm'];
-				const isLimited = false;
 
 				const mockBaseArgs: XcmBaseArgs = {
 					api,
@@ -1630,7 +1604,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -1660,7 +1633,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.RelayToSystem;
 				const assetIds = ['ksm'];
-				const isLimited = true;
 
 				const mockBaseArgs: XcmBaseArgs = {
 					api,
@@ -1674,7 +1646,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1709,7 +1680,6 @@ describe('AssetTransferAPI', () => {
 			const assetCallType = AssetCallType.Reserve;
 			const direction = Direction.RelayToSystem;
 			const assetIds = ['ksm'];
-			const isLimited = true;
 
 			const mockBaseArgs: XcmBaseArgs = {
 				api,
@@ -1724,7 +1694,6 @@ describe('AssetTransferAPI', () => {
 			};
 
 			const mockBaseOpts = {
-				isLimited,
 				weightLimit: {
 					refTime: '3000',
 					proofSize: '10000',

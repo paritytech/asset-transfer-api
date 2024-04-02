@@ -22,13 +22,11 @@ describe('transferMultiassets', () => {
 			xcmPallet: XcmPalletName.xTokens,
 		};
 		it('Should correctly construct an Unlimited transferMultiassets tx for V2', async () => {
-			const isLimited = false;
 			const refTime = undefined;
 			const proofSize = undefined;
 			const paysWithFeeDest = '0';
 
 			const ext = await transferMultiassets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -45,7 +43,6 @@ describe('transferMultiassets', () => {
 			expect(true).toBe(true);
 		});
 		it('Should correctly construct a Limited transferMultiassets tx for V2', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 			const paysWithFeeDest = '0';
@@ -57,7 +54,6 @@ describe('transferMultiassets', () => {
 					amounts: ['1000000', '50000000000'],
 				},
 				{
-					isLimited,
 					weightLimit: {
 						refTime,
 						proofSize,
@@ -74,7 +70,6 @@ describe('transferMultiassets', () => {
 		});
 
 		it('Should correctly construct an Unlimited transferMultiassets tx for V3', async () => {
-			const isLimited = false;
 			const refTime = undefined;
 			const proofSize = undefined;
 			const paysWithFeeDest = '1';
@@ -87,7 +82,6 @@ describe('transferMultiassets', () => {
 					xcmVersion: 3,
 				},
 				{
-					isLimited,
 					weightLimit: {
 						refTime,
 						proofSize,
@@ -103,7 +97,6 @@ describe('transferMultiassets', () => {
 			);
 		});
 		it('Should correctly construct a Limited transferMultiassets tx for V3', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 			const paysWithFeeDest = '0';
@@ -116,7 +109,6 @@ describe('transferMultiassets', () => {
 					xcmVersion: 3,
 				},
 				{
-					isLimited,
 					weightLimit: {
 						refTime,
 						proofSize,

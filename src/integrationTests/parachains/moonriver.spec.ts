@@ -64,7 +64,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiasset(moonriverATA, format as Format, 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -78,7 +77,6 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V2 submittable transferMultiasset', async () => {
 					const res = await moonriverTransferMultiasset(moonriverATA, 'submittable', 2, '2001', 'MOVR', {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -125,7 +123,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiasset(moonriverATA, format as Format, 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -139,7 +136,6 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V3 submittable transferMultiasset', async () => {
 					const res = await moonriverTransferMultiasset(moonriverATA, 'submittable', 3, '2001', 'ksm', {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -212,7 +208,6 @@ describe('Moonriver', () => {
 							assetIds,
 							amounts,
 							{
-								isLimited: true,
 								weightLimit: {
 									refTime: '1000',
 									proofSize: '2000',
@@ -234,7 +229,6 @@ describe('Moonriver', () => {
 						['vmovr', 'vksm'],
 						['10000000000', '10000000000'],
 						{
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -306,7 +300,6 @@ describe('Moonriver', () => {
 							assetIds,
 							amounts,
 							{
-								isLimited: true,
 								weightLimit: {
 									refTime: '1000',
 									proofSize: '2000',
@@ -328,7 +321,6 @@ describe('Moonriver', () => {
 						['sdn', 'ksm'],
 						['10000000000', '10000000000'],
 						{
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -392,7 +384,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiassetWithFee(moonriverATA, format as Format, 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -406,7 +397,6 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V2 submittable transferMultiassetWithFee', async () => {
 					const res = await moonriverTransferMultiassetWithFee(moonriverATA, 'submittable', 2, '2001', 'ksm', {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -467,7 +457,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiassetWithFee(moonriverATA, format as Format, 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -481,7 +470,6 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V3 submittable transferMultiassetWithFee', async () => {
 					const res = await moonriverTransferMultiassetWithFee(moonriverATA, 'submittable', 3, '2001', 'ksm', {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -546,7 +534,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiasset(moonriverATA, format as Format, 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -609,7 +596,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiasset(moonriverATA, format as Format, 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -684,7 +670,6 @@ describe('Moonriver', () => {
 							assetIds,
 							amounts,
 							{
-								isLimited: true,
 								weightLimit: {
 									refTime: '1000',
 									proofSize: '2000',
@@ -758,7 +743,6 @@ describe('Moonriver', () => {
 							assetIds,
 							amounts,
 							{
-								isLimited: true,
 								weightLimit: {
 									refTime: '1000',
 									proofSize: '2000',
@@ -824,7 +808,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiassetWithFee(moonriverATA, format as Format, 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -887,7 +870,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiassetWithFee(moonriverATA, format as Format, 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -938,7 +920,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 2, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -952,7 +933,6 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V2 limitedTeleportAssets submittable containing the native parachain asset', async () => {
 					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -999,7 +979,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 3, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1013,11 +992,114 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V3 limitedTeleportAssets submittable containing the native parachain asset', async () => {
 					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
 						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+		});
+		describe('teleportAssets', () => {
+			describe('XCM V2', () => {
+				it('Should correctly construct a teleportAssets call when sending Moonrivers primary native asset', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'1000',
+							'MOVR',
+							'call',
+							{
+								dest: 'statemine',
+								origin: 'moonriver',
+								direction: 'ParaToSystem' as Direction,
+								format: 'call',
+								method: 'transferMultiasset',
+								tx: '0x6a0101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000000',
+								xcmVersion: 2,
+							},
+						],
+						[
+							'1000',
+							'MOVR',
+							'payload',
+							{
+								dest: 'statemine',
+								origin: 'moonriver',
+								direction: 'ParaToSystem' as Direction,
+								format: 'payload',
+								method: 'transferMultiasset',
+								tx: '0xd86a0101000000000700e40b540201010200a10f01007369626c270800000000000000000000000000000000000000000000000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+								xcmVersion: 2,
+							},
+						],
+					];
+
+					for (const test of tests) {
+						const [, assetId, format, expectedResult] = test;
+						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 2, {
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+
+						expect(res).toEqual(expectedResult);
+					}
+				});
+				it('Should correctly build a V2 teleportAssets submittable containing the native parachain asset', async () => {
+					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 2, {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('XCM V3', () => {
+				it('Should correctly construct a teleportAssets call when sending Moonrivers primary native asset', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'1000',
+							'MOVR',
+							'call',
+							{
+								dest: 'statemine',
+								origin: 'moonriver',
+								direction: 'ParaToSystem' as Direction,
+								format: 'call',
+								method: 'transferMultiasset',
+								tx: '0x6a0103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000000',
+								xcmVersion: 3,
+							},
+						],
+						[
+							'1000',
+							'MOVR',
+							'payload',
+							{
+								dest: 'statemine',
+								origin: 'moonriver',
+								direction: 'ParaToSystem' as Direction,
+								format: 'payload',
+								method: 'transferMultiasset',
+								tx: '0xd86a0103000000000700e40b540203010200a10f01007369626c270800000000000000000000000000000000000000000000000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+								xcmVersion: 3,
+							},
+						],
+					];
+
+					for (const test of tests) {
+						const [, assetId, format, expectedResult] = test;
+						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 3, {
+							isForeignAssetsTransfer: false,
+							isLiquidTokenTransfer: false,
+						});
+
+						expect(res).toEqual(expectedResult);
+					}
+				});
+				it('Should correctly build a V3 teleportAssets submittable containing the native parachain asset', async () => {
+					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 3, {
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -1078,7 +1160,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiasset(moonriverATA, format as Format, 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1092,7 +1173,6 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V2 submittable transferMultiasset', async () => {
 					const res = await moonriverTransferMultiasset(moonriverATA, 'submittable', 2, '0', 'ksm', {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -1139,7 +1219,6 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await moonriverTransferMultiasset(moonriverATA, format as Format, 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1153,7 +1232,6 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V3 submittable transferMultiasset', async () => {
 					const res = await moonriverTransferMultiasset(moonriverATA, 'submittable', 3, '0', 'ksm', {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',

@@ -9,10 +9,10 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a `limitedTeleportAssets` call to send 1 WND from a Westend AssetHub (System Parachain) account
- * to a Westend (Relay Chain) account, where the `xcmVersion` is set to `4`, `isLimited` is set to true and no `weightLimit` value is given declaring that
- * we will allow `unlimited` weight to be used for the tx.
+ * to a Westend (Relay Chain) account, where the `xcmVersion` is set to `4` and no `weightLimit` option is provided declaring that
+ * the tx will allow unlimited weight to be used for fees.
  *
- * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westend-asset-hub-rpc.polkadot.io');
@@ -26,7 +26,6 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				isLimited: true,
 				xcmVersion: 4,
 			},
 		);

@@ -144,7 +144,6 @@ export class AssetTransferApi {
 	 *     ['1000000000000'],
 	 *     {
 	 *       format: 'call',
-	 *       isLimited: true,
 	 *       xcmVersion: 2,
 	 *     }
 	 *   )
@@ -167,16 +166,8 @@ export class AssetTransferApi {
 		amounts: string[],
 		opts: TransferArgsOpts<T> = {},
 	): Promise<TxResult<T>> {
-		const {
-			format,
-			paysWithFeeDest,
-			paysWithFeeOrigin,
-			isLimited,
-			weightLimit,
-			xcmVersion,
-			transferLiquidToken,
-			sendersAddr,
-		} = opts;
+		const { format, paysWithFeeDest, paysWithFeeOrigin, weightLimit, xcmVersion, transferLiquidToken, sendersAddr } =
+			opts;
 
 		if (!this.registryConfig.registryInitialized) {
 			await this.initializeRegistry();
@@ -252,7 +243,6 @@ export class AssetTransferApi {
 		};
 
 		const baseOpts = {
-			isLimited,
 			weightLimit,
 			paysWithFeeDest,
 			isLiquidTokenTransfer,

@@ -10,10 +10,10 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
 /**
  * In this example we are creating a `polkadotXcm` pallet `limitedTeleportAssets` call to send EQ (foreign asset with location `{"parents":"1","interior":{"X1":{"Parachain":"2011"}}}`)
  * from a Polkadot Asset Hub (System Parachain) account
- * to an Equilibrium (ParaChain) account, where the `xcmVersion` is set to 3, the `isLimited` option is set to true and there is no
- * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
+ * to an Equilibrium (ParaChain) account, where the `xcmVersion` is set to 3 and no `weightLimit` option is provided declaring that
+ * the tx will allow unlimited weight to be used for fees.
  *
- * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://polkadot-asset-hub-rpc.polkadot.io');
@@ -28,7 +28,6 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				isLimited: true,
 				xcmVersion: 3,
 			},
 		);
