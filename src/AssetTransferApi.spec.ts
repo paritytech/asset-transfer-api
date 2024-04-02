@@ -840,7 +840,7 @@ describe('AssetTransferAPI', () => {
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
 				);
-			}).rejects.toThrow('paysWithFeeOrigin value must be a valid MultiLocation. Received: hello there');
+			}).rejects.toThrow('paysWithFeeOrigin value must be a valid asset location. Received: hello there');
 		});
 
 		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not part of a valid lp token pair', async () => {
@@ -860,7 +860,7 @@ describe('AssetTransferAPI', () => {
 					},
 				);
 			}).rejects.toThrow(
-				'paysWithFeeOrigin value must be a valid MultiLocation. Received: {"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
+				'paysWithFeeOrigin value must be a valid asset location. Received: {"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
 			);
 		});
 	});
@@ -1743,6 +1743,34 @@ describe('AssetTransferAPI', () => {
 					mockBaseOpts,
 				);
 			}).rejects.toThrow('Did not find limitedReserveTransferAssets from pallet xcmPallet in the current runtime');
+		});
+	});
+	describe('checkAssetLpTokenPairExists', () => {
+		it('Should correctly return true when an assetConversion lp pool token location pair contains a match to a given paysWithFee asset location', async () => {
+			const paysWithFeeOrigin = `{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`;
+
+			expect(await systemAssetsApi['checkAssetLpTokenPairExists'](paysWithFeeOrigin)).toEqual([
+				true,
+				{
+					Parents: '0',
+					Interior: {
+						X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+					},
+				},
+			]);
+		});
+		it('Should correctly return false when an assetConversion lp pool token location pair does not contain a match to a given paysWithFee asset location', async () => {
+			const paysWithFeeOrigin = `{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"2000"}]}}`;
+
+			expect(await systemAssetsApi['checkAssetLpTokenPairExists'](paysWithFeeOrigin)).toEqual([
+				false,
+				{
+					Parents: '0',
+					Interior: {
+						X2: [{ PalletInstance: '50' }, { GeneralIndex: '2000' }],
+					},
+				},
+			]);
 		});
 	});
 });

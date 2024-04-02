@@ -327,15 +327,33 @@ export const adjustedMockSystemApi = {
 					const palletAssetConversionData = Object.assign(
 						[
 							[
-								[
-									{ parents: '0', interior: { Here: '' } },
+								Object.assign(
+									[
+										{ parents: '0', interior: { Here: '' } },
+										{
+											parents: '0',
+											interior: {
+												X2: [{ PalletInstance: '50' }, { GeneralIndex: '100' }],
+											},
+										},
+									],
 									{
-										parents: '0',
-										interior: {
-											X2: [{ PalletInstance: '50' }, { GeneralIndex: '100' }],
+										toHuman: () => {
+											return [
+												[
+													{ parents: '0', interior: { Here: '' } },
+													{
+														parents: '0',
+														interior: {
+															X2: [{ PalletInstance: '50' }, { GeneralIndex: '100' }],
+														},
+													},
+												],
+												0,
+											];
 										},
 									},
-								],
+								),
 								Object.assign(
 									{
 										lpToken: mockSystemApi.registry.createType('u32', 0),
@@ -350,15 +368,33 @@ export const adjustedMockSystemApi = {
 								),
 							],
 							[
-								[
-									{ parents: '0', interior: { Here: '' } },
+								Object.assign(
+									[
+										{ parents: '0', interior: { Here: '' } },
+										{
+											parents: '0',
+											interior: {
+												X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+											},
+										},
+									],
 									{
-										parents: '0',
-										interior: {
-											X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+										toHuman: () => {
+											return [
+												[
+													{ parents: '0', interior: { Here: '' } },
+													{
+														parents: '0',
+														interior: {
+															X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
+														},
+													},
+												],
+												1,
+											];
 										},
 									},
-								],
+								),
 								Object.assign(
 									{
 										lpToken: mockSystemApi.registry.createType('u32', 1),
