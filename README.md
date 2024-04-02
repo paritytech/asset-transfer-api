@@ -191,7 +191,7 @@ interface TransferArgsOpts<T extends Format> {
 	 */
 	paysWithFeeDest?: string;
 	/**
-	 * Option for applying a custome weightLimit.
+	 * Option for applying a custom weightLimit.
 	 * If not inputted it will default to `Unlimited`.
 	 */
 	weightLimit?: { refTime?: string, proofSize?: string };
