@@ -13,7 +13,7 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
  * to a Moonriver (ParaChain) account, where the `xcmVersion` is set to 3, the `isLimited` option is set to true and there is no
  * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  *
- * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`..
+ * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io');

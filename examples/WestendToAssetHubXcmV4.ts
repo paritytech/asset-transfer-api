@@ -12,7 +12,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  * to a Westend AssetHub (System Parachain) account, where the `xcmVersion` is set to `4`, `isLimited` is set to true and no `weightLimit` value is given declaring that
  * we will allow `unlimited` weight to be used for the tx.
  *
- * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`..
+ * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westend-rpc.polkadot.io');

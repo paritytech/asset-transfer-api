@@ -12,7 +12,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  * to a Westmint (System Parachain) account, where the `xcmVersion` is set to 2, and the `isLimited` declaring that
  * it will be `unlimited` since there is no `weightLimit` option as well.
  *
- * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`..
+ * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westend-rpc.polkadot.io');

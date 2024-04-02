@@ -1095,7 +1095,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a payload for a reserveTransferAsset for V2', async () => {
+				it('Should correctly build a limitedReserveTransferAssets payload for for V2', async () => {
 					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', false, 2);
 					expect(res).toEqual({
 						dest: 'encointer-parachain',
@@ -1540,7 +1540,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await baseRelayCreateTx('submittable', true, 2, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
-				it('Should correctly build a call for a reserveTransferAsset for V2', async () => {
+				it('Should correctly build a limitedReserveTransferAssets call for V2', async () => {
 					const res = await baseRelayCreateTx('call', false, 2);
 					expect(res).toEqual({
 						dest: 'karura',
@@ -1564,7 +1564,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 2,
 					});
 				});
-				it('Should correctly build a submittable extrinsic for a reserveTransferAsset for V2', async () => {
+				it('Should correctly build a limitedReserveTransferAssets submittable extrinsic for V2', async () => {
 					const res = await baseRelayCreateTx('submittable', false, 2);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
