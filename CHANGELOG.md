@@ -9,6 +9,7 @@
 - fix!: change TxResult<payload> type ([#391](https://github.com/paritytech/asset-transfer-api/pull/391))([09d1410](https://github.com/paritytech/asset-transfer-api/commit/09d141006f928ecf9b08e2b894ae6dfd4df7d8de))
 
 ### Fix
+
 - fix: update lp pool token storage key destructuring ([#390](https://github.com/paritytech/asset-transfer-api/pull/390))([cb7d39f](https://github.com/paritytech/asset-transfer-api/commit/cb7d39fb3ffbaa7f905545268f014c8ba51156ab))
 
 ### Chore
