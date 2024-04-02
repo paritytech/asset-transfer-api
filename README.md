@@ -177,7 +177,7 @@ interface TransferArgsOpts<T extends Format> {
 	 * It can either be a `payload`, `call`, or `submittable`.
 	 *
 	 * Note: A `submittable` will return a `SubmittableExtrinsic` polkadot-js type, whereas
-	 * a `payload` or `call` will return a hex. By default a `payload` will be returned if nothing is inputted.
+	 * a `payload` will return a `GenericExtrinsicPayload` polkadot-js type and a `call` will return a hex. By default a `payload` will be returned if nothing is inputted.
 	 */
 	format?: T;
 	/**
@@ -239,12 +239,12 @@ If you would like to run an example to understand the output, run: `yarn build:e
 
 ### Foreign Asset Transfers
 
-Sending a foreign asset requires the input `assetIds` in `createTransferTransaction` to include the `MultiLocation` of the asset you would like to send. If a `MultiLocation` is not passed it will not know if the asset you are sending is a foreign asset. If the `MultiLocation` passed in has a `Parachain` id which matches the `destChainId` input for the transfer, then the output will be a teleport, otherwise it will be a reserve backed transfer.
+Sending a foreign asset requires the input `assetIds` in `createTransferTransaction` to include the `MultiLocation` of the asset you would like to send. If a `MultiLocation` is not passed it will not know if the asset you are sending is a foreign asset. If the `MultiLocation` passed in has a `Parachain` id which matches the `destChainId` input for the transfer, then the output will be a limited teleport, otherwise it will be a limited reserve backed transfer.
 
 An example would look like:
 ```typescript
 api.createTransferTransaction(
-	'2125', // Note: the Parchain ID matches the MultiLocations 'Parachain' ID, making this a teleport of assets
+	'2125', // Note: the Parchain ID matches the MultiLocations 'Parachain' ID, making this a limitedTeleportAssets call
 	'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 	['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 	['1000000000000'],

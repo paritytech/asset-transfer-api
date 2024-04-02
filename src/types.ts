@@ -2,6 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
@@ -113,7 +114,7 @@ export type Format = 'payload' | 'call' | 'submittable';
  * The Format types possible for a constructed transaction.
  */
 export type ConstructedFormat<T> = T extends 'payload'
-	? `0x${string}`
+	? GenericExtrinsicPayload
 	: T extends 'call'
 	  ? `0x${string}`
 	  : T extends 'submittable'

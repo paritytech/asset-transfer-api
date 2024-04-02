@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 import { ApiPromise } from '@polkadot/api';
 import { KeyringPair } from '@polkadot/keyring/types';
-import { EXTRINSIC_VERSION } from 'consts';
 
 import { AssetTransferApi } from '../../src';
 import { TxResult } from '../../src/types';
@@ -41,11 +40,7 @@ const createForeignTransferTransaction = async (
 	try {
 		localTransferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
 
-		const payload = api.createType('ExtrinsicPayload', localTransferInfo.tx, {
-			version: EXTRINSIC_VERSION,
-		});
-
-		const extrinsic = api.registry.createType('Extrinsic', { method: payload.method }, { version: 4 });
+		const extrinsic = api.registry.createType('Extrinsic', { method: localTransferInfo.method }, { version: 4 });
 
 		await api.tx(extrinsic).signAndSend(origin);
 	} catch (e) {
@@ -71,11 +66,7 @@ const createLocalForeignTransferTransaction = async (
 	try {
 		localTransferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
 
-		const payload = api.createType('ExtrinsicPayload', localTransferInfo.tx, {
-			version: EXTRINSIC_VERSION,
-		});
-
-		const extrinsic = api.registry.createType('Extrinsic', { method: payload.method }, { version: 4 });
+		const extrinsic = api.registry.createType('Extrinsic', { method: localTransferInfo.method }, { version: 4 });
 
 		await api.tx(extrinsic).signAndSend(origin);
 	} catch (e) {
