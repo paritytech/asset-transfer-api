@@ -13,7 +13,7 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
  * to a Moonbeam (ParaChain) account, where the `xcmVersion` is set to 3, the `isLimited` option is set to true and there is no
  * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  *
- * NOTE: When `isLimited` is true it will use the `limited` version of either `reserveTransferAssets`, or `teleportAssets`.
+ * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://polkadot-asset-hub-rpc.polkadot.io');
@@ -22,7 +22,7 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'2004', // Note: Parachain ID 2004 (Moonbeam) is different than the asset location's `Parachain` Id, making this a `reserveTransferAssets` call
+			'2004', // Note: Parachain ID 2004 (Moonbeam) is different than the asset location's `Parachain` Id, making this a `limitedReserveTransferAssets` call
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			['{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}'],
 			['1000000000000'],

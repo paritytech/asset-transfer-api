@@ -8,10 +8,10 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a `teleportAssets` call to send 1 WND from a Westend AssetHub (System Parachain) account
+ * In this example we are creating a `limitedTeleportAssets` call to send 1 WND from a Westend AssetHub (System Parachain) account
  * to a Westend Collectives (System Parachain) account, where the `xcmVersion` is set to `4` and `isLimited` is set to false.
  *
- * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
+ * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`..
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westend-asset-hub-rpc.polkadot.io');

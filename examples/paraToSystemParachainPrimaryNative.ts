@@ -22,7 +22,7 @@ const main = async () => {
 		callInfo = await assetApi.createTransferTransaction(
 			'1000',
 			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
-			['movr'], // Note: since it is the primary asset of Moonriver that is being sent to AssetHub, it will be a `teleportAssets` call
+			['movr'], // Note: since it is the primary asset of Moonriver that is being sent to AssetHub, it will be a `limitedTeleportAssets` call
 			['1000000000000'],
 			{
 				format: 'call',

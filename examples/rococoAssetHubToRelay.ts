@@ -14,7 +14,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  *
  * NOTE:
  *
- * - When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
+ * - When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `limitedTeleportAssets`.
  *
  * - Currently rococos asset-hub shares the same `specName` as kusamas asset-hub, therefore to use rococo you will need to hardcore the
  * `specName` value as `asset-hub-rococo` into the `AssetTransferApi`.

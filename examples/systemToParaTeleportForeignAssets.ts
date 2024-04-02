@@ -13,7 +13,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  * to a Tinkernet (ParaChain) account, where the `xcmVersion` is set to 3, and the `isLimited` declaring that
  * it will be `unlimited` since there is no `weightLimit` option as well.
  *
- * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
+ * NOTE: To specify the amount of weight for the tx to use, set `isLimited` to true and provide a `weightLimit` option containing desired values for `refTime` and `proofSize`..
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io');
@@ -22,7 +22,7 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'2125', // Note: the Parchain ID matches the MultiLocations 'Parachain' ID, making this a teleportAssets
+			'2125', // Note: the Parchain ID matches the MultiLocations 'Parachain' ID, making this a limitedTeleportAssets call
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 			['1000000000000'],

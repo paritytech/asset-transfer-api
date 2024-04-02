@@ -18,8 +18,6 @@ import * as tokens from './createCalls/tokens';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
-	reserveTransferAssets,
-	teleportAssets,
 	transferAssets,
 	transferMultiasset,
 	transferMultiassets,
@@ -288,7 +286,6 @@ export class AssetTransferApi {
 			assetCallType,
 			baseArgs,
 			baseOpts,
-			isLimited,
 			paysWithFeeDest,
 		);
 
@@ -990,7 +987,6 @@ export class AssetTransferApi {
 		assetCallType: AssetCallType,
 		baseArgs: XcmBaseArgs | XTokensBaseArgs,
 		baseOpts: CreateXcmCallOpts,
-		isLimited?: boolean,
 		paysWithFeeDest?: string,
 	): Promise<ResolvedCallInfo> {
 		const { api } = baseArgs;
@@ -1015,17 +1011,9 @@ export class AssetTransferApi {
 		} else if (api.tx[xcmPallet] && api.tx[xcmPallet].transferAssets) {
 			txMethod = 'transferAssets';
 		} else if (assetCallType === AssetCallType.Reserve) {
-			if (isLimited) {
-				txMethod = 'limitedReserveTransferAssets';
-			} else {
-				txMethod = 'reserveTransferAssets';
-			}
+			txMethod = 'limitedReserveTransferAssets';
 		} else {
-			if (isLimited) {
-				txMethod = 'limitedTeleportAssets';
-			} else {
-				txMethod = 'teleportAssets';
-			}
+			txMethod = 'limitedTeleportAssets';
 		}
 
 		if (!callExistsInRuntime(api, txMethod, xcmPallet)) {
@@ -1043,9 +1031,7 @@ export class AssetTransferApi {
 
 		const xcmPalletTxMethodToTransaction: XcmPalletTxMethodTransactionMap = {
 			limitedReserveTransferAssets: [limitedReserveTransferAssets, [baseArgs, baseOpts]],
-			reserveTransferAssets: [reserveTransferAssets, [baseArgs, baseOpts]],
 			limitedTeleportAssets: [limitedTeleportAssets, [baseArgs, baseOpts]],
-			teleportAssets: [teleportAssets, [baseArgs, baseOpts]],
 			transferAssets: [transferAssets, [baseArgs, baseOpts]],
 		};
 
