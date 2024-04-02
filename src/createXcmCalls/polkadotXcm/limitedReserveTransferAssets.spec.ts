@@ -27,14 +27,12 @@ describe('limitedReserveTransferAssets', () => {
 			assetIds: ['{"parents":"1","interior":{ "X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 		};
 		it('Should correctly construct a tx for a system parachain with V2', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await limitedReserveTransferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -49,14 +47,12 @@ describe('limitedReserveTransferAssets', () => {
 			);
 		});
 		it('Should correctly construct a tx for when a weightLimit is available', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await limitedReserveTransferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -72,7 +68,6 @@ describe('limitedReserveTransferAssets', () => {
 		});
 
 		it('Should error when a api does not support the required pallets', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
@@ -82,7 +77,6 @@ describe('limitedReserveTransferAssets', () => {
 			const isForeignAssetsTransfer = true;
 			await expect(async () => {
 				await limitedReserveTransferAssets(mockApiBaseArgs, {
-					isLimited,
 					weightLimit: {
 						refTime,
 						proofSize,
@@ -111,14 +105,12 @@ describe('limitedReserveTransferAssets', () => {
 		});
 
 		it('Should correctly construct a foreign asset tx for when a weightLimit is available', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = true;
 			const ext = await limitedReserveTransferAssets(FAbaseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,

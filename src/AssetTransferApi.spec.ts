@@ -7,8 +7,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 import { AssetTransferApi } from './AssetTransferApi';
 import {
 	limitedReserveTransferAssets,
-	reserveTransferAssets,
-	teleportAssets,
+	limitedTeleportAssets,
 	transferAssets,
 	transferMultiasset,
 	transferMultiassets,
@@ -540,7 +539,7 @@ describe('AssetTransferAPI', () => {
 		describe('RelayToSystem', () => {
 			it('Should decode a calls extrinsic given its hash for RelayToSystem', async () => {
 				const expected =
-					'{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"120,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"xcmPallet"}';
+					'{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"120,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"xcmPallet"}';
 				const call = await relayAssetsApi.createTransferTransaction(
 					'1000',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -558,7 +557,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a payloads extrinsic given its hash for RelayToSystem', async () => {
 				const expected =
-					'{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"250,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"xcmPallet"}';
+					'{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"250,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"xcmPallet"}';
 				const payloadTxResult = await relayAssetsApi.createTransferTransaction(
 					'1000',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -577,7 +576,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a submittables extrinsic given its hash for RelayToSystem', async () => {
 				const expected =
-					'{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"520,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"xcmPallet"}';
+					'{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"520,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"xcmPallet"}';
 				const submittableTxResult = await relayAssetsApi.createTransferTransaction(
 					'1000',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -597,7 +596,7 @@ describe('AssetTransferAPI', () => {
 		describe('SystemToRelay', () => {
 			it('Should decode a calls extrinsic given its hash for SystemToRelay', async () => {
 				const expected =
-					'{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"polkadotXcm"}';
+					'{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"polkadotXcm"}';
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'0',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -615,7 +614,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a payloads extrinsic given its hash for SystemToRelay', async () => {
 				const expected =
-					'{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"20,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"polkadotXcm"}';
+					'{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"20,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"polkadotXcm"}';
 				const payloadTxResult = await systemAssetsApi.createTransferTransaction(
 					'0',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -634,7 +633,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a submittables extrinsic given its hash for SystemToRelay', async () => {
 				const expected =
-					'{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"50,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"teleportAssets","section":"polkadotXcm"}';
+					'{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"50,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"polkadotXcm"}';
 				const submittableTxResult = await systemAssetsApi.createTransferTransaction(
 					'0',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -693,7 +692,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a foreign asset tx submittable extrinsic given its hash for SystemToPara', async () => {
 				const expected =
-					'{"args":{"dest":{"V2":{"parents":"1","interior":{"X1":{"Parachain":"2,023"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
+					'{"args":{"dest":{"V2":{"parents":"1","interior":{"X1":{"Parachain":"2,023"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
 
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'2023',
@@ -711,7 +710,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a liquid token tx call given its hash for SystemToPara', async () => {
 				const expected =
-					'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,023"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"55"},{"GeneralIndex":"0"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
+					'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,023"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"55"},{"GeneralIndex":"0"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
 
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'2023',
@@ -743,7 +742,6 @@ describe('AssetTransferAPI', () => {
 				{
 					xcmVersion: 3,
 					weightLimit: { refTime: '1000', proofSize: '1000' },
-					isLimited: true,
 					format: 'call',
 					keepAlive: true,
 					paysWithFeeDest: 'usdt',
@@ -754,9 +752,9 @@ describe('AssetTransferAPI', () => {
 			expect(decoded).toEqual(expected);
 		});
 
-		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a reserveTransferAssets call', async () => {
+		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a limitedReserveTransferAssets call', async () => {
 			const expected =
-				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}},{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"100"}}]},"fee_asset_item":"0"},"method":"reserveTransferAssets","section":"polkadotXcm"}';
+				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}},{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"100"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
 			const callTxResult = await systemAssetsApi.createTransferTransaction(
 				'2000',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -879,7 +877,6 @@ describe('AssetTransferAPI', () => {
 				};
 
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -897,46 +894,6 @@ describe('AssetTransferAPI', () => {
 					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					true,
-				);
-
-				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
-			});
-
-			it('Should correctly resolve to a `reserveTransferAssets` call', async () => {
-				const specName = 'statemine';
-				const registry = new Registry(specName, {});
-
-				const mockBaseArgs: XcmBaseArgs = {
-					api: systemAssetsApi.api,
-					direction: Direction.SystemToPara as XcmDirection,
-					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					assetIds: ['usdt'],
-					amounts: ['10000000000'],
-					destChainId: '2023',
-					xcmVersion: 2,
-					specName: 'statemine',
-					registry: registry,
-				};
-				const mockBaseOpts = {
-					isLimited: false,
-					isLiquidTokenTransfer: false,
-					isForeignAssetsTransfer: false,
-				};
-
-				const expected: ResolvedCallInfo = [
-					'reserveTransferAssets',
-					await reserveTransferAssets(mockBaseArgs, mockBaseOpts),
-				];
-
-				const result = await moonriverAssetsApi['resolveCall'](
-					['usdt'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.SystemToPara,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-					false,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -958,7 +915,43 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = [
+					'limitedReserveTransferAssets',
+					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
+				];
+
+				const result = await moonriverAssetsApi['resolveCall'](
+					['usdt'],
+					'polkadotXcm' as XcmPalletName,
+					Direction.SystemToPara,
+					'Reserve' as AssetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+
+			it('Should correctly resolve to a `limitedReserveTransferAssets` call', async () => {
+				const specName = 'statemine';
+				const registry = new Registry(specName, {});
+
+				const mockBaseArgs: XcmBaseArgs = {
+					api: systemAssetsApi.api,
+					direction: Direction.SystemToPara as XcmDirection,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds: ['usdt'],
+					amounts: ['10000000000'],
+					destChainId: '2023',
+					xcmVersion: 2,
+					specName: 'statemine',
+					registry: registry,
+				};
+				const mockBaseOpts = {
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -979,7 +972,6 @@ describe('AssetTransferAPI', () => {
 					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					true,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -987,7 +979,7 @@ describe('AssetTransferAPI', () => {
 		});
 
 		describe('SystemToRelay', () => {
-			it('Should correctly resolve to a `teleportAssets` call', async () => {
+			it('Should correctly resolve to a `limitedTeleportAssets` call', async () => {
 				const specName = 'statemine';
 				const registry = new Registry(specName, {});
 
@@ -1003,7 +995,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: false,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1012,7 +1003,10 @@ describe('AssetTransferAPI', () => {
 					isForeignAssetsTransfer: false,
 				};
 
-				const expected: ResolvedCallInfo = ['teleportAssets', await teleportAssets(mockBaseArgs, mockBaseOpts)];
+				const expected: ResolvedCallInfo = [
+					'limitedTeleportAssets',
+					await limitedTeleportAssets(mockBaseArgs, mockBaseOpts),
+				];
 
 				const result = await systemAssetsApi['resolveCall'](
 					['ksm'],
@@ -1021,7 +1015,6 @@ describe('AssetTransferAPI', () => {
 					'Teleport' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					false,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1029,7 +1022,7 @@ describe('AssetTransferAPI', () => {
 		});
 
 		describe('SystemToSystem', () => {
-			it('Should correctly resolve to a `teleportAssets` call', async () => {
+			it('Should correctly resolve to a `limitedTeleportAssets` call', async () => {
 				const specName = 'statemine';
 				const registry = new Registry(specName, {});
 
@@ -1045,7 +1038,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: false,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1054,7 +1046,10 @@ describe('AssetTransferAPI', () => {
 					isForeignAssetsTransfer: false,
 				};
 
-				const expected: ResolvedCallInfo = ['teleportAssets', await teleportAssets(mockBaseArgs, mockBaseOpts)];
+				const expected: ResolvedCallInfo = [
+					'limitedTeleportAssets',
+					await limitedTeleportAssets(mockBaseArgs, mockBaseOpts),
+				];
 
 				const result = await systemAssetsApi['resolveCall'](
 					['ksm'],
@@ -1063,7 +1058,6 @@ describe('AssetTransferAPI', () => {
 					'Teleport' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					false,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1088,7 +1082,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet: 'xTokens' as XcmPalletName,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1106,7 +1099,6 @@ describe('AssetTransferAPI', () => {
 					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					true,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1129,7 +1121,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet: 'xTokens' as XcmPalletName,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1150,7 +1141,6 @@ describe('AssetTransferAPI', () => {
 					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					true,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1175,7 +1165,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet: 'xTokens' as XcmPalletName,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1197,48 +1186,7 @@ describe('AssetTransferAPI', () => {
 					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					true,
 					paysWithFeeDest,
-				);
-
-				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
-			});
-
-			it('Should correctly resolve to a `reserveTransferAssets` call for a parachain runtime which includes the `polkadotXcm` pallet and does not include the `xTokens` pallet', async () => {
-				const specName = 'moonriver';
-				const registry = new Registry(specName, {});
-
-				const mockBaseArgs: XcmBaseArgs = {
-					api: moonriverAssetsNoXTokensApi.api,
-					direction: Direction.ParaToSystem as XcmDirection,
-					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					assetIds: ['usdt'],
-					amounts: ['10000000000'],
-					destChainId: '1000',
-					xcmVersion: 2,
-					specName: 'moonriver',
-					registry: registry,
-				};
-				const mockBaseOpts = {
-					isLimited: false,
-					paysWithFeeDest: '1984',
-					isLiquidTokenTransfer: false,
-					isForeignAssetsTransfer: false,
-				};
-
-				const expected: ResolvedCallInfo = [
-					'reserveTransferAssets',
-					await reserveTransferAssets(mockBaseArgs, mockBaseOpts),
-				];
-
-				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
-					['usdt'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.ParaToSystem,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-					false,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1260,7 +1208,44 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited: true,
+					paysWithFeeDest: '1984',
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = [
+					'limitedReserveTransferAssets',
+					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
+				];
+
+				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
+					['usdt'],
+					'polkadotXcm' as XcmPalletName,
+					Direction.ParaToSystem,
+					'Reserve' as AssetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+
+			it('Should correctly resolve to a `limitedReserveTransferAssets` call for a parachain runtime which includes the `polkadotXcm` pallet and does not include the `xTokens` pallet', async () => {
+				const specName = 'moonriver';
+				const registry = new Registry(specName, {});
+
+				const mockBaseArgs: XcmBaseArgs = {
+					api: moonriverAssetsNoXTokensApi.api,
+					direction: Direction.ParaToSystem as XcmDirection,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds: ['usdt'],
+					amounts: ['10000000000'],
+					destChainId: '1000',
+					xcmVersion: 2,
+					specName: 'moonriver',
+					registry: registry,
+				};
+				const mockBaseOpts = {
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1282,7 +1267,6 @@ describe('AssetTransferAPI', () => {
 					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					true,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1297,7 +1281,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToRelay;
 				const assetIds = ['ksm'];
-				const isLimited = true;
 				const mockBaseArgs: XTokensBaseArgs = {
 					api: bifrostAssetsApi.api,
 					direction,
@@ -1311,7 +1294,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1330,20 +1312,18 @@ describe('AssetTransferAPI', () => {
 					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					isLimited,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
 
-			it('Should correctly resolve to `reserveTransferAssets` for a parachain runtime which includes the `polkadotXcm` pallet and does not include the `xTokens` pallet', async () => {
+			it('Should correctly resolve to `limitedReserveTransferAssets` for a parachain runtime which includes the `polkadotXcm` pallet and does not include the `xTokens` pallet', async () => {
 				const specName = 'moonriver';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.polkadotXcm;
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToRelay;
 				const assetIds = ['ksm'];
-				const isLimited = false;
 
 				const mockBaseArgs: XcmBaseArgs = {
 					api: moonriverAssetsNoXTokensApi.api,
@@ -1357,53 +1337,7 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					paysWithFeeDest: '1984',
-					isLiquidTokenTransfer: false,
-					isForeignAssetsTransfer: false,
-				};
-
-				const expected: ResolvedCallInfo = [
-					'reserveTransferAssets',
-					await reserveTransferAssets(mockBaseArgs, mockBaseOpts),
-				];
-
-				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
-					assetIds,
-					xcmPallet,
-					direction,
-					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-					isLimited,
-				);
-
-				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
-			});
-
-			it('Should correctly resolve to `limitedReserveTransferAssets` for a parachain runtime which includes the `polkadotXcm` pallet and does not include the `xTokens` pallet', async () => {
-				const api = moonriverAssetsNoXTokensApi.api;
-				const specName = 'moonriver';
-				const registry = new Registry(specName, {});
-				const xcmPallet = XcmPalletName.polkadotXcm;
-				const assetCallType = AssetCallType.Reserve;
-				const direction = Direction.ParaToRelay;
-				const assetIds = ['ksm'];
-				const isLimited = true;
-
-				const mockBaseArgs: XcmBaseArgs = {
-					api,
-					direction,
-					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					assetIds,
-					amounts: ['10000000000'],
-					destChainId: '0',
-					xcmVersion: 2,
-					specName,
-					registry: registry,
-				};
-				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -1420,7 +1354,48 @@ describe('AssetTransferAPI', () => {
 					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					isLimited,
+				);
+
+				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
+			});
+
+			it('Should correctly resolve to `limitedReserveTransferAssets` for a parachain runtime which includes the `polkadotXcm` pallet and does not include the `xTokens` pallet', async () => {
+				const api = moonriverAssetsNoXTokensApi.api;
+				const specName = 'moonriver';
+				const registry = new Registry(specName, {});
+				const xcmPallet = XcmPalletName.polkadotXcm;
+				const assetCallType = AssetCallType.Reserve;
+				const direction = Direction.ParaToRelay;
+				const assetIds = ['ksm'];
+
+				const mockBaseArgs: XcmBaseArgs = {
+					api,
+					direction,
+					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					amounts: ['10000000000'],
+					destChainId: '0',
+					xcmVersion: 2,
+					specName,
+					registry: registry,
+				};
+				const mockBaseOpts = {
+					isLiquidTokenTransfer: false,
+					isForeignAssetsTransfer: false,
+				};
+
+				const expected: ResolvedCallInfo = [
+					'limitedReserveTransferAssets',
+					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
+				];
+
+				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
+					assetIds,
+					xcmPallet,
+					direction,
+					assetCallType,
+					mockBaseArgs,
+					mockBaseOpts,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1436,7 +1411,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToPara;
 				const assetIds = ['movr'];
-				const isLimited = false;
 
 				const mockBaseArgs: XTokensBaseArgs = {
 					api,
@@ -1451,7 +1425,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -1465,7 +1438,6 @@ describe('AssetTransferAPI', () => {
 					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					isLimited,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1479,7 +1451,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToPara;
 				const assetIds = ['vmovr', 'xcbnc'];
-				const isLimited = false;
 
 				const mockBaseArgs: XTokensBaseArgs = {
 					api,
@@ -1494,7 +1465,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
@@ -1511,7 +1481,6 @@ describe('AssetTransferAPI', () => {
 					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					isLimited,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1525,7 +1494,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToPara;
 				const assetIds = ['vmovr', 'usdt'];
-				const isLimited = false;
 				const paysWithFeeDest =
 					'{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":10}]}}';
 
@@ -1542,7 +1510,6 @@ describe('AssetTransferAPI', () => {
 					xcmPallet,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					paysWithFeeDest,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
@@ -1560,7 +1527,6 @@ describe('AssetTransferAPI', () => {
 					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					isLimited,
 					paysWithFeeDest,
 				);
 
@@ -1568,7 +1534,7 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		describe('RelayToSystem', () => {
-			it('Should correctly resolve to a `teleportAssets` call', async () => {
+			it('Should correctly resolve to a `limitedTeleportAssets` call', async () => {
 				const api = relayAssetsApi.api;
 				const specName = 'kusama';
 				const registry = new Registry(specName, {});
@@ -1576,7 +1542,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Teleport;
 				const direction = Direction.RelayToSystem;
 				const assetIds = ['ksm'];
-				const isLimited = false;
 
 				const mockBaseArgs: XcmBaseArgs = {
 					api,
@@ -1590,12 +1555,14 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
 
-				const expected: ResolvedCallInfo = ['teleportAssets', await teleportAssets(mockBaseArgs, mockBaseOpts)];
+				const expected: ResolvedCallInfo = [
+					'limitedTeleportAssets',
+					await limitedTeleportAssets(mockBaseArgs, mockBaseOpts),
+				];
 
 				const result = await moonriverAssetsApi['resolveCall'](
 					assetIds,
@@ -1604,7 +1571,6 @@ describe('AssetTransferAPI', () => {
 					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					isLimited,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1612,7 +1578,7 @@ describe('AssetTransferAPI', () => {
 		});
 
 		describe('RelayToPara', () => {
-			it('Should correctly resolve to a `reserveTransferAssets` call', async () => {
+			it('Should correctly resolve to a `limitedReserveTransferAssets` call', async () => {
 				const api = relayAssetsApi.api;
 				const specName = 'kusama';
 				const registry = new Registry(specName, {});
@@ -1620,7 +1586,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.RelayToSystem;
 				const assetIds = ['ksm'];
-				const isLimited = false;
 
 				const mockBaseArgs: XcmBaseArgs = {
 					api,
@@ -1634,14 +1599,13 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					isLiquidTokenTransfer: false,
 					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
-					'reserveTransferAssets',
-					await reserveTransferAssets(mockBaseArgs, mockBaseOpts),
+					'limitedReserveTransferAssets',
+					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
 				];
 
 				const result = await moonriverAssetsApi['resolveCall'](
@@ -1651,7 +1615,6 @@ describe('AssetTransferAPI', () => {
 					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					isLimited,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1665,7 +1628,6 @@ describe('AssetTransferAPI', () => {
 				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.RelayToSystem;
 				const assetIds = ['ksm'];
-				const isLimited = true;
 
 				const mockBaseArgs: XcmBaseArgs = {
 					api,
@@ -1679,7 +1641,6 @@ describe('AssetTransferAPI', () => {
 					registry: registry,
 				};
 				const mockBaseOpts = {
-					isLimited,
 					weightLimit: {
 						refTime: '3000',
 						proofSize: '10000',
@@ -1700,7 +1661,6 @@ describe('AssetTransferAPI', () => {
 					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					isLimited,
 				);
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
@@ -1715,7 +1675,6 @@ describe('AssetTransferAPI', () => {
 			const assetCallType = AssetCallType.Reserve;
 			const direction = Direction.RelayToSystem;
 			const assetIds = ['ksm'];
-			const isLimited = true;
 
 			const mockBaseArgs: XcmBaseArgs = {
 				api,
@@ -1730,7 +1689,6 @@ describe('AssetTransferAPI', () => {
 			};
 
 			const mockBaseOpts = {
-				isLimited,
 				weightLimit: {
 					refTime: '3000',
 					proofSize: '10000',
@@ -1747,7 +1705,6 @@ describe('AssetTransferAPI', () => {
 					assetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
-					isLimited,
 				);
 			}).rejects.toThrow('Did not find limitedReserveTransferAssets from pallet xcmPallet in the current runtime');
 		});

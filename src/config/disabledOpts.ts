@@ -40,11 +40,6 @@ export const disabledOpts: DisabledOptions = {
 		chains: [],
 		error: (opt: string, chain: string) => callError(opt, chain),
 	},
-	isLimited: {
-		disabled: false,
-		chains: [],
-		error: (opt: string, chain: string) => callError(opt, chain),
-	},
 	weightLimit: {
 		disabled: false,
 		chains: [],

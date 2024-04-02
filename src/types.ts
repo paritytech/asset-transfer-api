@@ -142,9 +142,7 @@ export type LocalTransferTypes =
 export type Methods =
 	| LocalTransferTypes
 	| 'transferAssets'
-	| 'reserveTransferAssets'
 	| 'limitedReserveTransferAssets'
-	| 'teleportAssets'
 	| 'limitedTeleportAssets'
 	| 'transferMultiasset'
 	| 'transferMultiassets'
@@ -240,12 +238,7 @@ export interface TransferArgsOpts<T extends Format> {
 	 */
 	sendersAddr?: string;
 	/**
-	 * Boolean to declare if this will be with limited XCM transfers.
-	 * Deafult is unlimited.
-	 */
-	isLimited?: boolean;
-	/**
-	 * When isLimited is true, the option for applying a weightLimit is possible.
+	 * Option for applying a custom `weightLimit`.
 	 * If not inputted it will default to `Unlimited`.
 	 */
 	weightLimit?: {

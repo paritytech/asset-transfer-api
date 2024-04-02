@@ -268,13 +268,11 @@ describe('ParaToSystem', () => {
 		});
 	});
 	describe('WeightLimit', () => {
-		it('Should work when isLimited is true', () => {
-			const isLimited = true;
+		it('Should work when weightLimit option is provided', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
 			const weightLimit = ParaToSystem.createWeightLimit({
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -287,7 +285,7 @@ describe('ParaToSystem', () => {
 				},
 			});
 		});
-		it('Should work when isLimited is falsy', () => {
+		it('Should work when weightLimit option is not provided', () => {
 			const weightLimit = ParaToSystem.createWeightLimit({});
 
 			expect(weightLimit).toStrictEqual({

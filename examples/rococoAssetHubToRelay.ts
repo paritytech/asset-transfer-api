@@ -9,14 +9,12 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a call to send 1 ROC from a asset-hub-rococo (System Parachain) account
- * to a Rococo (Relay Chain) account, where the `xcmVersion` is set to 2, and the `isLimited` declaring that
- * it will be `unlimited` since there is no `weightLimit` option as well.
+ * to a Rococo (Relay Chain) account, where the `xcmVersion` is set to 2 and no `weightLimit` option is provided declaring that
+ * the tx will allow unlimited weight to be used for fees.
  *
- * NOTE:
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  *
- * - When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
- *
- * - Currently rococos asset-hub shares the same `specName` as kusamas asset-hub, therefore to use rococo you will need to hardcore the
+ * - Currently rococos asset-hub shares the same `specName` as kusamas asset-hub, therefore to use rococo you will need to hardcode the
  * `specName` value as `asset-hub-rococo` into the `AssetTransferApi`.
  */
 const main = async () => {
@@ -32,7 +30,6 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				isLimited: true,
 				xcmVersion: 2,
 			},
 		);

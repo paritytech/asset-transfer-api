@@ -26,14 +26,12 @@ describe('transferAssets', () => {
 		};
 
 		it('Should correctly construct a transferAssets tx from relay to system', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -66,14 +64,12 @@ describe('transferAssets', () => {
 		};
 
 		it('Should correctly construct a transferAssets tx from relay to a parachain', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -106,14 +102,12 @@ describe('transferAssets', () => {
 		};
 
 		it('Should correctly construct a tx from system to relay', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -128,14 +122,12 @@ describe('transferAssets', () => {
 			);
 		});
 		it('Should correctly construct a tx when a weightLimit is available', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -151,7 +143,6 @@ describe('transferAssets', () => {
 		});
 
 		it('Should error when a api does not support the required pallets', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
@@ -161,7 +152,6 @@ describe('transferAssets', () => {
 			const isForeignAssetsTransfer = true;
 			await expect(async () => {
 				await transferAssets(mockApiBaseArgs, {
-					isLimited,
 					weightLimit: {
 						refTime,
 						proofSize,
@@ -196,14 +186,12 @@ describe('transferAssets', () => {
 			assetIds: ['{"parents":"1","interior":{ "X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}'],
 		};
 		it('Should correctly construct a tx for a system parachain with V4', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -218,14 +206,12 @@ describe('transferAssets', () => {
 			);
 		});
 		it('Should correctly construct a tx when a weightLimit is available', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -241,7 +227,6 @@ describe('transferAssets', () => {
 		});
 
 		it('Should error when a api does not support the required pallets', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
@@ -251,7 +236,6 @@ describe('transferAssets', () => {
 			const isForeignAssetsTransfer = true;
 			await expect(async () => {
 				await transferAssets(mockApiBaseArgs, {
-					isLimited,
 					weightLimit: {
 						refTime,
 						proofSize,
@@ -280,14 +264,12 @@ describe('transferAssets', () => {
 		});
 
 		it('Should correctly construct a foreign asset tx when a weightLimit is available', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = true;
 			const ext = await transferAssets(FAbaseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,

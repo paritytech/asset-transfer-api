@@ -182,16 +182,15 @@ describe('ParaToRelay', () => {
 		});
 	});
 	describe('WeightLimit', () => {
-		it('Should work for unLimited', () => {
-			const weightLimit = ParaToRelay.createWeightLimit({ isLimited: true });
+		it('Should work for unlimited', () => {
+			const weightLimit = ParaToRelay.createWeightLimit({});
 			const expected = {
 				Unlimited: null,
 			};
 			expect(weightLimit).toStrictEqual(expected);
 		});
-		it('Should work for a weightLimit', () => {
+		it('Should work for a custom weightLimit', () => {
 			const weightLimit = ParaToRelay.createWeightLimit({
-				isLimited: true,
 				weightLimit: {
 					refTime: '100000000',
 					proofSize: '10000',

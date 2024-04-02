@@ -10,11 +10,11 @@ import { GREEN, PURPLE, RESET } from './colors';
 /**
  * In this example we are creating a reserve payload to send 1 USDt (assetId: 1984)
  * from a Kusama Asset Hub (System Parachain) account
- * to a Moonriver (ParaChain) account, where the `xcmVersion` is set to 3, `isLimited` is false declaring that
+ * to a Moonriver (ParaChain) account, where the `xcmVersion` is set to 3 and no `weightLimit` is provided declaring that
  * the allowable weight will be `unlimited` and `paysWithFeeOrigin` is `1984`
  * declaring that asset with ID `1984` (USDt) should be used to pay for tx fees in the origin.
  *
- * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io');
@@ -29,7 +29,6 @@ const main = async () => {
 			['1000000'],
 			{
 				format: 'payload',
-				isLimited: false,
 				xcmVersion: 3,
 				paysWithFeeOrigin: '1984',
 				sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',

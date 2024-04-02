@@ -9,10 +9,9 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a call to send PHA from a Moonriver (Parachain) account
- * to a Kusama Khala (Parachain) account, where the `xcmVersion` is set to 2, and `isLimited` is set to true declaring that
- * it will be a weight limited tx and provides the `weightLimit` with both `refTime` and `proofSize` respectively.
+ * to a Kusama Khala (Parachain) account, where the `xcmVersion` is set to 2 and a `weightLimit` option is provided declaring that
+ * it will be a weight limited tx with a custom `refTime` and `proofSize`.
  *
- * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.public.blastapi.io');
@@ -26,7 +25,6 @@ const main = async () => {
 			['10000000000'],
 			{
 				format: 'call',
-				isLimited: true,
 				weightLimit: {
 					refTime: '10000',
 					proofSize: '3000',
