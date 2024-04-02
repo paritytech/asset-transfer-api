@@ -3,6 +3,7 @@
 import '@polkadot/api-augment';
 
 import type { ApiPromise } from '@polkadot/api';
+import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types/interfaces';
@@ -649,7 +650,7 @@ export class AssetTransferApi {
 	private createPayload = async (
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
 		opts: { paysWithFeeOrigin?: string; sendersAddr: string },
-	): Promise<`0x${string}`> => {
+	): Promise<GenericExtrinsicPayload> => {
 		const { paysWithFeeOrigin, sendersAddr } = opts;
 		let assetId: BN | AnyJson = new BN(0);
 
@@ -722,7 +723,7 @@ export class AssetTransferApi {
 			version: unsignedPayload.version,
 		});
 
-		return extrinsicPayload.toHex();
+		return extrinsicPayload;
 	};
 
 	/**

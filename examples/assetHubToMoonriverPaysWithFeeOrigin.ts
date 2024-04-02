@@ -42,7 +42,7 @@ const main = async () => {
 		throw Error(e as string);
 	}
 
-	const decoded = assetApi.decodeExtrinsic(callInfo.tx, 'payload');
+	const decoded = assetApi.decodeExtrinsic(callInfo.tx.toHex(), 'payload');
 	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
