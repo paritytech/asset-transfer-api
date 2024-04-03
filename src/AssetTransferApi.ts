@@ -17,6 +17,7 @@ import * as foreignAssets from './createCalls/foreignAssets';
 import * as poolAssets from './createCalls/poolAssets';
 import * as tokens from './createCalls/tokens';
 import {
+	claimAssets,
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
 	reserveTransferAssets,
@@ -298,6 +299,13 @@ export class AssetTransferApi {
 			paysWithFeeOrigin,
 			sendersAddr,
 		});
+	}
+
+	public async claimAssets(
+		assets: string[],
+		beneficiary: string
+	): Promise<TxResult<T>> {
+		const tx = claimAssets
 	}
 
 	/**
