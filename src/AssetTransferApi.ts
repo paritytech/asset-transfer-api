@@ -301,11 +301,38 @@ export class AssetTransferApi {
 		});
 	}
 
-	public async claimAssets(
-		assets: string[],
-		beneficiary: string
+	public async claimAssets<T extends Format>(
+		assetLocations: string[],
+		amounts: string[],
+		beneficiary: string,
+		xcmVersion: number,
+		format?: T | undefined
 	): Promise<TxResult<T>> {
-		const tx = claimAssets
+		const { api, specName, safeXcmVersion } = this;
+		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
+
+		// TODO: input validation checks
+		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
+
+		const ext = await claimAssets(
+			api,
+			assetLocations,
+			amounts,
+			declaredXcmVersion,
+			beneficiary
+		);
+
+		return await this.constructFormat(
+			ext,
+			'local',
+			declaredXcmVersion,
+			'claimAssets',
+			specName,
+			specName,
+			{
+				format,
+			}
+		);
 	}
 
 	/**
@@ -501,7 +528,7 @@ export class AssetTransferApi {
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			origin,
-			dest: this.getDestinationSpecName(dest, this.registry),
+			dest: method != 'claimAssets' ? this.getDestinationSpecName(dest, this.registry): this.specName,
 			direction,
 			xcmVersion,
 			method,

@@ -148,7 +148,8 @@ export type Methods =
 	| 'limitedTeleportAssets'
 	| 'transferMultiasset'
 	| 'transferMultiassets'
-	| 'transferMultiassetWithFee';
+	| 'transferMultiassetWithFee'
+	| 'claimAssets';
 
 /**
  * Options that are appplied at initialization of the `AssetTransferApi`.
