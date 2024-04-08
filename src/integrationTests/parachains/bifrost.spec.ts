@@ -69,7 +69,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, expectedResult] = test;
 						const res = await bifrostTransferMultiasset(bifrostATA, 'payload', 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -116,7 +115,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, expectedResult] = test;
 						const res = await bifrostTransferMultiasset(bifrostATA, 'payload', 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -157,7 +155,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetIds, amounts, expectedResult] = test;
 						const res = await bifrostTransferMultiassets(bifrostATA, 'payload', 2, paraId, assetIds, amounts, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -197,7 +194,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetIds, amounts, expectedResult] = test;
 						const res = await bifrostTransferMultiassets(bifrostATA, 'payload', 3, paraId, assetIds, amounts, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -266,7 +262,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, expectedResult] = test;
 						const res = await bifrostTransferMultiassetWithFee(bifrostATA, 'payload', 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -302,7 +297,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, expectedResult] = test;
 						const res = await bifrostTransferMultiassetWithFee(bifrostATA, 'payload', 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -342,7 +336,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, expectedResult] = test;
 						const res = await bifrostTransferMultiasset(bifrostATA, 'payload', 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -378,7 +371,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, expectedResult] = test;
 						const res = await bifrostTransferMultiasset(bifrostATA, 'payload', 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -419,7 +411,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetIds, amounts, expectedResult] = test;
 						const res = await bifrostTransferMultiassets(bifrostATA, 'payload', 2, paraId, assetIds, amounts, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -458,7 +449,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetIds, amounts, expectedResult] = test;
 						const res = await bifrostTransferMultiassets(bifrostATA, 'payload', 3, paraId, assetIds, amounts, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -496,7 +486,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, expectedResult] = test;
 						const res = await bifrostTransferMultiassetWithFee(bifrostATA, 'payload', 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -532,7 +521,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, expectedResult] = test;
 						const res = await bifrostTransferMultiassetWithFee(bifrostATA, 'payload', 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -567,7 +555,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 2, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -585,7 +572,6 @@ describe('Bifrost', () => {
 				});
 				it('Should correctly build a V2 limitedTeleportAssets submittable containing the native parachain asset', async () => {
 					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 2, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -616,7 +602,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 3, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -634,7 +619,6 @@ describe('Bifrost', () => {
 				});
 				it('Should correctly build a V3 limitedTeleportAssets submittable containing the native parachain asset', async () => {
 					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 3, {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -667,7 +651,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 2, {
-							isLimited: false,
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
@@ -681,7 +664,6 @@ describe('Bifrost', () => {
 				});
 				it('Should correctly build a V2 teleportAssets submittable containing the native parachain asset', async () => {
 					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 2, {
-						isLimited: false,
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -708,7 +690,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 3, {
-							isLimited: false,
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
@@ -722,7 +703,6 @@ describe('Bifrost', () => {
 				});
 				it('Should correctly build a V3 teleportAssets submittable containing the native parachain asset', async () => {
 					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 3, {
-						isLimited: false,
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -759,7 +739,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await bifrostTransferMultiasset(bifrostATA, format as Format, 2, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -777,7 +756,6 @@ describe('Bifrost', () => {
 				});
 				it('Should correctly build a V2 submittable transferMultiasset', async () => {
 					const res = await bifrostTransferMultiasset(bifrostATA, 'submittable', 2, '0', 'ksm', {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -808,7 +786,6 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [paraId, assetId, format, expectedResult] = test;
 						const res = await bifrostTransferMultiasset(bifrostATA, format as Format, 3, paraId, assetId, {
-							isLimited: true,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -826,7 +803,6 @@ describe('Bifrost', () => {
 				});
 				it('Should correctly build a V3 submittable transferMultiasset', async () => {
 					const res = await bifrostTransferMultiasset(bifrostATA, 'submittable', 3, '0', 'ksm', {
-						isLimited: true,
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',

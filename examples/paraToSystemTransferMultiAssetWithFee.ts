@@ -9,10 +9,10 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a call to send 1 xcRMRK from a Moonriver (Parachain) account
- * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to 3, and `isLimited` is set to true declaring that
- * it will be a weight limited tx and provides the `weightLimit` with both `refTime` and `proofSize` respectively.
+ * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to 3 and a `weightLimit` is provided declaring that
+ * it will be a weight limited tx with a custom `refTime` and `proofSize`.
  *
- * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.public.blastapi.io');
@@ -26,7 +26,6 @@ const main = async () => {
 			['10000000000'],
 			{
 				format: 'call',
-				isLimited: true,
 				weightLimit: {
 					refTime: '10000',
 					proofSize: '3000',

@@ -32,7 +32,6 @@ export const paraTransferMultiasset = async <T extends Format>(
 		{
 			format,
 			xcmVersion,
-			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 		},
@@ -57,7 +56,6 @@ export const paraTransferMultiassets = async <T extends Format>(
 			paysWithFeeDest: '0',
 			format,
 			xcmVersion,
-			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 		},
@@ -82,7 +80,6 @@ export const paraTransferMultiassetWithFee = async <T extends Format>(
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
 			format,
 			xcmVersion,
-			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 		},
@@ -104,7 +101,6 @@ export const paraTeleportNativeAsset = async <T extends Format>(
 		{
 			format,
 			xcmVersion,
-			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 		},

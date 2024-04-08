@@ -1142,8 +1142,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	}
 };
 
-export const checkClaimAssetsInputs = async (assets: string[], amounts: string[]) => {
+export const checkClaimAssetsInputs = (assets: string[], amounts: string[]) => {
 	checkAssetsAmountMatch(assets, amounts);
 	checkAssetIdsAreOfSameAssetIdType(assets);
 };
-

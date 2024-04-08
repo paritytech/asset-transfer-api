@@ -20,8 +20,6 @@ import {
 	claimAssets,
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
-	reserveTransferAssets,
-	teleportAssets,
 	transferAssets,
 	transferMultiasset,
 	transferMultiassets,
@@ -49,6 +47,7 @@ import {
 	checkXcmVersion,
 } from './errors';
 import { LocalTxType } from './errors/checkLocalTxInput/types';
+import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs';
 import { Registry } from './registry';
 import { ChainInfoKeys, ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
@@ -81,7 +80,6 @@ import { deepEqual } from './util/deepEqual';
 import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
-import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -149,7 +147,6 @@ export class AssetTransferApi {
 	 *     ['1000000000000'],
 	 *     {
 	 *       format: 'call',
-	 *       isLimited: true,
 	 *       xcmVersion: 2,
 	 *     }
 	 *   )
@@ -172,16 +169,8 @@ export class AssetTransferApi {
 		amounts: string[],
 		opts: TransferArgsOpts<T> = {},
 	): Promise<TxResult<T>> {
-		const {
-			format,
-			paysWithFeeDest,
-			paysWithFeeOrigin,
-			isLimited,
-			weightLimit,
-			xcmVersion,
-			transferLiquidToken,
-			sendersAddr,
-		} = opts;
+		const { format, paysWithFeeDest, paysWithFeeOrigin, weightLimit, xcmVersion, transferLiquidToken, sendersAddr } =
+			opts;
 
 		if (!this.registryConfig.registryInitialized) {
 			await this.initializeRegistry();
@@ -257,7 +246,6 @@ export class AssetTransferApi {
 		};
 
 		const baseOpts = {
-			isLimited,
 			weightLimit,
 			paysWithFeeDest,
 			isLiquidTokenTransfer,
@@ -291,7 +279,6 @@ export class AssetTransferApi {
 			assetCallType,
 			baseArgs,
 			baseOpts,
-			isLimited,
 			paysWithFeeDest,
 		);
 
@@ -307,7 +294,7 @@ export class AssetTransferApi {
 		amounts: string[],
 		beneficiary: string,
 		xcmVersion: number,
-		format?: T | undefined
+		format?: T | undefined,
 	): Promise<TxResult<T>> {
 		const { api, specName, originChainId, registry, safeXcmVersion } = this;
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
@@ -320,9 +307,7 @@ export class AssetTransferApi {
 		checkClaimAssetsInputs(assets, amounts);
 
 		// TODO: check if assets are symbols or locations
-		const isLocationAssetId = assets.length === 0 || !assets[0].includes('parents') ?
-			false :
-			true;
+		const isLocationAssetId = assets.length === 0 || !assets[0].includes('parents') ? false : true;
 
 		if (!isLocationAssetId) {
 			// TODO: resolve locations from symbols using registry
@@ -333,25 +318,11 @@ export class AssetTransferApi {
 			}
 		}
 
-		const ext = await claimAssets(
-			api,
-			assetIds,
-			amounts,
-			declaredXcmVersion,
-			beneficiary
-		);
+		const ext = await claimAssets(api, assetIds, amounts, declaredXcmVersion, beneficiary);
 
-		return await this.constructFormat(
-			ext,
-			'local',
-			declaredXcmVersion,
-			'claimAssets',
-			originChainId,
-			originChainId,
-			{
-				format,
-			}
-		);
+		return await this.constructFormat(ext, 'local', declaredXcmVersion, 'claimAssets', originChainId, originChainId, {
+			format,
+		});
 	}
 
 	/**
@@ -547,7 +518,7 @@ export class AssetTransferApi {
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			origin,
-			dest:this.getDestinationSpecName(dest, this.registry),
+			dest: this.getDestinationSpecName(dest, this.registry),
 			direction,
 			xcmVersion,
 			method,
@@ -1049,7 +1020,6 @@ export class AssetTransferApi {
 		assetCallType: AssetCallType,
 		baseArgs: XcmBaseArgs | XTokensBaseArgs,
 		baseOpts: CreateXcmCallOpts,
-		isLimited?: boolean,
 		paysWithFeeDest?: string,
 	): Promise<ResolvedCallInfo> {
 		const { api } = baseArgs;
@@ -1074,17 +1044,9 @@ export class AssetTransferApi {
 		} else if (api.tx[xcmPallet] && api.tx[xcmPallet].transferAssets) {
 			txMethod = 'transferAssets';
 		} else if (assetCallType === AssetCallType.Reserve) {
-			if (isLimited) {
-				txMethod = 'limitedReserveTransferAssets';
-			} else {
-				txMethod = 'reserveTransferAssets';
-			}
+			txMethod = 'limitedReserveTransferAssets';
 		} else {
-			if (isLimited) {
-				txMethod = 'limitedTeleportAssets';
-			} else {
-				txMethod = 'teleportAssets';
-			}
+			txMethod = 'limitedTeleportAssets';
 		}
 
 		if (!callExistsInRuntime(api, txMethod, xcmPallet)) {
@@ -1102,9 +1064,7 @@ export class AssetTransferApi {
 
 		const xcmPalletTxMethodToTransaction: XcmPalletTxMethodTransactionMap = {
 			limitedReserveTransferAssets: [limitedReserveTransferAssets, [baseArgs, baseOpts]],
-			reserveTransferAssets: [reserveTransferAssets, [baseArgs, baseOpts]],
 			limitedTeleportAssets: [limitedTeleportAssets, [baseArgs, baseOpts]],
-			teleportAssets: [teleportAssets, [baseArgs, baseOpts]],
 			transferAssets: [transferAssets, [baseArgs, baseOpts]],
 		};
 

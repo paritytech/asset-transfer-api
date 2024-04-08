@@ -10,10 +10,10 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
 /**
  * In this example we are creating a `polkadotXcm` pallet `limitedReserveTransferAssets` call to send MOVR (foreign asset with location `{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}`)
  * from a Kusama Asset Hub (System Parachain) account
- * to a Bifrost (ParaChain) account, where the `xcmVersion` is set to 3, the `isLimited` option is set to true and there is no
- * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
+ * to a Bifrost (ParaChain) account, where the `xcmVersion` is set to 3 and no `weightLimit` option is provided declaring that
+ * the tx will allow unlimited weight to be used for fees.
  *
- * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io');
@@ -22,13 +22,12 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'2001', // Note: Parachain ID 2001 (Bifrost) is different than the asset location's `Parachain` Id, making this a `reserveTransferAssets` call
+			'2001', // Note: Parachain ID 2001 (Bifrost) is different than the asset location's `Parachain` Id, making this a `limitedReserveTransferAssets` call
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			['{"parents":"1","interior":{"X2":[{"Parachain":"2023"},{"PalletInstance":"10"}]}}'],
 			['1000000000000'],
 			{
 				format: 'call',
-				isLimited: true,
 				xcmVersion: 3,
 			},
 		);

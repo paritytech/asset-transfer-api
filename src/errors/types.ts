@@ -5,6 +5,5 @@ export interface CheckXcmTxInputsOpts {
 	isLiquidTokenTransfer: boolean;
 	isPrimaryParachainNativeAsset: boolean;
 	paysWithFeeDest?: string;
-	isLimited?: boolean;
 	weightLimit?: { refTime?: string; proofSize?: string };
 }

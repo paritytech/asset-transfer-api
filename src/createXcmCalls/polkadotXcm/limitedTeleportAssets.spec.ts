@@ -21,7 +21,6 @@ describe('limitedTeleportAssets', () => {
 			registry,
 		};
 		it('Should correctly construct a tx for a system parachain with V2', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
@@ -29,7 +28,6 @@ describe('limitedTeleportAssets', () => {
 			const isForeignAssetsTransfer = false;
 
 			const ext = await limitedTeleportAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,

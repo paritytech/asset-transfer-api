@@ -30,7 +30,6 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'submittable',
-				isLimited: true,
 				xcmVersion: 2,
 			},
 		);
