@@ -15,10 +15,10 @@ import BN from 'bn.js';
 
 import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { createApiWithAugmentations } from './createApiWithAugmentations';
-import { assetHubWestendV1007000 } from './metadata/assetHubWestendV1007000';
+import { assetHubWestendV1009000 } from './metadata/assetHubWestendV1009000';
 import { mockWeightInfo } from './mockWeightInfo';
 
-const mockSystemApi = createApiWithAugmentations(assetHubWestendV1007000);
+const mockSystemApi = createApiWithAugmentations(assetHubWestendV1009000);
 
 /**
  * Create a type registry for Westmint.
@@ -39,7 +39,7 @@ function createWestmintRegistry(specVersion: number): TypeRegistry {
 
 	registry.register(getSpecTypes(registry, 'Westmint', 'westmint', specVersion));
 
-	registry.setMetadata(new Metadata(registry, assetHubWestendV1007000));
+	registry.setMetadata(new Metadata(registry, assetHubWestendV1009000));
 
 	return registry;
 }
@@ -60,7 +60,7 @@ const queryInfoCallAt = () =>
 	Promise.resolve().then(() => mockSystemApi.createType('RuntimeDispatchInfoV2', mockWeightInfo));
 
 const getMetadata = () =>
-	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1007000));
+	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1009000));
 
 const getHeader = (): Promise<Header> =>
 	Promise.resolve().then(() =>
@@ -294,7 +294,7 @@ const mockApiAt = {
 	},
 };
 
-export const adjustedMockSystemApiV1007000 = {
+export const adjustedMockSystemApiV1009000 = {
 	createType: createType,
 	registry: createWestmintRegistry(1007000),
 	rpc: {
@@ -414,6 +414,7 @@ export const adjustedMockSystemApiV1007000 = {
 			teleportAssets: mockSystemApi.tx['polkadotXcm'].teleportAssets,
 			limitedTeleportAssets: mockSystemApi.tx['polkadotXcm'].limitedTeleportAssets,
 			transferAssets: mockSystemApi.tx['polkadotXcm'].transferAssets,
+			claimAssets: mockSystemApi.tx['polkadotXcm'].claimAssets,
 		},
 		assets: {
 			transfer: mockSystemApi.tx.assets.transfer,

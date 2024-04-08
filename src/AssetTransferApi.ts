@@ -81,6 +81,7 @@ import { deepEqual } from './util/deepEqual';
 import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
+import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -302,21 +303,39 @@ export class AssetTransferApi {
 	}
 
 	public async claimAssets<T extends Format>(
-		assetLocations: string[],
+		assets: string[],
 		amounts: string[],
 		beneficiary: string,
 		xcmVersion: number,
 		format?: T | undefined
 	): Promise<TxResult<T>> {
-		const { api, specName, safeXcmVersion } = this;
+		const { api, specName, originChainId, registry, safeXcmVersion } = this;
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
+		const assetIds: string[] = [];
+
+		// check XCM version
+		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
 		// TODO: input validation checks
-		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
+		checkClaimAssetsInputs(assets, amounts);
+
+		// TODO: check if assets are symbols or locations
+		const isLocationAssetId = assets.length === 0 || !assets[0].includes('parents') ?
+			false :
+			true;
+
+		if (!isLocationAssetId) {
+			// TODO: resolve locations from symbols using registry
+			for (let i = 0; i < assets.length; i++) {
+				let assetId = assets[i];
+				assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, false);
+				assetIds.push(assetId);
+			}
+		}
 
 		const ext = await claimAssets(
 			api,
-			assetLocations,
+			assetIds,
 			amounts,
 			declaredXcmVersion,
 			beneficiary
@@ -327,8 +346,8 @@ export class AssetTransferApi {
 			'local',
 			declaredXcmVersion,
 			'claimAssets',
-			specName,
-			specName,
+			originChainId,
+			originChainId,
 			{
 				format,
 			}
@@ -528,7 +547,7 @@ export class AssetTransferApi {
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			origin,
-			dest: method != 'claimAssets' ? this.getDestinationSpecName(dest, this.registry): this.specName,
+			dest:this.getDestinationSpecName(dest, this.registry),
 			direction,
 			xcmVersion,
 			method,

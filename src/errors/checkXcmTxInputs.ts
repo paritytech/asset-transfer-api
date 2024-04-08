@@ -357,8 +357,6 @@ export const checkLiquidTokenValidity = async (
 	// query chain state
 	const poolAsset = await api.query.poolAssets.asset(assetId);
 	if (poolAsset.isSome) {
-		// const poolAssets = await api.query.assetConversion.pools.entries();
-
 		for (const poolPairsData of await api.query.assetConversion.pools.entries()) {
 			const poolAssetData = JSON.stringify(poolPairsData[0]).replace(/(\d),/g, '$1');
 			const poolAssetInfo = poolPairsData[1].unwrap();
@@ -1143,3 +1141,9 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkRelayAmountsLength(amounts);
 	}
 };
+
+export const checkClaimAssetsInputs = async (assets: string[], amounts: string[]) => {
+	checkAssetsAmountMatch(assets, amounts);
+	checkAssetIdsAreOfSameAssetIdType(assets);
+};
+
