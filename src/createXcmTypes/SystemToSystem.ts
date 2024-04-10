@@ -129,7 +129,7 @@ export const SystemToSystem: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
+		const { registry, isAssetLocationTransfer, isLiquidTokenTransfer, api } = opts;
 
 		const sortedAndDedupedMultiAssets = await createSystemToSystemMultiAssets(
 			api,
@@ -138,7 +138,7 @@ export const SystemToSystem: ICreateXcmType = {
 			assets,
 			registry,
 			xcmVersion,
-			isForeignAssetsTransfer,
+			isAssetLocationTransfer,
 			isLiquidTokenTransfer,
 		);
 
@@ -185,7 +185,7 @@ export const SystemToSystem: ICreateXcmType = {
 			assetIds,
 			amounts,
 			xcmVersion,
-			isForeignAssetsTransfer,
+			isAssetLocationTransfer,
 			isLiquidTokenTransfer,
 		} = opts;
 		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
@@ -196,7 +196,7 @@ export const SystemToSystem: ICreateXcmType = {
 				assetIds,
 				registry,
 				xcmVersion,
-				isForeignAssetsTransfer,
+				isAssetLocationTransfer,
 				isLiquidTokenTransfer,
 			);
 
@@ -216,7 +216,7 @@ export const SystemToSystem: ICreateXcmType = {
 				multiAssets,
 				specName,
 				xcmVersion,
-				opts.isForeignAssetsTransfer,
+				opts.isAssetLocationTransfer,
 			);
 
 			return assetIndex;
@@ -235,7 +235,7 @@ export const SystemToSystem: ICreateXcmType = {
  * @param assets The assets to create into xcm `MultiAssets`.
  * @param xcmVersion The accepted xcm version.
  * @param registry The asset registry used to construct MultiLocations.
- * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
+ * @param isAssetLocationTransfer Whether this transfer is a foreign assets transfer.
  * @param isLiquidTokenTransfer Whether this transfer is a liquid pool assets transfer.
  */
 export const createSystemToSystemMultiAssets = async (
@@ -245,13 +245,13 @@ export const createSystemToSystemMultiAssets = async (
 	assets: string[],
 	registry: Registry,
 	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
+	isAssetLocationTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
 ): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
-	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
+	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isAssetLocationTransfer);
 
 	if (!isSystemChain(systemChainId)) {
 		throw new BaseError(
@@ -270,12 +270,12 @@ export const createSystemToSystemMultiAssets = async (
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
 
 		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
+			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isAssetLocationTransfer);
 		}
 
 		let concreteMultiLocation: UnionXcmMultiLocation;
 
-		if (isForeignAssetsTransfer) {
+		if (isAssetLocationTransfer) {
 			concreteMultiLocation = resolveMultiLocation(assetId, xcmVersion);
 		} else {
 			const parents = isRelayNative ? 1 : 0;

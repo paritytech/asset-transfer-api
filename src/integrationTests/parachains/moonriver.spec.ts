@@ -46,7 +46,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -63,7 +63,7 @@ describe('Moonriver', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -93,7 +93,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -110,7 +110,7 @@ describe('Moonriver', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -158,7 +158,7 @@ describe('Moonriver', () => {
 									refTime: '1000',
 									proofSize: '2000',
 								},
-								isForeignAssetsTransfer: false,
+								isAssetLocationTransfer: false,
 								isLiquidTokenTransfer: false,
 							},
 						);
@@ -183,7 +183,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						},
 					);
@@ -230,7 +230,7 @@ describe('Moonriver', () => {
 									refTime: '1000',
 									proofSize: '2000',
 								},
-								isForeignAssetsTransfer: false,
+								isAssetLocationTransfer: false,
 								isLiquidTokenTransfer: false,
 							},
 						);
@@ -255,7 +255,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						},
 					);
@@ -294,7 +294,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -311,7 +311,7 @@ describe('Moonriver', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -347,7 +347,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -364,7 +364,7 @@ describe('Moonriver', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -404,7 +404,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -446,7 +446,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -496,7 +496,7 @@ describe('Moonriver', () => {
 									refTime: '1000',
 									proofSize: '2000',
 								},
-								isForeignAssetsTransfer: false,
+								isAssetLocationTransfer: false,
 								isLiquidTokenTransfer: false,
 							},
 						);
@@ -549,7 +549,7 @@ describe('Moonriver', () => {
 									refTime: '1000',
 									proofSize: '2000',
 								},
-								isForeignAssetsTransfer: false,
+								isAssetLocationTransfer: false,
 								isLiquidTokenTransfer: false,
 							},
 						);
@@ -594,7 +594,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -636,7 +636,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -670,7 +670,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -687,7 +687,7 @@ describe('Moonriver', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -717,7 +717,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -734,7 +734,7 @@ describe('Moonriver', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -762,7 +762,7 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 2, {
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -775,7 +775,7 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V2 teleportAssets submittable containing the native parachain asset', async () => {
 					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 2, {
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -801,7 +801,7 @@ describe('Moonriver', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 3, {
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -814,7 +814,7 @@ describe('Moonriver', () => {
 				});
 				it('Should correctly build a V3 teleportAssets submittable containing the native parachain asset', async () => {
 					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 3, {
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -854,7 +854,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -871,7 +871,7 @@ describe('Moonriver', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -901,7 +901,7 @@ describe('Moonriver', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -918,7 +918,7 @@ describe('Moonriver', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');

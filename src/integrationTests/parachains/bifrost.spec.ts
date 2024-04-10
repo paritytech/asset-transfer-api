@@ -73,7 +73,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -119,7 +119,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -159,7 +159,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -198,7 +198,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -266,7 +266,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -301,7 +301,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -340,7 +340,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -375,7 +375,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -415,7 +415,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -453,7 +453,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -490,7 +490,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -525,7 +525,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -559,7 +559,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -576,7 +576,7 @@ describe('Bifrost', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -606,7 +606,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -623,7 +623,7 @@ describe('Bifrost', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -651,7 +651,7 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 2, {
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -664,7 +664,7 @@ describe('Bifrost', () => {
 				});
 				it('Should correctly build a V2 teleportAssets submittable containing the native parachain asset', async () => {
 					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 2, {
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -690,7 +690,7 @@ describe('Bifrost', () => {
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
 						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 3, {
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -703,7 +703,7 @@ describe('Bifrost', () => {
 				});
 				it('Should correctly build a V3 teleportAssets submittable containing the native parachain asset', async () => {
 					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 3, {
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -743,7 +743,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -760,7 +760,7 @@ describe('Bifrost', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -790,7 +790,7 @@ describe('Bifrost', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isForeignAssetsTransfer: false,
+							isAssetLocationTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
 
@@ -807,7 +807,7 @@ describe('Bifrost', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isForeignAssetsTransfer: false,
+						isAssetLocationTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');

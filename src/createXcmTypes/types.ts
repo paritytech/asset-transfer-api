@@ -386,7 +386,7 @@ export type XcmWeight = XcmWeightUnlimited | XcmWeightLimited;
 
 export interface CreateAssetsOpts {
 	registry: Registry;
-	isForeignAssetsTransfer: boolean;
+	isAssetLocationTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 	api: ApiPromise;
 }
@@ -398,7 +398,7 @@ export interface CreateFeeAssetItemOpts {
 	assetIds?: string[];
 	amounts?: string[];
 	xcmVersion?: number;
-	isForeignAssetsTransfer: boolean;
+	isAssetLocationTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 }
 

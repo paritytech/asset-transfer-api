@@ -561,7 +561,7 @@ describe('checkIfNativeRelayChainAssetPresentInMultiAssetIdList', () => {
 });
 
 describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () => {
-	it('Should correctly error when isForeignAssetsTransfer and both non native and foreign multilocations are in assetIds for direction SystemToPara', () => {
+	it('Should correctly error when isAssetLocationTransfer and both non native and foreign multilocations are in assetIds for direction SystemToPara', () => {
 		const expectedErrorMessage =
 			'(SystemToPara) found both foreign and native multilocations in {"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}},{"parents":"1","interior":{"X2": [{"Parachain":"2023"}, {"GeneralIndex": "0"}]}}. multilocation XCMs must only include either native or foreign assets of the destination chain.';
 		const xcmDirection = Direction.SystemToPara;
@@ -577,7 +577,7 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 		expect(err).toThrow(expectedErrorMessage);
 	});
 
-	it('Should correctly avoid throwing an error when isForeignAssetsTransfer and only native multilocations are in assetIds for direction SystemToPara', () => {
+	it('Should correctly avoid throwing an error when isAssetLocationTransfer and only native multilocations are in assetIds for direction SystemToPara', () => {
 		const xcmDirection = Direction.SystemToPara;
 		const destChainId = '2125';
 		const multiLocationAssetIds = [
@@ -591,7 +591,7 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 		expect(err).not.toThrow();
 	});
 
-	it('Should correctly avoid throwing an error when isForeignAssetsTransfer and only foreign multilocations are in assetIds for direction SystemToPara', () => {
+	it('Should correctly avoid throwing an error when isAssetLocationTransfer and only foreign multilocations are in assetIds for direction SystemToPara', () => {
 		const xcmDirection = Direction.SystemToPara;
 		const destChainId = '2125';
 		const multiLocationAssetIds = [
@@ -720,7 +720,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 });
 
 describe('CheckXTokensPalletOriginIsNonForeignAssetTx', () => {
-	it('Should correctly throw an error when xcm pallet is xTokens and isForeignAssetsTransfer is true', () => {
+	it('Should correctly throw an error when xcm pallet is xTokens and isAssetLocationTransfer is true', () => {
 		type Test = [isForeignAssetTransfer: boolean, xcmPallet: XcmPalletName, xcmDirection: Direction];
 
 		const tests: Test[] = [
@@ -729,10 +729,10 @@ describe('CheckXTokensPalletOriginIsNonForeignAssetTx', () => {
 		];
 
 		for (const test of tests) {
-			const [isForeignAssetsTransfer, xcmPallet, xcmDirection] = test;
+			const [isAssetLocationTransfer, xcmPallet, xcmDirection] = test;
 
 			const err = () => {
-				CheckXTokensPalletOriginIsNonForeignAssetTx(xcmDirection, xcmPallet, isForeignAssetsTransfer);
+				CheckXTokensPalletOriginIsNonForeignAssetTx(xcmDirection, xcmPallet, isAssetLocationTransfer);
 			};
 
 			expect(err).toThrow(`(${xcmDirection}) xTokens pallet does not support foreign asset transfers`);

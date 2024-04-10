@@ -185,7 +185,7 @@ describe('ParaToPara test', () => {
 	});
 	describe('Assets', () => {
 		const isLiquidTokenTransfer = false;
-		const isForeignAssetsTransfer = false;
+		const isAssetLocationTransfer = false;
 		it('Should work for V2', async () => {
 			const assets = await ParaToPara.createAssets(
 				['1000000000000', '2000000000'],
@@ -194,7 +194,7 @@ describe('ParaToPara test', () => {
 				['42259045809535163221576417993425387648', '182365888117048807484804376330534607370'],
 				{
 					registry,
-					isForeignAssetsTransfer,
+					isAssetLocationTransfer,
 					isLiquidTokenTransfer,
 					api: mockMoonriverParachainApi,
 				},
@@ -241,7 +241,7 @@ describe('ParaToPara test', () => {
 				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
 				{
 					registry,
-					isForeignAssetsTransfer,
+					isAssetLocationTransfer,
 					isLiquidTokenTransfer,
 					api: mockMoonriverParachainApi,
 				},
@@ -288,7 +288,7 @@ describe('ParaToPara test', () => {
 				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
 				{
 					registry,
-					isForeignAssetsTransfer,
+					isAssetLocationTransfer,
 					isLiquidTokenTransfer,
 					api: mockMoonriverParachainApi,
 				},

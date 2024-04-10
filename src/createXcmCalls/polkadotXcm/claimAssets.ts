@@ -4,9 +4,11 @@ import { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
+import { createAssetLocations } from '../../createXcmTypes/util/createAssetLocations';
 import { createBeneficiary } from '../../createXcmTypes/util/createBeneficiary';
-import { createClaimableAssetLocations } from '../../createXcmTypes/util/createClaimableAssetLocations';
 import { BaseError, BaseErrorsEnum } from '../../errors';
+import { Registry } from '../../registry';
+import { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
 
 /**
@@ -20,21 +22,36 @@ import { establishXcmPallet } from '../util/establishXcmPallet';
  */
 export const claimAssets = async (
 	api: ApiPromise,
-	assetLocations: string[],
+	registry: Registry,
+	specName: string,
+	assetIds: string[],
 	amounts: string[],
 	xcmVersion: number,
 	beneficiaryAddress: string,
+	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
+	console.log('asset locations', assetIds);
+
+	const { isAssetLocationTransfer, isLiquidTokenTransfer } = opts;
 	const beneficiary = createBeneficiary(beneficiaryAddress, xcmVersion);
 
-	const assets = await createClaimableAssetLocations(assetLocations, amounts, xcmVersion);
+	const assets = await createAssetLocations(
+		api,
+		assetIds,
+		specName,
+		amounts,
+		xcmVersion,
+		registry,
+		isAssetLocationTransfer,
+		isLiquidTokenTransfer,
+	);
 
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].claimAssets;
 
 	if (!ext) {
 		throw new BaseError(
-			`Did not find claimAssets call from pallet ${pallet} in the current runtime`,
+			`Did not find claimAssets call from pallet ${pallet} in the current runtime.`,
 			BaseErrorsEnum.RuntimeCallNotFound,
 		);
 	}

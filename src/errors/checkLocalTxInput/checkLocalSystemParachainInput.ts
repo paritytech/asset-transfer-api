@@ -13,7 +13,7 @@ export const checkLocalSystemParachainInput = async (
 	specName: string,
 	registry: Registry,
 	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
+	isAssetLocationTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
 ): Promise<LocalTxType> => {
 	return await checkLocalTxInput(
@@ -23,7 +23,7 @@ export const checkLocalSystemParachainInput = async (
 		specName,
 		registry,
 		xcmVersion,
-		isForeignAssetsTransfer,
+		isAssetLocationTransfer,
 		isLiquidTokenTransfer,
 	);
 };

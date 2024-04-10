@@ -31,7 +31,7 @@ describe('limitedReserveTransferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isForeignAssetsTransfer = false;
+			const isAssetLocationTransfer = false;
 			const ext = await limitedReserveTransferAssets(baseArgs, {
 				weightLimit: {
 					refTime,
@@ -39,7 +39,7 @@ describe('limitedReserveTransferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isForeignAssetsTransfer,
+				isAssetLocationTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -51,7 +51,7 @@ describe('limitedReserveTransferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isForeignAssetsTransfer = false;
+			const isAssetLocationTransfer = false;
 			const ext = await limitedReserveTransferAssets(baseArgs, {
 				weightLimit: {
 					refTime,
@@ -59,7 +59,7 @@ describe('limitedReserveTransferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isForeignAssetsTransfer,
+				isAssetLocationTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -74,7 +74,7 @@ describe('limitedReserveTransferAssets', () => {
 			const mockApi = { tx: {} } as unknown as ApiPromise;
 			const mockApiBaseArgs = { ...baseArgs, api: mockApi };
 			const paysWithFeeDest = undefined;
-			const isForeignAssetsTransfer = true;
+			const isAssetLocationTransfer = true;
 			await expect(async () => {
 				await limitedReserveTransferAssets(mockApiBaseArgs, {
 					weightLimit: {
@@ -83,7 +83,7 @@ describe('limitedReserveTransferAssets', () => {
 					},
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
-					isForeignAssetsTransfer,
+					isAssetLocationTransfer,
 				});
 			}).rejects.toThrow(
 				'No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.',
@@ -92,11 +92,11 @@ describe('limitedReserveTransferAssets', () => {
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V2', async () => {
 			const paysWithFeeDest = undefined;
-			const isForeignAssetsTransfer = true;
+			const isAssetLocationTransfer = true;
 			const ext = await limitedReserveTransferAssets(FAbaseArgs, {
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isForeignAssetsTransfer,
+				isAssetLocationTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -109,7 +109,7 @@ describe('limitedReserveTransferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isForeignAssetsTransfer = true;
+			const isAssetLocationTransfer = true;
 			const ext = await limitedReserveTransferAssets(FAbaseArgs, {
 				weightLimit: {
 					refTime,
@@ -117,7 +117,7 @@ describe('limitedReserveTransferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isForeignAssetsTransfer,
+				isAssetLocationTransfer,
 			});
 
 			expect(ext.toHex()).toBe(

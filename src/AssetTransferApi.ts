@@ -206,7 +206,7 @@ export class AssetTransferApi {
 		const localTxChainType = this.establishLocalTxChainType(originChainId, destChainId, chainOriginDestInfo);
 		const isLocalTx = localTxChainType !== LocalTxChainType.None;
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
-		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
+		const isAssetLocationTransfer = this.checkContainsAssetLocations(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
 		const xcmPallet = establishXcmPallet(api, xcmDirection);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
@@ -218,7 +218,7 @@ export class AssetTransferApi {
 		if (isLocalTx) {
 			const LocalTxOpts = {
 				...opts,
-				isForeignAssetsTransfer,
+				isAssetLocationTransfer,
 				isLiquidTokenTransfer,
 			};
 			return this.createLocalTx(
@@ -249,7 +249,7 @@ export class AssetTransferApi {
 			weightLimit,
 			paysWithFeeDest,
 			isLiquidTokenTransfer,
-			isForeignAssetsTransfer,
+			isAssetLocationTransfer,
 		};
 
 		await checkXcmTxInputs(
@@ -260,14 +260,14 @@ export class AssetTransferApi {
 			},
 		);
 
-		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
+		const assetType = this.fetchAssetType(xcmDirection, isAssetLocationTransfer);
 		const assetCallType = this.fetchCallType(
 			originChainId,
 			destChainId,
 			assetIds,
 			xcmDirection,
 			assetType,
-			isForeignAssetsTransfer,
+			isAssetLocationTransfer,
 			isPrimaryParachainNativeAsset,
 			registry,
 		);
@@ -290,38 +290,33 @@ export class AssetTransferApi {
 	}
 
 	public async claimAssets<T extends Format>(
-		assets: string[],
+		assetIds: string[],
 		amounts: string[],
 		beneficiary: string,
 		xcmVersion: number,
-		format?: T | undefined,
+		opts: TransferArgsOpts<T>,
 	): Promise<TxResult<T>> {
 		const { api, specName, originChainId, registry, safeXcmVersion } = this;
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
-		const assetIds: string[] = [];
+		const { format, sendersAddr, transferLiquidToken: isLiquidToken } = opts;
+		const isLiquidTokenTransfer = isLiquidToken ? true : false;
+		const isAssetLocationTransfer = this.checkContainsAssetLocations(assetIds);
 
 		// check XCM version
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
 		// TODO: input validation checks
-		checkClaimAssetsInputs(assets, amounts);
+		checkBaseInputOptions(opts, specName);
+		checkClaimAssetsInputs(assetIds, amounts);
 
-		// TODO: check if assets are symbols or locations
-		const isLocationAssetId = assets.length === 0 || !assets[0].includes('parents') ? false : true;
-
-		if (!isLocationAssetId) {
-			// TODO: resolve locations from symbols using registry
-			for (let i = 0; i < assets.length; i++) {
-				let assetId = assets[i];
-				assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, false);
-				assetIds.push(assetId);
-			}
-		}
-
-		const ext = await claimAssets(api, assetIds, amounts, declaredXcmVersion, beneficiary);
+		const ext = await claimAssets(api, registry, specName, assetIds, amounts, declaredXcmVersion, beneficiary, {
+			isAssetLocationTransfer,
+			isLiquidTokenTransfer,
+		});
 
 		return await this.constructFormat(ext, 'local', declaredXcmVersion, 'claimAssets', originChainId, originChainId, {
 			format,
+			sendersAddr,
 		});
 	}
 
@@ -547,11 +542,11 @@ export class AssetTransferApi {
 		return result;
 	}
 
-	private fetchAssetType(xcmDirection: Direction, isForeignAssetsTransfer?: boolean): AssetType {
+	private fetchAssetType(xcmDirection: Direction, isAssetLocationTransfer?: boolean): AssetType {
 		if (
 			xcmDirection === Direction.RelayToSystem ||
 			xcmDirection === Direction.SystemToRelay ||
-			(xcmDirection === Direction.SystemToSystem && !isForeignAssetsTransfer)
+			(xcmDirection === Direction.SystemToSystem && !isAssetLocationTransfer)
 		) {
 			return AssetType.Native;
 		}
@@ -574,7 +569,7 @@ export class AssetTransferApi {
 		assetIds: string[],
 		xcmDirection: Direction,
 		assetType: AssetType,
-		isForeignAssetsTransfer: boolean,
+		isAssetLocationTransfer: boolean,
 		isParachainPrimaryNativeAsset: boolean,
 		registry: Registry,
 	): AssetCallType {
@@ -592,7 +587,7 @@ export class AssetTransferApi {
 		let originIsMultiLocationsNativeChain = false;
 		let destIsMultiLocationsNativeChain = false;
 
-		if (isForeignAssetsTransfer) {
+		if (isAssetLocationTransfer) {
 			if (xcmDirection === Direction.ParaToSystem) {
 				// check if the asset(s) are native to the origin chain
 				for (const assetId of assetIds) {
@@ -796,13 +791,12 @@ export class AssetTransferApi {
 	}
 
 	/**
-	 * Returns if assetIds contains a values for a foreign asset transfer
+	 * Returns if `assetIds` contains asset location values
 	 *
 	 * @param assetIds string[]
 	 * @returns boolean
 	 */
-	private checkIsForeignAssetTransfer(assetIds: string[]): boolean {
-		// if assetIds is empty it is not a multilocation foreign asset transfer
+	private checkContainsAssetLocations(assetIds: string[]): boolean {
 		if (assetIds.length === 0) {
 			return false;
 		}
@@ -913,7 +907,7 @@ export class AssetTransferApi {
 				assetId,
 				this.specName,
 				declaredXcmVersion,
-				opts.isForeignAssetsTransfer,
+				opts.isAssetLocationTransfer,
 			);
 		}
 		const method = opts.keepAlive ? 'transferKeepAlive' : 'transfer';
@@ -926,7 +920,7 @@ export class AssetTransferApi {
 				this.specName,
 				this.registry,
 				declaredXcmVersion,
-				opts.isForeignAssetsTransfer,
+				opts.isAssetLocationTransfer,
 				opts.isLiquidTokenTransfer,
 			); // Throws an error when any of the inputs are incorrect.
 			let tx: SubmittableExtrinsic<'promise', ISubmittableResult> | undefined;

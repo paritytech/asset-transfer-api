@@ -24,7 +24,7 @@ export const checkLocalTxInput = async (
 	specName: string,
 	registry: Registry,
 	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
+	isAssetLocationTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
 ): Promise<LocalTxType> => {
 	// Ensure the lengths in assetIds and amounts is correct
@@ -35,7 +35,7 @@ export const checkLocalTxInput = async (
 		);
 	}
 
-	if (isForeignAssetsTransfer) {
+	if (isAssetLocationTransfer) {
 		if (assetIds.length === 0) {
 			throw new BaseError(
 				'Local foreignAsset transactions must have the `assetIds` input be a length of 1',
@@ -95,7 +95,7 @@ export const checkLocalTxInput = async (
 		}
 
 		// not a number so we check the registry using the symbol
-		assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
+		assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isAssetLocationTransfer);
 
 		if (assetId.length > 0) {
 			return LocalTxType.Assets;

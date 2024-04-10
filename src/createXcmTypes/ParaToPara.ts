@@ -198,7 +198,7 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
-		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isForeignAssetsTransfer } = opts;
+		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isAssetLocationTransfer } = opts;
 		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createParaToParaMultiAssets(
 				api,
@@ -216,7 +216,7 @@ export const ParaToPara: ICreateXcmType = {
 				multiAssets,
 				specName,
 				xcmVersion,
-				isForeignAssetsTransfer,
+				isAssetLocationTransfer,
 			);
 
 			return assetIndex;
@@ -507,7 +507,7 @@ const createXTokensMultiAssets = async (
  * @param assets The assets to create into xcm `MultiAssets`.
  * @param xcmVersion The accepted xcm version.
  * @param registry The asset registry used to construct MultiLocations.
- * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
+ * @param isAssetLocationTransfer Whether this transfer is a foreign assets transfer.
  */
 const createParaToParaMultiAssets = async (
 	api: ApiPromise,

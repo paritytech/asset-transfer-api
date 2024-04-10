@@ -32,7 +32,7 @@ describe('transferMultiassets', () => {
 					proofSize,
 				},
 				paysWithFeeDest,
-				isForeignAssetsTransfer: false,
+				isAssetLocationTransfer: false,
 				isLiquidTokenTransfer: false,
 			});
 
@@ -59,7 +59,7 @@ describe('transferMultiassets', () => {
 						proofSize,
 					},
 					paysWithFeeDest,
-					isForeignAssetsTransfer: false,
+					isAssetLocationTransfer: false,
 					isLiquidTokenTransfer: false,
 				},
 			);
@@ -87,7 +87,7 @@ describe('transferMultiassets', () => {
 						proofSize,
 					},
 					paysWithFeeDest,
-					isForeignAssetsTransfer: false,
+					isAssetLocationTransfer: false,
 					isLiquidTokenTransfer: false,
 				},
 			);
@@ -114,7 +114,7 @@ describe('transferMultiassets', () => {
 						proofSize,
 					},
 					paysWithFeeDest,
-					isForeignAssetsTransfer: false,
+					isAssetLocationTransfer: false,
 					isLiquidTokenTransfer: false,
 				},
 			);

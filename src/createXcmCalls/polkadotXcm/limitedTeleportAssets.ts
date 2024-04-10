@@ -20,7 +20,7 @@ export const limitedTeleportAssets = async (
 	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const { api, direction, destAddr, assetIds, amounts, destChainId, xcmVersion, specName, registry } = baseArgs;
-	const { weightLimit, paysWithFeeDest, isForeignAssetsTransfer } = opts;
+	const { weightLimit, paysWithFeeDest, isAssetLocationTransfer } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedTeleportAssets;
 	const typeCreator = createXcmTypes[direction];
@@ -28,7 +28,7 @@ export const limitedTeleportAssets = async (
 	const dest = typeCreator.createDest(destChainId, xcmVersion);
 	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
 		registry,
-		isForeignAssetsTransfer,
+		isAssetLocationTransfer,
 		isLiquidTokenTransfer: false,
 		api,
 	});
@@ -39,7 +39,7 @@ export const limitedTeleportAssets = async (
 	const feeAssetItem = paysWithFeeDest
 		? await typeCreator.createFeeAssetItem(api, {
 				registry,
-				isForeignAssetsTransfer,
+				isAssetLocationTransfer,
 				isLiquidTokenTransfer: false,
 		  })
 		: 0;

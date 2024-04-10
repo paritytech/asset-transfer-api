@@ -28,6 +28,8 @@ export const dedupeAssets = (
 		dedupedAssets.push(multiAsset);
 	}
 
+	console.log('ASSETS [0]', assets[0]);
+
 	if (typeof assets[0].fun.Fungible === 'string') {
 		return dedupedAssets as FungibleStrAssetType[];
 	}

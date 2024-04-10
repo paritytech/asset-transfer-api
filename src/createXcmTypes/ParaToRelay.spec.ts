@@ -9,7 +9,7 @@ describe('ParaToRelay', () => {
 	const assetOpts = {
 		registry,
 		isLiquidTokenTransfer: false,
-		isForeignAssetsTransfer: false,
+		isAssetLocationTransfer: false,
 		api: adjustedMockMoonriverParachainApi,
 	};
 	describe('Beneficiary', () => {
@@ -209,7 +209,7 @@ describe('ParaToRelay', () => {
 		const opts = {
 			registry,
 			isLiquidTokenTransfer: false,
-			isForeignAssetsTransfer: false,
+			isAssetLocationTransfer: false,
 		};
 		it('Should return zero', async () => {
 			const feeAssetItem = await ParaToRelay.createFeeAssetItem(adjustedMockMoonriverParachainApi, opts);

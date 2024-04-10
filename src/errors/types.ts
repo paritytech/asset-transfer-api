@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 export interface CheckXcmTxInputsOpts {
-	isForeignAssetsTransfer: boolean;
+	isAssetLocationTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 	isPrimaryParachainNativeAsset: boolean;
 	paysWithFeeDest?: string;

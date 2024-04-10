@@ -209,7 +209,7 @@ export const ParaToSystem: ICreateXcmType = {
 				multiAssets,
 				specName,
 				xcmVersion,
-				opts.isForeignAssetsTransfer,
+				opts.isAssetLocationTransfer,
 			);
 
 			return assetIndex;
@@ -492,7 +492,7 @@ const createXTokensMultiAssets = async (
  * @param assets The assets to create into xcm `MultiAssets`.
  * @param xcmVersion The accepted xcm version.
  * @param registry The asset registry used to construct MultiLocations.
- * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
+ * @param isAssetLocationTransfer Whether this transfer is a foreign assets transfer.
  */
 const createParaToSystemMultiAssets = async (
 	api: ApiPromise,
