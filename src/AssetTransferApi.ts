@@ -289,23 +289,47 @@ export class AssetTransferApi {
 		});
 	}
 
+	/**
+	 * Create a local claimAssets transaction to retrieve trapped assets. This can be either locally on a systems parachain, on the relay chain or any chain that supports tbe pallet-xcm `claimAssets` runtime call.
+	 *
+	 * ```ts
+	 * import { TxResult } from '@substrate/asset-transfer-api'
+	 *
+	 * let callInfo: TxResult<'call'>;
+	 * try {
+	 *   callInfo = await assetsApi.claimAssets(
+	 * 	   [`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`],
+	 *     ['1000000000000'],
+	 *     '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+	 *     {
+	 *       format: 'call',
+	 *       xcmVersion: 2,
+	 *     }
+	 *   )
+	 * } catch (e) {
+	 *   console.error(e);
+	 *   throw Error(e);
+	 * }
+	 * ```
+	 *
+	 * @param assetIds Array of assetId's to be claimed from AssetTrap
+	 * @param amounts Array of the amounts of each trapped asset to be claimed
+	 * @param beneficiary Address of the account to receive the trapped assets
+	 * @param opts Options
+	 */
 	public async claimAssets<T extends Format>(
 		assetIds: string[],
 		amounts: string[],
 		beneficiary: string,
-		xcmVersion: number,
 		opts: TransferArgsOpts<T>,
 	): Promise<TxResult<T>> {
 		const { api, specName, originChainId, registry, safeXcmVersion } = this;
+		const { format, sendersAddr, transferLiquidToken: isLiquidToken, xcmVersion } = opts;
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
-		const { format, sendersAddr, transferLiquidToken: isLiquidToken } = opts;
 		const isLiquidTokenTransfer = isLiquidToken ? true : false;
 		const isAssetLocationTransfer = this.checkContainsAssetLocations(assetIds);
 
-		// check XCM version
-		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
-
-		// TODO: input validation checks
+		checkXcmVersion(declaredXcmVersion);
 		checkBaseInputOptions(opts, specName);
 		checkClaimAssetsInputs(assetIds, amounts);
 

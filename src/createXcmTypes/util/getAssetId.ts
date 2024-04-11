@@ -55,7 +55,6 @@ export const getAssetId = async (
 	}
 	// check number assetId in registry
 	if (assetIsValidInt) {
-		console.log('LOG IN IS VALID INT', assetsInfo[asset]);
 		// if assetId index is valid, return the assetId
 		if (assetsInfo[asset] && assetsInfo[asset].length > 0) {
 			return asset;

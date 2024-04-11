@@ -1734,114 +1734,127 @@ describe('AssetTransferApi Integration Tests', () => {
 		});
 	});
 	describe('claimAssets', () => {
-		describe('XCM V4', () => {
-			describe('Asset Locations', () => {
-				it('Should correctly construct a claimAssets call using a location assetId', async () => {
-					const res = await systemAssetsApiV1009000.claimAssets(
-						[`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`],
-						['100000000'],
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						4,
-						{
-							format: 'call',
-						},
-					);
-
-					expect(res).toEqual({
-						dest: 'westmint',
-						direction: 'local',
-						format: 'call',
-						method: 'claimAssets',
-						origin: '1000',
-						tx: '0x1f0c04040002043205011f000284d7170400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+		describe('AssetId Locations', () => {
+			it('Should correctly construct a claimAssets call using a location assetId for XCM V4', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`],
+					['100000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
 						xcmVersion: 4,
-					});
-				});
-				it('Should correctly construct a claimAssets payload using a location assetId', async () => {
-					const res = await systemAssetsApiV1009000.claimAssets(
-						[
-							`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`,
-							`{"parents":"1","interior":{"Here":""}}`,
-						],
-						['100000000', '2000000000000'],
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						4,
-						{
-							format: 'payload',
-							sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-						},
-					);
+						format: 'call',
+					},
+				);
 
-					expect(res.tx.toHex()).toEqual(
-						'0xfc1f0c04080002043205011f000284d7170100000b00204aa9d1010400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
-					);
-				});
-				it('Should correctly construct a claimAssets submittable using a location assetId', async () => {
-					const res = await systemAssetsApiV1009000.claimAssets(
-						[`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`],
-						['200000000'],
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						4,
-						{
-							format: 'submittable',
-						},
-					);
-
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				expect(res).toEqual({
+					dest: 'westmint',
+					direction: 'local',
+					format: 'call',
+					method: 'claimAssets',
+					origin: '1000',
+					tx: '0x1f0c04040002043205011f000284d7170400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					xcmVersion: 4,
 				});
 			});
-			describe('Asset Symbols', () => {
-				it('Should correctly construct a claimAssets call using a symbol assetId', async () => {
-					const res = await systemAssetsApiV1009000.claimAssets(
-						[`usdt`],
-						['100000000'],
-						'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						4,
-						{
-							format: 'call',
-						},
-					);
+			it('Should correctly construct a claimAssets payload using multiple location assetIds for XCM V3', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[
+						`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`,
+						`{"parents":"1","interior":{"Here":""}}`,
+					],
+					['100000000', '2000000000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 3,
+						format: 'payload',
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					},
+				);
 
-					expect(res).toEqual({
-						dest: 'westmint',
-						direction: 'local',
-						format: 'call',
-						method: 'claimAssets',
-						origin: '1000',
-						tx: '0x1f0c040400020432050901000284d7170400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-						xcmVersion: 4,
-					});
-				});
-				// it('Should correctly construct a claimAssets payload using a symbol assetId', async () => {
-				// 	const res = await systemAssetsApiV1009000.claimAssets(
-				// 		[
-				// 			`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`,
-				// 			`{"parents":"1","interior":{"Here":""}}`,
-				// 		],
-				// 		[
-				// 			'100000000',
-				// 			'2000000000000',
-				// 		],
-				// 		'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				// 		4,
-				// 		'payload',
-				// 		'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-				// 	);
-
-				// 	expect(res.tx.toHex()).toEqual('0xfc1f0c04080002043205011f000284d7170100000b00204aa9d1010400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503');
-				// });
-				// it('Should correctly construct a claimAssets submittable using a symbol assetId', async () => {
-				// 	const res = await systemAssetsApiV1009000.claimAssets(
-				// 		[`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`],
-				// 		['200000000'],
-				// 		'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				// 		4,
-				// 		'submittable',
-				// 	);
-
-				// 	expect(res.tx.toRawType()).toEqual('Extrinsic');
-				// });
+				expect(res.tx.toHex()).toEqual(
+					'0x05011f0c0308000002043205011f000284d717000100000b00204aa9d1010300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+				);
 			});
+			it('Should correctly construct a claimAssets submittable using a location assetId for XCM V2', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`],
+					['200000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 2,
+						format: 'submittable',
+					},
+				);
+
+				expect(res.tx.toRawType()).toEqual('Extrinsic');
+			});
+		});
+		describe('AssetId Symbols', () => {
+			it('Should correctly construct a claimAssets call using a symbol assetId for XCM V4', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`usdt`],
+					['100000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 4,
+						format: 'call',
+					},
+				);
+
+				expect(res).toEqual({
+					dest: 'westmint',
+					direction: 'local',
+					format: 'call',
+					method: 'claimAssets',
+					origin: '1000',
+					tx: '0x1f0c040400020432050901000284d7170400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					xcmVersion: 4,
+				});
+			});
+			it('Should correctly construct a claimAssets payload using multiple symbol assetIds for XCM V3', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`usdt`, `wnd`],
+					['100000000', '2000000000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 3,
+						format: 'payload',
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					},
+				);
+
+				expect(res.tx.toHex()).toEqual(
+					'0x05011f0c03080000020432050901000284d717000100000b00204aa9d1010300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+				);
+			});
+			it('Should correctly construct a claimAssets submittable using a symbol assetId for XCM V2', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`usdc`],
+					['200000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 2,
+						format: 'submittable',
+					},
+				);
+
+				expect(res.tx.toRawType()).toEqual('Extrinsic');
+			});
+		});
+		it('Should correctly error when mixing both a location and symbol assetId', async () => {
+			await expect(async () => {
+				await systemAssetsApiV1009000.claimAssets(
+					[`{"parents":"1","interior":{"Here":""}}`, `usdt`],
+					['2000000000', '100000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 4,
+						format: 'call',
+					},
+				);
+			}).rejects.toThrow(
+				`Found both symbol usdt and multilocation assetId {"parents":"1","interior":{"Here":""}}. Asset Ids must be symbol and integer or multilocation exclusively.`,
+			);
 		});
 	});
 });

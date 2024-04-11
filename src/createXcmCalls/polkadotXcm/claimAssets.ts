@@ -30,8 +30,6 @@ export const claimAssets = async (
 	beneficiaryAddress: string,
 	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	console.log('asset locations', assetIds);
-
 	const { isAssetLocationTransfer, isLiquidTokenTransfer } = opts;
 	const beneficiary = createBeneficiary(beneficiaryAddress, xcmVersion);
 
