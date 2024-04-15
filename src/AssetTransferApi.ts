@@ -328,6 +328,7 @@ export class AssetTransferApi {
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		const isLiquidTokenTransfer = isLiquidToken ? true : false;
 		const isAssetLocationTransfer = this.checkContainsAssetLocations(assetIds);
+		const beneficiaryAddress = sanitizeAddress(beneficiary);
 
 		checkXcmVersion(declaredXcmVersion);
 		checkBaseInputOptions(opts, specName);
@@ -339,7 +340,7 @@ export class AssetTransferApi {
 			specName,
 			assetIds,
 			amounts,
-			beneficiary,
+			beneficiaryAddress,
 			declaredXcmVersion,
 			originChainId,
 			{
