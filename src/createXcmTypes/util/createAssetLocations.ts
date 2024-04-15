@@ -30,13 +30,16 @@ export const createAssetLocations = async (
 	amounts: string[],
 	xcmVersion: number,
 	registry: Registry,
+	originChainId: string,
 	isAssetLocationTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
 ): Promise<UnionXcmMultiAssets> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
+
 	const { tokens } = registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
 	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isAssetLocationTransfer);
+	const isRelayChain = originChainId === '0' ? true : false;
 
 	for (let i = 0; i < assetIds.length; i++) {
 		let concreteMultiLocation: UnionXcmMultiLocation;
@@ -53,7 +56,7 @@ export const createAssetLocations = async (
 		if (isAssetLocationTransfer) {
 			concreteMultiLocation = resolveMultiLocation(assetId, xcmVersion);
 		} else {
-			const parents = isRelayNative ? 1 : 0;
+			const parents = isRelayNative && !isRelayChain ? 1 : 0;
 			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
 				? { Here: '' }
 				: {

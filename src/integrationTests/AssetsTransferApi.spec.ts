@@ -1840,6 +1840,23 @@ describe('AssetTransferApi Integration Tests', () => {
 
 				expect(res.tx.toRawType()).toEqual('Extrinsic');
 			});
+			it('Should correctly construct a claimAssets payload using a liquidity pool token assetId', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`52`],
+					['200000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 2,
+						transferLiquidToken: true,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						format: 'payload',
+					},
+				);
+
+				expect(res.tx.toHex()).toEqual(
+					'0xd41f0c0104000002043705d0000208af2f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+				);
+			});
 		});
 		it('Should correctly error when mixing both a location and symbol assetId', async () => {
 			await expect(async () => {

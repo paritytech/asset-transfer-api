@@ -21,8 +21,9 @@ describe('claimAssets', () => {
 			specName,
 			assetIds,
 			amounts,
-			xcmVersion,
 			beneficiaryAddress,
+			xcmVersion,
+			'1000',
 			{
 				isAssetLocationTransfer: true,
 				isLiquidTokenTransfer: false,
@@ -45,8 +46,9 @@ describe('claimAssets', () => {
 			specName,
 			assets,
 			amounts,
-			xcmVersion,
 			beneficiaryAddress,
+			xcmVersion,
+			'1000',
 			{
 				isAssetLocationTransfer: true,
 				isLiquidTokenTransfer: false,
@@ -69,8 +71,9 @@ describe('claimAssets', () => {
 			specName,
 			assets,
 			amounts,
-			xcmVersion,
 			beneficiaryAddress,
+			xcmVersion,
+			'1000',
 			{
 				isAssetLocationTransfer: true,
 				isLiquidTokenTransfer: false,
@@ -88,10 +91,20 @@ describe('claimAssets', () => {
 		const beneficiaryAddress = '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b';
 
 		await expect(async () => {
-			await claimAssets(adjustedMockSystemApi, registry, specName, assetIds, amounts, xcmVersion, beneficiaryAddress, {
-				isAssetLocationTransfer: true,
-				isLiquidTokenTransfer: false,
-			});
+			await claimAssets(
+				adjustedMockSystemApi,
+				registry,
+				specName,
+				assetIds,
+				amounts,
+				beneficiaryAddress,
+				xcmVersion,
+				'1000',
+				{
+					isAssetLocationTransfer: true,
+					isLiquidTokenTransfer: false,
+				},
+			);
 		}).rejects.toThrow('Did not find claimAssets call from pallet polkadotXcm in the current runtime.');
 	});
 });

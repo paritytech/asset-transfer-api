@@ -1,4 +1,4 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
+// Copyright 2024 Parity Technologies (UK) Ltd.
 
 import '@polkadot/api-augment';
 
@@ -290,7 +290,7 @@ export class AssetTransferApi {
 	}
 
 	/**
-	 * Create a local claimAssets transaction to retrieve trapped assets. This can be either locally on a systems parachain, on the relay chain or any chain that supports tbe pallet-xcm `claimAssets` runtime call.
+	 * Create a local claimAssets XCM transaction to retrieve trapped assets. This can be either locally on a systems parachain, on the relay chain or any chain that supports the pallet-xcm `claimAssets` runtime call.
 	 *
 	 * ```ts
 	 * import { TxResult } from '@substrate/asset-transfer-api'
@@ -312,7 +312,7 @@ export class AssetTransferApi {
 	 * }
 	 * ```
 	 *
-	 * @param assetIds Array of assetId's to be claimed from AssetTrap
+	 * @param assetIds Array of assetId's to be claimed from the AssetTrap
 	 * @param amounts Array of the amounts of each trapped asset to be claimed
 	 * @param beneficiary Address of the account to receive the trapped assets
 	 * @param opts Options
@@ -333,10 +333,20 @@ export class AssetTransferApi {
 		checkBaseInputOptions(opts, specName);
 		checkClaimAssetsInputs(assetIds, amounts);
 
-		const ext = await claimAssets(api, registry, specName, assetIds, amounts, declaredXcmVersion, beneficiary, {
-			isAssetLocationTransfer,
-			isLiquidTokenTransfer,
-		});
+		const ext = await claimAssets(
+			api,
+			registry,
+			specName,
+			assetIds,
+			amounts,
+			beneficiary,
+			declaredXcmVersion,
+			originChainId,
+			{
+				isAssetLocationTransfer,
+				isLiquidTokenTransfer,
+			},
+		);
 
 		return await this.constructFormat(ext, 'local', declaredXcmVersion, 'claimAssets', originChainId, originChainId, {
 			format,

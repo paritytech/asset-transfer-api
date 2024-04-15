@@ -12,7 +12,7 @@ import { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
 
 /**
- * Allow users to claim assets trapped during XCM execution
+ * Allow users to claim assets trapped locally on-chain during failed XCM execution.
  *
  * @param api ApiPromise
  * @param assetLocations string[]
@@ -26,8 +26,9 @@ export const claimAssets = async (
 	specName: string,
 	assetIds: string[],
 	amounts: string[],
-	xcmVersion: number,
 	beneficiaryAddress: string,
+	xcmVersion: number,
+	originChainId: string,
 	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const { isAssetLocationTransfer, isLiquidTokenTransfer } = opts;
@@ -40,6 +41,7 @@ export const claimAssets = async (
 		amounts,
 		xcmVersion,
 		registry,
+		originChainId,
 		isAssetLocationTransfer,
 		isLiquidTokenTransfer,
 	);

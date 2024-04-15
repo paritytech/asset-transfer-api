@@ -317,7 +317,6 @@ api.claimAssets(
 	{
 		xcmVersion: 4,
 		format: 'payload',
-		transferLiquidToken: false
 		sendersAddr: '5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX'
 	} // opts
 )
