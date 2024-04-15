@@ -22,7 +22,7 @@ import { adjustedMockMoonriverNoXTokensParachainApi } from './testHelpers/adjust
 import { adjustedMockRelayApiNoLimitedReserveTransferAssets } from './testHelpers/adjustedMockRelayApiNoLimitedReserveTransferAssets';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
-import { adjustedMockSystemApiV1007000 } from './testHelpers/adjustedMockSystemApiV1007000';
+import { adjustedMockSystemApiV1009000 } from './testHelpers/adjustedMockSystemApiV1009000';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { AssetCallType, Direction, ResolvedCallInfo, UnsignedTransaction, XcmBaseArgs, XcmDirection } from './types';
@@ -50,7 +50,7 @@ const bifrostAssetsApi = new AssetTransferApi(adjustedMockBifrostParachainApi, '
 const moonriverAssetsNoXTokensApi = new AssetTransferApi(adjustedMockMoonriverNoXTokensParachainApi, 'moonriver', 2, {
 	registryType: 'NPM',
 });
-const westmintAssetsApi = new AssetTransferApi(adjustedMockSystemApiV1007000, 'westmint', 4, {
+const westmintAssetsApi = new AssetTransferApi(adjustedMockSystemApiV1009000, 'westmint', 4, {
 	registryType: 'NPM',
 });
 

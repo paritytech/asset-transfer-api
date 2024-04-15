@@ -4,7 +4,7 @@ import { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
-import { adjustedMockSystemApiV1007000 } from '../testHelpers/adjustedMockSystemApiV1007000';
+import { adjustedMockSystemApiV1009000 } from '../testHelpers/adjustedMockSystemApiV1009000';
 import { adjustedMockWestendRelayApiV1007001 } from '../testHelpers/adjustedMockWestendRelayApiV1007001';
 import type { Format, TxResult } from '../types';
 
@@ -13,7 +13,7 @@ const relayAssetsApiV1007001 = new AssetTransferApi(adjustedMockWestendRelayApiV
 	registryType: 'NPM',
 });
 const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
-const systemAssetsApiV100700 = new AssetTransferApi(adjustedMockSystemApiV1007000, 'westmint', 2, {
+const systemAssetsApiV1009000 = new AssetTransferApi(adjustedMockSystemApiV1009000, 'westmint', 2, {
 	registryType: 'NPM',
 });
 
@@ -1509,7 +1509,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			});
 			describe('V4', () => {
 				it('Should correctly build a transferAssets call for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'call', 4);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV1009000, 'call', 4);
 					expect(res).toEqual({
 						dest: 'westend',
 						origin: 'westmint',
@@ -1521,17 +1521,17 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a transferAssets payload for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'payload', 4);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV1009000, 'payload', 4);
 					expect(res.tx.toHex()).toEqual(
 						'0xd81f0b0401000400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b04040100009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a transferAssets for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'submittable', 3);
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV1009000, 'submittable', 3);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a transferAssets call for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'call', 4, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV1009000, 'call', 4, '1000', '2000');
 					expect(res).toEqual({
 						dest: 'westend',
 						origin: 'westmint',
@@ -1543,13 +1543,13 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 				});
 				it('Should correctly build a transferAssets payload for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'payload', 4, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV1009000, 'payload', 4, '1000', '2000');
 					expect(res.tx.toHex()).toEqual(
 						'0xe81f0b0401000400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b040401000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a transferAssets for V4', async () => {
-					const res = await nativeBaseSystemCreateTx(systemAssetsApiV100700, 'submittable', 4, '1000', '2000');
+					const res = await nativeBaseSystemCreateTx(systemAssetsApiV1009000, 'submittable', 4, '1000', '2000');
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
@@ -1731,6 +1731,147 @@ describe('AssetTransferApi Integration Tests', () => {
 					'Local transactions must have the `assetIds` input be a length of 1 or 0, and the `amounts` input be a length of 1',
 				);
 			});
+		});
+	});
+	describe('claimAssets', () => {
+		describe('AssetId Locations', () => {
+			it('Should correctly construct a claimAssets call using a location assetId for XCM V4', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`],
+					['100000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 4,
+						format: 'call',
+					},
+				);
+
+				expect(res).toEqual({
+					dest: 'westmint',
+					direction: 'local',
+					format: 'call',
+					method: 'claimAssets',
+					origin: '1000',
+					tx: '0x1f0c04040002043205011f000284d7170400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					xcmVersion: 4,
+				});
+			});
+			it('Should correctly construct a claimAssets payload using multiple location assetIds for XCM V3', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[
+						`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`,
+						`{"parents":"1","interior":{"Here":""}}`,
+					],
+					['100000000', '2000000000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 3,
+						format: 'payload',
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					},
+				);
+
+				expect(res.tx.toHex()).toEqual(
+					'0x05011f0c0308000002043205011f000284d717000100000b00204aa9d1010300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+				);
+			});
+			it('Should correctly construct a claimAssets submittable using a location assetId for XCM V2', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`],
+					['200000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 2,
+						format: 'submittable',
+					},
+				);
+
+				expect(res.tx.toRawType()).toEqual('Extrinsic');
+			});
+		});
+		describe('AssetId Symbols', () => {
+			it('Should correctly construct a claimAssets call using a symbol assetId for XCM V4', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`usdt`],
+					['100000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 4,
+						format: 'call',
+					},
+				);
+
+				expect(res).toEqual({
+					dest: 'westmint',
+					direction: 'local',
+					format: 'call',
+					method: 'claimAssets',
+					origin: '1000',
+					tx: '0x1f0c040400020432050901000284d7170400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					xcmVersion: 4,
+				});
+			});
+			it('Should correctly construct a claimAssets payload using multiple symbol assetIds for XCM V3', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`usdt`, `wnd`],
+					['100000000', '2000000000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 3,
+						format: 'payload',
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+					},
+				);
+
+				expect(res.tx.toHex()).toEqual(
+					'0x05011f0c03080000020432050901000284d717000100000b00204aa9d1010300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+				);
+			});
+			it('Should correctly construct a claimAssets submittable using a symbol assetId for XCM V2', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`usdc`],
+					['200000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 2,
+						format: 'submittable',
+					},
+				);
+
+				expect(res.tx.toRawType()).toEqual('Extrinsic');
+			});
+			it('Should correctly construct a claimAssets payload using a liquidity pool token assetId', async () => {
+				const res = await systemAssetsApiV1009000.claimAssets(
+					[`52`],
+					['200000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 2,
+						transferLiquidToken: true,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						format: 'payload',
+					},
+				);
+
+				expect(res.tx.toHex()).toEqual(
+					'0xd41f0c0104000002043705d0000208af2f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+				);
+			});
+		});
+		it('Should correctly error when mixing both a location and symbol assetId', async () => {
+			await expect(async () => {
+				await systemAssetsApiV1009000.claimAssets(
+					[`{"parents":"1","interior":{"Here":""}}`, `usdt`],
+					['2000000000', '100000000'],
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					{
+						xcmVersion: 4,
+						format: 'call',
+					},
+				);
+			}).rejects.toThrow(
+				`Found both symbol usdt and multilocation assetId {"parents":"1","interior":{"Here":""}}. Asset Ids must be symbol and integer or multilocation exclusively.`,
+			);
 		});
 	});
 });

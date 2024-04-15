@@ -304,13 +304,32 @@ For more information, refer to the [docs](https://github.com/paritytech/asset-tr
 
 Note: For other parachains, local transfers are currently supported via the balances and tokens pallets. For local parachain transactions, if an asset id is not passed in it will resolve to the balances pallet, and if a asset id is passed in it will resolve to the tokens pallet.
 
+### Claiming Trapped Assets
+
+The api can be used to construct `claimAssets` calls in order to retrieve assets trapped locally on chain after a failed XCM.
+
+An example would look like:
+```typescript
+api.claimAssets(
+	[`DOT`], // Asset(s) to claim
+	['1000000000000'], // Amount of asset(s) to claim
+	'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b', // Beneficiary
+	{
+		xcmVersion: 4,
+		format: 'payload',
+		sendersAddr: '5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX'
+	} // opts
+)
+```
+Note: claimAssets works when pallet-xcm is configured as the AssetTrap for the given runtime. This is true for all relay chains and system parachains but may not be for other chains.
+
 ## License
 
 The source code in this repository is distributed under the Apache 2.0 license. See the [LICENSE](https://github.com/paritytech/asset-transfer-api/blob/main/LICENSE) file. This source code comes with absolutely no warranty. Use at your own risk.
 
 ## Zombienet Testing
 
-Zombienet is used to launch a complete network including a relay chain, and two parachains. It will create HRMP channels betweens the launched parachains allowing the testing enviornment to send XCM messages and transfer assets. 
+Zombienet is used to launch a complete network including a relay chain, and two parachains. It will create HRMP channels betweens the launched parachains allowing the testing environment to send XCM messages and transfer assets. 
 
 ### **Requirements**:
 

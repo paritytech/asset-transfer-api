@@ -1,4 +1,4 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
+// Copyright 2024 Parity Technologies (UK) Ltd.
 
 import '@polkadot/api-augment';
 
@@ -17,6 +17,7 @@ import * as foreignAssets from './createCalls/foreignAssets';
 import * as poolAssets from './createCalls/poolAssets';
 import * as tokens from './createCalls/tokens';
 import {
+	claimAssets,
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
 	transferAssets,
@@ -46,6 +47,7 @@ import {
 	checkXcmVersion,
 } from './errors';
 import { LocalTxType } from './errors/checkLocalTxInput/types';
+import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs';
 import { Registry } from './registry';
 import { ChainInfoKeys, ChainInfoRegistry } from './registry/types';
 import { sanitizeAddress } from './sanitize/sanitizeAddress';
@@ -204,7 +206,7 @@ export class AssetTransferApi {
 		const localTxChainType = this.establishLocalTxChainType(originChainId, destChainId, chainOriginDestInfo);
 		const isLocalTx = localTxChainType !== LocalTxChainType.None;
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
-		const isForeignAssetsTransfer: boolean = this.checkIsForeignAssetTransfer(assetIds);
+		const isForeignAssetsTransfer = this.checkContainsAssetLocations(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
 		const xcmPallet = establishXcmPallet(api, xcmDirection);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
@@ -283,6 +285,72 @@ export class AssetTransferApi {
 		return this.constructFormat<T>(transaction, xcmDirection, declaredXcmVersion, txMethod, destChainId, specName, {
 			format,
 			paysWithFeeOrigin,
+			sendersAddr,
+		});
+	}
+
+	/**
+	 * Create a local claimAssets XCM transaction to retrieve trapped assets. This can be either locally on a systems parachain, on the relay chain or any chain that supports the pallet-xcm `claimAssets` runtime call.
+	 *
+	 * ```ts
+	 * import { TxResult } from '@substrate/asset-transfer-api'
+	 *
+	 * let callInfo: TxResult<'call'>;
+	 * try {
+	 *   callInfo = await assetsApi.claimAssets(
+	 * 	   [`{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`],
+	 *     ['1000000000000'],
+	 *     '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+	 *     {
+	 *       format: 'call',
+	 *       xcmVersion: 2,
+	 *     }
+	 *   )
+	 * } catch (e) {
+	 *   console.error(e);
+	 *   throw Error(e);
+	 * }
+	 * ```
+	 *
+	 * @param assetIds Array of assetId's to be claimed from the AssetTrap
+	 * @param amounts Array of the amounts of each trapped asset to be claimed
+	 * @param beneficiary Address of the account to receive the trapped assets
+	 * @param opts Options
+	 */
+	public async claimAssets<T extends Format>(
+		assetIds: string[],
+		amounts: string[],
+		beneficiary: string,
+		opts: TransferArgsOpts<T>,
+	): Promise<TxResult<T>> {
+		const { api, specName, originChainId, registry, safeXcmVersion } = this;
+		const { format, sendersAddr, transferLiquidToken: isLiquidToken, xcmVersion } = opts;
+		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
+		const isLiquidTokenTransfer = isLiquidToken ? true : false;
+		const assetIdsContainLocations = this.checkContainsAssetLocations(assetIds);
+		const beneficiaryAddress = sanitizeAddress(beneficiary);
+
+		checkXcmVersion(declaredXcmVersion);
+		checkBaseInputOptions(opts, specName);
+		checkClaimAssetsInputs(assetIds, amounts);
+
+		const ext = await claimAssets(
+			api,
+			registry,
+			specName,
+			assetIds,
+			amounts,
+			beneficiaryAddress,
+			declaredXcmVersion,
+			originChainId,
+			{
+				isForeignAssetsTransfer: assetIdsContainLocations,
+				isLiquidTokenTransfer,
+			},
+		);
+
+		return await this.constructFormat(ext, 'local', declaredXcmVersion, 'claimAssets', originChainId, originChainId, {
+			format,
 			sendersAddr,
 		});
 	}
@@ -758,13 +826,12 @@ export class AssetTransferApi {
 	}
 
 	/**
-	 * Returns if assetIds contains a values for a foreign asset transfer
+	 * Returns if `assetIds` contains asset location values
 	 *
 	 * @param assetIds string[]
 	 * @returns boolean
 	 */
-	private checkIsForeignAssetTransfer(assetIds: string[]): boolean {
-		// if assetIds is empty it is not a multilocation foreign asset transfer
+	private checkContainsAssetLocations(assetIds: string[]): boolean {
 		if (assetIds.length === 0) {
 			return false;
 		}
