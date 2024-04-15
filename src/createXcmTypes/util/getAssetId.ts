@@ -20,7 +20,7 @@ import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationEx
  * @param registry Registry
  * @param asset string
  * @param specName string
- * @param isAssetLocationTransfer boolean
+ * @param isForeignAssetsTransfer boolean
  */
 export const getAssetId = async (
 	api: ApiPromise,
@@ -28,14 +28,14 @@ export const getAssetId = async (
 	asset: string,
 	specName: string,
 	xcmVersion: number,
-	isAssetLocationTransfer?: boolean,
+	isForeignAssetsTransfer?: boolean,
 ): Promise<string> => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
 	const isParachain = new BN(currentChainId).gte(new BN(2000));
 
 	// if assets pallet, check the cache and return the cached assetId if found
-	if (!isAssetLocationTransfer) {
+	if (!isForeignAssetsTransfer) {
 		const cachedAsset = registry.cacheLookupAsset(asset);
 
 		if (cachedAsset) {
@@ -74,7 +74,7 @@ export const getAssetId = async (
 	let assetId = '';
 	const isAssetHub = currentChainId === ASSET_HUB_CHAIN_ID;
 
-	if (isAssetHub && isAssetLocationTransfer) {
+	if (isAssetHub && isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the cache or registry
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(asset, registry, xcmVersion);
 

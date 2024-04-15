@@ -206,7 +206,7 @@ export class AssetTransferApi {
 		const localTxChainType = this.establishLocalTxChainType(originChainId, destChainId, chainOriginDestInfo);
 		const isLocalTx = localTxChainType !== LocalTxChainType.None;
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
-		const isAssetLocationTransfer = this.checkContainsAssetLocations(assetIds);
+		const isForeignAssetsTransfer = this.checkContainsAssetLocations(assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
 		const xcmPallet = establishXcmPallet(api, xcmDirection);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
@@ -218,7 +218,7 @@ export class AssetTransferApi {
 		if (isLocalTx) {
 			const LocalTxOpts = {
 				...opts,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 			};
 			return this.createLocalTx(
@@ -249,7 +249,7 @@ export class AssetTransferApi {
 			weightLimit,
 			paysWithFeeDest,
 			isLiquidTokenTransfer,
-			isAssetLocationTransfer,
+			isForeignAssetsTransfer,
 		};
 
 		await checkXcmTxInputs(
@@ -260,14 +260,14 @@ export class AssetTransferApi {
 			},
 		);
 
-		const assetType = this.fetchAssetType(xcmDirection, isAssetLocationTransfer);
+		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
 		const assetCallType = this.fetchCallType(
 			originChainId,
 			destChainId,
 			assetIds,
 			xcmDirection,
 			assetType,
-			isAssetLocationTransfer,
+			isForeignAssetsTransfer,
 			isPrimaryParachainNativeAsset,
 			registry,
 		);
@@ -327,7 +327,7 @@ export class AssetTransferApi {
 		const { format, sendersAddr, transferLiquidToken: isLiquidToken, xcmVersion } = opts;
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		const isLiquidTokenTransfer = isLiquidToken ? true : false;
-		const isAssetLocationTransfer = this.checkContainsAssetLocations(assetIds);
+		const assetIdsContainLocations = this.checkContainsAssetLocations(assetIds);
 		const beneficiaryAddress = sanitizeAddress(beneficiary);
 
 		checkXcmVersion(declaredXcmVersion);
@@ -344,7 +344,7 @@ export class AssetTransferApi {
 			declaredXcmVersion,
 			originChainId,
 			{
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer: assetIdsContainLocations,
 				isLiquidTokenTransfer,
 			},
 		);
@@ -577,11 +577,11 @@ export class AssetTransferApi {
 		return result;
 	}
 
-	private fetchAssetType(xcmDirection: Direction, isAssetLocationTransfer?: boolean): AssetType {
+	private fetchAssetType(xcmDirection: Direction, isForeignAssetsTransfer?: boolean): AssetType {
 		if (
 			xcmDirection === Direction.RelayToSystem ||
 			xcmDirection === Direction.SystemToRelay ||
-			(xcmDirection === Direction.SystemToSystem && !isAssetLocationTransfer)
+			(xcmDirection === Direction.SystemToSystem && !isForeignAssetsTransfer)
 		) {
 			return AssetType.Native;
 		}
@@ -604,7 +604,7 @@ export class AssetTransferApi {
 		assetIds: string[],
 		xcmDirection: Direction,
 		assetType: AssetType,
-		isAssetLocationTransfer: boolean,
+		isForeignAssetsTransfer: boolean,
 		isParachainPrimaryNativeAsset: boolean,
 		registry: Registry,
 	): AssetCallType {
@@ -622,7 +622,7 @@ export class AssetTransferApi {
 		let originIsMultiLocationsNativeChain = false;
 		let destIsMultiLocationsNativeChain = false;
 
-		if (isAssetLocationTransfer) {
+		if (isForeignAssetsTransfer) {
 			if (xcmDirection === Direction.ParaToSystem) {
 				// check if the asset(s) are native to the origin chain
 				for (const assetId of assetIds) {
@@ -942,7 +942,7 @@ export class AssetTransferApi {
 				assetId,
 				this.specName,
 				declaredXcmVersion,
-				opts.isAssetLocationTransfer,
+				opts.isForeignAssetsTransfer,
 			);
 		}
 		const method = opts.keepAlive ? 'transferKeepAlive' : 'transfer';
@@ -955,7 +955,7 @@ export class AssetTransferApi {
 				this.specName,
 				this.registry,
 				declaredXcmVersion,
-				opts.isAssetLocationTransfer,
+				opts.isForeignAssetsTransfer,
 				opts.isLiquidTokenTransfer,
 			); // Throws an error when any of the inputs are incorrect.
 			let tx: SubmittableExtrinsic<'promise', ISubmittableResult> | undefined;

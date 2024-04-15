@@ -312,7 +312,7 @@ An example would look like:
 ```typescript
 api.claimAssets(
 	[`DOT`], // Asset(s) to claim
-	['1000000000000'], // Amount of asset to claim
+	['1000000000000'], // Amount of asset(s) to claim
 	'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b', // Beneficiary
 	{
 		xcmVersion: 4,

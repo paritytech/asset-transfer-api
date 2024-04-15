@@ -25,7 +25,7 @@ describe('claimAssets', () => {
 			xcmVersion,
 			'1000',
 			{
-				isAssetLocationTransfer: true,
+				isForeignAssetsTransfer: true,
 				isLiquidTokenTransfer: false,
 			},
 		);
@@ -50,7 +50,7 @@ describe('claimAssets', () => {
 			xcmVersion,
 			'1000',
 			{
-				isAssetLocationTransfer: true,
+				isForeignAssetsTransfer: true,
 				isLiquidTokenTransfer: false,
 			},
 		);
@@ -75,7 +75,7 @@ describe('claimAssets', () => {
 			xcmVersion,
 			'1000',
 			{
-				isAssetLocationTransfer: true,
+				isForeignAssetsTransfer: true,
 				isLiquidTokenTransfer: false,
 			},
 		);
@@ -101,7 +101,7 @@ describe('claimAssets', () => {
 				xcmVersion,
 				'1000',
 				{
-					isAssetLocationTransfer: true,
+					isForeignAssetsTransfer: true,
 					isLiquidTokenTransfer: false,
 				},
 			);

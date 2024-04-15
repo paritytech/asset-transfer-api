@@ -188,13 +188,13 @@ describe('SystemToPara XcmVersioned Generation', () => {
 	});
 
 	describe('Assets', () => {
-		const isAssetLocationTransfer = false;
+		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
 			const assets = await SystemToPara.createAssets(['100', '100'], 2, 'statemine', ['1', '2'], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 				api: mockSystemApi,
 			});
@@ -235,7 +235,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		it('Should work for V3', async () => {
 			const assets = await SystemToPara.createAssets(['100', '100'], 3, 'statemine', ['1', '2'], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 				api: mockSystemApi,
 			});
@@ -276,7 +276,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		it('Should work for V4', async () => {
 			const assets = await SystemToPara.createAssets(['100', '100'], 4, 'statemine', ['1', '2'], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 				api: mockSystemApi,
 			});
@@ -313,7 +313,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		it('Should correctly construct a liquid token transfer for V3', async () => {
 			const assets = await SystemToPara.createAssets(['100', '100'], 3, 'statemine', ['1', '2'], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
 				api: mockSystemApi,
 			});
@@ -354,7 +354,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		it('Should correctly construct a liquid token transfer for V4', async () => {
 			const assets = await SystemToPara.createAssets(['100', '100'], 4, 'statemine', ['1', '2'], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
 				api: mockSystemApi,
 			});

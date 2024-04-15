@@ -4,5 +4,5 @@ export interface CreateXcmCallOpts {
 	weightLimit?: { refTime?: string; proofSize?: string };
 	paysWithFeeDest?: string;
 	isLiquidTokenTransfer: boolean;
-	isAssetLocationTransfer: boolean;
+	isForeignAssetsTransfer: boolean;
 }

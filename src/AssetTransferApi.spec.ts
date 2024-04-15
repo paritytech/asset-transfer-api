@@ -882,7 +882,7 @@ describe('AssetTransferAPI', () => {
 						proofSize: '10000',
 					},
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = ['transferAssets', await transferAssets(mockBaseArgs, mockBaseOpts)];
@@ -916,7 +916,7 @@ describe('AssetTransferAPI', () => {
 				};
 				const mockBaseOpts = {
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -957,7 +957,7 @@ describe('AssetTransferAPI', () => {
 						proofSize: '10000',
 					},
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1000,7 +1000,7 @@ describe('AssetTransferAPI', () => {
 						proofSize: '10000',
 					},
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1043,7 +1043,7 @@ describe('AssetTransferAPI', () => {
 						proofSize: '10000',
 					},
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1087,7 +1087,7 @@ describe('AssetTransferAPI', () => {
 						proofSize: '10000',
 					},
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = ['transferMultiasset', await transferMultiasset(mockBaseArgs, mockBaseOpts)];
@@ -1126,7 +1126,7 @@ describe('AssetTransferAPI', () => {
 						proofSize: '10000',
 					},
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1171,7 +1171,7 @@ describe('AssetTransferAPI', () => {
 					},
 					paysWithFeeDest,
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1210,7 +1210,7 @@ describe('AssetTransferAPI', () => {
 				const mockBaseOpts = {
 					paysWithFeeDest: '1984',
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1252,7 +1252,7 @@ describe('AssetTransferAPI', () => {
 					},
 					paysWithFeeDest: '1984',
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1300,7 +1300,7 @@ describe('AssetTransferAPI', () => {
 					},
 					paysWithFeeDest: '1984',
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = ['transferMultiasset', await transferMultiasset(mockBaseArgs, mockBaseOpts)];
@@ -1339,7 +1339,7 @@ describe('AssetTransferAPI', () => {
 				const mockBaseOpts = {
 					paysWithFeeDest: '1984',
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1381,7 +1381,7 @@ describe('AssetTransferAPI', () => {
 				};
 				const mockBaseOpts = {
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1426,7 +1426,7 @@ describe('AssetTransferAPI', () => {
 				};
 				const mockBaseOpts = {
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = ['transferMultiasset', await transferMultiasset(mockBaseArgs, mockBaseOpts)];
@@ -1466,7 +1466,7 @@ describe('AssetTransferAPI', () => {
 				};
 				const mockBaseOpts = {
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1512,7 +1512,7 @@ describe('AssetTransferAPI', () => {
 				const mockBaseOpts = {
 					paysWithFeeDest,
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1556,7 +1556,7 @@ describe('AssetTransferAPI', () => {
 				};
 				const mockBaseOpts = {
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1600,7 +1600,7 @@ describe('AssetTransferAPI', () => {
 				};
 				const mockBaseOpts = {
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1646,7 +1646,7 @@ describe('AssetTransferAPI', () => {
 						proofSize: '10000',
 					},
 					isLiquidTokenTransfer: false,
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 				};
 
 				const expected: ResolvedCallInfo = [
@@ -1694,7 +1694,7 @@ describe('AssetTransferAPI', () => {
 					proofSize: '10000',
 				},
 				isLiquidTokenTransfer: false,
-				isAssetLocationTransfer: false,
+				isForeignAssetsTransfer: false,
 			};
 
 			await expect(async () => {

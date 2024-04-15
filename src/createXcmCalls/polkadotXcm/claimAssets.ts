@@ -31,7 +31,7 @@ export const claimAssets = async (
 	originChainId: string,
 	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	const { isAssetLocationTransfer, isLiquidTokenTransfer } = opts;
+	const { isForeignAssetsTransfer: assetIdsContainLocations, isLiquidTokenTransfer } = opts;
 	const beneficiary = createBeneficiary(beneficiaryAddress, xcmVersion);
 
 	const assets = await createAssetLocations(
@@ -42,7 +42,7 @@ export const claimAssets = async (
 		xcmVersion,
 		registry,
 		originChainId,
-		isAssetLocationTransfer,
+		assetIdsContainLocations,
 		isLiquidTokenTransfer,
 	);
 

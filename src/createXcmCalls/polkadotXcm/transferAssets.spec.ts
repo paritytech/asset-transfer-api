@@ -30,7 +30,7 @@ describe('transferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = false;
+			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
 				weightLimit: {
 					refTime,
@@ -38,7 +38,7 @@ describe('transferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -68,7 +68,7 @@ describe('transferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = false;
+			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
 				weightLimit: {
 					refTime,
@@ -76,7 +76,7 @@ describe('transferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -106,7 +106,7 @@ describe('transferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = false;
+			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
 				weightLimit: {
 					refTime,
@@ -114,7 +114,7 @@ describe('transferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -126,7 +126,7 @@ describe('transferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = false;
+			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
 				weightLimit: {
 					refTime,
@@ -134,7 +134,7 @@ describe('transferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -149,7 +149,7 @@ describe('transferAssets', () => {
 			const mockApi = { tx: {} } as unknown as ApiPromise;
 			const mockApiBaseArgs = { ...baseArgs, api: mockApi };
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = true;
+			const isForeignAssetsTransfer = true;
 			await expect(async () => {
 				await transferAssets(mockApiBaseArgs, {
 					weightLimit: {
@@ -158,7 +158,7 @@ describe('transferAssets', () => {
 					},
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
-					isAssetLocationTransfer,
+					isForeignAssetsTransfer,
 				});
 			}).rejects.toThrow(
 				'No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.',
@@ -190,7 +190,7 @@ describe('transferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = false;
+			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
 				weightLimit: {
 					refTime,
@@ -198,7 +198,7 @@ describe('transferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -210,7 +210,7 @@ describe('transferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = false;
+			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
 				weightLimit: {
 					refTime,
@@ -218,7 +218,7 @@ describe('transferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -233,7 +233,7 @@ describe('transferAssets', () => {
 			const mockApi = { tx: {} } as unknown as ApiPromise;
 			const mockApiBaseArgs = { ...baseArgs, api: mockApi };
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = true;
+			const isForeignAssetsTransfer = true;
 			await expect(async () => {
 				await transferAssets(mockApiBaseArgs, {
 					weightLimit: {
@@ -242,7 +242,7 @@ describe('transferAssets', () => {
 					},
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
-					isAssetLocationTransfer,
+					isForeignAssetsTransfer,
 				});
 			}).rejects.toThrow(
 				'No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.',
@@ -251,11 +251,11 @@ describe('transferAssets', () => {
 
 		it('Should correctly construct a foreign asset tx for a system parachain with V4', async () => {
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = true;
+			const isForeignAssetsTransfer = true;
 			const ext = await transferAssets(FAbaseArgs, {
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -268,7 +268,7 @@ describe('transferAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = true;
+			const isForeignAssetsTransfer = true;
 			const ext = await transferAssets(FAbaseArgs, {
 				weightLimit: {
 					refTime,
@@ -276,7 +276,7 @@ describe('transferAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 			});
 
 			expect(ext.toHex()).toBe(

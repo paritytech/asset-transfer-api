@@ -25,7 +25,7 @@ describe('limitedTeleportAssets', () => {
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = false;
+			const isForeignAssetsTransfer = false;
 
 			const ext = await limitedTeleportAssets(baseArgs, {
 				weightLimit: {
@@ -34,7 +34,7 @@ describe('limitedTeleportAssets', () => {
 				},
 				paysWithFeeDest,
 				isLiquidTokenTransfer,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 			});
 
 			expect(ext.toHex()).toBe(
@@ -45,13 +45,13 @@ describe('limitedTeleportAssets', () => {
 			const mockApi = { tx: {} } as unknown as ApiPromise;
 			const mockApiBaseArgs = { ...baseArgs, api: mockApi };
 			const paysWithFeeDest = undefined;
-			const isAssetLocationTransfer = false;
+			const isForeignAssetsTransfer = false;
 
 			await expect(async () => {
 				await limitedTeleportAssets(mockApiBaseArgs, {
 					paysWithFeeDest,
 					isLiquidTokenTransfer,
-					isAssetLocationTransfer,
+					isForeignAssetsTransfer,
 				});
 			}).rejects.toThrow(
 				'No supported pallet found in the current runtime. Supported pallets are xcmPallet, polkadotXcm, xTokens.',

@@ -129,13 +129,13 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 	});
 
 	describe('Assets', () => {
-		const isAssetLocationTransfer = false;
+		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
 			const assets = await SystemToSystem.createAssets(['100'], 2, 'statemine', ['USDT'], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 				api: mockSystemApi,
 			});
@@ -163,7 +163,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		it('Should work for V3', async () => {
 			const assets = await SystemToSystem.createAssets(['100'], 3, 'bridge-hub-kusama', ['ksm'], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 				api: mockSystemApi,
 			});
@@ -191,7 +191,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		it('Should work for V4', async () => {
 			const assets = await SystemToSystem.createAssets(['100'], 4, 'bridge-hub-kusama', ['ksm'], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 				api: mockSystemApi,
 			});
@@ -221,7 +221,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			await expect(async () => {
 				await SystemToSystem.createAssets(['100'], 3, 'bridge-hub-kusama', ['usdc'], {
 					registry,
-					isAssetLocationTransfer,
+					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
 					api: mockSystemApi,
 				});
@@ -230,7 +230,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 		it('Should work for a liquid token transfer', async () => {
 			const assets = await SystemToSystem.createAssets(['100'], 2, 'statemine', ['USDT'], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
 				api: mockSystemApi,
 			});

@@ -419,7 +419,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a call for a limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', 2, {
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
@@ -434,7 +434,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a limitedReserveTransferAssets payload for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', 2, {
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toHex()).toEqual(
@@ -443,7 +443,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V2 when its a native token', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', 2, {
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -454,7 +454,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
@@ -473,7 +473,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 
@@ -487,7 +487,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -499,7 +499,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '5000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
@@ -518,7 +518,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '5000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toHex()).toEqual(
@@ -531,7 +531,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '5000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -554,7 +554,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toHex()).toStrictEqual(
@@ -567,7 +567,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '1000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toHex()).toStrictEqual(
@@ -622,7 +622,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a call for a limitedReserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'call', 3, {
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
@@ -637,7 +637,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a limitedReserveTransferAssets payload for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'payload', 3, {
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toHex()).toEqual(
@@ -646,7 +646,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3 when the token is native', async () => {
 					const res = await nativeBaseSystemCreateTx(systemAssetsApi, 'submittable', 3, {
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -657,7 +657,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '5000',
 							proofSize: '3000',
 						},
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
@@ -676,7 +676,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '5000',
 							proofSize: '3000',
 						},
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toHex()).toEqual(
@@ -689,7 +689,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '5000',
 							proofSize: '3000',
 						},
-						isAssetLocationTransfer: false,
+						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -700,7 +700,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '5000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
@@ -719,7 +719,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '5000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toHex()).toEqual(
@@ -732,7 +732,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '5000',
 							proofSize: '2000',
 						},
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -743,7 +743,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '2000',
 							proofSize: '5000',
 						},
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
@@ -762,7 +762,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '2000',
 							proofSize: '5000',
 						},
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toHex()).toEqual(
@@ -775,14 +775,14 @@ describe('AssetTransferApi Integration Tests', () => {
 							refTime: '2000',
 							proofSize: '5000',
 						},
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 				it('Should correctly build a foreign asset XCM call limitedTeleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(systemAssetsApi, 'call', 3, {
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res).toEqual({
@@ -797,7 +797,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM payload limitedTeleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(systemAssetsApi, 'payload', 3, {
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toHex()).toEqual(
@@ -806,7 +806,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 				it('Should correctly build a foreign asset XCM submittable limitedTeleportAssets for V3', async () => {
 					const res = await foreignAssetMultiLocationBaseTeleportSystemCreateTx(systemAssetsApi, 'submittable', 3, {
-						isAssetLocationTransfer: true,
+						isForeignAssetsTransfer: true,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
@@ -830,7 +830,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						refTime: '1000',
 						proofSize: '2000',
 					},
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
 				});
 				expect(res.tx.toHex()).toStrictEqual(
@@ -843,7 +843,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						refTime: '1000',
 						proofSize: '2000',
 					},
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
 				});
 				expect(res.tx.toHex()).toStrictEqual(
@@ -1047,7 +1047,7 @@ describe('AssetTransferApi Integration Tests', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isAssetLocationTransfer: true,
+							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						},
 					);
@@ -1072,7 +1072,7 @@ describe('AssetTransferApi Integration Tests', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isAssetLocationTransfer: true,
+							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						},
 					);
@@ -1091,7 +1091,7 @@ describe('AssetTransferApi Integration Tests', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isAssetLocationTransfer: true,
+							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						},
 					);
@@ -1220,7 +1220,7 @@ describe('AssetTransferApi Integration Tests', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isAssetLocationTransfer: true,
+							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						},
 					);
@@ -1245,7 +1245,7 @@ describe('AssetTransferApi Integration Tests', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isAssetLocationTransfer: true,
+							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						},
 					);
@@ -1264,7 +1264,7 @@ describe('AssetTransferApi Integration Tests', () => {
 								refTime: '1000',
 								proofSize: '2000',
 							},
-							isAssetLocationTransfer: true,
+							isForeignAssetsTransfer: true,
 							isLiquidTokenTransfer: false,
 						},
 					);

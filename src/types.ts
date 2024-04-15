@@ -98,7 +98,7 @@ export interface ChainOriginDestInfo {
 }
 
 export interface LocalTxOpts extends TransferArgsOpts<Format> {
-	isAssetLocationTransfer: boolean;
+	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 }
 

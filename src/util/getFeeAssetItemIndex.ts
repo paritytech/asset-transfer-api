@@ -24,7 +24,7 @@ export const getFeeAssetItemIndex = async (
 	multiAssets: FungibleStrAssetType[],
 	specName: string,
 	xcmVersion: number,
-	isAssetLocationTransfer?: boolean,
+	isForeignAssetsTransfer?: boolean,
 ): Promise<number> => {
 	let result = -1;
 
@@ -59,10 +59,10 @@ export const getFeeAssetItemIndex = async (
 						paysWithFeeDest,
 						specName,
 						xcmVersion,
-						isAssetLocationTransfer,
+						isForeignAssetsTransfer,
 					);
-					// if isAssetLocationTransfer, compare the multiAsset interior to the the paysWithFeeDestGeneralIndex as a multilocation
-					if (isAssetLocationTransfer) {
+					// if isForeignAssetsTransfer, compare the multiAsset interior to the the paysWithFeeDestGeneralIndex as a multilocation
+					if (isForeignAssetsTransfer) {
 						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestGeneralIndex, xcmVersion);
 						const paysWithFeeDestMultiLocationInterior =
 							paysWithFeeDestMultiLocation.interior || paysWithFeeDestMultiLocation['Interior'];

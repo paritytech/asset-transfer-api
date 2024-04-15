@@ -23,7 +23,7 @@ describe('transferMultiasset', () => {
 		};
 		it('Should correctly construct an Unlimited transferMultiasset tx for V2', async () => {
 			const ext = await transferMultiasset(baseArgs, {
-				isAssetLocationTransfer: false,
+				isForeignAssetsTransfer: false,
 				isLiquidTokenTransfer: false,
 			});
 
@@ -37,7 +37,7 @@ describe('transferMultiasset', () => {
 					refTime: '1000',
 					proofSize: '2000',
 				},
-				isAssetLocationTransfer: false,
+				isForeignAssetsTransfer: false,
 				isLiquidTokenTransfer: false,
 			});
 
@@ -50,7 +50,7 @@ describe('transferMultiasset', () => {
 			const ext = await transferMultiasset(
 				{ ...baseArgs, xcmVersion: 3, amounts: ['100'] },
 				{
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
 				},
 			);
@@ -67,7 +67,7 @@ describe('transferMultiasset', () => {
 						refTime: '1000',
 						proofSize: '2000',
 					},
-					isAssetLocationTransfer: false,
+					isForeignAssetsTransfer: false,
 					isLiquidTokenTransfer: false,
 				},
 			);

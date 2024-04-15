@@ -128,12 +128,12 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 		});
 	});
 	describe('Assets', () => {
-		const isAssetLocationTransfer = false;
+		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
 		it('Should work for V2', async () => {
 			const assets = await RelayToSystem.createAssets(['100'], 2, '', [], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 				api: mockRelayApiV9420,
 			});
@@ -161,7 +161,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 		it('Should work for V3', async () => {
 			const assets = await RelayToSystem.createAssets(['100'], 3, '', [], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 				api: mockRelayApiV9420,
 			});
@@ -189,7 +189,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 		it('Should work for V4', async () => {
 			const assets = await RelayToSystem.createAssets(['100'], 4, '', [], {
 				registry,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 				api: mockRelayApiV9420,
 			});

@@ -122,14 +122,14 @@ export const checkAssetsAmountMatch = (
  * Ensures that foreign asset txs are not constructed when xcm pallet is xTokens
  *
  * @param xcmPallet
- * @param isAssetLocationTransfer
+ * @param isForeignAssetsTransfer
  */
 export const CheckXTokensPalletOriginIsNonForeignAssetTx = (
 	xcmDirection: Direction,
 	xcmPallet: XcmPalletName,
-	isAssetLocationTransfer: boolean,
+	isForeignAssetsTransfer: boolean,
 ) => {
-	if ((xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens) && isAssetLocationTransfer) {
+	if ((xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens) && isForeignAssetsTransfer) {
 		throw new BaseError(
 			`(${xcmDirection}) xTokens pallet does not support foreign asset transfers`,
 			BaseErrorsEnum.InvalidPallet,
@@ -392,12 +392,12 @@ const checkSystemAssets = async (
 	registry: Registry,
 	xcmDirection: string,
 	xcmVersion: number,
-	isAssetLocationTransfer: boolean,
+	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer?: boolean,
 ) => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 
-	if (isAssetLocationTransfer) {
+	if (isForeignAssetsTransfer) {
 		// check that the asset id is a valid multilocation
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmVersion);
 
@@ -661,7 +661,7 @@ const checkSystemToParaAssetId = async (
 	registry: Registry,
 	xcmDirection: Direction,
 	xcmVersion: number,
-	isAssetLocationTransfer: boolean,
+	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
 ) => {
 	await checkIsValidSystemChainAssetId(
@@ -672,7 +672,7 @@ const checkSystemToParaAssetId = async (
 		registry,
 		xcmDirection,
 		xcmVersion,
-		isAssetLocationTransfer,
+		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
 	);
 };
@@ -685,7 +685,7 @@ export const checkIsValidSystemChainAssetId = async (
 	registry: Registry,
 	xcmDirection: Direction,
 	xcmVersion: number,
-	isAssetLocationTransfer: boolean,
+	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
 ) => {
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
@@ -700,7 +700,7 @@ export const checkIsValidSystemChainAssetId = async (
 			registry,
 			xcmDirection,
 			xcmVersion,
-			isAssetLocationTransfer,
+			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
 		);
 	}
@@ -746,7 +746,7 @@ const checkSystemToSystemAssetId = async (
 	registry: Registry,
 	xcmDirection: Direction,
 	xcmVersion: number,
-	isAssetLocationTransfer: boolean,
+	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
 ) => {
 	await checkIsValidSystemChainAssetId(
@@ -757,7 +757,7 @@ const checkSystemToSystemAssetId = async (
 		registry,
 		xcmDirection,
 		xcmVersion,
-		isAssetLocationTransfer,
+		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
 	);
 };
@@ -971,7 +971,7 @@ export const checkAssetIdInput = async (
 	xcmDirection: Direction,
 	registry: Registry,
 	xcmVersion: number,
-	isAssetLocationTransfer: boolean,
+	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
 ) => {
 	for (let i = 0; i < assetIds.length; i++) {
@@ -1000,7 +1000,7 @@ export const checkAssetIdInput = async (
 				registry,
 				xcmDirection,
 				xcmVersion,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 			);
 		}
@@ -1014,7 +1014,7 @@ export const checkAssetIdInput = async (
 				registry,
 				xcmDirection,
 				xcmVersion,
-				isAssetLocationTransfer,
+				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 			);
 		}
@@ -1041,7 +1041,7 @@ export const checkAssetIdInput = async (
  */
 export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: CheckXcmTxInputsOpts) => {
 	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet } = baseArgs;
-	const { paysWithFeeDest, isAssetLocationTransfer, isLiquidTokenTransfer, isPrimaryParachainNativeAsset } = opts;
+	const { paysWithFeeDest, isForeignAssetsTransfer, isLiquidTokenTransfer, isPrimaryParachainNativeAsset } = opts;
 	const relayChainInfo = registry.currentRelayRegistry;
 
 	if (isPrimaryParachainNativeAsset) {
@@ -1091,7 +1091,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		direction,
 		registry,
 		xcmVersion,
-		isAssetLocationTransfer,
+		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
 	);
 
@@ -1111,7 +1111,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	}
 
 	if (direction === Direction.SystemToPara) {
-		if (isAssetLocationTransfer) {
+		if (isForeignAssetsTransfer) {
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
@@ -1122,7 +1122,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	}
 
 	if (direction === Direction.SystemToSystem) {
-		if (isAssetLocationTransfer) {
+		if (isForeignAssetsTransfer) {
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
@@ -1132,7 +1132,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	}
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {
-		CheckXTokensPalletOriginIsNonForeignAssetTx(direction, xcmPallet, isAssetLocationTransfer);
+		CheckXTokensPalletOriginIsNonForeignAssetTx(direction, xcmPallet, isForeignAssetsTransfer);
 		checkAssetsAmountMatch(assetIds, amounts, isPrimaryParachainNativeAsset);
 	}
 
