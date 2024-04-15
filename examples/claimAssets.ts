@@ -8,7 +8,7 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a `claimAssets` call to claim `wnd` tokens trapped in the AssetTrap of Westend AssetHub where the `xcmVersion` is set to 3.
+ * In this example we are creating a `claimAssets` call to claim `WND` tokens trapped in the AssetTrap of Westend AssetHub where the `xcmVersion` is set to 3.
  *
  */
 const main = async () => {
@@ -17,7 +17,7 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.claimAssets(
-			['wnd'],
+			['WND'],
 			['10000000000'],
 			'5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E',
 			{
