@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0-beta.1](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.0..v0.2.0-beta.1)(2024-04-24)
+
+### Chore
+
+- chore(deps): up pjs ([#396](https://github.com/paritytech/asset-transfer-api/pull/396))([4073aa2](https://github.com/paritytech/asset-transfer-api/commit/4073aa21250643d4503ef9fb123eaf27bea1fa90))
+- chore(registry): update registry dep ([#395](https://github.com/paritytech/asset-transfer-api/pull/395))([d7f3d8a](https://github.com/paritytech/asset-transfer-api/commit/d7f3d8afeb02f9c4b9e322d02337a33c19fe0856))
+
+### Feat
+
+- feat: add support for pallet-xcm claimAssets call ([#394](https://github.com/paritytech/asset-transfer-api/pull/394))([685ca19](https://github.com/paritytech/asset-transfer-api/commit/685ca19e54bdc6dc76b93423b09c9b44f57a009e))
+
+
 ## [0.2.0-beta.0](https://github.com/paritytech/asset-transfer-api/compare/v0.1.8..v0.2.0-beta.0)(2024-04-02)
 
 ## Breaking Change
