@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0-beta.2](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.1..v0.2.0-beta.2)(2024-04-24)
+
+### Chore
+
+- chore(deps): update pjs ([#398](https://github.com/paritytech/asset-transfer-api/pull/398))([339e032](https://github.com/paritytech/asset-transfer-api/commit/339e0322f22e5e3a8b5fd98c145212b6e1cc94b2))
+Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub.
+
+
 ## [0.2.0-beta.1](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.0..v0.2.0-beta.1)(2024-04-24)
 
 ### Chore
