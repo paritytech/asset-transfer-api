@@ -1411,13 +1411,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@substrate/asset-transfer-api@workspace:."
   dependencies:
-<<<<<<< HEAD
     "@polkadot/api": "npm:11.0.1"
-    "@substrate/asset-transfer-api-registry": "npm:^0.2.15"
-=======
-    "@polkadot/api": "npm:10.12.4"
     "@substrate/asset-transfer-api-registry": "npm:^0.2.17"
->>>>>>> main
     "@substrate/dev": "npm:^0.7.1"
     "@types/cli-progress": "npm:^3"
     ansi-colors: "npm:^4.1.3"
