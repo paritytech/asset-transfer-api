@@ -13,7 +13,7 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
  * from a Rococo Asset Hub (System Parachain) account
  * to a Rococo Asset Hub (System Parachain) account.
  *
- * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://rococo-asset-hub-rpc.polkadot.io');

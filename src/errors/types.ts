@@ -1,10 +1,13 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
+// Copyright 2024 Parity Technologies (UK) Ltd.
 
 export interface CheckXcmTxInputsOpts {
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 	isPrimaryParachainNativeAsset: boolean;
 	paysWithFeeDest?: string;
-	isLimited?: boolean;
 	weightLimit?: { refTime?: string; proofSize?: string };
+	assetTransferType?: string;
+	remoteReserveAssetTransferTypeLocation?: string;
+	feesTransferType?: string;
+	remoteReserveFeesTransferTypeLocation?: string;
 }

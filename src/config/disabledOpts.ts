@@ -40,11 +40,6 @@ export const disabledOpts: DisabledOptions = {
 		chains: [],
 		error: (opt: string, chain: string) => callError(opt, chain),
 	},
-	isLimited: {
-		disabled: false,
-		chains: [],
-		error: (opt: string, chain: string) => callError(opt, chain),
-	},
 	weightLimit: {
 		disabled: false,
 		chains: [],
@@ -61,6 +56,31 @@ export const disabledOpts: DisabledOptions = {
 		error: (opt: string, chain: string) => callError(opt, chain),
 	},
 	transferLiquidToken: {
+		disabled: false,
+		chains: [],
+		error: (opt: string, chain: string) => callError(opt, chain),
+	},
+	assetTransferType: {
+		disabled: false,
+		chains: [],
+		error: (opt: string, chain: string) => callError(opt, chain),
+	},
+	remoteReserveAssetTransferTypeLocation: {
+		disabled: false,
+		chains: [],
+		error: (opt: string, chain: string) => callError(opt, chain),
+	},
+	feesTransferType: {
+		disabled: false,
+		chains: [],
+		error: (opt: string, chain: string) => callError(opt, chain),
+	},
+	remoteReserveFeesTransferTypeLocation: {
+		disabled: false,
+		chains: [],
+		error: (opt: string, chain: string) => callError(opt, chain),
+	},
+	customXcmOnDest: {
 		disabled: false,
 		chains: [],
 		error: (opt: string, chain: string) => callError(opt, chain),

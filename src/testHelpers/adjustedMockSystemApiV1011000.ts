@@ -4,7 +4,7 @@ import type { ApiPromise } from '@polkadot/api';
 import { Metadata, Option, TypeRegistry } from '@polkadot/types';
 import type { Header } from '@polkadot/types/interfaces';
 import type {
-	PalletAssetConversionNativeOrAssetId,
+	PalletAssetConversionEvent,
 	PalletAssetConversionPoolInfo,
 	PalletAssetsAssetDetails,
 	PalletAssetsAssetMetadata,
@@ -15,10 +15,10 @@ import BN from 'bn.js';
 
 import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { createApiWithAugmentations } from './createApiWithAugmentations';
-import { assetHubWestendV1007000 } from './metadata/assetHubWestendV1007000';
+import { assetHubWestendV1011000 } from './metadata/assetHubWestendV1011000';
 import { mockWeightInfo } from './mockWeightInfo';
 
-const mockSystemApi = createApiWithAugmentations(assetHubWestendV1007000);
+const mockSystemApi = createApiWithAugmentations(assetHubWestendV1011000);
 
 /**
  * Create a type registry for Westmint.
@@ -39,7 +39,7 @@ function createWestmintRegistry(specVersion: number): TypeRegistry {
 
 	registry.register(getSpecTypes(registry, 'Westmint', 'westmint', specVersion));
 
-	registry.setMetadata(new Metadata(registry, assetHubWestendV1007000));
+	registry.setMetadata(new Metadata(registry, assetHubWestendV1011000));
 
 	return registry;
 }
@@ -60,7 +60,7 @@ const queryInfoCallAt = () =>
 	Promise.resolve().then(() => mockSystemApi.createType('RuntimeDispatchInfoV2', mockWeightInfo));
 
 const getMetadata = () =>
-	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1007000));
+	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1011000));
 
 const getHeader = (): Promise<Header> =>
 	Promise.resolve().then(() =>
@@ -147,7 +147,7 @@ const asset = (assetId: number | string | BN): Promise<Option<PalletAssetsAssetD
 		const maybeAsset = assets.has(adjAsset) ? assets.get(adjAsset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1007000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1011000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -216,7 +216,7 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 		const maybeAsset = assets.has(assetMultiLocation) ? assets.get(assetMultiLocation) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1007000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1011000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -262,41 +262,35 @@ const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const maybeAsset = assets.has(asset) ? assets.get(asset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1007000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1011000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
 	});
 
 const pools = (
-	_arg: ITuple<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionNativeOrAssetId]>,
-): Promise<[PalletAssetConversionNativeOrAssetId, PalletAssetConversionPoolInfo][]> =>
+	_arg: ITuple<[PalletAssetConversionEvent, PalletAssetConversionEvent]>,
+): Promise<[PalletAssetConversionEvent, PalletAssetConversionPoolInfo][]> =>
 	Promise.resolve().then(() => {
-		const palletAssetConversionNativeOrAssetId1 = mockSystemApi.registry.createType(
-			'PalletAssetConversionNativeOrAssetId',
-			[
-				{ parents: 0, interior: { Here: '' } },
-				{
-					parents: 0,
-					interior: { X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }] },
-				},
-			],
-		);
+		const palletAssetConversionNativeOrAssetId1 = mockSystemApi.registry.createType('PalletAssetConversionEvent', [
+			{ parents: 0, interior: { Here: '' } },
+			{
+				parents: 0,
+				interior: { X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }] },
+			},
+		]);
 
 		const poolInfo1 = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo', {
 			lpToken: 0,
 		});
 
-		const palletAssetConversionNativeOrAssetId2 = mockSystemApi.registry.createType(
-			'PalletAssetConversionNativeOrAssetId',
-			[
-				{ parents: 0, interior: { Here: '' } },
-				{
-					parents: 0,
-					interior: { X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }] },
-				},
-			],
-		);
+		const palletAssetConversionNativeOrAssetId2 = mockSystemApi.registry.createType('PalletAssetConversionEvent', [
+			{ parents: 0, interior: { Here: '' } },
+			{
+				parents: 0,
+				interior: { X2: [{ PalletInstance: 50 }, { GeneralIndex: 100 }] },
+			},
+		]);
 
 		const poolInfo2 = mockSystemApi.registry.createType('PalletAssetConversionPoolInfo', {
 			lpToken: 1,
@@ -316,9 +310,9 @@ const mockApiAt = {
 	},
 };
 
-export const adjustedMockSystemApiV1007000 = {
+export const adjustedMockSystemApiV1011000 = {
 	createType: createType,
-	registry: createWestmintRegistry(1007000),
+	registry: createWestmintRegistry(1011000),
 	rpc: {
 		state: {
 			getRuntimeVersion: getSystemRuntimeVersion,
@@ -436,6 +430,8 @@ export const adjustedMockSystemApiV1007000 = {
 			teleportAssets: mockSystemApi.tx['polkadotXcm'].teleportAssets,
 			limitedTeleportAssets: mockSystemApi.tx['polkadotXcm'].limitedTeleportAssets,
 			transferAssets: mockSystemApi.tx['polkadotXcm'].transferAssets,
+			claimAssets: mockSystemApi.tx['polkadotXcm'].claimAssets,
+			transferAssetsUsingTypeAndThen: mockSystemApi.tx['polkadotXcm'].transferAssetsUsingTypeAndThen,
 		},
 		assets: {
 			transfer: mockSystemApi.tx.assets.transfer,

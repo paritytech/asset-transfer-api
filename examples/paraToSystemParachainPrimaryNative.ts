@@ -9,10 +9,10 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a call to send MOVR from a Moonriver (Parachain) account
- * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to 3, and `isLimited` is false declaring that
+ * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to 3 and no `weightLimit` is provided declaring that
  * it will allow `unlimited` weight for the tx.
  *
- * NOTE: When `isLimited` is true it will expect for refTime and proofSize to be provided as additional arguments.
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.public.blastapi.io');
@@ -22,11 +22,10 @@ const main = async () => {
 		callInfo = await assetApi.createTransferTransaction(
 			'1000',
 			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
-			['movr'], // Note: since it is the primary asset of Moonriver that is being sent to AssetHub, it will be a `teleportAssets` call
+			['movr'], // Note: since it is the primary asset of Moonriver that is being sent to AssetHub, it will be a `limitedTeleportAssets` call
 			['1000000000000'],
 			{
 				format: 'call',
-				isLimited: false,
 				xcmVersion: 3,
 			},
 		);

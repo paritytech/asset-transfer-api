@@ -2,28 +2,18 @@ import type { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import type { Format, TxResult } from '../types';
 
-export type TestMultiasset = [parachainId: string, assetId: string, expected: TxResult<'payload'>];
+export type TestMultiasset = [parachainId: string, assetId: string, expected: `0x${string}`];
 
-export type TestMultiassets = [
-	parachainId: string,
-	assetIds: string[],
-	amounts: string[],
-	expected: TxResult<'payload'>,
-];
+export type TestMultiassets = [parachainId: string, assetIds: string[], amounts: string[], expected: `0x${string}`];
 
-export type TestMultiassetWithFormat = [
-	parachainId: string,
-	assetId: string,
-	format: string,
-	expected: TxResult<'payload'>,
-];
+export type TestMultiassetWithFormat = [parachainId: string, assetId: string, format: string, expected: `0x${string}`];
 
 export type TestMultiassetsWithFormat = [
 	parachainId: string,
 	assetIds: string[],
 	amounts: string[],
 	format: string,
-	expected: TxResult<'payload'>,
+	expected: `0x${string}`,
 ];
 
 export const paraTransferMultiasset = async <T extends Format>(
@@ -42,7 +32,6 @@ export const paraTransferMultiasset = async <T extends Format>(
 		{
 			format,
 			xcmVersion,
-			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 		},
@@ -67,7 +56,6 @@ export const paraTransferMultiassets = async <T extends Format>(
 			paysWithFeeDest: '0',
 			format,
 			xcmVersion,
-			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 		},
@@ -92,7 +80,6 @@ export const paraTransferMultiassetWithFee = async <T extends Format>(
 				'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',
 			format,
 			xcmVersion,
-			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 		},
@@ -114,7 +101,6 @@ export const paraTeleportNativeAsset = async <T extends Format>(
 		{
 			format,
 			xcmVersion,
-			isLimited: opts.isLimited,
 			weightLimit: opts.weightLimit,
 			sendersAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 		},

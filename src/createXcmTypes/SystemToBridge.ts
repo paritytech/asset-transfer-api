@@ -144,7 +144,7 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param opts Options that are used for WeightLimit.
 	 */
 	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
+		return opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 			? {
 					Limited: {
 						refTime: opts.weightLimit?.refTime,
@@ -161,7 +161,7 @@ export const SystemToBridge: ICreateXcmType = {
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isForeignAssetsTransfer } = opts;
-		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
+		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createSystemToBridgeAssets(
 				api,
 				normalizeArrToStr(amounts),

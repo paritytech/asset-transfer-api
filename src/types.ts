@@ -2,6 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
@@ -81,8 +82,10 @@ export enum AssetType {
 }
 
 export enum AssetCallType {
-	Reserve = 'Reserve',
-	Teleport = 'Teleport',
+    LocalReserve = "LocalReserve",
+    DestinationReserve = 'DestinationReserve',
+    RemoteReserve = 'RemoteReserve',
+    Teleport = "Teleport",
 }
 
 export enum LocalTxChainType {
@@ -118,7 +121,7 @@ export type Format = 'payload' | 'call' | 'submittable';
  * The Format types possible for a constructed transaction.
  */
 export type ConstructedFormat<T> = T extends 'payload'
-	? `0x${string}`
+	? GenericExtrinsicPayload
 	: T extends 'call'
 	  ? `0x${string}`
 	  : T extends 'submittable'
@@ -146,13 +149,13 @@ export type LocalTransferTypes =
 export type Methods =
 	| LocalTransferTypes
 	| 'transferAssets'
-	| 'reserveTransferAssets'
+	| 'transferAssetsUsingTypeAndThen'
 	| 'limitedReserveTransferAssets'
-	| 'teleportAssets'
 	| 'limitedTeleportAssets'
 	| 'transferMultiasset'
 	| 'transferMultiassets'
-	| 'transferMultiassetWithFee';
+	| 'transferMultiassetWithFee'
+	| 'claimAssets';
 
 /**
  * Options that are appplied at initialization of the `AssetTransferApi`.
@@ -248,12 +251,7 @@ export interface TransferArgsOpts<T extends Format> {
 	 */
 	sendersAddr?: string;
 	/**
-	 * Boolean to declare if this will be with limited XCM transfers.
-	 * Deafult is unlimited.
-	 */
-	isLimited?: boolean;
-	/**
-	 * When isLimited is true, the option for applying a weightLimit is possible.
+	 * Option for applying a custom `weightLimit`.
 	 * If not inputted it will default to `Unlimited`.
 	 */
 	weightLimit?: {
@@ -284,6 +282,28 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Default is false.
 	 */
 	transferLiquidToken?: boolean;
+	/**
+	 * The XCM `TransferType` used to transfer the `assets`.
+	 */
+	assetTransferType?: string;
+	/**
+	 * The RemoteReserve location for an XCM transfer.
+	 * Provided when speicifying an `assetTransferType` of RemoteReserve.
+	 */
+	remoteReserveAssetTransferTypeLocation?: string;
+	/**
+	 * The XCM `TransferType` used to pay fees for an XCM transfer.
+	 */
+	feesTransferType?: string;
+	/**
+	 * The RemoteReserve location for an XCM transfers fees.
+	 * Provided when speicifying an `feesTransferType` of RemoteReserve.
+	 */
+	remoteReserveFeesTransferTypeLocation?: string;
+	/**
+	 * Optional custom XCM message to be executed on destination chain .
+	 */
+	customXcmOnDest?: string;
 }
 
 export interface ChainInfo {
@@ -419,3 +439,19 @@ export type XTokensTxMethodTransactionMap = {
 export type XcmPalletTxMethodTransactionMap = {
 	[x: string]: [XcmPalletCallSignature, CallArgs];
 };
+
+export type LocalReserve = {
+	LocalReserve: 'null';
+};
+export type DestinationReserve = {
+	DestinationReserve: 'null';
+};
+export type RemoteReserve = {
+    RemoteReserve: AnyJson;
+}
+export type Teleport = {
+	Teleport: 'null';
+};
+
+export type AssetTransferType = LocalReserve | DestinationReserve | Teleport | RemoteReserve;
+

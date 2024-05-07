@@ -3,7 +3,7 @@
 import type { AnyJson } from '@polkadot/types/types';
 
 import { SUPPORTED_XCM_VERSIONS } from '../consts';
-import type { UnionXcmMultiLocation, XcmV4Junction } from '../createXcmTypes/types';
+import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { BaseError, BaseErrorsEnum } from '../errors/BaseError';
 import { sanitizeKeys } from './sanitizeKeys';
 
@@ -32,15 +32,16 @@ export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number)
 	}
 
 	let result = JSON.parse(multiLocationStr) as UnionXcmMultiLocation;
+	console.log('RESULT IS', JSON.stringify(result));
 
-	if (xcmVersion > 3 && multiLocationStr.toLowerCase().includes('x1')) {
-		result = {
-			parents: result.parents,
-			interior: {
-				X1: [result.interior.X1 as XcmV4Junction],
-			},
-		};
-	}
+	// if (xcmVersion > 3 && multiLocationStr.toLowerCase().includes('x1')) {
+	// 	result = {
+	// 		parents: result.parents,
+	// 		interior: {
+	// 			X1: [result.interior.X1 as XcmV4Junction],
+	// 		},
+	// 	};
+	// }
 
 	if (!hasGlobalConsensus) {
 		return sanitizeKeys(result);

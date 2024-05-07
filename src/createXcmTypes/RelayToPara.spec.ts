@@ -275,13 +275,11 @@ describe('RelayToPara XcmVersioned Generation', () => {
 	describe('WeightLimit', () => {
 		// NOTE: for V0, V1, and V2 Weightlimit just uses V2 so we only need to test once.
 		// No matter the version if its equal to or less than 2, it will alwyas default to V2.
-		it('Should work when isLimited is true', () => {
-			const isLimited = true;
+		it('Should work when weightLimit option is provided', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
 			const weightLimit = RelayToPara.createWeightLimit({
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -294,7 +292,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 				},
 			});
 		});
-		it('Should work when isLimited is falsy', () => {
+		it('Should work when weightLimit option is not provided', () => {
 			const weightLimit = RelayToPara.createWeightLimit({});
 
 			expect(weightLimit).toStrictEqual({

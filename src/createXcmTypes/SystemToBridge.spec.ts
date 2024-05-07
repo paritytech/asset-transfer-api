@@ -1,7 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../registry';
-import { adjustedMockSystemApiV1007000 } from '../testHelpers/adjustedMockSystemApiV1007000';
+import { adjustedMockSystemApiV1011000 } from '../testHelpers/adjustedMockSystemApiV1011000';
 import { SystemToBridge } from './SystemToBridge';
 
 describe('SystemToBridge', () => {
@@ -146,7 +146,7 @@ describe('SystemToBridge', () => {
 					registry,
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
-					api: adjustedMockSystemApiV1007000,
+					api: adjustedMockSystemApiV1011000,
 				},
 			);
 
@@ -182,7 +182,7 @@ describe('SystemToBridge', () => {
 					registry,
 					isForeignAssetsTransfer,
 					isLiquidTokenTransfer,
-					api: adjustedMockSystemApiV1007000,
+					api: adjustedMockSystemApiV1011000,
 				},
 			);
 

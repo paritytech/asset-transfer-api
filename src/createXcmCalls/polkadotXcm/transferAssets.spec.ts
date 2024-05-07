@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
-import { adjustedMockSystemApiV1007000 } from '../../testHelpers/adjustedMockSystemApiV1007000';
+import { adjustedMockSystemApiV1011000 } from '../../testHelpers/adjustedMockSystemApiV1011000';
 import { adjustedMockWestendRelayApiV1007001 } from '../../testHelpers/adjustedMockWestendRelayApiV1007001';
 import { Direction, XcmBaseArgs, XcmDirection } from '../../types';
 import { transferAssets } from './transferAssets';
@@ -26,14 +26,12 @@ describe('transferAssets', () => {
 		};
 
 		it('Should correctly construct a transferAssets tx from relay to system', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -66,14 +64,12 @@ describe('transferAssets', () => {
 		};
 
 		it('Should correctly construct a transferAssets tx from relay to a parachain', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -94,7 +90,7 @@ describe('transferAssets', () => {
 
 		const isLiquidTokenTransfer = false;
 		const baseArgs: XcmBaseArgs = {
-			api: adjustedMockSystemApiV1007000,
+			api: adjustedMockSystemApiV1011000,
 			direction: Direction.SystemToRelay as XcmDirection,
 			destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 			assetIds: ['wnd'],
@@ -106,14 +102,12 @@ describe('transferAssets', () => {
 		};
 
 		it('Should correctly construct a tx from system to relay', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -128,14 +122,12 @@ describe('transferAssets', () => {
 			);
 		});
 		it('Should correctly construct a tx when a weightLimit is available', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -151,7 +143,6 @@ describe('transferAssets', () => {
 		});
 
 		it('Should error when a api does not support the required pallets', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
@@ -161,7 +152,6 @@ describe('transferAssets', () => {
 			const isForeignAssetsTransfer = true;
 			await expect(async () => {
 				await transferAssets(mockApiBaseArgs, {
-					isLimited,
 					weightLimit: {
 						refTime,
 						proofSize,
@@ -181,7 +171,7 @@ describe('transferAssets', () => {
 
 		const isLiquidTokenTransfer = false;
 		const baseArgs: XcmBaseArgs = {
-			api: adjustedMockSystemApiV1007000,
+			api: adjustedMockSystemApiV1011000,
 			direction: Direction.SystemToPara as XcmDirection,
 			destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 			assetIds: ['1'],
@@ -197,14 +187,12 @@ describe('transferAssets', () => {
 			assetIds: ['{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}'],
 		};
 		it('Should correctly construct a tx for a system parachain with V4', async () => {
-			const isLimited = true;
 			const refTime = '1000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -219,14 +207,12 @@ describe('transferAssets', () => {
 			);
 		});
 		it('Should correctly construct a tx when a weightLimit is available', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = false;
 			const ext = await transferAssets(baseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -242,7 +228,6 @@ describe('transferAssets', () => {
 		});
 
 		it('Should error when a api does not support the required pallets', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
@@ -252,7 +237,6 @@ describe('transferAssets', () => {
 			const isForeignAssetsTransfer = true;
 			await expect(async () => {
 				await transferAssets(mockApiBaseArgs, {
-					isLimited,
 					weightLimit: {
 						refTime,
 						proofSize,
@@ -281,14 +265,12 @@ describe('transferAssets', () => {
 		});
 
 		it('Should correctly construct a foreign asset tx when a weightLimit is available', async () => {
-			const isLimited = true;
 			const refTime = '1000000000';
 			const proofSize = '2000';
 
 			const paysWithFeeDest = undefined;
 			const isForeignAssetsTransfer = true;
 			const ext = await transferAssets(FAbaseArgs, {
-				isLimited,
 				weightLimit: {
 					refTime,
 					proofSize,

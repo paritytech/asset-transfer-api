@@ -83,7 +83,6 @@ const call = assetsApi.createTransferTransaction(
   ['1000000000', '2000000000'], // Array of amounts of each token to transfer
   {
     format: 'call',
-    isLimited: true,
     xcmVersion: 1
   } // Options
 )
@@ -178,7 +177,7 @@ interface TransferArgsOpts<T extends Format> {
 	 * It can either be a `payload`, `call`, or `submittable`.
 	 *
 	 * Note: A `submittable` will return a `SubmittableExtrinsic` polkadot-js type, whereas
-	 * a `payload` or `call` will return a hex. By default a `payload` will be returned if nothing is inputted.
+	 * a `payload` will return a `GenericExtrinsicPayload` polkadot-js type and a `call` will return a hex. By default a `payload` will be returned if nothing is inputted.
 	 */
 	format?: T;
 	/**
@@ -192,12 +191,7 @@ interface TransferArgsOpts<T extends Format> {
 	 */
 	paysWithFeeDest?: string;
 	/**
-	 * Boolean to declare if this will be with limited XCM transfers.
-	 * Deafult is unlimited.
-	 */
-	isLimited?: boolean;
-	/**
-	 * When isLimited is true, the option for applying a weightLimit is possible.
+	 * Option for applying a custom weightLimit.
 	 * If not inputted it will default to `Unlimited`.
 	 */
 	weightLimit?: { refTime?: string, proofSize?: string };
@@ -236,7 +230,6 @@ api.createTransferTransaction(
 	['1000000'],
 	{
 		format: 'call',
-		isLimited: false,
 		xcmVersion: 2,
 	}
 );
@@ -246,18 +239,17 @@ If you would like to run an example to understand the output, run: `yarn build:e
 
 ### Foreign Asset Transfers
 
-Sending a foreign asset requires the input `assetIds` in `createTransferTransaction` to include the `MultiLocation` of the asset you would like to send. If a `MultiLocation` is not passed it will not know if the asset you are sending is a foreign asset. If the `MultiLocation` passed in has a `Parachain` id which matches the `destChainId` input for the transfer, then the output will be a teleport, otherwise it will be a reserve backed transfer.
+Sending a foreign asset requires the input `assetIds` in `createTransferTransaction` to include the `MultiLocation` of the asset you would like to send. If a `MultiLocation` is not passed it will not know if the asset you are sending is a foreign asset. If the `MultiLocation` passed in has a `Parachain` id which matches the `destChainId` input for the transfer, then the output will be a limited teleport, otherwise it will be a limited reserve backed transfer.
 
 An example would look like:
 ```typescript
 api.createTransferTransaction(
-	'2125', // Note: the Parchain ID matches the MultiLocations 'Parachain' ID, making this a teleport of assets
+	'2125', // Note: the Parchain ID matches the MultiLocations 'Parachain' ID, making this a limitedTeleportAssets call
 	'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 	['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 	['1000000000000'],
 	{
 		format: 'call',
-		isLimited: true,
 		xcmVersion: 3,
 	}
 )
@@ -278,7 +270,6 @@ api.createTransferTransaction(
 	['100000'],
 	{
 		format: 'call',
-		isLimited: true,
 		xcmVersion: 2,
 		transferLiquidToken: true,
 	}
@@ -313,13 +304,32 @@ For more information, refer to the [docs](https://github.com/paritytech/asset-tr
 
 Note: For other parachains, local transfers are currently supported via the balances and tokens pallets. For local parachain transactions, if an asset id is not passed in it will resolve to the balances pallet, and if a asset id is passed in it will resolve to the tokens pallet.
 
+### Claiming Trapped Assets
+
+The api can be used to construct `claimAssets` calls in order to retrieve assets trapped locally on chain after a failed XCM.
+
+An example would look like:
+```typescript
+api.claimAssets(
+	[`DOT`], // Asset(s) to claim
+	['1000000000000'], // Amount of asset(s) to claim
+	'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b', // Beneficiary
+	{
+		xcmVersion: 4,
+		format: 'payload',
+		sendersAddr: '5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX'
+	} // opts
+)
+```
+Note: claimAssets works when pallet-xcm is configured as the AssetTrap for the given runtime. This is true for all relay chains and system parachains but may not be for other chains.
+
 ## License
 
 The source code in this repository is distributed under the Apache 2.0 license. See the [LICENSE](https://github.com/paritytech/asset-transfer-api/blob/main/LICENSE) file. This source code comes with absolutely no warranty. Use at your own risk.
 
 ## Zombienet Testing
 
-Zombienet is used to launch a complete network including a relay chain, and two parachains. It will create HRMP channels betweens the launched parachains allowing the testing enviornment to send XCM messages and transfer assets. 
+Zombienet is used to launch a complete network including a relay chain, and two parachains. It will create HRMP channels betweens the launched parachains allowing the testing environment to send XCM messages and transfer assets. 
 
 ### **Requirements**:
 

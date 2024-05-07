@@ -4,7 +4,6 @@ import { KeyringPair } from '@polkadot/keyring/types';
 
 import { AssetTransferApi } from '../../src';
 import { TxResult } from '../../src/types';
-import { EXTRINSIC_VERSION } from '../consts';
 
 const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: number): AssetTransferApi => {
 	const injectedRegistry = {
@@ -41,11 +40,7 @@ const createLocalTransferTransaction = async (
 	try {
 		localTransferInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
 
-		const payload = api.createType('ExtrinsicPayload', localTransferInfo.tx, {
-			version: EXTRINSIC_VERSION,
-		});
-
-		const extrinsic = api.registry.createType('Extrinsic', { method: payload.method }, { version: 4 });
+		const extrinsic = api.registry.createType('Extrinsic', { method: localTransferInfo.method }, { version: 4 });
 
 		await api.tx(extrinsic).signAndSend(origin);
 	} catch (e) {
@@ -71,11 +66,7 @@ const createPayFeesTransaction = async (
 	try {
 		transferWithFeesInfo = await assetApi.createTransferTransaction(destChainId, destAddr, assetIds, amounts, opts);
 
-		const payload = api.createType('ExtrinsicPayload', transferWithFeesInfo.tx, {
-			version: EXTRINSIC_VERSION,
-		});
-
-		const extrinsic = api.registry.createType('Extrinsic', { method: payload.method }, { version: 4 });
+		const extrinsic = api.registry.createType('Extrinsic', { method: transferWithFeesInfo.method }, { version: 4 });
 
 		await api.tx(extrinsic).signAndSend(origin);
 	} catch (e) {

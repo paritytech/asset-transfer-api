@@ -413,7 +413,6 @@ export interface CreateFeeAssetItemOpts {
 }
 
 export interface CreateWeightLimitOpts {
-	isLimited?: boolean;
 	weightLimit?: { refTime?: string; proofSize?: string };
 }
 

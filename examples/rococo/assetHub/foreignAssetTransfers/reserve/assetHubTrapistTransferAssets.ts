@@ -11,10 +11,10 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
 /**
  * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send HOP (foreign asset with location `{"parents":"1","interior":{"X1":{"Parachain":"1,836"}}}`)
  * from a Rococo Asset Hub (System Parachain) account
- * to a Rhala Testnet (ParaChain) account, where the `xcmVersion` is set to 4, the `isLimited` option is set to true and there is no
+ * to a Rhala Testnet (ParaChain) account, where the `xcmVersion` is set to 4, and there is no
  * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  *
- * NOTE: When `isLimited` is true it will use the `limited` version of the either `reserveAssetTransfer`, or `teleportAssets`.
+ * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://rococo-asset-hub-rpc.polkadot.io');
@@ -29,7 +29,6 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				isLimited: true,
 				xcmVersion: 4,
 			},
 		);

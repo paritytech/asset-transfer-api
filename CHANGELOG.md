@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.2.0-beta.2](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.1..v0.2.0-beta.2)(2024-04-24)
+
+### Chore
+
+- chore(deps): update pjs ([#398](https://github.com/paritytech/asset-transfer-api/pull/398))([339e032](https://github.com/paritytech/asset-transfer-api/commit/339e0322f22e5e3a8b5fd98c145212b6e1cc94b2))
+Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub.
+
+
+## [0.2.0-beta.1](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.0..v0.2.0-beta.1)(2024-04-24)
+
+### Chore
+
+- chore(deps): up pjs ([#396](https://github.com/paritytech/asset-transfer-api/pull/396))([4073aa2](https://github.com/paritytech/asset-transfer-api/commit/4073aa21250643d4503ef9fb123eaf27bea1fa90))
+- chore(registry): update registry dep ([#395](https://github.com/paritytech/asset-transfer-api/pull/395))([d7f3d8a](https://github.com/paritytech/asset-transfer-api/commit/d7f3d8afeb02f9c4b9e322d02337a33c19fe0856))
+
+### Feat
+
+- feat: add support for pallet-xcm claimAssets call ([#394](https://github.com/paritytech/asset-transfer-api/pull/394))([685ca19](https://github.com/paritytech/asset-transfer-api/commit/685ca19e54bdc6dc76b93423b09c9b44f57a009e))
+
+
+## [0.2.0-beta.0](https://github.com/paritytech/asset-transfer-api/compare/v0.1.8..v0.2.0-beta.0)(2024-04-02)
+
+## Breaking Change
+
+- fix!: always use limited calls ([#392](https://github.com/paritytech/asset-transfer-api/pull/392))([c7ff030](https://github.com/paritytech/asset-transfer-api/commit/c7ff0302dcea92ecb92623832f6460cc56e28491))
+- fix!: change TxResult<payload> type ([#391](https://github.com/paritytech/asset-transfer-api/pull/391))([09d1410](https://github.com/paritytech/asset-transfer-api/commit/09d141006f928ecf9b08e2b894ae6dfd4df7d8de))
+
+### Fix
+
+- fix: update lp pool token storage key destructuring ([#390](https://github.com/paritytech/asset-transfer-api/pull/390))([cb7d39f](https://github.com/paritytech/asset-transfer-api/commit/cb7d39fb3ffbaa7f905545268f014c8ba51156ab))
+
+### Chore
+
+- chore(deps): up pjs ([#387](https://github.com/paritytech/asset-transfer-api/pull/387))([f3f2b28](https://github.com/paritytech/asset-transfer-api/commit/f3f2b28bada384be23317cf281bdd74426553461))
+- chore(registry): update registry dep ([#385](https://github.com/paritytech/asset-transfer-api/pull/385))([00064ea](https://github.com/paritytech/asset-transfer-api/commit/00064ea628b0095bcf0227bccb0122ddbd3b4f1d))
+
 ## [0.1.8](https://github.com/paritytech/asset-transfer-api/compare/v0.1.7..v0.1.8)(2024-03-05)
 
 ### Feat

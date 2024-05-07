@@ -162,7 +162,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param opts Options that are used for WeightLimit.
 	 */
 	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.isLimited && opts.weightLimit?.refTime && opts.weightLimit?.proofSize
+		return opts.weightLimit?.refTime && opts.weightLimit?.proofSize
 			? {
 					Limited: {
 						refTime: opts.weightLimit?.refTime,
@@ -188,7 +188,7 @@ export const SystemToSystem: ICreateXcmType = {
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
 		} = opts;
-		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
+		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createSystemToSystemMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
