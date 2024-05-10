@@ -3,14 +3,14 @@
  *
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetTransferApi, constructApiPromise } from '../../../../../src';
-import { TxResult } from '../../../../../src/types';
-import { GREEN, PURPLE, RESET } from '../../../../colors';
+import { AssetTransferApi, constructApiPromise } from '../../../../src';
+import { TxResult } from '../../../../src/types';
+import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
- * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send WETH (foreign asset with location `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`)
+ * In this example we are creating a `polkadotXcm` pallet `transferAssetsUsingTypeAndThen` call to send WETH (foreign asset with location `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`)
  * from a Rococo Asset Hub (System Parachain) account
- * to a Rococo Contracts (System ParaChain) account, where the `xcmVersion` is set to 4, and there is no
+ * to an Ethereum Sepolia an account, where the `xcmVersion` is set to 4, and there is no
  * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
@@ -26,8 +26,8 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'1002',
-			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
+			`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`,
+			'0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B',
 			[
 				`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
 			],
@@ -35,6 +35,14 @@ const main = async () => {
 			{
 				format: 'call',
 				xcmVersion: 4,
+				paysWithFeeDest:
+					'{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}',
+				assetTransferType: 'RemoteReserve',
+				remoteReserveAssetTransferTypeLocation:
+					'{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
+				feesTransferType: 'RemoteReserve',
+				remoteReserveFeesTransferTypeLocation:
+					'{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
 			},
 		);
 

@@ -416,6 +416,22 @@ export interface CreateWeightLimitOpts {
 	weightLimit?: { refTime?: string; proofSize?: string };
 }
 
+export type XcmVersionedAssetIdV2 = {
+	V2: {
+		Concrete: UnionXcmMultiLocation;
+	};
+};
+export type XcmVersionedAssetIdV3 = {
+	V3: {
+		Concrete: UnionXcmMultiLocation;
+	};
+};
+export type XcmVersionedAssetIdV4 = {
+	V4: UnionXcmMultiLocation;
+};
+
+export type XcmVersionedAssetId = XcmVersionedAssetIdV2 | XcmVersionedAssetIdV3 | XcmVersionedAssetIdV4;
+
 export interface ICreateXcmType {
 	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;
 	createDest: (destId: string, xcmVersion: number) => XcmDestBeneficiary;

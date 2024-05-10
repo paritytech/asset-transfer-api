@@ -6,7 +6,7 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
-import { assetDestIsBridge } from '../createXcmTypes/util/assetDestIsBridge';
+// import { assetDestIsBridge } from '../createXcmTypes/util/assetDestIsBridge';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
@@ -933,32 +933,72 @@ export const checkXcmVersionIsValidForSystemToBridge = (xcmVersion: number) => {
 	}
 };
 
-export const checkAssetLocationsAreValidGlobalConsensusLocations = (assetIds: string[]) => {
-	if (!assetDestIsBridge(assetIds)) {
+/**
+ * Checks to ensure that all assets are locations for SystemToBridge transactions
+ *
+ * @param assetIds
+ */
+// export const checkAssetLocationsAreValidGlobalConsensusLocations = (assetIds: string[]) => {
+// 	if (!assetDestIsBridge(assetIds)) {
+// 		throw new BaseError(
+// 			`SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received ${assetIds.toString()}`,
+// 			BaseErrorsEnum.InvalidAsset,
+// 		);
+// 	}
+// };
+/**
+ * Checks to ensure that required inputs are provided for SystemToBridge transactions
+ *
+ * @param paysWithFeeDest
+ * @param assetTransferType
+ * @param remoteReserveAssetTransferTypeLocation
+ * @param feesTransferType
+ * @param remoteReserveFeesTransferTypeLocation
+ */
+export const checkSystemToBridgeInputs = (
+	paysWithFeeDest: string | undefined,
+	assetTransferType: string | undefined,
+	remoteReserveAssetTransferTypeLocation: string | undefined,
+	feesTransferType: string | undefined,
+	remoteReserveFeesTransferTypeLocation: string | undefined,
+) => {
+	if (!paysWithFeeDest) {
+		throw new BaseError('paysWithFeeDest input is required for bridge transactions', BaseErrorsEnum.InvalidInput);
+	}
+	if (!assetTransferType) {
+		throw new BaseError('assetTransferType input is required for bridge transactions', BaseErrorsEnum.InvalidInput);
+	}
+	if (assetTransferType === 'RemoteReserve' && !remoteReserveAssetTransferTypeLocation) {
 		throw new BaseError(
-			`SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received ${assetIds.toString()}`,
-			BaseErrorsEnum.InvalidAsset,
+			'remoteReserveAssetTransferTypeLocation input is required for bridge transactions when asset transfer type is RemoteReserve',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+	if (!feesTransferType) {
+		throw new BaseError(
+			'remoteReserveAssetTransferTypeLocation input is required for bridge transactions',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+	if (feesTransferType === 'RemoteReserve' && !remoteReserveFeesTransferTypeLocation) {
+		throw new BaseError(
+			'remoteReserveFeeAssetTransferTypeLocation input is required for bridge transactions when fee asset transfer type is RemoteReserve',
+			BaseErrorsEnum.InvalidInput,
 		);
 	}
 };
 
-export const checkSystemToBridgeInputs = (paysWithFeeDest: string | undefined, assetTransferType: string | undefined, remoteReserveAssetTransferTypeLocation: string | undefined, feesTransferType: string | undefined, remoteReserveFeesTransferTypeLocation: string | undefined) => {
+export const checkPaysWithFeeDestAssetIdIsInAssets = (assetIds: string[], paysWithFeeDest: string | undefined) => {
 	if (!paysWithFeeDest) {
-        throw new BaseError('paysWithFeeDest input is required for bridge transactions', BaseErrorsEnum.InvalidInput);
-    }
-    if (!assetTransferType) {
-        throw new BaseError('assetTransferType input is required for bridge transactions', BaseErrorsEnum.InvalidInput);
-    }
-    if (assetTransferType === 'RemoteReserve' && !remoteReserveAssetTransferTypeLocation) {
-        throw new BaseError('remoteReserveAssetTransferTypeLocation input is required for bridge transactions when asset transfer type is RemoteReserve', BaseErrorsEnum.InvalidInput);
-    }
-    if (!feesTransferType) {
-        throw new BaseError('remoteReserveAssetTransferTypeLocation input is required for bridge transactions', BaseErrorsEnum.InvalidInput);
-    }
-    if (feesTransferType === 'RemoteReserve' && !remoteReserveFeesTransferTypeLocation) {
-        throw new BaseError('remoteReserveFeeAssetTransferTypeLocation input is required for bridge transactions when fee asset transfer type is RemoteReserve', BaseErrorsEnum.InvalidInput);
-    }
-}
+		return;
+	}
+
+	if (!assetIds.includes(paysWithFeeDest)) {
+		throw new BaseError(
+			`paysWithFeeDest asset must be present in assets to be transferred. Did not find ${paysWithFeeDest} in ${assetIds.toString()}`,
+		);
+	}
+};
 
 /**
  * Checks to ensure that the xcmVersion is at least 3 if paysWithFeeDest is provided
@@ -978,7 +1018,7 @@ export const checkXcmVersionIsValidForPaysWithFeeDest = (
 		xcmVersion &&
 		xcmVersion < 3
 	) {
-		throw new BaseError('paysWithFeeDest requires XCM version 3', BaseErrorsEnum.InvalidXcmVersion);
+		throw new BaseError('paysWithFeeDest requires XCM version 3 or greater', BaseErrorsEnum.InvalidXcmVersion);
 	}
 };
 
@@ -1085,7 +1125,16 @@ export const checkAssetIdInput = async (
  */
 export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: CheckXcmTxInputsOpts) => {
 	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet } = baseArgs;
-	const { paysWithFeeDest, isForeignAssetsTransfer, isLiquidTokenTransfer, isPrimaryParachainNativeAsset, assetTransferType, remoteReserveAssetTransferTypeLocation, feesTransferType, remoteReserveFeesTransferTypeLocation } = opts;
+	const {
+		paysWithFeeDest,
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer,
+		isPrimaryParachainNativeAsset,
+		assetTransferType,
+		remoteReserveAssetTransferTypeLocation,
+		feesTransferType,
+		remoteReserveFeesTransferTypeLocation,
+	} = opts;
 	const relayChainInfo = registry.currentRelayRegistry;
 
 	if (isPrimaryParachainNativeAsset) {
@@ -1176,10 +1225,17 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkMultiLocationIdLength(assetIds);
 		checkMultiLocationAmountsLength(amounts);
 		checkAssetsAmountMatch(assetIds, amounts);
-		checkXcmVersionIsValidForSystemToBridge(xcmVersion);
 		getGlobalConsensusSystemName(destChainId);
-		checkAssetLocationsAreValidGlobalConsensusLocations(assetIds);
-		checkSystemToBridgeInputs(paysWithFeeDest, assetTransferType, remoteReserveAssetTransferTypeLocation, feesTransferType, remoteReserveFeesTransferTypeLocation);
+		// checkAssetLocationsAreValidGlobalConsensusLocations(assetIds);
+		checkSystemToBridgeInputs(
+			paysWithFeeDest,
+			assetTransferType,
+			remoteReserveAssetTransferTypeLocation,
+			feesTransferType,
+			remoteReserveFeesTransferTypeLocation,
+		);
+		checkPaysWithFeeDestAssetIdIsInAssets(assetIds, paysWithFeeDest);
+		checkXcmVersionIsValidForSystemToBridge(xcmVersion);
 	}
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {

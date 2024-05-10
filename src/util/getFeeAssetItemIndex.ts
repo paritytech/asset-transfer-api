@@ -30,6 +30,8 @@ export const getFeeAssetItemIndex = async (
 
 	if (paysWithFeeDest) {
 		const isRelayFeeAsset =
+			paysWithFeeDest.toLowerCase() === `{"parents":"0","interior":{"here":""}}` ||
+			paysWithFeeDest.toLocaleLowerCase() === `{"parents":"1","interior":{"here":""}}` ||
 			paysWithFeeDest.toLowerCase() === 'dot' ||
 			paysWithFeeDest.toLowerCase() === 'ksm' ||
 			paysWithFeeDest.toLowerCase() === 'wnd';

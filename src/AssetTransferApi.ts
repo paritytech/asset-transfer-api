@@ -171,8 +171,20 @@ export class AssetTransferApi {
 		amounts: string[],
 		opts: TransferArgsOpts<T> = {},
 	): Promise<TxResult<T>> {
-		const { format, paysWithFeeDest, paysWithFeeOrigin, weightLimit, xcmVersion, transferLiquidToken, sendersAddr, assetTransferType, remoteReserveAssetTransferTypeLocation, feesTransferType, remoteReserveFeesTransferTypeLocation, customXcmOnDest } =
-			opts;
+		const {
+			format,
+			paysWithFeeDest,
+			paysWithFeeOrigin,
+			weightLimit,
+			xcmVersion,
+			transferLiquidToken,
+			sendersAddr,
+			assetTransferType,
+			remoteReserveAssetTransferTypeLocation,
+			feesTransferType,
+			remoteReserveFeesTransferTypeLocation,
+			customXcmOnDest,
+		} = opts;
 
 		if (!this.registryConfig.registryInitialized) {
 			await this.initializeRegistry();
@@ -209,7 +221,7 @@ export class AssetTransferApi {
 		const localTxChainType = this.establishLocalTxChainType(originChainId, destChainId, chainOriginDestInfo);
 		const isLocalTx = localTxChainType !== LocalTxChainType.None;
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
-		const isForeignAssetsTransfer = this.checkContainsAssetLocations(assetIds);
+		const isForeignAssetsTransfer = await this.checkContainsForeignAssets(api, assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
 		const xcmPallet = establishXcmPallet(api, xcmDirection);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
@@ -257,7 +269,7 @@ export class AssetTransferApi {
 			remoteReserveAssetTransferTypeLocation,
 			feesTransferType,
 			remoteReserveFeesTransferTypeLocation,
-			customXcmOnDest
+			customXcmOnDest,
 		};
 
 		await checkXcmTxInputs(
@@ -634,7 +646,7 @@ export class AssetTransferApi {
 
 		// relay to para -> reserve
 		if (xcmDirection === Direction.RelayToPara) {
-			return AssetCallType.LocalReserve;
+			return AssetCallType.Reserve;
 		}
 
 		let originIsMultiLocationsNativeChain = false;
@@ -667,7 +679,7 @@ export class AssetTransferApi {
 
 		// system to para native asset -> reserve
 		if (assetType === AssetType.Native && xcmDirection === Direction.SystemToPara) {
-			return AssetCallType.LocalReserve;
+			return AssetCallType.Reserve;
 		}
 
 		// system to para foreign asset (non native to destination) -> reserve
@@ -676,7 +688,7 @@ export class AssetTransferApi {
 			xcmDirection === Direction.SystemToPara &&
 			!destIsMultiLocationsNativeChain
 		) {
-			return AssetCallType.LocalReserve;
+			return AssetCallType.Reserve;
 		}
 
 		// system to para foreign asset (native to destination) -> teleport
@@ -686,7 +698,7 @@ export class AssetTransferApi {
 
 		// para to para -> reserve
 		if (xcmDirection === Direction.ParaToPara) {
-			return AssetCallType.LocalReserve;
+			return AssetCallType.Reserve;
 		}
 
 		// para to system only when the assets are native to origin -> teleport
@@ -704,19 +716,19 @@ export class AssetTransferApi {
 			(xcmDirection === Direction.ParaToSystem && assetIdsContainRelayAsset(assetIds, registry)) ||
 			!originIsMultiLocationsNativeChain
 		) {
-			return AssetCallType.LocalReserve;
+			return AssetCallType.Reserve;
 		}
 
 		// para to relay -> reserve
 		if (xcmDirection === Direction.ParaToRelay) {
-			return AssetCallType.LocalReserve;
+			return AssetCallType.Reserve;
 		}
 		// system to bridge -> remote reserve
 		if (xcmDirection === Direction.SystemToBridge) {
-			return AssetCallType.RemoteReserve
+			return AssetCallType.Reserve;
 		}
 
-		return AssetCallType.LocalReserve;
+		return AssetCallType.Reserve;
 	}
 	/**
 	 * returns an ExtrinsicPayload
@@ -869,6 +881,37 @@ export class AssetTransferApi {
 
 		return true;
 	}
+
+	/**
+	 * Checks if assetIds exclusively contain on-chain foreign asset values
+	 *
+	 * @param api ApiPromise
+	 * @param assetIds string[]
+	 * @returns boolean
+	 */
+	private checkContainsForeignAssets = async (api: ApiPromise, assetIds: string[]): Promise<boolean> => {
+		if (!api.query.foreignAssets) {
+			return false;
+		}
+
+		const foreignAssets: string[] = [];
+		for (const asset of await api.query.foreignAssets.asset.entries()) {
+			const storageKey = asset[0].toHuman();
+			if (storageKey) {
+				foreignAssets.push(JSON.stringify(storageKey[0]).replace(/(\d),/g, '$1'));
+			}
+		}
+
+		for (const assetId of assetIds) {
+			if (foreignAssets.includes(assetId)) {
+				continue;
+			} else {
+				return false;
+			}
+		}
+
+		return true;
+	};
 
 	/**
 	 * checks the chains state and determines whether an asset location is a part of a valid token liquidity pool pair
@@ -1099,27 +1142,22 @@ export class AssetTransferApi {
 			}
 		} else if (api.tx[xcmPallet]) {
 			if (
-				xcmDirection === Direction.SystemToBridge && 
-				api.tx[xcmPallet].transferAssetsUsingTypeAndThen
+				api.tx[xcmPallet].transferAssetsUsingTypeAndThen &&
+				xcmDirection === Direction.SystemToBridge ||
+				baseOpts.assetTransferType
 			) {
 				txMethod = 'transferAssetsUsingTypeAndThen';
-			} else if (
-				xcmDirection != Direction.SystemToBridge &&
-				api.tx[xcmPallet].transferAssets
-			) {
+			} else if (xcmDirection != Direction.SystemToBridge && api.tx[xcmPallet].transferAssets) {
 				txMethod = 'transferAssets';
-			} else if (assetCallType === AssetCallType.LocalReserve) {
-			txMethod = 'limitedReserveTransferAssets';
+			} else if (assetCallType === AssetCallType.Reserve) {
+				txMethod = 'limitedReserveTransferAssets';
 			} else {
-			txMethod = 'limitedTeleportAssets';
+				txMethod = 'limitedTeleportAssets';
 			}
 		}
 
 		if (!txMethod) {
-			throw new BaseError(
-				`Unable to resolve correct transfer call`,
-				BaseErrorsEnum.InternalError
-			)
+			throw new BaseError(`Unable to resolve correct transfer call`, BaseErrorsEnum.InternalError);
 		}
 
 		if (!callExistsInRuntime(api, txMethod, xcmPallet)) {

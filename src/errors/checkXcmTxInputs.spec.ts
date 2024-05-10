@@ -12,7 +12,7 @@ import {
 	checkAssetIdsAreOfSameAssetIdType,
 	checkAssetIdsHaveNoDuplicates,
 	checkAssetIdsLengthIsValid,
-	checkAssetLocationsAreValidGlobalConsensusLocations,
+	// checkAssetLocationsAreValidGlobalConsensusLocations,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkLiquidTokenTransferDirectionValidity,
@@ -700,7 +700,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 
 		const err = () => checkXcmVersionIsValidForPaysWithFeeDest(Direction.SystemToPara, xcmVersion, paysWithFeeDest);
 
-		expect(err).toThrow('paysWithFeeDest requires XCM version 3');
+		expect(err).toThrow('paysWithFeeDest requires XCM version 3 or greater');
 	});
 	it('Should correctly not throw an error if paysWithFeeDest is provided and xcmVersion is at least 3', () => {
 		const xcmVersion = 3;
@@ -708,7 +708,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 
 		const err = () => checkXcmVersionIsValidForPaysWithFeeDest(Direction.SystemToPara, xcmVersion, paysWithFeeDest);
 
-		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3 or greater');
 	});
 
 	it('Should correctly not throw an error if xcmDirection is ParaToSystem or ParaToPara', () => {
@@ -717,7 +717,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 
 		const err = () => checkXcmVersionIsValidForPaysWithFeeDest(Direction.ParaToSystem, xcmVersion, paysWithFeeDest);
 
-		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3 or greater');
 	});
 });
 
@@ -759,20 +759,20 @@ describe('checkXcmVersionIsValidForSystemToBridge', () => {
 	});
 });
 
-describe('checkAssetLocationsAreValidGlobalConsensusLocations', () => {
-	it('Should correctly throw an error when asset locations are found without a global consens junction', () => {
-		const assetIds = [
-			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
-			`{"parents":"1","interior":{"X1":{"Parachain":"1836"}}}`,
-		];
+// describe('checkAssetLocationsAreValidGlobalConsensusLocations', () => {
+// 	it('Should correctly throw an error when asset locations are found without a global consens junction', () => {
+// 		const assetIds = [
+// 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
+// 			`{"parents":"1","interior":{"X1":{"Parachain":"1836"}}}`,
+// 		];
 
-		const err = () => checkAssetLocationsAreValidGlobalConsensusLocations(assetIds);
+// 		const err = () => checkAssetLocationsAreValidGlobalConsensusLocations(assetIds);
 
-		expect(err).toThrow(
-			'SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received {"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}},{"parents":"1","interior":{"X1":{"Parachain":"1836"}}',
-		);
-	});
-});
+// 		expect(err).toThrow(
+// 			'SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received {"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}},{"parents":"1","interior":{"X1":{"Parachain":"1836"}}',
+// 		);
+// 	});
+// });
 
 describe('checkParaAssets', () => {
 	it('Should correctly resolve when a valid symbol assetId is provided', async () => {

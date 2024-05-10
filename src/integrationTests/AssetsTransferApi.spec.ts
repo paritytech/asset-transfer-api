@@ -147,7 +147,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
-					['{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}'],
+					['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 					['100'],
 					{
 						format: 'call',
@@ -167,7 +167,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				const res = await systemAssetsApi.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
-					['{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}'],
+					['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 					['100'],
 					{
 						format: 'call',
@@ -235,8 +235,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				assetIds: string[],
 				format: T,
 				xcmVersion: number,
-				refTime?: string,
-				proofSize?: string,
+				opts: CreateXcmCallOpts,
 			): Promise<TxResult<T>> => {
 				return await ataAPI.createTransferTransaction(
 					destination,
@@ -245,12 +244,15 @@ describe('AssetTransferApi Integration Tests', () => {
 					['1000000000'],
 					{
 						format,
-						weightLimit: {
-							refTime,
-							proofSize,
-						},
+						weightLimit: opts.weightLimit,
 						xcmVersion,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						paysWithFeeDest: opts.paysWithFeeDest,
+						assetTransferType: opts.assetTransferType,
+						remoteReserveAssetTransferTypeLocation: opts.remoteReserveAssetTransferTypeLocation,
+						feesTransferType: opts.remoteReserveFeesTransferTypeLocation,
+						remoteReserveFeesTransferTypeLocation: opts.remoteReserveFeesTransferTypeLocation,
+						customXcmOnDest: opts.customXcmOnDest,
 					},
 				);
 			};
@@ -265,10 +267,24 @@ describe('AssetTransferApi Integration Tests', () => {
 						],
 						'call',
 						3,
-						'1000',
-						'2000',
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest:
+								'{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}',
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+						},
 					);
-					expect(res.tx).toEqual('0x1f0b03020109079edaa8020300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400020209079edaa8020300fff9976782d46cc05630d1f6ebab18b2324d6b140002286bee0000000001a10f411f');
+					expect(res.tx).toEqual(
+						'0x1f0d03020109079edaa802030400020209079edaa8020300fff9976782d46cc05630d1f6ebab18b2324d6b140002286bee000300020209079edaa8020300fff9976782d46cc05630d1f6ebab18b2324d6b140003040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+					);
 				});
 
 				it('Should correctly build a payload for a transferAssets for V3', async () => {
@@ -278,10 +294,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
 						'payload',
 						3,
-						'1000',
-						'2000',
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}',
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+						},
 					);
-					expect(res.tx.toHex()).toEqual('0x05011f0b03020109020300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400020109020002286bee0000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503');
+					expect(res.tx.toHex()).toEqual(
+						'0x29011f0d0302010902030400020109020002286bee000300020109020003040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+					);
 				});
 				it('Should correctly build a submittable extrinsic for a transferAssets for V3', async () => {
 					const res = await bridgeBaseSystemCreateTx(
@@ -290,8 +319,19 @@ describe('AssetTransferApi Integration Tests', () => {
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
 						'submittable',
 						3,
-						'1000',
-						'2000',
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}',
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+						},
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
@@ -305,10 +345,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
 						'call',
 						4,
-						'1000',
-						'2000',
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}',
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+						},
 					);
-					expect(res.tx).toEqual('0x1f0b04020109020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404020109020002286bee0000000001a10f411f');
+					expect(res.tx).toEqual(
+						'0x1f0d04020109020404020109020002286bee0004020109020004040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+					);
 				});
 				it('Should correctly build a `transferAssets` payload for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
@@ -317,10 +370,23 @@ describe('AssetTransferApi Integration Tests', () => {
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
 						'payload',
 						4,
-						'1000',
-						'2000',
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}',
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+						},
 					);
-					expect(res.tx.toHex()).toEqual('0x01011f0b04020109050400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404020109050002286bee0000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503');
+					expect(res.tx.toHex()).toEqual(
+						'0x21011f0d04020109050404020109050002286bee0004020109050004040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+					);
 				});
 				it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
@@ -329,11 +395,72 @@ describe('AssetTransferApi Integration Tests', () => {
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
 						'submittable',
 						4,
-						'1000',
-						'2000',
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}',
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+						},
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
+			});
+			it('Should correctly error when provided an XCM version less than 3', async () => {
+				await expect(async () => {
+					await bridgeBaseSystemCreateTx(
+						systemAssetsApiV1011000,
+						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						'submittable',
+						2,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
+						},
+					);
+				}).rejects.toThrow('paysWithFeeDest requires XCM version 3 or greater');
+			});
+			it('Should correctly error when a paysWithFeeDest is provided that does not exist in provided assetIds', async () => {
+				await expect(async () => {
+					await bridgeBaseSystemCreateTx(
+						systemAssetsApiV1011000,
+						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						'submittable',
+						4,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: `{"parents":"1","interior":{"X1":[{"Parachain":"1000"}]}}`,
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: `{"parents":"1","interior":{"X1":[{"Parachain":"1000"}]}}`,
+						},
+					);
+				}).rejects.toThrow(
+					'paysWithFeeDest asset must be present in assets to be transferred. Did not find {"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}} in {"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}',
+				);
 			});
 		});
 		describe('SystemToPara', () => {
@@ -428,7 +555,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				return await ataAPI.createTransferTransaction(
 					'2023', // Since this is not `0` we know this is to a parachain
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}'],
+					['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
 					['100'],
 					{
 						format,
@@ -448,7 +575,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				return await ataAPI.createTransferTransaction(
 					'2125', // Since this is not `0` we know this is to a parachain
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					[`{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}`],
+					[`{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}`],
 					['100'],
 
 					{
@@ -1030,7 +1157,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			};
 			const statemineNativeAssetIdArr = ['KSM'];
 			const statemineForeignAssetIdArr = [
-				`{"parents":"1","interior":{"X2": [{"Parachain":"2125"}, {"GeneralIndex": "0"}]}}`,
+				`{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}`,
 			];
 
 			describe('V2', () => {

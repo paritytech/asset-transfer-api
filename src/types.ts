@@ -10,6 +10,7 @@ import BN from 'bn.js';
 import { CreateXcmCallOpts } from './createXcmCalls/types';
 import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
+import { UnionXcmMultiLocation } from './createXcmTypes/types';
 import type { Registry } from './registry';
 import type { ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './registry/types';
 
@@ -82,10 +83,8 @@ export enum AssetType {
 }
 
 export enum AssetCallType {
-    LocalReserve = "LocalReserve",
-    DestinationReserve = 'DestinationReserve',
-    RemoteReserve = 'RemoteReserve',
-    Teleport = "Teleport",
+	Reserve = 'Reserve',
+	Teleport = 'Teleport',
 }
 
 export enum LocalTxChainType {
@@ -440,18 +439,25 @@ export type XcmPalletTxMethodTransactionMap = {
 	[x: string]: [XcmPalletCallSignature, CallArgs];
 };
 
+export type RemoteReserveV3 = {
+	RemoteReserve: {
+		V3: UnionXcmMultiLocation;
+	};
+};
+export type RemoteReserveV4 = {
+	RemoteReserve: {
+		V4: UnionXcmMultiLocation;
+	};
+};
+export type RemoteReserve = RemoteReserveV3 | RemoteReserveV4;
 export type LocalReserve = {
 	LocalReserve: 'null';
 };
 export type DestinationReserve = {
 	DestinationReserve: 'null';
 };
-export type RemoteReserve = {
-    RemoteReserve: AnyJson;
-}
 export type Teleport = {
 	Teleport: 'null';
 };
 
 export type AssetTransferType = LocalReserve | DestinationReserve | Teleport | RemoteReserve;
-

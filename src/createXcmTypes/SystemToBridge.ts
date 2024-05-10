@@ -230,7 +230,6 @@ export const createSystemToBridgeAssets = async (
 
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(tokens, assetId);
-
 		if (!isRelayNative && !isValidInt) {
 			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 		}

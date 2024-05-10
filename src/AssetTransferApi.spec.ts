@@ -264,7 +264,7 @@ describe('AssetTransferAPI', () => {
 					relayAssetsApi.registry,
 				);
 
-				expect(assetCallType).toEqual('LocalReserve');
+				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('SystemToRelay', () => {
@@ -328,7 +328,7 @@ describe('AssetTransferAPI', () => {
 					systemAssetsApi.registry,
 				);
 
-				expect(assetCallType).toEqual('LocalReserve');
+				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('ParaToRelay', () => {
@@ -344,7 +344,7 @@ describe('AssetTransferAPI', () => {
 					moonriverAssetsApi.registry,
 				);
 
-				expect(assetCallType).toEqual('LocalReserve');
+				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('ParaToSystem', () => {
@@ -388,7 +388,7 @@ describe('AssetTransferAPI', () => {
 					moonriverAssetsApi.registry,
 				);
 
-				expect(assetCallType).toEqual('LocalReserve');
+				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('ParaToPara', () => {
@@ -404,7 +404,7 @@ describe('AssetTransferAPI', () => {
 					moonriverAssetsApi.registry,
 				);
 
-				expect(assetCallType).toEqual('LocalReserve');
+				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('ParaToRelay', () => {
@@ -420,7 +420,7 @@ describe('AssetTransferAPI', () => {
 					moonriverAssetsApi.registry,
 				);
 
-				expect(assetCallType).toEqual('LocalReserve');
+				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 	});
@@ -898,7 +898,7 @@ describe('AssetTransferAPI', () => {
 					['usdt'],
 					'polkadotXcm' as XcmPalletName,
 					Direction.SystemToPara,
-					'LocalReserve' as AssetCallType,
+					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
 				);
@@ -935,7 +935,7 @@ describe('AssetTransferAPI', () => {
 					['usdt'],
 					'polkadotXcm' as XcmPalletName,
 					Direction.SystemToPara,
-					'LocalReserve' as AssetCallType,
+					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
 				);
@@ -976,7 +976,7 @@ describe('AssetTransferAPI', () => {
 					['usdt'],
 					'polkadotXcm' as XcmPalletName,
 					Direction.SystemToPara,
-					'LocalReserve' as AssetCallType,
+					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
 				);
@@ -1103,7 +1103,7 @@ describe('AssetTransferAPI', () => {
 					['usdt'],
 					'xTokens' as XcmPalletName,
 					Direction.ParaToSystem,
-					'LocalReserve' as AssetCallType,
+					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
 				);
@@ -1145,7 +1145,7 @@ describe('AssetTransferAPI', () => {
 					['ksm', 'usdt'],
 					'xTokens' as XcmPalletName,
 					Direction.ParaToSystem,
-					'LocalReserve' as AssetCallType,
+					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
 				);
@@ -1190,7 +1190,7 @@ describe('AssetTransferAPI', () => {
 					['usdt'],
 					'xTokens' as XcmPalletName,
 					Direction.ParaToSystem,
-					'LocalReserve' as AssetCallType,
+					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
 					paysWithFeeDest,
@@ -1229,7 +1229,7 @@ describe('AssetTransferAPI', () => {
 					['usdt'],
 					'polkadotXcm' as XcmPalletName,
 					Direction.ParaToSystem,
-					'LocalReserve' as AssetCallType,
+					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
 				);
@@ -1271,7 +1271,7 @@ describe('AssetTransferAPI', () => {
 					['usdt'],
 					'polkadotXcm' as XcmPalletName,
 					Direction.ParaToSystem,
-					'LocalReserve' as AssetCallType,
+					'Reserve' as AssetCallType,
 					mockBaseArgs,
 					mockBaseOpts,
 				);
@@ -1285,7 +1285,7 @@ describe('AssetTransferAPI', () => {
 				const specName = 'bifrost';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.xTokens;
-				const assetCallType = AssetCallType.LocalReserve;
+				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToRelay;
 				const assetIds = ['ksm'];
 				const mockBaseArgs: XTokensBaseArgs = {
@@ -1328,7 +1328,7 @@ describe('AssetTransferAPI', () => {
 				const specName = 'moonriver';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.polkadotXcm;
-				const assetCallType = AssetCallType.LocalReserve;
+				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToRelay;
 				const assetIds = ['ksm'];
 
@@ -1371,7 +1371,7 @@ describe('AssetTransferAPI', () => {
 				const specName = 'moonriver';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.polkadotXcm;
-				const assetCallType = AssetCallType.LocalReserve;
+				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToRelay;
 				const assetIds = ['ksm'];
 
@@ -1415,7 +1415,7 @@ describe('AssetTransferAPI', () => {
 				const specName = 'moonriver';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.xTokens;
-				const assetCallType = AssetCallType.LocalReserve;
+				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToPara;
 				const assetIds = ['movr'];
 
@@ -1455,7 +1455,7 @@ describe('AssetTransferAPI', () => {
 				const specName = 'moonriver';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.xTokens;
-				const assetCallType = AssetCallType.LocalReserve;
+				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToPara;
 				const assetIds = ['vmovr', 'xcbnc'];
 
@@ -1498,7 +1498,7 @@ describe('AssetTransferAPI', () => {
 				const specName = 'moonriver';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.xTokens;
-				const assetCallType = AssetCallType.LocalReserve;
+				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.ParaToPara;
 				const assetIds = ['vmovr', 'usdt'];
 				const paysWithFeeDest =
@@ -1590,7 +1590,7 @@ describe('AssetTransferAPI', () => {
 				const specName = 'kusama';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.xcmPallet;
-				const assetCallType = AssetCallType.LocalReserve;
+				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.RelayToSystem;
 				const assetIds = ['ksm'];
 
@@ -1632,7 +1632,7 @@ describe('AssetTransferAPI', () => {
 				const specName = 'kusama';
 				const registry = new Registry(specName, {});
 				const xcmPallet = XcmPalletName.xcmPallet;
-				const assetCallType = AssetCallType.LocalReserve;
+				const assetCallType = AssetCallType.Reserve;
 				const direction = Direction.RelayToSystem;
 				const assetIds = ['ksm'];
 
@@ -1679,7 +1679,7 @@ describe('AssetTransferAPI', () => {
 			const specName = 'kusama';
 			const registry = new Registry(specName, {});
 			const xcmPallet = XcmPalletName.xcmPallet;
-			const assetCallType = AssetCallType.LocalReserve;
+			const assetCallType = AssetCallType.Reserve;
 			const direction = Direction.RelayToSystem;
 			const assetIds = ['ksm'];
 
@@ -1742,6 +1742,28 @@ describe('AssetTransferAPI', () => {
 					},
 				},
 			]);
+		});
+	});
+	describe('checkContainsForeignAssets', () => {
+		it('Should correctly return true when assetIds contain valid foreignAssets', async () => {
+			const { api } = systemAssetsApi;
+			const assetIds = [
+				`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
+			];
+
+			const result = await systemAssetsApi['checkContainsForeignAssets'](api, assetIds);
+
+			expect(result).toBe(true);
+		});
+		it('Should correctly return false when assetIds does not contain valid foreignAssets', async () => {
+			const { api } = systemAssetsApi;
+			const assetIds = [
+				`{"parents":"0","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
+			];
+
+			const result = await systemAssetsApi['checkContainsForeignAssets'](api, assetIds);
+
+			expect(result).toBe(false);
 		});
 	});
 });
