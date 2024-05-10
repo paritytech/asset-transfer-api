@@ -281,7 +281,7 @@ export class AssetTransferApi {
 		);
 
 		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
-		const assetCallType = this.fetchTransferType(
+		const assetCallType = this.fetchCallType(
 			originChainId,
 			destChainId,
 			assetIds,
@@ -628,7 +628,7 @@ export class AssetTransferApi {
 		return AssetType.Foreign;
 	}
 
-	private fetchTransferType(
+	private fetchCallType(
 		originChainId: string,
 		destChainId: string,
 		assetIds: string[],

@@ -234,10 +234,10 @@ describe('AssetTransferAPI', () => {
 		});
 	});
 
-	describe('fetchTransferType', () => {
+	describe('fetchCallType', () => {
 		describe('RelayToSystem', () => {
 			it('Should correctly return Teleport', () => {
-				const assetCallType = relayAssetsApi['fetchTransferType'](
+				const assetCallType = relayAssetsApi['fetchCallType'](
 					'0',
 					'1000',
 					['ksm'],
@@ -253,7 +253,7 @@ describe('AssetTransferAPI', () => {
 		});
 		describe('RelayToPara', () => {
 			it('Should correctly return Reserve', () => {
-				const assetCallType = relayAssetsApi['fetchTransferType'](
+				const assetCallType = relayAssetsApi['fetchCallType'](
 					'0',
 					'2023',
 					['ksm'],
@@ -269,7 +269,7 @@ describe('AssetTransferAPI', () => {
 		});
 		describe('SystemToRelay', () => {
 			it('Should correctly return Teleport', () => {
-				const assetCallType = systemAssetsApi['fetchTransferType'](
+				const assetCallType = systemAssetsApi['fetchCallType'](
 					'1000',
 					'0',
 					['ksm'],
@@ -285,7 +285,7 @@ describe('AssetTransferAPI', () => {
 		});
 		describe('SystemToSystem', () => {
 			it('Should correctly return Teleport when sending a native asset', () => {
-				const assetCallType = systemAssetsApi['fetchTransferType'](
+				const assetCallType = systemAssetsApi['fetchCallType'](
 					'1000',
 					'1001',
 					['ksm'],
@@ -301,7 +301,7 @@ describe('AssetTransferAPI', () => {
 		});
 		describe('SystemToPara', () => {
 			it('Should correctly return Teleport when sending to origin Parachain', () => {
-				const assetCallType = systemAssetsApi['fetchTransferType'](
+				const assetCallType = systemAssetsApi['fetchCallType'](
 					'1000',
 					'2023',
 					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
@@ -317,7 +317,7 @@ describe('AssetTransferAPI', () => {
 		});
 		describe('SystemToPara', () => {
 			it('Should correctly return Reserve when sending to non origin Parachain', () => {
-				const assetCallType = systemAssetsApi['fetchTransferType'](
+				const assetCallType = systemAssetsApi['fetchCallType'](
 					'1000',
 					'2125',
 					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
@@ -333,7 +333,7 @@ describe('AssetTransferAPI', () => {
 		});
 		describe('ParaToRelay', () => {
 			it('Should correctly return Reserve', () => {
-				const assetCallType = moonriverAssetsApi['fetchTransferType'](
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'0',
 					['ksm'],
@@ -349,7 +349,7 @@ describe('AssetTransferAPI', () => {
 		});
 		describe('ParaToSystem', () => {
 			it('Should correctly return Teleport when sending a foreign asset that is native to the origin', () => {
-				const assetCallType = moonriverAssetsApi['fetchTransferType'](
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'1000',
 					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
@@ -363,7 +363,7 @@ describe('AssetTransferAPI', () => {
 				expect(assetCallType).toEqual('Teleport');
 			});
 			it('Should correctly return Teleport when sending the parachains native asset', () => {
-				const assetCallType = moonriverAssetsApi['fetchTransferType'](
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'1000',
 					['movr'],
@@ -377,7 +377,7 @@ describe('AssetTransferAPI', () => {
 				expect(assetCallType).toEqual('Teleport');
 			});
 			it('Should correctly return Reserve when sending a foreign asset that is foreign to the origin', () => {
-				const assetCallType = moonriverAssetsApi['fetchTransferType'](
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'1000',
 					[`{"parents": "1", "interior": { "X1": {"Parachain": "2125"}}}`],
@@ -393,7 +393,7 @@ describe('AssetTransferAPI', () => {
 		});
 		describe('ParaToPara', () => {
 			it('Should correctly return Reserve', () => {
-				const assetCallType = moonriverAssetsApi['fetchTransferType'](
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'2125',
 					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
@@ -409,7 +409,7 @@ describe('AssetTransferAPI', () => {
 		});
 		describe('ParaToRelay', () => {
 			it('Should correctly return Reserve', () => {
-				const assetCallType = moonriverAssetsApi['fetchTransferType'](
+				const assetCallType = moonriverAssetsApi['fetchCallType'](
 					'2023',
 					'0',
 					['KSM'],
