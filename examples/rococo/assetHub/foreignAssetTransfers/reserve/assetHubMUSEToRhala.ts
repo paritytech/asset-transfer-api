@@ -26,9 +26,7 @@ const main = async () => {
 		callInfo = await assetApi.createTransferTransaction(
 			'2004',
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
-			[
-				`{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}`,
-			],
+			[`{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}`],
 			['1000000000000'],
 			{
 				format: 'call',

@@ -1142,8 +1142,7 @@ export class AssetTransferApi {
 			}
 		} else if (api.tx[xcmPallet]) {
 			if (
-				api.tx[xcmPallet].transferAssetsUsingTypeAndThen &&
-				xcmDirection === Direction.SystemToBridge ||
+				(api.tx[xcmPallet].transferAssetsUsingTypeAndThen && xcmDirection === Direction.SystemToBridge) ||
 				baseOpts.assetTransferType
 			) {
 				txMethod = 'transferAssetsUsingTypeAndThen';

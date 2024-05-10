@@ -465,7 +465,6 @@ export const adjustedMockSystemApiV1011000 = {
 													],
 												},
 											},
-											,
 										];
 									},
 								},

@@ -934,19 +934,6 @@ export const checkXcmVersionIsValidForSystemToBridge = (xcmVersion: number) => {
 };
 
 /**
- * Checks to ensure that all assets are locations for SystemToBridge transactions
- *
- * @param assetIds
- */
-// export const checkAssetLocationsAreValidGlobalConsensusLocations = (assetIds: string[]) => {
-// 	if (!assetDestIsBridge(assetIds)) {
-// 		throw new BaseError(
-// 			`SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received ${assetIds.toString()}`,
-// 			BaseErrorsEnum.InvalidAsset,
-// 		);
-// 	}
-// };
-/**
  * Checks to ensure that required inputs are provided for SystemToBridge transactions
  *
  * @param paysWithFeeDest
@@ -1226,7 +1213,6 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkMultiLocationAmountsLength(amounts);
 		checkAssetsAmountMatch(assetIds, amounts);
 		getGlobalConsensusSystemName(destChainId);
-		// checkAssetLocationsAreValidGlobalConsensusLocations(assetIds);
 		checkSystemToBridgeInputs(
 			paysWithFeeDest,
 			assetTransferType,
