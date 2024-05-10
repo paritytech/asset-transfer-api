@@ -4,7 +4,11 @@ import type { AnyJson } from '@polkadot/types/types';
 
 import { UnionXcmMultiLocation } from '../types';
 
-export const createDefaultXcmOnDestination = (beneficiary: UnionXcmMultiLocation, xcmVersion: number): AnyJson => {
+export const createDefaultXcmOnDestination = (
+	assets: string[],
+	beneficiary: UnionXcmMultiLocation,
+	xcmVersion: number,
+): AnyJson => {
 	const defaultDestXcm: AnyJson =
 		xcmVersion === 3
 			? {
@@ -13,7 +17,7 @@ export const createDefaultXcmOnDestination = (beneficiary: UnionXcmMultiLocation
 							depositAsset: {
 								assets: {
 									Wild: {
-										AllCounted: 1,
+										AllCounted: assets.length,
 									},
 								},
 								beneficiary,
@@ -27,7 +31,7 @@ export const createDefaultXcmOnDestination = (beneficiary: UnionXcmMultiLocation
 							depositAsset: {
 								assets: {
 									Wild: {
-										AllCounted: 1,
+										AllCounted: assets.length,
 									},
 								},
 								beneficiary,

@@ -71,7 +71,7 @@ export const transferAssetsUsingTypeAndThen = async (
 	);
 	const remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmVersion);
 
-	const defaultDestXcm = createDefaultXcmOnDestination(beneficiary, xcmVersion);
+	const defaultDestXcm = createDefaultXcmOnDestination(assetIds, beneficiary, xcmVersion);
 	const customXcmOnDest = customXcmOnDestStr ? (JSON.parse(customXcmOnDestStr) as AnyJson) : defaultDestXcm;
 
 	return ext(dest, assets, assetTransferType, remoteFeesId, feeAssetTransferType, customXcmOnDest, weightLimitValue);
