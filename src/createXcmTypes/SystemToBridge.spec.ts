@@ -123,9 +123,12 @@ describe('SystemToBridge', () => {
 				V4: {
 					parents: 2,
 					interior: {
-						X1: [
+						X2: [
 							{
 								GlobalConsensus: 'Kusama',
+							},
+							{
+								Parachain: '1000',
 							},
 						],
 					},

@@ -1,11 +1,10 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import type { AnyJson } from '@polkadot/types/types';
-
+import { ASSETHUB_GLOBAL_CONSENSUS_LOCATIONS } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
-import { InteriorKey, InteriorValue, UnionXcmMultiLocation } from '../types';
+import { UnionXcmMultiLocation } from '../types';
 
-export const getGlobalConsensusDestFromLocation = (locationStr: string, xcmVersion: number): InteriorValue => {
+export const getGlobalConsensusDestFromLocation = (locationStr: string): UnionXcmMultiLocation => {
 	if (!locationStr.toLowerCase().includes('globalconsensus')) {
 		throw new BaseError(
 			`Bridge transaction location ${locationStr} must contain a valid GlobalConsensus Junction`,
@@ -13,28 +12,30 @@ export const getGlobalConsensusDestFromLocation = (locationStr: string, xcmVersi
 		);
 	}
 
-	const assetLocation = JSON.parse(locationStr) as UnionXcmMultiLocation;
-	let globalConsensusDest: AnyJson | undefined;
+	let assetLocation = JSON.parse(locationStr) as UnionXcmMultiLocation;
 
-	if (assetLocation.interior.X1) {
-		globalConsensusDest = assetLocation.interior.X1;
+	if (assetLocation.interior && assetLocation.interior.X1) {
+		const globalConsensusDestStr = JSON.stringify(assetLocation.interior.X1).toLowerCase().includes('polkadot')
+			? ASSETHUB_GLOBAL_CONSENSUS_LOCATIONS['polkadot']
+			: JSON.stringify(assetLocation.interior.X1).toLowerCase().includes('kusama')
+			  ? ASSETHUB_GLOBAL_CONSENSUS_LOCATIONS['kusama']
+			  : JSON.stringify(assetLocation.interior.X1).toLowerCase().includes('westend')
+			    ? ASSETHUB_GLOBAL_CONSENSUS_LOCATIONS['westend']
+			    : JSON.stringify(assetLocation.interior.X1).toLowerCase().includes('rococo')
+			      ? ASSETHUB_GLOBAL_CONSENSUS_LOCATIONS['rococo']
+			      : undefined;
+
+		assetLocation = globalConsensusDestStr
+			? (JSON.parse(globalConsensusDestStr) as UnionXcmMultiLocation)
+			: assetLocation;
 	} else {
-		const interiorJunctionKey = Object.keys(assetLocation.interior)[0];
-		globalConsensusDest = (assetLocation.interior[interiorJunctionKey] as InteriorKey)[0];
-
-		if (!JSON.stringify(globalConsensusDest).toLowerCase().includes('globalconsensus')) {
-			throw new BaseError(
-				`Bridge transaction location interior ${JSON.stringify(
-					assetLocation.interior,
-				)} does not contain a GlobalConsensus Junction in the first index`,
-				BaseErrorsEnum.InternalError,
-			);
-		}
+		throw new BaseError(
+			`Bridge transaction location interior ${JSON.stringify(
+				assetLocation.interior,
+			)} does not contain a GlobalConsensus Junction in the first index`,
+			BaseErrorsEnum.InternalError,
+		);
 	}
 
-	if (xcmVersion < 4) {
-		return globalConsensusDest as InteriorValue;
-	} else {
-		return globalConsensusDest as InteriorValue;
-	}
+	return assetLocation;
 };

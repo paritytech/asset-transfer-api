@@ -25,7 +25,7 @@ const main = async () => {
 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			[`{"parents":"1","interior":{"Here":""}}`],
-			['1000000000000'],
+			['100000000000'],
 			{
 				format: 'call',
 				xcmVersion: 4,

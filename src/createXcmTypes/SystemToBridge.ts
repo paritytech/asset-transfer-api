@@ -18,6 +18,7 @@ import {
 	FungibleStrAssetType,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
+	InteriorValue,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
@@ -78,33 +79,55 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
-		const destination = getGlobalConsensusDestFromLocation(destId, xcmVersion);
+		const destination = getGlobalConsensusDestFromLocation(destId);
+		let dest: XcmDestBeneficiary | undefined = undefined;
 
 		if (xcmVersion === 3) {
-			/**
-			 * Ensure that the `parents` field is `2` when sending
-			 * from a system parachain to a GlobalConsensus system.
-			 */
-			return {
-				V3: {
-					parents: 2,
-					interior: {
-						X1: destination,
+			dest =
+				destination.interior && destination.interior.X1
+					? {
+							V3: {
+								parents: 2,
+								interior: {
+									X1: destination.interior.X1 as InteriorValue,
+								},
+							},
+					  }
+					: {
+							V3: {
+								parents: 2,
+								interior: {
+									X2: destination.interior.X2 as InteriorValue,
+								},
+							},
+					  };
+		} else {
+			if (destination.interior && destination.interior.X1) {
+				dest = {
+					V4: {
+						parents: 2,
+						interior: {
+							X1: [destination.interior.X1 as XcmV4JunctionDestBeneficiary],
+						},
 					},
-				},
-			};
+				};
+			} else if (destination.interior && destination.interior.X2) {
+				dest = {
+					V4: {
+						parents: 2,
+						interior: {
+							X2: destination.interior.X2 as XcmV4JunctionDestBeneficiary[],
+						},
+					},
+				};
+			}
 		}
 
-		const X1 = [destination as XcmV4JunctionDestBeneficiary];
+		if (!dest) {
+			throw new BaseError('Unable to create XCM Destination location', BaseErrorsEnum.InternalError);
+		}
 
-		return {
-			V4: {
-				parents: 2,
-				interior: {
-					X1,
-				},
-			},
-		};
+		return dest;
 	},
 	/**
 	 * Create a VersionedMultiAsset structured type.

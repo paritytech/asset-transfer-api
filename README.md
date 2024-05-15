@@ -228,7 +228,7 @@ interface TransferArgsOpts<T extends Format> {
 	feesTransferType?: string;
 	/**
 	 * The RemoteReserve location for an XCM transfers' fees.
-	 * Should be provided when specfying a `feesTransferType` of RemoteReserve.
+	 * Should be provided when specfying a `feesTransferType` of `RemoteReserve`.
 	 */
 	remoteReserveFeesTransferTypeLocation?: string;
 	/**
