@@ -5,6 +5,7 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { Registry } from '../registry';
+import { RequireOnlyOne } from '../types';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
 import { normalizeArrToStr } from '../util/normalizeArrToStr';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
@@ -18,11 +19,16 @@ import {
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
+	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
+	XcmV2Junctions,
+	XcmV3Junctions,
 	XcmV4JunctionDestBeneficiary,
+	XcmV4Junctions,
 	XcmWeight,
 } from './types';
 import { dedupeAssets } from './util/dedupeAssets';
+import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
 import { getGlobalConsensusDestFromLocation } from './util/getGlobalConsensusDestFromLocation';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
@@ -116,7 +122,7 @@ export const SystemToBridge: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		const { registry, isForeignAssetsTransfer, api } = opts;
+		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
 
 		const sortedAndDedupedMultiAssets = await createSystemToBridgeAssets(
 			api,
@@ -126,6 +132,7 @@ export const SystemToBridge: ICreateXcmType = {
 			registry,
 			xcmVersion,
 			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
 		);
 
 		if (xcmVersion === 3) {
@@ -160,7 +167,16 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
-		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isForeignAssetsTransfer } = opts;
+		const {
+			registry,
+			paysWithFeeDest,
+			specName,
+			assetIds,
+			amounts,
+			xcmVersion,
+			isForeignAssetsTransfer,
+			isLiquidTokenTransfer,
+		} = opts;
 		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createSystemToBridgeAssets(
 				api,
@@ -170,6 +186,7 @@ export const SystemToBridge: ICreateXcmType = {
 				registry,
 				xcmVersion,
 				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
 			);
 
 			const systemChainId = registry.lookupChainIdBySpecName(specName);
@@ -217,9 +234,11 @@ export const createSystemToBridgeAssets = async (
 	registry: Registry,
 	xcmVersion: number,
 	isForeignAssetsTransfer: boolean,
+	isLiquidTokenTransfer: boolean,
 ): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
+	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 
 	for (let i = 0; i < assets.length; i++) {
@@ -234,7 +253,23 @@ export const createSystemToBridgeAssets = async (
 			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 		}
 
-		const assetLocation = resolveMultiLocation(assetId, xcmVersion);
+		let assetLocation: UnionXcmMultiLocation;
+
+		if (isForeignAssetsTransfer) {
+			assetLocation = resolveMultiLocation(assetId, xcmVersion);
+		} else {
+			const parents = isRelayNative ? 1 : 0;
+			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
+				? { Here: '' }
+				: {
+						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
+				  };
+
+			assetLocation = {
+				parents,
+				interior,
+			};
+		}
 
 		if (xcmVersion < 4) {
 			multiAsset = {

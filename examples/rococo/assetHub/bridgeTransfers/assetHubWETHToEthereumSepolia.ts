@@ -35,12 +35,6 @@ const main = async () => {
 			{
 				format: 'call',
 				xcmVersion: 4,
-				paysWithFeeDest:
-					'{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}',
-				assetTransferType: 'RemoteReserve',
-				remoteReserveAssetTransferTypeLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
-				feesTransferType: 'RemoteReserve',
-				remoteReserveFeesTransferTypeLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
 			},
 		);
 

@@ -42,6 +42,3 @@ export const createDefaultXcmOnDestination = (
 
 	return defaultDestXcm;
 };
-
-// TODO: do we need to include BuyExecution?
-// BuyExecution { fees: remote_fees, weight_limit: t.args.weight_limit.clone() },

@@ -1141,12 +1141,9 @@ export class AssetTransferApi {
 				txMethod = 'transferMultiassets';
 			}
 		} else if (api.tx[xcmPallet]) {
-			if (
-				(api.tx[xcmPallet].transferAssetsUsingTypeAndThen && xcmDirection === Direction.SystemToBridge) ||
-				baseOpts.assetTransferType
-			) {
+			if (api.tx[xcmPallet].transferAssetsUsingTypeAndThen && baseOpts.assetTransferType) {
 				txMethod = 'transferAssetsUsingTypeAndThen';
-			} else if (xcmDirection != Direction.SystemToBridge && api.tx[xcmPallet].transferAssets) {
+			} else if (api.tx[xcmPallet].transferAssets) {
 				txMethod = 'transferAssets';
 			} else if (assetCallType === AssetCallType.Reserve) {
 				txMethod = 'limitedReserveTransferAssets';

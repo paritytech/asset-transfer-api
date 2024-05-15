@@ -6,7 +6,6 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
-// import { assetDestIsBridge } from '../createXcmTypes/util/assetDestIsBridge';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
@@ -949,25 +948,28 @@ export const checkSystemToBridgeInputs = (
 	feesTransferType: string | undefined,
 	remoteReserveFeesTransferTypeLocation: string | undefined,
 ) => {
-	if (!paysWithFeeDest) {
-		throw new BaseError('paysWithFeeDest input is required for bridge transactions', BaseErrorsEnum.InvalidInput);
+	if (assetTransferType && !paysWithFeeDest) {
+		throw new BaseError(
+			'paysWithFeeDest input is required for bridge transactions when assetTransferType is provided',
+			BaseErrorsEnum.InvalidInput,
+		);
 	}
-	if (!assetTransferType) {
-		throw new BaseError('assetTransferType input is required for bridge transactions', BaseErrorsEnum.InvalidInput);
-	}
-	if (assetTransferType === 'RemoteReserve' && !remoteReserveAssetTransferTypeLocation) {
+	// if (!assetTransferType) {
+	// 	throw new BaseError('assetTransferType input is required for bridge transactions', BaseErrorsEnum.InvalidInput);
+	// }
+	if (assetTransferType && assetTransferType === 'RemoteReserve' && !remoteReserveAssetTransferTypeLocation) {
 		throw new BaseError(
 			'remoteReserveAssetTransferTypeLocation input is required for bridge transactions when asset transfer type is RemoteReserve',
 			BaseErrorsEnum.InvalidInput,
 		);
 	}
-	if (!feesTransferType) {
-		throw new BaseError(
-			'remoteReserveAssetTransferTypeLocation input is required for bridge transactions',
-			BaseErrorsEnum.InvalidInput,
-		);
-	}
-	if (feesTransferType === 'RemoteReserve' && !remoteReserveFeesTransferTypeLocation) {
+	// if (!feesTransferType) {
+	// 	throw new BaseError(
+	// 		'remoteReserveAssetTransferTypeLocation input is required for bridge transactions',
+	// 		BaseErrorsEnum.InvalidInput,
+	// 	);
+	// }
+	if (feesTransferType && feesTransferType === 'RemoteReserve' && !remoteReserveFeesTransferTypeLocation) {
 		throw new BaseError(
 			'remoteReserveFeeAssetTransferTypeLocation input is required for bridge transactions when fee asset transfer type is RemoteReserve',
 			BaseErrorsEnum.InvalidInput,
