@@ -29,6 +29,11 @@ const main = async () => {
 			{
 				format: 'call',
 				xcmVersion: 4,
+				paysWithFeeDest: '{"parents":"1","interior":{"Here":""}}',
+				assetTransferType: 'RemoteReserve',
+				remoteReserveAssetTransferTypeLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
+				feesTransferType: 'RemoteReserve',
+				remoteReserveFeesTransferTypeLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
 			},
 		);
 

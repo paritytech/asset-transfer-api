@@ -23,7 +23,7 @@ const main = async () => {
 	try {
 		callInfo = await assetApi.createTransferTransaction(
 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
-			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
+			'13EoPU88424tufnjevEYbbvZ7sGV3q1uhuN4ZbUaoTsnLHYt',
 			[`{"parents":"1","interior":{"Here":""}}`],
 			['100000000000'],
 			{
