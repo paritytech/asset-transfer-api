@@ -723,7 +723,7 @@ export class AssetTransferApi {
 		if (xcmDirection === Direction.ParaToRelay) {
 			return AssetCallType.Reserve;
 		}
-		// system to bridge -> remote reserve
+		// system to bridge -> reserve
 		if (xcmDirection === Direction.SystemToBridge) {
 			return AssetCallType.Reserve;
 		}

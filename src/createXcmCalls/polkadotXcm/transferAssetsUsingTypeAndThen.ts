@@ -9,7 +9,6 @@ import { createDefaultXcmOnDestination } from '../../createXcmTypes/util/createD
 import { createXcmOnDestBeneficiary } from '../../createXcmTypes/util/createXcmOnDestBeneficiary';
 import { createXcmVersionedAssetId } from '../../createXcmTypes/util/createXcmVersionedAssetId';
 import { resolveAssetTransferType } from '../../createXcmTypes/util/resolveAssetTransferType';
-import { BaseError, BaseErrorsEnum } from '../../errors';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr';
 import type { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
@@ -37,13 +36,6 @@ export const transferAssetsUsingTypeAndThen = async (
 		customXcmOnDest: customXcmOnDestStr,
 	} = opts;
 
-	if (!paysWithFeeDest || !assetTransferTypeStr || !feesTransferTypeStr) {
-		throw new BaseError(
-			'transferAssetsUsingTypeAndThen: required bridge inputs not found',
-			BaseErrorsEnum.InvalidInput,
-		);
-	}
-
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].transferAssetsUsingTypeAndThen;
 	const typeCreator = createXcmTypes[direction];
@@ -60,7 +52,7 @@ export const transferAssetsUsingTypeAndThen = async (
 		weightLimit,
 	});
 	const assetTransferType = resolveAssetTransferType(
-		feesTransferTypeStr,
+		assetTransferTypeStr,
 		xcmVersion,
 		remoteReserveAssetTransferTypeLocation,
 	);

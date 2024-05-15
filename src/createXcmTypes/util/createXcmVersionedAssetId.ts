@@ -4,7 +4,13 @@ import { BaseError, BaseErrorsEnum } from '../../errors';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation';
 import { UnionXcmMultiLocation, XcmVersionedAssetId } from '../types';
 
-export const createXcmVersionedAssetId = (destFeesAssetId: string, xcmVersion: number): XcmVersionedAssetId => {
+export const createXcmVersionedAssetId = (
+	destFeesAssetId: string | undefined,
+	xcmVersion: number,
+): XcmVersionedAssetId => {
+	if (!destFeesAssetId) {
+		throw new BaseError('resolveAssetTransferType: destFeesAssetId not found', BaseErrorsEnum.InvalidInput);
+	}
 	if (xcmVersion < 3) {
 		throw new BaseError('XcmVersion must be greater than 2', BaseErrorsEnum.InvalidXcmVersion);
 	}

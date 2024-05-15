@@ -6,10 +6,13 @@ import { resolveMultiLocation } from '../../util/resolveMultiLocation';
 import { UnionXcmMultiLocation } from '../types';
 
 export const resolveAssetTransferType = (
-	assetTransferType: string,
+	assetTransferType: string | undefined,
 	xcmVersion: number,
 	remoteTransferLocationStr?: string,
 ): AssetTransferType => {
+	if (!assetTransferType) {
+		throw new BaseError('resolveAssetTransferType: assetTransferType not found', BaseErrorsEnum.InvalidInput);
+	}
 	if (xcmVersion < 3) {
 		throw new BaseError('Bridge txs require XCM version 3 or higher', BaseErrorsEnum.InvalidXcmVersion);
 	}
