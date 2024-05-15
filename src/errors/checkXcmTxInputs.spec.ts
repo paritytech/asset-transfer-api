@@ -12,7 +12,6 @@ import {
 	checkAssetIdsAreOfSameAssetIdType,
 	checkAssetIdsHaveNoDuplicates,
 	checkAssetIdsLengthIsValid,
-	// checkAssetLocationsAreValidGlobalConsensusLocations,
 	checkAssetsAmountMatch,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkLiquidTokenTransferDirectionValidity,
@@ -22,6 +21,7 @@ import {
 	checkParaPrimaryAssetAssetIdsLength,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
+	checkSystemToBridgeInputs,
 	checkXcmVersionIsValidForPaysWithFeeDest,
 	checkXcmVersionIsValidForSystemToBridge,
 	CheckXTokensPalletOriginIsNonForeignAssetTx,
@@ -759,20 +759,66 @@ describe('checkXcmVersionIsValidForSystemToBridge', () => {
 	});
 });
 
-// describe('checkAssetLocationsAreValidGlobalConsensusLocations', () => {
-// 	it('Should correctly throw an error when asset locations are found without a global consens junction', () => {
-// 		const assetIds = [
-// 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
-// 			`{"parents":"1","interior":{"X1":{"Parachain":"1836"}}}`,
-// 		];
+describe('checkSystemToBridgeInputs', () => {
+	it('Should correctly error when no paysWithFeeDest value is provided but assetTransferType is', () => {
+		const paysWithFeeDest = undefined;
+		const assetTransferType = 'RemoteReserve';
+		const remoteReserveAssetTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+		const feesTransferType = 'RemoteReserve';
+		const remoteReserveFeesTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
 
-// 		const err = () => checkAssetLocationsAreValidGlobalConsensusLocations(assetIds);
+		const err = () =>
+			checkSystemToBridgeInputs(
+				paysWithFeeDest,
+				assetTransferType,
+				remoteReserveAssetTransferTypeLocation,
+				feesTransferType,
+				remoteReserveFeesTransferTypeLocation,
+			);
 
-// 		expect(err).toThrow(
-// 			'SystemToBridge transactions require that all asset locations contain valid GlobalConsenus junctions. Received {"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}},{"parents":"1","interior":{"X1":{"Parachain":"1836"}}',
-// 		);
-// 	});
-// });
+		expect(err).toThrow('paysWithFeeDest input is required for bridge transactions when assetTransferType is provided');
+	});
+	it('Should correctly throw an error when assetTransferType is RemoteReserve and no remoteReserveAssetTransferTypeLocation value is provided', () => {
+		const paysWithFeeDest = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+		const assetTransferType = 'RemoteReserve';
+		const remoteReserveAssetTransferTypeLocation = undefined;
+		const feesTransferType = 'RemoteReserve';
+		const remoteReserveFeesTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+
+		const err = () =>
+			checkSystemToBridgeInputs(
+				paysWithFeeDest,
+				assetTransferType,
+				remoteReserveAssetTransferTypeLocation,
+				feesTransferType,
+				remoteReserveFeesTransferTypeLocation,
+			);
+
+		expect(err).toThrow(
+			'remoteReserveAssetTransferTypeLocation input is required for bridge transactions when asset transfer type is RemoteReserve',
+		);
+	});
+	it('Should correctly throw an error when feesTransferType is RemoteReserve and no remoteReserveFeesTransferTypeLocation value is provided', () => {
+		const paysWithFeeDest = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+		const assetTransferType = 'RemoteReserve';
+		const remoteReserveAssetTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+		const feesTransferType = 'RemoteReserve';
+		const remoteReserveFeesTransferTypeLocation = undefined;
+
+		const err = () =>
+			checkSystemToBridgeInputs(
+				paysWithFeeDest,
+				assetTransferType,
+				remoteReserveAssetTransferTypeLocation,
+				feesTransferType,
+				remoteReserveFeesTransferTypeLocation,
+			);
+
+		expect(err).toThrow(
+			'remoteReserveFeeAssetTransferTypeLocation input is required for bridge transactions when fee asset transfer type is RemoteReserve',
+		);
+	});
+});
 
 describe('checkParaAssets', () => {
 	it('Should correctly resolve when a valid symbol assetId is provided', async () => {

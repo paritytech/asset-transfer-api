@@ -954,21 +954,12 @@ export const checkSystemToBridgeInputs = (
 			BaseErrorsEnum.InvalidInput,
 		);
 	}
-	// if (!assetTransferType) {
-	// 	throw new BaseError('assetTransferType input is required for bridge transactions', BaseErrorsEnum.InvalidInput);
-	// }
 	if (assetTransferType && assetTransferType === 'RemoteReserve' && !remoteReserveAssetTransferTypeLocation) {
 		throw new BaseError(
 			'remoteReserveAssetTransferTypeLocation input is required for bridge transactions when asset transfer type is RemoteReserve',
 			BaseErrorsEnum.InvalidInput,
 		);
 	}
-	// if (!feesTransferType) {
-	// 	throw new BaseError(
-	// 		'remoteReserveAssetTransferTypeLocation input is required for bridge transactions',
-	// 		BaseErrorsEnum.InvalidInput,
-	// 	);
-	// }
 	if (feesTransferType && feesTransferType === 'RemoteReserve' && !remoteReserveFeesTransferTypeLocation) {
 		throw new BaseError(
 			'remoteReserveFeeAssetTransferTypeLocation input is required for bridge transactions when fee asset transfer type is RemoteReserve',
