@@ -14,7 +14,7 @@ import { GREEN, PURPLE, RESET } from '../../../colors';
  * the tx will allow unlimited weight to be used for fees.
  * We provide values for the `assetTransferType` and `feesTransferType` options of `LocalReserve` declaring that the local AssetHub should be
  * used as the reserve for the transferred asset(s) and fees.
- * 
+ *
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
