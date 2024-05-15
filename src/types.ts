@@ -282,25 +282,29 @@ export interface TransferArgsOpts<T extends Format> {
 	 */
 	transferLiquidToken?: boolean;
 	/**
-	 * The XCM `TransferType` used to transfer the `assets`.
+	 * The XCM `TransferType` used to transfer assets.
+	 * Provided to construct `transferAssetsUsingTypeAndThen` transactions.
 	 */
 	assetTransferType?: string;
 	/**
 	 * The RemoteReserve location for an XCM transfer.
-	 * Provided when speicifying an `assetTransferType` of RemoteReserve.
+	 * Should be provided when specifying an `assetTransferType` of `RemoteReserve`.
 	 */
 	remoteReserveAssetTransferTypeLocation?: string;
 	/**
 	 * The XCM `TransferType` used to pay fees for an XCM transfer.
+	 * Provided to construct `transferAssetsUsingTypeAndThen` transactions.
 	 */
 	feesTransferType?: string;
 	/**
-	 * The RemoteReserve location for an XCM transfers fees.
-	 * Provided when speicifying an `feesTransferType` of RemoteReserve.
+	 * The RemoteReserve location for an XCM transfers' fees.
+	 * Should be provided when specfying a `feesTransferType` of RemoteReserve.
 	 */
 	remoteReserveFeesTransferTypeLocation?: string;
 	/**
-	 * Optional custom XCM message to be executed on destination chain .
+	 * Optional custom XCM message to be executed on destination chain.
+	 * Should be provided if a custom xcm message is needed after transfering assets.
+	 * Defaults to `Xcm(vec![DepositAsset { assets: Wild(AllCounted(assets.len())), beneficiary }])`
 	 */
 	customXcmOnDest?: string;
 }
