@@ -8,7 +8,7 @@ import { TxResult } from '../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
- * In this example we are creating a `polkadotXcm` pallet `transferAssetsUsingTypeAndThen` call to send ROC (asset with location `{"parents":"1","interior":{"Here":""}}`)
+ * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send ROC (asset with location `{"parents":"1","interior":{"Here":""}}`)
  * from a Rococo Asset Hub (System Parachain) account
  * to a Westend Asset Hub account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
@@ -29,11 +29,6 @@ const main = async () => {
 			{
 				format: 'call',
 				xcmVersion: 4,
-				paysWithFeeDest: '{"parents":"1","interior":{"Here":""}}',
-				assetTransferType: 'RemoteReserve',
-				remoteReserveAssetTransferTypeLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
-				feesTransferType: 'RemoteReserve',
-				remoteReserveFeesTransferTypeLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
 			},
 		);
 
