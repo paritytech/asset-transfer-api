@@ -8,7 +8,7 @@ import { TxResult } from '../../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../../colors';
 
 /**
- * In this example we are creating a `foreignAssets` pallet `transfer` call to send KSM (foreign asset with location {"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`)
+ * In this example we are creating a `foreignAssets` pallet `transfer` call to send 1 KSM (foreign asset with location {"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`)
  * from a Polkadot Asset Hub (System Parachain) account
  * to a Polkadot Asset Hub (System Parachain) account.
  *

@@ -1,9 +1,9 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 import { UnionXcmMultiLocation } from '../types';
-import { createDefaultXcmOnDestination } from './createDefaultXcmOnDestination';
+import { createXcmOnDestination } from './createXcmOnDestination';
 
-describe('createDefaultXcmOnDestination', () => {
+describe('createXcmOnDestination', () => {
 	it('Should correctly construct the default XCM message for V3', () => {
 		const assetIds = [
 			`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
@@ -34,7 +34,7 @@ describe('createDefaultXcmOnDestination', () => {
 			],
 		};
 
-		expect(createDefaultXcmOnDestination(assetIds, beneficiary, xcmVersion)).toEqual(expected);
+		expect(createXcmOnDestination(assetIds, beneficiary, xcmVersion)).toEqual(expected);
 	});
 	it('Should correctly construct the default XCM message for V4', () => {
 		const assetIds = [
@@ -67,6 +67,6 @@ describe('createDefaultXcmOnDestination', () => {
 			],
 		};
 
-		expect(createDefaultXcmOnDestination(assetIds, beneficiary, xcmVersion)).toEqual(expected);
+		expect(createXcmOnDestination(assetIds, beneficiary, xcmVersion)).toEqual(expected);
 	});
 });

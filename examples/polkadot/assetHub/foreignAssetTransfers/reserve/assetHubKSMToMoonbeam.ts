@@ -8,7 +8,7 @@ import { TxResult } from '../../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../../colors';
 
 /**
- * In this example we are creating a `polkadotXcm` pallet `limitedReserveTransferAssets` call to send KSM (foreign asset with location '{"parents":"1","interior":{"X1":{"GlobalConsensus":"Kusama"}}}')
+ * In this example we are creating a `polkadotXcm` pallet `limitedReserveTransferAssets` call to send 1 KSM (foreign asset with location '{"parents":"1","interior":{"X1":{"GlobalConsensus":"Kusama"}}}')
  * from a Polkadot Asset Hub (System Parachain) account
  * to a Moonbeam (ParaChain) account, where the `xcmVersion` is set to 3 and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.

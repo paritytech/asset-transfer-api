@@ -8,7 +8,7 @@ import { TxResult } from '../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
- * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send KSM (asset with location `{"parents":"1","interior":{"Here":""}}`)
+ * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send 1 KSM (asset with location `{"parents":"1","interior":{"Here":""}}`)
  * from a Kusama Asset Hub (System Parachain) account
  * to a Polkadot Asset Hub account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
@@ -25,7 +25,7 @@ const main = async () => {
 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
 			'13EoPU88424tufnjevEYbbvZ7sGV3q1uhuN4ZbUaoTsnLHYt',
 			[`{"parents":"1","interior":{"Here":""}}`],
-			['100000000000'],
+			['1000000000000'],
 			{
 				format: 'call',
 				xcmVersion: 4,
