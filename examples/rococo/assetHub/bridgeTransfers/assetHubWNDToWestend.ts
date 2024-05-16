@@ -16,15 +16,15 @@ import { GREEN, PURPLE, RESET } from '../../../colors';
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westend-asset-hub-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://rococo-asset-hub-rpc.polkadot.io');
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
-			[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+			[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`],
 			['1000000000000'],
 			{
 				format: 'call',
