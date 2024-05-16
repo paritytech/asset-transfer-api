@@ -6,7 +6,7 @@ import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { createAssetLocations } from './createAssetLocations';
 
 describe('createAssetLocations', () => {
-	describe('AssetHub Kusama', () => {
+	describe('Kusama AssetHub', () => {
 		const registry = new Registry('statemine', {});
 
 		it('Should correctly create asset locations for XCM V4', async () => {

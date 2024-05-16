@@ -56,13 +56,15 @@ export const transferAssetsUsingTypeAndThen = async (
 		xcmVersion,
 		remoteReserveAssetTransferTypeLocation,
 	);
+	console.log('ASSETS TRANSFER TYPE', assetTransferType)
 	const feeAssetTransferType = resolveAssetTransferType(
 		feesTransferTypeStr,
 		xcmVersion,
 		remoteReserveFeesTransferTypeLocation,
 	);
 	const remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmVersion);
-
+	console.log('REMOTE FEES ID', remoteFeesId);
+	
 	const defaultDestXcm = createDefaultXcmOnDestination(assetIds, beneficiary, xcmVersion);
 	const customXcmOnDest = customXcmOnDestStr ? (JSON.parse(customXcmOnDestStr) as AnyJson) : defaultDestXcm;
 

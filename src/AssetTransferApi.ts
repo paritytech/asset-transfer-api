@@ -537,6 +537,10 @@ export class AssetTransferApi {
 			return Direction.RelayToPara;
 		}
 
+		if (api.query.paras && isDestBridge) {
+			return Direction.RelayToBridge;
+		}
+
 		/**
 		 * Check if the origin is a Parachain or Parathread
 		 */
@@ -1121,7 +1125,11 @@ export class AssetTransferApi {
 		baseOpts: CreateXcmCallOpts,
 		paysWithFeeDest?: string,
 	): Promise<ResolvedCallInfo> {
+		console.log('XCM PALLET', xcmPallet);
+		
 		const { api } = baseArgs;
+		console.log('API TX', api.tx[xcmPallet]);
+		console.log('BASE OPTS', baseOpts.assetTransferType);
 
 		let txMethod: Methods | undefined = undefined;
 
@@ -1155,6 +1163,8 @@ export class AssetTransferApi {
 		if (!txMethod) {
 			throw new BaseError(`Unable to resolve correct transfer call`, BaseErrorsEnum.InternalError);
 		}
+
+		console.log('TX METHOD IS', txMethod)
 
 		if (!callExistsInRuntime(api, txMethod, xcmPallet)) {
 			throw new BaseError(
