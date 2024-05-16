@@ -8,13 +8,10 @@ import { TxResult } from '../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
- * In this example we are creating a `polkadotXcm` pallet `transferAssetsUsingTypeAndThen` call to send ROC (asset with location `{"parents":"1","interior":{"Here":""}}`)
+ * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send ROC (asset with location `{"parents":"1","interior":{"Here":""}}`)
  * from a Rococo Asset Hub (System Parachain) account
  * to a Westend Asset Hub account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
- * We provide values for the `assetTransferType` and `feesTransferType` options of `LocalReserve` declaring that the local AssetHub should be
- * used as the reserve for the transferred asset(s) and fees.
- *
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
@@ -32,9 +29,6 @@ const main = async () => {
 			{
 				format: 'call',
 				xcmVersion: 4,
-				paysWithFeeDest: '{"parents":"1","interior":{"Here":""}}',
-				assetTransferType: 'LocalReserve',
-				feesTransferType: 'LocalReserve',
 			},
 		);
 
