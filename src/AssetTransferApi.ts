@@ -204,6 +204,7 @@ export class AssetTransferApi {
 		const { api, specName, safeXcmVersion, originChainId, registry } = this;
 		const isLiquidTokenTransfer = transferLiquidToken === true;
 		const chainOriginDestInfo = {
+			isOriginRelayChain: api.query.paras ? true : false,
 			isOriginSystemParachain: SYSTEM_PARACHAINS_NAMES.includes(specName.toLowerCase()),
 			isOriginParachain: isParachain(originChainId),
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
@@ -261,6 +262,7 @@ export class AssetTransferApi {
 		};
 
 		const baseOpts = {
+			chainOriginDestInfo,
 			weightLimit,
 			paysWithFeeDest,
 			isLiquidTokenTransfer,
@@ -497,8 +499,8 @@ export class AssetTransferApi {
 	private establishDirection(isLocal: boolean, chainOriginDestInfo: ChainOriginDestInfo): Direction {
 		if (isLocal) return Direction.Local;
 
-		const { api } = this;
 		const {
+			isOriginRelayChain,
 			isDestParachain,
 			isDestRelayChain,
 			isDestSystemParachain,
@@ -529,11 +531,11 @@ export class AssetTransferApi {
 		/**
 		 * Check if the origin is a Relay Chain
 		 */
-		if (api.query.paras && isDestSystemParachain) {
+		if (isOriginRelayChain && isDestSystemParachain) {
 			return Direction.RelayToSystem;
 		}
 
-		if (api.query.paras && isDestParachain) {
+		if (isOriginRelayChain && isDestParachain) {
 			return Direction.RelayToPara;
 		}
 
