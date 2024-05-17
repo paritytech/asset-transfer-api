@@ -626,7 +626,18 @@ describe('checkAssetIdsLengthIsValid', () => {
 		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
 		expect(err).not.toThrow('Maximum number of assets allowed for transfer is 2. Found 3 assetIds');
 	});
-	it('Should correctly throw an error when provided more than 1 asset id for a `transferAssets` call', () => {
+	it('Should correctly throw an error when provided more than 1 asset id for a non `transferAssetsUsingTypeAndThen` `xcmPallet` call', () => {
+		const assetIds = [
+			`{"parents":"1","interior":{"Here":""}}`,
+			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
+		];
+		const assetTransferType = undefined;
+		const xcmPallet = XcmPalletName.xcmPallet;
+
+		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
+		expect(err).toThrow('transferAssets transactions cannot contain more than 1 asset location id. Found 2 assetIds');
+	});
+	it('Should correctly throw an error when provided more than 1 asset id for a non `transferAssetsUsingTypeAndThen` `polkadotXcm` call', () => {
 		const assetIds = [
 			`{"parents":"1","interior":{"Here":""}}`,
 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
@@ -637,8 +648,7 @@ describe('checkAssetIdsLengthIsValid', () => {
 		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
 		expect(err).toThrow('transferAssets transactions cannot contain more than 1 asset location id. Found 2 assetIds');
 	});
-
-	it('Should correctly not throw an error when provided more than 1 asset id for a `transferAssetsUsingTypeAndThenCall`', () => {
+	it('Should correctly not throw an error when provided more than 1 asset id for a `transferAssetsUsingTypeAndThen` call', () => {
 		const assetIds = [
 			`{"parents":"1","interior":{"Here":""}}`,
 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
