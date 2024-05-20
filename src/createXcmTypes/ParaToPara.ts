@@ -29,6 +29,7 @@ import type {
 	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
+	XcmV2MultiLocation,
 	XcmV3MultiLocation,
 	XcmV4Location,
 	XcmWeight,
@@ -397,7 +398,7 @@ export const ParaToPara: ICreateXcmType = {
 				return {
 					V2: {
 						id: {
-							Concrete: paysWithFeeMultiLocation,
+							Concrete: paysWithFeeMultiLocation as XcmV2MultiLocation,
 						},
 					},
 				};

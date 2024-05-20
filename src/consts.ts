@@ -71,3 +71,18 @@ export const CDN_URL = 'https://paritytech.github.io/asset-transfer-api-registry
  * May result in either: `node` or `browser`.
  */
 export const JS_ENV = detectJsEnv();
+
+/**
+ * Supported consensus system chain names
+ */
+export const KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES = ['polkadot', 'kusama', 'westend', 'rococo', 'ethereum'];
+
+/**
+ * Global consensus locations for AssetHubs
+ */
+export const ASSETHUB_GLOBAL_CONSENSUS_LOCATIONS = {
+	polkadot: '{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}',
+	kusama: '{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}',
+	westend: '{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Westend"},{"Parachain":"1000"}]}}',
+	rococo: '{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}',
+};

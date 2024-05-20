@@ -8,6 +8,7 @@ import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
+import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
@@ -402,7 +403,7 @@ const checkSystemAssets = async (
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmVersion);
 
 		if (!multiLocationIsInRegistry) {
-			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId, xcmVersion);
+			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId);
 
 			if (!isValidForeignAsset) {
 				throw new BaseError(`MultiLocation ${assetId} not found`, BaseErrorsEnum.AssetNotFound);
@@ -816,10 +817,25 @@ const checkParaToRelayAssetId = (assetId: string, registry: Registry, specName: 
  *
  * @param assetIds
  */
-export const checkAssetIdsLengthIsValid = (assetIds: string[]) => {
+export const checkAssetIdsLengthIsValid = (
+	assetIds: string[],
+	xcmPalletName: XcmPalletName,
+	assetTransferType: string | undefined,
+) => {
 	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER) {
 		throw new BaseError(
 			`Maximum number of assets allowed for transfer is 2. Found ${assetIds.length} assetIds`,
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+
+	if (
+		assetIds.length > 1 &&
+		!assetTransferType &&
+		(xcmPalletName === XcmPalletName.polkadotXcm || xcmPalletName === XcmPalletName.xcmPallet)
+	) {
+		throw new BaseError(
+			`transferAssets transactions cannot contain more than 1 asset location id. Found ${assetIds.length} assetIds`,
 			BaseErrorsEnum.InvalidInput,
 		);
 	}
@@ -917,6 +933,69 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 };
 
 /**
+ * Checks to ensure that the xcmVersion is at least 3 for a SystemToBridge transaction
+ *
+ * @param xcmDirection
+ * @param xcmVersion
+ */
+export const checkXcmVersionIsValidForSystemToBridge = (xcmVersion: number) => {
+	if (xcmVersion && xcmVersion < 3) {
+		throw new BaseError(
+			'SystemToBridge transactions require XCM version 3 or greater',
+			BaseErrorsEnum.InvalidXcmVersion,
+		);
+	}
+};
+
+/**
+ * Checks to ensure that required inputs are provided for SystemToBridge transactions
+ *
+ * @param paysWithFeeDest
+ * @param assetTransferType
+ * @param remoteReserveAssetTransferTypeLocation
+ * @param feesTransferType
+ * @param remoteReserveFeesTransferTypeLocation
+ */
+export const checkSystemToBridgeInputs = (
+	paysWithFeeDest: string | undefined,
+	assetTransferType: string | undefined,
+	remoteReserveAssetTransferTypeLocation: string | undefined,
+	feesTransferType: string | undefined,
+	remoteReserveFeesTransferTypeLocation: string | undefined,
+) => {
+	if (assetTransferType && !paysWithFeeDest) {
+		throw new BaseError(
+			'paysWithFeeDest input is required for bridge transactions when assetTransferType is provided',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+	if (assetTransferType && assetTransferType === 'RemoteReserve' && !remoteReserveAssetTransferTypeLocation) {
+		throw new BaseError(
+			'remoteReserveAssetTransferTypeLocation input is required for bridge transactions when asset transfer type is RemoteReserve',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+	if (feesTransferType && feesTransferType === 'RemoteReserve' && !remoteReserveFeesTransferTypeLocation) {
+		throw new BaseError(
+			'remoteReserveFeeAssetTransferTypeLocation input is required for bridge transactions when fee asset transfer type is RemoteReserve',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+};
+
+export const checkPaysWithFeeDestAssetIdIsInAssets = (assetIds: string[], paysWithFeeDest: string | undefined) => {
+	if (!paysWithFeeDest) {
+		return;
+	}
+
+	if (!assetIds.includes(paysWithFeeDest)) {
+		throw new BaseError(
+			`paysWithFeeDest asset must be present in assets to be transferred. Did not find ${paysWithFeeDest} in ${assetIds.toString()}`,
+		);
+	}
+};
+
+/**
  * Checks to ensure that the xcmVersion is at least 3 if paysWithFeeDest is provided
  *
  * @param xcmVersion
@@ -934,7 +1013,7 @@ export const checkXcmVersionIsValidForPaysWithFeeDest = (
 		xcmVersion &&
 		xcmVersion < 3
 	) {
-		throw new BaseError('paysWithFeeDest requires XCM version 3', BaseErrorsEnum.InvalidXcmVersion);
+		throw new BaseError('paysWithFeeDest requires XCM version 3 or greater', BaseErrorsEnum.InvalidXcmVersion);
 	}
 };
 
@@ -1041,7 +1120,16 @@ export const checkAssetIdInput = async (
  */
 export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: CheckXcmTxInputsOpts) => {
 	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet } = baseArgs;
-	const { paysWithFeeDest, isForeignAssetsTransfer, isLiquidTokenTransfer, isPrimaryParachainNativeAsset } = opts;
+	const {
+		paysWithFeeDest,
+		isForeignAssetsTransfer,
+		isLiquidTokenTransfer,
+		isPrimaryParachainNativeAsset,
+		assetTransferType,
+		remoteReserveAssetTransferTypeLocation,
+		feesTransferType,
+		remoteReserveFeesTransferTypeLocation,
+	} = opts;
 	const relayChainInfo = registry.currentRelayRegistry;
 
 	if (isPrimaryParachainNativeAsset) {
@@ -1068,7 +1156,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	/**
 	 * Checks to ensure that assetId's have a length no greater than MAX_ASSETS_FOR_TRANSFER
 	 */
-	checkAssetIdsLengthIsValid(assetIds);
+	checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
 
 	/**
 	 * Checks to ensure that assetId's have no duplicate values
@@ -1115,7 +1203,6 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
-			checkAssetsAmountMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
 		checkAssetsAmountMatch(assetIds, amounts);
@@ -1123,12 +1210,26 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 
 	if (direction === Direction.SystemToSystem) {
 		if (isForeignAssetsTransfer) {
-			checkMultiLocationIdLength(assetIds);
-			checkMultiLocationAmountsLength(amounts);
 			checkAssetsAmountMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
+	}
+
+	if (direction === Direction.SystemToBridge) {
+		checkMultiLocationIdLength(assetIds);
+		checkMultiLocationAmountsLength(amounts);
+		checkAssetsAmountMatch(assetIds, amounts);
+		getGlobalConsensusSystemName(destChainId);
+		checkSystemToBridgeInputs(
+			paysWithFeeDest,
+			assetTransferType,
+			remoteReserveAssetTransferTypeLocation,
+			feesTransferType,
+			remoteReserveFeesTransferTypeLocation,
+		);
+		checkPaysWithFeeDestAssetIdIsInAssets(assetIds, paysWithFeeDest);
+		checkXcmVersionIsValidForSystemToBridge(xcmVersion);
 	}
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {
