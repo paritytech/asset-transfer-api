@@ -38,6 +38,7 @@ import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
+import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation';
 import {
 	BaseError,
 	BaseErrorsEnum,
@@ -82,7 +83,6 @@ import { callExistsInRuntime } from './util/callExistsInRuntime';
 import { deepEqual } from './util/deepEqual';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
-import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -945,8 +945,12 @@ export class AssetTransferApi {
 					const lpTokenLocations = lpTokens as UnionXcmMultiLocation[];
 
 					// convert json into locations
-					const firstLpToken = parseLocationStrToLocation(JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'));
-					const secondLpToken = parseLocationStrToLocation(JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'));
+					const firstLpToken = parseLocationStrToLocation(
+						JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
+					);
+					const secondLpToken = parseLocationStrToLocation(
+						JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
+					);
 
 					// check locations match paysWithFeeOrigin feeAsset
 					if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {
