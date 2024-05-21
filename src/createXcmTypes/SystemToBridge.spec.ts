@@ -115,7 +115,7 @@ describe('SystemToBridge', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const destId = `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`;
+			const destId = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}`;
 
 			const destination = SystemToBridge.createDest(destId, 4);
 

@@ -280,7 +280,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a transferAssets for V3', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
 						['1000000000000'],
 						'payload',
@@ -301,7 +301,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a submittable extrinsic for a transferAssets for V3', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
 						['1000000000000'],
 						'submittable',
@@ -323,7 +323,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a `transferAssets` call extrinsic for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
 						['1000000000000'],
 						'call',
@@ -344,7 +344,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a `transferAssets` payload for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
 						['1000000000000'],
 						'payload',
@@ -365,7 +365,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
 						['1000000000000'],
 						'submittable',
@@ -386,7 +386,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				await expect(async () => {
 					await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
 						['1000000000000'],
 						'submittable',
@@ -406,7 +406,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				await expect(async () => {
 					await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[
 							`{"parents":"1","interior":{"Here":""}}`,
 							`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,

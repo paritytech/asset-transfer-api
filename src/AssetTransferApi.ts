@@ -82,6 +82,7 @@ import { callExistsInRuntime } from './util/callExistsInRuntime';
 import { deepEqual } from './util/deepEqual';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
+import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help
@@ -944,12 +945,8 @@ export class AssetTransferApi {
 					const lpTokenLocations = lpTokens as UnionXcmMultiLocation[];
 
 					// convert json into locations
-					const firstLpToken = JSON.parse(
-						JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
-					) as UnionXcmMultiLocation;
-					const secondLpToken = JSON.parse(
-						JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
-					) as UnionXcmMultiLocation;
+					const firstLpToken = parseLocationStrToLocation(JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'));
+					const secondLpToken = parseLocationStrToLocation(JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'));
 
 					// check locations match paysWithFeeOrigin feeAsset
 					if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {
@@ -1052,7 +1049,7 @@ export class AssetTransferApi {
 						: poolAssets.transfer(api, addr, assetId, amount);
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				const location = JSON.parse(assetId) as UnionXcmMultiLocation;
+				const location = parseLocationStrToLocation(assetId);
 				tx =
 					method === 'transferKeepAlive'
 						? foreignAssets.transferKeepAlive(api, addr, location, amount)

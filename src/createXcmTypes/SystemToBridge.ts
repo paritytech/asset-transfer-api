@@ -31,9 +31,9 @@ import {
 import { dedupeAssets } from './util/dedupeAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
-import { getGlobalConsensusDestFromLocation } from './util/getGlobalConsensusDestFromLocation';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { isSystemChain } from './util/isSystemChain';
+import { parseLocationStrToLocation } from './util/parseLocationStrToLocation';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
 
 export const SystemToBridge: ICreateXcmType = {
@@ -79,7 +79,7 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
-		const destination = getGlobalConsensusDestFromLocation(destId);
+		const destination = parseLocationStrToLocation(destId);
 		let dest: XcmDestBeneficiary | undefined = undefined;
 
 		if (xcmVersion === 3) {
