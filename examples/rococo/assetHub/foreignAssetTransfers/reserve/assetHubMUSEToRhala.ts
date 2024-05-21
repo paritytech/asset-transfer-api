@@ -13,7 +13,7 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
  * to a Rhala Testnet (ParaChain) account, where the `xcmVersion` is set to 4, and there is no
  * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  *  * The `paysWithFeeDest` value is set to pay fees with `MUSE` and the values for `assetTransferType` and `feesTransferType`
- * are both set to `LocalReserve` specifying that the reserve locatiob to be used for transfers and fees is AssetHub.
+ * are both set to `LocalReserve` specifying that the reserve location to be used for transfers and fees is AssetHub.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
