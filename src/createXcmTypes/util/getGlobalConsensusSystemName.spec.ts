@@ -27,14 +27,14 @@ describe('getGlobalConsensusSystemName', () => {
 		});
 	});
 	describe('X2', () => {
-		it('Should correctly return the consensus system name for Polkadot', () => {
+		it('Should correctly return the consensus system name for Polkadot AssetHub', () => {
 			const destLocation = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`;
 
 			const result = getGlobalConsensusSystemName(destLocation);
 
 			expect(result).toEqual('polkadot');
 		});
-		it('Should correctly return the consensus system name for Kusama', () => {
+		it('Should correctly return the consensus system name for Kusama AssetHub', () => {
 			const destLocation = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}`;
 
 			const result = getGlobalConsensusSystemName(destLocation);
