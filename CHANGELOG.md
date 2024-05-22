@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0..v0.2.1)
+
+### Fix
+
+- fix: explicitly use passed in dest locations for bridgeTransfers ([#406](https://github.com/paritytech/asset-transfer-api/pull/406))([b3a199a](https://github.com/paritytech/asset-transfer-api/commit/b3a199ace74bc951abe9045d70110c1b9eac8089))
+
+
 ## [0.2.0](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.2..v0.2.0)
 
 ### Chore
