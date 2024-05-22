@@ -4,10 +4,6 @@ import type { ApiPromise } from '@polkadot/api';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors';
-import type { Registry } from '../registry';
-import { RequireOnlyOne } from '../types';
-import { resolveMultiLocation } from '../util/resolveMultiLocation';
-import { validateNumber } from '../validate';
 import {
 	CreateWeightLimitOpts,
 	FungibleStrAsset,
@@ -16,20 +12,11 @@ import {
 	ICreateXcmType,
 	InteriorValue,
 	UnionXcmMultiAssets,
-	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
-	XcmV2Junctions,
-	XcmV3Junctions,
 	XcmV4JunctionDestBeneficiary,
-	XcmV4Junctions,
 	XcmWeight,
 } from './types';
-import { dedupeAssets } from './util/dedupeAssets';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getAssetId } from './util/getAssetId';
-import { isRelayNativeAsset } from './util/isRelayNativeAsset';
 import { parseLocationStrToLocation } from './util/parseLocationStrToLocation';
-import { sortAssetsAscending } from './util/sortAssetsAscending';
 
 export const RelayToBridge: ICreateXcmType = {
 	/**
@@ -204,86 +191,3 @@ export const RelayToBridge: ICreateXcmType = {
 	},
 };
 
-/**
- * Create multiassets for SystemToBridge direction.
- *
- * @param api ApiPromise
- * @param amounts Amount per asset. It will match the `assets` length.
- * @param specName The specname of the chain the api is connected to.
- * @param assets The assets to create into xcm `MultiAssets`.
- * @param xcmVersion The accepted xcm version.
- * @param registry The asset registry used to construct MultiLocations.
- * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
- */
-export const createSystemToBridgeAssets = async (
-	api: ApiPromise,
-	amounts: string[],
-	specName: string,
-	assets: string[],
-	registry: Registry,
-	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean,
-): Promise<FungibleStrAssetType[]> => {
-	let multiAssets: FungibleStrAssetType[] = [];
-	let multiAsset: FungibleStrAssetType;
-	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
-	const systemChainId = registry.lookupChainIdBySpecName(specName);
-
-	for (let i = 0; i < assets.length; i++) {
-		let assetId: string = assets[i];
-		const amount = amounts[i];
-
-		const { tokens } = registry.currentRelayRegistry[systemChainId];
-
-		const isValidInt = validateNumber(assetId);
-		const isRelayNative = isRelayNativeAsset(tokens, assetId);
-		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
-		}
-
-		let assetLocation: UnionXcmMultiLocation;
-
-		if (isForeignAssetsTransfer) {
-			assetLocation = resolveMultiLocation(assetId, xcmVersion);
-		} else {
-			const parents = isRelayNative ? 1 : 0;
-			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
-				? { Here: '' }
-				: {
-						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-				  };
-
-			assetLocation = {
-				parents,
-				interior,
-			};
-		}
-
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: assetLocation,
-				},
-				fun: {
-					Fungible: amount,
-				},
-			};
-		} else {
-			multiAsset = {
-				id: assetLocation,
-				fun: {
-					Fungible: amount,
-				},
-			};
-		}
-
-		multiAssets.push(multiAsset);
-	}
-
-	multiAssets = sortAssetsAscending(multiAssets) as FungibleStrAssetType[];
-
-	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleStrAssetType[];
-
-	return sortedAndDedupedMultiAssets;
-};
