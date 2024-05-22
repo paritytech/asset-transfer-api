@@ -22,7 +22,7 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
+			`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Westend"},{"Parachain":"1000"}]}}`,
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
 			[`{"parents":"1","interior":{"Here":""}}`],
 			['1000000000000'],

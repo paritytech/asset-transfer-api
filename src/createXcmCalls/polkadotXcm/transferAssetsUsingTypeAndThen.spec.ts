@@ -100,7 +100,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`, // Polkadot location
 					],
 					amounts: ['1000000000000'],
-					destChainId: `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`, // location destChainId,
+					destChainId: `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`, // location destChainId,
 					xcmVersion: 3,
 					specName: 'asset-hub-westend',
 					registry,
@@ -139,7 +139,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`, // Polkadot location
 					],
 					amounts: ['1000000000000'],
-					destChainId: `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`, // location destChainId,
+					destChainId: `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`, // location destChainId,
 					xcmVersion: 3,
 					specName: 'asset-hub-westend',
 					registry,
@@ -221,7 +221,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`, // Polkadot location
 					],
 					amounts: ['1000000000000'],
-					destChainId: `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`, // location destChainId,
+					destChainId: `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`, // location destChainId,
 					xcmVersion: 4,
 					specName: 'asset-hub-westend',
 					registry,
@@ -260,7 +260,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`, // Polkadot location
 					],
 					amounts: ['1000000000000'],
-					destChainId: `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`, // location destChainId,
+					destChainId: `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`, // location destChainId,
 					xcmVersion: 4,
 					specName: 'asset-hub-westend',
 					registry,

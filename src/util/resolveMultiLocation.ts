@@ -4,6 +4,7 @@ import type { AnyJson } from '@polkadot/types/types';
 
 import { SUPPORTED_XCM_VERSIONS } from '../consts';
 import type { UnionXcmMultiLocation, XcmV4Junction } from '../createXcmTypes/types';
+import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation';
 import { BaseError, BaseErrorsEnum } from '../errors/BaseError';
 import { sanitizeKeys } from './sanitizeKeys';
 
@@ -31,7 +32,7 @@ export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number)
 		throw new BaseError(`Invalid XcmVersion for mulitLocation construction`, BaseErrorsEnum.InternalError);
 	}
 
-	let result = JSON.parse(multiLocationStr) as UnionXcmMultiLocation;
+	let result = parseLocationStrToLocation(multiLocationStr);
 
 	if (xcmVersion > 3 && result.interior.X1) {
 		result = {
