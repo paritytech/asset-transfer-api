@@ -817,10 +817,25 @@ const checkParaToRelayAssetId = (assetId: string, registry: Registry, specName: 
  *
  * @param assetIds
  */
-export const checkAssetIdsLengthIsValid = (assetIds: string[]) => {
+export const checkAssetIdsLengthIsValid = (
+	assetIds: string[],
+	xcmPalletName: XcmPalletName,
+	assetTransferType: string | undefined,
+) => {
 	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER) {
 		throw new BaseError(
 			`Maximum number of assets allowed for transfer is 2. Found ${assetIds.length} assetIds`,
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+
+	if (
+		assetIds.length > 1 &&
+		!assetTransferType &&
+		(xcmPalletName === XcmPalletName.polkadotXcm || xcmPalletName === XcmPalletName.xcmPallet)
+	) {
+		throw new BaseError(
+			`transferAssets transactions cannot contain more than 1 asset location id. Found ${assetIds.length} assetIds`,
 			BaseErrorsEnum.InvalidInput,
 		);
 	}
@@ -918,22 +933,19 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 };
 
 /**
- * Checks to ensure that the xcmVersion is at least 3 for a SystemToBridge transaction
+ * Checks to ensure that the xcmVersion is at least 3 for Bridge transactions
  *
  * @param xcmDirection
  * @param xcmVersion
  */
 export const checkXcmVersionIsValidForBridgeTx = (xcmVersion: number) => {
 	if (xcmVersion && xcmVersion < 3) {
-		throw new BaseError(
-			'Bridge transactions require XCM version 3 or greater',
-			BaseErrorsEnum.InvalidXcmVersion,
-		);
+		throw new BaseError('Bridge transactions require XCM version 3 or greater', BaseErrorsEnum.InvalidXcmVersion);
 	}
 };
 
 /**
- * Checks to ensure that required inputs are provided for SystemToBridge transactions
+ * Checks to ensure that required inputs are provided for Bridge transactions
  *
  * @param paysWithFeeDest
  * @param assetTransferType
@@ -1141,7 +1153,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	/**
 	 * Checks to ensure that assetId's have a length no greater than MAX_ASSETS_FOR_TRANSFER
 	 */
-	checkAssetIdsLengthIsValid(assetIds);
+	checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
 
 	/**
 	 * Checks to ensure that assetId's have no duplicate values

@@ -3,10 +3,10 @@
 import { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
+import { adjustedMockRelayApiV1011000 } from '../testHelpers/adjustedMockRelayApiV1011000';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
 import { adjustedMockSystemApiV1011000 } from '../testHelpers/adjustedMockSystemApiV1011000';
 import { adjustedMockWestendRelayApiV1007001 } from '../testHelpers/adjustedMockWestendRelayApiV1007001';
-import { adjustedMockRelayApiV1011000 } from '../testHelpers/adjustedMockRelayApiV1011000';
 import type { Format, TxResult } from '../types';
 
 const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, { registryType: 'NPM' });
@@ -237,6 +237,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				ataAPI: AssetTransferApi,
 				destination: string,
 				assetIds: string[],
+				amounts: string[],
 				format: T,
 				xcmVersion: number,
 				opts: CreateXcmCallOpts,
@@ -245,7 +246,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					destination,
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					assetIds,
-					['1000000000'],
+					amounts,
 					{
 						format,
 						weightLimit: opts.weightLimit,
@@ -263,6 +264,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						[
 							`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
 						],
+						['1000000000000'],
 						'call',
 						3,
 						{
@@ -275,15 +277,16 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 					);
 					expect(res.tx).toEqual(
-						'0x1f0b03020109079edaa8020300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400020209079edaa8020300fff9976782d46cc05630d1f6ebab18b2324d6b140002286bee0000000001a10f411f',
+						'0x1f0b03020109079edaa8020300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400020209079edaa8020300fff9976782d46cc05630d1f6ebab18b2324d6b1400070010a5d4e80000000001a10f411f',
 					);
 				});
 
 				it('Should correctly build a payload for a transferAssets for V3', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
+						['1000000000000'],
 						'payload',
 						3,
 						{
@@ -296,14 +299,15 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 					);
 					expect(res.tx.toHex()).toEqual(
-						'0x11011f0b030202090200a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400020109020002286bee0000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0x19011f0b030202090200a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000201090200070010a5d4e80000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a transferAssets for V3', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						['1000000000000'],
 						'submittable',
 						3,
 						{
@@ -323,8 +327,9 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a `transferAssets` call extrinsic for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
+						['1000000000000'],
 						'call',
 						4,
 						{
@@ -337,14 +342,15 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 					);
 					expect(res.tx).toEqual(
-						'0x1f0b040202090200a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404020109020002286bee0000000001a10f411f',
+						'0x1f0b040202090200a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b04040201090200070010a5d4e80000000001a10f411f',
 					);
 				});
 				it('Should correctly build a `transferAssets` payload for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						['1000000000000'],
 						'payload',
 						4,
 						{
@@ -357,14 +363,15 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 					);
 					expect(res.tx.toHex()).toEqual(
-						'0x0d011f0b040202090500a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404020109050002286bee0000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0x15011f0b040202090500a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b04040201090500070010a5d4e80000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						['1000000000000'],
 						'submittable',
 						4,
 						{
@@ -383,8 +390,9 @@ describe('AssetTransferApi Integration Tests', () => {
 				await expect(async () => {
 					await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						['1000000000000'],
 						'submittable',
 						2,
 						{
@@ -398,6 +406,31 @@ describe('AssetTransferApi Integration Tests', () => {
 					);
 				}).rejects.toThrow('Bridge transactions require XCM version 3 or greater');
 			});
+			it('Should correctly throw an error when providing more than 1 asset for a `transferAssets` call', async () => {
+				await expect(async () => {
+					await bridgeBaseSystemCreateTx(
+						systemAssetsApiV1011000,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
+						[
+							`{"parents":"1","interior":{"Here":""}}`,
+							`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+						],
+						['1000000000000', '2000000000000'],
+						'payload',
+						3,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+						},
+					);
+				}).rejects.toThrow(
+					'transferAssets transactions cannot contain more than 1 asset location id. Found 2 assetIds',
+				);
+			});
 		});
 		describe('SystemToPara', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(
@@ -410,8 +443,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				return await ataAPI.createTransferTransaction(
 					'2000', // Since this is not `0` we know this is to a parachain
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1', '2'],
-					['100', '100'],
+					['1'],
+					['100'],
 					{
 						format,
 						weightLimit: {
@@ -552,14 +585,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f',
+						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAssets for V2', async () => {
 					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 2, '1000', '2000');
 					expect(res.tx.toHex()).toEqual(
-						'0x31011f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0x09011f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V2', async () => {
@@ -574,14 +607,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000',
+						tx: '0x1f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000000',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a limitedReserveTransferAssets payload for V2', async () => {
 					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 2);
 					expect(res.tx.toHex()).toEqual(
-						'0x21011f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01080000020432050400910100000204320508009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0xf81f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400000204320504009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V2', async () => {
@@ -755,14 +788,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f',
+						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043205040091010000000001a10f411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAssets for V3', async () => {
 					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 3, '1000', '2000');
 					expect(res.tx.toHex()).toEqual(
-						'0x31011f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0x09011f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043205040091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3', async () => {
@@ -777,14 +810,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToPara',
 						format: 'call',
 						method: 'limitedReserveTransferAssets',
-						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000',
+						tx: '0x1f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043205040091010000000000',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a limitedReserveTransferAssets payload for V3', async () => {
 					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 3);
 					expect(res.tx.toHex()).toEqual(
-						'0x21011f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03080000020432050400910100000204320508009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0xf81f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400000204320504009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3', async () => {
@@ -1034,8 +1067,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				return await ataAPI.createTransferTransaction(
 					'1001', // collectives system parachain
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1', '2'],
-					['100', '100'],
+					['1'],
+					['100'],
 					{
 						format,
 						xcmVersion,
@@ -1105,14 +1138,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f',
+						tx: '0x1f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000001a10f411f',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAssets for V2', async () => {
 					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 2, '1000', '2000');
 					expect(res.tx.toHex()).toEqual(
-						'0x31011f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0x09011f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V2', async () => {
@@ -1127,14 +1160,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010800000204320504009101000002043205080091010000000000',
+						tx: '0x1f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000002043205040091010000000000',
 						xcmVersion: 2,
 					});
 				});
 				it('Should correctly build a limitedReserveTransferAssets payload for V2', async () => {
 					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 2);
 					expect(res.tx.toHex()).toEqual(
-						'0x21011f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01080000020432050400910100000204320508009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0xf81f0901010100a50f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400000204320504009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V2', async () => {
@@ -1278,14 +1311,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f',
+						tx: '0x1f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043205040091010000000001a10f411f',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a payload for a limitedReserveTransferAssets for V3', async () => {
 					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 3, '1000', '2000');
 					expect(res.tx.toHex()).toEqual(
-						'0x31011f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0x09011f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043205040091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3', async () => {
@@ -1300,14 +1333,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						direction: 'SystemToSystem',
 						format: 'call',
 						method: 'limitedTeleportAssets',
-						tx: '0x1f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030800000204320504009101000002043205080091010000000000',
+						tx: '0x1f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000002043205040091010000000000',
 						xcmVersion: 3,
 					});
 				});
 				it('Should correctly build a limitedReserveTransferAssets payload for V3 FOR TEST', async () => {
 					const res = await foreignBaseSystemCreateTx(systemAssetsApi, 'payload', 3);
 					expect(res.tx.toHex()).toEqual(
-						'0x21011f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03080000020432050400910100000204320508009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						'0xf81f0903010100a50f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400000204320504009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a limitedReserveTransferAssets for V3', async () => {
@@ -1467,7 +1500,7 @@ describe('AssetTransferApi Integration Tests', () => {
 						assetTransferType: opts.assetTransferType,
 						remoteReserveAssetTransferTypeLocation: opts.remoteReserveAssetTransferTypeLocation,
 						feesTransferType: opts.feesTransferType,
-						remoteReserveFeesTransferTypeLocation: opts.remoteReserveFeesTransferTypeLocation
+						remoteReserveFeesTransferTypeLocation: opts.remoteReserveFeesTransferTypeLocation,
 					},
 				);
 			};
@@ -1477,14 +1510,12 @@ describe('AssetTransferApi Integration Tests', () => {
 					const res = await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1011000,
 						`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`,
-						[
-							`{"parents":"0","interior":{"Here":""}}`,
-						],
+						[`{"parents":"0","interior":{"Here":""}}`],
 						'call',
 						3,
 						{
 							isLiquidTokenTransfer: false,
-							isForeignAssetsTransfer: true,
+							isForeignAssetsTransfer: false,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1504,13 +1535,13 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a transferAssetsUsingTypeAndThen for V3', async () => {
 					const res = await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'payload',
 						3,
 						{
 							isLiquidTokenTransfer: false,
-							isForeignAssetsTransfer: true,
+							isForeignAssetsTransfer: false,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1529,13 +1560,13 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a submittable extrinsic for a transferAssetsUsingTypeAndThen for V3', async () => {
 					const res = await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'submittable',
 						3,
 						{
 							isLiquidTokenTransfer: false,
-							isForeignAssetsTransfer: true,
+							isForeignAssetsTransfer: false,
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -1551,72 +1582,72 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 			});
 
-			// describe('V4', () => {
-			// 	it('Should correctly build a `transferAssetsUsingTypeAndThen` call extrinsic for V4', async () => {
-			// 		const res = await bridgeBaseRelayCreateTx(
-			// 			relayAssetsApiV1011000,
-			// 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":""}}}`,
-			// 			[`{"parents":"0","interior":{"Here":""}}`],
-			// 			'call',
-			// 			4,
-			// 			{
-			// 				isLiquidTokenTransfer: false,
-			// 				isForeignAssetsTransfer: true,
-			// 				weightLimit: {
-			// 					refTime: '1000',
-			// 					proofSize: '2000',
-			// 				},
-			// 				paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
-			// 				assetTransferType: 'RemoteReserve',
-			// 				remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
-			// 				feesTransferType: 'RemoteReserve',
-			// 				remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
-			// 			},
-			// 		);
-			// 		expect(res.tx).toEqual(
-			// 			'0x1f0b040202090200a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404020109020002286bee0000000001a10f411f',
-			// 		);
-			// 	});
-			// 	it('Should correctly build a `transferAssetsUsingTypeAndThen` payload for V4 test', async () => {
-			// 		const res = await bridgeBaseRelayCreateTx(
-			// 			relayAssetsApiV1011000,
-			// 			`{"parents":"1","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
-			// 			[`{"parents":"0","interior":{"Here":""}}`],
-			// 			'payload',
-			// 			4,
-			// 			{
-			// 				isLiquidTokenTransfer: false,
-			// 				isForeignAssetsTransfer: false,
-			// 				paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
-			// 				assetTransferType: 'RemoteReserve',
-			// 				remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
-			// 				feesTransferType: 'RemoteReserve',
-			// 				remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
-			// 			},
-			// 		);
-			// 		expect(res.tx.toHex()).toEqual(
-			// 			'0x3d01630d040202090500a10f040400000002286bee0304000100a10f0400000304000100a10f04040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800995d0f00180000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
-			// 		);
-			// 	});
-			// 	it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
-			// 		const res = await bridgeBaseRelayCreateTx(
-			// 			relayAssetsApiV1011000,
-			// 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`,
-			// 			[`{"parents":"0","interior":{"Here":""}}`],
-			// 			'submittable',
-			// 			4,
-			// 			{
-			// 				isLiquidTokenTransfer: false,
-			// 				isForeignAssetsTransfer: true,
-			// 				weightLimit: {
-			// 					refTime: '1000',
-			// 					proofSize: '2000',
-			// 				},
-			// 			},
-			// 		);
-			// 		expect(res.tx.toRawType()).toEqual('Extrinsic');
-			// 	});
-			// });
+			describe('V4', () => {
+				it('Should correctly build a `transferAssetsUsingTypeAndThen` call extrinsic for V4', async () => {
+					const res = await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'call',
+						4,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+						},
+					);
+					expect(res.tx).toEqual(
+						'0x630d040202090500a10f040400000002286bee0304000100a10f0400000304000100a10f04040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+					);
+				});
+				it('Should correctly build a `transferAssetsUsingTypeAndThen` payload for V4 test', async () => {
+					const res = await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"1","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'payload',
+						4,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: false,
+							paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+						},
+					);
+					expect(res.tx.toHex()).toEqual(
+						'0x3d01630d040202090500a10f040400000002286bee0304000100a10f0400000304000100a10f04040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800995d0f00180000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+					);
+				});
+				it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
+					const res = await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Westend"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'submittable',
+						4,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+						},
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
 			it('Should correctly error when provided an XCM version less than 3', async () => {
 				await expect(async () => {
 					await bridgeBaseRelayCreateTx(

@@ -38,6 +38,7 @@ import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
+import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation';
 import {
 	BaseError,
 	BaseErrorsEnum,
@@ -204,6 +205,7 @@ export class AssetTransferApi {
 		const { api, specName, safeXcmVersion, originChainId, registry } = this;
 		const isLiquidTokenTransfer = transferLiquidToken === true;
 		const chainOriginDestInfo = {
+			isOriginRelayChain: api.query.paras ? true : false,
 			isOriginSystemParachain: SYSTEM_PARACHAINS_NAMES.includes(specName.toLowerCase()),
 			isOriginParachain: isParachain(originChainId),
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
@@ -261,6 +263,7 @@ export class AssetTransferApi {
 		};
 
 		const baseOpts = {
+			chainOriginDestInfo,
 			weightLimit,
 			paysWithFeeDest,
 			isLiquidTokenTransfer,
@@ -497,8 +500,8 @@ export class AssetTransferApi {
 	private establishDirection(isLocal: boolean, chainOriginDestInfo: ChainOriginDestInfo): Direction {
 		if (isLocal) return Direction.Local;
 
-		const { api } = this;
 		const {
+			isOriginRelayChain,
 			isDestParachain,
 			isDestRelayChain,
 			isDestSystemParachain,
@@ -529,15 +532,15 @@ export class AssetTransferApi {
 		/**
 		 * Check if the origin is a Relay Chain
 		 */
-		if (api.query.paras && isDestSystemParachain) {
+		if (isOriginRelayChain && isDestSystemParachain) {
 			return Direction.RelayToSystem;
 		}
 
-		if (api.query.paras && isDestParachain) {
+		if (isOriginRelayChain && isDestParachain) {
 			return Direction.RelayToPara;
 		}
 
-		if (api.query.paras && isDestBridge) {
+		if (isOriginRelayChain && isDestBridge) {
 			return Direction.RelayToBridge;
 		}
 
@@ -946,12 +949,12 @@ export class AssetTransferApi {
 					const lpTokenLocations = lpTokens as UnionXcmMultiLocation[];
 
 					// convert json into locations
-					const firstLpToken = JSON.parse(
+					const firstLpToken = parseLocationStrToLocation(
 						JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
-					) as UnionXcmMultiLocation;
-					const secondLpToken = JSON.parse(
+					);
+					const secondLpToken = parseLocationStrToLocation(
 						JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
-					) as UnionXcmMultiLocation;
+					);
 
 					// check locations match paysWithFeeOrigin feeAsset
 					if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {
@@ -1054,7 +1057,7 @@ export class AssetTransferApi {
 						: poolAssets.transfer(api, addr, assetId, amount);
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				const location = JSON.parse(assetId) as UnionXcmMultiLocation;
+				const location = parseLocationStrToLocation(assetId);
 				tx =
 					method === 'transferKeepAlive'
 						? foreignAssets.transferKeepAlive(api, addr, location, amount)
@@ -1125,12 +1128,7 @@ export class AssetTransferApi {
 		baseOpts: CreateXcmCallOpts,
 		paysWithFeeDest?: string,
 	): Promise<ResolvedCallInfo> {
-		console.log('XCM PALLET', xcmPallet);
-		
 		const { api } = baseArgs;
-		console.log('API TX', api.tx[xcmPallet]);
-		console.log('BASE OPTS', baseOpts.assetTransferType);
-
 		let txMethod: Methods | undefined = undefined;
 
 		const isXtokensPallet = xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
@@ -1164,7 +1162,9 @@ export class AssetTransferApi {
 			throw new BaseError(`Unable to resolve correct transfer call`, BaseErrorsEnum.InternalError);
 		}
 
-		console.log('TX METHOD IS', txMethod)
+		if (!txMethod) {
+			throw new BaseError(`Unable to resolve correct transfer call`, BaseErrorsEnum.InternalError);
+		}
 
 		if (!callExistsInRuntime(api, txMethod, xcmPallet)) {
 			throw new BaseError(

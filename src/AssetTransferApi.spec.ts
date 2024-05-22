@@ -58,11 +58,12 @@ describe('AssetTransferAPI', () => {
 	describe('establishDirection', () => {
 		it('Should correctly determine direction for SystemToSystem', () => {
 			const info = {
+				isOriginRelayChain: false,
+				isOriginSystemParachain: true,
+				isOriginParachain: false,
 				isDestRelayChain: false,
 				isDestSystemParachain: true,
 				isDestParachain: false,
-				isOriginSystemParachain: true,
-				isOriginParachain: false,
 				isDestBridge: false,
 			};
 			const res = systemAssetsApi['establishDirection'](false, info);
@@ -70,11 +71,12 @@ describe('AssetTransferAPI', () => {
 		});
 		it('Should correctly determine direction for SystemToPara', () => {
 			const info = {
+				isOriginRelayChain: false,
+				isOriginSystemParachain: true,
+				isOriginParachain: false,
 				isDestRelayChain: false,
 				isDestSystemParachain: false,
 				isDestParachain: true,
-				isOriginSystemParachain: true,
-				isOriginParachain: false,
 				isDestBridge: false,
 			};
 			const res = systemAssetsApi['establishDirection'](false, info);
@@ -82,11 +84,12 @@ describe('AssetTransferAPI', () => {
 		});
 		it('Should correctly determine direction for SystemToRelay', () => {
 			const info = {
+				isOriginRelayChain: false,
+				isOriginSystemParachain: true,
+				isOriginParachain: false,
 				isDestRelayChain: true,
 				isDestSystemParachain: false,
 				isDestParachain: false,
-				isOriginSystemParachain: true,
-				isOriginParachain: false,
 				isDestBridge: false,
 			};
 			const res = systemAssetsApi['establishDirection'](false, info);
@@ -94,11 +97,12 @@ describe('AssetTransferAPI', () => {
 		});
 		it('Should correctly determine direction for RelayToPara', () => {
 			const info = {
+				isOriginRelayChain: true,
+				isOriginSystemParachain: false,
+				isOriginParachain: false,
 				isDestRelayChain: false,
 				isDestSystemParachain: false,
 				isDestParachain: true,
-				isOriginSystemParachain: false,
-				isOriginParachain: false,
 				isDestBridge: false,
 			};
 			const res = relayAssetsApi['establishDirection'](false, info);
@@ -106,11 +110,12 @@ describe('AssetTransferAPI', () => {
 		});
 		it('Should correctly determine direction for RelayToSystem', () => {
 			const info = {
+				isOriginRelayChain: true,
+				isOriginSystemParachain: false,
+				isOriginParachain: false,
 				isDestRelayChain: false,
 				isDestSystemParachain: true,
 				isDestParachain: false,
-				isOriginSystemParachain: false,
-				isOriginParachain: false,
 				isDestBridge: false,
 			};
 			const res = relayAssetsApi['establishDirection'](false, info);
@@ -118,11 +123,12 @@ describe('AssetTransferAPI', () => {
 		});
 		it('Should correctly determine direction for ParaToSystem', () => {
 			const info = {
+				isOriginSystemParachain: false,
+				isOriginParachain: true,
+				isOriginRelayChain: false,
 				isDestRelayChain: false,
 				isDestSystemParachain: true,
 				isDestParachain: false,
-				isOriginSystemParachain: false,
-				isOriginParachain: true,
 				isDestBridge: false,
 			};
 			const res = moonriverAssetsApi['establishDirection'](false, info);
@@ -130,11 +136,12 @@ describe('AssetTransferAPI', () => {
 		});
 		it('Should correctly determine direction for ParaToPara', () => {
 			const info = {
+				isOriginSystemParachain: false,
+				isOriginParachain: true,
+				isOriginRelayChain: false,
 				isDestRelayChain: false,
 				isDestSystemParachain: false,
 				isDestParachain: true,
-				isOriginSystemParachain: false,
-				isOriginParachain: true,
 				isDestBridge: false,
 			};
 			const res = moonriverAssetsApi['establishDirection'](false, info);
@@ -740,12 +747,12 @@ describe('AssetTransferAPI', () => {
 	describe('feeAssetItem', () => {
 		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a limitedReserveTransferAssets call', async () => {
 			const expected =
-				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"11"}]}}},"fun":{"Fungible":"10,000,000,000,000"}},{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"30,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":{"Limited":{"refTime":"1,000","proofSize":"1,000"}}},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
+				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"11"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":{"Limited":{"refTime":"1,000","proofSize":"1,000"}}},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
 			const callTxResult = await systemAssetsApi.createTransferTransaction(
 				'2000',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['ksm', '11'],
-				['30000000000000', '10000000000000'],
+				['11'],
+				['10000000000000'],
 				{
 					xcmVersion: 3,
 					weightLimit: { refTime: '1000', proofSize: '1000' },
@@ -761,12 +768,12 @@ describe('AssetTransferAPI', () => {
 
 		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a limitedReserveTransferAssets call', async () => {
 			const expected =
-				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}},{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"100"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
+				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
 			const callTxResult = await systemAssetsApi.createTransferTransaction(
 				'2000',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['ksm', '10'],
-				['100', '2000'],
+				['10'],
+				['2000'],
 				{
 					paysWithFeeDest: '10',
 					xcmVersion: 3,
@@ -785,8 +792,8 @@ describe('AssetTransferAPI', () => {
 			const payload = await systemAssetsApi.createTransferTransaction(
 				'2023',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['1984', 'usdc'],
-				['5000000', '4000000000'],
+				['usdc'],
+				['4000000000'],
 				{
 					paysWithFeeOrigin:
 						'{"parents": "0", "interior": {"X2": [{"PalletInstance": "50"},{"GeneralIndex": "1984"}]}}',
@@ -811,8 +818,8 @@ describe('AssetTransferAPI', () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1984', 'usdc'],
-					['5000000', '4000000000'],
+					['usdc'],
+					['4000000000'],
 					{
 						paysWithFeeOrigin: '100',
 						format: 'payload',
@@ -830,8 +837,8 @@ describe('AssetTransferAPI', () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1984', 'usdc'],
-					['5000000', '4000000000'],
+					['usdc'],
+					['4000000000'],
 					{
 						paysWithFeeOrigin: 'hello there',
 						format: 'payload',
@@ -849,13 +856,13 @@ describe('AssetTransferAPI', () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['1984', 'usdc'],
-					['5000000', '4000000000'],
+					['1984'],
+					['5000000'],
 					{
 						paysWithFeeOrigin: '{"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
 						format: 'payload',
 						keepAlive: true,
-						paysWithFeeDest: 'USDC',
+						paysWithFeeDest: '1984',
 						xcmVersion: 3,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},

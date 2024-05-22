@@ -99,11 +99,12 @@ export enum LocalTxChainType {
 }
 
 export interface ChainOriginDestInfo {
+	isOriginRelayChain: boolean;
+	isOriginSystemParachain: boolean;
+	isOriginParachain: boolean;
 	isDestRelayChain: boolean;
 	isDestSystemParachain: boolean;
 	isDestParachain: boolean;
-	isOriginSystemParachain: boolean;
-	isOriginParachain: boolean;
 	isDestBridge: boolean;
 }
 

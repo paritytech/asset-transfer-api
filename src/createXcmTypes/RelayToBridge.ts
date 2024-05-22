@@ -27,8 +27,8 @@ import {
 import { dedupeAssets } from './util/dedupeAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
-import { getGlobalConsensusDestFromLocation } from './util/getGlobalConsensusDestFromLocation';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset';
+import { parseLocationStrToLocation } from './util/parseLocationStrToLocation';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
 
 export const RelayToBridge: ICreateXcmType = {
@@ -74,7 +74,7 @@ export const RelayToBridge: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
-		const destination = getGlobalConsensusDestFromLocation(destId);
+		const destination = parseLocationStrToLocation(destId);
 		let dest: XcmDestBeneficiary | undefined = undefined;
 
 		if (xcmVersion === 3) {
@@ -133,11 +133,8 @@ export const RelayToBridge: ICreateXcmType = {
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
-	createAssets: async (
-		amounts: string[],
-		xcmVersion: number,
-	): Promise<UnionXcmMultiAssets> => {
-        const multiAssets = [];
+	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
+		const multiAssets = [];
 		let multiAsset: FungibleStrAssetType;
 
 		const amount = amounts[0];
@@ -171,16 +168,15 @@ export const RelayToBridge: ICreateXcmType = {
 
 		multiAssets.push(multiAsset);
 
-
-        if (xcmVersion === 3) {
-            return Promise.resolve({
-                V3: multiAssets as FungibleStrMultiAsset[],
-            });
-        } else {
-            return Promise.resolve({
-                V4: multiAssets as FungibleStrAsset[],
-            });
-        }
+		if (xcmVersion === 3) {
+			return Promise.resolve({
+				V3: multiAssets as FungibleStrMultiAsset[],
+			});
+		} else {
+			return Promise.resolve({
+				V4: multiAssets as FungibleStrAsset[],
+			});
+		}
 	},
 	/**
 	 * Create an Xcm WeightLimit structured type.
@@ -204,7 +200,7 @@ export const RelayToBridge: ICreateXcmType = {
 	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
-        return await Promise.resolve(0);
+		return await Promise.resolve(0);
 	},
 };
 

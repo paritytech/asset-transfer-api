@@ -2,7 +2,8 @@
 
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation';
-import { UnionXcmMultiLocation, XcmVersionedAssetId } from '../types';
+import { XcmVersionedAssetId } from '../types';
+import { parseLocationStrToLocation } from './parseLocationStrToLocation';
 
 export const createXcmVersionedAssetId = (
 	destFeesAssetId: string | undefined,
@@ -16,7 +17,7 @@ export const createXcmVersionedAssetId = (
 	}
 
 	let remoteFeesId: XcmVersionedAssetId;
-	const location = JSON.parse(destFeesAssetId) as UnionXcmMultiLocation;
+	const location = parseLocationStrToLocation(destFeesAssetId);
 
 	if (xcmVersion === 3) {
 		remoteFeesId = {

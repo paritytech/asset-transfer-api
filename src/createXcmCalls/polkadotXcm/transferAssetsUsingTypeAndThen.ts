@@ -2,11 +2,10 @@
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
-import type { AnyJson } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes';
-import { createDefaultXcmOnDestination } from '../../createXcmTypes/util/createDefaultXcmOnDestination';
 import { createXcmOnDestBeneficiary } from '../../createXcmTypes/util/createXcmOnDestBeneficiary';
+import { createXcmOnDestination } from '../../createXcmTypes/util/createXcmOnDestination';
 import { createXcmVersionedAssetId } from '../../createXcmTypes/util/createXcmVersionedAssetId';
 import { resolveAssetTransferType } from '../../createXcmTypes/util/resolveAssetTransferType';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr';
@@ -56,17 +55,14 @@ export const transferAssetsUsingTypeAndThen = async (
 		xcmVersion,
 		remoteReserveAssetTransferTypeLocation,
 	);
-	console.log('ASSETS TRANSFER TYPE', assetTransferType)
 	const feeAssetTransferType = resolveAssetTransferType(
 		feesTransferTypeStr,
 		xcmVersion,
 		remoteReserveFeesTransferTypeLocation,
 	);
 	const remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmVersion);
-	console.log('REMOTE FEES ID', remoteFeesId);
-	
-	const defaultDestXcm = createDefaultXcmOnDestination(assetIds, beneficiary, xcmVersion);
-	const customXcmOnDest = customXcmOnDestStr ? (JSON.parse(customXcmOnDestStr) as AnyJson) : defaultDestXcm;
+
+	const customXcmOnDest = createXcmOnDestination(assetIds, beneficiary, xcmVersion, customXcmOnDestStr);
 
 	return ext(dest, assets, assetTransferType, remoteFeesId, feeAssetTransferType, customXcmOnDest, weightLimitValue);
 };

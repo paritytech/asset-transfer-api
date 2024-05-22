@@ -34,8 +34,9 @@ The below chart is focusing on what directions are supported for constructing as
 | System to Relay        |         ✅         |      ✅            |          ✅         |
 | System to System       |         ✅         |      ✅            |          ✅         |
 | System to Bridge       |         ❌         |      ✅            |          ✅         |
-| System to Parachain    |         ✅         |      ✅            |          ✅		  |
-| Relay to Parachain     |         ✅         |      ✅            |          ✅         |    
+| System to Parachain    |         ✅         |      ✅            |          ✅         |
+| Relay to Parachain     |         ✅         |      ✅            |          ✅         |
+| Relay to Bridge        |         ❌         |      ✅            |          ✅         |  
 | Relay to System        |         ✅         |      ✅            |          ✅         |
 | Parachain to Parachain |         ✅         |      ✅            |          ✅         |
 | Parachain to Relay     |         ✅         |      ✅            |          ✅         |
@@ -211,7 +212,7 @@ interface TransferArgsOpts<T extends Format> {
 	 * Default is false.
 	 */
 	transferLiquidToken?: boolean;
-		/**
+	/**
 	 * The XCM `TransferType` used to transfer assets.
 	 * Provided to construct `transferAssetsUsingTypeAndThen` transactions.
 	 */

@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { UnionXcmMultiLocation } from '../types';
+import { parseLocationStrToLocation } from './parseLocationStrToLocation';
 
 /**
  * Determines if the dest chain is a Global Consensus origin based on the value of its dest location
@@ -8,15 +8,16 @@ import { UnionXcmMultiLocation } from '../types';
  * @returns boolean
  */
 export const chainDestIsBridge = (destLocation: string): boolean => {
-	const location = JSON.parse(destLocation) as UnionXcmMultiLocation;
+	const location = parseLocationStrToLocation(destLocation);
+	let destIsBridge = false;
 
-	if (
-		location.interior &&
-		location.interior.X1 &&
-		JSON.stringify(location.interior.X1).toLowerCase().includes('globalconsensus')
-	) {
-		return true;
+	if (location.interior) {
+		destIsBridge = location.interior.X1
+			? JSON.stringify(location.interior.X1).toLowerCase().includes('globalconsensus')
+			: location.interior.X2
+			  ? JSON.stringify(location.interior.X2).toLowerCase().includes('globalconsensus')
+			  : false;
 	}
 
-	return false;
+	return destIsBridge;
 };
