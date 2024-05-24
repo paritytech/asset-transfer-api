@@ -1632,7 +1632,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
 					const res = await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1011000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Westend"},{"Parachain":"1000"}]}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'submittable',
 						4,
@@ -1652,7 +1652,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				await expect(async () => {
 					await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1011000,
-						`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'submittable',
 						2,

@@ -190,4 +190,3 @@ export const RelayToBridge: ICreateXcmType = {
 		return await Promise.resolve(0);
 	},
 };
-
