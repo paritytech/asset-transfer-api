@@ -8,7 +8,7 @@ import { TxResult } from '../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
- * In this example we are creating a `polkadotXcm` pallet `transferAssetsUsingTypeAndThen` call to send 1 ROC (asset with location `{"parents":"0","interior":{"Here":""}}`)
+ * In this example we are creating a `xcmPallet` `transferAssetsUsingTypeAndThen` call to send 1 ROC (asset with location `{"parents":"0","interior":{"Here":""}}`)
  * from a Rococo (Relay Chain) account
  * to a Westend Asset Hub account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
