@@ -116,9 +116,6 @@ export const RelayToBridge: ICreateXcmType = {
 	 *
 	 * @param amounts Amount per asset. It will match the `assets` length.
 	 * @param xcmVersion The accepted xcm version.
-	 * @param specName The specname of the chain the api is connected to.
-	 * @param assets The assets to create into xcm `MultiAssets`.
-	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
 	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
 		const multiAssets = [];
@@ -184,7 +181,6 @@ export const RelayToBridge: ICreateXcmType = {
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
 	 * @param api ApiPromise
-	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
 		return await Promise.resolve(0);
