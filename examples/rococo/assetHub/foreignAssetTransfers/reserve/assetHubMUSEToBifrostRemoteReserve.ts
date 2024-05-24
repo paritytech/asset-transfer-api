@@ -10,7 +10,7 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
 /**
  * In this example we are creating a `polkadotXcm` pallet `transferAssetsUsingTypeAndThen` call to send MUSE (foreign asset with location `{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}`)
  * from a Rococo Asset Hub (System Parachain) account
- * to a Bifrost Polkadot (Parachain) testnet account, where the `xcmVersion` is set to 4, and there is no
+ * to a Bifrost Polkadot (Parachain) testnet account, where the `xcmVersion` is set to safeXcmVersion, and there is no
  * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  * We provide a `paysWithFeeDest` asset location for MUSE which will be used to pay for fees on the destination chain.
  * We also provide a value of `RemoteReserve` for the `assetTransferType` and `feeTransferType` options declaring a custom reserve location for both
@@ -35,7 +35,7 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				xcmVersion: 4,
+				xcmVersion: safeXcmVersion,
 				paysWithFeeDest: '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}',
 				assetTransferType: 'RemoteReserve',
 				remoteReserveAssetTransferTypeLocation: '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}',

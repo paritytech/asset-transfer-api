@@ -9,7 +9,7 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a call to send PHA from a Moonriver (Parachain) account
- * to a Kusama Khala (Parachain) account, where the `xcmVersion` is set to 2 and a `weightLimit` option is provided declaring that
+ * to a Kusama Khala (Parachain) account, where the `xcmVersion` is set to safeXcmVersion and a `weightLimit` option is provided declaring that
  * it will be a weight limited tx with a custom `refTime` and `proofSize`.
  *
  */
@@ -29,7 +29,7 @@ const main = async () => {
 					refTime: '10000',
 					proofSize: '3000',
 				},
-				xcmVersion: 2,
+				xcmVersion: safeXcmVersion,
 				// NOTE: for `xTokens` pallet `transferMultiassetWithFee` txs, `paysWithFeeDest` is the multiLocation of the asset that is intended to be used to pay for fees in the dest chain
 				paysWithFeeDest:
 					'{"parents": "1", "interior": {"X3": [{"Parachain": "1000"}, {"PalletInstance": "50"}, {"GeneralIndex": "1984"}]}}',

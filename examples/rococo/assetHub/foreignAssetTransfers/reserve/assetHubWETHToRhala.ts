@@ -10,7 +10,7 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
 /**
  * In this example we are creating a `polkadotXcm` pallet `transferAssetsUsingTypeAndThen` call to send WETH (foreign asset with location `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`)
  * from a Rococo Asset Hub (System Parachain) account
- * to a Rhala Testnet (ParaChain) account, where the `xcmVersion` is set to 4, and there is no
+ * to a Rhala Testnet (ParaChain) account, where the `xcmVersion` is set to safeXcmVersion, and there is no
  * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  * The `paysWithFeeDest` value is set to pay fees with WETH and the values for `assetTransferType` and `feesTransferType`
  * are both set to `LocalReserve` specifying that the reserve location to be used for transfers and fees is AssetHub.
@@ -34,7 +34,7 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				xcmVersion: 4,
+				xcmVersion: safeXcmVersion,
 				paysWithFeeDest: `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
 				assetTransferType: 'LocalReserve',
 				feesTransferType: 'LocalReserve',
