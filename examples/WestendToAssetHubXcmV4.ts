@@ -9,7 +9,7 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a `limitedTeleportAssets` call to send 1 WND from a Westend (Relay Chain) account
- * to a Westend AssetHub (System Parachain) account, where the `xcmVersion` is set to `4`and no `weightLimit` option is provided declaring that
+ * to a Westend AssetHub (System Parachain) account, where the `xcmVersion` is set to safeXcmVersion and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
@@ -26,7 +26,7 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				xcmVersion: 4,
+				xcmVersion: safeXcmVersion,
 			},
 		);
 

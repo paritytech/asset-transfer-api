@@ -22,7 +22,7 @@ const main = async () => {
 			'5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E',
 			{
 				format: 'call',
-				xcmVersion: 3,
+				xcmVersion: safeXcmVersion,
 			},
 		);
 

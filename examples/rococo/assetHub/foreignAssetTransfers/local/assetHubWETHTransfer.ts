@@ -8,8 +8,7 @@ import { TxResult } from '../../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../../colors';
 
 /**
- * In this example we are creating a `foreignAssets` pallet `transfer` call to send WETH (foreign asset with location `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
-`)
+ * In this example we are creating a `foreignAssets` pallet `transfer` call to send WETH (foreign asset with location `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,`)
  * from a Rococo Asset Hub (System Parachain) account
  * to a Rococo Asset Hub (System Parachain) account.
  *
@@ -34,7 +33,7 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				xcmVersion: 3,
+				xcmVersion: safeXcmVersion,
 			},
 		);
 

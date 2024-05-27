@@ -27,7 +27,7 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'call',
-				xcmVersion: 3, // Note: GlobalConsensus junctions require XCM V3 or higher
+				xcmVersion: safeXcmVersion, // Note: GlobalConsensus junctions require XCM V3 or higher
 			},
 		);
 
