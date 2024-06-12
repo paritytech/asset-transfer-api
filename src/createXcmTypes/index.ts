@@ -4,6 +4,7 @@ import { Direction } from '../types';
 import { ParaToPara } from './ParaToPara';
 import { ParaToRelay } from './ParaToRelay';
 import { ParaToSystem } from './ParaToSystem';
+import { RelayToBridge } from './RelayToBridge';
 import { RelayToPara } from './RelayToPara';
 import { RelayToSystem } from './RelayToSystem';
 import { SystemToBridge } from './SystemToBridge';
@@ -23,6 +24,7 @@ export const createXcmTypes: ICreateXcmTypeLookup = {
 	SystemToBridge,
 	RelayToPara,
 	RelayToSystem,
+	RelayToBridge,
 	ParaToPara,
 	ParaToRelay,
 	ParaToSystem,

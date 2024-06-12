@@ -8,27 +8,34 @@ import { TxResult } from '../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
- * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send 1 KSM (foreign asset with location `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`)
- * from a Polkadot Asset Hub (System Parachain) account
- * to a Kusama Asset Hub account, where the `xcmVersion` is set to safeXcmVersion and no `weightLimit` option is provided declaring that
+ * In this example we are creating an `xcmPallet` `transferAssetsUsingTypeAndThen` call to send 1 ROC (asset with location `{"parents":"0","interior":{"Here":""}}`)
+ * from a Rococo (Relay Chain) account
+ * to a Westend Asset Hub account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
+ * The `paysWithFeeDest` value is set to pay fees with KSM and the values for `assetTransferType` and `feesTransferType`
+ * are both set to the `RemoteReserve` location of Rococo AssetHub, specifying that the reserve location to be used for transferring and fees is Rococo AssetHub.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://polkadot-asset-hub-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://rococo-rpc.polkadot.io');
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}`,
+			`{"parents":"1","interior":{"X2":[{"GlobalConsensus":"Westend"},{"Parachain":"1000"}]}}`,
 			'13EoPU88424tufnjevEYbbvZ7sGV3q1uhuN4ZbUaoTsnLHYt',
-			[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}`],
+			[`{"parents":"0","interior":{"Here":""}}`],
 			['1000000000000'],
 			{
 				format: 'call',
-				xcmVersion: safeXcmVersion,
+				xcmVersion: 4,
+				paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
+				assetTransferType: 'RemoteReserve',
+				remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+				feesTransferType: 'RemoteReserve',
+				remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
 			},
 		);
 

@@ -10,7 +10,7 @@ import { GREEN, PURPLE, RESET } from '../../../colors';
 /**
  * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send 1 DOT (foreign asset with location `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`)
  * from a Kusama Asset Hub (System Parachain) account
- * to a Polkadot Asset Hub account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
+ * to a Polkadot Asset Hub account, where the `xcmVersion` is set to safeXcmVersion and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
@@ -22,13 +22,13 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+			`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 			'13EoPU88424tufnjevEYbbvZ7sGV3q1uhuN4ZbUaoTsnLHYt',
 			[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
 			['10000000000'],
 			{
 				format: 'call',
-				xcmVersion: 4,
+				xcmVersion: safeXcmVersion,
 			},
 		);
 

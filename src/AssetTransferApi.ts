@@ -38,6 +38,7 @@ import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
+import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation';
 import {
 	BaseError,
 	BaseErrorsEnum,
@@ -539,6 +540,10 @@ export class AssetTransferApi {
 			return Direction.RelayToPara;
 		}
 
+		if (isOriginRelayChain && isDestBridge) {
+			return Direction.RelayToBridge;
+		}
+
 		/**
 		 * Check if the origin is a Parachain or Parathread
 		 */
@@ -944,12 +949,12 @@ export class AssetTransferApi {
 					const lpTokenLocations = lpTokens as UnionXcmMultiLocation[];
 
 					// convert json into locations
-					const firstLpToken = JSON.parse(
+					const firstLpToken = parseLocationStrToLocation(
 						JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
-					) as UnionXcmMultiLocation;
-					const secondLpToken = JSON.parse(
+					);
+					const secondLpToken = parseLocationStrToLocation(
 						JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
-					) as UnionXcmMultiLocation;
+					);
 
 					// check locations match paysWithFeeOrigin feeAsset
 					if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {
@@ -1052,7 +1057,7 @@ export class AssetTransferApi {
 						: poolAssets.transfer(api, addr, assetId, amount);
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				const location = JSON.parse(assetId) as UnionXcmMultiLocation;
+				const location = parseLocationStrToLocation(assetId);
 				tx =
 					method === 'transferKeepAlive'
 						? foreignAssets.transferKeepAlive(api, addr, location, amount)
@@ -1124,7 +1129,6 @@ export class AssetTransferApi {
 		paysWithFeeDest?: string,
 	): Promise<ResolvedCallInfo> {
 		const { api } = baseArgs;
-
 		let txMethod: Methods | undefined = undefined;
 
 		const isXtokensPallet = xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
@@ -1152,6 +1156,10 @@ export class AssetTransferApi {
 			} else {
 				txMethod = 'limitedTeleportAssets';
 			}
+		}
+
+		if (!txMethod) {
+			throw new BaseError(`Unable to resolve correct transfer call`, BaseErrorsEnum.InternalError);
 		}
 
 		if (!txMethod) {
