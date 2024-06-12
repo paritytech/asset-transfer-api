@@ -208,7 +208,7 @@ export const SystemToPara: ICreateXcmType = {
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
 		} = opts;
-		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
+		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createSystemToParaMultiAssets(
 				api,
 				normalizeArrToStr(amounts),

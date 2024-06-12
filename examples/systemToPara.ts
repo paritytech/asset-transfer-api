@@ -9,7 +9,7 @@ import { GREEN, PURPLE, RESET } from './colors';
 
 /**
  * In this example we are creating a call to send 0.1 USDt from a Kusama AssetHub (System Parachain) account
- * to a Moonriver (Parachain) account, where the `xcmVersion` is set to 2 and no `weightLimit` option is provided declaring that
+ * to a Moonriver (Parachain) account, where the `xcmVersion` is set to safeXcmVersion and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
@@ -27,7 +27,7 @@ const main = async () => {
 			['100000'],
 			{
 				format: 'call',
-				xcmVersion: 2,
+				xcmVersion: safeXcmVersion,
 			},
 		);
 

@@ -6,13 +6,17 @@ import type { AnyJson } from '@polkadot/types/types';
 import type { Registry } from '../registry';
 import type { RequireOnlyOne } from '../types';
 
+export type InteriorValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
+
 export type XcmDestBeneficiary = {
 	[x: string]: {
 		parents: number;
-		interior: {
-			[x: string]: RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary | null;
-		};
+		interior: InteriorKey;
 	};
+};
+
+export type InteriorKey = {
+	[x: string]: InteriorValue;
 };
 
 export type XcmJunctionDestBeneficiary = {
@@ -25,6 +29,7 @@ export type XcmJunctionDestBeneficiary = {
 		key: string;
 	};
 	Parachain: string;
+	GlobalConsensus: string | AnyJson;
 };
 
 export type XcmV4JunctionDestBeneficiary =
@@ -33,16 +38,19 @@ export type XcmV4JunctionDestBeneficiary =
 				network?: string;
 				id: string;
 			};
-	  }[]
+	  }
 	| {
 			Parachain: string;
-	  }[]
+	  }
 	| {
 			AccountKey20: {
 				network?: string;
 				key: string;
 			};
-	  }[];
+	  }
+	| {
+			GlobalConsensus: string | AnyJson;
+	  };
 
 export type XcmV2MultiLocation = {
 	parents: number;
@@ -134,7 +142,7 @@ export type XcmV4Location = {
 
 export interface XcmV4Junctions {
 	Here: '' | null;
-	X1: XcmV4Junction;
+	X1: [XcmV4Junction];
 	X2: [XcmV4Junction, XcmV4Junction];
 	X3: [XcmV4Junction, XcmV4Junction, XcmV4Junction];
 	X4: [XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction];
@@ -167,6 +175,8 @@ export type XcmV4JunctionBase = {
 	Plurality: { id: AnyJson; part: AnyJson };
 	GlobalConsensus: string | AnyJson;
 };
+
+export type UnionJunction = XcmV2Junction | XcmV3Junction | XcmV4Junction;
 
 export type UnionXcmMultiLocation = XcmV4Location | XcmV3MultiLocation | XcmV2MultiLocation;
 
@@ -405,6 +415,22 @@ export interface CreateFeeAssetItemOpts {
 export interface CreateWeightLimitOpts {
 	weightLimit?: { refTime?: string; proofSize?: string };
 }
+
+export type XcmVersionedAssetIdV2 = {
+	V2: {
+		Concrete: UnionXcmMultiLocation;
+	};
+};
+export type XcmVersionedAssetIdV3 = {
+	V3: {
+		Concrete: UnionXcmMultiLocation;
+	};
+};
+export type XcmVersionedAssetIdV4 = {
+	V4: UnionXcmMultiLocation;
+};
+
+export type XcmVersionedAssetId = XcmVersionedAssetIdV2 | XcmVersionedAssetIdV3 | XcmVersionedAssetIdV4;
 
 export interface ICreateXcmType {
 	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;

@@ -29,7 +29,7 @@ const main = async () => {
 			['1000000'],
 			{
 				format: 'payload',
-				xcmVersion: 3,
+				xcmVersion: safeXcmVersion,
 				paysWithFeeOrigin: '1984',
 				sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 			},

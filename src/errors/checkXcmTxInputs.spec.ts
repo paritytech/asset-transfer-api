@@ -13,14 +13,17 @@ import {
 	checkAssetIdsHaveNoDuplicates,
 	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
+	checkBridgeTxInputs,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
 	checkParaAssets,
 	checkParaPrimaryAssetAmountsLength,
 	checkParaPrimaryAssetAssetIdsLength,
+	checkPaysWithFeeDestAssetIdIsInAssets,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
+	checkXcmVersionIsValidForBridgeTx,
 	checkXcmVersionIsValidForPaysWithFeeDest,
 	CheckXTokensPalletOriginIsNonForeignAssetTx,
 } from './checkXcmTxInputs';
@@ -609,17 +612,52 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 describe('checkAssetIdsLengthIsValid', () => {
 	it('Should correctly error when more than 2 assetIds are passed in', () => {
 		const assetIds = ['ksm', '1984', '10'];
+		const assetTransferType = 'RemoteReserve';
+		const xcmPallet = XcmPalletName.polkadotXcm;
 
-		const err = () => checkAssetIdsLengthIsValid(assetIds);
-
+		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
 		expect(err).toThrow('Maximum number of assets allowed for transfer is 2. Found 3 assetIds');
 	});
-	it('Should correctly not error when less 2 or less assetIds are passed in', () => {
+	it('Should correctly not error when 2 or fewer assetIds are passed in and assetTransferType is defined', () => {
 		const assetIds = ['ksm', '1984'];
+		const assetTransferType = 'RemoteReserve';
+		const xcmPallet = XcmPalletName.polkadotXcm;
 
-		const err = () => checkAssetIdsLengthIsValid(assetIds);
-
+		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
 		expect(err).not.toThrow('Maximum number of assets allowed for transfer is 2. Found 3 assetIds');
+	});
+	it('Should correctly throw an error when provided more than 1 asset id for a non `transferAssetsUsingTypeAndThen` `xcmPallet` call', () => {
+		const assetIds = [
+			`{"parents":"1","interior":{"Here":""}}`,
+			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
+		];
+		const assetTransferType = undefined;
+		const xcmPallet = XcmPalletName.xcmPallet;
+
+		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
+		expect(err).toThrow('transferAssets transactions cannot contain more than 1 asset location id. Found 2 assetIds');
+	});
+	it('Should correctly throw an error when provided more than 1 asset id for a non `transferAssetsUsingTypeAndThen` `polkadotXcm` call', () => {
+		const assetIds = [
+			`{"parents":"1","interior":{"Here":""}}`,
+			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
+		];
+		const assetTransferType = undefined;
+		const xcmPallet = XcmPalletName.polkadotXcm;
+
+		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
+		expect(err).toThrow('transferAssets transactions cannot contain more than 1 asset location id. Found 2 assetIds');
+	});
+	it('Should correctly not throw an error when provided more than 1 asset id for a `transferAssetsUsingTypeAndThen` call', () => {
+		const assetIds = [
+			`{"parents":"1","interior":{"Here":""}}`,
+			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
+		];
+		const assetTransferType = 'RemoteReserve';
+		const xcmPallet = XcmPalletName.polkadotXcm;
+
+		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
+		expect(err).not.toThrow();
 	});
 });
 
@@ -698,7 +736,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 
 		const err = () => checkXcmVersionIsValidForPaysWithFeeDest(Direction.SystemToPara, xcmVersion, paysWithFeeDest);
 
-		expect(err).toThrow('paysWithFeeDest requires XCM version 3');
+		expect(err).toThrow('paysWithFeeDest requires XCM version 3 or greater');
 	});
 	it('Should correctly not throw an error if paysWithFeeDest is provided and xcmVersion is at least 3', () => {
 		const xcmVersion = 3;
@@ -706,7 +744,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 
 		const err = () => checkXcmVersionIsValidForPaysWithFeeDest(Direction.SystemToPara, xcmVersion, paysWithFeeDest);
 
-		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3 or greater');
 	});
 
 	it('Should correctly not throw an error if xcmDirection is ParaToSystem or ParaToPara', () => {
@@ -715,7 +753,7 @@ describe('checkXcmVersionIsValidForPaysWithFeeDest', () => {
 
 		const err = () => checkXcmVersionIsValidForPaysWithFeeDest(Direction.ParaToSystem, xcmVersion, paysWithFeeDest);
 
-		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3');
+		expect(err).not.toThrow('paysWithFeeDest requires XCM version 3 or greater');
 	});
 });
 
@@ -745,6 +783,88 @@ describe('checkLiquidTokenTransferDirectionValidity', () => {
 		const err = () => checkLiquidTokenTransferDirectionValidity(Direction.ParaToSystem, true);
 
 		expect(err).toThrow('isLiquidTokenTransfer may not be true for the xcmDirection: ParaToSystem.');
+	});
+});
+
+describe('checkXcmVersionIsValidForBridgeTx', () => {
+	it('Should correctly throw an error when the xcm version is less than 3 for SystemToBridge direction', () => {
+		const xcmVersion = 2;
+		const err = () => checkXcmVersionIsValidForBridgeTx(xcmVersion);
+
+		expect(err).toThrow('Bridge transactions require XCM version 3 or greater');
+	});
+});
+
+describe('checkBridgeTxInputs', () => {
+	it('Should correctly error when no paysWithFeeDest value is provided but assetTransferType is', () => {
+		const paysWithFeeDest = undefined;
+		const assetTransferType = 'RemoteReserve';
+		const remoteReserveAssetTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+		const feesTransferType = 'RemoteReserve';
+		const remoteReserveFeesTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+
+		const err = () =>
+			checkBridgeTxInputs(
+				paysWithFeeDest,
+				assetTransferType,
+				remoteReserveAssetTransferTypeLocation,
+				feesTransferType,
+				remoteReserveFeesTransferTypeLocation,
+			);
+
+		expect(err).toThrow('paysWithFeeDest input is required for bridge transactions when assetTransferType is provided');
+	});
+	it('Should correctly throw an error when assetTransferType is RemoteReserve and no remoteReserveAssetTransferTypeLocation value is provided', () => {
+		const paysWithFeeDest = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+		const assetTransferType = 'RemoteReserve';
+		const remoteReserveAssetTransferTypeLocation = undefined;
+		const feesTransferType = 'RemoteReserve';
+		const remoteReserveFeesTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+
+		const err = () =>
+			checkBridgeTxInputs(
+				paysWithFeeDest,
+				assetTransferType,
+				remoteReserveAssetTransferTypeLocation,
+				feesTransferType,
+				remoteReserveFeesTransferTypeLocation,
+			);
+
+		expect(err).toThrow(
+			'remoteReserveAssetTransferTypeLocation input is required for bridge transactions when asset transfer type is RemoteReserve',
+		);
+	});
+	it('Should correctly throw an error when feesTransferType is RemoteReserve and no remoteReserveFeesTransferTypeLocation value is provided', () => {
+		const paysWithFeeDest = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+		const assetTransferType = 'RemoteReserve';
+		const remoteReserveAssetTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
+		const feesTransferType = 'RemoteReserve';
+		const remoteReserveFeesTransferTypeLocation = undefined;
+
+		const err = () =>
+			checkBridgeTxInputs(
+				paysWithFeeDest,
+				assetTransferType,
+				remoteReserveAssetTransferTypeLocation,
+				feesTransferType,
+				remoteReserveFeesTransferTypeLocation,
+			);
+
+		expect(err).toThrow(
+			'remoteReserveFeeAssetTransferTypeLocation input is required for bridge transactions when fee asset transfer type is RemoteReserve',
+		);
+	});
+});
+describe('checkPaysWithFeeDestAssetIdIsInAssets', () => {
+	it('Should correctly error when a paysWithFeeDestAsset is not found in the assetIds list', () => {
+		const assetIds = [`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`];
+		const paysWithFeeDest = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`;
+
+		const err = () => checkPaysWithFeeDestAssetIdIsInAssets(assetIds, paysWithFeeDest);
+
+		expect(err).toThrow(
+			'paysWithFeeDest asset must be present in assets to be transferred. Did not find {"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}} in {"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}',
+		);
 	});
 });
 
@@ -896,7 +1016,7 @@ describe('checkParaAssets', () => {
 			);
 
 			expect(registry.cacheLookupForeignAsset('GDZ')).toEqual({
-				multiLocation: '{"Parents":"1","Interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}',
+				multiLocation: '{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}',
 				name: 'Godzilla',
 				symbol: 'GDZ',
 			});

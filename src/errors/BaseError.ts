@@ -84,6 +84,10 @@ export enum BaseErrorsEnum {
 	 * Did not find the correct call in the current runtime.
 	 */
 	RuntimeCallNotFound = 'RuntimeCallNotFound',
+	/**
+	 * Did not find a known consensus system for bridge transaction.
+	 */
+	UnknownConsensusSystem = 'UnknownConsensusSystem',
 }
 
 export class BaseError extends Error {

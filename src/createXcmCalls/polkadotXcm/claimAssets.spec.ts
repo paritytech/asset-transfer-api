@@ -2,7 +2,7 @@
 
 import { Registry } from '../../registry';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
-import { adjustedMockSystemApiV1009000 } from '../../testHelpers/adjustedMockSystemApiV1009000';
+import { adjustedMockSystemApiV1011000 } from '../../testHelpers/adjustedMockSystemApiV1011000';
 import { claimAssets } from './claimAssets';
 
 describe('claimAssets', () => {
@@ -16,7 +16,7 @@ describe('claimAssets', () => {
 		const beneficiaryAddress = '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b';
 
 		const ext = await claimAssets(
-			adjustedMockSystemApiV1009000,
+			adjustedMockSystemApiV1011000,
 			registry,
 			specName,
 			assetIds,
@@ -41,7 +41,7 @@ describe('claimAssets', () => {
 		const beneficiaryAddress = '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b';
 
 		const ext = await claimAssets(
-			adjustedMockSystemApiV1009000,
+			adjustedMockSystemApiV1011000,
 			registry,
 			specName,
 			assets,
@@ -66,7 +66,7 @@ describe('claimAssets', () => {
 		const beneficiaryAddress = '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b';
 
 		const ext = await claimAssets(
-			adjustedMockSystemApiV1009000,
+			adjustedMockSystemApiV1011000,
 			registry,
 			specName,
 			assets,

@@ -31,19 +31,21 @@ The below chart is focusing on what directions are supported for constructing as
 
 | Direction              | V2                 | V3                 | V4                 |
 | ---------------------  | ------------------ | ------------------ | ------------------ |
-| System to Parachain    |         ✅         |      ✅            |          ✅		  |
 | System to Relay        |         ✅         |      ✅            |          ✅         |
-| Relay to Parachain     |         ✅         |      ✅            |          ✅         |    
+| System to System       |         ✅         |      ✅            |          ✅         |
+| System to Bridge       |         ❌         |      ✅            |          ✅         |
+| System to Parachain    |         ✅         |      ✅            |          ✅         |
+| Relay to Parachain     |         ✅         |      ✅            |          ✅         |
+| Relay to Bridge        |         ❌         |      ✅            |          ✅         |  
 | Relay to System        |         ✅         |      ✅            |          ✅         |
 | Parachain to Parachain |         ✅         |      ✅            |          ✅         |
 | Parachain to Relay     |         ✅         |      ✅            |          ✅         |
 | Parachain to System    |         ✅         |      ✅            |          ✅         |
-| System to System       |         ✅         |      ✅            |          ✅         |
 
 ## Note on Parachain to Parachain Support
 Parachain To Parachain support is currently limited to XCM V2, with the exception of Parachain primary asset tx construction (e.g. MOVR, SDN, etc.).
 
-Note: System refers to System Parachains like Asset Hub.
+## Note: System refers to System Parachains like Asset Hub.
 
 ## Usage
 
@@ -210,6 +212,32 @@ interface TransferArgsOpts<T extends Format> {
 	 * Default is false.
 	 */
 	transferLiquidToken?: boolean;
+	/**
+	 * The XCM `TransferType` used to transfer assets.
+	 * Provided to construct `transferAssetsUsingTypeAndThen` transactions.
+	 */
+	assetTransferType?: string;
+	/**
+	 * The RemoteReserve location for an XCM transfer.
+	 * Should be provided when specifying an `assetTransferType` of `RemoteReserve`.
+	 */
+	remoteReserveAssetTransferTypeLocation?: string;
+	/**
+	 * The XCM `TransferType` used to pay fees for an XCM transfer.
+	 * Provided to construct `transferAssetsUsingTypeAndThen` transactions.
+	 */
+	feesTransferType?: string;
+	/**
+	 * The RemoteReserve location for an XCM transfers' fees.
+	 * Should be provided when specfying a `feesTransferType` of `RemoteReserve`.
+	 */
+	remoteReserveFeesTransferTypeLocation?: string;
+	/**
+	 * Optional custom XCM message to be executed on destination chain.
+	 * Should be provided if a custom xcm message is needed after transfering assets.
+	 * Defaults to `Xcm(vec![DepositAsset { assets: Wild(AllCounted(assets.len())), beneficiary }])`
+	 */
+	customXcmOnDest?: string;
 }
 ```
 

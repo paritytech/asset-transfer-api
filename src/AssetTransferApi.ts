@@ -21,6 +21,7 @@ import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
 	transferAssets,
+	transferAssetsUsingTypeAndThen,
 	transferMultiasset,
 	transferMultiassets,
 	transferMultiassetWithFee,
@@ -30,11 +31,14 @@ import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establi
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
 import { UnionXcmMultiLocation } from './createXcmTypes/types';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
+import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
+import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName';
 import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
+import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation';
 import {
 	BaseError,
 	BaseErrorsEnum,
@@ -77,7 +81,6 @@ import {
 } from './types';
 import { callExistsInRuntime } from './util/callExistsInRuntime';
 import { deepEqual } from './util/deepEqual';
-import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
 
@@ -169,8 +172,20 @@ export class AssetTransferApi {
 		amounts: string[],
 		opts: TransferArgsOpts<T> = {},
 	): Promise<TxResult<T>> {
-		const { format, paysWithFeeDest, paysWithFeeOrigin, weightLimit, xcmVersion, transferLiquidToken, sendersAddr } =
-			opts;
+		const {
+			format,
+			paysWithFeeDest,
+			paysWithFeeOrigin,
+			weightLimit,
+			xcmVersion,
+			transferLiquidToken,
+			sendersAddr,
+			assetTransferType,
+			remoteReserveAssetTransferTypeLocation,
+			feesTransferType,
+			remoteReserveFeesTransferTypeLocation,
+			customXcmOnDest,
+		} = opts;
 
 		if (!this.registryConfig.registryInitialized) {
 			await this.initializeRegistry();
@@ -190,11 +205,13 @@ export class AssetTransferApi {
 		const { api, specName, safeXcmVersion, originChainId, registry } = this;
 		const isLiquidTokenTransfer = transferLiquidToken === true;
 		const chainOriginDestInfo = {
+			isOriginRelayChain: api.query.paras ? true : false,
 			isOriginSystemParachain: SYSTEM_PARACHAINS_NAMES.includes(specName.toLowerCase()),
 			isOriginParachain: isParachain(originChainId),
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
 			isDestSystemParachain: isSystemChain(destChainId),
 			isDestParachain: isParachain(destChainId),
+			isDestBridge: chainDestIsBridge(destChainId),
 		};
 
 		/**
@@ -206,7 +223,7 @@ export class AssetTransferApi {
 		const localTxChainType = this.establishLocalTxChainType(originChainId, destChainId, chainOriginDestInfo);
 		const isLocalTx = localTxChainType !== LocalTxChainType.None;
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
-		const isForeignAssetsTransfer = this.checkContainsAssetLocations(assetIds);
+		const isForeignAssetsTransfer = await this.checkContainsForeignAssets(api, assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
 		const xcmPallet = establishXcmPallet(api, xcmDirection);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
@@ -246,10 +263,16 @@ export class AssetTransferApi {
 		};
 
 		const baseOpts = {
+			chainOriginDestInfo,
 			weightLimit,
 			paysWithFeeDest,
 			isLiquidTokenTransfer,
 			isForeignAssetsTransfer,
+			assetTransferType,
+			remoteReserveAssetTransferTypeLocation,
+			feesTransferType,
+			remoteReserveFeesTransferTypeLocation,
+			customXcmOnDest,
 		};
 
 		await checkXcmTxInputs(
@@ -477,9 +500,15 @@ export class AssetTransferApi {
 	private establishDirection(isLocal: boolean, chainOriginDestInfo: ChainOriginDestInfo): Direction {
 		if (isLocal) return Direction.Local;
 
-		const { api } = this;
-		const { isDestParachain, isDestRelayChain, isDestSystemParachain, isOriginParachain, isOriginSystemParachain } =
-			chainOriginDestInfo;
+		const {
+			isOriginRelayChain,
+			isDestParachain,
+			isDestRelayChain,
+			isDestSystemParachain,
+			isOriginParachain,
+			isOriginSystemParachain,
+			isDestBridge,
+		} = chainOriginDestInfo;
 
 		/**
 		 * Check if the origin is a System Parachain
@@ -496,15 +525,23 @@ export class AssetTransferApi {
 			return Direction.SystemToPara;
 		}
 
+		if (isOriginSystemParachain && isDestBridge) {
+			return Direction.SystemToBridge;
+		}
+
 		/**
 		 * Check if the origin is a Relay Chain
 		 */
-		if (api.query.paras && isDestSystemParachain) {
+		if (isOriginRelayChain && isDestSystemParachain) {
 			return Direction.RelayToSystem;
 		}
 
-		if (api.query.paras && isDestParachain) {
+		if (isOriginRelayChain && isDestParachain) {
 			return Direction.RelayToPara;
+		}
+
+		if (isOriginRelayChain && isDestBridge) {
+			return Direction.RelayToBridge;
 		}
 
 		/**
@@ -693,6 +730,10 @@ export class AssetTransferApi {
 		if (xcmDirection === Direction.ParaToRelay) {
 			return AssetCallType.Reserve;
 		}
+		// system to bridge -> reserve
+		if (xcmDirection === Direction.SystemToBridge) {
+			return AssetCallType.Reserve;
+		}
 
 		return AssetCallType.Reserve;
 	}
@@ -814,7 +855,12 @@ export class AssetTransferApi {
 			return registry.relayChain;
 		}
 
+		if (chainDestIsBridge(destId)) {
+			return getGlobalConsensusSystemName(destId);
+		}
+
 		const lookup = registry.lookupParachainInfo(destId);
+
 		if (lookup.length === 0) {
 			throw new BaseError(
 				`Could not find any parachain information given the destId: ${destId}`,
@@ -842,6 +888,37 @@ export class AssetTransferApi {
 
 		return true;
 	}
+
+	/**
+	 * Checks if assetIds exclusively contain on-chain foreign asset values
+	 *
+	 * @param api ApiPromise
+	 * @param assetIds string[]
+	 * @returns boolean
+	 */
+	private checkContainsForeignAssets = async (api: ApiPromise, assetIds: string[]): Promise<boolean> => {
+		if (!api.query.foreignAssets) {
+			return false;
+		}
+
+		const foreignAssets: string[] = [];
+		for (const asset of await api.query.foreignAssets.asset.entries()) {
+			const storageKey = asset[0].toHuman();
+			if (storageKey) {
+				foreignAssets.push(JSON.stringify(storageKey[0]).replace(/(\d),/g, '$1'));
+			}
+		}
+
+		for (const assetId of assetIds) {
+			if (foreignAssets.includes(assetId)) {
+				continue;
+			} else {
+				return false;
+			}
+		}
+
+		return true;
+	};
 
 	/**
 	 * checks the chains state and determines whether an asset location is a part of a valid token liquidity pool pair
@@ -872,12 +949,12 @@ export class AssetTransferApi {
 					const lpTokenLocations = lpTokens as UnionXcmMultiLocation[];
 
 					// convert json into locations
-					const firstLpToken = JSON.parse(
+					const firstLpToken = parseLocationStrToLocation(
 						JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
-					) as UnionXcmMultiLocation;
-					const secondLpToken = JSON.parse(
+					);
+					const secondLpToken = parseLocationStrToLocation(
 						JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
-					) as UnionXcmMultiLocation;
+					);
 
 					// check locations match paysWithFeeOrigin feeAsset
 					if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {
@@ -980,11 +1057,11 @@ export class AssetTransferApi {
 						: poolAssets.transfer(api, addr, assetId, amount);
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				const multiLocation = resolveMultiLocation(assetId, declaredXcmVersion);
+				const location = parseLocationStrToLocation(assetId);
 				tx =
 					method === 'transferKeepAlive'
-						? foreignAssets.transferKeepAlive(api, addr, multiLocation, amount)
-						: foreignAssets.transfer(api, addr, multiLocation, amount);
+						? foreignAssets.transferKeepAlive(api, addr, location, amount)
+						: foreignAssets.transfer(api, addr, location, amount);
 				palletMethod = `foreignAssets::${method}`;
 			} else {
 				throw new BaseError(
@@ -1052,7 +1129,6 @@ export class AssetTransferApi {
 		paysWithFeeDest?: string,
 	): Promise<ResolvedCallInfo> {
 		const { api } = baseArgs;
-
 		let txMethod: Methods | undefined = undefined;
 
 		const isXtokensPallet = xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
@@ -1070,12 +1146,24 @@ export class AssetTransferApi {
 			} else {
 				txMethod = 'transferMultiassets';
 			}
-		} else if (api.tx[xcmPallet] && api.tx[xcmPallet].transferAssets) {
-			txMethod = 'transferAssets';
-		} else if (assetCallType === AssetCallType.Reserve) {
-			txMethod = 'limitedReserveTransferAssets';
-		} else {
-			txMethod = 'limitedTeleportAssets';
+		} else if (api.tx[xcmPallet]) {
+			if (api.tx[xcmPallet].transferAssetsUsingTypeAndThen && baseOpts.assetTransferType) {
+				txMethod = 'transferAssetsUsingTypeAndThen';
+			} else if (api.tx[xcmPallet].transferAssets) {
+				txMethod = 'transferAssets';
+			} else if (assetCallType === AssetCallType.Reserve) {
+				txMethod = 'limitedReserveTransferAssets';
+			} else {
+				txMethod = 'limitedTeleportAssets';
+			}
+		}
+
+		if (!txMethod) {
+			throw new BaseError(`Unable to resolve correct transfer call`, BaseErrorsEnum.InternalError);
+		}
+
+		if (!txMethod) {
+			throw new BaseError(`Unable to resolve correct transfer call`, BaseErrorsEnum.InternalError);
 		}
 
 		if (!callExistsInRuntime(api, txMethod, xcmPallet)) {
@@ -1095,6 +1183,7 @@ export class AssetTransferApi {
 			limitedReserveTransferAssets: [limitedReserveTransferAssets, [baseArgs, baseOpts]],
 			limitedTeleportAssets: [limitedTeleportAssets, [baseArgs, baseOpts]],
 			transferAssets: [transferAssets, [baseArgs, baseOpts]],
+			transferAssetsUsingTypeAndThen: [transferAssetsUsingTypeAndThen, [baseArgs, baseOpts]],
 		};
 
 		let call: XTokensCallSignature | XcmPalletCallSignature;

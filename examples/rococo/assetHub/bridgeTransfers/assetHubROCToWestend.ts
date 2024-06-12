@@ -3,32 +3,32 @@
  *
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetTransferApi, constructApiPromise } from '../../../../../src';
-import { TxResult } from '../../../../../src/types';
-import { GREEN, PURPLE, RESET } from '../../../../colors';
+import { AssetTransferApi, constructApiPromise } from '../../../../src';
+import { TxResult } from '../../../../src/types';
+import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
- * In this example we are creating a `polkadotXcm` pallet `limitedReserveTransferAssets` call to send KSM (foreign asset with location '{"parents":"1","interior":{"X1":{"GlobalConsensus":"Kusama"}}}')
- * from a Polkadot Asset Hub (System Parachain) account
- * to a Moonbeam (ParaChain) account, where the `xcmVersion` is set to 3 and no `weightLimit` option is provided declaring that
+ * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send 1 ROC (asset with location `{"parents":"1","interior":{"Here":""}}`)
+ * from a Rococo Asset Hub (System Parachain) account
+ * to a Westend Asset Hub account, where the `xcmVersion` is set to safeXcmVersion and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://polkadot-asset-hub-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://rococo-asset-hub-rpc.polkadot.io');
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'2004', // Note: Parachain ID 2004 (Moonbeam) is different than the asset location's `Parachain` Id, making this a `limitedReserveTransferAssets` call
+			`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Westend"},{"Parachain":"1000"}]}}`,
 			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
-			['{"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}}'],
+			[`{"parents":"1","interior":{"Here":""}}`],
 			['1000000000000'],
 			{
 				format: 'call',
-				xcmVersion: 3,
+				xcmVersion: safeXcmVersion,
 			},
 		);
 

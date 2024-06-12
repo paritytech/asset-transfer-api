@@ -6,6 +6,10 @@ export const isRelayNativeAsset = (tokens: string[], assetId: string): boolean =
 		return true;
 	}
 
+	if (assetId === `{"parents":"0","interior":{"Here":""}}` || assetId === `{"parents":"1","interior":{"Here":""}}`) {
+		return true;
+	}
+
 	for (const token of tokens) {
 		if (token.toLowerCase() === assetId.toLowerCase()) {
 			return true;

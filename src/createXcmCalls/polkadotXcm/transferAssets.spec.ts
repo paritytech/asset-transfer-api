@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
-import { adjustedMockSystemApiV1009000 } from '../../testHelpers/adjustedMockSystemApiV1009000';
+import { adjustedMockSystemApiV1011000 } from '../../testHelpers/adjustedMockSystemApiV1011000';
 import { adjustedMockWestendRelayApiV1007001 } from '../../testHelpers/adjustedMockWestendRelayApiV1007001';
 import { Direction, XcmBaseArgs, XcmDirection } from '../../types';
 import { transferAssets } from './transferAssets';
@@ -90,7 +90,7 @@ describe('transferAssets', () => {
 
 		const isLiquidTokenTransfer = false;
 		const baseArgs: XcmBaseArgs = {
-			api: adjustedMockSystemApiV1009000,
+			api: adjustedMockSystemApiV1011000,
 			direction: Direction.SystemToRelay as XcmDirection,
 			destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 			assetIds: ['wnd'],
@@ -171,7 +171,7 @@ describe('transferAssets', () => {
 
 		const isLiquidTokenTransfer = false;
 		const baseArgs: XcmBaseArgs = {
-			api: adjustedMockSystemApiV1009000,
+			api: adjustedMockSystemApiV1011000,
 			direction: Direction.SystemToPara as XcmDirection,
 			destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 			assetIds: ['1'],
@@ -181,9 +181,10 @@ describe('transferAssets', () => {
 			specName: 'westmint',
 			registry,
 		};
+
 		const FAbaseArgs = {
 			...baseArgs,
-			assetIds: ['{"parents":"1","interior":{ "X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}'],
+			assetIds: ['{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}'],
 		};
 		it('Should correctly construct a tx for a system parachain with V4', async () => {
 			const refTime = '1000';
