@@ -70,6 +70,10 @@ export enum Direction {
 	 * Relay chain to Parachain.
 	 */
 	RelayToPara = 'RelayToPara',
+	/**
+	 * Relay chain to an external `GlobalConsensus` chain.
+	 */
+	RelayToBridge = 'RelayToBridge',
 }
 
 /**

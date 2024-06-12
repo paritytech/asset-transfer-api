@@ -13,6 +13,7 @@ import {
 	checkAssetIdsHaveNoDuplicates,
 	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
+	checkBridgeTxInputs,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
@@ -22,9 +23,8 @@ import {
 	checkPaysWithFeeDestAssetIdIsInAssets,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
-	checkSystemToBridgeInputs,
+	checkXcmVersionIsValidForBridgeTx,
 	checkXcmVersionIsValidForPaysWithFeeDest,
-	checkXcmVersionIsValidForSystemToBridge,
 	CheckXTokensPalletOriginIsNonForeignAssetTx,
 } from './checkXcmTxInputs';
 
@@ -786,16 +786,16 @@ describe('checkLiquidTokenTransferDirectionValidity', () => {
 	});
 });
 
-describe('checkXcmVersionIsValidForSystemToBridge', () => {
+describe('checkXcmVersionIsValidForBridgeTx', () => {
 	it('Should correctly throw an error when the xcm version is less than 3 for SystemToBridge direction', () => {
 		const xcmVersion = 2;
-		const err = () => checkXcmVersionIsValidForSystemToBridge(xcmVersion);
+		const err = () => checkXcmVersionIsValidForBridgeTx(xcmVersion);
 
-		expect(err).toThrow('SystemToBridge transactions require XCM version 3 or greater');
+		expect(err).toThrow('Bridge transactions require XCM version 3 or greater');
 	});
 });
 
-describe('checkSystemToBridgeInputs', () => {
+describe('checkBridgeTxInputs', () => {
 	it('Should correctly error when no paysWithFeeDest value is provided but assetTransferType is', () => {
 		const paysWithFeeDest = undefined;
 		const assetTransferType = 'RemoteReserve';
@@ -804,7 +804,7 @@ describe('checkSystemToBridgeInputs', () => {
 		const remoteReserveFeesTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
 
 		const err = () =>
-			checkSystemToBridgeInputs(
+			checkBridgeTxInputs(
 				paysWithFeeDest,
 				assetTransferType,
 				remoteReserveAssetTransferTypeLocation,
@@ -822,7 +822,7 @@ describe('checkSystemToBridgeInputs', () => {
 		const remoteReserveFeesTransferTypeLocation = '{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}';
 
 		const err = () =>
-			checkSystemToBridgeInputs(
+			checkBridgeTxInputs(
 				paysWithFeeDest,
 				assetTransferType,
 				remoteReserveAssetTransferTypeLocation,
@@ -842,7 +842,7 @@ describe('checkSystemToBridgeInputs', () => {
 		const remoteReserveFeesTransferTypeLocation = undefined;
 
 		const err = () =>
-			checkSystemToBridgeInputs(
+			checkBridgeTxInputs(
 				paysWithFeeDest,
 				assetTransferType,
 				remoteReserveAssetTransferTypeLocation,
@@ -855,7 +855,6 @@ describe('checkSystemToBridgeInputs', () => {
 		);
 	});
 });
-
 describe('checkPaysWithFeeDestAssetIdIsInAssets', () => {
 	it('Should correctly error when a paysWithFeeDestAsset is not found in the assetIds list', () => {
 		const assetIds = [`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`];

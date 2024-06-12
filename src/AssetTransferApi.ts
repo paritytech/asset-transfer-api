@@ -540,6 +540,10 @@ export class AssetTransferApi {
 			return Direction.RelayToPara;
 		}
 
+		if (isOriginRelayChain && isDestBridge) {
+			return Direction.RelayToBridge;
+		}
+
 		/**
 		 * Check if the origin is a Parachain or Parathread
 		 */
@@ -1125,7 +1129,6 @@ export class AssetTransferApi {
 		paysWithFeeDest?: string,
 	): Promise<ResolvedCallInfo> {
 		const { api } = baseArgs;
-
 		let txMethod: Methods | undefined = undefined;
 
 		const isXtokensPallet = xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
@@ -1153,6 +1156,10 @@ export class AssetTransferApi {
 			} else {
 				txMethod = 'limitedTeleportAssets';
 			}
+		}
+
+		if (!txMethod) {
+			throw new BaseError(`Unable to resolve correct transfer call`, BaseErrorsEnum.InternalError);
 		}
 
 		if (!txMethod) {

@@ -3,6 +3,7 @@
 import { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
+import { adjustedMockRelayApiV1011000 } from '../testHelpers/adjustedMockRelayApiV1011000';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
 import { adjustedMockSystemApiV1011000 } from '../testHelpers/adjustedMockSystemApiV1011000';
 import { adjustedMockWestendRelayApiV1007001 } from '../testHelpers/adjustedMockWestendRelayApiV1007001';
@@ -10,6 +11,9 @@ import type { Format, TxResult } from '../types';
 
 const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, { registryType: 'NPM' });
 const relayAssetsApiV1007001 = new AssetTransferApi(adjustedMockWestendRelayApiV1007001, 'westend', 2, {
+	registryType: 'NPM',
+});
+const relayAssetsApiV1011000 = new AssetTransferApi(adjustedMockRelayApiV1011000, 'westend', 2, {
 	registryType: 'NPM',
 });
 const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
@@ -400,7 +404,7 @@ describe('AssetTransferApi Integration Tests', () => {
 							},
 						},
 					);
-				}).rejects.toThrow('SystemToBridge transactions require XCM version 3 or greater');
+				}).rejects.toThrow('Bridge transactions require XCM version 3 or greater');
 			});
 			it('Should correctly throw an error when providing more than 1 asset for a `transferAssets` call', async () => {
 				await expect(async () => {
@@ -1470,6 +1474,198 @@ describe('AssetTransferApi Integration Tests', () => {
 					);
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
+			});
+		});
+
+		describe('RelayToBridge', () => {
+			const bridgeBaseRelayCreateTx = async <T extends Format>(
+				ataAPI: AssetTransferApi,
+				destination: string,
+				assetIds: string[],
+				format: T,
+				xcmVersion: number,
+				opts: CreateXcmCallOpts,
+			): Promise<TxResult<T>> => {
+				return await ataAPI.createTransferTransaction(
+					destination,
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					assetIds,
+					['1000000000'],
+					{
+						format,
+						weightLimit: opts.weightLimit,
+						xcmVersion,
+						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						paysWithFeeDest: opts.paysWithFeeDest,
+						assetTransferType: opts.assetTransferType,
+						remoteReserveAssetTransferTypeLocation: opts.remoteReserveAssetTransferTypeLocation,
+						feesTransferType: opts.feesTransferType,
+						remoteReserveFeesTransferTypeLocation: opts.remoteReserveFeesTransferTypeLocation,
+					},
+				);
+			};
+
+			describe('V3', () => {
+				it('Should correctly build a transferAssetsUsingTypeAndThen call for V3', async () => {
+					const res = await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'call',
+						3,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: false,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+						},
+					);
+					expect(res.tx).toEqual(
+						'0x630d03010109079edaa80203040000000002286bee0303000100a10f030000000303000100a10f03040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+					);
+				});
+
+				it('Should correctly build a payload for a transferAssetsUsingTypeAndThen for V3', async () => {
+					const res = await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'payload',
+						3,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: false,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+						},
+					);
+					expect(res.tx.toHex()).toEqual(
+						'0x5501630d030102090500a10f03040000000002286bee0303000100a10f030000000303000100a10f03040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f45022800995d0f00180000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+					);
+				});
+				it('Should correctly build a submittable extrinsic for a transferAssetsUsingTypeAndThen for V3', async () => {
+					const res = await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'submittable',
+						3,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: false,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+						},
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+
+			describe('V4', () => {
+				it('Should correctly build a `transferAssetsUsingTypeAndThen` call extrinsic for V4', async () => {
+					const res = await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'call',
+						4,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+							paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+						},
+					);
+					expect(res.tx).toEqual(
+						'0x630d040102090500a10f040400000002286bee0304000100a10f0400000304000100a10f04040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+					);
+				});
+				it('Should correctly build a `transferAssetsUsingTypeAndThen` payload for V4 test', async () => {
+					const res = await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"1","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'payload',
+						4,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: false,
+							paysWithFeeDest: `{"parents":"0","interior":{"Here":""}}`,
+							assetTransferType: 'RemoteReserve',
+							remoteReserveAssetTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+							feesTransferType: 'RemoteReserve',
+							remoteReserveFeesTransferTypeLocation: '{"parents":"0","interior":{"X1":{"Parachain":"1000"}}}',
+						},
+					);
+					expect(res.tx.toHex()).toEqual(
+						'0x3d01630d040102090500a10f040400000002286bee0304000100a10f0400000304000100a10f04040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0045022800995d0f00180000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+					);
+				});
+				it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
+					const res = await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'submittable',
+						4,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+						},
+					);
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			it('Should correctly error when provided an XCM version less than 3', async () => {
+				await expect(async () => {
+					await bridgeBaseRelayCreateTx(
+						relayAssetsApiV1011000,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"0","interior":{"Here":""}}`],
+						'submittable',
+						2,
+						{
+							isLiquidTokenTransfer: false,
+							isForeignAssetsTransfer: true,
+							weightLimit: {
+								refTime: '1000',
+								proofSize: '2000',
+							},
+						},
+					);
+				}).rejects.toThrow('Bridge transactions require XCM version 3 or greater');
 			});
 		});
 

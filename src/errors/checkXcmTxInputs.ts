@@ -933,22 +933,19 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 };
 
 /**
- * Checks to ensure that the xcmVersion is at least 3 for a SystemToBridge transaction
+ * Checks to ensure that the xcmVersion is at least 3 for Bridge transactions
  *
  * @param xcmDirection
  * @param xcmVersion
  */
-export const checkXcmVersionIsValidForSystemToBridge = (xcmVersion: number) => {
+export const checkXcmVersionIsValidForBridgeTx = (xcmVersion: number) => {
 	if (xcmVersion && xcmVersion < 3) {
-		throw new BaseError(
-			'SystemToBridge transactions require XCM version 3 or greater',
-			BaseErrorsEnum.InvalidXcmVersion,
-		);
+		throw new BaseError('Bridge transactions require XCM version 3 or greater', BaseErrorsEnum.InvalidXcmVersion);
 	}
 };
 
 /**
- * Checks to ensure that required inputs are provided for SystemToBridge transactions
+ * Checks to ensure that required inputs are provided for Bridge transactions
  *
  * @param paysWithFeeDest
  * @param assetTransferType
@@ -956,7 +953,7 @@ export const checkXcmVersionIsValidForSystemToBridge = (xcmVersion: number) => {
  * @param feesTransferType
  * @param remoteReserveFeesTransferTypeLocation
  */
-export const checkSystemToBridgeInputs = (
+export const checkBridgeTxInputs = (
 	paysWithFeeDest: string | undefined,
 	assetTransferType: string | undefined,
 	remoteReserveAssetTransferTypeLocation: string | undefined,
@@ -1193,6 +1190,21 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkRelayAmountsLength(amounts);
 	}
 
+	if (direction === Direction.RelayToBridge) {
+		checkRelayAssetIdLength(assetIds);
+		checkRelayAmountsLength(amounts);
+		getGlobalConsensusSystemName(destChainId);
+		checkBridgeTxInputs(
+			paysWithFeeDest,
+			assetTransferType,
+			remoteReserveAssetTransferTypeLocation,
+			feesTransferType,
+			remoteReserveFeesTransferTypeLocation,
+		);
+		checkPaysWithFeeDestAssetIdIsInAssets(assetIds, paysWithFeeDest);
+		checkXcmVersionIsValidForBridgeTx(xcmVersion);
+	}
+
 	if (direction === Direction.SystemToRelay) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
@@ -1221,7 +1233,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkMultiLocationAmountsLength(amounts);
 		checkAssetsAmountMatch(assetIds, amounts);
 		getGlobalConsensusSystemName(destChainId);
-		checkSystemToBridgeInputs(
+		checkBridgeTxInputs(
 			paysWithFeeDest,
 			assetTransferType,
 			remoteReserveAssetTransferTypeLocation,
@@ -1229,7 +1241,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 			remoteReserveFeesTransferTypeLocation,
 		);
 		checkPaysWithFeeDestAssetIdIsInAssets(assetIds, paysWithFeeDest);
-		checkXcmVersionIsValidForSystemToBridge(xcmVersion);
+		checkXcmVersionIsValidForBridgeTx(xcmVersion);
 	}
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {
