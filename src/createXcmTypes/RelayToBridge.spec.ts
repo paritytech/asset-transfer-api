@@ -99,7 +99,7 @@ describe('RelayToBridge', () => {
 
 			const expectedRes = {
 				V3: {
-					parents: 2,
+					parents: 1,
 					interior: {
 						X1: {
 							GlobalConsensus: {
@@ -121,7 +121,7 @@ describe('RelayToBridge', () => {
 
 			const expectedRes = {
 				V4: {
-					parents: 2,
+					parents: 1,
 					interior: {
 						X2: [
 							{

@@ -69,7 +69,7 @@ export const RelayToBridge: ICreateXcmType = {
 				destination.interior && destination.interior.X1
 					? {
 							V3: {
-								parents: 2,
+								parents: 1,
 								interior: {
 									X1: destination.interior.X1 as InteriorValue,
 								},
@@ -77,7 +77,7 @@ export const RelayToBridge: ICreateXcmType = {
 					  }
 					: {
 							V3: {
-								parents: 2,
+								parents: 1,
 								interior: {
 									X2: destination.interior.X2 as InteriorValue,
 								},
@@ -87,7 +87,7 @@ export const RelayToBridge: ICreateXcmType = {
 			if (destination.interior && destination.interior.X1) {
 				dest = {
 					V4: {
-						parents: 2,
+						parents: 1,
 						interior: {
 							X1: [destination.interior.X1 as XcmV4JunctionDestBeneficiary],
 						},
@@ -96,7 +96,7 @@ export const RelayToBridge: ICreateXcmType = {
 			} else if (destination.interior && destination.interior.X2) {
 				dest = {
 					V4: {
-						parents: 2,
+						parents: 1,
 						interior: {
 							X2: destination.interior.X2 as XcmV4JunctionDestBeneficiary[],
 						},
