@@ -122,7 +122,7 @@ export const RelayToBridge: ICreateXcmType = {
 		let multiAsset: FungibleStrAssetType;
 
 		const amount = amounts[0];
-		if (xcmVersion < 4) {
+		if (xcmVersion === 3) {
 			multiAsset = {
 				fun: {
 					Fungible: amount,
