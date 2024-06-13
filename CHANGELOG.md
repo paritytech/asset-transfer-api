@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.3.0](https://github.com/paritytech/asset-transfer-api/compare/v0.2.1..v0.3.0)
+
+### Feat
+
+- feat: support relay to bridge tx construction ([#409](https://github.com/paritytech/asset-transfer-api/pull/409))([436d78b](https://github.com/paritytech/asset-transfer-api/commit/436d78bf6cdd086ee179ebbe8e11d0e06bdcdee2))
+
+### Chore
+
+- chore(deps): update pjs ([#414](https://github.com/paritytech/asset-transfer-api/pull/414))([563d208](https://github.com/paritytech/asset-transfer-api/commit/563d2088172feebe50402df596e8b7834e99fd2d))
+- chore(registry): update registry dep ([#413](https://github.com/paritytech/asset-transfer-api/pull/413))([f3be2fe](https://github.com/paritytech/asset-transfer-api/commit/f3be2feca6e0d19b7c571ff4b4befb3e04e8f1a6))
+- chore(yarn): bump yarn to 4.2.2 ([#411](https://github.com/paritytech/asset-transfer-api/pull/411))([54e8148](https://github.com/paritytech/asset-transfer-api/commit/54e8148431e6def75beaa6f4c14a8847270511b7))
+- chore(examples): update xmcVersion to safeXcmVersion ([#410](https://github.com/paritytech/asset-transfer-api/pull/410))([615d3be](https://github.com/paritytech/asset-transfer-api/commit/615d3be891cd554e2c9a24ac1b6e2d67828f4b6c))
+
 ## [0.2.1](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0..v0.2.1)
 
 ### Fix
