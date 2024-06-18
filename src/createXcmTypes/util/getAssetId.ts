@@ -112,7 +112,7 @@ export const getAssetId = async (
 			}
 		} else {
 			throw new BaseError(
-				`assetId ${asset} is not a valid symbol or integer asset id for ${specName}`,
+				`assetId ${asset} is not a valid symbol, integer asset id or location for ${specName}`,
 				BaseErrorsEnum.InvalidAsset,
 			);
 		}
