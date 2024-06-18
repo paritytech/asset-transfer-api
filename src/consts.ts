@@ -76,3 +76,13 @@ export const JS_ENV = detectJsEnv();
  * Supported consensus system chain names
  */
 export const KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES = ['polkadot', 'kusama', 'westend', 'rococo', 'ethereum'];
+
+/**
+ * The asset location of the native relay chain asset from the perspective of `System` and `Para` Chains
+ */
+export const SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION = '{"parents":"1","interior":{"Here":""}}';
+/**
+ * The asset location of the native relay chain asset from the perspective of the Relay chain
+ */
+export const RELAY_CHAINS_NATIVE_ASSET_LOCATION = '{"parents":"0","interior":{"Here":""}}';
+
