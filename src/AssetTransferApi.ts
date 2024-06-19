@@ -1104,7 +1104,7 @@ export class AssetTransferApi {
 				);
 			}
 		} else {
-			checkLocalRelayInput(assetIds, amounts);
+			checkLocalRelayInput(assetIds, amounts, this.registry);
 			/**
 			 * By default local transaction on a relay chain will always be from the balances pallet
 			 */

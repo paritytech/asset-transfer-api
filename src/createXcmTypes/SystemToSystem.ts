@@ -260,14 +260,12 @@ export const createSystemToSystemMultiAssets = async (
 		);
 	}
 
-	const { tokens } = registry.currentRelayRegistry[systemChainId];
-
 	for (let i = 0; i < assets.length; i++) {
 		let assetId: string = assets[i];
 		const amount = amounts[i];
 
 		const isValidInt = validateNumber(assetId);
-		const isRelayNative = isRelayNativeAsset(tokens, assetId);
+		const isRelayNative = isRelayNativeAsset(registry, assetId);
 
 		if (!isRelayNative && !isValidInt) {
 			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);

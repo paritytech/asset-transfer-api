@@ -26,7 +26,7 @@ describe('checkBaseInputTypes', () => {
 				['10000000000'],
 			);
 
-		expect(err).toThrow(`'assetIds' must be a array. Received: string`);
+		expect(err).toThrow(`'assetIds' must be an array. Received: string`);
 	});
 	it('Should error when assetIds has the wrong types in the array', () => {
 		const err = () =>
@@ -48,7 +48,7 @@ describe('checkBaseInputTypes', () => {
 				10000000000 as unknown as string[],
 			);
 
-		expect(err).toThrow(`'amounts' must be a array. Received: number`);
+		expect(err).toThrow(`'amounts' must be an array. Received: number`);
 	});
 	it('Should error when amounts has the wrong types in the array', () => {
 		const err = () =>

@@ -2,7 +2,6 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { Registry } from '../../registry';
 import { RequireOnlyOne } from '../../types';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation';
@@ -37,7 +36,6 @@ export const createAssetLocations = async (
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
 
-	const { tokens } = registry.currentRelayRegistry[ASSET_HUB_CHAIN_ID];
 	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, assetIdsContainLocations);
 	const isRelayChain = originChainId === '0' ? true : false;
 
@@ -47,7 +45,7 @@ export const createAssetLocations = async (
 		let assetId = assetIds[i];
 
 		const isValidInt = validateNumber(assetId);
-		const isRelayNative = isRelayNativeAsset(tokens, assetId);
+		const isRelayNative = isRelayNativeAsset(registry, assetId);
 
 		if (!assetIdsContainLocations && !isRelayNative && !isValidInt) {
 			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, assetIdsContainLocations);
