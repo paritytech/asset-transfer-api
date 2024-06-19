@@ -85,4 +85,3 @@ export const SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION = '{"parents":"1","inter
  * The asset location of the native relay chain asset from the perspective of the Relay chain
  */
 export const RELAY_CHAINS_NATIVE_ASSET_LOCATION = '{"parents":"0","interior":{"Here":""}}';
-
