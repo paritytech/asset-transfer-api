@@ -3,7 +3,6 @@
 import type { ApiPromise } from '@polkadot/api';
 import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
-import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset';
 
 import {
 	MAX_ASSETS_FOR_TRANSFER,
@@ -16,6 +15,7 @@ import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
+import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
@@ -294,7 +294,7 @@ const checkRelayToParaAssetId = (assetId: string, relayChainInfo: ChainInfo<Chai
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`(RelayToPara) asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`,
+			`(RelayToPara) assetId ${assetId} is not the native asset of ${relayChain.specName} relay chain. Expected an assetId of ${relayChainNativeAsset} or asset location ${RELAY_CHAINS_NATIVE_ASSET_LOCATION}`,
 			BaseErrorsEnum.InvalidAsset,
 		);
 	}
