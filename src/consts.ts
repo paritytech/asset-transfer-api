@@ -55,7 +55,7 @@ export const SUPPORTED_XCM_PALLETS = ['xcmPallet', 'polkadotXcm', 'xTokens'];
  * The current maximum number of assets that can be transferred in an extrinsic
  * https://github.com/paritytech/polkadot/blob/e0ed7e862c8c8b6c75eda1731c449543642176ef/xcm/pallet-xcm/src/lib.rs#L1131
  */
-export const MAX_ASSETS_FOR_TRANSFER = 2;
+export const MAX_ASSETS_FOR_TRANSFER = 5;
 
 /**
  * This is the max length for a number before we need to use BigInt.

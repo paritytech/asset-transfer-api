@@ -36,19 +36,31 @@ export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObj
 		let aParents: string | number | undefined = undefined;
 		let bParents: string | number | undefined = undefined;
 		if ('Concrete' in a.id && 'Concrete' in b.id) {
-			if ('Parents' in a.id.Concrete && 'Parents' in b.id.Concrete) {
-				aParents = a.id.Concrete['Parents'] as string | number;
-				bParents = b.id.Concrete['Parents'] as string | number;
-			} else {
-				aParents = a.id.Concrete.parents as string | number;
-				bParents = b.id.Concrete.parents as string | number;
-			}
-		} else if ('parents' in a.id && 'parents' in b.id) {
-			aParents = a.id.parents as string | number;
-			bParents = b.id.parents as string | number;
+			aParents =
+				'Parents' in a.id.Concrete
+					? (a.id.Concrete['Parents'] as string | number)
+					: 'parents' in a.id.Concrete
+					  ? (a.id.Concrete['parents'] as string | number)
+					  : undefined;
+			bParents =
+				'Parents' in b.id.Concrete
+					? (b.id.Concrete['Parents'] as string | number)
+					: 'parents' in b.id.Concrete
+					  ? (b.id.Concrete['parents'] as string | number)
+					  : undefined;
 		} else {
-			aParents = a.id['Parents'] as string | number;
-			bParents = b.id['Parents'] as string | number;
+			aParents =
+				'Parents' in a.id
+					? (a.id['Parents'] as string | number)
+					: 'parents' in a.id
+					  ? (a.id['parents'] as string | number)
+					  : undefined;
+			bParents =
+				'Parents' in b.id
+					? (b.id['Parents'] as string | number)
+					: 'parents' in b.id
+					  ? (b.id['parents'] as string | number)
+					  : undefined;
 		}
 
 		// Should never hit this, this exists to make the typescript compiler happy.
@@ -77,31 +89,43 @@ export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObj
 			| undefined = undefined;
 
 		if ('Concrete' in a.id && 'Concrete' in b.id) {
-			if ('Interior' in a.id.Concrete && 'Interior' in b.id.Concrete) {
-				aInterior = a.id.Concrete['Interior'] as
-					| RequireOnlyOne<XcmV2Junctions>
-					| RequireOnlyOne<XcmV3Junctions>
-					| RequireOnlyOne<XcmV4Junctions>;
-				bInterior = b.id.Concrete['Interior'] as
-					| RequireOnlyOne<XcmV2Junctions>
-					| RequireOnlyOne<XcmV3Junctions>
-					| RequireOnlyOne<XcmV4Junctions>;
-			} else {
-				aInterior = a.id.Concrete.interior;
-				bInterior = b.id.Concrete.interior;
-			}
-		} else if ('interior' in a.id && 'interior' in b.id) {
-			aInterior = a.id.interior;
-			bInterior = b.id.interior;
-		} else if ('Interior' in a.id && 'Interior' in b.id) {
-			aInterior = a.id['Interior'] as
-				| RequireOnlyOne<XcmV2Junctions>
-				| RequireOnlyOne<XcmV3Junctions>
-				| RequireOnlyOne<XcmV4Junctions>;
-			bInterior = b.id['Interior'] as
-				| RequireOnlyOne<XcmV2Junctions>
-				| RequireOnlyOne<XcmV3Junctions>
-				| RequireOnlyOne<XcmV4Junctions>;
+			aInterior =
+				'Interior' in a.id.Concrete
+					? (a.id.Concrete['Interior'] as
+							| RequireOnlyOne<XcmV2Junctions>
+							| RequireOnlyOne<XcmV3Junctions>
+							| RequireOnlyOne<XcmV4Junctions>)
+					: 'interior' in a.id.Concrete
+					  ? a.id.Concrete.interior
+					  : undefined;
+			bInterior =
+				'Interior' in b.id.Concrete
+					? (b.id.Concrete['Interior'] as
+							| RequireOnlyOne<XcmV2Junctions>
+							| RequireOnlyOne<XcmV3Junctions>
+							| RequireOnlyOne<XcmV4Junctions>)
+					: 'interior' in b.id.Concrete
+					  ? b.id.Concrete.interior
+					  : undefined;
+		} else {
+			aInterior =
+				'Interior' in a.id
+					? (a.id['Interior'] as
+							| RequireOnlyOne<XcmV2Junctions>
+							| RequireOnlyOne<XcmV3Junctions>
+							| RequireOnlyOne<XcmV4Junctions>)
+					: 'interior' in a.id
+					  ? a.id.interior
+					  : undefined;
+			bInterior =
+				'Interior' in b.id
+					? (b.id['Interior'] as
+							| RequireOnlyOne<XcmV2Junctions>
+							| RequireOnlyOne<XcmV3Junctions>
+							| RequireOnlyOne<XcmV4Junctions>)
+					: 'interior' in b.id
+					  ? b.id.interior
+					  : undefined;
 		}
 
 		// Should never hit this, this exists to make the typescript compiler happy.

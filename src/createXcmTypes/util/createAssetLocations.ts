@@ -36,13 +36,14 @@ export const createAssetLocations = async (
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
 
-	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, assetIdsContainLocations);
 	const isRelayChain = originChainId === '0' ? true : false;
 
 	for (let i = 0; i < assetIds.length; i++) {
 		let concreteMultiLocation: UnionXcmMultiLocation;
 		const amount = amounts[i];
 		let assetId = assetIds[i];
+
+		const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, assetIdsContainLocations);
 
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
