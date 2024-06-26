@@ -816,7 +816,7 @@ export const checkAssetIdsLengthIsValid = (
 	xcmPalletName: XcmPalletName,
 	assetTransferType: string | undefined,
 ) => {
-	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER) {
+	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER && !assetTransferType) {
 		throw new BaseError(
 			`Maximum number of assets allowed for transfer is 2. Found ${assetIds.length} assetIds`,
 			BaseErrorsEnum.InvalidInput,

@@ -13,7 +13,7 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
  * from a Kusama AssetHub account to a Basilisk Parachain account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
  * The `paysWithFeeDest` value is set to pay fees with KSM and the values for `assetTransferType` and `feesTransferType`
- * are both set to the `LocalReserve` specifying that the reserve location to be used for transferring and fees is the origin of Kusama AssetHub.
+ * are both set to `LocalReserve` specifying that the reserve location to be used for transferring and fees is the origin of Kusama AssetHub.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */

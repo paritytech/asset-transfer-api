@@ -625,7 +625,15 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 });
 
 describe('checkAssetIdsLengthIsValid', () => {
-	it('Should correctly not error when 5 or fewer assetIds are passed in and assetTransferType is defined', () => {
+	it('Should correctly error when more than 2 assetIds are passed in', () => {
+		const assetIds = ['ksm', '1984', '10'];
+		const assetTransferType = undefined;
+		const xcmPallet = XcmPalletName.polkadotXcm;
+
+		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
+		expect(err).toThrow('Maximum number of assets allowed for transfer is 2. Found 3 assetIds');
+	});
+	it('Should correctly not error when 2 or fewer assetIds are passed in and assetTransferType is defined', () => {
 		const assetIds = ['ksm', '1984'];
 		const assetTransferType = 'RemoteReserve';
 		const xcmPallet = XcmPalletName.polkadotXcm;
