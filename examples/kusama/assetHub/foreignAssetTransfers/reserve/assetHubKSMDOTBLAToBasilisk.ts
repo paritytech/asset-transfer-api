@@ -10,7 +10,7 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
 /**
  * In this example we are creating a `polkadotXcm` `transferAssetsUsingTypeAndThen` call to send 1 KSM (asset with location `{"parents":"0","interior":{"Here":""}}`),
  * 1 DOT (foreign asset with location `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`) and 1 USDT (asset with id `1984`)
- * from a Kusama (Relay Chain) account to a Basilisk Parachain account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
+ * from a Kusama AssetHub account to a Basilisk Parachain account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
  * The `paysWithFeeDest` value is set to pay fees with KSM and the values for `assetTransferType` and `feesTransferType`
  * are both set to the `LocalReserve` specifying that the reserve location to be used for transferring and fees is the origin of Kusama AssetHub.
