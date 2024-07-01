@@ -11,6 +11,7 @@ import {
 	SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION,
 } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
+import { assetIdIsLocation } from '../createXcmTypes/util/assetIdIsLocation';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
@@ -385,13 +386,18 @@ const checkSystemAssets = async (
 	isLiquidTokenTransfer?: boolean,
 ) => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
-
-	if (isForeignAssetsTransfer) {
+	if (isForeignAssetsTransfer && assetIdIsLocation(assetId)) {
 		// check that the asset id is a valid multilocation
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmVersion);
 
 		if (!multiLocationIsInRegistry) {
 			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId);
+
+			if (!isValidForeignAsset) {
+				if (isRelayNativeAsset(registry, assetId)) {
+					return;
+				}
+			}
 
 			if (!isValidForeignAsset) {
 				throw new BaseError(`MultiLocation ${assetId} not found`, BaseErrorsEnum.AssetNotFound);
@@ -434,7 +440,7 @@ const checkSystemAssets = async (
 		} else {
 			// not a valid number
 			// check if id is a valid token symbol of the system parachain chain
-			if (assetId === '') {
+			if (isRelayNativeAsset(registry, assetId)) {
 				return;
 			}
 
@@ -810,7 +816,7 @@ export const checkAssetIdsLengthIsValid = (
 	xcmPalletName: XcmPalletName,
 	assetTransferType: string | undefined,
 ) => {
-	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER) {
+	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER && !assetTransferType) {
 		throw new BaseError(
 			`Maximum number of assets allowed for transfer is 2. Found ${assetIds.length} assetIds`,
 			BaseErrorsEnum.InvalidInput,
@@ -890,7 +896,7 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 			const isValidInt = validateNumber(assetId);
 			if (isValidInt) {
 				integerAssetIdFound = assetId;
-			} else if (assetId.toLowerCase().includes('parents')) {
+			} else if (assetIdIsLocation(assetId)) {
 				multiLocationAssetIdFound = assetId;
 			} else {
 				symbolAssetIdFound = assetId;
@@ -1147,11 +1153,6 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	 * Checks to ensure that assetId's have no duplicate values
 	 */
 	checkAssetIdsHaveNoDuplicates(assetIds);
-
-	/**
-	 * Checks to ensure that assetId's are either empty string, symbol and integer values or multilocations
-	 */
-	checkAssetIdsAreOfSameAssetIdType(assetIds);
 
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols

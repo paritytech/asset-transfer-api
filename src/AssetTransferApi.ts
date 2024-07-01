@@ -30,6 +30,7 @@ import { CreateXcmCallOpts } from './createXcmCalls/types';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
 import { UnionXcmMultiLocation } from './createXcmTypes/types';
+import { assetIdIsLocation } from './createXcmTypes/util/assetIdIsLocation';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
@@ -911,13 +912,11 @@ export class AssetTransferApi {
 
 		for (const assetId of assetIds) {
 			if (foreignAssets.includes(assetId)) {
-				continue;
-			} else {
-				return false;
+				return true;
 			}
 		}
 
-		return true;
+		return false;
 	};
 
 	/**
@@ -1141,7 +1140,7 @@ export class AssetTransferApi {
 			// This ensures paraToRelay always uses `transferMultiAsset`.
 			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
 				txMethod = 'transferMultiasset';
-			} else if (paysWithFeeDest && paysWithFeeDest.includes('parents')) {
+			} else if (paysWithFeeDest && assetIdIsLocation(paysWithFeeDest)) {
 				txMethod = 'transferMultiassetWithFee';
 			} else {
 				txMethod = 'transferMultiassets';

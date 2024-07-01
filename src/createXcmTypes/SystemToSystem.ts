@@ -251,7 +251,6 @@ export const createSystemToSystemMultiAssets = async (
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
-	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
 
 	if (!isSystemChain(systemChainId)) {
 		throw new BaseError(
@@ -263,6 +262,8 @@ export const createSystemToSystemMultiAssets = async (
 	for (let i = 0; i < assets.length; i++) {
 		let assetId: string = assets[i];
 		const amount = amounts[i];
+
+		const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, isForeignAssetsTransfer);
 
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(registry, assetId);

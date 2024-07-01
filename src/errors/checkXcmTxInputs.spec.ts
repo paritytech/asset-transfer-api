@@ -627,7 +627,7 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 describe('checkAssetIdsLengthIsValid', () => {
 	it('Should correctly error when more than 2 assetIds are passed in', () => {
 		const assetIds = ['ksm', '1984', '10'];
-		const assetTransferType = 'RemoteReserve';
+		const assetTransferType = undefined;
 		const xcmPallet = XcmPalletName.polkadotXcm;
 
 		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
