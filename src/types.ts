@@ -302,9 +302,17 @@ export interface SignerPayloadJSON {
 	 */
 	genesisHash: string;
 	/**
+	 * @description The merkeleized metadata
+	 */
+	metadataHash: string;
+	/**
 	 * @description The encoded method (with arguments) in hex
 	 */
 	method: string;
+	/**
+	 * @description The mode for the CheckMetadataHash SignedExtension
+	 */
+	mode: string;
 	/**
 	 * @description The nonce for this transaction, in hex
 	 */

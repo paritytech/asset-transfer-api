@@ -47,7 +47,7 @@ const getSystemRuntimeVersion = () =>
 	Promise.resolve().then(() => {
 		return {
 			specName: mockSystemApi.registry.createType('Text', 'asset-hub-westend'),
-			specVersion: mockSystemApi.registry.createType('u32', 1004000),
+			specVersion: mockSystemApi.registry.createType('u32', 1014000),
 		};
 	});
 
@@ -147,7 +147,7 @@ const asset = (assetId: number | string | BN): Promise<Option<PalletAssetsAssetD
 		const maybeAsset = assets.has(adjAsset) ? assets.get(adjAsset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1009000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1014000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -195,7 +195,7 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 		const maybeAsset = assets.has(assetsMutliLocation.toHex()) ? assets.get(assetsMutliLocation.toHex()) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1009000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1014000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -246,7 +246,7 @@ const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const maybeAsset = assets.has(asset) ? assets.get(asset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1009000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1014000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -296,7 +296,7 @@ const mockApiAt = {
 
 export const adjustedMockSystemApiV1009000 = {
 	createType: createType,
-	registry: createWestmintRegistry(1009000),
+	registry: createWestmintRegistry(1014000),
 	rpc: {
 		state: {
 			getRuntimeVersion: getSystemRuntimeVersion,
@@ -440,8 +440,8 @@ export const adjustedMockSystemApiV1009000 = {
 		},
 	},
 	runtimeVersion: {
-		transactionVersion: mockSystemApi.registry.createType('u32', 4),
-		specVersion: mockSystemApi.registry.createType('u32', 9420),
+		transactionVersion: mockSystemApi.registry.createType('u32', 16),
+		specVersion: mockSystemApi.registry.createType('u32', 1014000),
 	},
 	genesisHash: mockSystemApi.registry.createType('BlockHash'),
 } as unknown as ApiPromise;

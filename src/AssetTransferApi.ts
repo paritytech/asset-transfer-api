@@ -758,7 +758,9 @@ export class AssetTransferApi {
 			blockNumber: blockNumber.toHex(),
 			era: era.toHex(),
 			genesisHash: this.api.genesisHash.toHex(),
+			metadataHash: this.api.registry.createType('Option<[u8;32]>', 0).toHex(),
 			method: method.toHex(),
+			mode: this.api.registry.createType('u8', 0).toHex(),
 			nonce: nonce.toHex(),
 			signedExtensions: [
 				'CheckNonZeroSender',
@@ -769,6 +771,7 @@ export class AssetTransferApi {
 				'CheckNonce',
 				'CheckWeight',
 				'ChargeAssetTxPayment',
+				'CheckMetadataHash'
 			],
 			tip: this.api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,
@@ -777,6 +780,7 @@ export class AssetTransferApi {
 		const extrinsicPayload = this.api.registry.createType('ExtrinsicPayload', unsignedPayload, {
 			version: unsignedPayload.version,
 		});
+		console.log('payload', extrinsicPayload.toHuman())
 
 		return extrinsicPayload;
 	};
