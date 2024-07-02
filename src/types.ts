@@ -304,7 +304,7 @@ export interface SignerPayloadJSON {
 	/**
 	 * @description The merkeleized metadata
 	 */
-	metadataHash: string;
+	metadataHash: string | null;
 	/**
 	 * @description The encoded method (with arguments) in hex
 	 */
