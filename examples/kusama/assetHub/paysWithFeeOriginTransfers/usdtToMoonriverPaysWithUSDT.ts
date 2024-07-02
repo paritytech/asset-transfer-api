@@ -8,7 +8,7 @@ import { TxResult } from '../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
- * In this example we are creating a reserve payload to send 1 USDt (asset ID: `1984`)
+ * In this example we are creating a `transferAssets` payload to send 1 USDT (asset ID: `1984`)
  * from a Kusama Asset Hub (System Parachain) account
  * to a Moonriver (Parachain) account, where the `xcmVersion` is set to safeXcmVersion and no `weightLimit` is provided declaring that
  * the allowable weight will be `unlimited` and `paysWithFeeOrigin` is asset ID `1984` (USDT)

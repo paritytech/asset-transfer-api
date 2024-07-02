@@ -8,7 +8,7 @@ import { TxResult } from '../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
- * In this example we are creating a reserve payload to send 1 ROC
+ * In this example we are creating a `transferAssets` payload to send 1 ROC
  * from a Rococo Asset Hub (System Parachain) account
  * to a Basilisk (Parachain) account, where the `xcmVersion` is set to safeXcmVersion and no `weightLimit` is provided declaring that
  * the allowable weight will be `unlimited` and `paysWithFeeOrigin` is asset location `{"parents":"1","interior":{"X1":{"Parachain":"3369"}}}` (MUSE)
