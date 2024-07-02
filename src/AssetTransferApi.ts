@@ -8,7 +8,6 @@ import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
-import BN from 'bn.js';
 
 import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
 import * as assets from './createCalls/assets';
@@ -35,6 +34,7 @@ import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContain
 import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName';
+import { getPaysWithFeeOriginAssetLocationFromRegistry } from './createXcmTypes/util/getPaysWithFeeOriginAssetLocationFromRegistry';
 import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
@@ -749,37 +749,37 @@ export class AssetTransferApi {
 		opts: { paysWithFeeOrigin?: string; sendersAddr: string },
 	): Promise<GenericExtrinsicPayload> => {
 		const { paysWithFeeOrigin, sendersAddr } = opts;
-		let assetId: BN | AnyJson = new BN(0);
+		let assetId: AnyJson = {};
 
-		// if a paysWithFeeOrigin is provided and the chain is of system origin
-		// we assign the assetId to the value of paysWithFeeOrigin
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(this.specName.toLowerCase());
 
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
-			const isValidInt = validateNumber(paysWithFeeOrigin);
+			let paysWithFeeOriginAssetLocation: string;
 
-			if (isValidInt) {
-				assetId = new BN(paysWithFeeOrigin);
-				const isSufficient = await this.checkAssetIsSufficient(assetId);
+			if (!assetIdIsLocation(paysWithFeeOrigin)) {
+				const paysWithFeeOriginLocation = getPaysWithFeeOriginAssetLocationFromRegistry(this, paysWithFeeOrigin);
 
-				if (!isSufficient) {
+				if (!paysWithFeeOriginLocation) {
 					throw new BaseError(
-						`asset with assetId ${assetId.toString()} is not a sufficient asset to pay for fees`,
-						BaseErrorsEnum.InvalidAsset,
-					);
-				}
-			} else {
-				const [isValidLpToken, feeAsset] = await this.checkAssetLpTokenPairExists(paysWithFeeOrigin);
-
-				if (!isValidLpToken) {
-					throw new BaseError(
-						`assetId ${JSON.stringify(feeAsset)} is not a valid liquidity pool token for ${this.specName}`,
+						`assetId ${JSON.stringify(paysWithFeeOrigin)} is not a valid paysWithFeeOrigin asset location`,
 						BaseErrorsEnum.NoFeeAssetLpFound,
 					);
 				}
-
-				assetId = JSON.parse(paysWithFeeOrigin) as AnyJson;
+				paysWithFeeOriginAssetLocation = JSON.stringify(paysWithFeeOriginLocation);
+			} else {
+				paysWithFeeOriginAssetLocation = paysWithFeeOrigin;
 			}
+
+			const [isValidLpToken] = await this.checkAssetLpTokenPairExists(paysWithFeeOriginAssetLocation);
+
+			if (!isValidLpToken) {
+				throw new BaseError(
+					`assetId ${paysWithFeeOrigin} is not a valid liquidity pool token for ${this.specName}`,
+					BaseErrorsEnum.NoFeeAssetLpFound,
+				);
+			}
+
+			assetId = JSON.parse(paysWithFeeOriginAssetLocation) as AnyJson;
 		}
 
 		const lastHeader = await this.api.rpc.chain.getHeader();
@@ -821,27 +821,6 @@ export class AssetTransferApi {
 		});
 
 		return extrinsicPayload;
-	};
-
-	/**
-	 * checks the chains state to determine whether an asset is valid
-	 * if it is valid, it returns whether it is marked as sufficient for paying fees
-	 *
-	 * @param assetId number
-	 * @returns Promise<boolean>
-	 */
-	private checkAssetIsSufficient = async (assetId: BN): Promise<boolean> => {
-		try {
-			const asset = (await this.api.query.assets.asset(assetId)).unwrap();
-
-			if (asset.isSufficient.toString().toLowerCase() === 'true') {
-				return true;
-			}
-
-			return false;
-		} catch (err: unknown) {
-			throw new BaseError(`assetId ${assetId.toString()} does not match a valid asset`, BaseErrorsEnum.InvalidAsset);
-		}
 	};
 
 	/**

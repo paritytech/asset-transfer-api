@@ -495,26 +495,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					},
 				);
 			};
-			const nativeBaseSystemPaysWithFeeOriginAssetIdCreateTx = async <T extends Format>(
-				ataAPI: AssetTransferApi,
-				format: T,
-				xcmVersion: number,
-				opts: CreateXcmCallOpts,
-			): Promise<TxResult<T>> => {
-				return await ataAPI.createTransferTransaction(
-					'2000', // Since this is not `0` we know this is to a parachain
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['KSM'],
-					['100'],
-					{
-						paysWithFeeOrigin: `1984`,
-						format,
-						xcmVersion,
-						weightLimit: opts.weightLimit,
-						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					},
-				);
-			};
 			const foreignAssetMultiLocationBaseSystemCreateTx = async <T extends Format>(
 				ataAPI: AssetTransferApi,
 				format: T,
@@ -763,19 +743,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					});
 					expect(res.tx.toHex()).toStrictEqual(
 						'0xf81f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f45022800010002043205011fcc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
-					);
-				});
-				it('Should correctly construct a paysWithFeeOrigin tx for V2 using an assets id', async () => {
-					const res = await nativeBaseSystemPaysWithFeeOriginAssetIdCreateTx(systemAssetsApi, 'payload', 2, {
-						weightLimit: {
-							refTime: '1000',
-							proofSize: '2000',
-						},
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toHex()).toStrictEqual(
-						'0xf81f0801010100411f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01040001000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 					);
 				});
 			});
@@ -1027,19 +994,6 @@ describe('AssetTransferApi Integration Tests', () => {
 						xcmVersion: 3,
 					});
 				});
-			});
-			it('Should correctly construct a paysWithFeeOrigin tx for V3 using an assets id', async () => {
-				const res = await nativeBaseSystemPaysWithFeeOriginAssetIdCreateTx(systemAssetsApi, 'payload', 3, {
-					weightLimit: {
-						refTime: '1000',
-						proofSize: '2000',
-					},
-					isForeignAssetsTransfer: false,
-					isLiquidTokenTransfer: false,
-				});
-				expect(res.tx.toHex()).toStrictEqual(
-					'0xf81f0803010100411f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b03040001000091010000000001a10f411f45022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
-				);
 			});
 			it('Should correctly construct a paysWithFeeOrigin tx for V3 using an assets location', async () => {
 				const res = await nativeBaseSystemPaysWithFeeOriginAssetLocationCreateTx(systemAssetsApi, 'payload', 3, {
