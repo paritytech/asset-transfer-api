@@ -812,26 +812,6 @@ describe('AssetTransferAPI', () => {
 
 			expect(unsigned.assetId).toStrictEqual(expected);
 		});
-
-		it('Should error during payload construction when a paysWithFeeOrigin is provided that is an integer', async () => {
-			await expect(async () => {
-				await systemAssetsApi.createTransferTransaction(
-					'2023',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['usdc'],
-					['4000000000'],
-					{
-						paysWithFeeOrigin: '100',
-						format: 'payload',
-						keepAlive: true,
-						paysWithFeeDest: 'USDC',
-						xcmVersion: 3,
-						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					},
-				);
-			}).rejects.toThrow('assetId "100" is not a valid paysWithFeeOrigin asset location');
-		});
-
 		it('Should error during payload construction when a non integer paysWithFeeOrigin is provided that is not a valid MultiLocation', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(

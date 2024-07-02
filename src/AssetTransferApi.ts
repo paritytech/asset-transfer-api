@@ -34,6 +34,7 @@ import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContain
 import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName';
+import { getPaysWithFeeOriginAssetLocationFromRegistry } from './createXcmTypes/util/getPaysWithFeeOriginAssetLocationFromRegistry';
 import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
@@ -753,14 +754,23 @@ export class AssetTransferApi {
 		const isOriginSystemParachain = SYSTEM_PARACHAINS_NAMES.includes(this.specName.toLowerCase());
 
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
+			let paysWithFeeOriginAssetLocation: string;
+
 			if (!assetIdIsLocation(paysWithFeeOrigin)) {
-				throw new BaseError(
-					`assetId ${JSON.stringify(paysWithFeeOrigin)} is not a valid paysWithFeeOrigin asset location`,
-					BaseErrorsEnum.NoFeeAssetLpFound,
-				);
+				const paysWithFeeOriginLocation = getPaysWithFeeOriginAssetLocationFromRegistry(this, paysWithFeeOrigin);
+
+				if (!paysWithFeeOriginLocation) {
+					throw new BaseError(
+						`assetId ${JSON.stringify(paysWithFeeOrigin)} is not a valid paysWithFeeOrigin asset location`,
+						BaseErrorsEnum.NoFeeAssetLpFound,
+					);
+				}
+				paysWithFeeOriginAssetLocation = JSON.stringify(paysWithFeeOriginLocation);
+			} else {
+				paysWithFeeOriginAssetLocation = paysWithFeeOrigin;
 			}
 
-			const [isValidLpToken] = await this.checkAssetLpTokenPairExists(paysWithFeeOrigin);
+			const [isValidLpToken] = await this.checkAssetLpTokenPairExists(paysWithFeeOriginAssetLocation);
 
 			if (!isValidLpToken) {
 				throw new BaseError(
@@ -769,7 +779,7 @@ export class AssetTransferApi {
 				);
 			}
 
-			assetId = JSON.parse(paysWithFeeOrigin) as AnyJson;
+			assetId = JSON.parse(paysWithFeeOriginAssetLocation) as AnyJson;
 		}
 
 		const lastHeader = await this.api.rpc.chain.getHeader();

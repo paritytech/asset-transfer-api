@@ -3,15 +3,15 @@
  *
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetTransferApi, constructApiPromise } from '../src';
-import { TxResult } from '../src/types';
-import { GREEN, PURPLE, RESET } from './colors';
+import { AssetTransferApi, constructApiPromise } from '../../../../src';
+import { TxResult } from '../../../../src/types';
+import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
  * In this example we are creating a reserve payload to send 1 USDt (asset ID: `1984`)
  * from a Kusama Asset Hub (System Parachain) account
- * to a Moonriver (ParaChain) account, where the `xcmVersion` is set to 3 and no `weightLimit` is provided declaring that
- * the allowable weight will be `unlimited` and `paysWithFeeOrigin` is asset location `{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}` (USDT)
+ * to a Moonriver (Parachain) account, where the `xcmVersion` is set to safeXcmVersion and no `weightLimit` is provided declaring that
+ * the allowable weight will be `unlimited` and `paysWithFeeOrigin` is asset ID `1984` (USDT)
  * declaring that `USDT` `should be used to pay for tx fees in the origin. In order to pay fees on the origin with a different asset than the native asset, the selected asset is expected to have an existing liquidity pool/pair with the native asset in AssetHub.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
@@ -30,8 +30,7 @@ const main = async () => {
 			{
 				format: 'payload',
 				xcmVersion: safeXcmVersion,
-				// NOTE: the `paysWithFeeOrigin` must be a valid asset location which has an existing liquidity pool pair on AssetHub.
-				paysWithFeeOrigin: '{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}',
+				paysWithFeeOrigin: '1984',
 				sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 			},
 		);
