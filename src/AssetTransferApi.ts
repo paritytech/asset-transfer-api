@@ -771,7 +771,7 @@ export class AssetTransferApi {
 				'CheckNonce',
 				'CheckWeight',
 				'ChargeAssetTxPayment',
-				'CheckMetadataHash'
+				'CheckMetadataHash',
 			],
 			tip: this.api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,

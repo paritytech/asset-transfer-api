@@ -35,7 +35,7 @@ const main = async () => {
 			},
 		);
 
-		console.log(callInfo.tx.toHex());
+		console.log(callInfo);
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);
