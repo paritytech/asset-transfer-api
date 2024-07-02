@@ -813,7 +813,7 @@ describe('AssetTransferAPI', () => {
 			expect(unsigned.assetId).toStrictEqual(expected);
 		});
 
-		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {
+		it('Should error during payload construction when a paysWithFeeOrigin is provided that is an integer', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(
 					'2023',
@@ -829,7 +829,7 @@ describe('AssetTransferAPI', () => {
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
 				);
-			}).rejects.toThrow('asset with assetId 100 is not a sufficient asset to pay for fees');
+			}).rejects.toThrow('assetId "100" is not a valid paysWithFeeOrigin asset location');
 		});
 
 		it('Should error during payload construction when a non integer paysWithFeeOrigin is provided that is not a valid MultiLocation', async () => {
@@ -848,7 +848,7 @@ describe('AssetTransferAPI', () => {
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
 				);
-			}).rejects.toThrow('paysWithFeeOrigin value must be a valid asset location. Received: hello there');
+			}).rejects.toThrow('assetId "hello there" is not a valid paysWithFeeOrigin asset location');
 		});
 
 		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not part of a valid lp token pair', async () => {
@@ -859,7 +859,8 @@ describe('AssetTransferAPI', () => {
 					['1984'],
 					['5000000'],
 					{
-						paysWithFeeOrigin: '{"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
+						paysWithFeeOrigin:
+							'{"parents":"1","interior":{"X2":[{"Parachain":"20070223"},{"PalletInstance":"1000000"}]}}',
 						format: 'payload',
 						keepAlive: true,
 						paysWithFeeDest: '1984',
@@ -868,7 +869,7 @@ describe('AssetTransferAPI', () => {
 					},
 				);
 			}).rejects.toThrow(
-				'paysWithFeeOrigin value must be a valid asset location. Received: {"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
+				'assetId {"parents":"1","interior":{"X2":[{"Parachain":"20070223"},{"PalletInstance":"1000000"}]}} is not a valid liquidity pool token for statemine',
 			);
 		});
 	});
