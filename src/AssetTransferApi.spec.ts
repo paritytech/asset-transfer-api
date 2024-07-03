@@ -812,26 +812,6 @@ describe('AssetTransferAPI', () => {
 
 			expect(unsigned.assetId).toStrictEqual(expected);
 		});
-
-		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {
-			await expect(async () => {
-				await systemAssetsApi.createTransferTransaction(
-					'2023',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['usdc'],
-					['4000000000'],
-					{
-						paysWithFeeOrigin: '100',
-						format: 'payload',
-						keepAlive: true,
-						paysWithFeeDest: 'USDC',
-						xcmVersion: 3,
-						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					},
-				);
-			}).rejects.toThrow('asset with assetId 100 is not a sufficient asset to pay for fees');
-		});
-
 		it('Should error during payload construction when a non integer paysWithFeeOrigin is provided that is not a valid MultiLocation', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(
@@ -848,7 +828,7 @@ describe('AssetTransferAPI', () => {
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
 				);
-			}).rejects.toThrow('paysWithFeeOrigin value must be a valid asset location. Received: hello there');
+			}).rejects.toThrow('assetId "hello there" is not a valid paysWithFeeOrigin asset location');
 		});
 
 		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not part of a valid lp token pair', async () => {
@@ -859,7 +839,8 @@ describe('AssetTransferAPI', () => {
 					['1984'],
 					['5000000'],
 					{
-						paysWithFeeOrigin: '{"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
+						paysWithFeeOrigin:
+							'{"parents":"1","interior":{"X2":[{"Parachain":"20070223"},{"PalletInstance":"1000000"}]}}',
 						format: 'payload',
 						keepAlive: true,
 						paysWithFeeDest: '1984',
@@ -868,7 +849,7 @@ describe('AssetTransferAPI', () => {
 					},
 				);
 			}).rejects.toThrow(
-				'paysWithFeeOrigin value must be a valid asset location. Received: {"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
+				'assetId {"parents":"1","interior":{"X2":[{"Parachain":"20070223"},{"PalletInstance":"1000000"}]}} is not a valid liquidity pool token for statemine',
 			);
 		});
 	});

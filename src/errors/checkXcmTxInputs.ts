@@ -4,12 +4,19 @@ import type { ApiPromise } from '@polkadot/api';
 import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { MAX_ASSETS_FOR_TRANSFER, RELAY_CHAIN_IDS } from '../consts';
+import {
+	MAX_ASSETS_FOR_TRANSFER,
+	RELAY_CHAIN_IDS,
+	RELAY_CHAINS_NATIVE_ASSET_LOCATION,
+	SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION,
+} from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
+import { assetIdIsLocation } from '../createXcmTypes/util/assetIdIsLocation';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
 import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
+import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
@@ -239,7 +246,7 @@ export const checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain = (
  * @param assetId
  * @param relayChainInfo
  */
-const checkRelayToSystemAssetId = (assetId: string, relayChainInfo: ChainInfo<ChainInfoKeys>) => {
+const checkRelayToSystemAssetId = (assetId: string, relayChainInfo: ChainInfo<ChainInfoKeys>, registry: Registry) => {
 	const relayChainId = RELAY_CHAIN_IDS[0];
 	const relayChain = relayChainInfo[relayChainId];
 	const relayChainNativeAsset = relayChain.tokens[0];
@@ -247,20 +254,13 @@ const checkRelayToSystemAssetId = (assetId: string, relayChainInfo: ChainInfo<Ch
 	// relay chain can only send its native asset
 	// ensure the asset being sent is the native asset of the relay chain
 	// no need to check if id is a number, if it is, it fails the check by default
-	let assetIsRelayChainNativeAsset = false;
 
-	// if an empty string is passed, treat it as the native relay asset
-	if (assetId === '') {
-		assetIsRelayChainNativeAsset = true;
-	}
-
-	if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
-		assetIsRelayChainNativeAsset = true;
-	}
+	// ensure assetId is relay chain's native token
+	const assetIsRelayChainNativeAsset = isRelayNativeAsset(registry, assetId);
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`(RelayToSystem) asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`,
+			`(RelayToSystem) assetId ${assetId} is not the native asset of ${relayChain.specName} relay chain. Expected an assetId of ${relayChainNativeAsset} or asset location ${RELAY_CHAINS_NATIVE_ASSET_LOCATION}`,
 			BaseErrorsEnum.InvalidAsset,
 		);
 	}
@@ -295,7 +295,7 @@ const checkRelayToParaAssetId = (assetId: string, relayChainInfo: ChainInfo<Chai
 
 	if (!assetIsRelayChainNativeAsset) {
 		throw new BaseError(
-			`(RelayToPara) asset ${assetId} is not ${relayChain.specName}'s native asset. Expected ${relayChainNativeAsset}`,
+			`(RelayToPara) assetId ${assetId} is not the native asset of ${relayChain.specName} relay chain. Expected an assetId of ${relayChainNativeAsset} or asset location ${RELAY_CHAINS_NATIVE_ASSET_LOCATION}`,
 			BaseErrorsEnum.InvalidAsset,
 		);
 	}
@@ -306,28 +306,17 @@ const checkRelayToParaAssetId = (assetId: string, relayChainInfo: ChainInfo<Chai
  * @param assetId
  * @param relayChainInfo
  */
-const checkSystemToRelayAssetId = (assetId: string, relayChainInfo: ChainInfo<ChainInfoKeys>) => {
+const checkSystemToRelayAssetId = (assetId: string, relayChainInfo: ChainInfo<ChainInfoKeys>, registry: Registry) => {
 	const relayChainId = RELAY_CHAIN_IDS[0];
 	const relayChain = relayChainInfo[relayChainId];
 	const relayChainNativeAsset = relayChain.tokens[0];
 
 	// ensure assetId is relay chain's native token
-	let matchedRelayChainNativeToken = false;
-
-	// if an empty string is passed, treat it as the native relay asset
-	if (assetId === '') {
-		matchedRelayChainNativeToken = true;
-	}
-
-	if (typeof assetId === 'string') {
-		if (relayChainNativeAsset.toLowerCase() === assetId.toLowerCase()) {
-			matchedRelayChainNativeToken = true;
-		}
-	}
+	const matchedRelayChainNativeToken = isRelayNativeAsset(registry, assetId);
 
 	if (!matchedRelayChainNativeToken) {
 		throw new BaseError(
-			`(SystemToRelay) assetId ${assetId} not native to ${relayChain.specName}. Expected ${relayChainNativeAsset}`,
+			`(SystemToRelay) assetId ${assetId} is not the native asset of ${relayChain.specName} relay chain. Expected an assetId of ${relayChainNativeAsset} or asset location ${SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION}`,
 			BaseErrorsEnum.InvalidAsset,
 		);
 	}
@@ -397,13 +386,18 @@ const checkSystemAssets = async (
 	isLiquidTokenTransfer?: boolean,
 ) => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
-
-	if (isForeignAssetsTransfer) {
+	if (isForeignAssetsTransfer && assetIdIsLocation(assetId)) {
 		// check that the asset id is a valid multilocation
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmVersion);
 
 		if (!multiLocationIsInRegistry) {
 			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId);
+
+			if (!isValidForeignAsset) {
+				if (isRelayNativeAsset(registry, assetId)) {
+					return;
+				}
+			}
 
 			if (!isValidForeignAsset) {
 				throw new BaseError(`MultiLocation ${assetId} not found`, BaseErrorsEnum.AssetNotFound);
@@ -446,7 +440,7 @@ const checkSystemAssets = async (
 		} else {
 			// not a valid number
 			// check if id is a valid token symbol of the system parachain chain
-			if (assetId === '') {
+			if (isRelayNativeAsset(registry, assetId)) {
 				return;
 			}
 
@@ -822,7 +816,7 @@ export const checkAssetIdsLengthIsValid = (
 	xcmPalletName: XcmPalletName,
 	assetTransferType: string | undefined,
 ) => {
-	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER) {
+	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER && !assetTransferType) {
 		throw new BaseError(
 			`Maximum number of assets allowed for transfer is 2. Found ${assetIds.length} assetIds`,
 			BaseErrorsEnum.InvalidInput,
@@ -902,7 +896,7 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 			const isValidInt = validateNumber(assetId);
 			if (isValidInt) {
 				integerAssetIdFound = assetId;
-			} else if (assetId.toLowerCase().includes('parents')) {
+			} else if (assetIdIsLocation(assetId)) {
 				multiLocationAssetIdFound = assetId;
 			} else {
 				symbolAssetIdFound = assetId;
@@ -1056,7 +1050,7 @@ export const checkAssetIdInput = async (
 		checkIfAssetIdIsBlankSpace(assetId);
 
 		if (xcmDirection === Direction.RelayToSystem) {
-			checkRelayToSystemAssetId(assetId, relayChainInfo);
+			checkRelayToSystemAssetId(assetId, relayChainInfo, registry);
 		}
 
 		if (xcmDirection === Direction.RelayToPara) {
@@ -1064,7 +1058,7 @@ export const checkAssetIdInput = async (
 		}
 
 		if (xcmDirection === Direction.SystemToRelay) {
-			checkSystemToRelayAssetId(assetId, relayChainInfo);
+			checkSystemToRelayAssetId(assetId, relayChainInfo, registry);
 		}
 
 		if (xcmDirection === Direction.SystemToPara) {
@@ -1159,11 +1153,6 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	 * Checks to ensure that assetId's have no duplicate values
 	 */
 	checkAssetIdsHaveNoDuplicates(assetIds);
-
-	/**
-	 * Checks to ensure that assetId's are either empty string, symbol and integer values or multilocations
-	 */
-	checkAssetIdsAreOfSameAssetIdType(assetIds);
 
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols

@@ -44,7 +44,7 @@ describe('checkLocalTxInput', () => {
 	it('Should correctly throw an error with an incorrect assetId', async () => {
 		await expect(async () => {
 			await checkLocalTxInput(systemAssetsApi.api, ['TST'], ['10000'], specName, registry, 2, false, false);
-		}).rejects.toThrow('assetId TST is not a valid symbol or integer asset id for statemine');
+		}).rejects.toThrow('assetId TST is not a valid symbol, integer asset id or location for statemine');
 	});
 	it("Should correctly throw an error when the integer assetId doesn't exist", async () => {
 		await expect(async () => {

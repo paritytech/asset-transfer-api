@@ -9,12 +9,11 @@ export const assetIdsContainRelayAsset = (assetIds: string[], registry: Registry
 		return true;
 	}
 
-	const { tokens } = registry.currentRelayRegistry['0'];
 	const relayAssetMultiLocation = `{"parents": 1, "interior": { "Here": ''}}`;
 
 	for (const asset of assetIds) {
 		// check relay tokens and if matched it is the relay asset
-		if (isRelayNativeAsset(tokens, asset)) {
+		if (isRelayNativeAsset(registry, asset)) {
 			return true;
 		}
 
