@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.1](https://github.com/paritytech/asset-transfer-api/compare/v0.3.0..v0.3.1)
+
+### Fix
+
+- fix(bug): added support for checkMetadataHash SignedExtension ([#421](https://github.com/paritytech/asset-transfer-api/pull/421))([2d84bfd](https://github.com/paritytech/asset-transfer-api/commit/36d4318920161cdb7945e289c059fee552d84bfd))
+- fix: Update paysWithFeeOrigin examples and errors ([#420](https://github.com/paritytech/asset-transfer-api/pull/420))([8d13795](https://github.com/paritytech/asset-transfer-api/commit/7eb9ce979a7b212623711bf716bda80fc8d13795))
+- fix: improve error messages ([#416](https://github.com/paritytech/asset-transfer-api/pull/416))([f42ae74](https://github.com/paritytech/asset-transfer-api/commit/5a11307491858d5317bd8f5fa60413633f42ae74))
+
+### Chore
+
+- chore(registry): update registry dep ([#423](https://github.com/paritytech/asset-transfer-api/pull/423))([7a58ae7](https://github.com/paritytech/asset-transfer-api/commit/c02d5bd65ca96afef52ebb798d8442aae7a58ae7))
+- chore(deps): bumped PJS/API to 12.1.1 ([#422](https://github.com/paritytech/asset-transfer-api/pull/422))([6a5e0d2](https://github.com/paritytech/asset-transfer-api/commit/a3f1740f90e5952fedbcb6254317d56bb6a5e0d2))
+
+### Docs
+
+- docs: add multiasset and AH reserve examples ([#418](https://github.com/paritytech/asset-transfer-api/pull/418))([1e6e060](https://github.com/paritytech/asset-transfer-api/commit/0bd701d0ae5da96b612934b8ee57f12b41e6e060))
+
+
 ## [0.3.0](https://github.com/paritytech/asset-transfer-api/compare/v0.2.1..v0.3.0)
 
 ### Feat
