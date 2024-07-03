@@ -800,7 +800,9 @@ export class AssetTransferApi {
 			blockNumber: blockNumber.toHex(),
 			era: era.toHex(),
 			genesisHash: this.api.genesisHash.toHex(),
+			metadataHash: null,
 			method: method.toHex(),
+			mode: this.api.registry.createType('u8', 0).toHex(),
 			nonce: nonce.toHex(),
 			signedExtensions: [
 				'CheckNonZeroSender',
@@ -811,6 +813,7 @@ export class AssetTransferApi {
 				'CheckNonce',
 				'CheckWeight',
 				'ChargeAssetTxPayment',
+				'CheckMetadataHash',
 			],
 			tip: this.api.registry.createType('Compact<Balance>', 0).toHex(),
 			version: tx.version,

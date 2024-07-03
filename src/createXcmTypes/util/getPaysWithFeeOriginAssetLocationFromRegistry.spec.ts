@@ -1,11 +1,11 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 import { AssetTransferApi } from '../../AssetTransferApi';
-import { adjustedMockSystemApiV1011000 } from '../../testHelpers/adjustedMockSystemApiV1011000';
+import { adjustedMockSystemApiV1014000 } from '../../testHelpers/adjustedMockSystemApiV1014000';
 import { getPaysWithFeeOriginAssetLocationFromRegistry } from './getPaysWithFeeOriginAssetLocationFromRegistry';
 
 describe('getPaysWithFeeOriginAssetLocationFromRegistry', () => {
-	const assetHubAPI = new AssetTransferApi(adjustedMockSystemApiV1011000, 'asset-hub-westend', 4, {
+	const assetHubAPI = new AssetTransferApi(adjustedMockSystemApiV1014000, 'asset-hub-westend', 4, {
 		registryType: 'NPM',
 	});
 
