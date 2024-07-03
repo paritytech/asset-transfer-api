@@ -26,6 +26,7 @@ import type {
 	XcmV4Junctions,
 	XcmWeight,
 } from './types';
+import { assetIdIsLocation } from './util/assetIdIsLocation';
 import { dedupeAssets } from './util/dedupeAssets';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
 import { getAssetId } from './util/getAssetId';
@@ -208,7 +209,7 @@ export const SystemToPara: ICreateXcmType = {
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
 		} = opts;
-		if (xcmVersion && xcmVersion === 3 && specName && amounts && assetIds && paysWithFeeDest) {
+		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
 			const multiAssets = await createSystemToParaMultiAssets(
 				api,
 				normalizeArrToStr(amounts),
@@ -269,7 +270,6 @@ export const createSystemToParaMultiAssets = async (
 ): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
-	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 
 	if (!isSystemChain(systemChainId)) {
@@ -279,14 +279,14 @@ export const createSystemToParaMultiAssets = async (
 		);
 	}
 
-	const { tokens } = registry.currentRelayRegistry[systemChainId];
-
 	for (let i = 0; i < assets.length; i++) {
 		let assetId: string = assets[i];
 		const amount = amounts[i];
 
+		const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, isForeignAssetsTransfer);
+
 		const isValidInt = validateNumber(assetId);
-		const isRelayNative = isRelayNativeAsset(tokens, assetId);
+		const isRelayNative = isRelayNativeAsset(registry, assetId);
 
 		if (!isRelayNative && !isValidInt) {
 			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
@@ -294,7 +294,7 @@ export const createSystemToParaMultiAssets = async (
 
 		let concreteMultiLocation: UnionXcmMultiLocation;
 
-		if (isForeignAssetsTransfer) {
+		if (isForeignAssetsTransfer && assetIdIsLocation(assetId)) {
 			concreteMultiLocation = resolveMultiLocation(assetId, xcmVersion);
 		} else {
 			const parents = isRelayNative ? 1 : 0;

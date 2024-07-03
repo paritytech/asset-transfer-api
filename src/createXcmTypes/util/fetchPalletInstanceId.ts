@@ -3,6 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { BaseError, BaseErrorsEnum } from '../../errors';
+import { assetIdIsLocation } from './assetIdIsLocation';
 
 /**
  * This fetches the metadata for the chain we are connected to and searches for the appropriate pallet and returns its index.
@@ -10,7 +11,12 @@ import { BaseError, BaseErrorsEnum } from '../../errors';
  * @param api ApiPromise.
  * @param isLiquidToken Boolean to determine whether or not to fetch the PoolAssets id.
  */
-export const fetchPalletInstanceId = (api: ApiPromise, isLiquidToken: boolean, isForeignAsset: boolean): string => {
+export const fetchPalletInstanceId = (
+	api: ApiPromise,
+	assetId: string,
+	isLiquidToken: boolean,
+	isForeignAsset: boolean,
+): string => {
 	if (isLiquidToken && isForeignAsset) {
 		throw new BaseError(
 			"Can't find the appropriate pallet when both liquid tokens and foreign assets",
@@ -21,7 +27,7 @@ export const fetchPalletInstanceId = (api: ApiPromise, isLiquidToken: boolean, i
 	const palletName =
 		isLiquidToken && api.query.poolAssets
 			? 'PoolAssets'
-			: isForeignAsset && api.query.foreignAssets
+			: isForeignAsset && api.query.foreignAssets && assetIdIsLocation(assetId)
 			  ? 'ForeignAssets'
 			  : api.query.assets
 			    ? 'Assets'

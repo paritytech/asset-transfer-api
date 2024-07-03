@@ -20,7 +20,7 @@ export const checkBaseInputTypes = (destChainId: string, destAddr: string, asset
 	}
 
 	if (!Array.isArray(assetIds)) {
-		throw new BaseError(`'assetIds' must be a array. Received: ${typeof assetIds}`, BaseErrorsEnum.InvalidInput);
+		throw new BaseError(`'assetIds' must be an array. Received: ${typeof assetIds}`, BaseErrorsEnum.InvalidInput);
 	} else {
 		for (let i = 0; i < assetIds.length; i++) {
 			if (typeof assetIds[i] !== 'string') {
@@ -33,7 +33,7 @@ export const checkBaseInputTypes = (destChainId: string, destAddr: string, asset
 	}
 
 	if (!Array.isArray(amounts)) {
-		throw new BaseError(`'amounts' must be a array. Received: ${typeof amounts}`, BaseErrorsEnum.InvalidInput);
+		throw new BaseError(`'amounts' must be an array. Received: ${typeof amounts}`, BaseErrorsEnum.InvalidInput);
 	} else {
 		for (let i = 0; i < amounts.length; i++) {
 			if (typeof amounts[i] !== 'string') {

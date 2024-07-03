@@ -15,10 +15,10 @@ import BN from 'bn.js';
 
 import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { createApiWithAugmentations } from './createApiWithAugmentations';
-import { assetHubWestendV1009000 } from './metadata/assetHubWestendV1009000';
+import { assetHubWestendV1011000 } from './metadata/assetHubWestendV1011000';
 import { mockWeightInfo } from './mockWeightInfo';
 
-const mockSystemApi = createApiWithAugmentations(assetHubWestendV1009000);
+const mockSystemApi = createApiWithAugmentations(assetHubWestendV1011000);
 
 /**
  * Create a type registry for Westmint.
@@ -39,7 +39,7 @@ function createWestmintRegistry(specVersion: number): TypeRegistry {
 
 	registry.register(getSpecTypes(registry, 'Westmint', 'westmint', specVersion));
 
-	registry.setMetadata(new Metadata(registry, assetHubWestendV1009000));
+	registry.setMetadata(new Metadata(registry, assetHubWestendV1011000));
 
 	return registry;
 }
@@ -60,7 +60,7 @@ const queryInfoCallAt = () =>
 	Promise.resolve().then(() => mockSystemApi.createType('RuntimeDispatchInfoV2', mockWeightInfo));
 
 const getMetadata = () =>
-	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1009000));
+	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1011000));
 
 const getHeader = (): Promise<Header> =>
 	Promise.resolve().then(() =>
@@ -147,7 +147,7 @@ const asset = (assetId: number | string | BN): Promise<Option<PalletAssetsAssetD
 		const maybeAsset = assets.has(adjAsset) ? assets.get(adjAsset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1009000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1011000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -186,16 +186,44 @@ const assetsMetadata = (assetId: number | string | BN): Promise<PalletAssetsAsse
 const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
 		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
-		const assetsMutliLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', asset);
-		const multiLocationStr = '{"parents":"1","interior":{"X2": [{"Parachain":"1103"}, {"GeneralIndex": "0"}]}}';
-		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', JSON.parse(multiLocationStr));
-		const multiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
-		assets.set(multiLocation.toHex(), multiLocationAsset);
+		const assetMultiLocation = JSON.stringify(asset);
 
-		const maybeAsset = assets.has(assetsMutliLocation.toHex()) ? assets.get(assetsMutliLocation.toHex()) : undefined;
+		const multiLocationStr = '{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}';
+		const multiLocationAsset = mockSystemApi.registry.createType('PalletAssetsAssetDetails', multiLocationAssetInfo);
+		assets.set(multiLocationStr, multiLocationAsset);
+
+		const bridgedRococoMultiLocation1Str = '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}';
+		const bridgedRococoMultiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo,
+		);
+		assets.set(bridgedRococoMultiLocation1Str, bridgedRococoMultiLocationAsset);
+
+		const bridgedPolkadotMultiLocation1Str = '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}';
+		const bridgedPolkadotMultiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo,
+		);
+		assets.set(bridgedPolkadotMultiLocation1Str, bridgedPolkadotMultiLocationAsset);
+
+		const bridgedEthereumMultiLocationStr = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`;
+		const bridgedEthereumMultiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo,
+		);
+		assets.set(bridgedEthereumMultiLocationStr, bridgedEthereumMultiLocationAsset);
+
+		const bridgedEthereum2MultiLocationStr = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xc3d088842dcf02c13699f936bb83dfbbc6f721ab"}}]}}`;
+		const bridgedEthereum2MultiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo,
+		);
+		assets.set(bridgedEthereum2MultiLocationStr, bridgedEthereum2MultiLocationAsset);
+
+		const maybeAsset = assets.has(assetMultiLocation) ? assets.get(assetMultiLocation) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1009000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1011000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -204,7 +232,7 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAssetsAssetMetadata> =>
 	Promise.resolve().then(() => {
 		const metadata: Map<string, PalletAssetsAssetMetadata> = new Map();
-		const assetIdMultiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', assetId);
+		const assetIdMultiLocation = JSON.stringify(assetId);
 
 		const rawTnkrMultiLocationMetadata = {
 			deposit: mockSystemApi.registry.createType('u128', 6693666633),
@@ -219,15 +247,10 @@ const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAs
 			'PalletAssetsAssetMetadata',
 			rawTnkrMultiLocationMetadata,
 		);
-		const multiLocation = mockSystemApi.registry.createType('XcmV2MultiLocation', {
-			parents: '1',
-			interior: { X2: [{ Parachain: '1103' }, { GeneralIndex: '0' }] },
-		});
-		metadata.set(multiLocation.toHex(), tnkrForeignAssetMetadata);
+		const multiLocation = `{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}`;
+		metadata.set(multiLocation, tnkrForeignAssetMetadata);
 
-		const maybeMetadata = metadata.has(assetIdMultiLocation.toHex())
-			? metadata.get(assetIdMultiLocation.toHex())
-			: undefined;
+		const maybeMetadata = metadata.has(assetIdMultiLocation) ? metadata.get(assetIdMultiLocation) : undefined;
 
 		if (maybeMetadata) {
 			return maybeMetadata;
@@ -246,7 +269,7 @@ const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const maybeAsset = assets.has(asset) ? assets.get(asset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1009000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1011000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -294,9 +317,9 @@ const mockApiAt = {
 	},
 };
 
-export const adjustedMockSystemApiV1009000 = {
+export const adjustedMockSystemApiV1011000 = {
 	createType: createType,
-	registry: createWestmintRegistry(1009000),
+	registry: createWestmintRegistry(1011000),
 	rpc: {
 		state: {
 			getRuntimeVersion: getSystemRuntimeVersion,
@@ -318,7 +341,154 @@ export const adjustedMockSystemApiV1009000 = {
 			metadata: assetsMetadata,
 		},
 		foreignAssets: {
-			asset: foreignAsset,
+			asset: Object.assign(foreignAsset, {
+				entries: () => {
+					const storageKeyData = [
+						[
+							Object.assign(
+								'0x30e64a56026f4b5e3c2d196283a9a17dd34371a193a751eea5883e9553457b2e1afcbaa957381128fa2f32d7b2871124020209079edaa8020300c9f05326311bc2a55426761bec20057685fb80f7',
+								{
+									toHuman: () => {
+										return [{ parents: '1', interior: { X2: [{ Parachain: '2125' }, { GeneralIndex: '0' }] } }];
+									},
+								},
+							),
+							{
+								owner: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								issuer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								admin: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								freezer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								supply: '0x00000000000000001bc16d674ec80000',
+								deposit: 100000000000,
+								minBalance: 1,
+								isSufficient: false,
+								accounts: 1,
+								sufficients: 0,
+								approvals: 0,
+								status: 'Live',
+							},
+						],
+						[
+							Object.assign(
+								'0x30e64a56026f4b5e3c2d196283a9a17dd34371a193a751eea5883e9553457b2e40829062ff2f47b747a4ffd8da5b653f020209079edaa8020300b34a6924a02100ba6ef12af1c798285e8f7a16ee',
+								{
+									toHuman: () => {
+										return [{ parents: '2', interior: { X1: { GlobalConsensus: 'Rococo' } } }];
+									},
+								},
+							),
+							{
+								owner: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								issuer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								admin: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								freezer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								supply: '0x00000000000000001bc16d674ec80000',
+								deposit: 100000000000,
+								minBalance: 1,
+								isSufficient: false,
+								accounts: 1,
+								sufficients: 0,
+								approvals: 0,
+								status: 'Live',
+							},
+						],
+						[
+							Object.assign(
+								'0x30e64a56026f4b5e3c2d196283a9a17dd34371a193a751eea5883e9553457b2e8e98a2f8b983529ae6515f403f4b5bd5020209079edaa8020300c3d088842dcf02c13699f936bb83dfbbc6f721ab',
+								{
+									toHuman: () => {
+										return [{ parents: '2', interior: { X1: { GlobalConsensus: 'Polkadot' } } }];
+									},
+								},
+							),
+							{
+								owner: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								issuer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								admin: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								freezer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								supply: '0x00000000000000001bc16d674ec80000',
+								deposit: 100000000000,
+								minBalance: 1,
+								isSufficient: false,
+								accounts: 1,
+								sufficients: 0,
+								approvals: 0,
+								status: 'Live',
+							},
+						],
+						[
+							Object.assign(
+								'0x30e64a56026f4b5e3c2d196283a9a17dd34371a193a751eea5883e9553457b2eb3a5911d7874cd9283dcfd1fe247aa0d010100b11c',
+								{
+									toHuman: () => {
+										return [
+											{
+												parents: '2',
+												interior: {
+													X2: [
+														{ GlobalConsensus: { Ethereum: { chainId: '11155111' } } },
+														{ AccountKey20: { network: null, key: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14' } },
+													],
+												},
+											},
+										];
+									},
+								},
+							),
+							{
+								owner: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								issuer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								admin: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								freezer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								supply: '0x00000000000000001bc16d674ec80000',
+								deposit: 100000000000,
+								minBalance: 1,
+								isSufficient: false,
+								accounts: 1,
+								sufficients: 0,
+								approvals: 0,
+								status: 'Live',
+							},
+						],
+						[
+							Object.assign(
+								'0x30e64a56026f4b5e3c2d196283a9a17dd34371a193a751eea5883e9553457b2eba06e8d16807b79060f24185ad2a4ede02010904',
+								{
+									toHuman: () => {
+										return [
+											{
+												parents: '2',
+												interior: {
+													X2: [
+														{ GlobalConsensus: { Ethereum: { chainId: '11155111' } } },
+														{ AccountKey20: { network: null, key: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14' } },
+													],
+												},
+											},
+										];
+									},
+								},
+							),
+							{
+								owner: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								issuer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								admin: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								freezer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								supply: '0x00000000000000001bc16d674ec80000',
+								deposit: 100000000000,
+								minBalance: 1,
+								isSufficient: false,
+								accounts: 1,
+								sufficients: 0,
+								approvals: 0,
+								status: 'Live',
+							},
+						],
+					];
+
+					return storageKeyData;
+				},
+			}),
 			metadata: foreignAssetsMetadata,
 		},
 		poolAssets: {
@@ -415,6 +585,7 @@ export const adjustedMockSystemApiV1009000 = {
 			limitedTeleportAssets: mockSystemApi.tx['polkadotXcm'].limitedTeleportAssets,
 			transferAssets: mockSystemApi.tx['polkadotXcm'].transferAssets,
 			claimAssets: mockSystemApi.tx['polkadotXcm'].claimAssets,
+			transferAssetsUsingTypeAndThen: mockSystemApi.tx['polkadotXcm'].transferAssetsUsingTypeAndThen,
 		},
 		assets: {
 			transfer: mockSystemApi.tx.assets.transfer,

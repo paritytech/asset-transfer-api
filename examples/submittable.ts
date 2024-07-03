@@ -30,7 +30,7 @@ const main = async () => {
 			['1000000000000'],
 			{
 				format: 'submittable',
-				xcmVersion: 2,
+				xcmVersion: safeXcmVersion,
 			},
 		);
 

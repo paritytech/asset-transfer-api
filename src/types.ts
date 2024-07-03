@@ -10,6 +10,7 @@ import BN from 'bn.js';
 import { CreateXcmCallOpts } from './createXcmCalls/types';
 import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
+import { UnionXcmMultiLocation } from './createXcmTypes/types';
 import type { Registry } from './registry';
 import type { ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './registry/types';
 
@@ -46,6 +47,10 @@ export enum Direction {
 	 */
 	SystemToSystem = 'SystemToSystem',
 	/**
+	 * System parachain to an external `GlobalConsensus` chain.
+	 */
+	SystemToBridge = 'SystemToBridge',
+	/**
 	 * Parachain to Parachain.
 	 */
 	ParaToPara = 'ParaToPara',
@@ -65,6 +70,10 @@ export enum Direction {
 	 * Relay chain to Parachain.
 	 */
 	RelayToPara = 'RelayToPara',
+	/**
+	 * Relay chain to an external `GlobalConsensus` chain.
+	 */
+	RelayToBridge = 'RelayToBridge',
 }
 
 /**
@@ -90,11 +99,13 @@ export enum LocalTxChainType {
 }
 
 export interface ChainOriginDestInfo {
+	isOriginRelayChain: boolean;
+	isOriginSystemParachain: boolean;
+	isOriginParachain: boolean;
 	isDestRelayChain: boolean;
 	isDestSystemParachain: boolean;
 	isDestParachain: boolean;
-	isOriginSystemParachain: boolean;
-	isOriginParachain: boolean;
+	isDestBridge: boolean;
 }
 
 export interface LocalTxOpts extends TransferArgsOpts<Format> {
@@ -142,6 +153,7 @@ export type LocalTransferTypes =
 export type Methods =
 	| LocalTransferTypes
 	| 'transferAssets'
+	| 'transferAssetsUsingTypeAndThen'
 	| 'limitedReserveTransferAssets'
 	| 'limitedTeleportAssets'
 	| 'transferMultiasset'
@@ -166,6 +178,10 @@ export type AssetTransferApiOpts<T extends ChainInfoKeys | InjectedChainInfoKeys
 	 * or the hosted CDN which updates frequently.
 	 */
 	registryType?: RegistryTypes;
+	/**
+	 * Chain name of the chain which the api is connected to.
+	 */
+	chainName?: string;
 };
 
 /**
@@ -270,6 +286,32 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Default is false.
 	 */
 	transferLiquidToken?: boolean;
+	/**
+	 * The XCM `TransferType` used to transfer assets.
+	 * Provided to construct `transferAssetsUsingTypeAndThen` transactions.
+	 */
+	assetTransferType?: string;
+	/**
+	 * The RemoteReserve location for an XCM transfer.
+	 * Should be provided when specifying an `assetTransferType` of `RemoteReserve`.
+	 */
+	remoteReserveAssetTransferTypeLocation?: string;
+	/**
+	 * The XCM `TransferType` used to pay fees for an XCM transfer.
+	 * Provided to construct `transferAssetsUsingTypeAndThen` transactions.
+	 */
+	feesTransferType?: string;
+	/**
+	 * The RemoteReserve location for an XCM transfers' fees.
+	 * Should be provided when specfying a `feesTransferType` of RemoteReserve.
+	 */
+	remoteReserveFeesTransferTypeLocation?: string;
+	/**
+	 * Optional custom XCM message to be executed on destination chain.
+	 * Should be provided if a custom xcm message is needed after transfering assets.
+	 * Defaults to `Xcm(vec![DepositAsset { assets: Wild(AllCounted(assets.len())), beneficiary }])`
+	 */
+	customXcmOnDest?: string;
 }
 
 export interface ChainInfo {
@@ -405,3 +447,26 @@ export type XTokensTxMethodTransactionMap = {
 export type XcmPalletTxMethodTransactionMap = {
 	[x: string]: [XcmPalletCallSignature, CallArgs];
 };
+
+export type RemoteReserveV3 = {
+	RemoteReserve: {
+		V3: UnionXcmMultiLocation;
+	};
+};
+export type RemoteReserveV4 = {
+	RemoteReserve: {
+		V4: UnionXcmMultiLocation;
+	};
+};
+export type RemoteReserve = RemoteReserveV3 | RemoteReserveV4;
+export type LocalReserve = {
+	LocalReserve: 'null';
+};
+export type DestinationReserve = {
+	DestinationReserve: 'null';
+};
+export type Teleport = {
+	Teleport: 'null';
+};
+
+export type AssetTransferType = LocalReserve | DestinationReserve | Teleport | RemoteReserve;

@@ -1,5 +1,52 @@
 # Changelog
 
+## [0.3.0](https://github.com/paritytech/asset-transfer-api/compare/v0.2.1..v0.3.0)
+
+### Feat
+
+- feat: support relay to bridge tx construction ([#409](https://github.com/paritytech/asset-transfer-api/pull/409))([436d78b](https://github.com/paritytech/asset-transfer-api/commit/436d78bf6cdd086ee179ebbe8e11d0e06bdcdee2))
+
+### Chore
+
+- chore(deps): update pjs ([#414](https://github.com/paritytech/asset-transfer-api/pull/414))([563d208](https://github.com/paritytech/asset-transfer-api/commit/563d2088172feebe50402df596e8b7834e99fd2d))
+- chore(registry): update registry dep ([#413](https://github.com/paritytech/asset-transfer-api/pull/413))([f3be2fe](https://github.com/paritytech/asset-transfer-api/commit/f3be2feca6e0d19b7c571ff4b4befb3e04e8f1a6))
+- chore(yarn): bump yarn to 4.2.2 ([#411](https://github.com/paritytech/asset-transfer-api/pull/411))([54e8148](https://github.com/paritytech/asset-transfer-api/commit/54e8148431e6def75beaa6f4c14a8847270511b7))
+- chore(examples): update xmcVersion to safeXcmVersion ([#410](https://github.com/paritytech/asset-transfer-api/pull/410))([615d3be](https://github.com/paritytech/asset-transfer-api/commit/615d3be891cd554e2c9a24ac1b6e2d67828f4b6c))
+
+## [0.2.1](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0..v0.2.1)
+
+### Fix
+
+- fix: explicitly use passed in dest locations for bridgeTransfers ([#406](https://github.com/paritytech/asset-transfer-api/pull/406))([b3a199a](https://github.com/paritytech/asset-transfer-api/commit/b3a199ace74bc951abe9045d70110c1b9eac8089))
+
+
+## [0.2.0](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.2..v0.2.0)
+
+### Chore
+
+- chore(deps): update pjs ([#403](https://github.com/paritytech/asset-transfer-api/pull/403))([60f82f9](https://github.com/paritytech/asset-transfer-api/commit/60f82f9a478ca65e1f8831b87ab6458c598edd34))
+- chore(registry): update registry dep ([#402](https://github.com/paritytech/asset-transfer-api/pull/402))([014c8f0](https://github.com/paritytech/asset-transfer-api/commit/014c8f0f79b8134ff44d8ca0cb96eb2c22dbf46f))
+- chore(deps): update pjs ([#398](https://github.com/paritytech/asset-transfer-api/pull/398))([339e032](https://github.com/paritytech/asset-transfer-api/commit/339e0322f22e5e3a8b5fd98c145212b6e1cc94b2))
+Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub.
+- chore(deps): up pjs ([#396](https://github.com/paritytech/asset-transfer-api/pull/396))([4073aa2](https://github.com/paritytech/asset-transfer-api/commit/4073aa21250643d4503ef9fb123eaf27bea1fa90))
+- chore(registry): update registry dep ([#395](https://github.com/paritytech/asset-transfer-api/pull/395))([d7f3d8a](https://github.com/paritytech/asset-transfer-api/commit/d7f3d8afeb02f9c4b9e322d02337a33c19fe0856))
+- chore(deps): up pjs ([#387](https://github.com/paritytech/asset-transfer-api/pull/387))([f3f2b28](https://github.com/paritytech/asset-transfer-api/commit/f3f2b28bada384be23317cf281bdd74426553461))
+- chore(registry): update registry dep ([#385](https://github.com/paritytech/asset-transfer-api/pull/385))([00064ea](https://github.com/paritytech/asset-transfer-api/commit/00064ea628b0095bcf0227bccb0122ddbd3b4f1d))
+
+### Feat
+
+- feat: support system to bridge txs ([#383](https://github.com/paritytech/asset-transfer-api/pull/383))([311ecd9](https://github.com/paritytech/asset-transfer-api/commit/311ecd91ade1756933500760211d1e351ba907c0))
+- feat: add support for pallet-xcm claimAssets call ([#394](https://github.com/paritytech/asset-transfer-api/pull/394))([685ca19](https://github.com/paritytech/asset-transfer-api/commit/685ca19e54bdc6dc76b93423b09c9b44f57a009e))
+
+## Breaking Change
+
+- fix!: always use limited calls ([#392](https://github.com/paritytech/asset-transfer-api/pull/392))([c7ff030](https://github.com/paritytech/asset-transfer-api/commit/c7ff0302dcea92ecb92623832f6460cc56e28491))
+- fix!: change TxResult<payload> type ([#391](https://github.com/paritytech/asset-transfer-api/pull/391))([09d1410](https://github.com/paritytech/asset-transfer-api/commit/09d141006f928ecf9b08e2b894ae6dfd4df7d8de))
+
+### Fix
+
+- fix: update lp pool token storage key destructuring ([#390](https://github.com/paritytech/asset-transfer-api/pull/390))([cb7d39f](https://github.com/paritytech/asset-transfer-api/commit/cb7d39fb3ffbaa7f905545268f014c8ba51156ab))
+
 ## [0.2.0-beta.2](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.1..v0.2.0-beta.2)(2024-04-24)
 
 ### Chore

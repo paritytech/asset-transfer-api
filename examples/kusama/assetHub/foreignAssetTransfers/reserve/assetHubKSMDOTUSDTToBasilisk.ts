@@ -8,10 +8,12 @@ import { TxResult } from '../../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../../colors';
 
 /**
- * In this example we are creating a `polkadotXcm` pallet `limitedTeleportAssets` call to send MOVR (foreign asset with location `{"parents":"1","interior":{"X2":[{"Parachain":"2023"},{"PalletInstance":"10"}]}}`)
- * from a Kusama Asset Hub (System Parachain) account
- * to a Moonriver (ParaChain) account, where the `xcmVersion` is set to 3 and no `weightLimit` option is provided declaring that
+ * In this example we are creating a `polkadotXcm` `transferAssetsUsingTypeAndThen` call to send 1 KSM (asset with location `{"parents":"0","interior":{"Here":""}}`),
+ * 1 DOT (foreign asset with location `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`) and 1 USDT (asset with id `1984`)
+ * from a Kusama AssetHub account to a Basilisk Parachain account, where the `xcmVersion` is set to 4 and no `weightLimit` option is provided declaring that
  * the tx will allow unlimited weight to be used for fees.
+ * The `paysWithFeeDest` value is set to pay fees with KSM and the values for `assetTransferType` and `feesTransferType`
+ * are both set to `LocalReserve` specifying that the reserve location to be used for transferring and fees is the origin of Kusama AssetHub.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
@@ -22,13 +24,20 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			'2023', // Note: Parachain ID 2023 (Moonriver) is identical to the asset location's `Parachain` Id, making this a `limitedTeleportAssets` call
-			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
-			['{"parents":"1","interior":{"X2":[{"Parachain":"2023"},{"PalletInstance":"10"}]}}'],
-			['1000000000000'],
+			`2090`,
+			'13EoPU88424tufnjevEYbbvZ7sGV3q1uhuN4ZbUaoTsnLHYt',
+			[
+				`{"parents":"1","interior":{"Here":""}}`,
+				`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
+				`1984`,
+			],
+			['1000000000000', '1000000000000', '1000000'],
 			{
 				format: 'call',
-				xcmVersion: 3,
+				xcmVersion: 4,
+				paysWithFeeDest: `{"parents":"1","interior":{"Here":""}}`,
+				assetTransferType: 'LocalReserve',
+				feesTransferType: 'LocalReserve',
 			},
 		);
 
