@@ -50,7 +50,7 @@
     "typedoc-theme-hierarchy": "^4.0.0"
   },
   "dependencies": {
-    "@polkadot/api": "11.2.1",
-    "@substrate/asset-transfer-api-registry": "^0.2.20"
+    "@polkadot/api": "12.1.1",
+    "@substrate/asset-transfer-api-registry": "^0.2.17"
   }
 }
