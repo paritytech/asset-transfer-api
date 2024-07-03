@@ -1400,11 +1400,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@substrate/asset-transfer-api-registry@npm:^0.2.20":
-=======
 "@substrate/asset-transfer-api-registry@npm:^0.2.17":
->>>>>>> main
   version: 0.2.20
   resolution: "@substrate/asset-transfer-api-registry@npm:0.2.20"
   checksum: 10/77fc71840c9289476f6549662916e7cf2be370a51db2228ff678c31168f3c4d17dccd0c0373d044d2408c035bffa1608ab910b77037640b29ac187514b960929
