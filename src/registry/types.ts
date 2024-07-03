@@ -90,6 +90,8 @@ export type SanitizedXcAssetsData = {
 		| { Native: string }
 		| { Stable: string }
 		| string;
+	assetHubReserveLocation: string;
+	originChainReserveLocation?: string;
 };
 
 export type AssetsInfoType = 'assetsInfo' | 'foreignAssetsInfo' | 'poolPairsInfo';

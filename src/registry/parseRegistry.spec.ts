@@ -422,6 +422,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token: 'RMRK',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 			{
 				paraID: 1000,
@@ -432,6 +433,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token2: '0',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 		];
 		const opts = {
@@ -467,6 +469,7 @@ describe('parseRegistry', () => {
 					asset: {
 						Token: 'RMRK',
 					},
+					assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 				},
 				{
 					paraID: 1000,
@@ -477,6 +480,7 @@ describe('parseRegistry', () => {
 					asset: {
 						Token2: '0',
 					},
+					assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 				},
 			],
 			specName: 'termo',
@@ -495,6 +499,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token: 'RMRK',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 			{
 				paraID: 1230,
@@ -505,6 +510,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token2: '0',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 		];
 		const opts = {
@@ -529,6 +535,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token: 'RMRK',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 			{
 				paraID: 1000,
@@ -539,6 +546,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token2: '0',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 			{
 				paraID: 1230,
@@ -549,6 +557,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token2: '0',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 		]);
 	});
@@ -577,6 +586,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token: 'RMRK',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 			{
 				paraID: 1230,
@@ -587,6 +597,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token2: '0',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 		];
 		const opts = {
@@ -610,6 +621,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token: 'RMRK',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 			{
 				paraID: 1230,
@@ -620,6 +632,7 @@ describe('parseRegistry', () => {
 				asset: {
 					Token2: '0',
 				},
+				assetHubReserveLocation: `{"parents":"0","interior":{"Here":""}}`,
 			},
 		]);
 	});

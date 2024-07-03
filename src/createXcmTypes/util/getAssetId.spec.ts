@@ -30,7 +30,7 @@ describe('getAssetId', () => {
 		it('Should error when an asset id symbol is given that is not present in the registry or chain state', async () => {
 			await expect(async () => {
 				await getAssetId(systemAssetsApi.api, registry, 'hello', 'statemine', 2, false);
-			}).rejects.toThrow('assetId hello is not a valid symbol or integer asset id');
+			}).rejects.toThrow('assetId hello is not a valid symbol, integer asset id or location for statemine');
 		});
 
 		it('Should correctly return the foreign asset multilocation when given a valid foreign asset multilocation', async () => {
