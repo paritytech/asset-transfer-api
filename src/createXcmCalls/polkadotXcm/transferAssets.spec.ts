@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry';
-import { adjustedMockSystemApiV1011000 } from '../../testHelpers/adjustedMockSystemApiV1011000';
+import { adjustedMockSystemApiV1014000 } from '../../testHelpers/adjustedMockSystemApiV1014000';
 import { adjustedMockWestendRelayApiV1007001 } from '../../testHelpers/adjustedMockWestendRelayApiV1007001';
 import { Direction, XcmBaseArgs, XcmDirection } from '../../types';
 import { transferAssets } from './transferAssets';
@@ -90,7 +90,7 @@ describe('transferAssets', () => {
 
 		const isLiquidTokenTransfer = false;
 		const baseArgs: XcmBaseArgs = {
-			api: adjustedMockSystemApiV1011000,
+			api: adjustedMockSystemApiV1014000,
 			direction: Direction.SystemToRelay as XcmDirection,
 			destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 			assetIds: ['wnd'],
@@ -171,7 +171,7 @@ describe('transferAssets', () => {
 
 		const isLiquidTokenTransfer = false;
 		const baseArgs: XcmBaseArgs = {
-			api: adjustedMockSystemApiV1011000,
+			api: adjustedMockSystemApiV1014000,
 			direction: Direction.SystemToPara as XcmDirection,
 			destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 			assetIds: ['1'],

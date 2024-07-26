@@ -22,7 +22,7 @@ import { adjustedMockMoonriverNoXTokensParachainApi } from './testHelpers/adjust
 import { adjustedMockRelayApiNoLimitedReserveTransferAssets } from './testHelpers/adjustedMockRelayApiNoLimitedReserveTransferAssets';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
-import { adjustedMockSystemApiV1011000 } from './testHelpers/adjustedMockSystemApiV1011000';
+import { adjustedMockSystemApiV1014000 } from './testHelpers/adjustedMockSystemApiV1014000';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { AssetCallType, Direction, ResolvedCallInfo, UnsignedTransaction, XcmBaseArgs, XcmDirection } from './types';
@@ -50,7 +50,7 @@ const bifrostAssetsApi = new AssetTransferApi(adjustedMockBifrostParachainApi, '
 const moonriverAssetsNoXTokensApi = new AssetTransferApi(adjustedMockMoonriverNoXTokensParachainApi, 'moonriver', 2, {
 	registryType: 'NPM',
 });
-const westmintAssetsApi = new AssetTransferApi(adjustedMockSystemApiV1011000, 'westmint', 4, {
+const westmintAssetsApi = new AssetTransferApi(adjustedMockSystemApiV1014000, 'westmint', 4, {
 	registryType: 'NPM',
 });
 
@@ -181,7 +181,7 @@ describe('AssetTransferAPI', () => {
 			);
 			expect(res.format).toEqual('payload');
 			expect(res.tx.toHex()).toEqual(
-				'0xf81f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16010400000204320504009101000000000045022800010000cc240000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+				'0xf81f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16010400000204320504009101000000000045022800010000e0510f00040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 			);
 		});
 		it('Should construct the correct submittable', async () => {
@@ -638,6 +638,7 @@ describe('AssetTransferAPI', () => {
 						format: 'payload',
 						keepAlive: true,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						paysWithFeeOrigin: '1984',
 					},
 				);
 
@@ -812,26 +813,6 @@ describe('AssetTransferAPI', () => {
 
 			expect(unsigned.assetId).toStrictEqual(expected);
 		});
-
-		it('Should error during payload construction when a paysWithFeeOrigin is provided that matches a non sufficient asset', async () => {
-			await expect(async () => {
-				await systemAssetsApi.createTransferTransaction(
-					'2023',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					['usdc'],
-					['4000000000'],
-					{
-						paysWithFeeOrigin: '100',
-						format: 'payload',
-						keepAlive: true,
-						paysWithFeeDest: 'USDC',
-						xcmVersion: 3,
-						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-					},
-				);
-			}).rejects.toThrow('asset with assetId 100 is not a sufficient asset to pay for fees');
-		});
-
 		it('Should error during payload construction when a non integer paysWithFeeOrigin is provided that is not a valid MultiLocation', async () => {
 			await expect(async () => {
 				await systemAssetsApi.createTransferTransaction(
@@ -848,7 +829,7 @@ describe('AssetTransferAPI', () => {
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 					},
 				);
-			}).rejects.toThrow('paysWithFeeOrigin value must be a valid asset location. Received: hello there');
+			}).rejects.toThrow('assetId "hello there" is not a valid paysWithFeeOrigin asset location');
 		});
 
 		it('Should error during payload construction when a paysWithFeeOrigin is provided that is not part of a valid lp token pair', async () => {
@@ -859,7 +840,8 @@ describe('AssetTransferAPI', () => {
 					['1984'],
 					['5000000'],
 					{
-						paysWithFeeOrigin: '{"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
+						paysWithFeeOrigin:
+							'{"parents":"1","interior":{"X2":[{"Parachain":"20070223"},{"PalletInstance":"1000000"}]}}',
 						format: 'payload',
 						keepAlive: true,
 						paysWithFeeDest: '1984',
@@ -868,7 +850,7 @@ describe('AssetTransferAPI', () => {
 					},
 				);
 			}).rejects.toThrow(
-				'paysWithFeeOrigin value must be a valid asset location. Received: {"parents":"1","interior":{"X2":["Parachain":"2007","PalletInstance":"1000000"]}}',
+				'assetId {"parents":"1","interior":{"X2":[{"Parachain":"20070223"},{"PalletInstance":"1000000"}]}} is not a valid liquidity pool token for statemine',
 			);
 		});
 	});

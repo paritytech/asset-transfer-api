@@ -261,17 +261,15 @@ export const createSystemToBridgeAssets = async (
 ): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
-	const palletId = fetchPalletInstanceId(api, isLiquidTokenTransfer, isForeignAssetsTransfer);
-	const systemChainId = registry.lookupChainIdBySpecName(specName);
 
 	for (let i = 0; i < assets.length; i++) {
 		let assetId: string = assets[i];
 		const amount = amounts[i];
 
-		const { tokens } = registry.currentRelayRegistry[systemChainId];
+		const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, isForeignAssetsTransfer);
 
 		const isValidInt = validateNumber(assetId);
-		const isRelayNative = isRelayNativeAsset(tokens, assetId);
+		const isRelayNative = isRelayNativeAsset(registry, assetId);
 		if (!isRelayNative && !isValidInt) {
 			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 		}

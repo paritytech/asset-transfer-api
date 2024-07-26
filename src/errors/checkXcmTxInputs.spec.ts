@@ -109,19 +109,19 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToSystem,
-				`(RelayToSystem) asset 1 is not polkadot's native asset. Expected DOT`,
+				`(RelayToSystem) assetId 1 is not the native asset of polkadot relay chain. Expected an assetId of DOT or asset location {"parents":"0","interior":{"Here":""}}`,
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToSystem,
-				`(RelayToSystem) asset DOT is not kusama's native asset. Expected KSM`,
+				`(RelayToSystem) assetId DOT is not the native asset of kusama relay chain. Expected an assetId of KSM or asset location {"parents":"0","interior":{"Here":""}}`,
 			],
 			[
 				'Westend',
 				['WND', '100000'],
 				Direction.RelayToSystem,
-				`(RelayToSystem) asset 100000 is not westend's native asset. Expected WND`,
+				`(RelayToSystem) assetId 100000 is not the native asset of westend relay chain. Expected an assetId of WND or asset location {"parents":"0","interior":{"Here":""}}`,
 			],
 		];
 
@@ -134,13 +134,13 @@ describe('checkAssetIds', () => {
 				'Polkadot',
 				['1', 'DOT'],
 				Direction.RelayToPara,
-				`(RelayToPara) asset 1 is not polkadot's native asset. Expected DOT`,
+				`(RelayToPara) assetId 1 is not the native asset of polkadot relay chain. Expected an assetId of DOT or asset location {"parents":"0","interior":{"Here":""}}`,
 			],
 			[
 				'Kusama',
 				['DOT', 'KSM'],
 				Direction.RelayToPara,
-				`(RelayToPara) asset DOT is not kusama's native asset. Expected KSM`,
+				`(RelayToPara) assetId DOT is not the native asset of kusama relay chain. Expected an assetId of KSM or asset location {"parents":"0","interior":{"Here":""}}`,
 			],
 		];
 
@@ -149,9 +149,24 @@ describe('checkAssetIds', () => {
 
 	it('Should error when direction is SystemToRelay and an assetId is not native to the relay chain', async () => {
 		const tests: Test[] = [
-			['Statemint', ['0'], Direction.SystemToRelay, `(SystemToRelay) assetId 0 not native to polkadot`],
-			['Statemine', ['MOVR', 'KSM'], Direction.SystemToRelay, `(SystemToRelay) assetId MOVR not native to kusama`],
-			['Westmint', ['WND', '250'], Direction.SystemToRelay, `(SystemToRelay) assetId 250 not native to westend`],
+			[
+				'Statemint',
+				['0'],
+				Direction.SystemToRelay,
+				`(SystemToRelay) assetId 0 is not the native asset of polkadot relay chain. Expected an assetId of DOT or asset location {"parents":"1","interior":{"Here":""}}`,
+			],
+			[
+				'Statemine',
+				['MOVR', 'KSM'],
+				Direction.SystemToRelay,
+				`(SystemToRelay) assetId MOVR is not the native asset of kusama relay chain. Expected an assetId of KSM or asset location {"parents":"1","interior":{"Here":""}}`,
+			],
+			[
+				'Westmint',
+				['WND', '250'],
+				Direction.SystemToRelay,
+				`(SystemToRelay) assetId 250 is not the native asset of westend relay chain. Expected an assetId of WND or asset location {"parents":"1","interior":{"Here":""}}`,
+			],
 		];
 
 		await runTests(tests);
@@ -612,7 +627,7 @@ describe('checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain', () =>
 describe('checkAssetIdsLengthIsValid', () => {
 	it('Should correctly error when more than 2 assetIds are passed in', () => {
 		const assetIds = ['ksm', '1984', '10'];
-		const assetTransferType = 'RemoteReserve';
+		const assetTransferType = undefined;
 		const xcmPallet = XcmPalletName.polkadotXcm;
 
 		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
@@ -855,6 +870,7 @@ describe('checkBridgeTxInputs', () => {
 		);
 	});
 });
+
 describe('checkPaysWithFeeDestAssetIdIsInAssets', () => {
 	it('Should correctly error when a paysWithFeeDestAsset is not found in the assetIds list', () => {
 		const assetIds = [`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`];

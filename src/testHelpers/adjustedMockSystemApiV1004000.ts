@@ -585,7 +585,7 @@ export const adjustedMockSystemApi = {
 	},
 	runtimeVersion: {
 		transactionVersion: mockSystemApi.registry.createType('u32', 4),
-		specVersion: mockSystemApi.registry.createType('u32', 9420),
+		specVersion: mockSystemApi.registry.createType('u32', 1004000),
 	},
 	genesisHash: mockSystemApi.registry.createType('BlockHash'),
 } as unknown as ApiPromise;

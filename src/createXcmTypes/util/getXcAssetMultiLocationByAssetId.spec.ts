@@ -24,6 +24,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 				asset: {
 					Token: 'RMRK',
 				},
+				assetHubReserveLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
 			},
 			{
 				paraID: 1000,
@@ -34,6 +35,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 				asset: {
 					Token2: '0',
 				},
+				assetHubReserveLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
 			},
 		];
 
@@ -74,6 +76,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 				decimals: 12,
 				xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x0101"}]}}}',
 				asset: '72145018963825376852137222787619937732',
+				assetHubReserveLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
 			},
 			{
 				paraID: 2001,
@@ -81,6 +84,7 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 				decimals: 18,
 				xcmV1MultiLocation: '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x010a"}]}}}',
 				asset: '203223821023327994093278529517083736593',
+				assetHubReserveLocation: `{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}`,
 			},
 		];
 		it('Should correctly return the multilocation when given a valid integer assetId', async () => {

@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.3.1](https://github.com/paritytech/asset-transfer-api/compare/v0.3.0..v0.3.1)
+
+### Fix
+
+- fix(bug): added support for checkMetadataHash SignedExtension ([#421](https://github.com/paritytech/asset-transfer-api/pull/421))([2d84bfd](https://github.com/paritytech/asset-transfer-api/commit/36d4318920161cdb7945e289c059fee552d84bfd))
+- fix: Update paysWithFeeOrigin examples and errors ([#420](https://github.com/paritytech/asset-transfer-api/pull/420))([8d13795](https://github.com/paritytech/asset-transfer-api/commit/7eb9ce979a7b212623711bf716bda80fc8d13795))
+- fix: improve error messages ([#416](https://github.com/paritytech/asset-transfer-api/pull/416))([f42ae74](https://github.com/paritytech/asset-transfer-api/commit/5a11307491858d5317bd8f5fa60413633f42ae74))
+
+### Chore
+
+- chore(registry): update registry dep ([#423](https://github.com/paritytech/asset-transfer-api/pull/423))([7a58ae7](https://github.com/paritytech/asset-transfer-api/commit/c02d5bd65ca96afef52ebb798d8442aae7a58ae7))
+- chore(deps): bumped PJS/API to 12.1.1 ([#422](https://github.com/paritytech/asset-transfer-api/pull/422))([6a5e0d2](https://github.com/paritytech/asset-transfer-api/commit/a3f1740f90e5952fedbcb6254317d56bb6a5e0d2))
+
+### Docs
+
+- docs: add multiasset and AH reserve examples ([#418](https://github.com/paritytech/asset-transfer-api/pull/418))([1e6e060](https://github.com/paritytech/asset-transfer-api/commit/0bd701d0ae5da96b612934b8ee57f12b41e6e060))
+
+
+## [0.3.0](https://github.com/paritytech/asset-transfer-api/compare/v0.2.1..v0.3.0)
+
+### Feat
+
+- feat: support relay to bridge tx construction ([#409](https://github.com/paritytech/asset-transfer-api/pull/409))([436d78b](https://github.com/paritytech/asset-transfer-api/commit/436d78bf6cdd086ee179ebbe8e11d0e06bdcdee2))
+
+### Chore
+
+- chore(deps): update pjs ([#414](https://github.com/paritytech/asset-transfer-api/pull/414))([563d208](https://github.com/paritytech/asset-transfer-api/commit/563d2088172feebe50402df596e8b7834e99fd2d))
+- chore(registry): update registry dep ([#413](https://github.com/paritytech/asset-transfer-api/pull/413))([f3be2fe](https://github.com/paritytech/asset-transfer-api/commit/f3be2feca6e0d19b7c571ff4b4befb3e04e8f1a6))
+- chore(yarn): bump yarn to 4.2.2 ([#411](https://github.com/paritytech/asset-transfer-api/pull/411))([54e8148](https://github.com/paritytech/asset-transfer-api/commit/54e8148431e6def75beaa6f4c14a8847270511b7))
+- chore(examples): update xmcVersion to safeXcmVersion ([#410](https://github.com/paritytech/asset-transfer-api/pull/410))([615d3be](https://github.com/paritytech/asset-transfer-api/commit/615d3be891cd554e2c9a24ac1b6e2d67828f4b6c))
+
 ## [0.2.1](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0..v0.2.1)
 
 ### Fix
