@@ -121,7 +121,7 @@ AssetTransferApi.createTransferTransaction(
 type AssetTransferApiOpts = {
 	/**
 	 * The injectedRegistry allows you to add custom values to the predefined initialized registry.
-	 * If you would like to see the registry you may visit https://github.com/paritytech/asset-transfer-api-registry/blob/main/registry.json
+	 * If you would like to see the registry you may visit https://github.com/paritytech/asset-transfer-api-registry/blob/main/docs/registry.json
 	 * When adding a new chain, the `specName` and `tokens` fields are mandatory.
 	 * 
 	 * An example input of the registry would be:
