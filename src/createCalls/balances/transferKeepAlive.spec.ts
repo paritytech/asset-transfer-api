@@ -3,7 +3,7 @@
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { transferKeepAlive } from './transferKeepAlive';
 
-describe('transfer', () => {
+describe('balances::transfer', () => {
 	it('Should construct a valid transfer extrinsic', () => {
 		const res = transferKeepAlive(
 			mockSystemApi,

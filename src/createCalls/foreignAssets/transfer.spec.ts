@@ -4,7 +4,7 @@ import type { UnionXcmMultiLocation } from '../../createXcmTypes/types';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { transfer } from './transfer';
 
-describe('transfer', () => {
+describe('foreignAssets::transfer', () => {
 	it('Should construct a valid foreignAsset transfer extrinsic', () => {
 		const foreignAsset = {
 			parents: 1,

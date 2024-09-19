@@ -138,14 +138,21 @@ export type ConstructedFormat<T> = T extends 'payload'
 export type LocalTransferTypes =
 	| 'assets::transfer'
 	| 'assets::transferKeepAlive'
+	| 'assets::transferAll'
 	| 'foreignAssets::transfer'
 	| 'foreignAssets::transferKeepAlive'
+	| 'foreignAssets::transferAll'
 	| 'balances::transfer'
 	| 'balances::transferKeepAlive'
+	| 'balances::transferAll'
 	| 'poolAssets::transfer'
 	| 'poolAssets::transferKeepAlive'
+	| 'poolAssets::transferAll'
 	| 'tokens::transfer'
-	| 'tokens::transferKeepAlive';
+	| 'tokens::transferKeepAlive'
+	| 'tokens::transferAll';
+
+export type LocalMethodName = 'transfer' | 'transferKeepAlive' | 'transferAll';
 
 /**
  * The Methods are the collections of methods the API will use to construct a transaction.
@@ -277,10 +284,15 @@ export interface TransferArgsOpts<T extends Format> {
 	 */
 	xcmVersion?: number;
 	/**
-	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as oppose
+	 * For creating local asset transfers, this will allow for a `transferKeepAlive` as opposed
 	 * to a `transfer`.
 	 */
 	keepAlive?: boolean;
+	/**
+	 * For creating local asset transfers, this will allow for a `transferAll` call as opposed
+	 * to a `transfer` call.
+	 */
+	transferAll?: boolean;
 	/**
 	 * Boolean to declare if this will transfer liquidity tokens.
 	 * Default is false.

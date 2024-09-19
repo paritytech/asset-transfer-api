@@ -64,6 +64,7 @@ import {
 	ConstructedFormat,
 	Direction,
 	Format,
+	LocalMethodName,
 	LocalTransferTypes,
 	LocalTxChainType,
 	LocalTxOpts,
@@ -82,6 +83,7 @@ import {
 } from './types';
 import { callExistsInRuntime } from './util/callExistsInRuntime';
 import { deepEqual } from './util/deepEqual';
+import { resolveMultiLocation } from './util/resolveMultiLocation';
 import { sanitizeKeys } from './util/sanitizeKeys';
 import { validateNumber } from './validate';
 
@@ -982,6 +984,8 @@ export class AssetTransferApi {
 		opts: LocalTxOpts,
 	) {
 		const { api, specName } = this;
+		const { isForeignAssetsTransfer, isLiquidTokenTransfer, keepAlive, transferAll } = opts;
+		const transferKeepAlive = keepAlive ? keepAlive : false;
 		let assetId = assetIds[0];
 		const amount = amounts[0];
 		const isValidNumber = validateNumber(assetId);
@@ -1003,7 +1007,15 @@ export class AssetTransferApi {
 				opts.isForeignAssetsTransfer,
 			);
 		}
-		const method = opts.keepAlive ? 'transferKeepAlive' : 'transfer';
+		let method: LocalMethodName;
+		if (transferAll) {
+			method = 'transferAll';
+		} else if (keepAlive) {
+			method = 'transferKeepAlive';
+		} else {
+			method = 'transfer';
+		}
+		let tx: SubmittableExtrinsic<'promise', ISubmittableResult> | undefined;
 
 		if (localTxChainType === LocalTxChainType.System) {
 			const localAssetType = await checkLocalSystemParachainInput(
@@ -1013,36 +1025,49 @@ export class AssetTransferApi {
 				this.specName,
 				this.registry,
 				declaredXcmVersion,
-				opts.isForeignAssetsTransfer,
-				opts.isLiquidTokenTransfer,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
 			); // Throws an error when any of the inputs are incorrect.
-			let tx: SubmittableExtrinsic<'promise', ISubmittableResult> | undefined;
 			let palletMethod: LocalTransferTypes | undefined;
 
 			if (localAssetType === LocalTxType.Balances) {
-				tx =
-					method === 'transferKeepAlive'
-						? balances.transferKeepAlive(api, addr, amount)
-						: balances.transfer(api, addr, amount);
+				if (method === 'transferKeepAlive') {
+					tx = balances.transferKeepAlive(api, addr, amount);
+				} else if (method === 'transferAll') {
+					tx = balances.transferAll(api, addr, transferKeepAlive);
+				} else {
+					tx = balances.transfer(api, addr, amount);
+				}
 				palletMethod = `balances::${method}`;
 			} else if (localAssetType === LocalTxType.Assets) {
-				tx =
-					method === 'transferKeepAlive'
-						? assets.transferKeepAlive(api, addr, assetId, amount)
-						: assets.transfer(api, addr, assetId, amount);
+				if (method === 'transferKeepAlive') {
+					tx = assets.transferKeepAlive(api, addr, assetId, amount);
+				} else if (method === 'transferAll') {
+					tx = assets.transferAll(api, assetId, addr, transferKeepAlive);
+				} else {
+					tx = assets.transfer(api, addr, assetId, amount);
+				}
 				palletMethod = `assets::${method}`;
 			} else if (localAssetType === LocalTxType.PoolAssets) {
-				tx =
-					method === 'transferKeepAlive'
-						? poolAssets.transferKeepAlive(api, addr, assetId, amount)
-						: poolAssets.transfer(api, addr, assetId, amount);
+				if (method === 'transferKeepAlive') {
+					tx = poolAssets.transferKeepAlive(api, addr, assetId, amount);
+				} else if (method === 'transferAll') {
+					tx = poolAssets.transferAll(api, assetId, addr, transferKeepAlive);
+				} else {
+					tx = poolAssets.transfer(api, addr, assetId, amount);
+				}
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				const location = parseLocationStrToLocation(assetId);
-				tx =
-					method === 'transferKeepAlive'
-						? foreignAssets.transferKeepAlive(api, addr, location, amount)
-						: foreignAssets.transfer(api, addr, location, amount);
+				const foreignAssetsXcmVersion = 4;
+				const location = resolveMultiLocation(JSON.parse(assetId) as AnyJson, foreignAssetsXcmVersion);
+
+				if (method === 'transferKeepAlive') {
+					tx = foreignAssets.transferKeepAlive(api, addr, location, amount);
+				} else if (method === 'transferAll') {
+					tx = foreignAssets.transferAll(api, location, addr, transferKeepAlive);
+				} else {
+					tx = foreignAssets.transfer(api, addr, location, amount);
+				}
 				palletMethod = `foreignAssets::${method}`;
 			} else {
 				throw new BaseError(
@@ -1062,19 +1087,29 @@ export class AssetTransferApi {
 			 */
 			if (localAssetType === LocalTxType.Balances) {
 				const palletMethod: LocalTransferTypes = `balances::${method}`;
-				const tx =
-					method === 'transferKeepAlive'
-						? balances.transferKeepAlive(api, addr, amount)
-						: balances.transfer(api, addr, amount);
+				if (method === 'transferKeepAlive') {
+					tx = balances.transferKeepAlive(api, addr, amount);
+				} else if (method === 'transferAll') {
+					tx = balances.transferAll(api, addr, transferKeepAlive);
+				} else {
+					tx = balances.transfer(api, addr, amount);
+				}
 				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
 					...opts,
 				});
 			} else if (localAssetType === LocalTxType.Tokens) {
 				const palletMethod: LocalTransferTypes = `tokens::${method}`;
-				const tx =
-					method === 'transferKeepAlive'
-						? tokens.transferKeepAlive(api, addr, assetIds[0], amount)
-						: tokens.transfer(api, addr, assetIds[0], amount);
+				if (method === 'transferKeepAlive') {
+					tx = tokens.transferKeepAlive(api, addr, assetIds[0], amount);
+				} else if (method === 'transferAll') {
+					tx = tokens.transferAll(api, assetIds[0], addr, transferKeepAlive);
+				} else {
+					tx = tokens.transfer(api, addr, assetIds[0], amount);
+				}
+				// const tx =
+				// 	method === 'transferKeepAlive'
+				// 		? tokens.transferKeepAlive(api, addr, assetIds[0], amount)
+				// 		: tokens.transfer(api, addr, assetIds[0], amount);
 				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
 					...opts,
 				});
@@ -1090,10 +1125,17 @@ export class AssetTransferApi {
 			 * By default local transaction on a relay chain will always be from the balances pallet
 			 */
 			const palletMethod: LocalTransferTypes = `balances::${method}`;
-			const tx =
-				method === 'transferKeepAlive'
-					? balances.transferKeepAlive(api, addr, amount)
-					: balances.transfer(api, addr, amount);
+			if (method === 'transferKeepAlive') {
+				tx = balances.transferKeepAlive(api, addr, amount);
+			} else if (method === 'transferAll') {
+				tx = balances.transferAll(api, addr, transferKeepAlive);
+			} else {
+				tx = balances.transfer(api, addr, amount);
+			}
+			// const tx =
+			// 	method === 'transferKeepAlive'
+			// 		? balances.transferKeepAlive(api, addr, amount)
+			// 		: balances.transfer(api, addr, amount);
 			return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
 				...opts,
 			});
