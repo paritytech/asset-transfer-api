@@ -1,7 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 import { Registry } from '../../registry';
-import { adjustedMockSystemApiV1014000 } from '../../testHelpers/adjustedMockSystemApiV1014000';
+import { adjustedMockSystemApiV1016000 } from '../../testHelpers/adjustedMockSystemApiV1016000';
 import { Direction, XcmBaseArgs, XcmDirection } from '../../types';
 import { transferAssetsUsingTypeAndThen } from './transferAssetsUsingTypeAndThen';
 
@@ -12,7 +12,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 				const registry = new Registry('asset-hub-rococo', {});
 				const isLiquidTokenTransfer = false;
 				const baseArgs: XcmBaseArgs = {
-					api: adjustedMockSystemApiV1014000,
+					api: adjustedMockSystemApiV1016000,
 					direction: Direction.SystemToBridge as XcmDirection,
 					destAddr: '0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B',
 					assetIds: [
@@ -52,7 +52,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 				const registry = new Registry('asset-hub-rococo', {});
 				const isLiquidTokenTransfer = false;
 				const baseArgs: XcmBaseArgs = {
-					api: adjustedMockSystemApiV1014000,
+					api: adjustedMockSystemApiV1016000,
 					direction: Direction.SystemToBridge as XcmDirection,
 					destAddr: '0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B',
 					assetIds: [
@@ -93,7 +93,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 				const registry = new Registry('asset-hub-westend', {});
 				const isLiquidTokenTransfer = false;
 				const baseArgs: XcmBaseArgs = {
-					api: adjustedMockSystemApiV1014000,
+					api: adjustedMockSystemApiV1016000,
 					direction: Direction.SystemToBridge as XcmDirection,
 					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					assetIds: [
@@ -132,7 +132,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 				const registry = new Registry('asset-hub-westend', {});
 				const isLiquidTokenTransfer = false;
 				const baseArgs: XcmBaseArgs = {
-					api: adjustedMockSystemApiV1014000,
+					api: adjustedMockSystemApiV1016000,
 					direction: Direction.SystemToBridge as XcmDirection,
 					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					assetIds: [
@@ -174,7 +174,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 				const registry = new Registry('asset-hub-rococo', {});
 				const isLiquidTokenTransfer = false;
 				const baseArgs: XcmBaseArgs = {
-					api: adjustedMockSystemApiV1014000,
+					api: adjustedMockSystemApiV1016000,
 					direction: Direction.SystemToBridge as XcmDirection,
 					destAddr: '0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B',
 					assetIds: [
@@ -214,7 +214,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 				const registry = new Registry('asset-hub-westend', {});
 				const isLiquidTokenTransfer = false;
 				const baseArgs: XcmBaseArgs = {
-					api: adjustedMockSystemApiV1014000,
+					api: adjustedMockSystemApiV1016000,
 					direction: Direction.SystemToBridge as XcmDirection,
 					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					assetIds: [
@@ -253,7 +253,7 @@ describe('transferAssetsUsingTypeAndThen', () => {
 				const registry = new Registry('asset-hub-westend', {});
 				const isLiquidTokenTransfer = false;
 				const baseArgs: XcmBaseArgs = {
-					api: adjustedMockSystemApiV1014000,
+					api: adjustedMockSystemApiV1016000,
 					direction: Direction.SystemToBridge as XcmDirection,
 					destAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 					assetIds: [

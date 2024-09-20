@@ -22,7 +22,8 @@ import { adjustedMockMoonriverNoXTokensParachainApi } from './testHelpers/adjust
 import { adjustedMockRelayApiNoLimitedReserveTransferAssets } from './testHelpers/adjustedMockRelayApiNoLimitedReserveTransferAssets';
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
-import { adjustedMockSystemApiV1014000 } from './testHelpers/adjustedMockSystemApiV1014000';
+import { adjustedMockSystemApiV1016000 } from './testHelpers/adjustedMockSystemApiV1016000';
+import { mockDryRunCallResult } from './testHelpers/mockDryRunCallResult';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { AssetCallType, Direction, ResolvedCallInfo, UnsignedTransaction, XcmBaseArgs, XcmDirection } from './types';
@@ -50,7 +51,7 @@ const bifrostAssetsApi = new AssetTransferApi(adjustedMockBifrostParachainApi, '
 const moonriverAssetsNoXTokensApi = new AssetTransferApi(adjustedMockMoonriverNoXTokensParachainApi, 'moonriver', 2, {
 	registryType: 'NPM',
 });
-const westmintAssetsApi = new AssetTransferApi(adjustedMockSystemApiV1014000, 'westmint', 4, {
+const westmintAssetsApi = new AssetTransferApi(adjustedMockSystemApiV1016000, 'westmint', 4, {
 	registryType: 'NPM',
 });
 
@@ -487,6 +488,52 @@ describe('AssetTransferAPI', () => {
 			);
 			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(callTxResult.tx, 'call');
 			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
+		});
+	});
+
+	describe('dryRunCall', () => {
+		const sendersAddress = '5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E';
+
+		it('Should correctly execute a dry run for a submittable extrinsic', async () => {
+			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
+
+			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
+				mockDryRunCallResult.Ok.executionResult.Ok.paysFee,
+			);
+		});
+
+		it('Should correctly execute a dry run for a payload extrinsic', async () => {
+			const payloadTexResult = await westmintAssetsApi['constructFormat'](
+				mockSubmittableExt,
+				Direction.SystemToPara,
+				4,
+				'transferAssets',
+				'0',
+				'asset-hub-westend',
+				{ format: 'payload' },
+			);
+
+			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, payloadTexResult.tx, 'payload');
+			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
+				mockDryRunCallResult.Ok.executionResult.Ok.paysFee,
+			);
+		});
+
+		it('Should correctly execute a dry run for a call', async () => {
+			const callTxResult = await westmintAssetsApi['constructFormat'](
+				mockSubmittableExt,
+				Direction.SystemToPara,
+				4,
+				'transferAssets',
+				'0',
+				'asset-hub-westend',
+				{ format: 'call' },
+			);
+
+			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, callTxResult.tx, 'call');
+			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
+				mockDryRunCallResult.Ok.executionResult.Ok.paysFee,
+			);
 		});
 	});
 

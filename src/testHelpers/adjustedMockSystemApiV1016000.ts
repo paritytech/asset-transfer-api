@@ -15,10 +15,11 @@ import BN from 'bn.js';
 
 import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { createApiWithAugmentations } from './createApiWithAugmentations';
-import { assetHubWestendV1014000 } from './metadata/assetHubWestendV1014000';
+import { assetHubWestendV1016000 } from './metadata/assetHubWestendV1016000';
+import { mockDryRunCallResult } from './mockDryRunCallResult';
 import { mockWeightInfo } from './mockWeightInfo';
 
-const mockSystemApi = createApiWithAugmentations(assetHubWestendV1014000);
+const mockSystemApi = createApiWithAugmentations(assetHubWestendV1016000);
 
 /**
  * Create a type registry for Westmint.
@@ -39,7 +40,7 @@ function createWestmintRegistry(specVersion: number): TypeRegistry {
 
 	registry.register(getSpecTypes(registry, 'Westmint', 'westmint', specVersion));
 
-	registry.setMetadata(new Metadata(registry, assetHubWestendV1014000));
+	registry.setMetadata(new Metadata(registry, assetHubWestendV1016000));
 
 	return registry;
 }
@@ -47,7 +48,7 @@ const getSystemRuntimeVersion = () =>
 	Promise.resolve().then(() => {
 		return {
 			specName: mockSystemApi.registry.createType('Text', 'asset-hub-westend'),
-			specVersion: mockSystemApi.registry.createType('u32', 1014000),
+			specVersion: mockSystemApi.registry.createType('u32', 1016000),
 		};
 	});
 
@@ -59,8 +60,13 @@ const getSystemSafeXcmVersion = () =>
 const queryInfoCallAt = () =>
 	Promise.resolve().then(() => mockSystemApi.createType('RuntimeDispatchInfoV2', mockWeightInfo));
 
+const mockDryRunCall = () =>
+	Promise.resolve().then(() =>
+		mockSystemApi.createType('Result<CallDryRunEffects, XcmDryRunApiError>', mockDryRunCallResult),
+	);
+
 const getMetadata = () =>
-	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1014000));
+	Promise.resolve().then(() => mockSystemApi.registry.createType('Metadata', assetHubWestendV1016000));
 
 const getHeader = (): Promise<Header> =>
 	Promise.resolve().then(() =>
@@ -147,7 +153,7 @@ const asset = (assetId: number | string | BN): Promise<Option<PalletAssetsAssetD
 		const maybeAsset = assets.has(adjAsset) ? assets.get(adjAsset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1014000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1016000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -223,7 +229,7 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 		const maybeAsset = assets.has(assetMultiLocation) ? assets.get(assetMultiLocation) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1014000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1016000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -269,7 +275,7 @@ const poolAsset = (asset: string): Promise<Option<PalletAssetsAssetDetails>> =>
 		const maybeAsset = assets.has(asset) ? assets.get(asset) : undefined;
 
 		if (maybeAsset) {
-			return new Option(createWestmintRegistry(1014000), 'PalletAssetsAssetDetails', maybeAsset);
+			return new Option(createWestmintRegistry(1016000), 'PalletAssetsAssetDetails', maybeAsset);
 		}
 
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
@@ -314,12 +320,15 @@ const mockApiAt = {
 		transactionPaymentApi: {
 			queryInfo: queryInfoCallAt,
 		},
+		dryRunApi: {
+			dryRunCall: mockDryRunCall,
+		},
 	},
 };
 
-export const adjustedMockSystemApiV1014000 = {
+export const adjustedMockSystemApiV1016000 = {
 	createType: createType,
-	registry: createWestmintRegistry(1014000),
+	registry: createWestmintRegistry(1016000),
 	rpc: {
 		state: {
 			getRuntimeVersion: getSystemRuntimeVersion,
@@ -609,10 +618,13 @@ export const adjustedMockSystemApiV1014000 = {
 		transactionPaymentApi: {
 			queryInfo: mockApiAt.call.transactionPaymentApi.queryInfo,
 		},
+		dryRunApi: {
+			dryRunCall: mockApiAt.call.dryRunApi.dryRunCall,
+		},
 	},
 	runtimeVersion: {
 		transactionVersion: mockSystemApi.registry.createType('u32', 4),
-		specVersion: mockSystemApi.registry.createType('u32', 1014000),
+		specVersion: mockSystemApi.registry.createType('u32', 1016000),
 	},
 	genesisHash: mockSystemApi.registry.createType('BlockHash'),
 } as unknown as ApiPromise;

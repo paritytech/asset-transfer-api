@@ -3,7 +3,12 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
-import type { InteriorMultiLocation } from '@polkadot/types/interfaces';
+import type {
+	DispatchResultWithPostInfo,
+	InteriorMultiLocation,
+	VersionedXcm,
+	WeightV2,
+} from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
@@ -225,6 +230,19 @@ export interface TxResult<T> {
 	 * @description The constructed transaction.
 	 */
 	tx: ConstructedFormat<T>;
+
+	/**
+	 * @description The result of xcm execution.
+	 */
+	executionResult?: DispatchResultWithPostInfo;
+	/**
+	 * @description Weight needed to execute the local segment of a provided XCM.
+	 */
+	localXcmFees?: [VersionedXcm, WeightV2];
+	/**
+	 * @description List of forwarded xcms and the weights needed to execute them.
+	 */
+	forwardedXcmFees?: [VersionedXcm, WeightV2][];
 }
 
 /**
@@ -312,6 +330,10 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Defaults to `Xcm(vec![DepositAsset { assets: Wild(AllCounted(assets.len())), beneficiary }])`
 	 */
 	customXcmOnDest?: string;
+	/**
+	 * Optionally allows for dry running the constructed tx in order get the estimated fees and execution result.
+	 */
+	dryRunCall?: boolean;
 }
 
 export interface ChainInfo {

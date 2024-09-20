@@ -6,8 +6,16 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
-import type { RuntimeDispatchInfo, RuntimeDispatchInfoV1 } from '@polkadot/types/interfaces';
+import type {
+	CallDryRunEffects,
+	RuntimeDispatchInfo,
+	RuntimeDispatchInfoV1,
+	WeightV2,
+	XcmDryRunApiError,
+	XcmPaymentApiError,
+} from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
+import type { Result } from '@polkadot/types-codec';
 
 import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
 import * as assets from './createCalls/assets';
@@ -186,6 +194,7 @@ export class AssetTransferApi {
 			feesTransferType,
 			remoteReserveFeesTransferTypeLocation,
 			customXcmOnDest,
+			dryRunCall,
 		} = opts;
 
 		if (!this.registryConfig.registryInitialized) {
@@ -274,6 +283,8 @@ export class AssetTransferApi {
 			feesTransferType,
 			remoteReserveFeesTransferTypeLocation,
 			customXcmOnDest,
+			dryRunCall,
+			sendersAddr,
 		};
 
 		await checkXcmTxInputs(
@@ -310,6 +321,7 @@ export class AssetTransferApi {
 			format,
 			paysWithFeeOrigin,
 			sendersAddr,
+			dryRunCall,
 		});
 	}
 
@@ -452,6 +464,46 @@ export class AssetTransferApi {
 
 		return null;
 	}
+
+	/**
+	 * Dry Run a call to determine its execution result
+	 *
+	 * ```ts
+	 * const executionResult = await assetApi.dryRunCall(sendersAddr, tx, 'call');
+	 * console.log(executionResult.toJSON());
+	 * ```
+	 * @param sendersAddr address of the account sending the transaction
+	 * @param tx a payload, call or submittable
+	 * @param format The format the tx is in
+	 */
+	public async dryRunCall<T extends Format>(
+		sendersAddr: string,
+		tx: ConstructedFormat<T>,
+		format: T,
+	): Promise<Result<CallDryRunEffects, XcmDryRunApiError> | null> {
+		const { api } = this;
+
+		const account = api.registry.createType('AccountId32', sendersAddr);
+		const origin = api.registry.createType('FrameSupportDispatchRawOrigin', {
+			Signed: account,
+		});
+		const originCaller = api.registry.createType('OriginCaller', {
+			System: origin,
+		});
+
+		if (format === 'payload') {
+			const extrinsicPayload = api.registry.createType('ExtrinsicPayload', tx, {
+				version: EXTRINSIC_VERSION,
+			});
+			const call = api.registry.createType('Call', extrinsicPayload.method);
+
+			return await api.call.dryRunApi.dryRunCall(originCaller, call.toHex());
+		} else if (format === 'call' || format === 'submittable') {
+			return await api.call.dryRunApi.dryRunCall(originCaller, tx);
+		}
+
+		return null;
+	}
 	/**
 	 * Decodes the hex of an extrinsic into a string readable format.
 	 *
@@ -580,9 +632,9 @@ export class AssetTransferApi {
 		method: Methods,
 		dest: string,
 		origin: string,
-		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string },
+		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string; dryRunCall?: boolean },
 	): Promise<TxResult<T>> {
-		const { format, paysWithFeeOrigin, sendersAddr } = opts;
+		const { format, paysWithFeeOrigin, sendersAddr, dryRunCall } = opts;
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			origin,
@@ -610,6 +662,43 @@ export class AssetTransferApi {
 				paysWithFeeOrigin,
 				sendersAddr: addr,
 			})) as ConstructedFormat<T>;
+		}
+
+		if (dryRunCall && sendersAddr) {
+			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt as Format);
+
+			if (executionResult?.isOk) {
+				const maybeLocalXcm = executionResult.asOk.localXcm;
+				if (maybeLocalXcm.isSome) {
+					const localXcm = maybeLocalXcm.unwrap();
+					const localXcmWeightResult: Result<WeightV2, XcmPaymentApiError> =
+						await this.api.call.xcmPaymentApi.queryXcmWeight(localXcm);
+
+					if (localXcmWeightResult.isOk) {
+						const localXcmWeight = localXcmWeightResult.asOk;
+						result.localXcmFees = [localXcm, localXcmWeight];
+					}
+				}
+			}
+
+			if (executionResult?.asOk.forwardedXcms && executionResult?.asOk.forwardedXcms.length > 0) {
+				result.forwardedXcmFees = [];
+
+				if (executionResult?.isOk) {
+					for (const [, xcms] of executionResult.asOk.forwardedXcms) {
+						for (const xcm of xcms) {
+							const forwardedXcmWeightResult: Result<WeightV2, XcmPaymentApiError> =
+								await this.api.call.xcmPaymentApi.queryXcmWeight(xcm);
+
+							if (forwardedXcmWeightResult.isOk) {
+								const forwardedXcmWeight = forwardedXcmWeightResult.asOk;
+
+								result.forwardedXcmFees.push([xcm, forwardedXcmWeight]);
+							}
+						}
+					}
+				}
+			}
 		}
 
 		return result;
