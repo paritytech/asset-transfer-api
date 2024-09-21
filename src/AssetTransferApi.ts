@@ -1106,10 +1106,6 @@ export class AssetTransferApi {
 				} else {
 					tx = tokens.transfer(api, addr, assetIds[0], amount);
 				}
-				// const tx =
-				// 	method === 'transferKeepAlive'
-				// 		? tokens.transferKeepAlive(api, addr, assetIds[0], amount)
-				// 		: tokens.transfer(api, addr, assetIds[0], amount);
 				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
 					...opts,
 				});
