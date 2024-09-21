@@ -1127,7 +1127,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	const relayChainInfo = registry.currentRelayRegistry;
 
 	/**
-	 * Require `sendersAddr` when dryRunCall option is true
+	 * Require `sendersAddr` and `xcmFeeAsset` when dryRunCall option is true
 	 */
 	checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset(dryRunCall, sendersAddr, xcmFeeAsset);
 
