@@ -15,7 +15,7 @@ import type {
 	XcmPaymentApiError,
 } from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
-import type { Result } from '@polkadot/types-codec';
+import type { Result, u128 } from '@polkadot/types-codec';
 
 import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
 import * as assets from './createCalls/assets';
@@ -36,15 +36,17 @@ import {
 import { CreateXcmCallOpts } from './createXcmCalls/types';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
-import { UnionXcmMultiLocation } from './createXcmTypes/types';
+import { UnionXcmMultiLocation, XcmVersionedAssetId } from './createXcmTypes/types';
 import { assetIdIsLocation } from './createXcmTypes/util/assetIdIsLocation';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
+import { createXcmVersionedAssetId } from './createXcmTypes/util/createXcmVersionedAssetId';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName';
 import { getPaysWithFeeOriginAssetLocationFromRegistry } from './createXcmTypes/util/getPaysWithFeeOriginAssetLocationFromRegistry';
 import { isParachain } from './createXcmTypes/util/isParachain';
 import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
+import { isRelayNativeAsset } from './createXcmTypes/util/isRelayNativeAsset';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
 import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation';
@@ -83,6 +85,7 @@ import {
 	UnsignedTransaction,
 	type XcmBaseArgs,
 	XcmDirection,
+	XcmFee,
 	type XcmPalletCallSignature,
 	type XcmPalletTxMethodTransactionMap,
 	type XTokensCallSignature,
@@ -195,6 +198,7 @@ export class AssetTransferApi {
 			remoteReserveFeesTransferTypeLocation,
 			customXcmOnDest,
 			dryRunCall,
+			xcmFeeAsset,
 		} = opts;
 
 		if (!this.registryConfig.registryInitialized) {
@@ -285,6 +289,7 @@ export class AssetTransferApi {
 			customXcmOnDest,
 			dryRunCall,
 			sendersAddr,
+			xcmFeeAsset,
 		};
 
 		await checkXcmTxInputs(
@@ -322,6 +327,7 @@ export class AssetTransferApi {
 			paysWithFeeOrigin,
 			sendersAddr,
 			dryRunCall,
+			xcmFeeAsset,
 		});
 	}
 
@@ -632,9 +638,16 @@ export class AssetTransferApi {
 		method: Methods,
 		dest: string,
 		origin: string,
-		opts: { format?: T; paysWithFeeOrigin?: string; sendersAddr?: string; dryRunCall?: boolean },
+		opts: {
+			format?: T;
+			paysWithFeeOrigin?: string;
+			sendersAddr?: string;
+			dryRunCall?: boolean;
+			xcmFeeAsset?: string;
+			xcmVersion?: number;
+		},
 	): Promise<TxResult<T>> {
-		const { format, paysWithFeeOrigin, sendersAddr, dryRunCall } = opts;
+		const { format, paysWithFeeOrigin, sendersAddr, dryRunCall, xcmFeeAsset } = opts;
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			origin,
@@ -664,44 +677,93 @@ export class AssetTransferApi {
 			})) as ConstructedFormat<T>;
 		}
 
-		if (dryRunCall && sendersAddr) {
-			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt as Format);
+		if (dryRunCall && sendersAddr && xcmFeeAsset) {
+			let feeAssetLocation: XcmVersionedAssetId | undefined = undefined;
+			const currentXcmVersion = xcmVersion ? xcmVersion : this.safeXcmVersion;
+			if (isRelayNativeAsset(this.registry, xcmFeeAsset)) {
+				const relayAssetLocation = `{"parents":"1","interior":{"Here":""}}`;
+				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, currentXcmVersion);
+			} else {
+				const feeAsset = await getAssetId(
+					this.api,
+					this.registry,
+					xcmFeeAsset,
+					this.specName,
+					currentXcmVersion,
+					false,
+				);
 
-			if (executionResult?.isOk) {
-				const maybeLocalXcm = executionResult.asOk.localXcm;
-				if (maybeLocalXcm.isSome) {
-					const localXcm = maybeLocalXcm.unwrap();
-					const localXcmWeightResult: Result<WeightV2, XcmPaymentApiError> =
-						await this.api.call.xcmPaymentApi.queryXcmWeight(localXcm);
-
-					if (localXcmWeightResult.isOk) {
-						const localXcmWeight = localXcmWeightResult.asOk;
-						result.localXcmFees = [localXcm, localXcmWeight];
+				if (feeAsset) {
+					const location = getPaysWithFeeOriginAssetLocationFromRegistry(this, feeAsset);
+					if (location) {
+						feeAssetLocation = createXcmVersionedAssetId(JSON.stringify(location), currentXcmVersion);
 					}
 				}
 			}
 
-			if (executionResult?.asOk.forwardedXcms && executionResult?.asOk.forwardedXcms.length > 0) {
-				result.forwardedXcmFees = [];
+			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt as Format);
 
-				if (executionResult?.isOk) {
-					for (const [, xcms] of executionResult.asOk.forwardedXcms) {
-						for (const xcm of xcms) {
-							const forwardedXcmWeightResult: Result<WeightV2, XcmPaymentApiError> =
-								await this.api.call.xcmPaymentApi.queryXcmWeight(xcm);
+			if (executionResult?.isOk) {
+				result.xcmExecutionResult = executionResult.asOk.executionResult;
 
-							if (forwardedXcmWeightResult.isOk) {
-								const forwardedXcmWeight = forwardedXcmWeightResult.asOk;
+				if (feeAssetLocation) {
+					const maybeLocalXcm = executionResult.asOk.localXcm;
+					if (maybeLocalXcm.isSome) {
+						const localXcm = maybeLocalXcm.unwrap();
+						const localXcmWeightResult: Result<WeightV2, XcmPaymentApiError> =
+							await this.api.call.xcmPaymentApi.queryXcmWeight(localXcm);
 
-								result.forwardedXcmFees.push([xcm, forwardedXcmWeight]);
+						if (localXcmWeightResult.isOk) {
+							const localXcmWeight = localXcmWeightResult.asOk;
+							const weightToFeeAssetResult: Result<u128, XcmPaymentApiError> =
+								await this.api.call.xcmPaymentApi.queryWeightToAssetFee(localXcmWeight, feeAssetLocation);
+
+							const weightToFee = this.getXcmWeightToFee(weightToFeeAssetResult, feeAssetLocation);
+							result.localXcmFees = [localXcm, weightToFee];
+						}
+					}
+
+					if (executionResult.asOk.forwardedXcms && executionResult.asOk.forwardedXcms.length > 0) {
+						result.forwardedXcmFees = [];
+
+						for (const [, xcms] of executionResult.asOk.forwardedXcms) {
+							for (const xcm of xcms) {
+								const forwardedXcmWeightResult: Result<WeightV2, XcmPaymentApiError> =
+									await this.api.call.xcmPaymentApi.queryXcmWeight(xcm);
+
+								if (forwardedXcmWeightResult.isOk) {
+									const forwardedXcmWeight = forwardedXcmWeightResult.asOk;
+
+									const weightToFeeAssetResult: Result<u128, XcmPaymentApiError> =
+										await this.api.call.xcmPaymentApi.queryWeightToAssetFee(forwardedXcmWeight, feeAssetLocation);
+
+									const weightToFee = this.getXcmWeightToFee(weightToFeeAssetResult, feeAssetLocation);
+									result.forwardedXcmFees.push([xcm, weightToFee]);
+								}
 							}
 						}
 					}
 				}
+			} else if (executionResult?.isErr) {
+				result.xcmExecutionResult = executionResult.asErr;
 			}
 		}
 
 		return result;
+	}
+
+	private getXcmWeightToFee(
+		weightToAssetFeeResult: Result<u128, XcmPaymentApiError>,
+		asset: XcmVersionedAssetId,
+	): XcmFee {
+		if (weightToAssetFeeResult.isOk) {
+			return { xcmFee: weightToAssetFeeResult.asOk.toString() };
+		} else {
+			throw new BaseError(
+				`XcmFeeAsset Error: ${weightToAssetFeeResult.asErr.toString()} - asset: ${JSON.stringify(asset)}`,
+				BaseErrorsEnum.InvalidAsset,
+			);
+		}
 	}
 
 	private fetchAssetType(xcmDirection: Direction, isForeignAssetsTransfer?: boolean): AssetType {

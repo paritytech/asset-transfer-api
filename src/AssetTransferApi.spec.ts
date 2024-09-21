@@ -491,6 +491,31 @@ describe('AssetTransferAPI', () => {
 		});
 	});
 
+	describe('getXcmWeightToFee', () => {
+		it('Should correctly return the xcm fee for a valid result', () => {
+			const xcmWeightToFeeAssetResult = westmintAssetsApi.api.registry.createType('Result<u128, XcmPaymentApiError>', {
+				ok: 100000000000,
+			});
+
+			expect(
+				westmintAssetsApi['getXcmWeightToFee'](xcmWeightToFeeAssetResult, {
+					V4: { parents: 1, interior: { Here: '' } },
+				}),
+			).toEqual({ xcmFee: '100000000000' });
+		});
+		it('Should correctly throw an error when given an error result', () => {
+			const xcmWeightToFeeAssetResult = westmintAssetsApi.api.registry.createType('Result<u128, XcmPaymentApiError>', {
+				err: 'AssetNotFound',
+			});
+			const assetLocation = { V4: { parents: 1, interior: { Here: '' } } };
+
+			const err = () =>
+				westmintAssetsApi['getXcmWeightToFee'](xcmWeightToFeeAssetResult, {
+					V4: { parents: 1, interior: { Here: '' } },
+				});
+			expect(err).toThrow(`XcmFeeAsset Error: AssetNotFound - asset: ${JSON.stringify(assetLocation)}`);
+		});
+	});
 	describe('dryRunCall', () => {
 		const sendersAddress = '5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E';
 
@@ -527,8 +552,15 @@ describe('AssetTransferAPI', () => {
 				'transferAssets',
 				'0',
 				'asset-hub-westend',
-				{ format: 'call' },
+				{
+					format: 'call',
+					dryRunCall: true,
+					xcmFeeAsset: 'wnd',
+					sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+				},
 			);
+
+			expect(callTxResult.localXcmFees![1]).toEqual({ xcmFee: '3500000000000000' });
 
 			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, callTxResult.tx, 'call');
 			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(

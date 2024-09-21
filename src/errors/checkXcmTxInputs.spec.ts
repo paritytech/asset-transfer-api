@@ -14,6 +14,7 @@ import {
 	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
 	checkBridgeTxInputs,
+	checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkLiquidTokenTransferDirectionValidity,
 	checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain,
@@ -881,6 +882,25 @@ describe('checkPaysWithFeeDestAssetIdIsInAssets', () => {
 		expect(err).toThrow(
 			'paysWithFeeDest asset must be present in assets to be transferred. Did not find {"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}} in {"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}',
 		);
+	});
+});
+
+describe('checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset', () => {
+	it('Should correctly error when sendersAddr is not provided and dryRunCall option is true', () => {
+		const xcmFeeAsset = 'ksm';
+		const dryRunCall = true;
+
+		const err = () => checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset(dryRunCall, undefined, xcmFeeAsset);
+
+		expect(err).toThrow('sendersAddr option must be provided when the dryRunCall option is set to true');
+	});
+	it('Should correctly error when xcmFeeAsset is not provided and dryRunCall option is true', () => {
+		const sendersAddr = '5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E';
+		const dryRunCall = true;
+
+		const err = () => checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset(dryRunCall, sendersAddr, undefined);
+
+		expect(err).toThrow('xcmFeeAsset option must be provided when the dryRunCall option is set to true');
 	});
 });
 

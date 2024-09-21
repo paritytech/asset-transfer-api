@@ -12,4 +12,5 @@ export interface CheckXcmTxInputsOpts {
 	remoteReserveFeesTransferTypeLocation?: string;
 	dryRunCall?: boolean;
 	sendersAddr?: string;
+	xcmFeeAsset?: string;
 }

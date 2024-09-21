@@ -7,7 +7,7 @@ import type {
 	DispatchResultWithPostInfo,
 	InteriorMultiLocation,
 	VersionedXcm,
-	WeightV2,
+	XcmDryRunApiError,
 } from '@polkadot/types/interfaces';
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
@@ -234,17 +234,20 @@ export interface TxResult<T> {
 	/**
 	 * @description The result of xcm execution.
 	 */
-	executionResult?: DispatchResultWithPostInfo;
+	xcmExecutionResult?: DispatchResultWithPostInfo | XcmDryRunApiError;
 	/**
 	 * @description Weight needed to execute the local segment of a provided XCM.
 	 */
-	localXcmFees?: [VersionedXcm, WeightV2];
+	localXcmFees?: [VersionedXcm, XcmFee];
 	/**
 	 * @description List of forwarded xcms and the weights needed to execute them.
 	 */
-	forwardedXcmFees?: [VersionedXcm, WeightV2][];
+	forwardedXcmFees?: [VersionedXcm, XcmFee][];
 }
 
+export type XcmFee = {
+	xcmFee: string;
+};
 /**
  * The TransferArgsOpts are the options passed into createTransferTransaction.
  */
@@ -334,6 +337,11 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Optionally allows for dry running the constructed tx in order get the estimated fees and execution result.
 	 */
 	dryRunCall?: boolean;
+
+	/**
+	 * Optional assetId that will be used to pay for fees. Used with the `dryRunCall` option to determine fees in the specified asset.
+	 */
+	xcmFeeAsset?: string;
 }
 
 export interface ChainInfo {

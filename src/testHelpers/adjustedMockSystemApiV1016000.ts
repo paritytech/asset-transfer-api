@@ -17,6 +17,8 @@ import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { createApiWithAugmentations } from './createApiWithAugmentations';
 import { assetHubWestendV1016000 } from './metadata/assetHubWestendV1016000';
 import { mockDryRunCallResult } from './mockDryRunCallResult';
+import { mockQueryWeightToAssetFeeResult } from './mockQueryWeightToAssetFeeResult';
+import { mockQueryXcmWeightResult } from './mockQueryXcmWeightResult';
 import { mockWeightInfo } from './mockWeightInfo';
 
 const mockSystemApi = createApiWithAugmentations(assetHubWestendV1016000);
@@ -63,6 +65,14 @@ const queryInfoCallAt = () =>
 const mockDryRunCall = () =>
 	Promise.resolve().then(() =>
 		mockSystemApi.createType('Result<CallDryRunEffects, XcmDryRunApiError>', mockDryRunCallResult),
+	);
+const mockQueryXcmWeight = () =>
+	Promise.resolve().then(() =>
+		mockSystemApi.createType('Result<Weight, XcmPaymentApiError>', mockQueryXcmWeightResult),
+	);
+const mockQueryWeightToAssetFee = () =>
+	Promise.resolve().then(() =>
+		mockSystemApi.createType('Result<u128, XcmPaymentApiError>', mockQueryWeightToAssetFeeResult),
 	);
 
 const getMetadata = () =>
@@ -322,6 +332,10 @@ const mockApiAt = {
 		},
 		dryRunApi: {
 			dryRunCall: mockDryRunCall,
+		},
+		xcmPaymentApi: {
+			queryXcmWeight: mockQueryXcmWeight,
+			queryWeightToAssetFee: mockQueryWeightToAssetFee,
 		},
 	},
 };
@@ -620,6 +634,10 @@ export const adjustedMockSystemApiV1016000 = {
 		},
 		dryRunApi: {
 			dryRunCall: mockApiAt.call.dryRunApi.dryRunCall,
+		},
+		xcmPaymentApi: {
+			queryXcmWeight: mockApiAt.call.xcmPaymentApi.queryXcmWeight,
+			queryWeightToAssetFee: mockApiAt.call.xcmPaymentApi.queryWeightToAssetFee,
 		},
 	},
 	runtimeVersion: {

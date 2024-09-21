@@ -90,4 +90,9 @@ export const disabledOpts: DisabledOptions = {
 		chains: [],
 		error: (opt: string, chain: string) => callError(opt, chain),
 	},
+	xcmFeeAsset: {
+		disabled: false,
+		chains: [],
+		error: (opt: string, chain: string) => callError(opt, chain),
+	},
 };
