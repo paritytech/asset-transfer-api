@@ -54,9 +54,11 @@ describe('getPaysWithFeeOriginAssetLocationFromRegistry', () => {
 		const expected = {
 			parents: '2',
 			interior: {
-				X1: {
-					GlobalConsensus: 'Rococo',
-				},
+				X1: [
+					{
+						GlobalConsensus: 'Rococo',
+					},
+				],
 			},
 		};
 
@@ -97,7 +99,7 @@ describe('getPaysWithFeeOriginAssetLocationFromRegistry', () => {
 		const err = () => getPaysWithFeeOriginAssetLocationFromRegistry(assetHubAPI, paysWithFeeOriginAssetId);
 
 		expect(err).toThrow(
-			`Multiple assets found with symbol USDT:\nassetId: 66 symbol: USDT\nassetId: 67 symbol: USDT\nassetId: 2000 symbol: USDT\nassetId: 8888 symbol: USDT\nPlease provide an integer assetId or valid asset location for paysWithFeeOrigin rather than the token symbol`,
+			`Multiple assets found with symbol USDT:\nassetId: 66 symbol: USDT\nassetId: 67 symbol: USDT\nassetId: 2000 symbol: USDT\nassetId: 8888 symbol: USDT\nassetId: 4000000012 symbol: USDT\nPlease provide an integer assetId or valid asset location for paysWithFeeOrigin rather than the token symbol`,
 		);
 	});
 });
