@@ -1410,10 +1410,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@substrate/asset-transfer-api-registry@npm:^0.2.18":
-  version: 0.2.20
-  resolution: "@substrate/asset-transfer-api-registry@npm:0.2.20"
-  checksum: 10/77fc71840c9289476f6549662916e7cf2be370a51db2228ff678c31168f3c4d17dccd0c0373d044d2408c035bffa1608ab910b77037640b29ac187514b960929
+"@substrate/asset-transfer-api-registry@npm:^0.2.22":
+  version: 0.2.22
+  resolution: "@substrate/asset-transfer-api-registry@npm:0.2.22"
+  checksum: 10/644a6af34190a3555824e6f9af4d191f52ee05db8ce7f03ac78dd7a34a46f764f16b0d26b8d6354e72d6b9b6d681a6af9b5bd2a0551568981f524c0dbe0e1b8c
   languageName: node
   linkType: hard
 
@@ -1422,7 +1422,7 @@ __metadata:
   resolution: "@substrate/asset-transfer-api@workspace:."
   dependencies:
     "@polkadot/api": "npm:^13.1.1"
-    "@substrate/asset-transfer-api-registry": "npm:^0.2.18"
+    "@substrate/asset-transfer-api-registry": "npm:^0.2.22"
     "@substrate/dev": "npm:^0.7.1"
     "@types/cli-progress": "npm:^3"
     ansi-colors: "npm:^4.1.3"
