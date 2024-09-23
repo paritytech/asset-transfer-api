@@ -613,19 +613,23 @@ export const adjustedMockSystemApiV1016000 = {
 		assets: {
 			transfer: mockSystemApi.tx.assets.transfer,
 			transferKeepAlive: mockSystemApi.tx.assets.transferKeepAlive,
+			transferAll: mockSystemApi.tx.assets.transferAll,
 		},
 		foreignAssets: {
 			transfer: mockSystemApi.tx.foreignAssets.transfer,
 			transferKeepAlive: mockSystemApi.tx.foreignAssets.transferKeepAlive,
+			transferAll: mockSystemApi.tx.foreignAssets.transferAll,
 		},
 		balances: {
 			transfer: mockSystemApi.tx.balances.transfer,
 			transferAllowDeath: mockSystemApi.tx.balances.transferAllowDeath,
 			transferKeepAlive: mockSystemApi.tx.balances.transferKeepAlive,
+			transferAll: mockSystemApi.tx.balances.transferAll,
 		},
 		poolAssets: {
 			transfer: mockSystemApi.tx.poolAssets.transfer,
 			transferKeepAlive: mockSystemApi.tx.poolAssets.transferKeepAlive,
+			transferAll: mockSystemApi.tx.poolAssets.transferAll,
 		},
 	},
 	call: {

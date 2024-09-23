@@ -55,6 +55,11 @@ export const disabledOpts: DisabledOptions = {
 		chains: [],
 		error: (opt: string, chain: string) => callError(opt, chain),
 	},
+	transferAll: {
+		disabled: false,
+		chains: [],
+		error: (opt: string, chain: string) => callError(opt, chain),
+	},
 	transferLiquidToken: {
 		disabled: false,
 		chains: [],

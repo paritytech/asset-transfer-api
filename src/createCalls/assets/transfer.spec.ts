@@ -3,7 +3,7 @@
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { transfer } from './transfer';
 
-describe('transfer', () => {
+describe('assets::transfer', () => {
 	it('Should construct a valid transfer extrinsic', () => {
 		const res = transfer(
 			mockSystemApi,

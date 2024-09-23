@@ -3,7 +3,7 @@
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { transferKeepAlive } from './transferKeepAlive';
 
-describe('transferKeepAlive', () => {
+describe('poolAssets::transferKeepAlive', () => {
 	it('Should correctly build a poolAssets transferKeepAlive', () => {
 		const res = transferKeepAlive(
 			mockSystemApi,

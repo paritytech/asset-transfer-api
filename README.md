@@ -208,6 +208,11 @@ interface TransferArgsOpts<T extends Format> {
 	 */
 	keepAlive?: boolean;
 	/**
+	 * For creating local asset transfers, this will allow for a `transferAll` as opposed
+	 * to a `transfer`.
+	 */
+	transferAll?: boolean;
+	/**
 	 * Boolean to declare if this will transfer liquidity tokens.
 	 * Default is false.
 	 */
