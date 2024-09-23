@@ -3,7 +3,7 @@
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { transfer } from './transfer';
 
-describe('transfer', () => {
+describe('poolAssets::transfer', () => {
 	it('Should correctly build a poolAssets transfer', () => {
 		const res = transfer(
 			mockSystemApi,
