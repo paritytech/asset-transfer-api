@@ -1120,8 +1120,16 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		remoteReserveAssetTransferTypeLocation,
 		feesTransferType,
 		remoteReserveFeesTransferTypeLocation,
+		dryRunCall,
+		sendersAddr,
+		xcmFeeAsset,
 	} = opts;
 	const relayChainInfo = registry.currentRelayRegistry;
+
+	/**
+	 * Require `sendersAddr` and `xcmFeeAsset` when dryRunCall option is true
+	 */
+	checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset(dryRunCall, sendersAddr, xcmFeeAsset);
 
 	if (isPrimaryParachainNativeAsset) {
 		/**
@@ -1247,4 +1255,24 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 export const checkClaimAssetsInputs = (assets: string[], amounts: string[]) => {
 	checkAssetsAmountMatch(assets, amounts);
 	checkAssetIdsAreOfSameAssetIdType(assets);
+};
+
+export const checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset = (
+	dryRunCall?: boolean,
+	sendersAddress?: string,
+	xcmFeeAsset?: string,
+) => {
+	if (dryRunCall && !sendersAddress) {
+		throw new BaseError(
+			'sendersAddr option must be provided when the dryRunCall option is set to true',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+
+	if (dryRunCall && !xcmFeeAsset) {
+		throw new BaseError(
+			'xcmFeeAsset option must be provided when the dryRunCall option is set to true',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
 };

@@ -243,6 +243,15 @@ interface TransferArgsOpts<T extends Format> {
 	 * Defaults to `Xcm(vec![DepositAsset { assets: Wild(AllCounted(assets.len())), beneficiary }])`
 	 */
 	customXcmOnDest?: string;
+	/**
+	 * Optionally allows for dry running the constructed tx in order get the estimated fees and execution result.
+	 */
+	dryRunCall?: boolean;
+
+	/**
+	 * Optional assetId that will be used to pay for fees. Used with the `dryRunCall` option to determine fees in the specified asset.
+	 */
+	xcmFeeAsset?: string;
 }
 ```
 

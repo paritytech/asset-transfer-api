@@ -23,6 +23,7 @@ import { adjustedMockRelayApiNoLimitedReserveTransferAssets } from './testHelper
 import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
 import { adjustedMockSystemApiV1016000 } from './testHelpers/adjustedMockSystemApiV1016000';
+import { mockDryRunCallResult } from './testHelpers/mockDryRunCallResult';
 import { mockSystemApi } from './testHelpers/mockSystemApi';
 import { mockWeightInfo } from './testHelpers/mockWeightInfo';
 import { AssetCallType, Direction, ResolvedCallInfo, UnsignedTransaction, XcmBaseArgs, XcmDirection } from './types';
@@ -487,6 +488,84 @@ describe('AssetTransferAPI', () => {
 			);
 			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(callTxResult.tx, 'call');
 			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
+		});
+	});
+
+	describe('getXcmWeightToFee', () => {
+		it('Should correctly return the xcm fee for a valid result', () => {
+			const xcmWeightToFeeAssetResult = westmintAssetsApi.api.registry.createType('Result<u128, XcmPaymentApiError>', {
+				ok: 100000000000,
+			});
+
+			expect(
+				westmintAssetsApi['getXcmWeightToFee'](xcmWeightToFeeAssetResult, {
+					V4: { parents: 1, interior: { Here: '' } },
+				}),
+			).toEqual({ xcmFee: '100000000000' });
+		});
+		it('Should correctly throw an error when given an error result', () => {
+			const xcmWeightToFeeAssetResult = westmintAssetsApi.api.registry.createType('Result<u128, XcmPaymentApiError>', {
+				err: 'AssetNotFound',
+			});
+			const assetLocation = { V4: { parents: 1, interior: { Here: '' } } };
+
+			const err = () =>
+				westmintAssetsApi['getXcmWeightToFee'](xcmWeightToFeeAssetResult, {
+					V4: { parents: 1, interior: { Here: '' } },
+				});
+			expect(err).toThrow(`XcmFeeAsset Error: AssetNotFound - asset: ${JSON.stringify(assetLocation)}`);
+		});
+	});
+	describe('dryRunCall', () => {
+		const sendersAddress = '5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E';
+
+		it('Should correctly execute a dry run for a submittable extrinsic', async () => {
+			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
+
+			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
+				mockDryRunCallResult.Ok.executionResult.Ok.paysFee,
+			);
+		});
+
+		it('Should correctly execute a dry run for a payload extrinsic', async () => {
+			const payloadTexResult = await westmintAssetsApi['constructFormat'](
+				mockSubmittableExt,
+				Direction.SystemToPara,
+				4,
+				'transferAssets',
+				'0',
+				'asset-hub-westend',
+				{ format: 'payload' },
+			);
+
+			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, payloadTexResult.tx, 'payload');
+			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
+				mockDryRunCallResult.Ok.executionResult.Ok.paysFee,
+			);
+		});
+
+		it('Should correctly execute a dry run for a call', async () => {
+			const callTxResult = await westmintAssetsApi['constructFormat'](
+				mockSubmittableExt,
+				Direction.SystemToPara,
+				4,
+				'transferAssets',
+				'0',
+				'asset-hub-westend',
+				{
+					format: 'call',
+					dryRunCall: true,
+					xcmFeeAsset: 'wnd',
+					sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+				},
+			);
+
+			expect(callTxResult.localXcmFees![1]).toEqual({ xcmFee: '3500000000000000' });
+
+			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, callTxResult.tx, 'call');
+			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
+				mockDryRunCallResult.Ok.executionResult.Ok.paysFee,
+			);
 		});
 	});
 

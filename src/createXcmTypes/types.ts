@@ -411,9 +411,10 @@ export interface CreateFeeAssetItemOpts {
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 }
+export type WeightV2 = { refTime?: string; proofSize?: string };
 
 export interface CreateWeightLimitOpts {
-	weightLimit?: { refTime?: string; proofSize?: string };
+	weightLimit?: WeightV2;
 }
 
 export type XcmVersionedAssetIdV2 = {
