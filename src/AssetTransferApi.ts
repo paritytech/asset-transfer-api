@@ -81,6 +81,7 @@ import {
 	Methods,
 	RegistryTypes,
 	ResolvedCallInfo,
+	SystemOriginCaller,
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
@@ -491,13 +492,11 @@ export class AssetTransferApi {
 	): Promise<Result<CallDryRunEffects, XcmDryRunApiError> | null> {
 		const { api } = this;
 
-		const account = api.registry.createType('AccountId32', sendersAddr);
-		const origin = api.registry.createType('FrameSupportDispatchRawOrigin', {
-			Signed: account,
-		});
-		const originCaller = api.registry.createType('OriginCaller', {
-			System: origin,
-		});
+		const originCaller: SystemOriginCaller = {
+			System: {
+				Signed: sendersAddr,
+			},
+		};
 
 		if (format === 'payload') {
 			const extrinsicPayload = api.registry.createType('ExtrinsicPayload', tx, {

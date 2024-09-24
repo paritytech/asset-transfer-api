@@ -255,6 +255,12 @@ export interface TxResult<T> {
 export type XcmFee = {
 	xcmFee: string;
 };
+
+export type SystemOriginCaller = {
+	System: {
+		Signed: string;
+	};
+};
 /**
  * The TransferArgsOpts are the options passed into createTransferTransaction.
  */
