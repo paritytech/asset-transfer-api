@@ -256,7 +256,7 @@ export type XcmFee = {
 	xcmFee: string;
 };
 
-export type SystemOriginSignedCaller = {
+export type SignedOriginCaller = {
 	System: {
 		Signed: string;
 	};
