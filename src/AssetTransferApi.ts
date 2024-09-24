@@ -81,7 +81,7 @@ import {
 	Methods,
 	RegistryTypes,
 	ResolvedCallInfo,
-	SystemOriginCaller,
+	SystemOriginSignedCaller,
 	TransferArgsOpts,
 	TxResult,
 	UnsignedTransaction,
@@ -492,7 +492,7 @@ export class AssetTransferApi {
 	): Promise<Result<CallDryRunEffects, XcmDryRunApiError> | null> {
 		const { api } = this;
 
-		const originCaller: SystemOriginCaller = {
+		const originCaller: SystemOriginSignedCaller = {
 			System: {
 				Signed: sendersAddr,
 			},
