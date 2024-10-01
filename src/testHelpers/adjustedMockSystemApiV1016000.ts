@@ -215,6 +215,13 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 		);
 		assets.set(bridgedRococoMultiLocation1Str, bridgedRococoMultiLocationAsset);
 
+		const bridgedPaseoMultiLocation1Str = '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Paseo"}}}';
+		const bridgedPaseoMultiLocationAsset = mockSystemApi.registry.createType(
+			'PalletAssetsAssetDetails',
+			multiLocationAssetInfo,
+		);
+		assets.set(bridgedPaseoMultiLocation1Str, bridgedPaseoMultiLocationAsset);
+
 		const bridgedPolkadotMultiLocation1Str = '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}';
 		const bridgedPolkadotMultiLocationAsset = mockSystemApi.registry.createType(
 			'PalletAssetsAssetDetails',
@@ -393,10 +400,34 @@ export const adjustedMockSystemApiV1016000 = {
 						],
 						[
 							Object.assign(
-								'0x30e64a56026f4b5e3c2d196283a9a17dd34371a193a751eea5883e9553457b2e40829062ff2f47b747a4ffd8da5b653f020209079edaa8020300b34a6924a02100ba6ef12af1c798285e8f7a16ee',
+								'g',
 								{
 									toHuman: () => {
 										return [{ parents: '2', interior: { X1: { GlobalConsensus: 'Rococo' } } }];
+									},
+								},
+							),
+							{
+								owner: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								issuer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								admin: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								freezer: '5GjRnmh5o3usSYzVmsxBWzHEpvJyHK4tKNPhjpUR3ASrruBy',
+								supply: '0x00000000000000001bc16d674ec80000',
+								deposit: 100000000000,
+								minBalance: 1,
+								isSufficient: false,
+								accounts: 1,
+								sufficients: 0,
+								approvals: 0,
+								status: 'Live',
+							},
+						],
+												[
+							Object.assign(
+								'0x30e64a56026f4b5e3c2d196283a9a17dd34371a193a751eea5883e9553457b2e40829062ff2f47b747a4ffd8da5b653f020209079edaa8020300b34a6924a02100ba6ef12af1c798285e8f7a16eg',
+								{
+									toHuman: () => {
+										return [{ parents: '2', interior: { X1: { GlobalConsensus: 'Paseo' } } }];
 									},
 								},
 							),

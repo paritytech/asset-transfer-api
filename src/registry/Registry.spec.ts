@@ -4,9 +4,9 @@ import type { ForeignAssetsData } from './types';
 describe('Registry', () => {
 	const registry = new Registry('polkadot', {});
 	describe('initialization', () => {
-		it('Should initalize rococo correctly', () => {
-			const registry = new Registry('rococo', {});
-			expect(registry.relayChain).toEqual('rococo');
+		it('Should initalize paseo correctly', () => {
+			const registry = new Registry('paseo', {});
+			expect(registry.relayChain).toEqual('paseo');
 		});
 	});
 	describe('lookupTokenSymbol', () => {

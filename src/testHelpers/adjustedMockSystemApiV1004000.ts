@@ -347,7 +347,7 @@ export const adjustedMockSystemApi = {
 								'0x30e64a56026f4b5e3c2d196283a9a17dd34371a193a751eea5883e9553457b2e40829062ff2f47b747a4ffd8da5b653f020209079edaa8020300b34a6924a02100ba6ef12af1c798285e8f7a16ee',
 								{
 									toHuman: () => {
-										return [{ parents: '2', interior: { X1: { GlobalConsensus: 'Rococo' } } }];
+										return [{ parents: '2', interior: { X1: { GlobalConsensus: 'Paseo' } } }];
 									},
 								},
 							),

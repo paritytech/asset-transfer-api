@@ -124,11 +124,13 @@ export const parseRegistry = (
 		const kusama = injectedRegistry.kusama;
 		const westend = injectedRegistry.westend;
 		const rococo = injectedRegistry.rococo;
+		const paseo = injectedRegistry.paseo;
 
 		if (polkadot) updateRegistry(polkadot, registry, 'polkadot');
 		if (kusama) updateRegistry(kusama, registry, 'kusama');
 		if (westend) updateRegistry(westend, registry, 'westend');
 		if (rococo) updateRegistry(rococo, registry, 'rococo');
+		if (paseo) updateRegistry(paseo, registry, 'paseo');
 	}
 	if (assetsOpts.overrideRegistry) {
 		const { overrideRegistry } = assetsOpts;
@@ -136,11 +138,13 @@ export const parseRegistry = (
 		const kusama = overrideRegistry.kusama;
 		const westend = overrideRegistry.westend;
 		const rococo = overrideRegistry.rococo;
+		const paseo = overrideRegistry.paseo;
 
 		if (polkadot) updateRegistry(polkadot, registry, 'polkadot', true);
 		if (kusama) updateRegistry(kusama, registry, 'kusama', true);
 		if (westend) updateRegistry(westend, registry, 'westend', true);
 		if (rococo) updateRegistry(rococo, registry, 'rococo', true);
+		if (paseo) updateRegistry(paseo, registry, 'paseo', true);
 	}
 
 	/**

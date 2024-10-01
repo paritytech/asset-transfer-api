@@ -5,7 +5,7 @@ import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystem
 import { SystemToBridge } from './SystemToBridge';
 
 describe('SystemToBridge', () => {
-	const registry = new Registry('asset-hub-rococo', {});
+	const registry = new Registry('asset-hub-paseo', {});
 	const isForeignAssetsTransfer = true;
 	const isLiquidTokenTransfer = false;
 	describe('Beneficiary', () => {
@@ -144,7 +144,7 @@ describe('SystemToBridge', () => {
 				['10000000000'],
 				3,
 				'asset-hub-westend',
-				[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+				[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Paseo"}}}`],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -160,7 +160,7 @@ describe('SystemToBridge', () => {
 							Concrete: {
 								parents: '2',
 								interior: {
-									X1: { GlobalConsensus: 'Rococo' },
+									X1: { GlobalConsensus: 'Paseo' },
 								},
 							},
 						},

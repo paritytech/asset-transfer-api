@@ -24,10 +24,12 @@ describe('findRelayChain', () => {
 		const findKusama = findRelayChain('asset-hub-kusama', registry);
 		const findWestend = findRelayChain('asset-hub-westend', registry);
 		const findRococo = findRelayChain('asset-hub-rococo', registry, 'Rococo Asset Hub');
+		const findPaseo = findRelayChain('asset-hub-paseo', registry, 'Paseo Asset Hub');
 
 		expect(findPolkadot).toEqual('polkadot');
 		expect(findKusama).toEqual('kusama');
 		expect(findWestend).toEqual('westend');
 		expect(findRococo).toEqual('rococo');
+		expect(findPaseo).toEqual('paseo');
 	});
 });

@@ -5,7 +5,7 @@ import { detectJsEnv } from './util/detectJsEvn';
 /**
  * List of all known relay chains.
  */
-export const RELAY_CHAIN_NAMES = ['kusama', 'polkadot', 'westend', 'rococo'];
+export const RELAY_CHAIN_NAMES = ['kusama', 'polkadot', 'westend', 'rococo', 'paseo'];
 
 /**
  * As of now all the known relay chains have an ID of 0.
@@ -28,6 +28,7 @@ export const SYSTEM_PARACHAINS_NAMES = [
 	'asset-hub-polkadot',
 	'asset-hub-westend',
 	'asset-hub-rococo',
+	'asset-hub-paseo',
 	'bridge-hub-kusama',
 	'bridge-hub-polkadot',
 	'encointer-parachain',
@@ -37,6 +38,8 @@ export const POLKADOT_ASSET_HUB_SPEC_NAMES = ['statemint', 'asset-hub-polkadot']
 export const KUSAMA_ASSET_HUB_SPEC_NAMES = ['statemine', 'asset-hub-kusama'];
 export const WESTEND_ASSET_HUB_SPEC_NAMES = ['westmint', 'asset-hub-westend'];
 export const ROCOCO_ASSET_HUB_SPEC_NAME = ['asset-hub-rococo'];
+export const PASEO_ASSET_HUB_SPEC_NAME = ['asset-hub-paseo'];
+
 
 /**
  * The default xcm version to construct a xcm message.
@@ -75,7 +78,7 @@ export const JS_ENV = detectJsEnv();
 /**
  * Supported consensus system chain names
  */
-export const KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES = ['polkadot', 'kusama', 'westend', 'rococo', 'ethereum'];
+export const KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES = ['polkadot', 'kusama', 'westend', 'rococo', 'paseo', 'ethereum'];
 
 /**
  * The asset location of the native relay chain asset from the perspective of `System` and `Para` Chains

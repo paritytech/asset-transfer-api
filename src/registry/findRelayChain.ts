@@ -4,6 +4,7 @@ import {
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
 	ROCOCO_ASSET_HUB_SPEC_NAME,
+	PASEO_ASSET_HUB_SPEC_NAME,
 	WESTEND_ASSET_HUB_SPEC_NAMES,
 } from '../consts';
 import { BaseError, BaseErrorsEnum } from '../errors';
@@ -33,6 +34,14 @@ export const findRelayChain = (
 		(specName.toLowerCase() === 'statemine' && chainName && chainName.toLowerCase().includes('rococo'))
 	) {
 		return 'rococo';
+	}
+
+	const paseoChains = Object.keys(registry.paseo).map((val) => registry.paseo[val].specName);
+	if (
+		paseoChains.includes(specName.toLowerCase()) ||
+		PASEO_ASSET_HUB_SPEC_NAME.includes(specName.toLowerCase())
+	) {
+		return 'paseo';
 	}
 
 	const kusamaChains = Object.keys(registry.kusama).map((val) => registry.kusama[val].specName);

@@ -50,13 +50,13 @@ describe('getPaysWithFeeOriginAssetLocationFromRegistry', () => {
 		expect(result).toEqual(expected);
 	});
 	it('Should correctly return the asset location of a valid Foreign Assets Pallet asset symbol on AssetHub', () => {
-		const paysWithFeeOriginAssetId = 'ROC';
+		const paysWithFeeOriginAssetId = 'PAS';
 		const expected = {
 			parents: '2',
 			interior: {
 				X1: [
 					{
-						GlobalConsensus: 'Rococo',
+						GlobalConsensus: 'Paseo',
 					},
 				],
 			},

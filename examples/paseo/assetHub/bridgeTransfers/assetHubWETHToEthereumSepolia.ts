@@ -9,7 +9,7 @@ import { GREEN, PURPLE, RESET } from '../../../colors';
 
 /**
  * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send WETH (foreign asset with location `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`)
- * from a Rococo Asset Hub (System Parachain) account
+ * from a Paseo Asset Hub (System Parachain) account
  * to an Ethereum Sepolia account, where the `xcmVersion` is set to safeXcmVersion, and there is no
  * `weightLimit` option provided which declares that the tx will allow unlimited weight to be used for fees.
  *
@@ -17,7 +17,7 @@ import { GREEN, PURPLE, RESET } from '../../../colors';
  */
 const main = async () => {
 	const { api, specName, chainName, safeXcmVersion } = await constructApiPromise(
-		'wss://rococo-asset-hub-rpc.polkadot.io',
+		'wss://paseo-asset-hub-rpc.polkadot.io',
 	);
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, {
 		chainName,

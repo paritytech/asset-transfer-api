@@ -5,7 +5,7 @@ import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystem
 import { RelayToBridge } from './RelayToBridge';
 
 describe('RelayToBridge', () => {
-	const registry = new Registry('rococo', {});
+	const registry = new Registry('paseo', {});
 	const isForeignAssetsTransfer = true;
 	const isLiquidTokenTransfer = false;
 	describe('Beneficiary', () => {
@@ -143,7 +143,7 @@ describe('RelayToBridge', () => {
 			const assets = await RelayToBridge.createAssets(
 				['10000000000'],
 				3,
-				'rococo',
+				'paseo',
 				[`{"parents":"0","interior":{"Here":""}}`],
 				{
 					registry,
@@ -177,7 +177,7 @@ describe('RelayToBridge', () => {
 			const assets = await RelayToBridge.createAssets(
 				['10000000000'],
 				4,
-				'rococo',
+				'paseo',
 				[`{"parents":"0","interior":{"Here":""}}`],
 				{
 					registry,

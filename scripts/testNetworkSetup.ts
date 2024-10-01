@@ -8,7 +8,7 @@ import { DispatchError } from '@polkadot/types/interfaces';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
-import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, PASEO_ALICE_WS_URL } from './consts';
 import { awaitBlockProduction, delay, logWithDate } from './util';
 
 /**
@@ -38,13 +38,13 @@ const main = async () => {
 	await kusamaAssetHubApi.isReady;
 	logWithDate(chalk.green('Created a connection to Kusama AssetHub'));
 
-	const rococoApi = await ApiPromise.create({
-		provider: new WsProvider(ROCOCO_ALICE_WS_URL),
+	const paseoApi = await ApiPromise.create({
+		provider: new WsProvider(PASEO_ALICE_WS_URL),
 		noInitWarn: true,
 	});
 
-	await rococoApi.isReady;
-	logWithDate(chalk.green('Created a connection to Rococo'));
+	await paseoApi.isReady;
+	logWithDate(chalk.green('Created a connection to Paseo'));
 
 	/**
 	 * Create this call via the parachain api, since this is the chain in which it will be called.
@@ -58,10 +58,10 @@ const main = async () => {
 	 * Create an xcm call via the relay chain because this is the chain in which it will be called.
 	 * NOTE: The relay chain will have sudo powers.
 	 */
-	const xcmDoubleEncoded = rococoApi.createType('XcmDoubleEncoded', {
+	const xcmDoubleEncoded = paseoApi.createType('XcmDoubleEncoded', {
 		encoded: forceCreateCall.toHex(),
 	});
-	const xcmOriginType = rococoApi.createType('XcmOriginKind', 'Superuser');
+	const xcmOriginType = paseoApi.createType('XcmOriginKind', 'Superuser');
 	const xcmDest = {
 		V3: {
 			parents: 0,
@@ -95,16 +95,16 @@ const main = async () => {
 			},
 		],
 	};
-	const multiLocation = rococoApi.createType('XcmVersionedMultiLocation', xcmDest);
-	const xcmVersionedMsg = rococoApi.createType('XcmVersionedXcm', xcmMessage);
-	const xcmMsg = rococoApi.tx.xcmPallet.send(multiLocation, xcmVersionedMsg);
-	const xcmCall = rococoApi.createType('Call', {
+	const multiLocation = paseoApi.createType('XcmVersionedMultiLocation', xcmDest);
+	const xcmVersionedMsg = paseoApi.createType('XcmVersionedXcm', xcmMessage);
+	const xcmMsg = paseoApi.tx.xcmPallet.send(multiLocation, xcmVersionedMsg);
+	const xcmCall = paseoApi.createType('Call', {
 		callIndex: xcmMsg.callIndex,
 		args: xcmMsg.args,
 	});
 
 	logWithDate('Sending Sudo XCM message from relay chain to execute forceCreate call on Kusama AssetHub');
-	await rococoApi.tx.sudo.sudo(xcmCall).signAndSend(alice);
+	await paseoApi.tx.sudo.sudo(xcmCall).signAndSend(alice);
 
 	/**
 	 * Make sure we allow the asset enough time to be created before we mint.

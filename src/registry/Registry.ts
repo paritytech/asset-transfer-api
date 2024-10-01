@@ -7,6 +7,7 @@ import {
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
 	ROCOCO_ASSET_HUB_SPEC_NAME,
+	PASEO_ASSET_HUB_SPEC_NAME,
 	WESTEND_ASSET_HUB_SPEC_NAMES,
 } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
@@ -41,6 +42,7 @@ export class Registry {
 			kusama: {},
 			westend: {},
 			rococo: {},
+			paseo: {},
 		};
 		this.initializeAssetHubCache();
 		this.initializeCurrentChainIdCache();
@@ -261,7 +263,8 @@ export class Registry {
 			POLKADOT_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
 			KUSAMA_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
 			WESTEND_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
-			ROCOCO_ASSET_HUB_SPEC_NAME.includes(specName.toLowerCase())
+			ROCOCO_ASSET_HUB_SPEC_NAME.includes(specName.toLowerCase()) ||
+			PASEO_ASSET_HUB_SPEC_NAME.includes(specName.toLowerCase())
 		) {
 			this.specNameToIdCache.set(specName, '1000');
 			return '1000';
