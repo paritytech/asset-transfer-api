@@ -93,7 +93,7 @@ const call = assetsApi.createTransferTransaction(
 ### AssetTransferApi & AssetTransferApiOpts & TransferArgsOpts
 
 ```Typescript
-// The AssetTransferApi exposes one method as of now called: `createTransferTransaction`
+// The AssetTransferApi method: `createTransferTransaction`
 
 /**
  * Create an XCM transaction to transfer Assets, or native tokens from one
@@ -114,6 +114,20 @@ AssetTransferApi.createTransferTransaction(
 )
 ```
 
+```typescript
+// The AssetTransferApi method: `fetchFeeInfo`
+
+/**
+ * Fetch estimated fee information for an extrinsic
+ *
+ * @param tx a payload, call or submittable
+ * @param format The format the tx is in
+ */
+AssetTransferApi.fetchFeeInfo(
+  	tx: ConstructedFormat<T>,
+	format: T,
+)
+```
 
 ```typescript
 // AssetTransferApiOpts are the options for the `AssetTransferApi`
