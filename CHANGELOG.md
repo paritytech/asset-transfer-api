@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.4.0](https://github.com/paritytech/asset-transfer-api/compare/v0.3.1..v0.4.0)
+
+### Feat
+
+- feat: implement transfer all ([#434](https://github.com/paritytech/asset-transfer-api/pull/434))([cf960c5](https://github.com/paritytech/asset-transfer-api/commit/811eba83a37ad9cf54d486fb392a87567cf960c5))
+- feat: implement dryRunCall option ([#433](https://github.com/paritytech/asset-transfer-api/pull/433))([19dfab3](https://github.com/paritytech/asset-transfer-api/commit/9ea6e2015df610cc1be4654ee17f2a8a319dfab3))
+
+### Chore
+
+- chore(yarn): bump yarn to 4.5.0 ([#436](https://github.com/paritytech/asset-transfer-api/pull/436))([bcb4335](https://github.com/paritytech/asset-transfer-api/commit/bb1f4d90ffaef0d6d9146b912a4e727b2bcb4335))
+- chore(registry): update registry dep ([#435](https://github.com/paritytech/asset-transfer-api/pull/435))([26b1466](https://github.com/paritytech/asset-transfer-api/commit/ed3efdb1fc39f45df9cec212270f3a90c26b1466))
+- chore(deps): update pjs ([#432](https://github.com/paritytech/asset-transfer-api/pull/432))([b9f19ca](https://github.com/paritytech/asset-transfer-api/commit/00b245fcc8612a930dcddda223b0a484fb9f19ca))
+- chore(deps): update pjs ([#426](https://github.com/paritytech/asset-transfer-api/pull/426))([bfb6edd](https://github.com/paritytech/asset-transfer-api/commit/1947f5d7dad21428d3d74637a45052f75bfb6edd))
+
+### Docs
+
+- docs: Update Instructions on the Repo ([#428](https://github.com/paritytech/asset-transfer-api/pull/428))([ceeac5a](https://github.com/paritytech/asset-transfer-api/commit/d5bf1319b88bbb6d03e346fb5c0ff0b62ceeac5a))
+
 ## [0.3.1](https://github.com/paritytech/asset-transfer-api/compare/v0.3.0..v0.3.1)
 
 ### Fix
