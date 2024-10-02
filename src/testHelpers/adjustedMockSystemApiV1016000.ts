@@ -1,14 +1,16 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
+import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { Metadata, Option, TypeRegistry } from '@polkadot/types';
-import type { Header } from '@polkadot/types/interfaces';
+import type { Call, Extrinsic, Header } from '@polkadot/types/interfaces';
 import type {
 	PalletAssetConversionEvent,
 	PalletAssetConversionPoolInfo,
 	PalletAssetsAssetDetails,
 	PalletAssetsAssetMetadata,
 } from '@polkadot/types/lookup';
+import type { ISubmittableResult } from '@polkadot/types/types';
 import { ITuple } from '@polkadot/types-codec/types';
 import { getSpecTypes } from '@polkadot/types-known';
 import BN from 'bn.js';
@@ -340,6 +342,11 @@ const mockApiAt = {
 	},
 };
 
+const mockSubmittableExt = mockSystemApi.registry.createType(
+	'Extrinsic',
+	'0x0501041f0b04010100a90f0400010100c4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063040401000013000064a7b3b6e00d0000000000',
+) as SubmittableExtrinsic<'promise', ISubmittableResult>;
+
 export const adjustedMockSystemApiV1016000 = {
 	createType: createType,
 	registry: createWestmintRegistry(1016000),
@@ -600,38 +607,43 @@ export const adjustedMockSystemApiV1016000 = {
 			}),
 		},
 	},
-	tx: {
-		polkadotXcm: {
-			limitedReserveTransferAssets: mockSystemApi.tx['polkadotXcm'].limitedReserveTransferAssets,
-			reserveTransferAssets: mockSystemApi.tx['polkadotXcm'].reserveTransferAssets,
-			teleportAssets: mockSystemApi.tx['polkadotXcm'].teleportAssets,
-			limitedTeleportAssets: mockSystemApi.tx['polkadotXcm'].limitedTeleportAssets,
-			transferAssets: mockSystemApi.tx['polkadotXcm'].transferAssets,
-			claimAssets: mockSystemApi.tx['polkadotXcm'].claimAssets,
-			transferAssetsUsingTypeAndThen: mockSystemApi.tx['polkadotXcm'].transferAssetsUsingTypeAndThen,
+	tx: Object.assign(
+		(_extrinsic: Call | Extrinsic | Uint8Array | string) => {
+			return mockSubmittableExt;
 		},
-		assets: {
-			transfer: mockSystemApi.tx.assets.transfer,
-			transferKeepAlive: mockSystemApi.tx.assets.transferKeepAlive,
-			transferAll: mockSystemApi.tx.assets.transferAll,
+		{
+			polkadotXcm: {
+				limitedReserveTransferAssets: mockSystemApi.tx['polkadotXcm'].limitedReserveTransferAssets,
+				reserveTransferAssets: mockSystemApi.tx['polkadotXcm'].reserveTransferAssets,
+				teleportAssets: mockSystemApi.tx['polkadotXcm'].teleportAssets,
+				limitedTeleportAssets: mockSystemApi.tx['polkadotXcm'].limitedTeleportAssets,
+				transferAssets: mockSystemApi.tx['polkadotXcm'].transferAssets,
+				claimAssets: mockSystemApi.tx['polkadotXcm'].claimAssets,
+				transferAssetsUsingTypeAndThen: mockSystemApi.tx['polkadotXcm'].transferAssetsUsingTypeAndThen,
+			},
+			assets: {
+				transfer: mockSystemApi.tx.assets.transfer,
+				transferKeepAlive: mockSystemApi.tx.assets.transferKeepAlive,
+				transferAll: mockSystemApi.tx.assets.transferAll,
+			},
+			foreignAssets: {
+				transfer: mockSystemApi.tx.foreignAssets.transfer,
+				transferKeepAlive: mockSystemApi.tx.foreignAssets.transferKeepAlive,
+				transferAll: mockSystemApi.tx.foreignAssets.transferAll,
+			},
+			balances: {
+				transfer: mockSystemApi.tx.balances.transfer,
+				transferAllowDeath: mockSystemApi.tx.balances.transferAllowDeath,
+				transferKeepAlive: mockSystemApi.tx.balances.transferKeepAlive,
+				transferAll: mockSystemApi.tx.balances.transferAll,
+			},
+			poolAssets: {
+				transfer: mockSystemApi.tx.poolAssets.transfer,
+				transferKeepAlive: mockSystemApi.tx.poolAssets.transferKeepAlive,
+				transferAll: mockSystemApi.tx.poolAssets.transferAll,
+			},
 		},
-		foreignAssets: {
-			transfer: mockSystemApi.tx.foreignAssets.transfer,
-			transferKeepAlive: mockSystemApi.tx.foreignAssets.transferKeepAlive,
-			transferAll: mockSystemApi.tx.foreignAssets.transferAll,
-		},
-		balances: {
-			transfer: mockSystemApi.tx.balances.transfer,
-			transferAllowDeath: mockSystemApi.tx.balances.transferAllowDeath,
-			transferKeepAlive: mockSystemApi.tx.balances.transferKeepAlive,
-			transferAll: mockSystemApi.tx.balances.transferAll,
-		},
-		poolAssets: {
-			transfer: mockSystemApi.tx.poolAssets.transfer,
-			transferKeepAlive: mockSystemApi.tx.poolAssets.transferKeepAlive,
-			transferAll: mockSystemApi.tx.poolAssets.transferAll,
-		},
-	},
+	),
 	call: {
 		transactionPaymentApi: {
 			queryInfo: mockApiAt.call.transactionPaymentApi.queryInfo,
