@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.1](https://github.com/paritytech/asset-transfer-api/compare/v0.4.0..v0.4.1)
+
+### Chore
+
+- chore(deps): update pjs ([#440](https://github.com/paritytech/asset-transfer-api/pull/440))([6187377](https://github.com/paritytech/asset-transfer-api/commit/bc7918e761ad370c369a8e4183c3c30536187377))
+
+### Fix
+
+- fix(bug): fix fetchFeeInfo partial fee ([#439](https://github.com/paritytech/asset-transfer-api/pull/439))([d227a14](https://github.com/paritytech/asset-transfer-api/commit/8238bf090413ae8c655f9a466a077bd90d227a14))
+
 ## [0.4.0](https://github.com/paritytech/asset-transfer-api/compare/v0.3.1..v0.4.0)
 
 ### Feat
