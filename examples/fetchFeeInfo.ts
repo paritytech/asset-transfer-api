@@ -8,9 +8,10 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send PHA from a Moonriver (Parachain) account
- * to a Kusama Khala (Parachain) account, where the `xcmVersion` is set to safeXcmVersion and a `weightLimit` option is provided declaring that
- * it will be a weight limited tx with a custom `refTime` and `proofSize`.
+ * In this example we are creating a call to send WETH from a Bifrost Polkadot (Parachain) account
+ * to a Polkadot AssetHub (System Parachain) account, where the `xcmVersion` is set to 3.
+ *
+ * `fetchFeeInfo` returns the associated weight of the transaction, the transaction's class and the estimated fee denoted in the native asset of the origin chain.
  *
  */
 const main = async () => {
