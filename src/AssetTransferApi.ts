@@ -4,7 +4,7 @@ import '@polkadot/api-augment';
 
 import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
+import type { GenericExtrinsic, GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
 import type {
 	CallDryRunEffects,
@@ -14,7 +14,7 @@ import type {
 	XcmDryRunApiError,
 	XcmPaymentApiError,
 } from '@polkadot/types/interfaces';
-import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
+import type { AnyJson, AnyTuple, ISubmittableResult } from '@polkadot/types/types';
 import type { Result, u128 } from '@polkadot/types-codec';
 
 import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
@@ -444,31 +444,32 @@ export class AssetTransferApi {
 	): Promise<RuntimeDispatchInfo | RuntimeDispatchInfoV1 | null> {
 		const { api } = this;
 
+		const fakeSignerAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+
 		if (format === 'payload') {
 			const extrinsicPayload = api.registry.createType('ExtrinsicPayload', tx, {
 				version: EXTRINSIC_VERSION,
 			});
-
 			const ext = api.registry.createType(
 				'Extrinsic',
 				{ method: extrinsicPayload.method },
 				{ version: EXTRINSIC_VERSION },
 			);
-			const u8a = ext.toU8a();
+			const u8a = await this.extToU8a(api, ext, fakeSignerAddress);
 
-			return await api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+			return await api.call.transactionPaymentApi.queryInfo(u8a, u8a.length);
 		} else if (format === 'call') {
 			const ext = api.registry.createType('Extrinsic', { method: tx }, { version: EXTRINSIC_VERSION });
-			const u8a = ext.toU8a();
+			const u8a = await this.extToU8a(api, ext, fakeSignerAddress);
 
-			return await api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+			return await api.call.transactionPaymentApi.queryInfo(u8a, u8a.length);
 		} else if (format === 'submittable') {
 			const ext = api.registry.createType('Extrinsic', tx, {
 				version: EXTRINSIC_VERSION,
 			});
-			const u8a = ext.toU8a();
+			const u8a = await this.extToU8a(api, ext, fakeSignerAddress);
 
-			return await api.call.transactionPaymentApi.queryInfo(ext, u8a.length);
+			return await api.call.transactionPaymentApi.queryInfo(u8a, u8a.length);
 		}
 
 		return null;
@@ -1365,5 +1366,39 @@ export class AssetTransferApi {
 		}
 
 		return [txMethod, transaction];
+	}
+
+	private async extToU8a(api: ApiPromise, ext: GenericExtrinsic<AnyTuple>, address: string): Promise<Uint8Array> {
+		const lastHeader = await api.rpc.chain.getHeader();
+		const era = api.registry.createType('ExtrinsicEra', {
+			current: lastHeader.number.toNumber(),
+			period: 64,
+		});
+		const nonce = await api.rpc.system.accountNextIndex(address);
+		const tx = api.tx(ext.toU8a());
+
+		return tx
+			.signFake(address, {
+				runtimeVersion: api.runtimeVersion,
+				blockHash: lastHeader.hash.toHex(),
+				era,
+				genesisHash: api.genesisHash.toHex(),
+				metadataHash: undefined,
+				mode: api.registry.createType('u8', 0).toHex(),
+				nonce: nonce.toHex(),
+				signedExtensions: [
+					'CheckNonZeroSender',
+					'CheckSpecVersion',
+					'CheckTxVersion',
+					'CheckGenesis',
+					'CheckMortality',
+					'CheckNonce',
+					'CheckWeight',
+					'ChargeAssetTxPayment',
+					'CheckMetadataHash',
+				],
+				tip: api.registry.createType('Compact<Balance>', 0).toHex(),
+			})
+			.toU8a();
 	}
 }

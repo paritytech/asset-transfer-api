@@ -1,9 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { ApiPromise } from '@polkadot/api';
+import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { Metadata, Option, StorageKey, TypeRegistry, u128 } from '@polkadot/types';
-import type { Header } from '@polkadot/types/interfaces';
+import type { Call, Extrinsic, Header } from '@polkadot/types/interfaces';
 import { PalletAssetsAssetDetails, PalletAssetsAssetMetadata } from '@polkadot/types/lookup';
+import type { ISubmittableResult } from '@polkadot/types/types';
 import { getSpecTypes } from '@polkadot/types-known';
 
 import { moonriverV2302 } from './metadata/moonriverV2302';
@@ -416,6 +418,10 @@ const metadata = (assetId: number): Promise<PalletAssetsAssetMetadata> =>
 
 		return mockMoonriverParachainApi.registry.createType('PalletAssetsAssetMetadata', {});
 	});
+const mockSubmittableExt = mockMoonriverParachainApi.registry.createType(
+	'Extrinsic',
+	'0x0501046a010100010200451f0608010a0013000064a7b3b6e00d01010200451f0100c4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a06300',
+) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
 export const adjustedMockMoonriverParachainApi = {
 	registry: mockMoonriverParachainApi.registry,
@@ -564,19 +570,24 @@ export const adjustedMockMoonriverParachainApi = {
 			metadata: metadata,
 		},
 	},
-	tx: {
-		polkadotXcm: {
-			limitedReserveTransferAssets: mockMoonriverParachainApi.tx['polkadotXcm'].limitedReserveTransferAssets,
-			reserveTransferAssets: mockMoonriverParachainApi.tx['polkadotXcm'].reserveTransferAssets,
-			teleportAssets: mockMoonriverParachainApi.tx['polkadotXcm'].teleportAssets,
-			limitedTeleportAssets: mockMoonriverParachainApi.tx['polkadotXcm'].limitedTeleportAssets,
+	tx: Object.assign(
+		(_extrinsic: Call | Extrinsic | Uint8Array | string) => {
+			return mockSubmittableExt;
 		},
-		xTokens: {
-			transferMultiasset: mockMoonriverParachainApi.tx['xTokens'].transferMultiasset,
-			transferMultiassetWithFee: mockMoonriverParachainApi.tx['xTokens'].transferMultiassetWithFee,
-			transferMultiassets: mockMoonriverParachainApi.tx['xTokens'].transferMultiassets,
+		{
+			polkadotXcm: {
+				limitedReserveTransferAssets: mockMoonriverParachainApi.tx['polkadotXcm'].limitedReserveTransferAssets,
+				reserveTransferAssets: mockMoonriverParachainApi.tx['polkadotXcm'].reserveTransferAssets,
+				teleportAssets: mockMoonriverParachainApi.tx['polkadotXcm'].teleportAssets,
+				limitedTeleportAssets: mockMoonriverParachainApi.tx['polkadotXcm'].limitedTeleportAssets,
+			},
+			xTokens: {
+				transferMultiasset: mockMoonriverParachainApi.tx['xTokens'].transferMultiasset,
+				transferMultiassetWithFee: mockMoonriverParachainApi.tx['xTokens'].transferMultiassetWithFee,
+				transferMultiassets: mockMoonriverParachainApi.tx['xTokens'].transferMultiassets,
+			},
 		},
-	},
+	),
 	runtimeVersion: {
 		transactionVersion: mockMoonriverParachainApi.registry.createType('u32', 4),
 		specVersion: mockMoonriverParachainApi.registry.createType('u32', 2302),

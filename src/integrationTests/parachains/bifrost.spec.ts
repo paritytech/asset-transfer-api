@@ -812,6 +812,18 @@ describe('Bifrost', () => {
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
+				it('Should correctly estimate the feeInfo for a transferMultiasset extrinsic', async () => {
+					const res = await bifrostTransferMultiasset(bifrostATA, 'submittable', 3, '0', 'ksm', {
+						weightLimit: {
+							refTime: '1000',
+							proofSize: '2000',
+						},
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					const fees = await bifrostATA.fetchFeeInfo(res.tx, 'submittable');
+					expect(fees?.partialFee.toString()).toEqual('171607466');
+				});
 			});
 		});
 	});

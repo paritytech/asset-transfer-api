@@ -1834,4 +1834,39 @@ describe('AssetTransferAPI', () => {
 			expect(result).toBe(false);
 		});
 	});
+	describe('extToU8a', () => {
+		it('Should correctly return a Uint8Array from an extrinsic for AssetHub', async () => {
+			const assetHubCall =
+				'0x1f0b04010100a90f0400010100c4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063040401000013000064a7b3b6e00d0000000000';
+			const ext = westmintAssetsApi.api.registry.createType('Extrinsic', { method: assetHubCall }, { version: 4 });
+			const fakeSignerAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+			const u8a = await westmintAssetsApi['extToU8a'](westmintAssetsApi.api, ext, fakeSignerAddress);
+
+			expect(u8a.toString()).toEqual(
+				'165,2,132,0,212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,69,2,40,0,0,0,31,11,4,1,1,0,169,15,4,0,1,1,0,196,219,123,203,115,62,17,124,11,52,172,150,53,75,16,212,126,132,160,6,185,231,230,106,34,157,23,78,143,242,160,99,4,4,1,0,0,19,0,0,100,167,179,182,224,13,0,0,0,0,0',
+			);
+		});
+		it('Should correctly return a Uint8Array from an extrinsic for Bifrost', async () => {
+			const bifrostCall =
+				'0x46010100010200451f0608010a0013000064a7b3b6e00d01010200a10f0100c4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a06300';
+			const ext = bifrostAssetsApi.api.registry.createType('Extrinsic', { method: bifrostCall }, { version: 4 });
+			const fakeSignerAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+			const u8a = await bifrostAssetsApi['extToU8a'](bifrostAssetsApi.api, ext, fakeSignerAddress);
+
+			expect(u8a.toString()).toEqual(
+				'229,2,132,0,212,53,147,199,21,253,211,28,97,20,26,189,4,169,159,214,130,44,133,88,133,76,205,227,154,86,132,231,165,109,162,125,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,69,2,40,0,0,70,1,4,1,2,9,7,4,3,0,192,42,170,57,178,35,254,141,10,14,92,79,39,234,217,8,60,117,108,194,0,19,0,0,100,167,179,182,224,13,4,1,2,0,161,15,1,0,196,219,123,203,115,62,17,124,11,52,172,150,53,75,16,212,126,132,160,6,185,231,230,106,34,157,23,78,143,242,160,99,0',
+			);
+		});
+		it('Should correctly return a Uint8Array from an extrinsic for Moonriver', async () => {
+			const moonriverCall =
+				'0x6a010100010200451f0608010a0013000064a7b3b6e00d01010200451f0100c4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a06300';
+			const ext = moonriverAssetsApi.api.registry.createType('Extrinsic', { method: moonriverCall }, { version: 4 });
+			const fakeSignerAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+			const u8a = await moonriverAssetsApi['extToU8a'](moonriverAssetsApi.api, ext, fakeSignerAddress);
+
+			expect(u8a.toString()).toEqual(
+				'105,2,132,53,71,114,119,118,97,69,70,53,122,88,98,50,54,70,122,57,114,99,81,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,69,2,40,0,106,1,1,0,1,2,0,69,31,6,8,1,10,0,19,0,0,100,167,179,182,224,13,1,1,2,0,69,31,1,0,196,219,123,203,115,62,17,124,11,52,172,150,53,75,16,212,126,132,160,6,185,231,230,106,34,157,23,78,143,242,160,99,0',
+			);
+		});
+	});
 });
