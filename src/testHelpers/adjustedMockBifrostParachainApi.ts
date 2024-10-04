@@ -74,6 +74,7 @@ export const adjustedMockBifrostParachainApi = {
 				reserveTransferAssets: mockBifrostParachainApi.tx['polkadotXcm'].reserveTransferAssets,
 				teleportAssets: mockBifrostParachainApi.tx['polkadotXcm'].teleportAssets,
 				limitedTeleportAssets: mockBifrostParachainApi.tx['polkadotXcm'].limitedTeleportAssets,
+				transferAssets: mockBifrostParachainApi.tx['polkadotXcm'].transferAssets,
 			},
 			xTokens: {
 				transferMultiasset: mockBifrostParachainApi.tx['xTokens'].transferMultiasset,

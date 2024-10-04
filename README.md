@@ -266,6 +266,11 @@ interface TransferArgsOpts<T extends Format> {
 	 * Optional assetId that will be used to pay for fees. Used with the `dryRunCall` option to determine fees in the specified asset.
 	 */
 	xcmFeeAsset?: string;
+
+	/**
+	 * Optionally sets the pallet to be used for the current tx.
+	 */
+	xcmPalletOverride?: XcmPallet;
 }
 ```
 

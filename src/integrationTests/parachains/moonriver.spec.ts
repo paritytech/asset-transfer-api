@@ -9,12 +9,101 @@ import type { TestMultiassetsWithFormat, TestMultiassetWithFormat } from '../uti
 import { paraTransferMultiasset as moonriverTransferMultiasset } from '../util';
 import { paraTransferMultiassets as moonriverTransferMultiassets } from '../util';
 import { paraTransferMultiassetWithFee as moonriverTransferMultiassetWithFee } from '../util';
-import { paraTeleportNativeAsset as moonriverTeleportNativeAsset } from '../util';
-
+import { paraTransferAssets as moonriverTransferAssets } from '../util';
 const moonriverATA = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, { registryType: 'NPM' });
 
 describe('Moonriver', () => {
 	describe('ParaToPara', () => {
+		describe('limitedReserveTransferAssets', () => {
+			describe('XCM V2', () => {
+				it('Should correctly construct a limitedReserveTransferAssets call from Moonriver to Bifrost', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'2001',
+							'319623561105283008236062145480775032445', // xcBNC
+							'call',
+							'0x670801010100451f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608000100025a62020000000000',
+						],
+						[
+							'2001',
+							'vBNC',
+							'payload',
+							'0x0d01670801010100451f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608010100025a6202000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						],
+					];
+
+					for (const test of tests) {
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await moonriverTransferAssets(
+							moonriverATA,
+							format as Format,
+							2,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
+
+						if (format === 'call') {
+							expect(res.tx).toEqual(expectedResult);
+						} else {
+							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
+						}
+					}
+				});
+				it('Should correctly build a V2 limitedReserveTransferAssets submittable', async () => {
+					const res = await moonriverTransferAssets(moonriverATA, 'submittable', 2, '2001', ['vKSM'], ['10000000'], {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('XCM V3', () => {
+				it('Should correctly construct a limitedReserveTransferAssets call from Bifrost to Moonriver', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'2001',
+							'movr',
+							'call',
+							'0x670803010100451f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400000000025a62020000000000',
+						],
+					];
+
+					for (const test of tests) {
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await moonriverTransferAssets(
+							moonriverATA,
+							format as Format,
+							3,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
+
+						if (format === 'call') {
+							expect(res.tx).toEqual(expectedResult);
+						} else {
+							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
+						}
+					}
+				});
+				it('Should correctly build a V3 limitedReserveTransferAssets submittable from Moonriver to Bifrost', async () => {
+					const res = await moonriverTransferAssets(moonriverATA, 'submittable', 3, '2001', ['MOVR'], ['10000000'], {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+		});
 		describe('transferMultiasset', () => {
 			describe('XCM V2', () => {
 				it('Should correctly build xTokens transferMultiasset txs from Moonriver', async () => {
@@ -373,6 +462,180 @@ describe('Moonriver', () => {
 		});
 	});
 	describe('ParaToSystem', () => {
+		describe('limitedTeleportAssets', () => {
+			describe('XCM V2', () => {
+				it('Should correctly construct a limitedTeleportAssets call from Moonriver to AssetHub', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'1000',
+							'movr',
+							'call',
+							'0x670901010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400000000025a62020000000000',
+						],
+					];
+
+					for (const test of tests) {
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await moonriverTransferAssets(
+							moonriverATA,
+							format as Format,
+							2,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
+
+						if (format === 'call') {
+							expect(res.tx).toEqual(expectedResult);
+						} else {
+							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
+						}
+					}
+				});
+				it('Should correctly build a V2 limitedTeleportAssets submittable', async () => {
+					const res = await moonriverTransferAssets(moonriverATA, 'submittable', 2, '1000', ['movr'], ['10000000'], {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('XCM V3', () => {
+				it('Should correctly construct a limitedTeleportAssets call from Moonriver to AssetHub', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'1000',
+							'movr',
+							'call',
+							'0x670903010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400000000025a62020000000000',
+						],
+					];
+
+					for (const test of tests) {
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await moonriverTransferAssets(
+							moonriverATA,
+							format as Format,
+							3,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
+
+						if (format === 'call') {
+							expect(res.tx).toEqual(expectedResult);
+						} else {
+							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
+						}
+					}
+				});
+				it('Should correctly build a V3 limitedTeleportAssets submittable', async () => {
+					const res = await moonriverTransferAssets(moonriverATA, 'submittable', 3, '1000', ['movr'], ['10000000'], {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+		});
+		describe('limitedReserveTransferAssets', () => {
+			describe('XCM V2', () => {
+				it('Should correctly construct a limitedReserveTransferAssets call from Moonriver to AssetHub', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'1000',
+							'xcKSM',
+							'call',
+							'0x670801010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010000025a62020000000000',
+						],
+						[
+							'1000',
+							'xcUSDT',
+							'payload',
+							'0x1101670801010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010300a10f043205011f00025a6202000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+						],
+					];
+
+					for (const test of tests) {
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await moonriverTransferAssets(
+							moonriverATA,
+							format as Format,
+							2,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
+
+						if (format === 'call') {
+							expect(res.tx).toEqual(expectedResult);
+						} else {
+							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
+						}
+					}
+				});
+				it('Should correctly build a V2 limitedReserveTransferAssets submittable', async () => {
+					const res = await moonriverTransferAssets(moonriverATA, 'submittable', 2, '1000', ['ksm'], ['10000000'], {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('XCM V3', () => {
+				it('Should correctly construct a limitedReserveTransferAssets call from Moonriver to AssetHub', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'1000',
+							'ksm',
+							'call',
+							'0x670803010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010000025a62020000000000',
+						],
+					];
+
+					for (const test of tests) {
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await moonriverTransferAssets(
+							moonriverATA,
+							format as Format,
+							3,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
+
+						if (format === 'call') {
+							expect(res.tx).toEqual(expectedResult);
+						} else {
+							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
+						}
+					}
+				});
+				it('Should correctly build a V3 limitedReserveTransferAssets submittable from Moonriver to AssetHub', async () => {
+					const res = await moonriverTransferAssets(moonriverATA, 'submittable', 3, '1000', ['xcUsdt'], ['10000000'], {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+		});
 		describe('transferMultiasset', () => {
 			describe('XCM V2', () => {
 				it('Should correctly build xTokens transferMultiasset txs from Moonriver', async () => {
@@ -642,182 +905,6 @@ describe('Moonriver', () => {
 
 						expect(res.tx).toEqual(expectedResult);
 					}
-				});
-			});
-		});
-		describe('limitedTeleportAssets', () => {
-			describe('XCM V2', () => {
-				it('Should correctly construct a limitedTeleportAssets call when sending Moonrivers primary native asset', async () => {
-					const tests: TestMultiassetWithFormat[] = [
-						[
-							'1000',
-							'MOVR',
-							'call',
-							'0x6a0101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f',
-						],
-						[
-							'1000',
-							'MOVR',
-							'payload',
-							'0xe86a0101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
-						],
-					];
-
-					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 2, {
-							weightLimit: {
-								refTime: '1000',
-								proofSize: '2000',
-							},
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
-
-						if (format === 'call') {
-							expect(res.tx).toEqual(expectedResult);
-						} else {
-							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
-						}
-					}
-				});
-				it('Should correctly build a V2 limitedTeleportAssets submittable containing the native parachain asset', async () => {
-					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 2, {
-						weightLimit: {
-							refTime: '1000',
-							proofSize: '2000',
-						},
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
-				});
-			});
-			describe('XCM V3', () => {
-				it('Should correctly construct a limitedTeleportAssets call when sending Moonrivers primary native asset', async () => {
-					const tests: TestMultiassetWithFormat[] = [
-						[
-							'1000',
-							'MOVR',
-							'call',
-							'0x6a0103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f',
-						],
-						[
-							'1000',
-							'MOVR',
-							'payload',
-							'0xe86a0103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
-						],
-					];
-
-					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 3, {
-							weightLimit: {
-								refTime: '1000',
-								proofSize: '2000',
-							},
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
-
-						if (format === 'call') {
-							expect(res.tx).toEqual(expectedResult);
-						} else {
-							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
-						}
-					}
-				});
-				it('Should correctly build a V3 limitedTeleportAssets submittable containing the native parachain asset', async () => {
-					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 3, {
-						weightLimit: {
-							refTime: '1000',
-							proofSize: '2000',
-						},
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
-				});
-			});
-		});
-		describe('teleportAssets', () => {
-			describe('XCM V2', () => {
-				it('Should correctly construct a teleportAssets call when sending Moonrivers primary native asset', async () => {
-					const tests: TestMultiassetWithFormat[] = [
-						[
-							'1000',
-							'MOVR',
-							'call',
-							'0x6a0101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000000',
-						],
-						[
-							'1000',
-							'MOVR',
-							'payload',
-							'0xd86a0101000000000700e40b540201010200a10f01007369626c270800000000000000000000000000000000000000000000000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
-						],
-					];
-
-					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 2, {
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
-
-						if (format === 'call') {
-							expect(res.tx).toEqual(expectedResult);
-						} else {
-							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
-						}
-					}
-				});
-				it('Should correctly build a V2 teleportAssets submittable containing the native parachain asset', async () => {
-					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 2, {
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
-				});
-			});
-			describe('XCM V3', () => {
-				it('Should correctly construct a teleportAssets call when sending Moonrivers primary native asset', async () => {
-					const tests: TestMultiassetWithFormat[] = [
-						[
-							'1000',
-							'MOVR',
-							'call',
-							'0x6a0103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000000',
-						],
-						[
-							'1000',
-							'MOVR',
-							'payload',
-							'0xd86a0103000000000700e40b540203010200a10f01007369626c270800000000000000000000000000000000000000000000000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
-						],
-					];
-
-					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 3, {
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
-
-						if (format === 'call') {
-							expect(res.tx).toEqual(expectedResult);
-						} else {
-							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
-						}
-					}
-				});
-				it('Should correctly build a V3 teleportAssets submittable containing the native parachain asset', async () => {
-					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 3, {
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 		});

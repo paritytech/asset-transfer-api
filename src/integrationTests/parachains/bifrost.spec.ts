@@ -9,12 +9,143 @@ import type { TestMultiasset, TestMultiassets, TestMultiassetWithFormat } from '
 import { paraTransferMultiasset as bifrostTransferMultiasset } from '../util';
 import { paraTransferMultiassets as bifrostTransferMultiassets } from '../util';
 import { paraTransferMultiassetWithFee as bifrostTransferMultiassetWithFee } from '../util';
-import { paraTeleportNativeAsset as bifrsotTeleportNativeAsset } from '../util';
+import { paraTransferAssets as bifrostTransferAssets } from '../util';
 
 const bifrostATA = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2, { registryType: 'NPM' });
 
 describe('Bifrost', () => {
 	describe('ParaToPara', () => {
+		describe('transferAssets', () => {
+			describe('XCM V2', () => {
+				it('Should correctly construct a transferAssets call from Bifrost to Moonriver', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'2023',
+							'vKSM',
+							'call',
+							'0x290b010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608010400025a62020000000000',
+						],
+						[
+							'2023',
+							'vBNC',
+							'payload',
+							'0x0d01290b010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608010100025a620200000000004502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
+						],
+					];
+
+					for (const test of tests) {
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await bifrostTransferAssets(
+							bifrostATA,
+							format as Format,
+							2,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
+
+						if (format === 'call') {
+							expect(res.tx).toEqual(expectedResult);
+						} else {
+							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
+						}
+					}
+				});
+				it('Should correctly build a V2 transferAssets submittable', async () => {
+					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 2, '2023', ['vKSM'], ['10000000'], {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('XCM V3', () => {
+				it('Should correctly construct a transferAssets call from Bifrost to Moonriver', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'2023',
+							'movr',
+							'call',
+							'0x290b030101009d1f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0304000102009d1f040a00025a62020000000000',
+						],
+					];
+
+					for (const test of tests) {
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await bifrostTransferAssets(
+							bifrostATA,
+							format as Format,
+							3,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
+
+						if (format === 'call') {
+							expect(res.tx).toEqual(expectedResult);
+						} else {
+							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
+						}
+					}
+				});
+				it('Should correctly build a V3 transferAssets submittable from Bifrost to Moonriver', async () => {
+					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 3, '2023', ['BNC'], ['10000000'], {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+			describe('XCM V4', () => {
+				it('Should correctly construct a transferAssets call from Bifrost to Moonriver', async () => {
+					const tests: TestMultiassetWithFormat[] = [
+						[
+							'2023',
+							'movr',
+							'call',
+							'0x290b040101009d1f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b04040102009d1f040a00025a62020000000000',
+						],
+					];
+
+					for (const test of tests) {
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await bifrostTransferAssets(
+							bifrostATA,
+							format as Format,
+							4,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
+
+						if (format === 'call') {
+							expect(res.tx).toEqual(expectedResult);
+						} else {
+							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
+						}
+					}
+				});
+				it('Should correctly build a V4 transferAssets submittable from Bifrost to Moonriver', async () => {
+					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 4, '2023', ['BNC'], ['10000000'], {
+						isForeignAssetsTransfer: false,
+						isLiquidTokenTransfer: false,
+					});
+					expect(res.tx.toRawType()).toEqual('Extrinsic');
+				});
+			});
+		});
 		describe('transferMultiasset', () => {
 			describe('XCM V2', () => {
 				it('Should correctly build xTokens transferMultiasset txs from Bifrost Kusama', async () => {
@@ -321,16 +452,16 @@ describe('Bifrost', () => {
 							'ksm',
 							'0xe8460101000100000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 						],
-						// [
-						// 	'1000',
-						// 	'rmrk',
-						// 	'0x050146010100010300a10f04320520000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						// ],
-						// [
-						// 	'1000',
-						// 	'usdt',
-						// 	'0x090146010100010300a10f043205011f000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						// ],
+						[
+							'1000',
+							'rmrk',
+							'0x050146010100010300a10f04320520000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
+						],
+						[
+							'1000',
+							'usdt',
+							'0x090146010100010300a10f043205011f000700e40b540201010200a10f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
+						],
 					];
 
 					for (const test of tests) {
@@ -534,34 +665,38 @@ describe('Bifrost', () => {
 				});
 			});
 		});
-		describe('limitedTeleportAssets', () => {
+		describe('transferAssets', () => {
 			describe('XCM V2', () => {
-				it('Should correctly construct a limitedTeleportAssets call when sending Bifrosts primary native asset', async () => {
+				it('Should correctly construct a transferAssets call from Bifrost to AssetHub', async () => {
 					const tests: TestMultiassetWithFormat[] = [
 						[
 							'1000',
-							'BNC',
+							'vKSM',
 							'call',
-							'0x460101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f',
+							'0x290b01010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608010400025a62020000000000',
 						],
 						[
 							'1000',
-							'BNC',
+							'vBNC',
 							'payload',
-							'0xe8460101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
+							'0x0d01290b01010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608010100025a620200000000004502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 						],
 					];
 
 					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 2, {
-							weightLimit: {
-								refTime: '1000',
-								proofSize: '2000',
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await bifrostTransferAssets(
+							bifrostATA,
+							format as Format,
+							2,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
 							},
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
+						);
 
 						if (format === 'call') {
 							expect(res.tx).toEqual(expectedResult);
@@ -570,12 +705,8 @@ describe('Bifrost', () => {
 						}
 					}
 				});
-				it('Should correctly build a V2 limitedTeleportAssets submittable containing the native parachain asset', async () => {
-					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 2, {
-						weightLimit: {
-							refTime: '1000',
-							proofSize: '2000',
-						},
+				it('Should correctly build a V2 transferAssets submittable', async () => {
+					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 2, '1000', ['vKSM'], ['10000000'], {
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -583,32 +714,36 @@ describe('Bifrost', () => {
 				});
 			});
 			describe('XCM V3', () => {
-				it('Should correctly construct a limitedTeleportAssets call when sending Bifrosts primary native asset', async () => {
+				it('Should correctly construct a transferAssets call from Bifrost to AssetHub', async () => {
 					const tests: TestMultiassetWithFormat[] = [
 						[
 							'1000',
-							'BNC',
+							'USDT',
 							'call',
-							'0x460103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f',
+							'0x290b03010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010300a10f043205011f00025a62020000000000',
 						],
 						[
 							'1000',
-							'BNC',
+							'RMRK',
 							'payload',
-							'0xe8460103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
+							'0x0d01290b03010100a10f0300010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b030400010300a10f0432052000025a620200000000004502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 						],
 					];
 
 					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 3, {
-							weightLimit: {
-								refTime: '1000',
-								proofSize: '2000',
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await bifrostTransferAssets(
+							bifrostATA,
+							format as Format,
+							3,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
 							},
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
+						);
 
 						if (format === 'call') {
 							expect(res.tx).toEqual(expectedResult);
@@ -617,43 +752,39 @@ describe('Bifrost', () => {
 						}
 					}
 				});
-				it('Should correctly build a V3 limitedTeleportAssets submittable containing the native parachain asset', async () => {
-					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 3, {
-						weightLimit: {
-							refTime: '1000',
-							proofSize: '2000',
-						},
+				it('Should correctly build a V3 transferAssets submittable from Bifrost to AssetHub', async () => {
+					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 3, '1000', ['KSM'], ['10000000'], {
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
 					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
-		});
-		describe('teleportAssets', () => {
-			describe('XCM V2', () => {
-				it('Should correctly construct a teleportAssets call when sending Bifrosts primary native asset', async () => {
+			describe('XCM V4', () => {
+				it('Should correctly construct a transferAssets call from Bifrost to AssetHub', async () => {
 					const tests: TestMultiassetWithFormat[] = [
 						[
 							'1000',
-							'BNC',
+							'bnc',
 							'call',
-							'0x460101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000000',
-						],
-						[
-							'1000',
-							'BNC',
-							'payload',
-							'0xd8460101000000000700e40b540201010200a10f01007369626c27080000000000000000000000000000000000000000000000000000004502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
+							'0x290b04010100a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404000000025a62020000000000',
 						],
 					];
 
 					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 2, {
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
+						const [destChainId, assetId, format, expectedResult] = test;
+						const res = await bifrostTransferAssets(
+							bifrostATA,
+							format as Format,
+							4,
+							destChainId,
+							[assetId],
+							['10000000'],
+							{
+								isForeignAssetsTransfer: false,
+								isLiquidTokenTransfer: false,
+							},
+						);
 
 						if (format === 'call') {
 							expect(res.tx).toEqual(expectedResult);
@@ -662,47 +793,8 @@ describe('Bifrost', () => {
 						}
 					}
 				});
-				it('Should correctly build a V2 teleportAssets submittable containing the native parachain asset', async () => {
-					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 2, {
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
-				});
-			});
-			describe('XCM V3', () => {
-				it('Should correctly construct a teleportAssets call when sending Bifrosts primary native asset', async () => {
-					const tests: TestMultiassetWithFormat[] = [
-						[
-							'1000',
-							'BNC',
-							'call',
-							'0x460103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000000',
-						],
-						[
-							'1000',
-							'BNC',
-							'payload',
-							'0xd8460103000000000700e40b540203010200a10f01007369626c27080000000000000000000000000000000000000000000000000000004502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-					];
-
-					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await bifrsotTeleportNativeAsset(bifrostATA, format as Format, assetId, 3, {
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
-
-						if (format === 'call') {
-							expect(res.tx).toEqual(expectedResult);
-						} else {
-							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
-						}
-					}
-				});
-				it('Should correctly build a V3 teleportAssets submittable containing the native parachain asset', async () => {
-					const res = await bifrsotTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 3, {
+				it('Should correctly build a V3 transferAssets submittable from Bifrost to Moonriver', async () => {
+					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 4, '1000', ['BNC'], ['10000000'], {
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
