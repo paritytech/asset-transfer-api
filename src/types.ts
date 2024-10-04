@@ -362,7 +362,7 @@ export interface TransferArgsOpts<T extends Format> {
 	xcmFeeAsset?: string;
 
 	/**
-	 * Optionally manually sets the pallet to you use for the current transaction.
+	 * Optionally sets the pallet to be used for the current tx.
 	 */
 	xcmPalletOverride?: XcmPallet;
 }
