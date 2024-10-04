@@ -268,7 +268,7 @@ interface TransferArgsOpts<T extends Format> {
 	xcmFeeAsset?: string;
 
 	/**
-	 * Optionally manually sets the pallet you intend to you use for the current transaction.
+	 * Optionally manually sets the pallet to you use for the current transaction.
 	 */
 	xcmPalletOverride?: XcmPallet;
 }
