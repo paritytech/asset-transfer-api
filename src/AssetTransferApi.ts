@@ -202,6 +202,7 @@ export class AssetTransferApi {
 			customXcmOnDest,
 			dryRunCall,
 			xcmFeeAsset,
+			xcmPalletOverride,
 		} = opts;
 
 		if (!this.registryConfig.registryInitialized) {
@@ -242,7 +243,7 @@ export class AssetTransferApi {
 		const xcmDirection = this.establishDirection(isLocalTx, chainOriginDestInfo);
 		const isForeignAssetsTransfer = await this.checkContainsForeignAssets(api, assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
-		const xcmPallet = establishXcmPallet(api, xcmDirection);
+		const xcmPallet = establishXcmPallet(api, xcmDirection, xcmPalletOverride);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 

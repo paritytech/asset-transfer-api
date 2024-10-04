@@ -9,7 +9,7 @@ import type { TestMultiassetsWithFormat, TestMultiassetWithFormat } from '../uti
 import { paraTransferMultiasset as moonriverTransferMultiasset } from '../util';
 import { paraTransferMultiassets as moonriverTransferMultiassets } from '../util';
 import { paraTransferMultiassetWithFee as moonriverTransferMultiassetWithFee } from '../util';
-import { paraTeleportNativeAsset as moonriverTeleportNativeAsset } from '../util';
+import { paraLimitedTeleportNativeAsset as moonriverLimitedTeleportNativeAsset } from '../util';
 
 const moonriverATA = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, { registryType: 'NPM' });
 
@@ -653,19 +653,19 @@ describe('Moonriver', () => {
 							'1000',
 							'MOVR',
 							'call',
-							'0x6a0101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f',
+							'0x670901010100a10f01000101007369626c270800000000000000000000000000000000000000000000000000000104000000000700e40b54020000000001a10f411f',
 						],
 						[
 							'1000',
 							'MOVR',
 							'payload',
-							'0xe86a0101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+							'0x0901670901010100a10f01000101007369626c270800000000000000000000000000000000000000000000000000000104000000000700e40b54020000000001a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						],
 					];
 
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
-						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 2, {
+						const res = await moonriverLimitedTeleportNativeAsset(moonriverATA, format as Format, assetId, 2, {
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -682,7 +682,7 @@ describe('Moonriver', () => {
 					}
 				});
 				it('Should correctly build a V2 limitedTeleportAssets submittable containing the native parachain asset', async () => {
-					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 2, {
+					const res = await moonriverLimitedTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 2, {
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -700,19 +700,19 @@ describe('Moonriver', () => {
 							'1000',
 							'MOVR',
 							'call',
-							'0x6a0103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f',
+							'0x670903010100a10f03000101007369626c270800000000000000000000000000000000000000000000000000000304000000000700e40b54020000000001a10f411f',
 						],
 						[
 							'1000',
 							'MOVR',
 							'payload',
-							'0xe86a0103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000001a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+							'0x0901670903010100a10f03000101007369626c270800000000000000000000000000000000000000000000000000000304000000000700e40b54020000000001a10f411f45022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						],
 					];
 
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
-						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 3, {
+						const res = await moonriverLimitedTeleportNativeAsset(moonriverATA, format as Format, assetId, 3, {
 							weightLimit: {
 								refTime: '1000',
 								proofSize: '2000',
@@ -729,7 +729,7 @@ describe('Moonriver', () => {
 					}
 				});
 				it('Should correctly build a V3 limitedTeleportAssets submittable containing the native parachain asset', async () => {
-					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 3, {
+					const res = await moonriverLimitedTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 3, {
 						weightLimit: {
 							refTime: '1000',
 							proofSize: '2000',
@@ -741,27 +741,27 @@ describe('Moonriver', () => {
 				});
 			});
 		});
-		describe('teleportAssets', () => {
+		describe('limitedTeleportAssets', () => {
 			describe('XCM V2', () => {
-				it('Should correctly construct a teleportAssets call when sending Moonrivers primary native asset', async () => {
+				it('Should correctly construct a limitedTeleportAssets call when sending Moonrivers primary native asset', async () => {
 					const tests: TestMultiassetWithFormat[] = [
 						[
 							'1000',
 							'MOVR',
 							'call',
-							'0x6a0101000000000700e40b540201010200a10f01007369626c2708000000000000000000000000000000000000000000000000000000',
+							'0x670901010100a10f01000101007369626c270800000000000000000000000000000000000000000000000000000104000000000700e40b54020000000000',
 						],
 						[
 							'1000',
 							'MOVR',
 							'payload',
-							'0xd86a0101000000000700e40b540201010200a10f01007369626c270800000000000000000000000000000000000000000000000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+							'0xf8670901010100a10f01000101007369626c270800000000000000000000000000000000000000000000000000000104000000000700e40b5402000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						],
 					];
 
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
-						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 2, {
+						const res = await moonriverLimitedTeleportNativeAsset(moonriverATA, format as Format, assetId, 2, {
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
@@ -773,8 +773,8 @@ describe('Moonriver', () => {
 						}
 					}
 				});
-				it('Should correctly build a V2 teleportAssets submittable containing the native parachain asset', async () => {
-					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 2, {
+				it('Should correctly build a V2 limitedTeleportAssets submittable containing the native parachain asset', async () => {
+					const res = await moonriverLimitedTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 2, {
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});
@@ -782,25 +782,25 @@ describe('Moonriver', () => {
 				});
 			});
 			describe('XCM V3', () => {
-				it('Should correctly construct a teleportAssets call when sending Moonrivers primary native asset', async () => {
+				it('Should correctly construct a limitedTeleportAssets call when sending Moonrivers primary native asset', async () => {
 					const tests: TestMultiassetWithFormat[] = [
 						[
 							'1000',
 							'MOVR',
 							'call',
-							'0x6a0103000000000700e40b540203010200a10f01007369626c2708000000000000000000000000000000000000000000000000000000',
+							'0x670903010100a10f03000101007369626c270800000000000000000000000000000000000000000000000000000304000000000700e40b54020000000000',
 						],
 						[
 							'1000',
 							'MOVR',
 							'payload',
-							'0xd86a0103000000000700e40b540203010200a10f01007369626c270800000000000000000000000000000000000000000000000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
+							'0xf8670903010100a10f03000101007369626c270800000000000000000000000000000000000000000000000000000304000000000700e40b5402000000000045022800fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 						],
 					];
 
 					for (const test of tests) {
 						const [, assetId, format, expectedResult] = test;
-						const res = await moonriverTeleportNativeAsset(moonriverATA, format as Format, assetId, 3, {
+						const res = await moonriverLimitedTeleportNativeAsset(moonriverATA, format as Format, assetId, 3, {
 							isForeignAssetsTransfer: false,
 							isLiquidTokenTransfer: false,
 						});
@@ -813,7 +813,7 @@ describe('Moonriver', () => {
 					}
 				});
 				it('Should correctly build a V3 teleportAssets submittable containing the native parachain asset', async () => {
-					const res = await moonriverTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 3, {
+					const res = await moonriverLimitedTeleportNativeAsset(moonriverATA, 'submittable', 'MOVR', 3, {
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
 					});

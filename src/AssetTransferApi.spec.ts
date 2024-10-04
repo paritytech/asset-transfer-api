@@ -583,6 +583,7 @@ describe('AssetTransferAPI', () => {
 					{
 						format: 'call',
 						keepAlive: false,
+						xcmPalletOverride: 'xTokens',
 					},
 				);
 
@@ -604,6 +605,7 @@ describe('AssetTransferAPI', () => {
 						format: 'payload',
 						keepAlive: false,
 						sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
+						xcmPalletOverride: 'xTokens',
 					},
 				);
 
@@ -622,6 +624,7 @@ describe('AssetTransferAPI', () => {
 					['10000000000000'],
 					{
 						format: 'submittable',
+						xcmPalletOverride: 'xTokens',
 					},
 				);
 
