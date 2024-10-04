@@ -16,27 +16,6 @@ export type TestMultiassetsWithFormat = [
 	expected: `0x${string}`,
 ];
 
-export const paraLimitedTeleportNativeAsset = async <T extends Format>(
-	parachainATA: AssetTransferApi,
-	format: T,
-	nativeAssetId: string,
-	xcmVersion: number,
-	opts: CreateXcmCallOpts,
-): Promise<TxResult<T>> => {
-	return await parachainATA.createTransferTransaction(
-		'1000', // `1000` indicating the dest chain is a system chain.
-		'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
-		[nativeAssetId],
-		['10000000000'],
-		{
-			format,
-			xcmVersion,
-			weightLimit: opts.weightLimit,
-			sendersAddr: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-		},
-	);
-};
-
 export const paraTransferAssets = async <T extends Format>(
 	parachainATA: AssetTransferApi,
 	format: T,

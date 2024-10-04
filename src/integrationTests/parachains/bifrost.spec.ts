@@ -9,7 +9,6 @@ import type { TestMultiasset, TestMultiassets, TestMultiassetWithFormat } from '
 import { paraTransferMultiasset as bifrostTransferMultiasset } from '../util';
 import { paraTransferMultiassets as bifrostTransferMultiassets } from '../util';
 import { paraTransferMultiassetWithFee as bifrostTransferMultiassetWithFee } from '../util';
-import { paraLimitedTeleportNativeAsset as bifrostLimitedTeleportNativeAsset } from '../util';
 import { paraTransferAssets as bifrostTransferAssets } from '../util';
 
 const bifrostATA = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2, { registryType: 'NPM' });
@@ -138,7 +137,7 @@ describe('Bifrost', () => {
 						}
 					}
 				});
-				it('Should correctly build a V3 transferAssets submittable from Bifrost to Moonriver', async () => {
+				it('Should correctly build a V4 transferAssets submittable from Bifrost to Moonriver', async () => {
 					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 4, '2023', ['BNC'], ['10000000'], {
 						isForeignAssetsTransfer: false,
 						isLiquidTokenTransfer: false,
@@ -663,102 +662,6 @@ describe('Bifrost', () => {
 
 						expect(res.tx.toHex()).toEqual(expectedResult);
 					}
-				});
-			});
-		});
-		describe('limitedTeleportAssets', () => {
-			describe('XCM V2', () => {
-				it('Should correctly construct a limitedTeleportAssets call when sending Bifrosts primary native asset', async () => {
-					const tests: TestMultiassetWithFormat[] = [
-						[
-							'1000',
-							'BNC',
-							'call',
-							'0x290b01010100a10f01000101007369626c270800000000000000000000000000000000000000000000000000000104000000000700e40b54020000000001a10f411f',
-						],
-						[
-							'1000',
-							'BNC',
-							'payload',
-							'0x0901290b01010100a10f01000101007369626c270800000000000000000000000000000000000000000000000000000104000000000700e40b54020000000001a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-					];
-
-					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await bifrostLimitedTeleportNativeAsset(bifrostATA, format as Format, assetId, 2, {
-							weightLimit: {
-								refTime: '1000',
-								proofSize: '2000',
-							},
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
-
-						if (format === 'call') {
-							expect(res.tx).toEqual(expectedResult);
-						} else {
-							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
-						}
-					}
-				});
-				it('Should correctly build a V2 limitedTeleportAssets submittable containing the native parachain asset', async () => {
-					const res = await bifrostLimitedTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 2, {
-						weightLimit: {
-							refTime: '1000',
-							proofSize: '2000',
-						},
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
-				});
-			});
-			describe('XCM V3', () => {
-				it('Should correctly construct a limitedTeleportAssets call when sending Bifrosts primary native asset', async () => {
-					const tests: TestMultiassetWithFormat[] = [
-						[
-							'1000',
-							'BNC',
-							'call',
-							'0x290b03010100a10f03000101007369626c270800000000000000000000000000000000000000000000000000000304000000000700e40b54020000000001a10f411f',
-						],
-						[
-							'1000',
-							'BNC',
-							'payload',
-							'0x0901290b03010100a10f03000101007369626c270800000000000000000000000000000000000000000000000000000304000000000700e40b54020000000001a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-					];
-
-					for (const test of tests) {
-						const [, assetId, format, expectedResult] = test;
-						const res = await bifrostLimitedTeleportNativeAsset(bifrostATA, format as Format, assetId, 3, {
-							weightLimit: {
-								refTime: '1000',
-								proofSize: '2000',
-							},
-							isForeignAssetsTransfer: false,
-							isLiquidTokenTransfer: false,
-						});
-
-						if (format === 'call') {
-							expect(res.tx).toEqual(expectedResult);
-						} else {
-							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
-						}
-					}
-				});
-				it('Should correctly build a V3 limitedTeleportAssets submittable containing the native parachain asset', async () => {
-					const res = await bifrostLimitedTeleportNativeAsset(bifrostATA, 'submittable', 'BNC', 3, {
-						weightLimit: {
-							refTime: '1000',
-							proofSize: '2000',
-						},
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 		});
