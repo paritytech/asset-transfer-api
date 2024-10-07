@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.4.2](https://github.com/paritytech/asset-transfer-api/compare/v0.4.1..v0.4.2)
+
+### Fix
+- fix: default to xcmPallet ([#442](https://github.com/paritytech/asset-transfer-api/pull/442))([771f264](https://github.com/paritytech/asset-transfer-api/commit/81904a2df0c5e9f03cc936e461fedc4f4771f264))
+
 ## [0.4.1](https://github.com/paritytech/asset-transfer-api/compare/v0.4.0..v0.4.1)
 
 ### Chore
