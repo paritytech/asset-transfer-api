@@ -39,6 +39,11 @@ export const transferAssets = async (
 
 	const feeAssetItem = paysWithFeeDest
 		? await typeCreator.createFeeAssetItem(api, {
+				specName,
+				xcmVersion,
+				assetIds,
+				amounts,
+				paysWithFeeDest,
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,

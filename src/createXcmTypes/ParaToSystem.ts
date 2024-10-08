@@ -203,7 +203,7 @@ export const ParaToSystem: ICreateXcmType = {
 				registry,
 			);
 
-			const assetIndex = getFeeAssetItemIndex(
+			const assetIndex = await getFeeAssetItemIndex(
 				api,
 				registry,
 				paysWithFeeDest,
