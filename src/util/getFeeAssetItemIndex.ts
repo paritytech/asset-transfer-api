@@ -48,8 +48,6 @@ export const getFeeAssetItemIndex = async (
 
 			if (isRelayFeeAsset) {
 				// if the asset id is a relay asset, match Here interior
-				console.log(JSON.stringify(multiAssetInterior));
-
 				if ('Here' in multiAssetInterior) {
 					result = i;
 					break;
