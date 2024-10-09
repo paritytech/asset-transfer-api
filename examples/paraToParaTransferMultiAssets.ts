@@ -26,6 +26,7 @@ const main = async () => {
 			['1000000', '10000000000'],
 			{
 				format: 'call',
+				xcmPalletOverride: 'xTokens',
 				xcmVersion: safeXcmVersion,
 			},
 		);

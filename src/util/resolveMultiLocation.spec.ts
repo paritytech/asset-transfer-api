@@ -29,4 +29,18 @@ describe('resolveMultiLocation', () => {
 			'XcmVersion must be greater than 2 for MultiLocations that contain a GlobalConsensus junction.',
 		);
 	});
+	it('Should correctly resolve an xcmV1Multilocation values location', () => {
+		const str = `{"v1":{"parents":1,"interior":{"x2":[{"globalConsensus":{"ethereum":{"chainId":1}}},{"accountKey20":{"network":null,"key":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]}}}`;
+		const exp = {
+			parents: 1,
+			interior: {
+				x2: [
+					{ globalConsensus: { ethereum: { chainId: 1 } } },
+					{ accountKey20: { network: null, key: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' } },
+				],
+			},
+		};
+
+		expect(resolveMultiLocation(str, 3)).toStrictEqual(exp);
+	});
 });

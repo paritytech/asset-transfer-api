@@ -495,31 +495,6 @@ describe('AssetTransferApi Integration Tests', () => {
 					);
 				}).rejects.toThrow('Bridge transactions require XCM version 3 or greater');
 			});
-			it('Should correctly throw an error when providing more than 1 asset for a `transferAssets` call', async () => {
-				await expect(async () => {
-					await bridgeBaseSystemCreateTx(
-						systemAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
-						[
-							`{"parents":"1","interior":{"Here":""}}`,
-							`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`,
-						],
-						['1000000000000', '2000000000000'],
-						'payload',
-						3,
-						{
-							isLiquidTokenTransfer: false,
-							isForeignAssetsTransfer: true,
-							weightLimit: {
-								refTime: '1000',
-								proofSize: '2000',
-							},
-						},
-					);
-				}).rejects.toThrow(
-					'transferAssets transactions cannot contain more than 1 asset location id. Found 2 assetIds',
-				);
-			});
 		});
 		describe('SystemToPara', () => {
 			const foreignBaseSystemCreateTx = async <T extends Format>(

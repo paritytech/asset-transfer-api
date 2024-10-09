@@ -34,6 +34,11 @@ export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number)
 
 	let result = parseLocationStrToLocation(multiLocationStr);
 
+	// handle case where result is an xcmV1Multilocation from the registry
+	if ('v1' in result) {
+		result = result.v1 as UnionXcmMultiLocation;
+	}
+
 	if (xcmVersion > 3 && result.interior.X1) {
 		result = {
 			parents: result.parents,
