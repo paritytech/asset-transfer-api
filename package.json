@@ -1,6 +1,6 @@
 {
   "name": "@substrate/asset-transfer-api",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
