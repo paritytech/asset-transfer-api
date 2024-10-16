@@ -1,7 +1,7 @@
 [relaychain]
 default_command = "./zombienet/bin/polkadot"
 default_args = [ "-lparachain=debug" ]
-chain = "rococo-local"
+chain = "paseo-local"
 
   [[relaychain.nodes]]
   name = "alice"
@@ -27,17 +27,17 @@ chain = "rococo-local"
 [[parachains]]
 id = 1000
 addToGenesis = true
-chain = "asset-hub-rococo-local"
+chain = "asset-hub-paseo-local"
 cumulus_based = true
 
   [[parachains.collators]]
-  name = "asset-hub-rococo-collator01"
+  name = "asset-hub-paseo-collator01"
   command = "./zombienet/bin/polkadot-parachain"
   args = ["--log=xcm=trace,pallet-assets=trace"]
   ws_port = 9910
 
   [[parachains.collators]]
-  name = "asset-hub-rococo-collator02"
+  name = "asset-hub-paseo-collator02"
   command = "./zombienet/bin/polkadot-parachain"
   ws_port = 9911
   args = ["--log=xcm=trace,pallet-assets=trace"]
