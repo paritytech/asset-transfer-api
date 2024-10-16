@@ -849,13 +849,13 @@ describe('checkBridgeTxInputs', () => {
 
 describe('checkPaysWithFeeDestAssetIdIsInAssets', () => {
 	it('Should correctly error when a paysWithFeeDestAsset is not found in the assetIds list', () => {
-		const assetIds = [`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`];
+		const assetIds = [`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Paseo"}}}`];
 		const paysWithFeeDest = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`;
 
 		const err = () => checkPaysWithFeeDestAssetIdIsInAssets(assetIds, paysWithFeeDest);
 
 		expect(err).toThrow(
-			'paysWithFeeDest asset must be present in assets to be transferred. Did not find {"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}} in {"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}',
+			'paysWithFeeDest asset must be present in assets to be transferred. Did not find {"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}} in {"parents":"2","interior":{"X1":{"GlobalConsensus":"Paseo"}}}',
 		);
 	});
 });

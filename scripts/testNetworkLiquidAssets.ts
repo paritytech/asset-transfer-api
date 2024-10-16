@@ -6,7 +6,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
-import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, PASEO_ALICE_WS_URL } from './consts';
 import { awaitBlockProduction, awaitEpochChange, delay, logWithDate } from './util';
 
 const ASSET_ID = 1;
@@ -70,7 +70,7 @@ const main = async () => {
 	const bob = keyring.addFromUri('//Bob');
 
 	const relayApi = await ApiPromise.create({
-		provider: new WsProvider(ROCOCO_ALICE_WS_URL),
+		provider: new WsProvider(PASEO_ALICE_WS_URL),
 		noInitWarn: true,
 	});
 

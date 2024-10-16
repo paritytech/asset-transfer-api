@@ -12,11 +12,7 @@ describe('parseRegistry', () => {
 		expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);
 		expect(registry.kusama['0'].tokens).toStrictEqual(['KSM']);
 		expect(registry.westend['0'].tokens).toStrictEqual(['WND']);
-		expect(registry.rococo['0'].tokens).toStrictEqual(['ROC']);
-	});
-	it('Should correctly overwrite rococos asset-hub specName', () => {
-		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, {});
-		expect(registry.rococo['1000'].specName).toEqual('asset-hub-rococo');
+		expect(registry.paseo['0'].tokens).toStrictEqual(['PAS']);
 	});
 	it('Should correctly inject an injectedRegsitry', () => {
 		const assetsInfo = {};
@@ -125,7 +121,7 @@ describe('parseRegistry', () => {
 		const foreignAssetsInfo = {};
 		const opts = {
 			injectedRegistry: {
-				rococo: {
+				paseo: {
 					'2000': {
 						foreignAssetsInfo,
 						tokens: ['TST'],
@@ -137,7 +133,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.rococo['2000']).toStrictEqual({
+		expect(registry.paseo['2000']).toStrictEqual({
 			tokens: ['TST'],
 			assetsInfo: {},
 			foreignAssetsInfo: {},
@@ -308,7 +304,7 @@ describe('parseRegistry', () => {
 		const specName = 'termo';
 		const opts = {
 			injectedRegistry: {
-				rococo: {
+				paseo: {
 					'0': {
 						specName: specName,
 					},
@@ -317,20 +313,20 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.rococo['0']).toStrictEqual({
-			tokens: ['ROC'],
+		expect(registry.paseo['0']).toStrictEqual({
+			tokens: ['PAS'],
 			assetsInfo: {},
 			foreignAssetsInfo: {},
 			poolPairsInfo: {},
-			specName: 'rococo',
+			specName: 'paseo',
 		});
 	});
 	it('Should correctly add a new chain', () => {
 		const specName = 'termo';
 		const opts = {
 			injectedRegistry: {
-				rococo: {
-					'4000': {
+				paseo: {
+					'40001': {
 						tokens: ['TRM'],
 						specName: specName,
 					},
@@ -339,7 +335,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.rococo['4000']).toStrictEqual({
+		expect(registry.paseo['40001']).toStrictEqual({
 			tokens: ['TRM'],
 			assetsInfo: {},
 			foreignAssetsInfo: {},
@@ -350,7 +346,7 @@ describe('parseRegistry', () => {
 	it('Should error when adding a new chain without specName', () => {
 		const opts = {
 			injectedRegistry: {
-				rococo: {
+				paseo: {
 					'6666': {
 						tokens: ['ISX'],
 					},
@@ -364,7 +360,7 @@ describe('parseRegistry', () => {
 	it('Should error when adding a new chain without tokens', () => {
 		const opts = {
 			injectedRegistry: {
-				rococo: {
+				paseo: {
 					'6666': {
 						specName: 'termo',
 					},
@@ -386,8 +382,8 @@ describe('parseRegistry', () => {
 		};
 		const opts = {
 			injectedRegistry: {
-				rococo: {
-					'4000': {
+				paseo: {
+					'40001': {
 						specName,
 						foreignAssetsInfo,
 					},
@@ -396,7 +392,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.rococo['4000']).toStrictEqual({
+		expect(registry.paseo['40001']).toStrictEqual({
 			tokens: ['TRM'],
 			assetsInfo: {},
 			foreignAssetsInfo: {
@@ -438,8 +434,8 @@ describe('parseRegistry', () => {
 		];
 		const opts = {
 			injectedRegistry: {
-				rococo: {
-					'4000': {
+				paseo: {
+					'40001': {
 						specName,
 						xcAssetsData,
 					},
@@ -448,7 +444,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.rococo['4000']).toStrictEqual({
+		expect(registry.paseo['40001']).toStrictEqual({
 			tokens: ['TRM'],
 			assetsInfo: {},
 			foreignAssetsInfo: {
@@ -515,8 +511,8 @@ describe('parseRegistry', () => {
 		];
 		const opts = {
 			injectedRegistry: {
-				rococo: {
-					'4000': {
+				paseo: {
+					'40001': {
 						specName,
 						xcAssetsData,
 					},
@@ -525,7 +521,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.rococo['4000'].xcAssetsData).toStrictEqual([
+		expect(registry.paseo['40001'].xcAssetsData).toStrictEqual([
 			{
 				paraID: 1000,
 				symbol: 'RMRK',
@@ -602,8 +598,8 @@ describe('parseRegistry', () => {
 		];
 		const opts = {
 			overrideRegistry: {
-				rococo: {
-					'4000': {
+				paseo: {
+					'40001': {
 						xcAssetsData,
 					},
 				},
@@ -611,7 +607,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.rococo['4000'].xcAssetsData).toEqual([
+		expect(registry.paseo['40001'].xcAssetsData).toEqual([
 			{
 				paraID: 1000,
 				symbol: 'RMRK',
@@ -744,8 +740,8 @@ describe('parseRegistry', () => {
 		};
 		const opts = {
 			overrideRegistry: {
-				rococo: {
-					'4000': {
+				paseo: {
+					'40001': {
 						specName,
 						foreignAssetsInfo,
 					},
@@ -753,15 +749,14 @@ describe('parseRegistry', () => {
 			},
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
-
-		expect(registry.rococo['4000'].tokens).toStrictEqual(['TRM']);
-		expect(registry.rococo['4000'].foreignAssetsInfo).toStrictEqual({
+		expect(registry.paseo['40001'].tokens).toStrictEqual(['TRM']);
+		expect(registry.paseo['40001'].foreignAssetsInfo).toStrictEqual({
 			TESTY: {
 				symbol: 'TSTY',
 				name: 'Testy',
 				multiLocation: '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Testy"}}}',
 			},
 		});
-		expect(registry.rococo['4000'].specName).toStrictEqual('prorrata');
+		expect(registry.paseo['40001'].specName).toStrictEqual('prorrata');
 	});
 });

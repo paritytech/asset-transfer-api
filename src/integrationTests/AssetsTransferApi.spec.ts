@@ -394,8 +394,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a submittable extrinsic for a transferAssets for V3', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
-						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
 						['1000000000000'],
 						'submittable',
 						3,
@@ -437,8 +437,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a `transferAssets` payload for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
-						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
 						['1000000000000'],
 						'payload',
 						4,
@@ -452,14 +452,14 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 					);
 					expect(res.tx.toHex()).toEqual(
-						'0x15011f0b040202090500a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b04040201090500070010a5d4e80000000001a10f411f4502280001000000c0800f00040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
+						'0x15011f0b040202090200a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b04040201090200070010a5d4e80000000001a10f411f4502280001000000c0800f00040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 					);
 				});
 				it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
 					const res = await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
-						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
 						['1000000000000'],
 						'submittable',
 						4,
@@ -479,8 +479,8 @@ describe('AssetTransferApi Integration Tests', () => {
 				await expect(async () => {
 					await bridgeBaseSystemCreateTx(
 						systemAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
-						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Rococo"}}}`],
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
+						[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`],
 						['1000000000000'],
 						'submittable',
 						2,
@@ -1553,7 +1553,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a payload for a transferAssetsUsingTypeAndThen for V3', async () => {
 					const res = await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'payload',
 						3,
@@ -1572,13 +1572,13 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 					);
 					expect(res.tx.toHex()).toEqual(
-						'0x5501630d030102090500a10f03040000000002286bee0303000100a10f030000000303000100a10f03040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000f0780f00180000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
+						'0x5501630d030102090200a10f03040000000002286bee0303000100a10f030000000303000100a10f03040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000f0780f00180000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 					);
 				});
 				it('Should correctly build a submittable extrinsic for a transferAssetsUsingTypeAndThen for V3', async () => {
 					const res = await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'submittable',
 						3,
@@ -1604,7 +1604,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				it('Should correctly build a `transferAssetsUsingTypeAndThen` call extrinsic for V4', async () => {
 					const res = await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'call',
 						4,
@@ -1623,13 +1623,13 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 					);
 					expect(res.tx).toEqual(
-						'0x630d040102090500a10f040400000002286bee0304000100a10f0400000304000100a10f04040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
+						'0x630d040102090200a10f040400000002286bee0304000100a10f0400000304000100a10f04040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f',
 					);
 				});
 				it('Should correctly build a `transferAssetsUsingTypeAndThen` payload for V4 test', async () => {
 					const res = await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1016000,
-						`{"parents":"1","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						`{"parents":"1","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'payload',
 						4,
@@ -1644,13 +1644,13 @@ describe('AssetTransferApi Integration Tests', () => {
 						},
 					);
 					expect(res.tx.toHex()).toEqual(
-						'0x3d01630d040102090500a10f040400000002286bee0304000100a10f0400000304000100a10f04040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b004502280000f0780f00180000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
+						'0x3d01630d040102090200a10f040400000002286bee0304000100a10f0400000304000100a10f04040d01020400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b004502280000f0780f00180000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 					);
 				});
 				it('Should correctly build a `transferAssets` submittable extrinsic for a transferAssets for V4', async () => {
 					const res = await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'submittable',
 						4,
@@ -1670,7 +1670,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				await expect(async () => {
 					await bridgeBaseRelayCreateTx(
 						relayAssetsApiV1016000,
-						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Rococo"},{"Parachain":"1000"}]}}`,
+						`{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}`,
 						[`{"parents":"0","interior":{"Here":""}}`],
 						'submittable',
 						2,

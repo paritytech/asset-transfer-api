@@ -16,7 +16,7 @@
       ],
       "include": [
         "./*",
-        "./rococo/**/*.ts",
+        "./paseo/**/*.ts",
         "./kusama/**/*.ts",
         "./polkadot/**/*.ts",
         "../src/**/*.ts",

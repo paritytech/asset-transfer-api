@@ -9,14 +9,14 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
 
 /**
  * In this example we are creating a `foreignAssets` pallet `transfer` call to send WETH (foreign asset with location `{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,`)
- * from a Rococo Asset Hub (System Parachain) account
- * to a Rococo Asset Hub (System Parachain) account.
+ * from a Paseo Asset Hub (System Parachain) account
+ * to a Paseo Asset Hub (System Parachain) account.
  *
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
 	const { api, specName, safeXcmVersion, chainName } = await constructApiPromise(
-		'wss://rococo-asset-hub-rpc.polkadot.io',
+		'wss://paseo-asset-hub-rpc.polkadot.io',
 	);
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion, {
 		chainName,

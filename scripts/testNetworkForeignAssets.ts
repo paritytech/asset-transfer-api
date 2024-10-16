@@ -5,7 +5,7 @@ import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
-import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, MUSE_WS_URL, PASEO_ALICE_WS_URL } from './consts';
 import { awaitBlockProduction, awaitEpochChange, delay, logWithDate } from './util';
 
 const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
@@ -13,15 +13,15 @@ const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
 		parents: 1,
 		interior: {
 			X1: {
-				parachain: 1836,
+				parachain: 3369,
 			},
 		},
 	};
 
 	const setMetadataTx = assetHubApi.tx.foreignAssets.setMetadata(
 		trappistMultilocation,
-		'Asset Hub Rococo Hop',
-		'Hop',
+		'Asset Hub Paseo Muse',
+		'Muse',
 		12,
 	);
 
@@ -40,14 +40,14 @@ const fAssetCreateCall = (assetHubApi: ApiPromise): `0x${string}` => {
 		parents: 1,
 		interior: {
 			X1: {
-				parachain: 1836,
+				parachain: 3369,
 			},
 		},
 	};
 
 	const createTx = assetHubApi.tx.foreignAssets.create(
 		trappistMultilocation,
-		'5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', // Sibling 1836 -> ParaId
+		'5Eg2fnsjAAr8RGZfa8Sy5mYFPabA9ZLNGYECCKXPD6xnK6D2', // Sibling 3369 -> ParaId
 		'100000000000',
 	);
 
@@ -185,28 +185,28 @@ const main = async () => {
 	logWithDate(chalk.green('Created a connection to Kusama AssetHub'));
 
 	const trappistApi = await ApiPromise.create({
-		provider: new WsProvider(TRAPPIST_WS_URL),
+		provider: new WsProvider(MUSE_WS_URL),
 		noInitWarn: true,
 	});
 
 	await trappistApi.isReady;
-	logWithDate(chalk.green('Created a connection to Trappist'));
+	logWithDate(chalk.green('Created a connection to Muse'));
 
 	const relayApi = await ApiPromise.create({
-		provider: new WsProvider(ROCOCO_ALICE_WS_URL),
+		provider: new WsProvider(PASEO_ALICE_WS_URL),
 		noInitWarn: true,
 	});
 
 	await relayApi.isReady;
 
-	logWithDate(chalk.green('Created a connection to Rococo'));
+	logWithDate(chalk.green('Created a connection to Paseo'));
 
 	logWithDate(chalk.blue('Opening HRMP Channels'));
 
 	const hrmpChannelCalls = [];
 
-	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1000), Number(1836)));
-	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1836), Number(1000)));
+	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(1000), Number(3369)));
+	hrmpChannelCalls.push(openHrmpChannels(relayApi, Number(3369), Number(1000)));
 
 	await relayApi.tx.sudo.sudo(relayApi.tx.utility.batchAll(hrmpChannelCalls)).signAndSend(alice);
 
@@ -243,7 +243,7 @@ const main = async () => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
-awaitBlockProduction(TRAPPIST_WS_URL).then(async () => {
+awaitBlockProduction(MUSE_WS_URL).then(async () => {
 	await main()
 		.catch(console.error)
 		.finally(() => process.exit());
