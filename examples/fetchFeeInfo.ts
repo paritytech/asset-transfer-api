@@ -8,30 +8,34 @@ import { TxResult } from '../src/types';
 import { GREEN, PURPLE, RESET } from './colors';
 
 /**
- * In this example we are creating a call to send 1 xcUSDT from a Moonriver (Parachain) account
- * to a Kusama Asset Hub (System Parachain) account, where the `xcmVersion` is set to safeXcmVersion and no `weightLimit` is provided declaring that
- * it will allow `unlimited` weight for the tx.
+ * In this example we are creating a call to send WETH from a Bifrost Polkadot (Parachain) account
+ * to a Polkadot AssetHub (System Parachain) account, where the `xcmVersion` is set to 3.
  *
- * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
+ * `fetchFeeInfo` returns the associated weight of the transaction, the transaction's class and the estimated fee denoted in the native asset of the origin chain.
+ *
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.public.blastapi.io');
+	const safeXcmVersion = 3;
+	const { api, specName } = await constructApiPromise('wss://bifrost-polkadot-rpc.dwellir.com');
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
 			'1000',
 			'0xc4db7bcb733e117c0b34ac96354b10d47e84a006b9e7e66a229d174e8ff2a063',
-			['xcUSDT'],
-			['1000000'],
+			['WETH'],
+			['1000000000000000000'],
 			{
 				format: 'call',
-				xcmPalletOverride: 'xTokens',
 				xcmVersion: safeXcmVersion,
 			},
 		);
 
-		console.log(`${PURPLE}The following call data that is returned:\n${GREEN}${JSON.stringify(callInfo, null, 4)}`);
+		const feeInfo = await assetApi.fetchFeeInfo(callInfo.tx, 'call');
+
+		console.log(
+			`${PURPLE}The following feeInfo data that is returned:\n${GREEN}${JSON.stringify(feeInfo?.toHuman(), null, 4)}`,
+		);
 	} catch (e) {
 		console.error(e);
 		throw Error(e as string);

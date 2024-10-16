@@ -29,6 +29,7 @@ const main = async () => {
 					refTime: '10000',
 					proofSize: '3000',
 				},
+				xcmPalletOverride: 'xTokens',
 				xcmVersion: safeXcmVersion,
 				// NOTE: for `xTokens` pallet `transferMultiassetWithFee` txs, `paysWithFeeDest` is the multiLocation of the asset that is intended to be used to pay for fees in the dest chain
 				paysWithFeeDest:

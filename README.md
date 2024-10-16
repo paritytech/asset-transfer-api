@@ -93,7 +93,7 @@ const call = assetsApi.createTransferTransaction(
 ### AssetTransferApi & AssetTransferApiOpts & TransferArgsOpts
 
 ```Typescript
-// The AssetTransferApi exposes one method as of now called: `createTransferTransaction`
+// The AssetTransferApi method: `createTransferTransaction`
 
 /**
  * Create an XCM transaction to transfer Assets, or native tokens from one
@@ -114,6 +114,20 @@ AssetTransferApi.createTransferTransaction(
 )
 ```
 
+```typescript
+// The AssetTransferApi method: `fetchFeeInfo`
+
+/**
+ * Fetch estimated fee information for an extrinsic
+ *
+ * @param tx a payload, call or submittable
+ * @param format The format the tx is in
+ */
+AssetTransferApi.fetchFeeInfo(
+  	tx: ConstructedFormat<T>,
+	format: T,
+)
+```
 
 ```typescript
 // AssetTransferApiOpts are the options for the `AssetTransferApi`
@@ -252,6 +266,11 @@ interface TransferArgsOpts<T extends Format> {
 	 * Optional assetId that will be used to pay for fees. Used with the `dryRunCall` option to determine fees in the specified asset.
 	 */
 	xcmFeeAsset?: string;
+
+	/**
+	 * Optionally sets the pallet to be used for the current tx.
+	 */
+	xcmPalletOverride?: XcmPallet;
 }
 ```
 

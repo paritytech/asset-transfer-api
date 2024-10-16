@@ -629,40 +629,16 @@ describe('checkAssetIdsLengthIsValid', () => {
 	it('Should correctly error when more than 2 assetIds are passed in', () => {
 		const assetIds = ['ksm', '1984', '10'];
 		const assetTransferType = undefined;
-		const xcmPallet = XcmPalletName.polkadotXcm;
 
-		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
+		const err = () => checkAssetIdsLengthIsValid(assetIds, assetTransferType);
 		expect(err).toThrow('Maximum number of assets allowed for transfer is 2. Found 3 assetIds');
 	});
 	it('Should correctly not error when 2 or fewer assetIds are passed in and assetTransferType is defined', () => {
 		const assetIds = ['ksm', '1984'];
 		const assetTransferType = 'RemoteReserve';
-		const xcmPallet = XcmPalletName.polkadotXcm;
 
-		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
+		const err = () => checkAssetIdsLengthIsValid(assetIds, assetTransferType);
 		expect(err).not.toThrow('Maximum number of assets allowed for transfer is 2. Found 3 assetIds');
-	});
-	it('Should correctly throw an error when provided more than 1 asset id for a non `transferAssetsUsingTypeAndThen` `xcmPallet` call', () => {
-		const assetIds = [
-			`{"parents":"1","interior":{"Here":""}}`,
-			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
-		];
-		const assetTransferType = undefined;
-		const xcmPallet = XcmPalletName.xcmPallet;
-
-		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
-		expect(err).toThrow('transferAssets transactions cannot contain more than 1 asset location id. Found 2 assetIds');
-	});
-	it('Should correctly throw an error when provided more than 1 asset id for a non `transferAssetsUsingTypeAndThen` `polkadotXcm` call', () => {
-		const assetIds = [
-			`{"parents":"1","interior":{"Here":""}}`,
-			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
-		];
-		const assetTransferType = undefined;
-		const xcmPallet = XcmPalletName.polkadotXcm;
-
-		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
-		expect(err).toThrow('transferAssets transactions cannot contain more than 1 asset location id. Found 2 assetIds');
 	});
 	it('Should correctly not throw an error when provided more than 1 asset id for a `transferAssetsUsingTypeAndThen` call', () => {
 		const assetIds = [
@@ -670,9 +646,8 @@ describe('checkAssetIdsLengthIsValid', () => {
 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Westend"}}}`,
 		];
 		const assetTransferType = 'RemoteReserve';
-		const xcmPallet = XcmPalletName.polkadotXcm;
 
-		const err = () => checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
+		const err = () => checkAssetIdsLengthIsValid(assetIds, assetTransferType);
 		expect(err).not.toThrow();
 	});
 });

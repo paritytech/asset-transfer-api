@@ -4,7 +4,7 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { SUPPORTED_XCM_PALLETS } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
-import { Direction } from '../../types';
+import { Direction, XcmPallet } from '../../types';
 
 export enum XcmPalletName {
 	xcmPallet = 'xcmPallet',
@@ -20,7 +20,28 @@ export enum XcmPalletName {
  *
  * @param api ApiPromise
  */
-export const establishXcmPallet = (api: ApiPromise, direction?: Direction): XcmPalletName => {
+export const establishXcmPallet = (
+	api: ApiPromise,
+	direction?: Direction,
+	xcmPalletOverride?: XcmPallet,
+): XcmPalletName => {
+	if (xcmPalletOverride) {
+		if (api.tx[xcmPalletOverride]) {
+			return XcmPalletName[xcmPalletOverride];
+		} else {
+			throw new BaseError(
+				`Pallet ${xcmPalletOverride} not found in the current runtime.`,
+				BaseErrorsEnum.PalletNotFound,
+			);
+		}
+	}
+
+	if (api.tx.polkadotXcm) {
+		return XcmPalletName.polkadotXcm;
+	} else if (api.tx.xcmPallet) {
+		return XcmPalletName.xcmPallet;
+	}
+
 	let xPallet: XcmPalletName | undefined;
 
 	if (api.tx.xTokens) {
@@ -31,12 +52,6 @@ export const establishXcmPallet = (api: ApiPromise, direction?: Direction): XcmP
 
 	if (isValidXTokensDirection(xPallet, direction)) {
 		return xPallet as XcmPalletName;
-	}
-
-	if (api.tx.polkadotXcm) {
-		return XcmPalletName.polkadotXcm;
-	} else if (api.tx.xcmPallet) {
-		return XcmPalletName.xcmPallet;
 	}
 
 	const supportedPallets = SUPPORTED_XCM_PALLETS.map((pallet) => {

@@ -1,6 +1,6 @@
 {
   "name": "@substrate/asset-transfer-api",
-  "version": "0.3.1",
+  "version": "0.4.3",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -50,7 +50,7 @@
     "typedoc-theme-hierarchy": "^4.0.0"
   },
   "dependencies": {
-    "@polkadot/api": "^13.1.1",
+    "@polkadot/api": "^13.2.1",
     "@substrate/asset-transfer-api-registry": "^0.2.22"
   }
 }
