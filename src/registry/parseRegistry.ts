@@ -1,7 +1,6 @@
 // Copyright 2023-2024 Parity Technologies (UK) Ltd.
 import { AnyJson } from '@polkadot/types/types';
 
-import { ASSET_HUB_CHAIN_ID } from '../consts';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import type { AssetTransferApiOpts } from '../types';
 import { deepEqual } from '../util/deepEqual';
@@ -123,13 +122,11 @@ export const parseRegistry = (
 		const polkadot = injectedRegistry.polkadot;
 		const kusama = injectedRegistry.kusama;
 		const westend = injectedRegistry.westend;
-		const rococo = injectedRegistry.rococo;
 		const paseo = injectedRegistry.paseo;
 
 		if (polkadot) updateRegistry(polkadot, registry, 'polkadot');
 		if (kusama) updateRegistry(kusama, registry, 'kusama');
 		if (westend) updateRegistry(westend, registry, 'westend');
-		if (rococo) updateRegistry(rococo, registry, 'rococo');
 		if (paseo) updateRegistry(paseo, registry, 'paseo');
 	}
 	if (assetsOpts.overrideRegistry) {
@@ -137,21 +134,13 @@ export const parseRegistry = (
 		const polkadot = overrideRegistry.polkadot;
 		const kusama = overrideRegistry.kusama;
 		const westend = overrideRegistry.westend;
-		const rococo = overrideRegistry.rococo;
 		const paseo = overrideRegistry.paseo;
 
 		if (polkadot) updateRegistry(polkadot, registry, 'polkadot', true);
 		if (kusama) updateRegistry(kusama, registry, 'kusama', true);
 		if (westend) updateRegistry(westend, registry, 'westend', true);
-		if (rococo) updateRegistry(rococo, registry, 'rococo', true);
 		if (paseo) updateRegistry(paseo, registry, 'paseo', true);
 	}
-
-	/**
-	 * This is a temporary overwrite to ensure the statemine specName is not shared between
-	 * kusama and rococo for their asset-hub chains.
-	 */
-	registry.rococo[ASSET_HUB_CHAIN_ID].specName = 'asset-hub-rococo';
 
 	return registry;
 };

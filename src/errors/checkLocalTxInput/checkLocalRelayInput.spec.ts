@@ -5,7 +5,7 @@ import { checkLocalRelayInput } from './checkLocalRelayInput';
 import { LocalTxType } from './types';
 
 describe('checkLocalRelayInput', () => {
-	const registry = new Registry('statemine', { chainName: 'paseo' });
+	const registry = new Registry('asset-hub-paseo', { chainName: 'paseo' });
 
 	it('Should return LocalTxType.Balances', () => {
 		const res = checkLocalRelayInput([], ['10000'], registry);

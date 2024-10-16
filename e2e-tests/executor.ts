@@ -6,7 +6,7 @@ import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { delay } from '../scripts/util';
 import { constructApiPromise } from '../src';
 import { balanceTracker, IBalance } from './balance';
-import { KUSAMA_ASSET_HUB_WS_URL, PASEO_ALICE_WS_URL, MUSE_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, MUSE_WS_URL, PASEO_ALICE_WS_URL } from './consts';
 import { startProgressBar, startTestLogger, terminateProgressBar, testResultLogger, updateProgressBar } from './logger';
 import { assetTests, foreignAssetsTests, IndividualTest, liquidPoolsTests, localTests, tests } from './tests';
 import { verification } from './verification';

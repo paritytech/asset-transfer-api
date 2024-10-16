@@ -12,12 +12,7 @@ describe('parseRegistry', () => {
 		expect(registry.polkadot['0'].tokens).toStrictEqual(['DOT']);
 		expect(registry.kusama['0'].tokens).toStrictEqual(['KSM']);
 		expect(registry.westend['0'].tokens).toStrictEqual(['WND']);
-		expect(registry.rococo['0'].tokens).toStrictEqual(['ROC']);
 		expect(registry.paseo['0'].tokens).toStrictEqual(['PAS']);
-	});
-	it('Should correctly overwrite rococos asset-hub specName', () => {
-		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, {});
-		expect(registry.rococo['1000'].specName).toEqual('asset-hub-rococo');
 	});
 	it('Should correctly inject an injectedRegsitry', () => {
 		const assetsInfo = {};
@@ -331,7 +326,7 @@ describe('parseRegistry', () => {
 		const opts = {
 			injectedRegistry: {
 				paseo: {
-					'4000': {
+					'40001': {
 						tokens: ['TRM'],
 						specName: specName,
 					},
@@ -340,7 +335,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.paseo['4000']).toStrictEqual({
+		expect(registry.paseo['40001']).toStrictEqual({
 			tokens: ['TRM'],
 			assetsInfo: {},
 			foreignAssetsInfo: {},
@@ -388,7 +383,7 @@ describe('parseRegistry', () => {
 		const opts = {
 			injectedRegistry: {
 				paseo: {
-					'4000': {
+					'40001': {
 						specName,
 						foreignAssetsInfo,
 					},
@@ -397,7 +392,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.paseo['4000']).toStrictEqual({
+		expect(registry.paseo['40001']).toStrictEqual({
 			tokens: ['TRM'],
 			assetsInfo: {},
 			foreignAssetsInfo: {
@@ -440,7 +435,7 @@ describe('parseRegistry', () => {
 		const opts = {
 			injectedRegistry: {
 				paseo: {
-					'4000': {
+					'40001': {
 						specName,
 						xcAssetsData,
 					},
@@ -449,7 +444,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.paseo['4000']).toStrictEqual({
+		expect(registry.paseo['40001']).toStrictEqual({
 			tokens: ['TRM'],
 			assetsInfo: {},
 			foreignAssetsInfo: {
@@ -517,7 +512,7 @@ describe('parseRegistry', () => {
 		const opts = {
 			injectedRegistry: {
 				paseo: {
-					'4000': {
+					'40001': {
 						specName,
 						xcAssetsData,
 					},
@@ -526,7 +521,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.paseo['4000'].xcAssetsData).toStrictEqual([
+		expect(registry.paseo['40001'].xcAssetsData).toStrictEqual([
 			{
 				paraID: 1000,
 				symbol: 'RMRK',
@@ -604,7 +599,7 @@ describe('parseRegistry', () => {
 		const opts = {
 			overrideRegistry: {
 				paseo: {
-					'4000': {
+					'40001': {
 						xcAssetsData,
 					},
 				},
@@ -612,7 +607,7 @@ describe('parseRegistry', () => {
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
 
-		expect(registry.paseo['4000'].xcAssetsData).toEqual([
+		expect(registry.paseo['40001'].xcAssetsData).toEqual([
 			{
 				paraID: 1000,
 				symbol: 'RMRK',
@@ -746,7 +741,7 @@ describe('parseRegistry', () => {
 		const opts = {
 			overrideRegistry: {
 				paseo: {
-					'4000': {
+					'40001': {
 						specName,
 						foreignAssetsInfo,
 					},
@@ -754,15 +749,14 @@ describe('parseRegistry', () => {
 			},
 		};
 		const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, opts);
-
-		expect(registry.paseo['4000'].tokens).toStrictEqual(['TRM']);
-		expect(registry.paseo['4000'].foreignAssetsInfo).toStrictEqual({
+		expect(registry.paseo['40001'].tokens).toStrictEqual(['TRM']);
+		expect(registry.paseo['40001'].foreignAssetsInfo).toStrictEqual({
 			TESTY: {
 				symbol: 'TSTY',
 				name: 'Testy',
 				multiLocation: '{"parents":"2","interior":{"X1":{"GlobalConsensus":"Testy"}}}',
 			},
 		});
-		expect(registry.paseo['4000'].specName).toStrictEqual('prorrata');
+		expect(registry.paseo['40001'].specName).toStrictEqual('prorrata');
 	});
 });

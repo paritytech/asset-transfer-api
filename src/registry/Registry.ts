@@ -5,9 +5,8 @@ import registry from '@substrate/asset-transfer-api-registry';
 import {
 	ASSET_HUB_CHAIN_ID,
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
-	POLKADOT_ASSET_HUB_SPEC_NAMES,
-	ROCOCO_ASSET_HUB_SPEC_NAME,
 	PASEO_ASSET_HUB_SPEC_NAME,
+	POLKADOT_ASSET_HUB_SPEC_NAMES,
 	WESTEND_ASSET_HUB_SPEC_NAMES,
 } from '../consts';
 import type { AssetTransferApiOpts } from '../types';
@@ -34,14 +33,13 @@ export class Registry {
 		this.opts = opts;
 		this.specName = specName;
 		this.registry = parseRegistry(registry as ChainInfoRegistry<ChainInfoKeys>, opts);
-		this.relayChain = findRelayChain(this.specName, this.registry, this.opts.chainName);
+		this.relayChain = findRelayChain(this.specName, this.registry);
 		this.currentRelayRegistry = this.registry[this.relayChain];
 		this.specNameToIdCache = new Map<string, string>();
 		this.cache = {
 			polkadot: {},
 			kusama: {},
 			westend: {},
-			rococo: {},
 			paseo: {},
 		};
 		this.initializeAssetHubCache();
@@ -263,7 +261,6 @@ export class Registry {
 			POLKADOT_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
 			KUSAMA_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
 			WESTEND_ASSET_HUB_SPEC_NAMES.includes(specName.toLowerCase()) ||
-			ROCOCO_ASSET_HUB_SPEC_NAME.includes(specName.toLowerCase()) ||
 			PASEO_ASSET_HUB_SPEC_NAME.includes(specName.toLowerCase())
 		) {
 			this.specNameToIdCache.set(specName, '1000');

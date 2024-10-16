@@ -5,7 +5,7 @@ import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 import chalk from 'chalk';
 
-import { KUSAMA_ASSET_HUB_WS_URL, PASEO_ALICE_WS_URL, MUSE_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, MUSE_WS_URL, PASEO_ALICE_WS_URL } from './consts';
 import { awaitBlockProduction, awaitEpochChange, delay, logWithDate } from './util';
 
 const fAssetSetMetadataCall = (assetHubApi: ApiPromise): `0x${string}` => {
