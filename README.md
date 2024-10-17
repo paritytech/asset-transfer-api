@@ -28,21 +28,21 @@ Find the full documentation [here](https://paritytech.github.io/asset-transfer-a
 
 The below chart is focusing on what directions are supported for constructing asset transfers and in what XCM version. The goal is to have everything in green checkmarks. Note that local transfers (intra-chain) are not visualized here.
 
-
-| Direction              | V2                 | V3                 | V4                 |
-| ---------------------  | ------------------ | ------------------ | ------------------ |
-| System to Relay        |         ✅         |      ✅            |          ✅         |
-| System to System       |         ✅         |      ✅            |          ✅         |
-| System to Bridge       |         ❌         |      ✅            |          ✅         |
-| System to Parachain    |         ✅         |      ✅            |          ✅         |
-| Relay to Parachain     |         ✅         |      ✅            |          ✅         |
-| Relay to Bridge        |         ❌         |      ✅            |          ✅         |  
-| Relay to System        |         ✅         |      ✅            |          ✅         |
-| Parachain to Parachain |         ✅         |      ✅            |          ✅         |
-| Parachain to Relay     |         ✅         |      ✅            |          ✅         |
-| Parachain to System    |         ✅         |      ✅            |          ✅         |
+| Direction              | V2  | V3  | V4  |
+| ---------------------- | --- | --- | --- |
+| System to Relay        | ✅  | ✅  | ✅  |
+| System to System       | ✅  | ✅  | ✅  |
+| System to Bridge       | ❌  | ✅  | ✅  |
+| System to Parachain    | ✅  | ✅  | ✅  |
+| Relay to Parachain     | ✅  | ✅  | ✅  |
+| Relay to Bridge        | ❌  | ✅  | ✅  |
+| Relay to System        | ✅  | ✅  | ✅  |
+| Parachain to Parachain | ✅  | ✅  | ✅  |
+| Parachain to Relay     | ✅  | ✅  | ✅  |
+| Parachain to System    | ✅  | ✅  | ✅  |
 
 ## Note on Parachain to Parachain Support
+
 Parachain To Parachain support is currently limited to XCM V2, with the exception of Parachain primary asset tx construction (e.g. MOVR, SDN, etc.).
 
 ## Note: System refers to System Parachains like Asset Hub.
@@ -60,25 +60,25 @@ Parachain To Parachain support is currently limited to XCM V2, with the exceptio
 ### NodeJS Version
 
 Recommended: v21 or greater
-When the API is initalized using the `CDN`, `node:fetch` is being used and is stable in node v21. Therefore it is recommended to use v21 or greater. 
+When the API is initalized using the `CDN`, `node:fetch` is being used and is stable in node v21. Therefore it is recommended to use v21 or greater.
 
 ### Example Usage
 
 **Note:** For more detailed and practical usage examples, please refer to the `./examples` directory, where you can find various use cases. To run these examples, follow the steps below:
 
 1. First, install the dependencies:
-    
-    ```bash
-    yarn install
-    
-    ```
-    
+
+   ```bash
+   yarn install
+
+   ```
+
 2. Then, build and run the desired example:
-    
-    ```bash
-    yarn build:examples && node ./examples/build/examples/<file_to_run>.js
-    
-    ```
+
+   ```bash
+   yarn build:examples && node ./examples/build/examples/<file_to_run>.js
+
+   ```
 
 ```typescript
 import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api';
@@ -92,15 +92,15 @@ const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westm
 const assetsApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 const call = assetsApi.createTransferTransaction(
-  '2001', // destChainId (If the destination is a relay chain put `0`)
-  '0x00', // destAddress
-  ['1', '2'], // Array of AssetIds
-  ['1000000000', '2000000000'], // Array of amounts of each token to transfer
-  {
-    format: 'call',
-    xcmVersion: 1
-  } // Options
-)
+	'2001', // destChainId (If the destination is a relay chain put `0`)
+	'0x00', // destAddress
+	['1', '2'], // Array of AssetIds
+	['1000000000', '2000000000'], // Array of amounts of each token to transfer
+	{
+		format: 'call',
+		xcmVersion: 1,
+	}, // Options
+);
 ```
 
 ### AssetTransferApi & AssetTransferApiOpts & TransferArgsOpts
@@ -150,7 +150,7 @@ type AssetTransferApiOpts = {
 	 * The injectedRegistry allows you to add custom values to the predefined initialized registry.
 	 * If you would like to see the registry you may visit https://github.com/paritytech/asset-transfer-api-registry/blob/main/docs/registry.json
 	 * When adding a new chain, the `specName` and `tokens` fields are mandatory.
-	 * 
+	 *
 	 * An example input of the registry would be:
 	 * {
 	 *     polkadot: {
@@ -161,7 +161,7 @@ type AssetTransferApiOpts = {
 	 *         }
 	 *     }
 	 * }
-	 * 
+	 *
 	 * NOTE: It supports adding info for `polkadot`, `kusama`, `westend` and `paseo`.
 	 */
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
@@ -170,10 +170,10 @@ type AssetTransferApiOpts = {
 	 * either overriding fields' values or adding new information. If the chain of which data is
 	 * being overriden is not present in the registry, it will be treated as if it were
 	 * and injectedRegistry and added following the same logic.
-	 * 
+	 *
 	 * If the chain is present in the registry, it will override only the fields
 	 * present in the passed overrideRegistry, leaving the remaining as is.
-	 * 
+	 *
 	 * An example input for overrideRegistry would be:
 	 * {
 	 *     westend: {
@@ -182,14 +182,14 @@ type AssetTransferApiOpts = {
 	 *         }
 	 *     }
 	 * }
-	 * 
+	 *
 	 * This would override the existing native token for the Westend Relay Chain
 	 * to WER instead of WND.
 	 */
 	overrideRegistry?: RequireAtLeastOne<ChainInfoRegistry<InjectedChainInfoKeys>>;
 	/**
 	 * RegistryTypes is a string and can either be 'CDN' or 'NPM'.
-	 * 
+	 *
 	 * CDN - The registry will be initialized with the up to date version given the CDN
 	 * NPM - The registry will be initialized with the NPM version which is updated less frequently.
 	 */
@@ -223,7 +223,7 @@ interface TransferArgsOpts<T extends Format> {
 	 * Option for applying a custom weightLimit.
 	 * If not inputted it will default to `Unlimited`.
 	 */
-	weightLimit?: { refTime?: string, proofSize?: string };
+	weightLimit?: { refTime?: string; proofSize?: string };
 	/**
 	 * Set the xcmVersion for message construction. If this is not present a supported version
 	 * will be queried, and if there is no supported version a safe version will be queried.
@@ -296,6 +296,7 @@ The `AssetTransferApi.createTransferTransaction` is able to infer what kind of t
 If the transfer is being sent from a parachain that utilizes the `xTokens` pallet, the API will detect that and construct the transaction that is necessary. It will construct one of three calls: `transferMultiasset`, `transferMultiassets`, or `transferMultiassetWithFee`. This is only applicable when the intended transfer direction starts from a parachain. The `xTokens` pallet can be found [here](https://github.com/open-web3-stack/open-runtime-module-library/tree/master/xtokens).
 
 An example would look like:
+
 ```typescript
 api.createTransferTransaction(
 	'1000',
@@ -305,7 +306,7 @@ api.createTransferTransaction(
 	{
 		format: 'call',
 		xcmVersion: 2,
-	}
+	},
 );
 ```
 
@@ -316,6 +317,7 @@ If you would like to run an example to understand the output, run: `yarn build:e
 Sending a foreign asset requires the input `assetIds` in `createTransferTransaction` to include the `MultiLocation` of the asset you would like to send. If a `MultiLocation` is not passed it will not know if the asset you are sending is a foreign asset. If the `MultiLocation` passed in has a `Parachain` id which matches the `destChainId` input for the transfer, then the output will be a limited teleport, otherwise it will be a limited reserve backed transfer.
 
 An example would look like:
+
 ```typescript
 api.createTransferTransaction(
 	'2125', // Note: the Parchain ID matches the MultiLocations 'Parachain' ID, making this a limitedTeleportAssets call
@@ -325,8 +327,8 @@ api.createTransferTransaction(
 	{
 		format: 'call',
 		xcmVersion: 3,
-	}
-)
+	},
+);
 ```
 
 If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/systemToParaTeleportForeignAssets.js`
@@ -336,18 +338,13 @@ If you would like to run an example to understand the output run: `yarn build:ex
 Sending a liquidity token (from the `poolAssets` pallet) in Asset Hub is as simple as setting the option `transferLiquidToken` to true. That being said, it does have some nuances. A liquidity token cross-chain transfer must be in the direction of a SystemToPara, and the inputted asset must be a valid integer as a string. The api will error if either of these conditions are not met.
 
 An example would look like:
+
 ```typescript
-api.createTransferTransaction(
-	'2023',
-	'0xF977814e90dA44bFA03b6295A0616a897441aceC',
-	['0'],
-	['100000'],
-	{
-		format: 'call',
-		xcmVersion: 2,
-		transferLiquidToken: true,
-	}
-);
+api.createTransferTransaction('2023', '0xF977814e90dA44bFA03b6295A0616a897441aceC', ['0'], ['100000'], {
+	format: 'call',
+	xcmVersion: 2,
+	transferLiquidToken: true,
+});
 ```
 
 If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/systemToParaLpToken.js`
@@ -357,17 +354,18 @@ If you would like to run an example to understand the output run: `yarn build:ex
 Sending an Asset or Native token locally on a System Parachain is easy. In order to create a transaction, ensure the `destChainId` is the same as the ID of the System Parachain itself. Note, the only System parachains that are supported are `Kusama AssetHub`, `Polkadot AssetHub`, `Westend AssetHub`, `Rococo AssetHub` ([note](https://github.com/paritytech/asset-transfer-api/pull/297#issue-1913578303) on how to use it) and as a side effect the only `destChainId` that is supported is `1000`. In addition to that, ensure the length of the `assetId's` array and `amounts` array are 1. As sending assets will only accept one asset at a time. Keep in mind `transfer`, and `transferKeepAlive` are the only supported calls.
 
 An example would look like:
+
 ```typescript
 api.createTransferTransaction(
-  	'1000', // destChainId
+	'1000', // destChainId
 	'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b', // destAddr
 	['1984'], // assetIds
 	['10000000000'], // amounts
 	{
 		format: 'call',
-		keepAlive: true
-	} // opts
-)
+		keepAlive: true,
+	}, // opts
+);
 ```
 
 The api can also send native tokens as well. Similar to the above you would replace the `assetIds` with `['DOT']`. In addition to that, you may provide an empty array to denote you want to send the chain's native token.
@@ -383,6 +381,7 @@ Note: For other parachains, local transfers are currently supported via the bala
 The api can be used to construct `claimAssets` calls in order to retrieve assets trapped locally on chain after a failed XCM.
 
 An example would look like:
+
 ```typescript
 api.claimAssets(
 	[`DOT`], // Asset(s) to claim
@@ -391,10 +390,11 @@ api.claimAssets(
 	{
 		xcmVersion: 4,
 		format: 'payload',
-		sendersAddr: '5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX'
-	} // opts
-)
+		sendersAddr: '5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
+	}, // opts
+);
 ```
+
 Note: claimAssets works when pallet-xcm is configured as the AssetTrap for the given runtime. This is true for all relay chains and system parachains but may not be for other chains.
 
 ## License
@@ -403,7 +403,7 @@ The source code in this repository is distributed under the Apache 2.0 license. 
 
 ## Zombienet Testing
 
-Zombienet is used to launch a complete network including a relay chain, and two parachains. It will create HRMP channels betweens the launched parachains allowing the testing environment to send XCM messages and transfer assets. 
+Zombienet is used to launch a complete network including a relay chain, and two parachains. It will create HRMP channels betweens the launched parachains allowing the testing environment to send XCM messages and transfer assets.
 
 ### **Requirements**:
 
@@ -415,7 +415,7 @@ Zombienet is used to launch a complete network including a relay chain, and two 
 - trappist-collator: This binary is compiled along with polkadot above. You can find it [here](https://github.com/paritytech/trappist). (Needed for medium network)
 - polkadot-parachain (ie: cumulus): You can find the releases [here](https://github.com/paritytech/polkadot-sdk/releases). (Needed for small, or medium network)
 
-NOTES: 
+NOTES:
 
 - When it comes to picking a version for both `cumulus` and `polkadot` ensure they are the same. Cumulus will have an extra 0 at the end though. Ex: v0.9.37 (polkadot) -> v0.9.370 (cumulus)
 
