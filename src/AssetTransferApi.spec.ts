@@ -851,14 +851,14 @@ describe('AssetTransferAPI', () => {
 
 		it('Should correctly set the feeAssetItem when paysWithFeeDest option is provided for a limitedReserveTransferAssets call', async () => {
 			const expected =
-				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
+				'{"args":{"dest":{"V3":{"parents":"1","interior":{"X1":{"Parachain":"2,000"}}}},"beneficiary":{"V3":{"parents":"0","interior":{"X1":{"AccountId32":{"network":null,"id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V3":[{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"10"}]}}},"fun":{"Fungible":"2,000"}},{"id":{"Concrete":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"11"}]}}},"fun":{"Fungible":"100,000"}}]},"fee_asset_item":"1","weight_limit":"Unlimited"},"method":"limitedReserveTransferAssets","section":"polkadotXcm"}';
 			const callTxResult = await systemAssetsApi.createTransferTransaction(
 				'2000',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				['10'],
-				['2000'],
+				['10', '11'],
+				['2000', '100000'],
 				{
-					paysWithFeeDest: '10',
+					paysWithFeeDest: '11',
 					xcmVersion: 3,
 					format: 'call',
 					keepAlive: true,

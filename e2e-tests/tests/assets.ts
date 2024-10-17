@@ -7,12 +7,12 @@ import { TxResult } from '../../src/types';
 
 const createAssetApi = (api: ApiPromise, specName: string, safeXcmVersion: number): AssetTransferApi => {
 	const injectedRegistry = {
-		rococo: {
-			'1836': {
-				tokens: ['HOP'],
+		paseo: {
+			'3369': {
+				tokens: ['MUSE'],
 				assetsInfo: {},
 				foreignAssetsInfo: {},
-				specName: 'trappist-rococo',
+				specName: 'muse',
 				poolPairsInfo: {},
 			},
 		},

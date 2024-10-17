@@ -48,10 +48,10 @@ export type ChainInfoRegistry<T extends ChainInfoKeys | InjectedChainInfoKeys> =
 	polkadot: ChainInfo<T>;
 	kusama: ChainInfo<T>;
 	westend: ChainInfo<T>;
-	rococo: ChainInfo<T>;
+	paseo: ChainInfo<T>;
 };
 
-export type RelayChains = 'polkadot' | 'kusama' | 'westend' | 'rococo';
+export type RelayChains = 'polkadot' | 'kusama' | 'westend' | 'paseo';
 
 export type InterMultiLocationJunctionType = 'here' | 'x1' | 'x2' | 'x3' | 'x4' | 'x5' | 'x6' | 'x7' | 'x8';
 type XCMRegistryInteriorMultiLocation = Partial<

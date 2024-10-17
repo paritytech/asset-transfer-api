@@ -1,6 +1,6 @@
 {
   "name": "@substrate/asset-transfer-api",
-  "version": "0.4.1",
+  "version": "0.4.3",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -51,6 +51,6 @@
   },
   "dependencies": {
     "@polkadot/api": "^14.0.1",
-    "@substrate/asset-transfer-api-registry": "^0.2.22"
+    "@substrate/asset-transfer-api-registry": "^0.2.24"
   }
 }

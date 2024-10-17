@@ -4,6 +4,7 @@ import { ApiPromise } from '@polkadot/api';
 
 import { FungibleStrAssetType } from '../createXcmTypes/types';
 import { getAssetId } from '../createXcmTypes/util/getAssetId';
+import { isParachain } from '../createXcmTypes/util/isParachain';
 import { BaseError, BaseErrorsEnum } from '../errors';
 import { Registry } from '../registry';
 import { resolveMultiLocation } from '../util/resolveMultiLocation';
@@ -26,6 +27,8 @@ export const getFeeAssetItemIndex = async (
 	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean,
 ): Promise<number> => {
+	const chainId = registry.lookupChainIdBySpecName(specName);
+	const isParaOrigin = isParachain(chainId);
 	let result = -1;
 
 	if (paysWithFeeDest) {
@@ -45,7 +48,7 @@ export const getFeeAssetItemIndex = async (
 
 			if (isRelayFeeAsset) {
 				// if the asset id is a relay asset, match Here interior
-				if (multiAssetInterior.Here || multiAssetInterior['here']) {
+				if ('Here' in multiAssetInterior) {
 					result = i;
 					break;
 				}
@@ -55,7 +58,7 @@ export const getFeeAssetItemIndex = async (
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
 				if (!isValidNumber) {
-					const paysWithFeeDestGeneralIndex = await getAssetId(
+					const paysWithFeeDestAssetLocationStr = await getAssetId(
 						api,
 						registry,
 						paysWithFeeDest,
@@ -63,9 +66,9 @@ export const getFeeAssetItemIndex = async (
 						xcmVersion,
 						isForeignAssetsTransfer,
 					);
-					// if isForeignAssetsTransfer, compare the multiAsset interior to the the paysWithFeeDestGeneralIndex as a multilocation
-					if (isForeignAssetsTransfer) {
-						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestGeneralIndex, xcmVersion);
+					// if isForeignAssetsTransfer or parachain origin, compare the multiAsset interior to the the paysWithFeeDestAssetLocationStr as a multilocation
+					if (isForeignAssetsTransfer || isParaOrigin) {
+						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestAssetLocationStr, xcmVersion);
 						const paysWithFeeDestMultiLocationInterior =
 							paysWithFeeDestMultiLocation.interior || paysWithFeeDestMultiLocation['Interior'];
 						if (JSON.stringify(multiAssetInterior) === JSON.stringify(paysWithFeeDestMultiLocationInterior)) {
@@ -82,7 +85,7 @@ export const getFeeAssetItemIndex = async (
 						if (
 							multiAssetInterior.X2 &&
 							(multiAssetInterior.X2[1].GeneralIndex || multiAssetInterior.X2[1]['Generalindex']) ===
-								paysWithFeeDestGeneralIndex
+								paysWithFeeDestAssetLocationStr
 						) {
 							result = i;
 							break;

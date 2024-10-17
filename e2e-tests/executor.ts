@@ -6,7 +6,7 @@ import { cryptoWaitReady } from '@polkadot/util-crypto';
 import { delay } from '../scripts/util';
 import { constructApiPromise } from '../src';
 import { balanceTracker, IBalance } from './balance';
-import { KUSAMA_ASSET_HUB_WS_URL, ROCOCO_ALICE_WS_URL, TRAPPIST_WS_URL } from './consts';
+import { KUSAMA_ASSET_HUB_WS_URL, MUSE_WS_URL, PASEO_ALICE_WS_URL } from './consts';
 import { startProgressBar, startTestLogger, terminateProgressBar, testResultLogger, updateProgressBar } from './logger';
 import { assetTests, foreignAssetsTests, IndividualTest, liquidPoolsTests, localTests, tests } from './tests';
 import { verification } from './verification';
@@ -62,16 +62,16 @@ const executor = async (testCase: string) => {
 
 		switch (originChainId) {
 			case '0':
-				originWsUrl = ROCOCO_ALICE_WS_URL;
-				chainName = 'Rococo';
+				originWsUrl = PASEO_ALICE_WS_URL;
+				chainName = 'Paseo';
 				break;
 			case '1000':
 				originWsUrl = KUSAMA_ASSET_HUB_WS_URL;
 				chainName = 'Kusama Asset Hub';
 				break;
 			case '1836':
-				originWsUrl = TRAPPIST_WS_URL;
-				chainName = 'Trappist';
+				originWsUrl = MUSE_WS_URL;
+				chainName = 'Muse Testnet';
 				break;
 		}
 		if (originChainId == destChainId) {
@@ -79,15 +79,15 @@ const executor = async (testCase: string) => {
 		} else {
 			switch (destChainId) {
 				case '0':
-					destWsUrl = ROCOCO_ALICE_WS_URL;
-					chainName = 'Rococo';
+					destWsUrl = PASEO_ALICE_WS_URL;
+					chainName = 'Paseo';
 					break;
 				case '1000':
 					destWsUrl = KUSAMA_ASSET_HUB_WS_URL;
 					chainName = 'Kusama Asset Hub';
 					break;
 				case '1836':
-					destWsUrl = TRAPPIST_WS_URL;
+					destWsUrl = MUSE_WS_URL;
 					chainName = 'Trappist';
 					break;
 			}

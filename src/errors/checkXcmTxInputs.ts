@@ -811,25 +811,10 @@ const checkParaToRelayAssetId = (assetId: string, registry: Registry, specName: 
  *
  * @param assetIds
  */
-export const checkAssetIdsLengthIsValid = (
-	assetIds: string[],
-	xcmPalletName: XcmPalletName,
-	assetTransferType: string | undefined,
-) => {
+export const checkAssetIdsLengthIsValid = (assetIds: string[], assetTransferType: string | undefined) => {
 	if (assetIds.length > MAX_ASSETS_FOR_TRANSFER && !assetTransferType) {
 		throw new BaseError(
 			`Maximum number of assets allowed for transfer is 2. Found ${assetIds.length} assetIds`,
-			BaseErrorsEnum.InvalidInput,
-		);
-	}
-
-	if (
-		assetIds.length > 1 &&
-		!assetTransferType &&
-		(xcmPalletName === XcmPalletName.polkadotXcm || xcmPalletName === XcmPalletName.xcmPallet)
-	) {
-		throw new BaseError(
-			`transferAssets transactions cannot contain more than 1 asset location id. Found ${assetIds.length} assetIds`,
 			BaseErrorsEnum.InvalidInput,
 		);
 	}
@@ -1155,7 +1140,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	/**
 	 * Checks to ensure that assetId's have a length no greater than MAX_ASSETS_FOR_TRANSFER
 	 */
-	checkAssetIdsLengthIsValid(assetIds, xcmPallet, assetTransferType);
+	checkAssetIdsLengthIsValid(assetIds, assetTransferType);
 
 	/**
 	 * Checks to ensure that assetId's have no duplicate values

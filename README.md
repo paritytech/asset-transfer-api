@@ -149,7 +149,7 @@ type AssetTransferApiOpts = {
 	 *     }
 	 * }
 	 * 
-	 * NOTE: It supports adding info for `polkadot`, `kusama`, `westend` and `rococo`.
+	 * NOTE: It supports adding info for `polkadot`, `kusama`, `westend` and `paseo`.
 	 */
 	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry>;
 	/**
