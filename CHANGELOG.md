@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.4](https://github.com/paritytech/asset-transfer-api/compare/v0.4.3..v0.4.4)
+
+### Chore
+
+- chore: migrate rococo refs to paseo ([#447](https://github.com/paritytech/asset-transfer-api/pull/447))([5b13228](https://github.com/paritytech/asset-transfer-api/commit/da53859c6ec5213864b409bcbd93943895b13228))
+
 ## [0.4.3](https://github.com/paritytech/asset-transfer-api/compare/v0.4.2..v0.4.3)
 
 ### Fix
