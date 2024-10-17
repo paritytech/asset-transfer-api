@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { createBeneficiary } from './createBeneficiary';
+import { createBeneficiary } from './createBeneficiary.js';
 
 describe('createBeneficiary', () => {
 	it('Should work for V2', () => {

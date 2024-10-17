@@ -5,9 +5,9 @@
 import { stringToHex } from '@polkadot/util';
 import { BN } from 'bn.js';
 
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import type { RequireOnlyOne } from '../../types';
-import { validateNumber } from '../../validate';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import type { RequireOnlyOne } from '../../types.js';
+import { validateNumber } from '../../validate/index.js';
 import type {
 	FungibleObjAssetType,
 	FungibleStrAssetType,
@@ -15,7 +15,7 @@ import type {
 	XcmV2Junctions,
 	XcmV3Junctions,
 	XcmV4Junctions,
-} from '../types';
+} from '../types.js';
 
 /**
  * This sorts a list of multiassets in ascending order based on their id.

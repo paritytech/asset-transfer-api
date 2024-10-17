@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { transfer } from './transfer';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi.js';
+import { transfer } from './transfer.js';
 
 describe('poolAssets::transfer', () => {
 	it('Should correctly build a poolAssets transfer', () => {

@@ -3,13 +3,13 @@
 import type { ApiPromise } from '@polkadot/api';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { BaseError, BaseErrorsEnum } from '../errors';
-import type { Registry } from '../registry';
-import type { RequireOnlyOne } from '../types';
-import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
-import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import { resolveMultiLocation } from '../util/resolveMultiLocation';
-import { validateNumber } from '../validate';
+import { BaseError, BaseErrorsEnum } from '../errors/index.js';
+import type { Registry } from '../registry/index.js';
+import type { RequireOnlyOne } from '../types.js';
+import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex.js';
+import { normalizeArrToStr } from '../util/normalizeArrToStr.js';
+import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
+import { validateNumber } from '../validate/index.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -25,14 +25,14 @@ import type {
 	XcmV3Junctions,
 	XcmV4Junctions,
 	XcmWeight,
-} from './types';
-import { assetIdIsLocation } from './util/assetIdIsLocation';
-import { dedupeAssets } from './util/dedupeAssets';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId';
-import { getAssetId } from './util/getAssetId';
-import { isRelayNativeAsset } from './util/isRelayNativeAsset';
-import { isSystemChain } from './util/isSystemChain';
-import { sortAssetsAscending } from './util/sortAssetsAscending';
+} from './types.js';
+import { assetIdIsLocation } from './util/assetIdIsLocation.js';
+import { dedupeAssets } from './util/dedupeAssets.js';
+import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
+import { getAssetId } from './util/getAssetId.js';
+import { isRelayNativeAsset } from './util/isRelayNativeAsset.js';
+import { isSystemChain } from './util/isSystemChain.js';
+import { sortAssetsAscending } from './util/sortAssetsAscending.js';
 
 export const SystemToPara: ICreateXcmType = {
 	/**

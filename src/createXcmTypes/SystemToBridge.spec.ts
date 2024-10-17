@@ -1,8 +1,8 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystemApiV1016000';
-import { SystemToBridge } from './SystemToBridge';
+import { Registry } from '../registry/index.js';
+import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystemApiV1016000.js';
+import { SystemToBridge } from './SystemToBridge.js';
 
 describe('SystemToBridge', () => {
 	const registry = new Registry('asset-hub-paseo', {});

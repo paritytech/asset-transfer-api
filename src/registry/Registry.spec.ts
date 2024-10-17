@@ -1,5 +1,5 @@
-import { Registry } from './Registry';
-import type { ForeignAssetsData } from './types';
+import { Registry } from './Registry.js';
+import type { ForeignAssetsData } from './types.js';
 
 describe('Registry', () => {
 	const registry = new Registry('polkadot', {});

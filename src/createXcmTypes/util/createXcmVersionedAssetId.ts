@@ -1,9 +1,9 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation';
-import { XcmVersionedAssetId } from '../types';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import { XcmVersionedAssetId } from '../types.js';
+import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const createXcmVersionedAssetId = (
 	destFeesAssetId: string | undefined,

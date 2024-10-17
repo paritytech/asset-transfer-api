@@ -16,7 +16,7 @@ import {
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
 	XcmWeight,
-} from './types';
+} from './types.js';
 
 export const ParaToRelay: ICreateXcmType = {
 	/**

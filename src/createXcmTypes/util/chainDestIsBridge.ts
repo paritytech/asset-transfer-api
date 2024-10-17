@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { parseLocationStrToLocation } from './parseLocationStrToLocation';
+import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 /**
  * Determines if the dest chain is a Global Consensus origin based on the value of its dest location

@@ -3,8 +3,8 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
-import type { Registry } from '../registry';
-import type { RequireOnlyOne } from '../types';
+import type { Registry } from '../registry/index.js';
+import type { RequireOnlyOne } from '../types.js';
 
 export type InteriorValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
 

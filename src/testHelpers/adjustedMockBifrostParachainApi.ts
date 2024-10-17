@@ -3,8 +3,8 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { Call, Extrinsic, Header } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { mockBifrostParachainApi } from './mockBifrostParachainApi';
-import { mockWeightInfo } from './mockWeightInfo';
+import { mockBifrostParachainApi } from './mockBifrostParachainApi.js';
+import { mockWeightInfo } from './mockWeightInfo.js';
 
 const queryInfoCallAt = () =>
 	Promise.resolve().then(() => mockBifrostParachainApi.createType('RuntimeDispatchInfoV2', mockWeightInfo));

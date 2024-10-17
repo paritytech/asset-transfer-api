@@ -2,11 +2,11 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { Registry } from '../../registry';
-import { adjustedMockSystemApiV1016000 } from '../../testHelpers/adjustedMockSystemApiV1016000';
-import { adjustedMockWestendRelayApiV1007001 } from '../../testHelpers/adjustedMockWestendRelayApiV1007001';
-import { Direction, XcmBaseArgs, XcmDirection } from '../../types';
-import { transferAssets } from './transferAssets';
+import { Registry } from '../../registry/index.js';
+import { adjustedMockSystemApiV1016000 } from '../../testHelpers/adjustedMockSystemApiV1016000.js';
+import { adjustedMockWestendRelayApiV1007001 } from '../../testHelpers/adjustedMockWestendRelayApiV1007001.js';
+import { Direction, XcmBaseArgs, XcmDirection } from '../../types.js';
+import { transferAssets } from './transferAssets.js';
 
 describe('transferAssets', () => {
 	describe('RelayToSystem', () => {

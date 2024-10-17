@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { parseLocationStrToLocation } from './parseLocationStrToLocation';
+import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 describe('parseLocationStrToLocation', () => {
 	it('Should correctly return a valid UnionXcmMultilocation', () => {

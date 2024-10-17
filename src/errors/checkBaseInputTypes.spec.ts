@@ -1,4 +1,4 @@
-import { checkBaseInputTypes } from './checkBaseInputTypes';
+import { checkBaseInputTypes } from './checkBaseInputTypes.js';
 
 describe('checkBaseInputTypes', () => {
 	it('Should error when destChainId is the wrong type', () => {

@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { assetIdsContainRelayAsset } from './assetIdsContainsRelayAsset';
+import { Registry } from '../../registry/index.js';
+import { assetIdsContainRelayAsset } from './assetIdsContainsRelayAsset.js';
 
 describe('assetIdsContainsRelayAsset', () => {
 	it('Should return true when assetIds contains relay chain symbol', () => {

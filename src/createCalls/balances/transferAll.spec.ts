@@ -1,7 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { transferAll } from './transferAll';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi.js';
+import { transferAll } from './transferAll.js';
 
 describe('balances::transferAll', () => {
 	it('Should construct a valid balances pallet transferAll extrinsic', () => {

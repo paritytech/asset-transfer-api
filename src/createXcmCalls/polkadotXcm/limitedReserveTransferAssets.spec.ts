@@ -2,10 +2,10 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { Registry } from '../../registry';
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
-import { Direction, XcmDirection } from '../../types';
-import { limitedReserveTransferAssets } from './limitedReserveTransferAssets';
+import { Registry } from '../../registry/index.js';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000.js';
+import { Direction, XcmDirection } from '../../types.js';
+import { limitedReserveTransferAssets } from './limitedReserveTransferAssets.js';
 
 describe('limitedReserveTransferAssets', () => {
 	const registry = new Registry('statemine', {});

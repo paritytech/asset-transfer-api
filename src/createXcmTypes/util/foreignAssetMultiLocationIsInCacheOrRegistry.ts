@@ -1,10 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { ASSET_HUB_CHAIN_ID } from '../../consts';
-import { Registry } from '../../registry';
-import type { ForeignAssetsInfo } from '../../registry/types';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation';
-import { sanitizeKeys } from '../../util/sanitizeKeys';
+import { ASSET_HUB_CHAIN_ID } from '../../consts.js';
+import { Registry } from '../../registry/index.js';
+import type { ForeignAssetsInfo } from '../../registry/types.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 
 export const foreignAssetMultiLocationIsInCacheOrRegistry = (
 	multilocationStr: string,

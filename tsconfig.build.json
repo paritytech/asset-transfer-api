@@ -1,0 +1,12 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"customConditions": [],
+		"verbatimModuleSyntax": false,
+		"declarationMap": true,
+		"sourceMap": true,
+		"stripInternal": true
+	},
+	"include": ["src/**/*.ts", "./src/**/*.json"],
+	"exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "src/testHelpers"]
+}

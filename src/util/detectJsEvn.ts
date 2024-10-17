@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { BaseError, BaseErrorsEnum } from '../errors';
+import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 
 /**
  * Returns the specific environment the api is running in.

@@ -2,9 +2,9 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import type { Registry } from '../../registry';
-import { checkLocalTxInput } from './checkLocalTxInput';
-import { LocalTxType } from './types';
+import type { Registry } from '../../registry/index.js';
+import { checkLocalTxInput } from './checkLocalTxInput.js';
+import { LocalTxType } from './types.js';
 
 export const checkLocalSystemParachainInput = async (
 	api: ApiPromise,

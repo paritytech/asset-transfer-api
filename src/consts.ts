@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { detectJsEnv } from './util/detectJsEvn';
+import { detectJsEnv } from './util/detectJsEvn.js';
 
 /**
  * List of all known relay chains.

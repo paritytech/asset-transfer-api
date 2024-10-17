@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { sanitizeAddress } from './sanitizeAddress';
+import { sanitizeAddress } from './sanitizeAddress.js';
 
 describe('sanitizeAddress', () => {
 	it('Should sanitize a SS58 address to the correct publicKey', () => {

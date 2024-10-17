@@ -11,7 +11,7 @@ import {
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
 	XcmWeight,
-} from './types';
+} from './types.js';
 
 export const SystemToRelay: ICreateXcmType = {
 	/**
