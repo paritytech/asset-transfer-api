@@ -63,7 +63,6 @@
 
 - docs: add multiasset and AH reserve examples ([#418](https://github.com/paritytech/asset-transfer-api/pull/418))([1e6e060](https://github.com/paritytech/asset-transfer-api/commit/0bd701d0ae5da96b612934b8ee57f12b41e6e060))
 
-
 ## [0.3.0](https://github.com/paritytech/asset-transfer-api/compare/v0.2.1..v0.3.0)
 
 ### Feat
@@ -83,7 +82,6 @@
 
 - fix: explicitly use passed in dest locations for bridgeTransfers ([#406](https://github.com/paritytech/asset-transfer-api/pull/406))([b3a199a](https://github.com/paritytech/asset-transfer-api/commit/b3a199ace74bc951abe9045d70110c1b9eac8089))
 
-
 ## [0.2.0](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.2..v0.2.0)
 
 ### Chore
@@ -91,7 +89,7 @@
 - chore(deps): update pjs ([#403](https://github.com/paritytech/asset-transfer-api/pull/403))([60f82f9](https://github.com/paritytech/asset-transfer-api/commit/60f82f9a478ca65e1f8831b87ab6458c598edd34))
 - chore(registry): update registry dep ([#402](https://github.com/paritytech/asset-transfer-api/pull/402))([014c8f0](https://github.com/paritytech/asset-transfer-api/commit/014c8f0f79b8134ff44d8ca0cb96eb2c22dbf46f))
 - chore(deps): update pjs ([#398](https://github.com/paritytech/asset-transfer-api/pull/398))([339e032](https://github.com/paritytech/asset-transfer-api/commit/339e0322f22e5e3a8b5fd98c145212b6e1cc94b2))
-Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub.
+  Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub.
 - chore(deps): up pjs ([#396](https://github.com/paritytech/asset-transfer-api/pull/396))([4073aa2](https://github.com/paritytech/asset-transfer-api/commit/4073aa21250643d4503ef9fb123eaf27bea1fa90))
 - chore(registry): update registry dep ([#395](https://github.com/paritytech/asset-transfer-api/pull/395))([d7f3d8a](https://github.com/paritytech/asset-transfer-api/commit/d7f3d8afeb02f9c4b9e322d02337a33c19fe0856))
 - chore(deps): up pjs ([#387](https://github.com/paritytech/asset-transfer-api/pull/387))([f3f2b28](https://github.com/paritytech/asset-transfer-api/commit/f3f2b28bada384be23317cf281bdd74426553461))
@@ -116,8 +114,7 @@ Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub
 ### Chore
 
 - chore(deps): update pjs ([#398](https://github.com/paritytech/asset-transfer-api/pull/398))([339e032](https://github.com/paritytech/asset-transfer-api/commit/339e0322f22e5e3a8b5fd98c145212b6e1cc94b2))
-Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub.
-
+  Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub.
 
 ## [0.2.0-beta.1](https://github.com/paritytech/asset-transfer-api/compare/v0.2.0-beta.0..v0.2.0-beta.1)(2024-04-24)
 
@@ -129,7 +126,6 @@ Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub
 ### Feat
 
 - feat: add support for pallet-xcm claimAssets call ([#394](https://github.com/paritytech/asset-transfer-api/pull/394))([685ca19](https://github.com/paritytech/asset-transfer-api/commit/685ca19e54bdc6dc76b93423b09c9b44f57a009e))
-
 
 ## [0.2.0-beta.0](https://github.com/paritytech/asset-transfer-api/compare/v0.1.8..v0.2.0-beta.0)(2024-04-02)
 
@@ -192,7 +188,6 @@ Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub
 
 - test: set registries to NPM for AssetTransferApi ([#363](https://github.com/paritytech/asset-transfer-api/pull/363)) ([94d6c31](https://github.com/paritytech/asset-transfer-api/commit/94d6c31e74a4d32a072c455d2f8dcbeddb605122))
 - test: e2e tests ([#343](https://github.com/paritytech/asset-transfer-api/pull/343)) ([7d5de87](https://github.com/paritytech/asset-transfer-api/commit/7d5de8726328728edca8be63eb79ce25b8439d1e))
-
 
 ## [0.1.6](https://github.com/paritytech/asset-transfer-api/compare/v0.1.5..v0.1.6)(2024-01-22)
 
@@ -265,7 +260,7 @@ Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub
 
 ## Fix
 
-- fix: xtokens and xTokens naming for ParaTo*
+- fix: xtokens and xTokens naming for ParaTo\*
 - fix: sorting bug for ascending assets
 - fix: add Ethereum address check in createBeneficiary for ParaToPara direction
 - fix(internal): refactor dest and beneficiary types generators
@@ -295,7 +290,7 @@ Note: This PJS update allows for paysWithFeeOrigin to work on Polkadot Asset Hub
 
 - fix: rococo initialization in the registry ([#297](https://github.com/paritytech/asset-transfer-api/pull/297))
 
-NOTE: 
+NOTE:
 
 In order to use rococo's asset hub with the `AssetTransferApi` one will need to hardcode the `specName` into the initialization like the following:
 
@@ -303,7 +298,7 @@ In order to use rococo's asset hub with the `AssetTransferApi` one will need to 
 new AssetTransferApi(api, `asset-hub-rococo`, xcmVersion);
 ```
 
-The reason being, kusama's asset hub and and rococo's asset-hub both share the same specName currently and will cause conflicts. We currently do an overewrite in the registry that the api uses and set the `specName` for rococo's asset hub to be `asset-hub-rococo`. This is on the horizon to get solved on the actual chain itself soon, so this wont be necessary in the coming future. 
+The reason being, kusama's asset hub and and rococo's asset-hub both share the same specName currently and will cause conflicts. We currently do an overewrite in the registry that the api uses and set the `specName` for rococo's asset hub to be `asset-hub-rococo`. This is on the horizon to get solved on the actual chain itself soon, so this wont be necessary in the coming future.
 
 ## Docs
 
@@ -329,7 +324,7 @@ The reason being, kusama's asset hub and and rococo's asset-hub both share the s
 
 ## Summary
 
-This release assumes the following is stable, and tested. The api is still not fully featured as we don't have support for certain things which will be listed below. Please review the documentation in the [README.md](https://github.com/paritytech/asset-transfer-api/blob/main/README.md) for any information, and feel free to file an issue if anything is unclear. 
+This release assumes the following is stable, and tested. The api is still not fully featured as we don't have support for certain things which will be listed below. Please review the documentation in the [README.md](https://github.com/paritytech/asset-transfer-api/blob/main/README.md) for any information, and feel free to file an issue if anything is unclear.
 
 What is not supported:
 
@@ -345,7 +340,7 @@ What is supported:
 - RelayToSystem (Native relay token, CrossChain Transfers)
 - SystemToSystem (Native relay token, CrossChain Transfers)
 - ParaToSystem (Asset Hub assets, foreign assets, CrossChain Transfers via either Xtokens, or polkadotXcm pallet).
-    - NOTE: There is a performance bottleneck currently with the construction of xtokens pallet transfers. This is actively being looked into and will be resovled soon.
+  - NOTE: There is a performance bottleneck currently with the construction of xtokens pallet transfers. This is actively being looked into and will be resovled soon.
 - Decoding extrinsics
 - Estimating fees of extrinsics
 - Registry lookup
@@ -409,7 +404,7 @@ What is supported:
 
 ## Fix
 
-- fix: Update System Parachain Id check based on chainId 
+- fix: Update System Parachain Id check based on chainId
 - fix: remove incorrect reference to '0' for Native Relay Token
 
 ## Features
@@ -419,14 +414,14 @@ What is supported:
 
 ## Docs
 
-- docs: update README.md 
+- docs: update README.md
 
 ## Chore
 
 - chore(deps): bump word-wrap from 1.2.3 to 1.2.5
 - chore(examples): add payload paysWithFeeOrigin example
 - chore(deps): bump semver from 6.3.0 to 6.3.1
-- chore: update naming to support AssetHub specnames 
+- chore: update naming to support AssetHub specnames
 
 ## [0.1.0-beta.2](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-beta.1..v0.1.0-beta.2)(2023-08-09)
 
@@ -490,7 +485,7 @@ NOTE - The API is considered stable for the following direction:
 
 ## [0.1.0-alpha.4](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.3..v0.1.0-alpha.4)(2023-05-30)
 
-- change isNative to isRelayNative for System to Para 
+- change isNative to isRelayNative for System to Para
 - Add additional xcmDirection validation checks, fix SystemToRelay AssetType
 
 ## [0.1.0-alpha.3](https://github.com/paritytech/asset-transfer-api/compare/v0.1.0-alpha.2..v0.1.0-alpha.3) (2023-05-30)

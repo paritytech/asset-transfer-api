@@ -1,56 +1,56 @@
 {
-  "name": "@substrate/asset-transfer-api",
-  "version": "0.4.4",
-  "description": "",
-  "main": "lib/index.js",
-  "scripts": {
-    "build": "substrate-exec-rimraf ./lib && substrate-exec-tsc",
-    "build:scripts": "substrate-exec-rimraf scripts/build/ && substrate-exec-tsc --project scripts/tsconfig.json",
-    "build:examples": "substrate-exec-rimraf examples/build/ && substrate-exec-tsc --project examples/tsconfig.json",
-    "build:e2e": "substrate-exec-rimraf e2e-tests/build/ && substrate-exec-tsc --project e2e-tests/tsconfig.json",
-    "start": "node ./lib/index.js",
-    "start:zombienet-post-script": "yarn build:scripts && node ./scripts/build/testNetworkSetup.js",
-    "start:zombienet-foreign-assets-script": "yarn build:scripts && node ./scripts/build/testNetworkForeignAssets.js",
-    "start:zombienet-liquidity-assets-script": "yarn build:scripts && node ./scripts/build/testNetworkLiquidAssets.js",
-    "zombienet": "./zombienet/zombienet-linux-x64 -p native spawn ./zombienet/medium-network.toml",
-    "e2e:zombienet": "./e2e-tests/zombienet.sh",
-    "e2e:assets": "./e2e-tests/tests.sh --assets",
-    "e2e:local": "./e2e-tests/tests.sh --local",
-    "e2e:liquidity-assets": "./e2e-tests/tests.sh --liquidity-assets",
-    "e2e:foreign-assets": "./e2e-tests/tests.sh --foreign-assets",
-    "lint": "substrate-dev-run-lint",
-    "lint:fix": "substrate-dev-run-lint --fix",
-    "test": "NODE_ENV=test substrate-exec-jest --detectOpenHandles",
-    "docs": "typedoc",
-    "deploy": "yarn build && npm publish"
-  },
-  "engines": {
-    "node": ">=18.14"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/paritytech/asset-transfer-api.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/paritytech/asset-transfer-api/issues"
-  },
-  "homepage": "https://github.com/paritytech/asset-transfer-api#readme",
-  "packageManager": "yarn@4.5.0",
-  "devDependencies": {
-    "@substrate/dev": "^0.7.1",
-    "@types/cli-progress": "^3",
-    "ansi-colors": "^4.1.3",
-    "chalk": "4.1.2",
-    "cli-progress": "^3.12.0",
-    "typedoc": "^0.25.4",
-    "typedoc-plugin-missing-exports": "^1.0.0",
-    "typedoc-theme-hierarchy": "^4.0.0"
-  },
-  "dependencies": {
-    "@polkadot/api": "^14.0.1",
-    "@substrate/asset-transfer-api-registry": "^0.2.24"
-  }
+	"name": "@substrate/asset-transfer-api",
+	"version": "0.4.4",
+	"description": "",
+	"main": "lib/index.js",
+	"scripts": {
+		"build": "substrate-exec-rimraf ./lib && substrate-exec-tsc",
+		"build:scripts": "substrate-exec-rimraf scripts/build/ && substrate-exec-tsc --project scripts/tsconfig.json",
+		"build:examples": "substrate-exec-rimraf examples/build/ && substrate-exec-tsc --project examples/tsconfig.json",
+		"build:e2e": "substrate-exec-rimraf e2e-tests/build/ && substrate-exec-tsc --project e2e-tests/tsconfig.json",
+		"start": "node ./lib/index.js",
+		"start:zombienet-post-script": "yarn build:scripts && node ./scripts/build/testNetworkSetup.js",
+		"start:zombienet-foreign-assets-script": "yarn build:scripts && node ./scripts/build/testNetworkForeignAssets.js",
+		"start:zombienet-liquidity-assets-script": "yarn build:scripts && node ./scripts/build/testNetworkLiquidAssets.js",
+		"zombienet": "./zombienet/zombienet-linux-x64 -p native spawn ./zombienet/medium-network.toml",
+		"e2e:zombienet": "./e2e-tests/zombienet.sh",
+		"e2e:assets": "./e2e-tests/tests.sh --assets",
+		"e2e:local": "./e2e-tests/tests.sh --local",
+		"e2e:liquidity-assets": "./e2e-tests/tests.sh --liquidity-assets",
+		"e2e:foreign-assets": "./e2e-tests/tests.sh --foreign-assets",
+		"lint": "substrate-dev-run-lint",
+		"lint:fix": "substrate-dev-run-lint --fix",
+		"test": "NODE_ENV=test substrate-exec-jest --detectOpenHandles",
+		"docs": "typedoc",
+		"deploy": "yarn build && npm publish"
+	},
+	"engines": {
+		"node": ">=18.14"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/paritytech/asset-transfer-api.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "Apache-2.0",
+	"bugs": {
+		"url": "https://github.com/paritytech/asset-transfer-api/issues"
+	},
+	"homepage": "https://github.com/paritytech/asset-transfer-api#readme",
+	"packageManager": "yarn@4.5.0",
+	"devDependencies": {
+		"@substrate/dev": "^0.7.1",
+		"@types/cli-progress": "^3",
+		"ansi-colors": "^4.1.3",
+		"chalk": "4.1.2",
+		"cli-progress": "^3.12.0",
+		"typedoc": "^0.25.4",
+		"typedoc-plugin-missing-exports": "^1.0.0",
+		"typedoc-theme-hierarchy": "^4.0.0"
+	},
+	"dependencies": {
+		"@polkadot/api": "^14.0.1",
+		"@substrate/asset-transfer-api-registry": "^0.2.24"
+	}
 }
