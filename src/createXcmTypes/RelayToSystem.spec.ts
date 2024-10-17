@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { mockRelayApiV9420 } from '../testHelpers/mockRelayApiV9420';
-import { RelayToSystem } from './RelayToSystem';
+import { Registry } from '../registry/index.js';
+import { mockRelayApiV9420 } from '../testHelpers/mockRelayApiV9420.js';
+import { RelayToSystem } from './RelayToSystem.js';
 
 describe('RelayToSystem XcmVersioned Generation', () => {
 	const registry = new Registry('kusama', {});

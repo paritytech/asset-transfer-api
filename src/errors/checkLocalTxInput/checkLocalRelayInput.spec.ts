@@ -1,8 +1,8 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { checkLocalRelayInput } from './checkLocalRelayInput';
-import { LocalTxType } from './types';
+import { Registry } from '../../registry/index.js';
+import { checkLocalRelayInput } from './checkLocalRelayInput.js';
+import { LocalTxType } from './types.js';
 
 describe('checkLocalRelayInput', () => {
 	const registry = new Registry('asset-hub-paseo', { chainName: 'paseo' });

@@ -1,7 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { isRelayNativeAsset } from './isRelayNativeAsset';
+import { Registry } from '../../registry/index.js';
+import { isRelayNativeAsset } from './isRelayNativeAsset.js';
 
 describe('isRelayNativeAsset', () => {
 	describe('RelayToSystem', () => {

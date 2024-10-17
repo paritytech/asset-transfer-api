@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { mockSystemApi } from '../testHelpers/mockSystemApi';
-import { SystemToRelay } from './SystemToRelay';
+import { Registry } from '../registry/index.js';
+import { mockSystemApi } from '../testHelpers/mockSystemApi.js';
+import { SystemToRelay } from './SystemToRelay.js';
 
 describe('SystemToRelay XcmVersioned Generation', () => {
 	const registry = new Registry('statemine', {});

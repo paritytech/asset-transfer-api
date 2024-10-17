@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi';
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { fetchPalletInstanceId } from './fetchPalletInstanceId';
+import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi.js';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi.js';
+import { fetchPalletInstanceId } from './fetchPalletInstanceId.js';
 
 describe('fetchPalletInstanceId', () => {
 	it('Should return the correct string when the api has the assets pallet', () => {

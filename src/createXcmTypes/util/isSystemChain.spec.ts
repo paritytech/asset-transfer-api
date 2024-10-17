@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { isSystemChain } from './isSystemChain';
+import { isSystemChain } from './isSystemChain.js';
 
 describe('isSystemChain', () => {
 	it('Should correctly return true for a chainId of 1000', () => {

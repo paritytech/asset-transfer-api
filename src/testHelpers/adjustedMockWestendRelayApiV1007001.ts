@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { Header } from '@polkadot/types/interfaces';
 
-import { mockRelayApiV1007001 } from './mockRelayApiV1007001';
+import { mockRelayApiV1007001 } from './mockRelayApiV1007001.js';
 
 const getRelaySafeXcmVersion = () =>
 	Promise.resolve().then(() => {

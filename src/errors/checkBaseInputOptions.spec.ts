@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { Format, TransferArgsOpts } from '../types';
-import { checkBaseInputOptions } from './checkBaseInputOptions';
+import type { Format, TransferArgsOpts } from '../types.js';
+import { checkBaseInputOptions } from './checkBaseInputOptions.js';
 
 describe('checkBaseInputOptions', () => {
 	it('Should error when a call is used with `PaysWithFeeOrigin`', () => {

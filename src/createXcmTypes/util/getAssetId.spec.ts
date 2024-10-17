@@ -1,11 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetTransferApi } from '../../AssetTransferApi';
-import { Registry } from '../../registry';
-import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
-import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
-import { getAssetId } from './getAssetId';
+import { AssetTransferApi } from '../../AssetTransferApi.js';
+import { Registry } from '../../registry/index.js';
+import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi.js';
+import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi.js';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000.js';
+import { getAssetId } from './getAssetId.js';
 
 describe('getAssetId', () => {
 	describe('Statemine', () => {

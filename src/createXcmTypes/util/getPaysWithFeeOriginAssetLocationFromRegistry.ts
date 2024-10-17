@@ -1,10 +1,10 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { AssetTransferApi } from '../../AssetTransferApi';
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { AssetsInfo } from '../../registry/types';
-import { validateNumber } from '../../validate';
-import { UnionXcmMultiLocation } from '../types';
+import { AssetTransferApi } from '../../AssetTransferApi.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { AssetsInfo } from '../../registry/types.js';
+import { validateNumber } from '../../validate/index.js';
+import { UnionXcmMultiLocation } from '../types.js';
 
 export const getPaysWithFeeOriginAssetLocationFromRegistry = (
 	ataAPI: AssetTransferApi,

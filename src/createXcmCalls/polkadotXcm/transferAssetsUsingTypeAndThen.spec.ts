@@ -1,9 +1,9 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { adjustedMockSystemApiV1016000 } from '../../testHelpers/adjustedMockSystemApiV1016000';
-import { Direction, XcmBaseArgs, XcmDirection } from '../../types';
-import { transferAssetsUsingTypeAndThen } from './transferAssetsUsingTypeAndThen';
+import { Registry } from '../../registry/index.js';
+import { adjustedMockSystemApiV1016000 } from '../../testHelpers/adjustedMockSystemApiV1016000.js';
+import { Direction, XcmBaseArgs, XcmDirection } from '../../types.js';
+import { transferAssetsUsingTypeAndThen } from './transferAssetsUsingTypeAndThen.js';
 
 describe('transferAssetsUsingTypeAndThen', () => {
 	describe('SystemToBridge', () => {

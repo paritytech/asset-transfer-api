@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { resolveMultiLocation } from './resolveMultiLocation';
+import { resolveMultiLocation } from './resolveMultiLocation.js';
 
 describe('resolveMultiLocation', () => {
 	it('Should correctly not throw an error when xcmVersion is 3 and the multiLocation does not contain a generalKey Junction', () => {

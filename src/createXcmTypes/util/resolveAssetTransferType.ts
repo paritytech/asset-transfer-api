@@ -1,9 +1,9 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { AssetTransferType } from '../../types';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation';
-import { UnionXcmMultiLocation } from '../types';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { AssetTransferType } from '../../types.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import { UnionXcmMultiLocation } from '../types.js';
 
 export const resolveAssetTransferType = (
 	assetTransferType: string | undefined,

@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { Direction } from '../../types';
-import { isParachainPrimaryNativeAsset } from './isParachainPrimaryNativeAsset';
+import { Registry } from '../../registry/index.js';
+import { Direction } from '../../types.js';
+import { isParachainPrimaryNativeAsset } from './isParachainPrimaryNativeAsset.js';
 
 describe('isParachainPrimaryNativeAsset', () => {
 	type Test = [primaryNativeAssetSymbol: string | undefined, specName: string, registry: Registry, expected: boolean];

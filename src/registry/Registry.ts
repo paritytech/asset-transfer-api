@@ -1,16 +1,15 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import registry from '@substrate/asset-transfer-api-registry';
-
 import {
 	ASSET_HUB_CHAIN_ID,
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
 	PASEO_ASSET_HUB_SPEC_NAME,
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
 	WESTEND_ASSET_HUB_SPEC_NAMES,
-} from '../consts';
-import type { AssetTransferApiOpts } from '../types';
-import { findRelayChain, parseRegistry } from './';
+} from '../consts.js';
+import type { AssetTransferApiOpts } from '../types.js';
+import { findRelayChain, parseRegistry } from './index.js';
+import { registry } from './registry-json.js';
 import type {
 	ChainInfo,
 	ChainInfoKeys,
@@ -18,7 +17,7 @@ import type {
 	ExpandedChainInfoKeys,
 	ForeignAssetsData,
 	RelayChains,
-} from './types';
+} from './types.js';
 
 export class Registry {
 	readonly specName: string;
@@ -187,7 +186,7 @@ export class Registry {
 	 */
 	public lookupTokenSymbol(symbol: string): ExpandedChainInfoKeys[] {
 		const chainIds = Object.keys(this.currentRelayRegistry);
-		const result = [];
+		const result: ExpandedChainInfoKeys[] = [];
 
 		for (let i = 0; i < chainIds.length; i++) {
 			const chainInfo = this.currentRelayRegistry[chainIds[i]];
@@ -210,7 +209,7 @@ export class Registry {
 		chainId: string;
 	})[] {
 		const chainIds = Object.keys(this.currentRelayRegistry);
-		const result = [];
+		const result: (ChainInfoKeys & { chainId: string })[] = [];
 
 		for (let i = 0; i < chainIds.length; i++) {
 			const chainInfo = this.currentRelayRegistry[chainIds[i]];

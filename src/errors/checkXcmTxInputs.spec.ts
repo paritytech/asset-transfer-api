@@ -1,12 +1,12 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetTransferApi } from '../AssetTransferApi';
-import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
-import { Registry } from '../registry';
-import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi';
-import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
-import { mockSystemApi } from '../testHelpers/mockSystemApi';
-import { Direction } from '../types';
+import { AssetTransferApi } from '../AssetTransferApi.js';
+import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet.js';
+import { Registry } from '../registry/index.js';
+import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi.js';
+import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000.js';
+import { mockSystemApi } from '../testHelpers/mockSystemApi.js';
+import { Direction } from '../types.js';
 import {
 	checkAssetIdInput,
 	checkAssetIdsAreOfSameAssetIdType,
@@ -27,7 +27,7 @@ import {
 	checkXcmVersionIsValidForBridgeTx,
 	checkXcmVersionIsValidForPaysWithFeeDest,
 	CheckXTokensPalletOriginIsNonForeignAssetTx,
-} from './checkXcmTxInputs';
+} from './checkXcmTxInputs.js';
 
 const parachainAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, {
 	registryType: 'NPM',

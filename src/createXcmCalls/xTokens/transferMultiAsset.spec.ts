@@ -1,10 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
-import { Direction, XcmDirection } from '../../types';
-import { XcmPalletName } from '../util/establishXcmPallet';
-import { transferMultiasset } from './transferMultiasset';
+import { Registry } from '../../registry/index.js';
+import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi.js';
+import { Direction, XcmDirection } from '../../types.js';
+import { XcmPalletName } from '../util/establishXcmPallet.js';
+import { transferMultiasset } from './transferMultiasset.js';
 
 describe('transferMultiasset', () => {
 	describe('ParaToSystem', () => {

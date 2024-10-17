@@ -1,15 +1,14 @@
 {
-	"extends": "@substrate/dev/config/tsconfig.json",
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"extends": "@total-typescript/tsconfig/tsc/dom/library",
 	"compilerOptions": {
+		"customConditions": ["@paritytech/source"],
+		"noUncheckedIndexedAccess": false,
+		"verbatimModuleSyntax": false,
+		"noImplicitAny": false,
 		"baseUrl": ".",
-		"outDir": "lib",
-		"rootDirs": ["./src", "./scripts"],
-		"suppressImplicitAnyIndexErrors": true,
-		"ignoreDeprecations": "5.0",
-		"resolveJsonModule": true,
-		"esModuleInterop": true
+		"outDir": "dist",
+		"rootDirs": ["./src", "./scripts"]
 	},
-	"typeRoots": ["./node_modules/@types"],
-	"exclude": ["node_modules", "./src/**/*.spec.ts", "./src/testHelpers"],
-	"include": ["./src/**/*.ts", "./src/**/*.json"]
+	"include": ["./src/**/*.ts", "./src/**/*.cts", "./src/**/*.json"]
 }

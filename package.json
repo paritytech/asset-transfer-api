@@ -2,12 +2,30 @@
 	"name": "@substrate/asset-transfer-api",
 	"version": "0.4.4",
 	"description": "",
-	"main": "lib/index.js",
+	"type": "module",
+	"main": "./dist/commonjs/index.js",
+	"types": "./dist/commonjs/index.d.ts",
+	"module": "./dist/esm/index.js",
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"import": {
+				"@paritytech/source": "./src/index.ts",
+				"types": "./dist/esm/index.d.ts",
+				"default": "./dist/esm/index.js"
+			},
+			"require": {
+				"types": "./dist/commonjs/index.d.ts",
+				"default": "./dist/commonjs/index.js"
+			}
+		}
+	},
 	"scripts": {
-		"build": "substrate-exec-rimraf ./lib && substrate-exec-tsc",
-		"build:scripts": "substrate-exec-rimraf scripts/build/ && substrate-exec-tsc --project scripts/tsconfig.json",
-		"build:examples": "substrate-exec-rimraf examples/build/ && substrate-exec-tsc --project examples/tsconfig.json",
-		"build:e2e": "substrate-exec-rimraf e2e-tests/build/ && substrate-exec-tsc --project e2e-tests/tsconfig.json",
+		"clean": "rimraf dist .tshy .tshy-build",
+		"build": "yarn run clean && tshy",
+		"build:scripts": "rimraf scripts/build/ && tsc --project scripts/tsconfig.json",
+		"build:examples": "rimraf examples/build/ && tsc --project examples/tsconfig.json",
+		"build:e2e": "rimraf e2e-tests/build/ && tsc --project e2e-tests/tsconfig.json",
 		"start": "node ./lib/index.js",
 		"start:zombienet-post-script": "yarn build:scripts && node ./scripts/build/testNetworkSetup.js",
 		"start:zombienet-foreign-assets-script": "yarn build:scripts && node ./scripts/build/testNetworkForeignAssets.js",
@@ -39,15 +57,34 @@
 	},
 	"homepage": "https://github.com/paritytech/asset-transfer-api#readme",
 	"packageManager": "yarn@4.5.0",
+	"tshy": {
+		"project": "./tsconfig.build.json",
+		"exports": {
+			"./package.json": "./package.json",
+			".": "./src/index.ts"
+		},
+		"sourceDialects": [
+			"@paritytech/source"
+		],
+		"exclude": [
+			"src/**/*.spec.ts",
+			"src/**/*.test.ts",
+			"src/testHelpers"
+		]
+	},
 	"devDependencies": {
 		"@substrate/dev": "^0.7.1",
+		"@total-typescript/tsconfig": "^1.0.4",
 		"@types/cli-progress": "^3",
 		"ansi-colors": "^4.1.3",
 		"chalk": "4.1.2",
 		"cli-progress": "^3.12.0",
+		"rimraf": "^6.0.1",
+		"tshy": "^3.0.2",
 		"typedoc": "^0.26.10",
 		"typedoc-plugin-missing-exports": "^3.0.0",
-		"typedoc-theme-hierarchy": "^4.0.0"
+		"typedoc-theme-hierarchy": "^4.0.0",
+		"typescript": "^5.6.3"
 	},
 	"dependencies": {
 		"@polkadot/api": "14.1.1",

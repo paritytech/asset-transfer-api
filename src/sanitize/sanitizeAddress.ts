@@ -3,8 +3,8 @@
 import { isHex, u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 
-import { BaseError, BaseErrorsEnum } from '../errors';
-import { validateAddress } from '../validate/validateAddress';
+import { BaseError, BaseErrorsEnum } from '../errors/index.js';
+import { validateAddress } from '../validate/validateAddress.js';
 
 /**
  * First validate the given address is valid, then ensure

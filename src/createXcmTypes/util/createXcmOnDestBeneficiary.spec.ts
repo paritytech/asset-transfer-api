@@ -1,7 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 // import { UnionXcmMultiLocation } from "../types";
-import { createXcmOnDestBeneficiary } from './createXcmOnDestBeneficiary';
+import { createXcmOnDestBeneficiary } from './createXcmOnDestBeneficiary.js';
 
 describe('createXcmOnDestBeneficiary hello', () => {
 	it('Should correctly construct the beneficiary for XCM V3 using an Ethereum address', () => {

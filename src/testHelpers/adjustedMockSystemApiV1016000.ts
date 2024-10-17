@@ -15,13 +15,13 @@ import { ITuple } from '@polkadot/types-codec/types';
 import { getSpecTypes } from '@polkadot/types-known';
 import BN from 'bn.js';
 
-import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
-import { createApiWithAugmentations } from './createApiWithAugmentations';
-import { assetHubWestendV1016000 } from './metadata/assetHubWestendV1016000';
-import { mockDryRunCallResult } from './mockDryRunCallResult';
-import { mockQueryWeightToAssetFeeResult } from './mockQueryWeightToAssetFeeResult';
-import { mockQueryXcmWeightResult } from './mockQueryXcmWeightResult';
-import { mockWeightInfo } from './mockWeightInfo';
+import type { UnionXcmMultiLocation } from '../createXcmTypes/types.js';
+import { createApiWithAugmentations } from './createApiWithAugmentations.js';
+import { assetHubWestendV1016000 } from './metadata/assetHubWestendV1016000.js';
+import { mockDryRunCallResult } from './mockDryRunCallResult.js';
+import { mockQueryWeightToAssetFeeResult } from './mockQueryWeightToAssetFeeResult.js';
+import { mockQueryXcmWeightResult } from './mockQueryXcmWeightResult.js';
+import { mockWeightInfo } from './mockWeightInfo.js';
 
 const mockSystemApi = createApiWithAugmentations(assetHubWestendV1016000);
 

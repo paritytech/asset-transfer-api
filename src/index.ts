@@ -1,5 +1,5 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-export * from './AssetTransferApi';
-export * from './constructApiPromise';
-export * from './types';
+export * from './AssetTransferApi.js';
+export * from './constructApiPromise.js';
+export * from './types.js';

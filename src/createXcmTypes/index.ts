@@ -1,17 +1,17 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Direction } from '../types';
-import { ParaToPara } from './ParaToPara';
-import { ParaToRelay } from './ParaToRelay';
-import { ParaToSystem } from './ParaToSystem';
-import { RelayToBridge } from './RelayToBridge';
-import { RelayToPara } from './RelayToPara';
-import { RelayToSystem } from './RelayToSystem';
-import { SystemToBridge } from './SystemToBridge';
-import { SystemToPara } from './SystemToPara';
-import { SystemToRelay } from './SystemToRelay';
-import { SystemToSystem } from './SystemToSystem';
-import { ICreateXcmType } from './types';
+import { Direction } from '../types.js';
+import { ParaToPara } from './ParaToPara.js';
+import { ParaToRelay } from './ParaToRelay.js';
+import { ParaToSystem } from './ParaToSystem.js';
+import { RelayToBridge } from './RelayToBridge.js';
+import { RelayToPara } from './RelayToPara.js';
+import { RelayToSystem } from './RelayToSystem.js';
+import { SystemToBridge } from './SystemToBridge.js';
+import { SystemToPara } from './SystemToPara.js';
+import { SystemToRelay } from './SystemToRelay.js';
+import { SystemToSystem } from './SystemToSystem.js';
+import { ICreateXcmType } from './types.js';
 
 type ICreateXcmTypeLookup = {
 	[key in Exclude<Direction, Direction.Local>]: ICreateXcmType;

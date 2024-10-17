@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { multiLocationAssetIsParachainsNativeAsset } from './multiLocationAssetIsParachainsNativeAsset';
+import { multiLocationAssetIsParachainsNativeAsset } from './multiLocationAssetIsParachainsNativeAsset.js';
 
 describe('multiLocationAssetIsParachainsNativeAsset', () => {
 	type Test = [destChainId: string, multiLocationAssetId: string, expected: boolean];

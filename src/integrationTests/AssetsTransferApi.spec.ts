@@ -1,13 +1,13 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetTransferApi } from '../AssetTransferApi';
-import { CreateXcmCallOpts } from '../createXcmCalls/types';
-import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
-import { adjustedMockRelayApiV1016000 } from '../testHelpers/adjustedMockRelayApiV1016000';
-import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
-import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystemApiV1016000';
-import { adjustedMockWestendRelayApiV1007001 } from '../testHelpers/adjustedMockWestendRelayApiV1007001';
-import type { Format, TxResult } from '../types';
+import { AssetTransferApi } from '../AssetTransferApi.js';
+import { CreateXcmCallOpts } from '../createXcmCalls/types.js';
+import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420.js';
+import { adjustedMockRelayApiV1016000 } from '../testHelpers/adjustedMockRelayApiV1016000.js';
+import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000.js';
+import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystemApiV1016000.js';
+import { adjustedMockWestendRelayApiV1007001 } from '../testHelpers/adjustedMockWestendRelayApiV1007001.js';
+import type { Format, TxResult } from '../types.js';
 
 const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, { registryType: 'NPM' });
 const relayAssetsApiV1007001 = new AssetTransferApi(adjustedMockWestendRelayApiV1007001, 'westend', 2, {

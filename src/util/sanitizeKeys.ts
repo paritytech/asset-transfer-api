@@ -1,4 +1,4 @@
-import { AnyObj } from '../types';
+import { AnyObj } from '../types.js';
 
 enum MultiLocationJunctionTypeKeys {
 	'parachain' = 'Parachain',

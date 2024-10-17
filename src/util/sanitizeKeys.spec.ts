@@ -1,4 +1,4 @@
-import { sanitizeKeys } from './sanitizeKeys';
+import { sanitizeKeys } from './sanitizeKeys.js';
 
 describe('sanitizeKeys', () => {
 	it('Should correctly update all keys in plain objects', () => {

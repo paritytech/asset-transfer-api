@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-export { BaseError, BaseErrorsEnum } from './BaseError';
-export { checkBaseInputOptions } from './checkBaseInputOptions';
-export { checkBaseInputTypes } from './checkBaseInputTypes';
-export * from './checkLocalTxInput';
-export { checkXcmTxInputs } from './checkXcmTxInputs';
-export { checkXcmVersion } from './checkXcmVersion';
+export { BaseError, BaseErrorsEnum } from './BaseError.js';
+export { checkBaseInputOptions } from './checkBaseInputOptions.js';
+export { checkBaseInputTypes } from './checkBaseInputTypes.js';
+export * from './checkLocalTxInput/index.js';
+export { checkXcmTxInputs } from './checkXcmTxInputs.js';
+export { checkXcmVersion } from './checkXcmVersion.js';

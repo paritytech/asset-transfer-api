@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { mockMoonriverParachainApi } from '../testHelpers/mockMoonriverParachainApi';
-import { ParaToPara } from './ParaToPara';
+import { Registry } from '../registry/index.js';
+import { mockMoonriverParachainApi } from '../testHelpers/mockMoonriverParachainApi.js';
+import { ParaToPara } from './ParaToPara.js';
 
 describe('ParaToPara test', () => {
 	const registry = new Registry('kusama', {});

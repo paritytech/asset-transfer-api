@@ -4,7 +4,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { Weight } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { AssetTransferApi } from './AssetTransferApi';
+import { AssetTransferApi } from './AssetTransferApi.js';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
@@ -12,22 +12,22 @@ import {
 	transferMultiasset,
 	transferMultiassets,
 	transferMultiassetWithFee,
-} from './createXcmCalls';
-import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
-import type { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
-import { Registry } from './registry';
-import { adjustedMockBifrostParachainApi } from './testHelpers/adjustedMockBifrostParachainApi';
-import { adjustedMockMoonriverParachainApi } from './testHelpers/adjustedMockMoonriverParachainApi';
-import { adjustedMockMoonriverNoXTokensParachainApi } from './testHelpers/adjustedMockMoonriverParachainNoXTokens';
-import { adjustedMockRelayApiNoLimitedReserveTransferAssets } from './testHelpers/adjustedMockRelayApiNoLimitedReserveTransferAssets';
-import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420';
-import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000';
-import { adjustedMockSystemApiV1016000 } from './testHelpers/adjustedMockSystemApiV1016000';
-import { mockDryRunCallResult } from './testHelpers/mockDryRunCallResult';
-import { mockSystemApi } from './testHelpers/mockSystemApi';
-import { mockWeightInfo } from './testHelpers/mockWeightInfo';
-import { AssetCallType, Direction, ResolvedCallInfo, UnsignedTransaction, XcmBaseArgs, XcmDirection } from './types';
-import { AssetType } from './types';
+} from './createXcmCalls/index.js';
+import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet.js';
+import type { XTokensBaseArgs } from './createXcmCalls/xTokens/types.js';
+import { Registry } from './registry/index.js';
+import { adjustedMockBifrostParachainApi } from './testHelpers/adjustedMockBifrostParachainApi.js';
+import { adjustedMockMoonriverParachainApi } from './testHelpers/adjustedMockMoonriverParachainApi.js';
+import { adjustedMockMoonriverNoXTokensParachainApi } from './testHelpers/adjustedMockMoonriverParachainNoXTokens.js';
+import { adjustedMockRelayApiNoLimitedReserveTransferAssets } from './testHelpers/adjustedMockRelayApiNoLimitedReserveTransferAssets.js';
+import { adjustedMockRelayApi } from './testHelpers/adjustedMockRelayApiV9420.js';
+import { adjustedMockSystemApi } from './testHelpers/adjustedMockSystemApiV1004000.js';
+import { adjustedMockSystemApiV1016000 } from './testHelpers/adjustedMockSystemApiV1016000.js';
+import { mockDryRunCallResult } from './testHelpers/mockDryRunCallResult.js';
+import { mockSystemApi } from './testHelpers/mockSystemApi.js';
+import { mockWeightInfo } from './testHelpers/mockWeightInfo.js';
+import { AssetCallType, Direction, ResolvedCallInfo, UnsignedTransaction, XcmBaseArgs, XcmDirection } from './types.js';
+import { AssetType } from './types.js';
 
 const mockSubmittableExt = mockSystemApi.registry.createType(
 	'Extrinsic',

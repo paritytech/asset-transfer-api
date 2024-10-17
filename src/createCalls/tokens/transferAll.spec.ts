@@ -1,7 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi';
-import { transferAll } from './transferAll';
+import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi.js';
+import { transferAll } from './transferAll.js';
 
 describe('tokens::transferAll', () => {
 	it('Should construct a valid ORML tokens pallet transferAll extrinsic', () => {

@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { isParachain } from './isParachain';
+import { isParachain } from './isParachain.js';
 
 describe('isParachain', () => {
 	it('Should correctly return true for a chainId of 2001', () => {

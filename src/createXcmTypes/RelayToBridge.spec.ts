@@ -1,8 +1,8 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystemApiV1016000';
-import { RelayToBridge } from './RelayToBridge';
+import { Registry } from '../registry/index.js';
+import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystemApiV1016000.js';
+import { RelayToBridge } from './RelayToBridge.js';
 
 describe('RelayToBridge', () => {
 	const registry = new Registry('paseo', {});

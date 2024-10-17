@@ -2,14 +2,14 @@
 
 import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 
-import { AssetTransferApi } from '../../AssetTransferApi';
-import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
-import type { Format } from '../../types';
-import type { TestMultiassetsWithFormat, TestMultiassetWithFormat } from '../util';
-import { paraTransferMultiasset as moonriverTransferMultiasset } from '../util';
-import { paraTransferMultiassets as moonriverTransferMultiassets } from '../util';
-import { paraTransferMultiassetWithFee as moonriverTransferMultiassetWithFee } from '../util';
-import { paraTransferAssets as moonriverTransferAssets } from '../util';
+import { AssetTransferApi } from '../../AssetTransferApi.js';
+import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi.js';
+import type { Format } from '../../types.js';
+import type { TestMultiassetsWithFormat, TestMultiassetWithFormat } from '../util.js';
+import { paraTransferMultiasset as moonriverTransferMultiasset } from '../util.js';
+import { paraTransferMultiassets as moonriverTransferMultiassets } from '../util.js';
+import { paraTransferMultiassetWithFee as moonriverTransferMultiassetWithFee } from '../util.js';
+import { paraTransferAssets as moonriverTransferAssets } from '../util.js';
 const moonriverATA = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, { registryType: 'NPM' });
 
 describe('Moonriver', () => {

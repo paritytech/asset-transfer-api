@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry';
+import { Registry } from '../../registry/index.js';
+import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry.js';
 
 describe('foreignAssetMultiLocationIsInCacheOrRegistry', () => {
 	it('Should return true if a given foreign asset multilocation exists in the asset api registry', () => {

@@ -1,9 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import reg from '@substrate/asset-transfer-api-registry';
+import reg from '@substrate/asset-transfer-api-registry/docs/registry.json' assert { type: 'json' };
 
-import { parseRegistry } from './parseRegistry';
-import { ChainInfoKeys, ChainInfoRegistry } from './types';
+import { parseRegistry } from './parseRegistry.js';
+import { ChainInfoKeys, ChainInfoRegistry } from './types.js';
 
 describe('parseRegistry', () => {
 	it('Should return the correct object structure', () => {

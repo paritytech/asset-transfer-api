@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { transferKeepAlive } from './transferKeepAlive';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi.js';
+import { transferKeepAlive } from './transferKeepAlive.js';
 
 describe('balances::transfer', () => {
 	it('Should construct a valid transfer extrinsic', () => {

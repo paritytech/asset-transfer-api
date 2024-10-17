@@ -1,7 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { UnionXcmMultiLocation } from '../types';
-import { createXcmOnDestination } from './createXcmOnDestination';
+import { UnionXcmMultiLocation } from '../types.js';
+import { createXcmOnDestination } from './createXcmOnDestination.js';
 
 describe('createXcmOnDestination', () => {
 	it('Should correctly construct the default XCM message for V3', () => {

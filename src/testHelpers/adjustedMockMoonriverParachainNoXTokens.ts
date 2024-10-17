@@ -6,8 +6,8 @@ import type { Header } from '@polkadot/types/interfaces';
 import { PalletAssetsAssetDetails, PalletAssetsAssetMetadata } from '@polkadot/types/lookup';
 import { getSpecTypes } from '@polkadot/types-known';
 
-import { moonriverV2302 } from './metadata/moonriverV2302';
-import { mockMoonriverParachainApi } from './mockMoonriverParachainApi';
+import { moonriverV2302 } from './metadata/moonriverV2302.js';
+import { mockMoonriverParachainApi } from './mockMoonriverParachainApi.js';
 
 const getSystemSafeXcmVersion = () =>
 	Promise.resolve().then(() => {

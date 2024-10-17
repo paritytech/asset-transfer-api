@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { createXcmVersionedAssetId } from './createXcmVersionedAssetId';
+import { createXcmVersionedAssetId } from './createXcmVersionedAssetId.js';
 
 describe('createXcmVersionedAssetId', () => {
 	it('Should correctly construct an XcmVersionedAssetId for XCM V3', () => {

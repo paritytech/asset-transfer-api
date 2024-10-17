@@ -2,14 +2,14 @@
 
 import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 
-import { AssetTransferApi } from '../../AssetTransferApi';
-import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
-import type { Format } from '../../types';
-import type { TestMultiasset, TestMultiassets, TestMultiassetWithFormat } from '../util';
-import { paraTransferMultiasset as bifrostTransferMultiasset } from '../util';
-import { paraTransferMultiassets as bifrostTransferMultiassets } from '../util';
-import { paraTransferMultiassetWithFee as bifrostTransferMultiassetWithFee } from '../util';
-import { paraTransferAssets as bifrostTransferAssets } from '../util';
+import { AssetTransferApi } from '../../AssetTransferApi.js';
+import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi.js';
+import type { Format } from '../../types.js';
+import type { TestMultiasset, TestMultiassets, TestMultiassetWithFormat } from '../util.js';
+import { paraTransferMultiasset as bifrostTransferMultiasset } from '../util.js';
+import { paraTransferMultiassets as bifrostTransferMultiassets } from '../util.js';
+import { paraTransferMultiassetWithFee as bifrostTransferMultiassetWithFee } from '../util.js';
+import { paraTransferAssets as bifrostTransferAssets } from '../util.js';
 
 const bifrostATA = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2, { registryType: 'NPM' });
 

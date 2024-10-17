@@ -23,3 +23,7 @@ zombienet/bin/*
 # Binaries
 /bin/*
 !bin/README.md
+
+.tshy
+.tshy-build
+dist

@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { normalizeArrToStr } from './normalizeArrToStr';
+import { normalizeArrToStr } from './normalizeArrToStr.js';
 
 describe('normalizeAccounts', () => {
 	it('Should handle an array with both strings and numbers', () => {

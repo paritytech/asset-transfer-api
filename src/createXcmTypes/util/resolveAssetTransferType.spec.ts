@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { resolveAssetTransferType } from './resolveAssetTransferType';
+import { resolveAssetTransferType } from './resolveAssetTransferType.js';
 
 describe('resolveAssetTransferType', () => {
 	describe('RemoteReserve', () => {

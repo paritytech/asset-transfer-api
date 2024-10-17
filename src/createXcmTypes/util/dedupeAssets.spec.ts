@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { FungibleStrMultiAsset } from '../types';
-import { dedupeAssets } from './dedupeAssets';
+import type { FungibleStrMultiAsset } from '../types.js';
+import { dedupeAssets } from './dedupeAssets.js';
 
 describe('dedupeAssets', () => {
 	it('Should dedupe a sorted list of Assets', () => {

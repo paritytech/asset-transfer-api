@@ -15,10 +15,10 @@ import { ITuple } from '@polkadot/types-codec/types';
 import { getSpecTypes } from '@polkadot/types-known';
 import BN from 'bn.js';
 
-import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
-import { assetHubWestendV1004000 } from './metadata/assetHubWestendV1004000';
-import { mockSystemApi } from './mockSystemApi';
-import { mockWeightInfo } from './mockWeightInfo';
+import type { UnionXcmMultiLocation } from '../createXcmTypes/types.js';
+import { assetHubWestendV1004000 } from './metadata/assetHubWestendV1004000.js';
+import { mockSystemApi } from './mockSystemApi.js';
+import { mockWeightInfo } from './mockWeightInfo.js';
 /**
  * Create a type registry for Statemine.
  * Useful for creating types in order to facilitate testing.

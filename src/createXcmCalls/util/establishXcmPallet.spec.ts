@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { mockRelayApiV9420 } from '../../testHelpers/mockRelayApiV9420';
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { establishXcmPallet } from './establishXcmPallet';
+import { mockRelayApiV9420 } from '../../testHelpers/mockRelayApiV9420.js';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi.js';
+import { establishXcmPallet } from './establishXcmPallet.js';
 
 describe('establishXcmPallet', () => {
 	it('Should detect xcmPallet pallet correctly', () => {

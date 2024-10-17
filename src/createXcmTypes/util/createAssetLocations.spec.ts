@@ -1,9 +1,9 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { adjustedMockRelayApi } from '../../testHelpers/adjustedMockRelayApiV9420';
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { createAssetLocations } from './createAssetLocations';
+import { Registry } from '../../registry/index.js';
+import { adjustedMockRelayApi } from '../../testHelpers/adjustedMockRelayApiV9420.js';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi.js';
+import { createAssetLocations } from './createAssetLocations.js';
 
 describe('createAssetLocations', () => {
 	describe('Kusama AssetHub', () => {
