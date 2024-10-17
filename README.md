@@ -64,8 +64,21 @@ When the API is initalized using the `CDN`, `node:fetch` is being used and is st
 
 ### Example Usage
 
-**NOTE:** For more practical usage, and specified examples please look through our `./examples` directory to see more use cases. To
-run these examples: `yarn build:examples && node ./examples/build/examples/<file_to_run>.js`.
+**Note:** For more detailed and practical usage examples, please refer to the `./examples` directory, where you can find various use cases. To run these examples, follow the steps below:
+
+1. First, install the dependencies:
+    
+    ```bash
+    yarn install
+    
+    ```
+    
+2. Then, build and run the desired example:
+    
+    ```bash
+    yarn build:examples && node ./examples/build/examples/<file_to_run>.js
+    
+    ```
 
 ```typescript
 import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api';
