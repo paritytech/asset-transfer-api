@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi';
-import { transferKeepAlive } from './transferKeepAlive';
+import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi.js';
+import { transferKeepAlive } from './transferKeepAlive.js';
 
 describe('tokens::transferKeepAlive', () => {
 	it('transferKeepAlive', () => {

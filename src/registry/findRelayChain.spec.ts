@@ -1,10 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import reg from '@substrate/asset-transfer-api-registry';
+import reg from '@substrate/asset-transfer-api-registry/docs/registry.json' assert { type: 'json' };
 
-import { findRelayChain } from './findRelayChain';
-import { parseRegistry } from './parseRegistry';
-import { ChainInfoKeys, ChainInfoRegistry } from './types';
+import { findRelayChain } from './findRelayChain.js';
+import { parseRegistry } from './parseRegistry.js';
+import { ChainInfoKeys, ChainInfoRegistry } from './types.js';
 
 describe('findRelayChain', () => {
 	const registry = parseRegistry(reg as ChainInfoRegistry<ChainInfoKeys>, {});

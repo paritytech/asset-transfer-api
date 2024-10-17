@@ -2,7 +2,7 @@
 
 import type { AnyJson } from '@polkadot/types/types';
 
-import { UnionXcmMultiLocation } from '../types';
+import { UnionXcmMultiLocation } from '../types.js';
 
 export const createXcmOnDestination = (
 	assets: string[],

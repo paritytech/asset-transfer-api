@@ -1,5 +1,5 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-export { transfer } from './transfer';
-export { transferAll } from './transferAll';
-export { transferKeepAlive } from './transferKeepAlive';
+export { transfer } from './transfer.js';
+export { transferAll } from './transferAll.js';
+export { transferKeepAlive } from './transferKeepAlive.js';

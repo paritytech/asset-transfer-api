@@ -2,7 +2,7 @@
 
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { XcmDestBeneficiary } from '../types';
+import { XcmDestBeneficiary } from '../types.js';
 
 export const createBeneficiary = (accountId: string, xcmVersion?: number): XcmDestBeneficiary => {
 	if (xcmVersion === 2) {

@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { validateAddress } from './validateAddress';
+import { validateAddress } from './validateAddress.js';
 
 describe('validateAddress', () => {
 	it('Should not error with a valid substrate address', () => {

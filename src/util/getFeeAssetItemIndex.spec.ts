@@ -2,12 +2,12 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { AssetTransferApi } from '../AssetTransferApi';
-import { FungibleStrMultiAsset } from '../createXcmTypes/types';
-import { Registry } from '../registry';
-import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
-import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
-import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
+import { AssetTransferApi } from '../AssetTransferApi.js';
+import { FungibleStrMultiAsset } from '../createXcmTypes/types.js';
+import { Registry } from '../registry/index.js';
+import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420.js';
+import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000.js';
+import { getFeeAssetItemIndex } from './getFeeAssetItemIndex.js';
 
 type Test = [
 	paysWithFeeDest: string,

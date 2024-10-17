@@ -3,12 +3,12 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../../createXcmTypes';
-import type { XcmDestBeneficiaryXcAssets } from '../../createXcmTypes/types';
-import { UnionXcAssetsMultiAssets } from '../../createXcmTypes/types';
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import type { CreateXcmCallOpts } from '../types';
-import type { XTokensBaseArgs } from './types';
+import { createXcmTypes } from '../../createXcmTypes/index.js';
+import type { XcmDestBeneficiaryXcAssets } from '../../createXcmTypes/types.js';
+import { UnionXcAssetsMultiAssets } from '../../createXcmTypes/types.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import type { CreateXcmCallOpts } from '../types.js';
+import type { XTokensBaseArgs } from './types.js';
 
 /**
  * Build a Polkadot-js `transferMultiassets` SubmittableExtrinsic

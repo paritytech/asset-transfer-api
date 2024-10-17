@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
-import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
+import { Registry } from '../../registry/index.js';
+import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000.js';
+import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists.js';
 
 describe('foreignMultiAssetMultiLocationExists', () => {
 	const registry = new Registry('statemine', {});

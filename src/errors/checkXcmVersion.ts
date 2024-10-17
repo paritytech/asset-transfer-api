@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { SUPPORTED_XCM_VERSIONS } from '../consts';
-import { BaseError, BaseErrorsEnum } from './BaseError';
+import { SUPPORTED_XCM_VERSIONS } from '../consts.js';
+import { BaseError, BaseErrorsEnum } from './BaseError.js';
 
 /**
  * Check that an inputted xcm version is supported. If not throw an error.

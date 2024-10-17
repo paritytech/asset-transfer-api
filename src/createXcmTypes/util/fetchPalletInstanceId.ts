@@ -2,8 +2,8 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { assetIdIsLocation } from './assetIdIsLocation';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { assetIdIsLocation } from './assetIdIsLocation.js';
 
 /**
  * This fetches the metadata for the chain we are connected to and searches for the appropriate pallet and returns its index.

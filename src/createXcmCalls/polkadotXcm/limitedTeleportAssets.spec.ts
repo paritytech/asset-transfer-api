@@ -1,9 +1,9 @@
 import type { ApiPromise } from '@polkadot/api';
 
-import { Registry } from '../../registry';
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { Direction, XcmDirection } from '../../types';
-import { limitedTeleportAssets } from './limitedTeleportAssets';
+import { Registry } from '../../registry/index.js';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi.js';
+import { Direction, XcmDirection } from '../../types.js';
+import { limitedTeleportAssets } from './limitedTeleportAssets.js';
 
 describe('limitedTeleportAssets', () => {
 	const registry = new Registry('statemine', {});

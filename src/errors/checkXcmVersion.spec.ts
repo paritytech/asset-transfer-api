@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { checkXcmVersion } from './checkXcmVersion';
+import { checkXcmVersion } from './checkXcmVersion.js';
 
 describe('checkXcmVersion', () => {
 	it('Should correctly throw an error on a unsupported version', () => {

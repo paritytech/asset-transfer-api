@@ -1,7 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { RELAY_CHAIN_IDS } from '../../consts';
-import { Registry } from '../../registry';
+import { RELAY_CHAIN_IDS } from '../../consts.js';
+import { Registry } from '../../registry/index.js';
 
 export const isRelayNativeAsset = (registry: Registry, assetId: string): boolean => {
 	const relayChainId = RELAY_CHAIN_IDS[0];

@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { BaseError, BaseErrorsEnum } from '../errors/BaseError';
-import { Format, TransferArgsOpts } from '../types';
+import { BaseError, BaseErrorsEnum } from '../errors/BaseError.js';
+import { Format, TransferArgsOpts } from '../types.js';
 
 interface DisabledOptionsInfo {
 	disabled: boolean;

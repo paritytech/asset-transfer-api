@@ -1,4 +1,4 @@
-import { deepEqual } from './deepEqual';
+import { deepEqual } from './deepEqual.js';
 
 describe('deepEqual', () => {
 	it('Should return true for 2 equal objects that are out of order', () => {

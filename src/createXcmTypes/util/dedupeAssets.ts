@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { FungibleObjAssetType, FungibleStrAssetType } from '../types';
+import type { FungibleObjAssetType, FungibleStrAssetType } from '../types.js';
 
 /**
  * This removes duplicate assets when given a sorted list
@@ -10,7 +10,7 @@ import type { FungibleObjAssetType, FungibleStrAssetType } from '../types';
 export const dedupeAssets = (
 	assets: FungibleStrAssetType[] | FungibleObjAssetType[],
 ): FungibleStrAssetType[] | FungibleObjAssetType[] => {
-	const dedupedAssets = [];
+	const dedupedAssets: any[] = [];
 
 	for (let i = 0; i < assets.length; i++) {
 		const multiAsset = assets[i];

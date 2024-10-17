@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { chainDestIsBridge } from './chainDestIsBridge';
+import { chainDestIsBridge } from './chainDestIsBridge.js';
 
 describe('chainDestIsBridge', () => {
 	it('Should correctly return true for a GlobalConsensus destination location', () => {

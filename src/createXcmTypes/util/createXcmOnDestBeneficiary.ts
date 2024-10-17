@@ -2,8 +2,8 @@
 
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { UnionXcmMultiLocation } from '../types';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { UnionXcmMultiLocation } from '../types.js';
 
 export const createXcmOnDestBeneficiary = (accountId: string, xcmVersion: number): UnionXcmMultiLocation => {
 	if (xcmVersion < 3) {

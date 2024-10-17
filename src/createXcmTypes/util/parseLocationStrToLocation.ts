@@ -1,7 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { UnionXcmMultiLocation } from '../types';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { UnionXcmMultiLocation } from '../types.js';
 
 export const parseLocationStrToLocation = (locationStr: string): UnionXcmMultiLocation => {
 	try {

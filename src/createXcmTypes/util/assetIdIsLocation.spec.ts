@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { assetIdIsLocation } from './assetIdIsLocation';
+import { assetIdIsLocation } from './assetIdIsLocation.js';
 
 describe('assetIdIsLocation', () => {
 	it('Should correctly return true for a valid location assetId string', () => {
