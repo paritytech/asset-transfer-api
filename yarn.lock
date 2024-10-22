@@ -1007,7 +1007,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/api@npm:14.0.1, @polkadot/api@npm:^14.0.1":
+"@polkadot/api@npm:14.0.1":
   version: 14.0.1
   resolution: "@polkadot/api@npm:14.0.1"
   dependencies:
@@ -1414,7 +1414,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@substrate/asset-transfer-api@workspace:."
   dependencies:
-    "@polkadot/api": "npm:^14.0.1"
+    "@polkadot/api": "npm:14.0.1"
+    "@polkadot/api-augment": "npm:14.0.1"
+    "@polkadot/types": "npm:14.0.1"
+    "@polkadot/types-codec": "npm:14.0.1"
+    "@polkadot/util": "npm:13.1.1"
+    "@polkadot/util-crypto": "npm:13.1.1"
     "@substrate/asset-transfer-api-registry": "npm:^0.2.24"
     "@substrate/dev": "npm:^0.7.1"
     "@types/cli-progress": "npm:^3"
