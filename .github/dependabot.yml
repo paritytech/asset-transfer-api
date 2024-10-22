@@ -20,7 +20,7 @@ updates:
     commit-message:
       # Prefix all commit messages with "chore"
       # include a list of updated dependencies
-      prefix: "chore:"
+      prefix: "chore"
       include: "scope"
     labels:
       - "dependencies"
