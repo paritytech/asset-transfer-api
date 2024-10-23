@@ -43,7 +43,7 @@
 		"@substrate/dev": "^0.7.1",
 		"@types/cli-progress": "^3",
 		"ansi-colors": "^4.1.3",
-		"chalk": "4.1.2",
+		"chalk": "5.3.0",
 		"cli-progress": "^3.12.0",
 		"typedoc": "^0.26.10",
 		"typedoc-plugin-missing-exports": "^3.0.0",
