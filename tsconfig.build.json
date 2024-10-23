@@ -1,0 +1,10 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"customConditions": [],
+		"verbatimModuleSyntax": false,
+		"declarationMap": true,
+		"sourceMap": true,
+		"stripInternal": true
+	}
+}

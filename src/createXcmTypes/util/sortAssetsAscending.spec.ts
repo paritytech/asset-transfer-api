@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { FungibleObjAssetType, FungibleStrAssetType } from '../types';
-import { sortAssetsAscending } from './sortAssetsAscending';
+import { FungibleObjAssetType, FungibleStrAssetType } from '../types.js';
+import { sortAssetsAscending } from './sortAssetsAscending.js';
 
 describe('sortAssetsAscending', () => {
 	it('Should sort an unsorted multi asset array in ascending order', () => {

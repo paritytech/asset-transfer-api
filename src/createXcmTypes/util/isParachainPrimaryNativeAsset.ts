@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { Direction } from '../../types';
+import { Registry } from '../../registry/index.js';
+import { Direction } from '../../types.js';
 
 export const isParachainPrimaryNativeAsset = (
 	registry: Registry,

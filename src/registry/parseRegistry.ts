@@ -1,16 +1,16 @@
 // Copyright 2023-2024 Parity Technologies (UK) Ltd.
 import { AnyJson } from '@polkadot/types/types';
 
-import { BaseError, BaseErrorsEnum } from '../errors';
-import type { AssetTransferApiOpts } from '../types';
-import { deepEqual } from '../util/deepEqual';
+import { BaseError, BaseErrorsEnum } from '../errors/index.js';
+import type { AssetTransferApiOpts } from '../types.js';
+import { deepEqual } from '../util/deepEqual.js';
 import type {
 	ChainInfo,
 	ChainInfoKeys,
 	ChainInfoRegistry,
 	InjectedChainInfoKeys,
 	SanitizedXcAssetsData,
-} from './types';
+} from './types.js';
 
 /**
  * Function to iterate over the properties of an object in order to check whether
@@ -33,7 +33,7 @@ const propertyIterator = (
 	property?: string,
 	override?: boolean,
 ) => {
-	const tokenBuffer = [];
+	const tokenBuffer: string[] = [];
 	const xcAssetsBuffer: SanitizedXcAssetsData[] = [];
 	if (property === 'specName' && override) {
 		chain[id]['specName'] = input as unknown as string;

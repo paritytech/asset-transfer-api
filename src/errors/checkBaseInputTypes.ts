@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { BaseError, BaseErrorsEnum } from './BaseError';
+import { BaseError, BaseErrorsEnum } from './BaseError.js';
 
 /**
  * Check the base types for the inputs for createTransferTransaction

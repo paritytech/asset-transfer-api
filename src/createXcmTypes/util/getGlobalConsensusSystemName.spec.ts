@@ -1,6 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { getGlobalConsensusSystemName } from './getGlobalConsensusSystemName';
+import { getGlobalConsensusSystemName } from './getGlobalConsensusSystemName.js';
 
 describe('getGlobalConsensusSystemName', () => {
 	describe('X1', () => {

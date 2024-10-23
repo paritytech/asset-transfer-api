@@ -1,4 +1,4 @@
-import { validateNumber } from './validateNumber';
+import { validateNumber } from './validateNumber.js';
 
 describe('validateNumber', () => {
 	it('Should correctly validate a number as a string with a length less than 16', () => {

@@ -2,13 +2,13 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { FungibleStrAssetType } from '../createXcmTypes/types';
-import { getAssetId } from '../createXcmTypes/util/getAssetId';
-import { isParachain } from '../createXcmTypes/util/isParachain';
-import { BaseError, BaseErrorsEnum } from '../errors';
-import { Registry } from '../registry';
-import { resolveMultiLocation } from '../util/resolveMultiLocation';
-import { validateNumber } from '../validate/validateNumber';
+import { FungibleStrAssetType } from '../createXcmTypes/types.js';
+import { getAssetId } from '../createXcmTypes/util/getAssetId.js';
+import { isParachain } from '../createXcmTypes/util/isParachain.js';
+import { BaseError, BaseErrorsEnum } from '../errors/index.js';
+import { Registry } from '../registry/index.js';
+import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
+import { validateNumber } from '../validate/validateNumber.js';
 
 /**
  * For System origin XCM V3 Tx's, if paysWithFeeDest option is provided, finds and returns the index

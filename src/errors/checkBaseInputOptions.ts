@@ -1,9 +1,9 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { Format, TransferArgsOpts } from '../types';
-import { validateAddress } from '../validate';
-import { BaseError, BaseErrorsEnum } from './BaseError';
-import { disableOpts } from './disableOpts';
+import type { Format, TransferArgsOpts } from '../types.js';
+import { validateAddress } from '../validate/index.js';
+import { BaseError, BaseErrorsEnum } from './BaseError.js';
+import { disableOpts } from './disableOpts.js';
 
 /**
  * Ensure that options that require certain inputs are validated.

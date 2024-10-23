@@ -3,15 +3,15 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../../createXcmTypes';
-import { createXcmOnDestBeneficiary } from '../../createXcmTypes/util/createXcmOnDestBeneficiary';
-import { createXcmOnDestination } from '../../createXcmTypes/util/createXcmOnDestination';
-import { createXcmVersionedAssetId } from '../../createXcmTypes/util/createXcmVersionedAssetId';
-import { resolveAssetTransferType } from '../../createXcmTypes/util/resolveAssetTransferType';
-import { normalizeArrToStr } from '../../util/normalizeArrToStr';
-import type { CreateXcmCallOpts } from '../types';
-import { establishXcmPallet } from '../util/establishXcmPallet';
-import type { PolkadotXcmBaseArgs } from './types';
+import { createXcmTypes } from '../../createXcmTypes/index.js';
+import { createXcmOnDestBeneficiary } from '../../createXcmTypes/util/createXcmOnDestBeneficiary.js';
+import { createXcmOnDestination } from '../../createXcmTypes/util/createXcmOnDestination.js';
+import { createXcmVersionedAssetId } from '../../createXcmTypes/util/createXcmVersionedAssetId.js';
+import { resolveAssetTransferType } from '../../createXcmTypes/util/resolveAssetTransferType.js';
+import { normalizeArrToStr } from '../../util/normalizeArrToStr.js';
+import type { CreateXcmCallOpts } from '../types.js';
+import { establishXcmPallet } from '../util/establishXcmPallet.js';
+import type { PolkadotXcmBaseArgs } from './types.js';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferAssetsUsingTypeAndThen` call.
  *

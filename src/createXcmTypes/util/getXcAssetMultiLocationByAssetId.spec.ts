@@ -1,10 +1,10 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { AssetTransferApi } from '../../AssetTransferApi';
-import { Registry } from '../../registry';
-import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
-import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
-import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId';
+import { AssetTransferApi } from '../../AssetTransferApi.js';
+import { Registry } from '../../registry/index.js';
+import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi.js';
+import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi.js';
+import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId.js';
 
 const bifrostRegistry = new Registry('bifrost', {});
 const bifrostApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 3, { registryType: 'NPM' });

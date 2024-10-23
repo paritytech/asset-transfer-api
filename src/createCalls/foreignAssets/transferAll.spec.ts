@@ -1,8 +1,8 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { UnionXcmMultiLocation } from '../../createXcmTypes/types';
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { transferAll } from './transferAll';
+import { UnionXcmMultiLocation } from '../../createXcmTypes/types.js';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi.js';
+import { transferAll } from './transferAll.js';
 
 describe('foreignAssets::transferAll', () => {
 	it('Should construct a valid foreignAssets pallet transferAll extrinsic', () => {

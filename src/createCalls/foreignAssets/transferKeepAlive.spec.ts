@@ -1,8 +1,8 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { UnionXcmMultiLocation } from '../../createXcmTypes/types';
-import { mockSystemApi } from '../../testHelpers/mockSystemApi';
-import { transferKeepAlive } from './transferKeepAlive';
+import type { UnionXcmMultiLocation } from '../../createXcmTypes/types.js';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi.js';
+import { transferKeepAlive } from './transferKeepAlive.js';
 
 describe('foreignAssets::transfer', () => {
 	it('Should construct a valid foreignAssets transferKeepAlive extrinsic', () => {

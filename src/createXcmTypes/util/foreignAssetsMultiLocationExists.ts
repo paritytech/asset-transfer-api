@@ -2,11 +2,11 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { Registry } from '../../registry';
-import type { ForeignAssetsData } from '../../registry/types';
-import type { AssetMetadata } from '../../types';
-import { UnionXcmMultiLocation } from '../types';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { Registry } from '../../registry/index.js';
+import type { ForeignAssetsData } from '../../registry/types.js';
+import type { AssetMetadata } from '../../types.js';
+import { UnionXcmMultiLocation } from '../types.js';
 
 export const foreignAssetsMultiLocationExists = async (
 	assetHubApi: ApiPromise,
