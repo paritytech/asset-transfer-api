@@ -1480,7 +1480,7 @@ __metadata:
     cli-progress: "npm:^3.12.0"
     typedoc: "npm:^0.26.10"
     typedoc-plugin-missing-exports: "npm:^3.0.0"
-    typedoc-theme-hierarchy: "npm:^4.0.0"
+    typedoc-theme-hierarchy: "npm:^5.0.3"
   languageName: unknown
   linkType: soft
 
@@ -3100,14 +3100,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^10.0.0":
-  version: 10.1.0
-  resolution: "fs-extra@npm:10.1.0"
+"fs-extra@npm:11.1.1":
+  version: 11.1.1
+  resolution: "fs-extra@npm:11.1.1"
   dependencies:
     graceful-fs: "npm:^4.2.0"
     jsonfile: "npm:^6.0.1"
     universalify: "npm:^2.0.0"
-  checksum: 10/05ce2c3b59049bcb7b52001acd000e44b3c4af4ec1f8839f383ef41ec0048e3cfa7fd8a637b1bddfefad319145db89be91f4b7c1db2908205d38bf91e7d1d3b7
+  checksum: 10/c4e9fabf9762a70d1403316b7faa899f3d3303c8afa765b891c2210fdeba368461e04ae1203920b64ef6a7d066a39ab8cef2160b5ce8d1011bb4368688cd9bb7
   languageName: node
   linkType: hard
 
@@ -5764,14 +5764,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-theme-hierarchy@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "typedoc-theme-hierarchy@npm:4.0.0"
+"typedoc-theme-hierarchy@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "typedoc-theme-hierarchy@npm:5.0.3"
   dependencies:
-    fs-extra: "npm:^10.0.0"
+    fs-extra: "npm:11.1.1"
   peerDependencies:
-    typedoc: ^0.24.0
-  checksum: 10/e561783b8039431da88abe34cef0288e7377b6cc08d2f432769901de03872a59b0d5e97ba13fd7dd1faa4b14c03247371f4b382ddb8c223eb4b568dca89f918a
+    typedoc: ^0.26.0
+  checksum: 10/7b188945c1fbe8167badf17e04a976e39938aadf74df8d44e1ae2574b2d43a0a256c67027b1d718211e10af3c8ef8cb453c927863471bf9d6c67b3456e0d0653
   languageName: node
   linkType: hard
 
