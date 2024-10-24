@@ -24,7 +24,7 @@ const isPlainObject = (input: unknown) => {
  * @param xcmObj
  */
 export const sanitizeKeys = <T extends AnyObj>(xcmObj: T): T => {
-	const final = {};
+	const final = {} as AnyObj;
 
 	// Iterate over key-value pairs of the root object 'obj'
 	for (const [key, value] of Object.entries(xcmObj)) {
@@ -43,7 +43,7 @@ export const sanitizeKeys = <T extends AnyObj>(xcmObj: T): T => {
 };
 
 const mapKey = (key: string): string => {
-	const lowerKey = key.toLowerCase();
+	const lowerKey = key.toLowerCase() as keyof typeof MultiLocationJunctionTypeKeys;
 	if (MultiLocationJunctionTypeKeys[lowerKey]) {
 		return MultiLocationJunctionTypeKeys[lowerKey] as string;
 	}

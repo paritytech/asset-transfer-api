@@ -182,7 +182,7 @@ export const ParaToSystem: ICreateXcmType = {
 						refTime: opts.weightLimit.refTime,
 						proofSize: opts.weightLimit.proofSize,
 					},
-			  }
+				}
 			: { Unlimited: null };
 	},
 	/**

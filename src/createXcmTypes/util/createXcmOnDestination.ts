@@ -23,16 +23,16 @@ export const createXcmOnDestination = (
 						beneficiary,
 					},
 				},
-		  ];
+			];
 
 	const defaultDestXcm: AnyJson =
 		xcmVersion === 3
 			? {
 					V3: xcmMessage,
-			  }
+				}
 			: {
 					V4: xcmMessage,
-			  };
+				};
 
 	return defaultDestXcm;
 };

@@ -47,7 +47,7 @@ export const transferAssets = async (
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-		  })
+			})
 		: 0;
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitValue);

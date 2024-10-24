@@ -168,7 +168,7 @@ export const SystemToSystem: ICreateXcmType = {
 						refTime: opts.weightLimit?.refTime,
 						proofSize: opts.weightLimit?.proofSize,
 					},
-			  }
+				}
 			: { Unlimited: null };
 	},
 	/**
@@ -282,7 +282,7 @@ export const createSystemToSystemMultiAssets = async (
 				? { Here: '' }
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-				  };
+					};
 			concreteMultiLocation = resolveMultiLocation(
 				{
 					parents,

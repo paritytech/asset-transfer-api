@@ -60,7 +60,7 @@ export const createAssetLocations = async (
 				? { Here: '' }
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-				  };
+					};
 
 			concreteMultiLocation = {
 				parents,

@@ -28,10 +28,10 @@ export const fetchPalletInstanceId = (
 		isLiquidToken && api.query.poolAssets
 			? 'PoolAssets'
 			: isForeignAsset && api.query.foreignAssets && assetIdIsLocation(assetId)
-			  ? 'ForeignAssets'
-			  : api.query.assets
-			    ? 'Assets'
-			    : '';
+				? 'ForeignAssets'
+				: api.query.assets
+					? 'Assets'
+					: '';
 
 	// return early if assets pallet is not found and palletName is not PoolAssets or ForeignAssets
 	if (!api.query.assets && palletName.length === 0) {

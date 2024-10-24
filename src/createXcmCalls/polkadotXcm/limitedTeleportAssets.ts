@@ -41,7 +41,7 @@ export const limitedTeleportAssets = async (
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: false,
-		  })
+			})
 		: 0;
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);

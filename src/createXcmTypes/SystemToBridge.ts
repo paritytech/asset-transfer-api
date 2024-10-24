@@ -92,7 +92,7 @@ export const SystemToBridge: ICreateXcmType = {
 									X1: destination.interior.X1 as InteriorValue,
 								},
 							},
-					  }
+						}
 					: {
 							V3: {
 								parents: 2,
@@ -100,7 +100,7 @@ export const SystemToBridge: ICreateXcmType = {
 									X2: destination.interior.X2 as InteriorValue,
 								},
 							},
-					  };
+						};
 		} else {
 			if (destination.interior && destination.interior.X1) {
 				dest = {
@@ -180,7 +180,7 @@ export const SystemToBridge: ICreateXcmType = {
 						refTime: opts.weightLimit?.refTime,
 						proofSize: opts.weightLimit?.proofSize,
 					},
-			  }
+				}
 			: { Unlimited: null };
 	},
 	/**
@@ -284,7 +284,7 @@ export const createSystemToBridgeAssets = async (
 				? { Here: '' }
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-				  };
+					};
 
 			assetLocation = {
 				parents,

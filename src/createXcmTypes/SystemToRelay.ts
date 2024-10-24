@@ -173,7 +173,7 @@ export const SystemToRelay: ICreateXcmType = {
 						refTime: opts.weightLimit?.refTime,
 						proofSize: opts.weightLimit?.proofSize,
 					},
-			  }
+				}
 			: { Unlimited: null };
 	},
 	/**

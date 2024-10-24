@@ -40,27 +40,27 @@ export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObj
 				'Parents' in a.id.Concrete
 					? (a.id.Concrete['Parents'] as string | number)
 					: 'parents' in a.id.Concrete
-					  ? (a.id.Concrete['parents'] as string | number)
-					  : undefined;
+						? (a.id.Concrete['parents'] as string | number)
+						: undefined;
 			bParents =
 				'Parents' in b.id.Concrete
 					? (b.id.Concrete['Parents'] as string | number)
 					: 'parents' in b.id.Concrete
-					  ? (b.id.Concrete['parents'] as string | number)
-					  : undefined;
+						? (b.id.Concrete['parents'] as string | number)
+						: undefined;
 		} else {
 			aParents =
 				'Parents' in a.id
 					? (a.id['Parents'] as string | number)
 					: 'parents' in a.id
-					  ? (a.id['parents'] as string | number)
-					  : undefined;
+						? (a.id['parents'] as string | number)
+						: undefined;
 			bParents =
 				'Parents' in b.id
 					? (b.id['Parents'] as string | number)
 					: 'parents' in b.id
-					  ? (b.id['parents'] as string | number)
-					  : undefined;
+						? (b.id['parents'] as string | number)
+						: undefined;
 		}
 
 		// Should never hit this, this exists to make the typescript compiler happy.
@@ -96,8 +96,8 @@ export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObj
 							| RequireOnlyOne<XcmV3Junctions>
 							| RequireOnlyOne<XcmV4Junctions>)
 					: 'interior' in a.id.Concrete
-					  ? a.id.Concrete.interior
-					  : undefined;
+						? a.id.Concrete.interior
+						: undefined;
 			bInterior =
 				'Interior' in b.id.Concrete
 					? (b.id.Concrete['Interior'] as
@@ -105,8 +105,8 @@ export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObj
 							| RequireOnlyOne<XcmV3Junctions>
 							| RequireOnlyOne<XcmV4Junctions>)
 					: 'interior' in b.id.Concrete
-					  ? b.id.Concrete.interior
-					  : undefined;
+						? b.id.Concrete.interior
+						: undefined;
 		} else {
 			aInterior =
 				'Interior' in a.id
@@ -115,8 +115,8 @@ export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObj
 							| RequireOnlyOne<XcmV3Junctions>
 							| RequireOnlyOne<XcmV4Junctions>)
 					: 'interior' in a.id
-					  ? a.id.interior
-					  : undefined;
+						? a.id.interior
+						: undefined;
 			bInterior =
 				'Interior' in b.id
 					? (b.id['Interior'] as
@@ -124,8 +124,8 @@ export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObj
 							| RequireOnlyOne<XcmV3Junctions>
 							| RequireOnlyOne<XcmV4Junctions>)
 					: 'interior' in b.id
-					  ? b.id.interior
-					  : undefined;
+						? b.id.interior
+						: undefined;
 		}
 
 		// Should never hit this, this exists to make the typescript compiler happy.
@@ -207,8 +207,8 @@ const getSameJunctionMultiLocationSortOrder = (
 
 	switch (Object.keys(aInterior)[0]) {
 		case 'X1':
-			const aX1Type = Object.keys(aInterior.X1!)[0];
-			const bX1Type = Object.keys(bInterior.X1!)[0];
+			const aX1Type = Object.keys(aInterior.X1!)[0] as keyof typeof MultiLocationJunctionType;
+			const bX1Type = Object.keys(bInterior.X1!)[0] as keyof typeof MultiLocationJunctionType;
 			if (aX1Type === bX1Type && aInterior.X1 !== bInterior.X1) {
 				const aHex = stringToHex(JSON.stringify(aInterior.X1));
 				const bHex = stringToHex(JSON.stringify(bInterior.X1));
@@ -286,8 +286,8 @@ const getSortOrderForX2ThroughX8 = (a: MultiLocationJunctions, b: MultiLocationJ
 	for (let i = 0; i < a.length; i++) {
 		const junctionA = a[i];
 		const junctionB = b[i];
-		const junctionAType = Object.keys(junctionA)[0];
-		const junctionBType = Object.keys(junctionB)[0];
+		const junctionAType = Object.keys(junctionA)[0] as keyof typeof MultiLocationJunctionType;
+		const junctionBType = Object.keys(junctionB)[0] as keyof typeof MultiLocationJunctionType;
 
 		// if the junctions are the same type but not equal
 		// we compare the inner values in order to determine sort order

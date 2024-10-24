@@ -189,7 +189,7 @@ export const SystemToPara: ICreateXcmType = {
 						refTime: opts.weightLimit?.refTime,
 						proofSize: opts.weightLimit?.proofSize,
 					},
-			  }
+				}
 			: { Unlimited: null };
 	},
 	/**
@@ -302,7 +302,7 @@ export const createSystemToParaMultiAssets = async (
 				? { Here: '' }
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-				  };
+					};
 
 			concreteMultiLocation = {
 				parents,

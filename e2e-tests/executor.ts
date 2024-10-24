@@ -104,7 +104,7 @@ const executor = async (testCase: string) => {
 				: await ApiPromise.create({
 						provider: new WsProvider(destWsUrl),
 						noInitWarn: true,
-				  });
+					});
 
 		await destinationApi.isReady;
 		const destInitialBalance: IBalance = await balanceTracker(destinationApi, testCase, destAddr, assetIds);

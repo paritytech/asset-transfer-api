@@ -132,10 +132,10 @@ export type Format = 'payload' | 'call' | 'submittable';
 export type ConstructedFormat<T> = T extends 'payload'
 	? GenericExtrinsicPayload
 	: T extends 'call'
-	  ? `0x${string}`
-	  : T extends 'submittable'
-	    ? SubmittableExtrinsic<'promise', ISubmittableResult>
-	    : never;
+		? `0x${string}`
+		: T extends 'submittable'
+			? SubmittableExtrinsic<'promise', ISubmittableResult>
+			: never;
 
 /**
  * The types of local transactions the api can construct.

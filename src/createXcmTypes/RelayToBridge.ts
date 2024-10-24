@@ -74,7 +74,7 @@ export const RelayToBridge: ICreateXcmType = {
 									X1: destination.interior.X1 as InteriorValue,
 								},
 							},
-					  }
+						}
 					: {
 							V3: {
 								parents: 1,
@@ -82,7 +82,7 @@ export const RelayToBridge: ICreateXcmType = {
 									X2: destination.interior.X2 as InteriorValue,
 								},
 							},
-					  };
+						};
 		} else {
 			if (destination.interior && destination.interior.X1) {
 				dest = {
@@ -174,7 +174,7 @@ export const RelayToBridge: ICreateXcmType = {
 						refTime: opts.weightLimit?.refTime,
 						proofSize: opts.weightLimit?.proofSize,
 					},
-			  }
+				}
 			: { Unlimited: null };
 	},
 	/**
