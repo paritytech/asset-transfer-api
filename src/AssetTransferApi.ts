@@ -704,7 +704,7 @@ export class AssetTransferApi {
 				}
 			}
 
-			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt as Format);
+			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt);
 
 			if (executionResult?.isOk) {
 				result.xcmExecutionResult = executionResult.asOk.executionResult;
@@ -1041,7 +1041,7 @@ export class AssetTransferApi {
 		const foreignAssets: string[] = [];
 		for (const asset of await api.query.foreignAssets.asset.entries()) {
 			const storageKey = asset[0].toHuman();
-			if (storageKey) {
+			if (storageKey && Array.isArray(storageKey) && storageKey.length > 0) {
 				foreignAssets.push(JSON.stringify(storageKey[0]).replace(/(\d),/g, '$1'));
 			}
 		}
@@ -1083,17 +1083,19 @@ export class AssetTransferApi {
 					const lpTokens = poolPairsData[0].toHuman(); // get asset location tuple
 					const lpTokenLocations = lpTokens as UnionXcmMultiLocation[];
 
-					// convert json into locations
-					const firstLpToken = parseLocationStrToLocation(
-						JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
-					);
-					const secondLpToken = parseLocationStrToLocation(
-						JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
-					);
+					if (Array.isArray(lpTokenLocations[0])) {
+						// convert json into locations
+						const firstLpToken = parseLocationStrToLocation(
+							JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
+						);
+						const secondLpToken = parseLocationStrToLocation(
+							JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
+						);
 
-					// check locations match paysWithFeeOrigin feeAsset
-					if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {
-						return [true, feeAsset];
+						// check locations match paysWithFeeOrigin feeAsset
+						if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {
+							return [true, feeAsset];
+						}
 					}
 				}
 			} catch (e) {

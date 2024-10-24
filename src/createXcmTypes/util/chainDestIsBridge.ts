@@ -15,8 +15,8 @@ export const chainDestIsBridge = (destLocation: string): boolean => {
 		destIsBridge = location.interior.X1
 			? JSON.stringify(location.interior.X1).toLowerCase().includes('globalconsensus')
 			: location.interior.X2
-			  ? JSON.stringify(location.interior.X2).toLowerCase().includes('globalconsensus')
-			  : false;
+				? JSON.stringify(location.interior.X2).toLowerCase().includes('globalconsensus')
+				: false;
 	}
 
 	return destIsBridge;

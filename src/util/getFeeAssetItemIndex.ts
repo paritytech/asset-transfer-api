@@ -43,8 +43,8 @@ export const getFeeAssetItemIndex = async (
 			const multiAsset = multiAssets[i];
 			const multiAssetInterior =
 				'Concrete' in multiAsset.id
-					? multiAsset.id.Concrete.interior || multiAsset.id.Concrete['Interior']
-					: multiAsset.id.interior || multiAsset.id['Interior'];
+					? multiAsset.id.Concrete.interior || (multiAsset.id.Concrete as { [key: string]: unknown })['Interior']
+					: multiAsset.id.interior || (multiAsset.id as { [key: string]: unknown })['Interior'];
 
 			if (isRelayFeeAsset) {
 				// if the asset id is a relay asset, match Here interior
@@ -70,7 +70,8 @@ export const getFeeAssetItemIndex = async (
 					if (isForeignAssetsTransfer || isParaOrigin) {
 						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestAssetLocationStr, xcmVersion);
 						const paysWithFeeDestMultiLocationInterior =
-							paysWithFeeDestMultiLocation.interior || paysWithFeeDestMultiLocation['Interior'];
+							paysWithFeeDestMultiLocation.interior ||
+							(paysWithFeeDestMultiLocation as { [key: string]: unknown })['Interior'];
 						if (JSON.stringify(multiAssetInterior) === JSON.stringify(paysWithFeeDestMultiLocationInterior)) {
 							result = i;
 							break;
@@ -78,13 +79,14 @@ export const getFeeAssetItemIndex = async (
 					} else {
 						// if the current multiAsset is the relay asset we skip it since the
 						// pays with fee dest item is not the relay asset
-						if (multiAssetInterior.Here || multiAssetInterior['here']) {
+						if (multiAssetInterior.Here || (multiAssetInterior as { [key: string]: unknown })['here']) {
 							continue;
 						}
 
 						if (
 							multiAssetInterior.X2 &&
-							(multiAssetInterior.X2[1].GeneralIndex || multiAssetInterior.X2[1]['Generalindex']) ===
+							(multiAssetInterior.X2[1].GeneralIndex ||
+								(multiAssetInterior.X2[1] as { [key: string]: unknown })['Generalindex']) ===
 								paysWithFeeDestAssetLocationStr
 						) {
 							result = i;
@@ -94,7 +96,8 @@ export const getFeeAssetItemIndex = async (
 				} else {
 					if (
 						multiAssetInterior.X2 &&
-						(multiAssetInterior.X2[1].GeneralIndex || multiAssetInterior.X2[1]['Generalindex']) === paysWithFeeDest
+						(multiAssetInterior.X2[1].GeneralIndex ||
+							(multiAssetInterior.X2[1] as { [key: string]: unknown })['Generalindex']) === paysWithFeeDest
 					) {
 						result = i;
 						break;

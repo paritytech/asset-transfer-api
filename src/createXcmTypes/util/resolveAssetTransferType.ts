@@ -30,14 +30,14 @@ export const resolveAssetTransferType = (
 			assetTransferType === 'LocalReserve'
 				? {
 						LocalReserve: 'null',
-				  }
+					}
 				: assetTransferType === 'DestinationReserve'
-				  ? {
+					? {
 							DestinationReserve: 'null',
-				    }
-				  : {
+						}
+					: {
 							Teleport: 'null',
-				    };
+						};
 	}
 
 	return transferType;
