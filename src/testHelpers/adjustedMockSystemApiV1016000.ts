@@ -160,8 +160,8 @@ const asset = (assetId: number | string | BN): Promise<Option<PalletAssetsAssetD
 		const adjAsset = BN.isBN(assetId)
 			? assetId.toNumber()
 			: typeof assetId === 'string'
-			  ? Number.parseInt(assetId)
-			  : assetId;
+				? Number.parseInt(assetId)
+				: assetId;
 		const maybeAsset = assets.has(adjAsset) ? assets.get(adjAsset) : undefined;
 
 		if (maybeAsset) {
@@ -190,8 +190,8 @@ const assetsMetadata = (assetId: number | string | BN): Promise<PalletAssetsAsse
 		const adjAsset = BN.isBN(assetId)
 			? assetId.toNumber()
 			: typeof assetId === 'string'
-			  ? Number.parseInt(assetId)
-			  : assetId;
+				? Number.parseInt(assetId)
+				: assetId;
 		const maybeMetadata = metadata.has(adjAsset) ? metadata.get(adjAsset) : undefined;
 
 		if (maybeMetadata) {

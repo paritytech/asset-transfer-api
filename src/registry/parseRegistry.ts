@@ -29,8 +29,8 @@ import type {
 const propertyIterator = (
 	input: object,
 	chain: ChainInfo<ChainInfoKeys>,
-	id: string,
-	property?: string,
+	id: keyof ChainInfoKeys,
+	property?: keyof ChainInfoKeys,
 	override?: boolean,
 ) => {
 	const tokenBuffer = [];
@@ -38,7 +38,7 @@ const propertyIterator = (
 	if (property === 'specName' && override) {
 		chain[id]['specName'] = input as unknown as string;
 	} else if (property !== 'specName') {
-		for (const [key, value] of Object.entries(input)) {
+		for (const [key, value] of Object.entries(input) as [keyof object, unknown][]) {
 			if (!property) {
 				propertyIterator(value as object, chain, id, key, override);
 			} else if (property === 'tokens' && chain[id][property] && typeof value === 'string') {
@@ -53,7 +53,7 @@ const propertyIterator = (
 					Object.assign(chain[id], { xcAssetsData: xcAssetsBuffer });
 				} else {
 					let hit = false;
-					for (const chainObj of (chain[id]['xcAssetsData'] as SanitizedXcAssetsData[]).values()) {
+					for (const chainObj of chain[id]['xcAssetsData'].values()) {
 						if (deepEqual(value as AnyJson, chainObj as AnyJson)) hit = true;
 					}
 					if (!hit) chain[id]['xcAssetsData']?.push(value as SanitizedXcAssetsData);
@@ -61,11 +61,11 @@ const propertyIterator = (
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			} else if (chain[id][property] && !chain[id][property][key]) {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				chain[id][property][key] = value as object;
+				(chain[id][property] as { [key: string]: unknown })[key] = value as object;
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 			} else if (chain[id][property] && chain[id][property][key] && override) {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				chain[id][property][key] = value as object;
+				(chain[id][property] as { [key: string]: unknown })[key] = value as object;
 			}
 		}
 	}
@@ -85,7 +85,7 @@ const propertyIterator = (
 const updateRegistry = (
 	injectedChain: ChainInfo<InjectedChainInfoKeys>,
 	registry: ChainInfoRegistry<ChainInfoKeys>,
-	registryChain: string,
+	registryChain: keyof ChainInfoRegistry<ChainInfoKeys>,
 	override?: boolean,
 ) => {
 	const chain = registry[registryChain] as unknown as ChainInfo<ChainInfoKeys>;
@@ -96,7 +96,7 @@ const updateRegistry = (
 		poolPairsInfo: {},
 		specName: '',
 	};
-	for (const id of Object.keys(injectedChain)) {
+	for (const id of Object.keys(injectedChain) as (keyof InjectedChainInfoKeys)[]) {
 		if (!chain[id] && !injectedChain[id].specName) {
 			throw new BaseError('A specName must be provided when adding a new chain', BaseErrorsEnum.SpecNameNotProvided);
 		} else if (!chain[id] && !injectedChain[id].tokens) {

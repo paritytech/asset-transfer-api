@@ -47,7 +47,7 @@ export const limitedReserveTransferAssets = async (
 				xcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-		  })
+			})
 		: 0;
 
 	return ext(dest, beneficiary, assets, feeAssetItem, weightLimitType);
