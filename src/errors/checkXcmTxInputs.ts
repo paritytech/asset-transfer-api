@@ -25,6 +25,8 @@ import { AssetInfo, Direction } from '../types';
 import { validateNumber } from '../validate';
 import { BaseError, BaseErrorsEnum } from './BaseError';
 import type { CheckXcmTxInputsOpts } from './types';
+import { UnionXcmMultiLocation } from '../createXcmTypes/types';
+import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation';
 
 /**
  * Ensure when sending tx's to or from the relay chain that the length of the assetIds array
@@ -606,6 +608,15 @@ export const checkParaAssets = async (
 				BaseErrorsEnum.AssetNotFound,
 			);
 		}
+	} else if (api.query.assetRegistry) {
+		if (assetIdIsLocation(assetId)) {
+			if ('locationAssets' in api.query.assetRegistry) {
+				const assetLocation = await api.query.assetRegistry.locationAssets(assetId);
+				if (assetLocation) {
+					console.log("LOCATION OF ASSET REGISTRY ASSET", JSON.stringify(assetLocation))
+				}
+			} 
+		}
 	} else {
 		// Parachain doesn't support pallet assets
 		// check for assetId in registry
@@ -629,6 +640,19 @@ export const checkParaAssets = async (
 			for (const info of paraXcAssets) {
 				if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
 					return;
+				} else if (assetIdIsLocation(assetId)) {
+					console.log("info.xcmV1MultiLocation.toLowerCase()", info.xcmV1MultiLocation.toLowerCase())
+					const v1AssetLocation = (JSON.parse(info.xcmV1MultiLocation) as UnionXcmMultiLocation);
+	
+					if ('v1' in v1AssetLocation ) {
+						const registryAssetLocation = parseLocationStrToLocation(JSON.stringify(v1AssetLocation.v1));
+						const assetLocation = parseLocationStrToLocation(assetId);
+
+	
+						if (JSON.stringify(registryAssetLocation).toLowerCase() === JSON.stringify(assetLocation).toLowerCase()) {
+							return;
+						}
+					}
 				}
 			}
 		}
