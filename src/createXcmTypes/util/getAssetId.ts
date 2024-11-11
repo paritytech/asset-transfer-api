@@ -7,11 +7,11 @@ import { ASSET_HUB_CHAIN_ID } from '../../consts';
 import { BaseError, BaseErrorsEnum } from '../../errors';
 import { Registry } from '../../registry';
 import { validateNumber } from '../../validate';
+import { UnionXcmMultiLocation } from '../types';
+import { assetIdIsLocation } from './assetIdIsLocation';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
-import { UnionXcmMultiLocation } from '../types';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation';
-import { assetIdIsLocation } from './assetIdIsLocation';
 
 /**
  *
@@ -198,8 +198,8 @@ export const getAssetId = async (
 					if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === asset.toLowerCase()) {
 						assetId = info.xcmV1MultiLocation;
 						registry.setAssetInCache(asset, assetId);
-					} else if (assetIdIsLocation(asset)){
-						const v1AssetLocation = (JSON.parse(info.xcmV1MultiLocation) as UnionXcmMultiLocation);
+					} else if (assetIdIsLocation(asset)) {
+						const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as UnionXcmMultiLocation;
 
 						if ('v1' in v1AssetLocation) {
 							const registryAssetLocation = parseLocationStrToLocation(JSON.stringify(v1AssetLocation.v1));

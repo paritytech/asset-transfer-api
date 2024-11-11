@@ -22,6 +22,26 @@ describe('parseLocationStrToLocation', () => {
 
 		expect(result).toEqual(expected);
 	});
+	it('Should correctly return a valid Ethereum UnionXcmMultilocation', () => {
+		const locationStr = `{"parents":"2","interior":{"X1":[{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}]}}`;
+		const expected = {
+			parents: '2',
+			interior: {
+				X1: [
+					{
+						GlobalConsensus: {
+							Ethereum: {
+								chainId: '1',
+							},
+						},
+					},
+				],
+			},
+		};
+		const result = parseLocationStrToLocation(locationStr);
+
+		expect(result).toEqual(expected);
+	});
 	it('Should correctly error when an unparseable location string is provided', () => {
 		const locationStr = '{"parents":"2","interior":{"X2":[{GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}';
 

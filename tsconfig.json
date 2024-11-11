@@ -1,9 +1,9 @@
 {
-	"extends": "@substrate/dev/config/tsconfig.json",
+	"extends": "./node_modules/@substrate/dev/config/tsconfig.json",
 	"compilerOptions": {
 		"baseUrl": ".",
 		"outDir": "lib",
-		"rootDirs": ["./src", "./scripts"],
+		"rootDirs": ["./src", "./scripts", "./examples", "./e2e-tests"],
 		"ignoreDeprecations": "5.0",
 		"resolveJsonModule": true,
 		"esModuleInterop": true

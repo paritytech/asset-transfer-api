@@ -75,11 +75,11 @@ export interface XCMAssetRegistryMultiLocation {
 }
 
 export type SanitizedXcAssetsData = {
-	paraID: number;
 	symbol: string;
-	decimals: number;
 	xcmV1MultiLocation: string;
-	asset:
+	paraID?: number;
+	decimals?: number;
+	asset?:
 		| { ForeignAsset: string }
 		| { VToken: string }
 		| { VToken2: string }
@@ -90,7 +90,7 @@ export type SanitizedXcAssetsData = {
 		| { Native: string }
 		| { Stable: string }
 		| string;
-	assetHubReserveLocation: string;
+	assetHubReserveLocation?: string;
 	originChainReserveLocation?: string;
 };
 

@@ -21,6 +21,7 @@ import {
 	checkParaAssets,
 	checkParaPrimaryAssetAmountsLength,
 	checkParaPrimaryAssetAssetIdsLength,
+	checkParaToEthereum,
 	checkPaysWithFeeDestAssetIdIsInAssets,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
@@ -53,6 +54,19 @@ const runTests = async (tests: Test[]) => {
 		}).rejects.toThrow(errorMessage);
 	}
 };
+
+describe('checkParaToEthereum', () => {
+	it('Should correctly throw an error when paysWithFeeDest is not provided', () => {
+		const err = () => checkParaToEthereum('7KqMfyEXGMAgkNGxiTf3PNgKqSH1WNghbAGLKezYyLLW4Zp1', undefined);
+
+		expect(err).toThrow('paysWithFeeDest option must be provided for ParaToEthereum XCM direction');
+	});
+	it('Should correctly throw an error when sendersAddr is not provided', () => {
+		const err = () => checkParaToEthereum(undefined, 'DOT');
+
+		expect(err).toThrow('sendersAddr option must be provided for ParaToEthereum XCM direction');
+	});
+});
 
 describe('checkRelayAssetIdLength', () => {
 	it('Should error with an incorrect assetId length for inputs to or from relay chains', () => {

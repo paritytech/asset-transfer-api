@@ -11,6 +11,7 @@ import {
 	SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION,
 } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
+import { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { assetIdIsLocation } from '../createXcmTypes/util/assetIdIsLocation';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
@@ -18,6 +19,7 @@ import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalCo
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
+import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import type { XcmBaseArgsWithPallet } from '../types';
@@ -25,8 +27,6 @@ import { AssetInfo, Direction } from '../types';
 import { validateNumber } from '../validate';
 import { BaseError, BaseErrorsEnum } from './BaseError';
 import type { CheckXcmTxInputsOpts } from './types';
-import { UnionXcmMultiLocation } from '../createXcmTypes/types';
-import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation';
 
 /**
  * Ensure when sending tx's to or from the relay chain that the length of the assetIds array
@@ -608,15 +608,6 @@ export const checkParaAssets = async (
 				BaseErrorsEnum.AssetNotFound,
 			);
 		}
-	} else if (api.query.assetRegistry) {
-		if (assetIdIsLocation(assetId)) {
-			if ('locationAssets' in api.query.assetRegistry) {
-				const assetLocation = await api.query.assetRegistry.locationAssets(assetId);
-				if (assetLocation) {
-					console.log("LOCATION OF ASSET REGISTRY ASSET", JSON.stringify(assetLocation))
-				}
-			} 
-		}
 	} else {
 		// Parachain doesn't support pallet assets
 		// check for assetId in registry
@@ -637,18 +628,19 @@ export const checkParaAssets = async (
 			}
 		} else {
 			// check for assetId symbol match
+			console.log('THE ASSET---', assetId);
+
 			for (const info of paraXcAssets) {
+				console.log('INFOS ASSET---', info.asset);
 				if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
 					return;
 				} else if (assetIdIsLocation(assetId)) {
-					console.log("info.xcmV1MultiLocation.toLowerCase()", info.xcmV1MultiLocation.toLowerCase())
-					const v1AssetLocation = (JSON.parse(info.xcmV1MultiLocation) as UnionXcmMultiLocation);
-	
-					if ('v1' in v1AssetLocation ) {
+					const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as UnionXcmMultiLocation;
+
+					if ('v1' in v1AssetLocation) {
 						const registryAssetLocation = parseLocationStrToLocation(JSON.stringify(v1AssetLocation.v1));
 						const assetLocation = parseLocationStrToLocation(assetId);
 
-	
 						if (JSON.stringify(registryAssetLocation).toLowerCase() === JSON.stringify(assetLocation).toLowerCase()) {
 							return;
 						}
@@ -1258,6 +1250,25 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	if (direction === Direction.ParaToRelay) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
+	}
+
+	if (direction === Direction.ParaToEthereum) {
+		checkParaToEthereum(sendersAddr, paysWithFeeDest);
+	}
+};
+
+export const checkParaToEthereum = (sendersAddr?: string, paysWithFeeDest?: string) => {
+	if (!paysWithFeeDest) {
+		throw new BaseError(
+			'paysWithFeeDest option must be provided for ParaToEthereum XCM direction',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+	if (!sendersAddr) {
+		throw new BaseError(
+			'sendersAddr option must be provided for ParaToEthereum XCM direction',
+			BaseErrorsEnum.InvalidInput,
+		);
 	}
 };
 
