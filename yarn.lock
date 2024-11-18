@@ -5368,11 +5368,11 @@ __metadata:
   linkType: hard
 
 "typedoc-plugin-missing-exports@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "typedoc-plugin-missing-exports@npm:3.0.0"
+  version: 3.0.2
+  resolution: "typedoc-plugin-missing-exports@npm:3.0.2"
   peerDependencies:
     typedoc: 0.26.x
-  checksum: 10/75f4f16a68c0a356a92d01e516e8d8220bf064c4a1af1f9f9da1d2cf4516293f32d94f8738324b16f973b9bbf34622e1edf3596015af04595f48e85242f86e54
+  checksum: 10/19cde6bf4e147d09f1fd8e9f5bdd8a61273570a163a4bcc77cb05d2161ec5c02af21aba1994941fa2de5e503dfc3ce15c9f0e18a5c6505423e03a06e692b703d
   languageName: node
   linkType: hard
 
