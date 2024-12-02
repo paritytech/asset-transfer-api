@@ -50,10 +50,10 @@
 		"typedoc-theme-hierarchy": "^5.0.3"
 	},
 	"dependencies": {
-		"@polkadot/api": "14.3.1",
-		"@polkadot/api-augment": "14.3.1",
-		"@polkadot/types": "14.3.1",
-		"@polkadot/types-codec": "14.3.1",
+		"@polkadot/api": "15.0.1",
+		"@polkadot/api-augment": "15.0.1",
+		"@polkadot/types": "15.0.1",
+		"@polkadot/types-codec": "15.0.1",
 		"@polkadot/util": "13.2.3",
 		"@polkadot/util-crypto": "13.2.3",
 		"@substrate/asset-transfer-api-registry": "^0.2.24"
