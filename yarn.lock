@@ -1379,9 +1379,9 @@ __metadata:
   linkType: hard
 
 "@substrate/asset-transfer-api-registry@npm:^0.2.24":
-  version: 0.2.24
-  resolution: "@substrate/asset-transfer-api-registry@npm:0.2.24"
-  checksum: 10/cc51814a6a205937c0ebe7fea1db529bf292515b1cb220642d7cebad8075be25c62d1e1e215d7929af411b28b752d046aeae4f7c30589105b744fbea09fbdaab
+  version: 0.2.25
+  resolution: "@substrate/asset-transfer-api-registry@npm:0.2.25"
+  checksum: 10/c7e10e706b88dd481fdad73987c4c862c092db5d4d2aede7bc69c82bf17b0dd0aab46579a68a291585abb021ac4be62985a227d83c832f60183cbd312cbdfba6
   languageName: node
   linkType: hard
 
