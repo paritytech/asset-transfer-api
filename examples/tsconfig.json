@@ -3,10 +3,6 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"outDir": "build",
-<<<<<<< HEAD
-		"suppressImplicitAnyIndexErrors": true,
-=======
->>>>>>> 65a65cf (update e2e tests to use chopsticks e2e)
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"ignoreDeprecations": "5.0"
