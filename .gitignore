@@ -1,0 +1,29 @@
+# Node Modules
+/node_modules
+
+# MacOS
+.DS_Store
+
+# Yarn berry
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+
+# Tsc Build
+**/lib
+**/build
+
+# Zombienet
+zombienet-macos
+zombienet-linux-arm64
+zombienet-linux-x64
+zombienet.log
+zombienet/bin/*
+
+# Binaries
+/bin/*
+!bin/README.md
+
+# Chopsticks
+db.sqlite
+db.sqlite-*

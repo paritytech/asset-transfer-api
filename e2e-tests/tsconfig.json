@@ -1,0 +1,9 @@
+{
+	"extends": "../node_modules/@substrate/dev/config/tsconfig.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"outDir": "build",
+		"ignoreDeprecations": "5.0",
+		"resolveJsonModule": true
+	}
+}

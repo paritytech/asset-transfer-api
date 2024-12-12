@@ -1,0 +1,1 @@
+This directory should contain all the binaries for running zombienet.

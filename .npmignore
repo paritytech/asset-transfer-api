@@ -1,0 +1,17 @@
+# NOTE: We use .npmignore instead of the `files` field in the package.json so we  
+# can ignore specific test helper directories
+
+# Ignore all directories 
+/*
+
+# Unignore the build directory
+!/lib
+
+# Ignore specific paths within the build directory
+/lib/testHelpers
+
+# Ignore all test files.
+/lib/**/*.spec.*
+
+# Ignore all integration tests
+/lib/integrationTests
