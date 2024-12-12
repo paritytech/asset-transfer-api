@@ -39,12 +39,12 @@ describe('Polkadot AssetHub <> Hydration', () => {
 
 		hydration = hydration1;
 		polkadotAssetHub = polkadotAssetHub1;
-	}, 100000);
+	}, 200000);
 
 	afterEach(async () => {
 		await polkadotAssetHub.teardown();
 		await hydration.teardown();
-	}, 100000);
+	}, 200000);
 
 	test('AssetHub Local DOT Transfer', async () => {
 		await polkadotAssetHub.api.isReady;

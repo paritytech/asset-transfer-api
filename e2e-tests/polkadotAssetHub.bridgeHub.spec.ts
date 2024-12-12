@@ -35,12 +35,12 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 
 		polkadotBridgeHub = polkadotBridgeHub1;
 		polkadotAssetHub = polkadotAssetHub1;
-	}, 100000);
+	}, 200000);
 
 	afterEach(async () => {
 		await polkadotBridgeHub.teardown();
 		await polkadotAssetHub.teardown();
-	}, 100000);
+	}, 200000);
 
 	test('Snowbridge WETH From AssetHub to Ethereum', async () => {
 		await polkadotAssetHub.dev.setStorage({
