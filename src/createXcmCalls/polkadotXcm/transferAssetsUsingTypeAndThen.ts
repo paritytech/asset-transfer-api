@@ -59,6 +59,7 @@ export const transferAssetsUsingTypeAndThen = async (
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
 		api,
+		destChainId,
 	});
 
 	let assetTransferType: AssetTransferType;

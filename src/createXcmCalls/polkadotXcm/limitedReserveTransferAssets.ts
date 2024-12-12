@@ -32,6 +32,7 @@ export const limitedReserveTransferAssets = async (
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
 		api,
+		destChainId,
 	});
 	const weightLimitType = typeCreator.createWeightLimit({
 		weightLimit,

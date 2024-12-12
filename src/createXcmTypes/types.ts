@@ -413,6 +413,7 @@ export interface CreateAssetsOpts {
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 	api: ApiPromise;
+	destChainId?: string;
 }
 
 export interface CreateFeeAssetItemOpts {

@@ -397,40 +397,10 @@ api.claimAssets(
 
 Note: claimAssets works when pallet-xcm is configured as the AssetTrap for the given runtime. This is true for all relay chains and system parachains but may not be for other chains.
 
+## E2E Testing
+
+You can access the E2E tests and their documentation [here](./e2e-tests/).
+
 ## License
 
 The source code in this repository is distributed under the Apache 2.0 license. See the [LICENSE](https://github.com/paritytech/asset-transfer-api/blob/main/LICENSE) file. This source code comes with absolutely no warranty. Use at your own risk.
-
-## Zombienet Testing
-
-Zombienet is used to launch a complete network including a relay chain, and two parachains. It will create HRMP channels betweens the launched parachains allowing the testing environment to send XCM messages and transfer assets.
-
-### **Requirements**:
-
-**Zombienet Binary**: You can download the appropriate binary from the zombienet repository [here](https://github.com/paritytech/zombienet/releases). Ensure that it is in the root of this directory. Note: For macos users if permission is denied to run the binary you can `chmod 755 <file_name>` to allow permissions.
-
-**Test Network Binaries**: You will need the following binaries depending on whether you want to run a small or medium network:
-
-- polkadot: You can find the releases [here](https://github.com/paritytech/polkadot-sdk/releases). (Needed for small, or medium network)
-- trappist-collator: This binary is compiled along with polkadot above. You can find it [here](https://github.com/paritytech/trappist). (Needed for medium network)
-- polkadot-parachain (ie: cumulus): You can find the releases [here](https://github.com/paritytech/polkadot-sdk/releases). (Needed for small, or medium network)
-
-NOTES:
-
-- When it comes to picking a version for both `cumulus` and `polkadot` ensure they are the same. Cumulus will have an extra 0 at the end though. Ex: v0.9.37 (polkadot) -> v0.9.370 (cumulus)
-
-- You can retrieve the binaries via the release, or by compiling yourself. It's recommended to compile it yourself.
-
-Copy each binary that is necessary into the root `<root>/bin` folder.
-
-### Running Zombienet
-
-From the root directory run `./<zombienet_binary_name> -p native spawn ./zombienet/<network_file>.toml | tee zombienet.log`
-
-### Create an asset
-
-From the root directory run `yarn start:zombienet-post-script`. You can run this right after running your zombienet network.
-
-## E2E Testing
-
-You can access the E2E tests and its documentation [here](./e2e-tests/).

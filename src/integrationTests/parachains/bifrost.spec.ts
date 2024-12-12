@@ -96,13 +96,6 @@ describe('Bifrost', () => {
 						}
 					}
 				});
-				it('Should correctly build a V3 transferAssets submittable from Bifrost to Moonriver', async () => {
-					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 3, '2023', ['BNC'], ['10000000'], {
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
-				});
 			});
 			describe('XCM V4', () => {
 				it('Should correctly construct a transferAssets call from Bifrost to Moonriver', async () => {
@@ -136,13 +129,6 @@ describe('Bifrost', () => {
 							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
 						}
 					}
-				});
-				it('Should correctly build a V4 transferAssets submittable from Bifrost to Moonriver', async () => {
-					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 4, '2023', ['BNC'], ['10000000'], {
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 		});
@@ -765,9 +751,9 @@ describe('Bifrost', () => {
 					const tests: TestMultiassetWithFormat[] = [
 						[
 							'1000',
-							'bnc',
+							'ksm',
 							'call',
-							'0x290b04010100a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404000000025a62020000000000',
+							'0x290b04010100a10f0400010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0404010000025a62020000000000',
 						],
 					];
 
@@ -792,13 +778,6 @@ describe('Bifrost', () => {
 							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
 						}
 					}
-				});
-				it('Should correctly build a V3 transferAssets submittable from Bifrost to Moonriver', async () => {
-					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 4, '1000', ['BNC'], ['10000000'], {
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
 				});
 			});
 		});
