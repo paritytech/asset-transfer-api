@@ -1,40 +1,15 @@
 ## E2E Tests
 
-End-to-end tests that run on a zombienet testnet.
+End-to-End tests that run using Chopsticks.
 
-**NOTE: tested using polkadot v1.4.0**
-
-### Setup
-
-To setup the testing environment you need to first download the `polkadot`, `polkadot-execute-worker`, `polkadot-prepare-worker` and `polkadot-parachain` from the `polkadot-sdk` [release page](https://github.com/paritytech/polkadot-sdk/releases/latest), as well as the `trappist-node` from its [release page](https://github.com/paritytech/trappist/releases/latest), and place them in the `../zombienet/bin/` folder.
-
-You also need to have the latest `zombienet` executable in the `../zombienet/` folder, which you can download from [here](https://github.com/paritytech/zombienet/releases/latest).
-
-### Launching zombienet
-
-To launch the zombienet run the following commands:
+To run the end-to-end tests run the command:
 
 ```bash
-$ yarn build && yarn e2e:build
+$ yarn build && yarn build:e2e
 ```
 
 Then run:
 
 ```bash
-$ yarn e2e:zombienet
+$ yarn test:e2e
 ```
-
-And this will launch the zombienet using the config file located in the `../zombienet/` directory. Once it finished its setup, you can proceed to the following step.
-
-### Launching the tests
-
-For testing, we provide 4 options:
-
-- Testing liquidity tokens transfers with the command `yarn e2e:liquidity-assets`.
-- Testing foreign assets transfers with the command `yarn e2e:foreign-assets`.
-- Testing local transferss with the command `yarn e2e:local`.
-- Testing assets transfers with the command `yarn e2e:assets`.
-
-Each of these commands will run the appropiate script to setup the basics, located in `../scripts/`. Wait for it to finish setting up the testing environment, and then go through the tests indicated in the `./tests/index.ts` file for the chosen option.
-
-After each testing suite has been completed, it's recommended to restart the zombienet before running another test suite.

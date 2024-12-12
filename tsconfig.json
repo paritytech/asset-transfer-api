@@ -1,14 +1,14 @@
 {
-	"extends": "@substrate/dev/config/tsconfig.json",
+	"extends": "./node_modules/@substrate/dev/config/tsconfig.json",
 	"compilerOptions": {
 		"baseUrl": ".",
 		"outDir": "lib",
-		"rootDirs": ["./src", "./scripts"],
+		"rootDirs": ["./src"],
 		"ignoreDeprecations": "5.0",
 		"resolveJsonModule": true,
 		"esModuleInterop": true
 	},
 	"typeRoots": ["./node_modules/@types"],
 	"exclude": ["node_modules", "./src/**/*.spec.ts", "./src/testHelpers"],
-	"include": ["./src/**/*.ts", "./src/**/*.json"]
+	"include": ["./src/**/*.ts", "./src/**/*.json", "./vitest.config.ts", "./vitest.workspace.ts", "./vitest-setup-file.ts"]
 }
