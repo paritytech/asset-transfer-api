@@ -31,6 +31,7 @@ export const limitedTeleportAssets = async (
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer: false,
 		api,
+		destChainId,
 	});
 	const weightLimitType = typeCreator.createWeightLimit({
 		weightLimit,

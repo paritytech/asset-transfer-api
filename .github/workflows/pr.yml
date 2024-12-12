@@ -101,4 +101,10 @@ jobs:
         run: yarn install
 
       - name: Unit tests.
-        run: yarn test
+        run: yarn test:unit
+
+      - name: Integration tests.
+        run: yarn test:integration
+
+      - name: E2E tests.
+        run: yarn test:e2e

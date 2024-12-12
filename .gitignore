@@ -23,3 +23,7 @@ zombienet/bin/*
 # Binaries
 /bin/*
 !bin/README.md
+
+# Chopsticks
+db.sqlite
+db.sqlite-*

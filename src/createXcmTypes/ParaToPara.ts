@@ -35,6 +35,7 @@ import type {
 	XcmWeight,
 } from './types';
 import { dedupeAssets } from './util/dedupeAssets';
+import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
@@ -152,7 +153,7 @@ export const ParaToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		const { registry } = opts;
+		const { registry, destChainId } = opts;
 
 		const sortedAndDedupedMultiAssets = await createParaToParaMultiAssets(
 			opts.api,
@@ -161,6 +162,7 @@ export const ParaToPara: ICreateXcmType = {
 			assets,
 			xcmVersion,
 			registry,
+			destChainId,
 		);
 
 		if (xcmVersion === 2) {
@@ -517,6 +519,7 @@ const createParaToParaMultiAssets = async (
 	assets: string[],
 	xcmVersion: number,
 	registry: Registry,
+	destChainId?: string,
 ): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType | undefined = undefined;
@@ -530,10 +533,7 @@ const createParaToParaMultiAssets = async (
 
 	if (isPrimaryParachainNativeAsset) {
 		concreteMultiLocation = resolveMultiLocation(
-			{
-				parents: 0,
-				interior: { Here: '' },
-			},
+			getParachainNativeAssetLocation(registry, assets[0], destChainId),
 			xcmVersion,
 		);
 
