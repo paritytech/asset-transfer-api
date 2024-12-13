@@ -28,6 +28,7 @@ import { normalizeArrToStr } from '../../util/normalizeArrToStr';
 import type { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
 import type { PolkadotXcmBaseArgs } from './types';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferAssetsUsingTypeAndThen` call.
  *
@@ -167,7 +168,8 @@ export const transferAssetsUsingTypeAndThen = async (
 
 		sendersAddr = sanitizeAddress(sendersAddr);
 		const sendersAccount = createXcmOnDestBeneficiary(sendersAddr, xcmVersion);
-		customXcmOnDestStr = `[{"setAppendix":[{"depositAsset":{"assets":{"Wild":"All"},"beneficiary":${JSON.stringify(sendersAccount)}}}]},{"initiateReserveWithdraw":{"assets":{"Wild":{"AllOf":${JSON.stringify(erc20Location)}}},"reserve":${destChainId},"xcm":[{"buyExecution":{"fees":${JSON.stringify(reanchoredERC20AccountLocation)},"weightLimit":"Unlimited"}},{"depositAsset":{"assets":{"Wild":{"AllCounted":"1"}},"beneficiary":${JSON.stringify(beneficiary)}}},{"setTopic":"0x0000000000000000000000000000000000000000000000000000000000000000"}]}},{"setTopic":"0x0000000000000000000000000000000000000000000000000000000000000000"}]`;
+		const resolvedDestChainId = resolveMultiLocation(destChainId, xcmVersion);
+		customXcmOnDestStr = `[{"setAppendix":[{"depositAsset":{"assets":{"Wild":"All"},"beneficiary":${JSON.stringify(sendersAccount)}}}]},{"initiateReserveWithdraw":{"assets":{"Wild":{"AllOf":${JSON.stringify(erc20Location)}}},"reserve":${JSON.stringify(resolvedDestChainId)},"xcm":[{"buyExecution":{"fees":${JSON.stringify(reanchoredERC20AccountLocation)},"weightLimit":"Unlimited"}},{"depositAsset":{"assets":{"Wild":{"AllCounted":"1"}},"beneficiary":${JSON.stringify(beneficiary)}}},{"setTopic":"0x0000000000000000000000000000000000000000000000000000000000000000"}]}},{"setTopic":"0x0000000000000000000000000000000000000000000000000000000000000000"}]`;
 
 		feeAssetTransferType = {
 			DestinationReserve: 'null',

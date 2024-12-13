@@ -40,6 +40,7 @@ The below chart is focusing on what directions are supported for constructing as
 | Parachain to Parachain | ✅  | ✅  | ✅  |
 | Parachain to Relay     | ✅  | ✅  | ✅  |
 | Parachain to System    | ✅  | ✅  | ✅  |
+| Parachain to Ethereum  | ❌  | ✅  | ✅  |
 
 ## Note on Parachain to Parachain Support
 
