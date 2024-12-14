@@ -107,8 +107,6 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			transferLiquidToken: true,
 		});
 
-		console.log('payload', JSON.stringify(tx));
-
 		const extrinsic = assetTransferApi.api.registry.createType('Extrinsic', { method: tx.tx.method }, { version: 4 });
 
 		await polkadotAssetHub.api.tx(extrinsic).signAndSend(alice);
