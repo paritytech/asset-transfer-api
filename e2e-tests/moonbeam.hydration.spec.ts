@@ -29,12 +29,12 @@ describe('Moonbeam <> Hydration', () => {
 
 		hydration = hydration1;
 		moonbeam = moonbeam1;
-	}, 200000);
+	}, 500000);
 
 	afterEach(async () => {
 		await moonbeam.teardown();
 		await hydration.teardown();
-	}, 200000);
+	}, 500000);
 
 	test('Transfer GLMR from Moonbeam to Hydration', async () => {
 		await moonbeam.dev.setStorage({
