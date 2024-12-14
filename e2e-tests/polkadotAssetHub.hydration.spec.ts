@@ -39,12 +39,12 @@ describe('Polkadot AssetHub <> Hydration', () => {
 
 		hydration = hydration1;
 		polkadotAssetHub = polkadotAssetHub1;
-	}, 200000);
+	}, 500000);
 
 	afterEach(async () => {
 		await polkadotAssetHub.teardown();
 		await hydration.teardown();
-	}, 200000);
+	}, 500000);
 
 	test('AssetHub Local DOT Transfer', async () => {
 		await polkadotAssetHub.api.isReady;
@@ -74,7 +74,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 
 		const recipientsUpdatedDOTBalance = (await polkadotAssetHub.api.query.system.account(recipientAddress)).data.free;
 		expect(recipientsUpdatedDOTBalance.toNumber()).toBeGreaterThan(1000000);
-	}, 50000);
+	}, 100000);
 
 	test('AssetHub Local Pool Asset Transfer', async () => {
 		await polkadotAssetHub.api.isReady;
@@ -120,7 +120,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 		expect(recipientsUpdatedPoolAssetBalance.balance.toNumber()).toBeGreaterThan(
 			recipientsInitialPoolAssetBalance.balance.toNumber(),
 		);
-	}, 50000);
+	}, 100000);
 
 	test('Hydration Local HDX Transfer', async () => {
 		await hydration.dev.setStorage({
@@ -161,7 +161,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 		expect((recipientUpdatedHDXBalance as AccountData).free.toNumber()).toBeGreaterThan(
 			(recipientInitialHDXBalance as AccountData).free.toNumber(),
 		);
-	}, 70000);
+	}, 100000);
 
 	test('Transfer DOT From Hydration to AssetHub', async () => {
 		await hydration.dev.setStorage({
@@ -195,7 +195,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 		const recipientsUpdatedDOTBalance = (await polkadotAssetHub.api.query.system.account(recipientAddress)).data.free;
 		expect(recipientsUpdatedDOTBalance.toNumber()).not.toEqual(0);
 		expect(recipientsUpdatedDOTBalance.toNumber()).toBeGreaterThan(recipientsInitialDOTBalance.toNumber());
-	}, 70000);
+	}, 100000);
 
 	test('Transfer DOT From AssetHub to Hydration', async () => {
 		await polkadotAssetHub.dev.setStorage({
@@ -225,7 +225,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 		expect((recipientsUpdatedDOTBalance as AccountData).free.toNumber()).toBeGreaterThan(
 			(recipientsInitialDOTBalance as AccountData).free.toNumber(),
 		);
-	}, 50000);
+	}, 100000);
 
 	test('Transfer SnowBridge WETH From Hydration To AssetHub', async () => {
 		await hydration.dev.setStorage({
@@ -303,7 +303,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 
 		expect(JSON.stringify(recipientsUpdatedWETHBalance)).not.toEqual('null');
 		expect(recipientsUpdatedWETHBalance.balance.toNumber()).toBeGreaterThan(0);
-	}, 50000);
+	}, 100000);
 
 	test('Transfer SnowBridge WETH From AssetHub To Hydration', async () => {
 		await polkadotAssetHub.dev.setStorage({
@@ -351,5 +351,5 @@ describe('Polkadot AssetHub <> Hydration', () => {
 		expect((recipientsUpdatedWETHBalance as AccountData).free.toNumber()).toBeGreaterThan(
 			(recipientsInitialHydrationWETHBalance as AccountData).free.toNumber(),
 		);
-	}, 50000);
+	}, 100000);
 });

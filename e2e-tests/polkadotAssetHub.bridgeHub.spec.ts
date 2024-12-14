@@ -35,12 +35,12 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 
 		polkadotBridgeHub = polkadotBridgeHub1;
 		polkadotAssetHub = polkadotAssetHub1;
-	}, 200000);
+	}, 500000);
 
 	afterEach(async () => {
 		await polkadotBridgeHub.teardown();
 		await polkadotAssetHub.teardown();
-	}, 200000);
+	}, 500000);
 
 	test('Snowbridge WETH From AssetHub to Ethereum', async () => {
 		await polkadotAssetHub.dev.setStorage({
@@ -84,5 +84,5 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 		const messageCommittedEvent = bridgeHubEvents[bridgeHubEvents.length - 1];
 		expect(messageCommittedEvent.event.section).toEqual('ethereumOutboundQueue');
 		expect(messageCommittedEvent.event.method).toEqual('MessagesCommitted');
-	}, 5000000);
+	}, 100000);
 });
