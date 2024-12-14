@@ -2,19 +2,19 @@
 
 ## [0.4.5](https://github.com/paritytech/asset-transfer-api/compare/v0.4.4..v0.4.5)
 
-## Test
+### Test
 
 - test: add chopsticks e2e tests ([#481](https://github.com/paritytech/asset-transfer-api/pull/481))([7406b5c](https://github.com/paritytech/asset-transfer-api/commit/d7354428e634792e33c294f358cbbeb737406b5c))
 
-## Fix
+### Fix
 
 - fix: dependabot PR title ([#464](https://github.com/paritytech/asset-transfer-api/pull/464))([1f576b1](https://github.com/paritytech/asset-transfer-api/commit/29963b5fc1c1f4f20cd957f7a87d9f6f51f576b1))
 
-## Docs
+### Docs
 
 - docs: Update README.md and add installation instructions for examples ([#454](https://github.com/paritytech/asset-transfer-api/pull/454))([029ec73](https://github.com/paritytech/asset-transfer-api/commit/ecda631fe80d4d5b799cb13e895d40245029ec73))
 
-## Chore
+### Chore
 
 - chore(deps): update pjs ([#484](https://github.com/paritytech/asset-transfer-api/pull/484))([664ba3c](https://github.com/paritytech/asset-transfer-api/commit/464a2e20303ef54e92b8d7fb9335229d8664ba3c))
 - chore(deps-dev): bump typedoc from 0.27.2 to 0.27.4 ([#480](https://github.com/paritytech/asset-transfer-api/pull/480))([710ab6e](https://github.com/paritytech/asset-transfer-api/commit/af7f27860a43be114748380bcc6f529de710ab6e))
