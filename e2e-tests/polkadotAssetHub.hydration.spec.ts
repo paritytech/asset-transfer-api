@@ -131,7 +131,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			},
 			Tokens: {
 				Accounts: [
-					[[alice.address, 0], { free: '10000000000000000000000' }], // HDX
+					[[alice.address, 0], { free: '50000000000000000000000000' }], // HDX
 				],
 			},
 		});
