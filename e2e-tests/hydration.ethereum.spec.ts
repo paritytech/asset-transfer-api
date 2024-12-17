@@ -35,13 +35,13 @@ describe('Hydration <> Ethereum', () => {
 		hydration = hydration1;
 		polkadotBridgeHub = polkadotBridgeHub1;
 		polkadotAssetHub = polkadotAssetHub1;
-	}, 500000);
+	}, 1000000);
 
 	afterEach(async () => {
 		await hydration.teardown();
 		await polkadotAssetHub.teardown();
 		await polkadotBridgeHub.teardown();
-	}, 500000);
+	}, 1000000);
 
 	describe('XCM V3', () => {
 		const xcmVersion = 3;
