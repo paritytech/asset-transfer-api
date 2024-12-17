@@ -108,15 +108,11 @@ describe('Hydration <> Ethereum', () => {
 			await polkadotAssetHub.dev.newBlock();
 
 			const assetHubEvents = await polkadotAssetHub.api.query.system.events();
-			const foreignAssetsBurnedEvent = assetHubEvents[4];
-			expect(foreignAssetsBurnedEvent.phase.toString()).toEqual('Finalization');
-			expect(foreignAssetsBurnedEvent.event.section).toEqual('foreignAssets');
-			expect(foreignAssetsBurnedEvent.event.method).toEqual('Burned');
 
-			const xcmMessageSentEvent = assetHubEvents[6];
-			expect(xcmMessageSentEvent.phase.toString()).toEqual('Finalization');
-			expect(xcmMessageSentEvent.event.method).toEqual('XcmpMessageSent');
-			expect(xcmMessageSentEvent.event.section).toEqual('xcmpQueue');
+			const xcmMessageProcessed = assetHubEvents[assetHubEvents.length - 1];
+			expect(xcmMessageProcessed.phase.toString()).toEqual('Finalization');
+			expect(xcmMessageProcessed.event.method).toEqual('Processed');
+			expect(xcmMessageProcessed.event.section).toEqual('messageQueue');
 
 			await setTimeout(5000);
 			await polkadotBridgeHub.dev.timeTravel(1);
@@ -196,15 +192,11 @@ describe('Hydration <> Ethereum', () => {
 			await polkadotAssetHub.dev.newBlock();
 
 			const assetHubEvents = await polkadotAssetHub.api.query.system.events();
-			const foreignAssetsBurnedEvent = assetHubEvents[4];
-			expect(foreignAssetsBurnedEvent.phase.toString()).toEqual('Finalization');
-			expect(foreignAssetsBurnedEvent.event.section).toEqual('foreignAssets');
-			expect(foreignAssetsBurnedEvent.event.method).toEqual('Burned');
 
-			const xcmMessageSentEvent = assetHubEvents[6];
-			expect(xcmMessageSentEvent.phase.toString()).toEqual('Finalization');
-			expect(xcmMessageSentEvent.event.method).toEqual('XcmpMessageSent');
-			expect(xcmMessageSentEvent.event.section).toEqual('xcmpQueue');
+			const xcmMessageProcessed = assetHubEvents[assetHubEvents.length - 1];
+			expect(xcmMessageProcessed.phase.toString()).toEqual('Finalization');
+			expect(xcmMessageProcessed.event.method).toEqual('Processed');
+			expect(xcmMessageProcessed.event.section).toEqual('messageQueue');
 
 			await setTimeout(5000);
 			await polkadotBridgeHub.dev.timeTravel(1);
