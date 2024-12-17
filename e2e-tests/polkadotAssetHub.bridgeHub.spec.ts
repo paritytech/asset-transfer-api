@@ -56,7 +56,7 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 					Account: [[[snowbridgeWETHLocation, alice.address], { balance: 75000000000000 }]],
 				},
 			});
-	
+
 			const assetTransferApi = new AssetTransferApi(polkadotAssetHub.api, 'asset-hub-polkadot', xcmVersion);
 			const tx = await assetTransferApi.createTransferTransaction(
 				`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`,
@@ -71,19 +71,19 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 					sendersAddr: alice.address,
 				},
 			);
-	
+
 			const extrinsic = assetTransferApi.api.registry.createType('Extrinsic', { method: tx.tx.method }, { version: 4 });
-	
+
 			await polkadotAssetHub.api.tx(extrinsic).signAndSend(alice);
 			await polkadotAssetHub.dev.newBlock();
 			await polkadotBridgeHub.dev.newBlock();
-	
+
 			const bridgeHubEvents = await polkadotBridgeHub.api.query.system.events();
-	
+
 			const messageAcceptedEvent = bridgeHubEvents[bridgeHubEvents.length - 3];
 			expect(messageAcceptedEvent.event.section).toEqual('ethereumOutboundQueue');
 			expect(messageAcceptedEvent.event.method).toEqual('MessageAccepted');
-	
+
 			const messageCommittedEvent = bridgeHubEvents[bridgeHubEvents.length - 1];
 			expect(messageCommittedEvent.event.section).toEqual('ethereumOutboundQueue');
 			expect(messageCommittedEvent.event.method).toEqual('MessagesCommitted');
@@ -104,7 +104,7 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 					Account: [[[snowbridgeWETHLocation, alice.address], { balance: 75000000000000 }]],
 				},
 			});
-	
+
 			const assetTransferApi = new AssetTransferApi(polkadotAssetHub.api, 'asset-hub-polkadot', xcmVersion);
 			const tx = await assetTransferApi.createTransferTransaction(
 				`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`,
@@ -119,19 +119,19 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 					sendersAddr: alice.address,
 				},
 			);
-	
+
 			const extrinsic = assetTransferApi.api.registry.createType('Extrinsic', { method: tx.tx.method }, { version: 4 });
-	
+
 			await polkadotAssetHub.api.tx(extrinsic).signAndSend(alice);
 			await polkadotAssetHub.dev.newBlock();
 			await polkadotBridgeHub.dev.newBlock();
-	
+
 			const bridgeHubEvents = await polkadotBridgeHub.api.query.system.events();
-	
+
 			const messageAcceptedEvent = bridgeHubEvents[bridgeHubEvents.length - 3];
 			expect(messageAcceptedEvent.event.section).toEqual('ethereumOutboundQueue');
 			expect(messageAcceptedEvent.event.method).toEqual('MessageAccepted');
-	
+
 			const messageCommittedEvent = bridgeHubEvents[bridgeHubEvents.length - 1];
 			expect(messageCommittedEvent.event.section).toEqual('ethereumOutboundQueue');
 			expect(messageCommittedEvent.event.method).toEqual('MessagesCommitted');

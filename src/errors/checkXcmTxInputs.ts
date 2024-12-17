@@ -1108,7 +1108,8 @@ export const checkAssetIdInput = async (
  * @param registry
  */
 export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: CheckXcmTxInputsOpts) => {
-	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet, destAddr } = baseArgs;
+	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet, destAddr } =
+		baseArgs;
 	const {
 		paysWithFeeDest,
 		isForeignAssetsTransfer,

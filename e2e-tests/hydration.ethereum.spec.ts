@@ -61,7 +61,7 @@ describe('Hydration <> Ethereum', () => {
 					],
 				},
 			});
-	
+
 			const assetTransferApi = new AssetTransferApi(hydration.api, 'hydradx', xcmVersion, {
 				registryType: 'NPM',
 				injectedRegistry: {
@@ -87,7 +87,7 @@ describe('Hydration <> Ethereum', () => {
 					},
 				},
 			});
-	
+
 			const tx = await assetTransferApi.createTransferTransaction(
 				ethereumNetworkGlobalConsensusLocation,
 				alith.address,
@@ -100,32 +100,32 @@ describe('Hydration <> Ethereum', () => {
 					paysWithFeeDest: 'DOT',
 				},
 			);
-	
+
 			const extrinsic = assetTransferApi.api.registry.createType('Extrinsic', { method: tx.tx.method }, { version: 4 });
-	
+
 			await hydration.api.tx(extrinsic).signAndSend(alice);
 			await hydration.dev.newBlock();
 			await polkadotAssetHub.dev.newBlock();
-	
+
 			const assetHubEvents = await polkadotAssetHub.api.query.system.events();
 			const foreignAssetsBurnedEvent = assetHubEvents[4];
 			expect(foreignAssetsBurnedEvent.phase.toString()).toEqual('Finalization');
 			expect(foreignAssetsBurnedEvent.event.section).toEqual('foreignAssets');
 			expect(foreignAssetsBurnedEvent.event.method).toEqual('Burned');
-	
+
 			const xcmMessageSentEvent = assetHubEvents[6];
 			expect(xcmMessageSentEvent.phase.toString()).toEqual('Finalization');
 			expect(xcmMessageSentEvent.event.method).toEqual('XcmpMessageSent');
 			expect(xcmMessageSentEvent.event.section).toEqual('xcmpQueue');
-	
+
 			await setTimeout(5000);
 			await polkadotBridgeHub.dev.timeTravel(1);
-	
+
 			const bridgeHubEvents = await polkadotBridgeHub.api.query.system.events();
 			const messageAcceptedEvent = bridgeHubEvents[bridgeHubEvents.length - 3];
 			expect(messageAcceptedEvent.event.section).toEqual('ethereumOutboundQueue');
 			expect(messageAcceptedEvent.event.method).toEqual('MessageAccepted');
-	
+
 			const messageCommittedEvent = bridgeHubEvents[bridgeHubEvents.length - 1];
 			expect(messageCommittedEvent.event.section).toEqual('ethereumOutboundQueue');
 			expect(messageCommittedEvent.event.method).toEqual('MessagesCommitted');
@@ -149,7 +149,7 @@ describe('Hydration <> Ethereum', () => {
 					],
 				},
 			});
-	
+
 			const assetTransferApi = new AssetTransferApi(hydration.api, 'hydradx', xcmVersion, {
 				registryType: 'NPM',
 				injectedRegistry: {
@@ -175,7 +175,7 @@ describe('Hydration <> Ethereum', () => {
 					},
 				},
 			});
-	
+
 			const tx = await assetTransferApi.createTransferTransaction(
 				ethereumNetworkGlobalConsensusLocation,
 				alith.address,
@@ -188,32 +188,32 @@ describe('Hydration <> Ethereum', () => {
 					paysWithFeeDest: 'DOT',
 				},
 			);
-	
+
 			const extrinsic = assetTransferApi.api.registry.createType('Extrinsic', { method: tx.tx.method }, { version: 4 });
-	
+
 			await hydration.api.tx(extrinsic).signAndSend(alice);
 			await hydration.dev.newBlock();
 			await polkadotAssetHub.dev.newBlock();
-	
+
 			const assetHubEvents = await polkadotAssetHub.api.query.system.events();
 			const foreignAssetsBurnedEvent = assetHubEvents[4];
 			expect(foreignAssetsBurnedEvent.phase.toString()).toEqual('Finalization');
 			expect(foreignAssetsBurnedEvent.event.section).toEqual('foreignAssets');
 			expect(foreignAssetsBurnedEvent.event.method).toEqual('Burned');
-	
+
 			const xcmMessageSentEvent = assetHubEvents[6];
 			expect(xcmMessageSentEvent.phase.toString()).toEqual('Finalization');
 			expect(xcmMessageSentEvent.event.method).toEqual('XcmpMessageSent');
 			expect(xcmMessageSentEvent.event.section).toEqual('xcmpQueue');
-	
+
 			await setTimeout(5000);
 			await polkadotBridgeHub.dev.timeTravel(1);
-	
+
 			const bridgeHubEvents = await polkadotBridgeHub.api.query.system.events();
 			const messageAcceptedEvent = bridgeHubEvents[bridgeHubEvents.length - 3];
 			expect(messageAcceptedEvent.event.section).toEqual('ethereumOutboundQueue');
 			expect(messageAcceptedEvent.event.method).toEqual('MessageAccepted');
-	
+
 			const messageCommittedEvent = bridgeHubEvents[bridgeHubEvents.length - 1];
 			expect(messageCommittedEvent.event.section).toEqual('ethereumOutboundQueue');
 			expect(messageCommittedEvent.event.method).toEqual('MessagesCommitted');
