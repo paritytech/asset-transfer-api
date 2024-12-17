@@ -16,53 +16,6 @@ const bifrostATA = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifros
 describe('Bifrost', () => {
 	describe('ParaToPara', () => {
 		describe('transferAssets', () => {
-			describe('XCM V2', () => {
-				it('Should correctly construct a transferAssets call from Bifrost to Moonriver', async () => {
-					const tests: TestMultiassetWithFormat[] = [
-						[
-							'2023',
-							'vKSM',
-							'call',
-							'0x290b010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608010400025a62020000000000',
-						],
-						[
-							'2023',
-							'vBNC',
-							'payload',
-							'0x0d01290b010101009d1f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608010100025a620200000000004502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-					];
-
-					for (const test of tests) {
-						const [destChainId, assetId, format, expectedResult] = test;
-						const res = await bifrostTransferAssets(
-							bifrostATA,
-							format as Format,
-							2,
-							destChainId,
-							[assetId],
-							['10000000'],
-							{
-								isForeignAssetsTransfer: false,
-								isLiquidTokenTransfer: false,
-							},
-						);
-
-						if (format === 'call') {
-							expect(res.tx).toEqual(expectedResult);
-						} else {
-							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
-						}
-					}
-				});
-				it('Should correctly build a V2 transferAssets submittable', async () => {
-					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 2, '2023', ['vKSM'], ['10000000'], {
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
-				});
-			});
 			describe('XCM V3', () => {
 				it('Should correctly construct a transferAssets call from Bifrost to Moonriver', async () => {
 					const tests: TestMultiassetWithFormat[] = [
@@ -143,28 +96,13 @@ describe('Bifrost', () => {
 						],
 						[
 							'2023',
-							'vbnc',
-							'0x050146010100010200451f06080101000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-						[
-							'2023',
 							'movr',
 							'0xfc460101000102009d1f040a000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 						],
 						[
 							'2023',
-							'vmovr',
-							'0x050146010100010200451f0608010a000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-						[
-							'2023',
 							'ksm',
 							'0xe8460101000100000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-						[
-							'2023',
-							'vksm',
-							'0x050146010100010200451f06080104000700e40b5402010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 						],
 						[
 							'2092',
@@ -250,12 +188,6 @@ describe('Bifrost', () => {
 				it('Should correctly build xTokens transferMultiassets txs from Bifrost Kusama', async () => {
 					const tests: TestMultiassets[] = [
 						[
-							'2023',
-							['vmovr', 'movr'],
-							['10000000000', '10000000000'],
-							'0x55014605010800010200451f0608010a000700e40b5402000102009d1f040a000700e40b540200000000010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-						[
 							'2092',
 							['kint', 'kbtc'],
 							['10000000000', '10000000000'],
@@ -336,28 +268,13 @@ describe('Bifrost', () => {
 						],
 						[
 							'2023',
-							'vbnc',
-							'0x3d0146030100010200451f06080101000700e40b54020100010300a10f043205011f0000010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-						[
-							'2023',
 							'movr',
 							'0x3501460301000102009d1f040a000700e40b54020100010300a10f043205011f0000010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 						],
 						[
 							'2023',
-							'vmovr',
-							'0x3d0146030100010200451f0608010a000700e40b54020100010300a10f043205011f0000010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-						[
-							'2023',
 							'ksm',
 							'0x2101460301000100000700e40b54020100010300a10f043205011f0000010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-						[
-							'2023',
-							'vksm',
-							'0x3d0146030100010200451f06080104000700e40b54020100010300a10f043205011f0000010102009d1f0100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b01a10f411f4502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
 						],
 						[
 							'2092',
@@ -652,53 +569,6 @@ describe('Bifrost', () => {
 			});
 		});
 		describe('transferAssets', () => {
-			describe('XCM V2', () => {
-				it('Should correctly construct a transferAssets call from Bifrost to AssetHub', async () => {
-					const tests: TestMultiassetWithFormat[] = [
-						[
-							'1000',
-							'vKSM',
-							'call',
-							'0x290b01010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608010400025a62020000000000',
-						],
-						[
-							'1000',
-							'vBNC',
-							'payload',
-							'0x0d01290b01010100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b010400010200451f0608010100025a620200000000004502280000fe080000040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d450300',
-						],
-					];
-
-					for (const test of tests) {
-						const [destChainId, assetId, format, expectedResult] = test;
-						const res = await bifrostTransferAssets(
-							bifrostATA,
-							format as Format,
-							2,
-							destChainId,
-							[assetId],
-							['10000000'],
-							{
-								isForeignAssetsTransfer: false,
-								isLiquidTokenTransfer: false,
-							},
-						);
-
-						if (format === 'call') {
-							expect(res.tx).toEqual(expectedResult);
-						} else {
-							expect((res.tx as GenericExtrinsicPayload).toHex()).toEqual(expectedResult);
-						}
-					}
-				});
-				it('Should correctly build a V2 transferAssets submittable', async () => {
-					const res = await bifrostTransferAssets(bifrostATA, 'submittable', 2, '1000', ['vKSM'], ['10000000'], {
-						isForeignAssetsTransfer: false,
-						isLiquidTokenTransfer: false,
-					});
-					expect(res.tx.toRawType()).toEqual('Extrinsic');
-				});
-			});
 			describe('XCM V3', () => {
 				it('Should correctly construct a transferAssets call from Bifrost to AssetHub', async () => {
 					const tests: TestMultiassetWithFormat[] = [
