@@ -41,7 +41,7 @@ const main = async () => {
 			`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`,
 			'0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B',
 			['DOT', 'WETH.snow'],
-			['500000000000', '75000000000000'],
+			['70000000000', '75000000000000'],
 			{
 				sendersAddr: '7KqMfyEXGMAgkNGxiTf3PNgKqSH1WNghbAGLKezYyLLW4Zp1',
 				format: 'call',
