@@ -1,5 +1,46 @@
 # Changelog
 
+## [0.4.5](https://github.com/paritytech/asset-transfer-api/compare/v0.4.4..v0.4.5)
+
+### Test
+
+- test: add chopsticks e2e tests ([#481](https://github.com/paritytech/asset-transfer-api/pull/481))([7406b5c](https://github.com/paritytech/asset-transfer-api/commit/d7354428e634792e33c294f358cbbeb737406b5c))
+
+### Fix
+
+- fix: dependabot PR title ([#464](https://github.com/paritytech/asset-transfer-api/pull/464))([1f576b1](https://github.com/paritytech/asset-transfer-api/commit/29963b5fc1c1f4f20cd957f7a87d9f6f51f576b1))
+
+### Docs
+
+- docs: Update README.md and add installation instructions for examples ([#454](https://github.com/paritytech/asset-transfer-api/pull/454))([029ec73](https://github.com/paritytech/asset-transfer-api/commit/ecda631fe80d4d5b799cb13e895d40245029ec73))
+
+### Chore
+
+- chore(deps): update pjs ([#484](https://github.com/paritytech/asset-transfer-api/pull/484))([664ba3c](https://github.com/paritytech/asset-transfer-api/commit/464a2e20303ef54e92b8d7fb9335229d8664ba3c))
+- chore(deps-dev): bump typedoc from 0.27.2 to 0.27.4 ([#480](https://github.com/paritytech/asset-transfer-api/pull/480))([710ab6e](https://github.com/paritytech/asset-transfer-api/commit/af7f27860a43be114748380bcc6f529de710ab6e))
+- chore(deps-dev): bump typedoc from 0.26.11 to 0.27.2 ([#479](https://github.com/paritytech/asset-transfer-api/pull/479))([44f4ef8](https://github.com/paritytech/asset-transfer-api/commit/410410a7ca36193ba9254a23a140efa2f44f4ef8))
+- chore(deps): bump the pjs group with 4 updates ([#478](https://github.com/paritytech/asset-transfer-api/pull/478))([21359a7](https://github.com/paritytech/asset-transfer-api/commit/420b25bcb84fa862f28db409b905e1fc521359a7))
+- chore(deps-dev): bump typedoc-plugin-missing-exports from 3.0.0 to 3.1.0 ([#477](https://github.com/paritytech/asset-transfer-api/pull/477))([5d12392](https://github.com/paritytech/asset-transfer-api/commit/b86dac416871584783856ff61042eea695d12392))
+- chore(deps): bump the pjs group across 1 directory with 6 updates ([#476](https://github.com/paritytech/asset-transfer-api/pull/476))([54f46b5](https://github.com/paritytech/asset-transfer-api/commit/f56781dcab9bdb820f0dab2def449a48f54f46b5))
+- chore(deps): revert bump @substrate/asset-transfer-api-registry from 0.2.24 to 0.2.25 ([#472](https://github.com/paritytech/asset-transfer-api/pull/471))([b1f004c](https://github.com/paritytech/asset-transfer-api/commit/72b341a2f0b20f63a195ef47b3c0c2804b1f004c))
+- chore(deps-dev): bump @substrate/dev from 0.8.0 to 0.9.0 ([#471](https://github.com/paritytech/asset-transfer-api/pull/471))([e5c0881](https://github.com/paritytech/asset-transfer-api/commit/69c8bfc52dc9146e1769f995adbd40990e5c0881))
+- chore(deps-dev): bump typedoc from 0.26.10 to 0.26.11 ([#470](https://github.com/paritytech/asset-transfer-api/pull/470))([a104c49](https://github.com/paritytech/asset-transfer-api/commit/1582fb96adf870d0cd0fa151a2de0715aa104c49))
+- chore(deps): bump the pjs group with 6 updates ([#469](https://github.com/paritytech/asset-transfer-api/pull/469))([7c87c81](https://github.com/paritytech/asset-transfer-api/commit/a37540d8881672f8058650b98bbfd98447c87c81))
+- chore(deps): bump @substrate/asset-transfer-api-registry from 0.2.24 to 0.2.2 ([#468](https://github.com/paritytech/asset-transfer-api/pull/468))([9ad862a](https://github.com/paritytech/asset-transfer-api/commit/bb0c3f47f43a3bc0f4ac3f59c1484d2709ad862a))
+- chore(deps-dev): bump chalk from 4.1.2 to 5.3.0 ([#467](https://github.com/paritytech/asset-transfer-api/pull/467))([65e9f5f](https://github.com/paritytech/asset-transfer-api/commit/46f8598265da4be5528b6f970eb49a33e65e9f5f))
+- chore(deps-dev): bump typedoc-theme-hierarchy from 4.0.0 to 5.0.3 ([#466](https://github.com/paritytech/asset-transfer-api/pull/466))([601026b](https://github.com/paritytech/asset-transfer-api/commit/5d73c1ed705252e1f49894be6748cfcdb601026b))
+- chore(deps): bump the pjs group across 1 directory with 6 updates ([#465](https://github.com/paritytech/asset-transfer-api/pull/465))([630624d](https://github.com/paritytech/asset-transfer-api/commit/0c26dcdc196327328385d336819e89c84630624d))
+- chore(deps-dev): bump @types/cli-progress from 3.11.5 to 3.11.6([#463](https://github.com/paritytech/asset-transfer-api/pull/463))([d8c6de2](https://github.com/paritytech/asset-transfer-api/commit/c1f6541388062a8d2f67014402b7ad686d8c6de2))
+- chore(deps-dev): bump typedoc from 0.25.4 to 0.26.10 ([#462](https://github.com/paritytech/asset-transfer-api/pull/462))([4c42bf5](https://github.com/paritytech/asset-transfer-api/commit/bf740e6d3b7aab5948f4a4c6e753d09af4c42bf5))
+- chore(deps-dev): bump typedoc-plugin-missing-exports from 1.0.0 to 3.0.0 ([#461](https://github.com/paritytech/asset-transfer-api/pull/461))([1d9dccb](https://github.com/paritytech/asset-transfer-api/commit/229a94142f49af8675e3df74060eab5bf1d9dccb))
+- chore(deps-dev): bump @substrate/dev from 0.7.1 to 0.8.0 ([#460](https://github.com/paritytech/asset-transfer-api/pull/460))([b66d5a7](https://github.com/paritytech/asset-transfer-api/commit/db398842d50eb88d3f2bd2344916f130cb66d5a7))
+- chore: declare explicit pjs dependencies ([#458](https://github.com/paritytech/asset-transfer-api/pull/458))([151f964](https://github.com/paritytech/asset-transfer-api/commit/217d05e3fe860dd0fab0a0cc74985ffcf151f964))
+- chore: enable dependabot ([#457](https://github.com/paritytech/asset-transfer-api/pull/457))([b5af4c6](https://github.com/paritytech/asset-transfer-api/commit/155ebe4bf036e87e2c087c332d204d48ab5af4c6))
+- chore: run prettier format ([#456](https://github.com/paritytech/asset-transfer-api/pull/456))([d13b8a0](https://github.com/paritytech/asset-transfer-api/commit/bab268ab19279ec131da1fa717885c008d13b8a0))
+- chore(deps): bump tar from 6.1.13 to 6.2.1 ([#453](https://github.com/paritytech/asset-transfer-api/pull/453))([da25d80](https://github.com/paritytech/asset-transfer-api/commit/7f326b8aedb65f29fe26cb1bef4150c82da25d80))
+- chore(deps): bump micromatch from 4.0.5 to 4.0.8 ([#452](https://github.com/paritytech/asset-transfer-api/pull/452))([ab5e927](https://github.com/paritytech/asset-transfer-api/commit/9d7d205c77ba373b610221d30cd28e387ab5e927))
+- chore(deps): bump braces from 3.0.2 to 3.0.3 ([#451](https://github.com/paritytech/asset-transfer-api/pull/451))([7704d7f](https://github.com/paritytech/asset-transfer-api/commit/593545316aa7b950f80f5c207512b48bc7704d7f))
+
 ## [0.4.4](https://github.com/paritytech/asset-transfer-api/compare/v0.4.3..v0.4.4)
 
 ### Chore
