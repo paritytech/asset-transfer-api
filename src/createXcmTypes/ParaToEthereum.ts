@@ -23,10 +23,10 @@ import type {
 	XcmWeight,
 } from './types';
 import { dedupeAssets } from './util/dedupeAssets';
+import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId';
 import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
 import { sortAssetsAscending } from './util/sortAssetsAscending';
-import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation';
 
 export const ParaToEthereum: ICreateXcmType = {
 	/**
@@ -150,7 +150,7 @@ export const ParaToEthereum: ICreateXcmType = {
 			assets,
 			xcmVersion,
 			registry,
-			destChainId
+			destChainId,
 		);
 
 		if (xcmVersion === 2) {

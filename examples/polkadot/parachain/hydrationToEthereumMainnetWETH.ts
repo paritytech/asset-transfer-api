@@ -38,10 +38,10 @@ const main = async () => {
 	let callInfo: TxResult<'call'>;
 	try {
 		callInfo = await assetApi.createTransferTransaction(
-			`{"parents":"2","interior":{"X1":[{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}]}}`,
-			'5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX',
-			['WETH.snow', 'DOT'],
-			['1000000000000', '10000000000'],
+			`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`,
+			'0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B',
+			['DOT', 'WETH.snow'],
+			['500000000000', '75000000000000'],
 			{
 				sendersAddr: '7KqMfyEXGMAgkNGxiTf3PNgKqSH1WNghbAGLKezYyLLW4Zp1',
 				format: 'call',

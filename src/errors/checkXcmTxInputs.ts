@@ -628,10 +628,7 @@ export const checkParaAssets = async (
 			}
 		} else {
 			// check for assetId symbol match
-			console.log('THE ASSET---', assetId);
-
 			for (const info of paraXcAssets) {
-				console.log('INFOS ASSET---', info.asset);
 				if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
 					return;
 				} else if (assetIdIsLocation(assetId)) {
@@ -1111,7 +1108,7 @@ export const checkAssetIdInput = async (
  * @param registry
  */
 export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: CheckXcmTxInputsOpts) => {
-	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet } = baseArgs;
+	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet, destAddr } = baseArgs;
 	const {
 		paysWithFeeDest,
 		isForeignAssetsTransfer,
@@ -1253,11 +1250,17 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	}
 
 	if (direction === Direction.ParaToEthereum) {
-		checkParaToEthereum(sendersAddr, paysWithFeeDest);
+		checkParaToEthereum(destAddr, sendersAddr, paysWithFeeDest);
 	}
 };
 
-export const checkParaToEthereum = (sendersAddr?: string, paysWithFeeDest?: string) => {
+export const checkParaToEthereum = (destAddr: string, sendersAddr?: string, paysWithFeeDest?: string) => {
+	if (!isEthereumAddress(destAddr)) {
+		throw new BaseError(
+			'destAddress must be a valid ethereum address for ParaToEthereum XCM direction',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
 	if (!paysWithFeeDest) {
 		throw new BaseError(
 			'paysWithFeeDest option must be provided for ParaToEthereum XCM direction',

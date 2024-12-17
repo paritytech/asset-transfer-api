@@ -25,10 +25,10 @@ import { BaseError, BaseErrorsEnum } from '../../errors';
 import { sanitizeAddress } from '../../sanitize/sanitizeAddress';
 import { AssetTransferType, Direction } from '../../types';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation';
 import type { CreateXcmCallOpts } from '../types';
 import { establishXcmPallet } from '../util/establishXcmPallet';
 import type { PolkadotXcmBaseArgs } from './types';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferAssetsUsingTypeAndThen` call.
  *

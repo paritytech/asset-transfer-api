@@ -42,10 +42,6 @@ The below chart is focusing on what directions are supported for constructing as
 | Parachain to System    | ✅  | ✅  | ✅  |
 | Parachain to Ethereum  | ❌  | ✅  | ✅  |
 
-## Note on Parachain to Parachain Support
-
-Parachain To Parachain support is currently limited to XCM V2, with the exception of Parachain primary asset tx construction (e.g. MOVR, SDN, etc.).
-
 ## Note: System refers to System Parachains like Asset Hub.
 
 ## Usage
