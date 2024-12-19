@@ -1,8 +1,10 @@
-import { setupNetworks, testingPairs } from '@acala-network/chopsticks-testing';
+import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
+
+const { checkSystemEvents } = withExpect(expect);
 
 describe('Polkadot AssetHub <> Ethereum', () => {
 	const snowbridgeWETHLocation = {
@@ -78,15 +80,9 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 			await polkadotAssetHub.dev.newBlock();
 			await polkadotBridgeHub.dev.newBlock();
 
-			const bridgeHubEvents = await polkadotBridgeHub.api.query.system.events();
-
-			const messageAcceptedEvent = bridgeHubEvents[bridgeHubEvents.length - 3];
-			expect(messageAcceptedEvent.event.section).toEqual('ethereumOutboundQueue');
-			expect(messageAcceptedEvent.event.method).toEqual('MessageAccepted');
-
-			const messageCommittedEvent = bridgeHubEvents[bridgeHubEvents.length - 1];
-			expect(messageCommittedEvent.event.section).toEqual('ethereumOutboundQueue');
-			expect(messageCommittedEvent.event.method).toEqual('MessagesCommitted');
+			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
+				.redact({ redactKeys: new RegExp('nonce') })
+				.toMatchSnapshot('bridgehub ethereum outbound queue events');
 		}, 100000);
 	});
 
@@ -126,15 +122,9 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 			await polkadotAssetHub.dev.newBlock();
 			await polkadotBridgeHub.dev.newBlock();
 
-			const bridgeHubEvents = await polkadotBridgeHub.api.query.system.events();
-
-			const messageAcceptedEvent = bridgeHubEvents[bridgeHubEvents.length - 3];
-			expect(messageAcceptedEvent.event.section).toEqual('ethereumOutboundQueue');
-			expect(messageAcceptedEvent.event.method).toEqual('MessageAccepted');
-
-			const messageCommittedEvent = bridgeHubEvents[bridgeHubEvents.length - 1];
-			expect(messageCommittedEvent.event.section).toEqual('ethereumOutboundQueue');
-			expect(messageCommittedEvent.event.method).toEqual('MessagesCommitted');
+			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
+				.redact({ redactKeys: new RegExp('nonce') })
+				.toMatchSnapshot('bridgehub ethereum outbound queue events');
 		}, 100000);
 	});
 });

@@ -1,9 +1,11 @@
-import { setupNetworks, testingPairs } from '@acala-network/chopsticks-testing';
+import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
 import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
+
+const { checkSystemEvents } = withExpect(expect);
 
 describe('Hydration <> Ethereum', () => {
 	const ethereumNetworkGlobalConsensusLocation = `{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`;
@@ -107,24 +109,17 @@ describe('Hydration <> Ethereum', () => {
 			await hydration.dev.newBlock();
 			await polkadotAssetHub.dev.newBlock();
 
-			const assetHubEvents = await polkadotAssetHub.api.query.system.events();
-
-			const xcmMessageProcessed = assetHubEvents[assetHubEvents.length - 1];
-			expect(xcmMessageProcessed.phase.toString()).toEqual('Finalization');
-			expect(xcmMessageProcessed.event.method).toEqual('Processed');
-			expect(xcmMessageProcessed.event.section).toEqual('messageQueue');
+			await checkSystemEvents(polkadotAssetHub, 'foreignAssets').toMatchSnapshot('assethub foreign assets burned');
+			await checkSystemEvents(polkadotAssetHub, 'xcmpQueue', 'XcmpMessageSent').toMatchSnapshot(
+				'assetHub xcmp message sent',
+			);
 
 			await setTimeout(5000);
 			await polkadotBridgeHub.dev.timeTravel(1);
 
-			const bridgeHubEvents = await polkadotBridgeHub.api.query.system.events();
-			const messageAcceptedEvent = bridgeHubEvents[bridgeHubEvents.length - 3];
-			expect(messageAcceptedEvent.event.section).toEqual('ethereumOutboundQueue');
-			expect(messageAcceptedEvent.event.method).toEqual('MessageAccepted');
-
-			const messageCommittedEvent = bridgeHubEvents[bridgeHubEvents.length - 1];
-			expect(messageCommittedEvent.event.section).toEqual('ethereumOutboundQueue');
-			expect(messageCommittedEvent.event.method).toEqual('MessagesCommitted');
+			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
+				.redact({ redactKeys: new RegExp('nonce') })
+				.toMatchSnapshot('bridgehub ethereum outbound queue events');
 		}, 100000);
 	});
 	describe('XCM V4', () => {
@@ -191,6 +186,11 @@ describe('Hydration <> Ethereum', () => {
 			await hydration.dev.newBlock();
 			await polkadotAssetHub.dev.newBlock();
 
+			await checkSystemEvents(polkadotAssetHub, 'foreignAssets').toMatchSnapshot('assethub foreign assets burned');
+			await checkSystemEvents(polkadotAssetHub, 'xcmpQueue', 'XcmpMessageSent').toMatchSnapshot(
+				'assetHub xcmp message sent',
+			);
+
 			const assetHubEvents = await polkadotAssetHub.api.query.system.events();
 
 			const xcmMessageProcessed = assetHubEvents[assetHubEvents.length - 1];
@@ -200,6 +200,10 @@ describe('Hydration <> Ethereum', () => {
 
 			await setTimeout(5000);
 			await polkadotBridgeHub.dev.timeTravel(1);
+
+			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
+				.redact({ redactKeys: new RegExp('nonce') })
+				.toMatchSnapshot('bridgehub ethereum outbound queue events');
 
 			const bridgeHubEvents = await polkadotBridgeHub.api.query.system.events();
 			const messageAcceptedEvent = bridgeHubEvents[bridgeHubEvents.length - 3];
