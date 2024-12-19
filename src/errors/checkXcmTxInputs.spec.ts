@@ -21,6 +21,7 @@ import {
 	checkParaAssets,
 	checkParaPrimaryAssetAmountsLength,
 	checkParaPrimaryAssetAssetIdsLength,
+	checkParaToEthereum,
 	checkPaysWithFeeDestAssetIdIsInAssets,
 	checkRelayAmountsLength,
 	checkRelayAssetIdLength,
@@ -53,6 +54,29 @@ const runTests = async (tests: Test[]) => {
 		}).rejects.toThrow(errorMessage);
 	}
 };
+
+describe('checkParaToEthereum', () => {
+	const ethereumAccountAddress = '0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B';
+	const substrateAccountAddress = '5EWNeodpcQ6iYibJ3jmWVe85nsok1EDG8Kk3aFg8ZzpfY1qX';
+
+	it('Should correctly throw an error when destAddress is not an ethereum address', () => {
+		const err = () =>
+			checkParaToEthereum(substrateAccountAddress, '7KqMfyEXGMAgkNGxiTf3PNgKqSH1WNghbAGLKezYyLLW4Zp1', undefined);
+
+		expect(err).toThrow('destAddress must be a valid ethereum address for ParaToEthereum XCM direction');
+	});
+	it('Should correctly throw an error when paysWithFeeDest is not provided', () => {
+		const err = () =>
+			checkParaToEthereum(ethereumAccountAddress, '7KqMfyEXGMAgkNGxiTf3PNgKqSH1WNghbAGLKezYyLLW4Zp1', undefined);
+
+		expect(err).toThrow('paysWithFeeDest option must be provided for ParaToEthereum XCM direction');
+	});
+	it('Should correctly throw an error when sendersAddr is not provided', () => {
+		const err = () => checkParaToEthereum(ethereumAccountAddress, undefined, 'DOT');
+
+		expect(err).toThrow('sendersAddr option must be provided for ParaToEthereum XCM direction');
+	});
+});
 
 describe('checkRelayAssetIdLength', () => {
 	it('Should error with an incorrect assetId length for inputs to or from relay chains', () => {

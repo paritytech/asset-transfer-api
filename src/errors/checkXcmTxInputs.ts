@@ -11,6 +11,7 @@ import {
 	SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION,
 } from '../consts';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
+import { UnionXcmMultiLocation } from '../createXcmTypes/types';
 import { assetIdIsLocation } from '../createXcmTypes/util/assetIdIsLocation';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
@@ -18,6 +19,7 @@ import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalCo
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
 import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
+import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation';
 import { Registry } from '../registry';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types';
 import type { XcmBaseArgsWithPallet } from '../types';
@@ -629,6 +631,17 @@ export const checkParaAssets = async (
 			for (const info of paraXcAssets) {
 				if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
 					return;
+				} else if (assetIdIsLocation(assetId)) {
+					const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as UnionXcmMultiLocation;
+
+					if ('v1' in v1AssetLocation) {
+						const registryAssetLocation = parseLocationStrToLocation(JSON.stringify(v1AssetLocation.v1));
+						const assetLocation = parseLocationStrToLocation(assetId);
+
+						if (JSON.stringify(registryAssetLocation).toLowerCase() === JSON.stringify(assetLocation).toLowerCase()) {
+							return;
+						}
+					}
 				}
 			}
 		}
@@ -1095,7 +1108,8 @@ export const checkAssetIdInput = async (
  * @param registry
  */
 export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: CheckXcmTxInputsOpts) => {
-	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet } = baseArgs;
+	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet, destAddr } =
+		baseArgs;
 	const {
 		paysWithFeeDest,
 		isForeignAssetsTransfer,
@@ -1234,6 +1248,31 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	if (direction === Direction.ParaToRelay) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
+	}
+
+	if (direction === Direction.ParaToEthereum) {
+		checkParaToEthereum(destAddr, sendersAddr, paysWithFeeDest);
+	}
+};
+
+export const checkParaToEthereum = (destAddr: string, sendersAddr?: string, paysWithFeeDest?: string) => {
+	if (!isEthereumAddress(destAddr)) {
+		throw new BaseError(
+			'destAddress must be a valid ethereum address for ParaToEthereum XCM direction',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+	if (!paysWithFeeDest) {
+		throw new BaseError(
+			'paysWithFeeDest option must be provided for ParaToEthereum XCM direction',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+	if (!sendersAddr) {
+		throw new BaseError(
+			'sendersAddr option must be provided for ParaToEthereum XCM direction',
+			BaseErrorsEnum.InvalidInput,
+		);
 	}
 };
 

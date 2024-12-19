@@ -1,0 +1,237 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Polkadot AssetHub <> Hydration > Local Transfers > AssetHub Local DOT Transfer > local assethub recipient initial dot balance 1`] = `
+{
+  "consumers": 0,
+  "data": {
+    "flags": "0x80000000000000000000000000000000",
+    "free": 0,
+    "frozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 0,
+  "providers": 0,
+  "sufficients": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > Local Transfers > AssetHub Local DOT Transfer > local assethub recipient updated dot balance 1`] = `
+{
+  "consumers": 0,
+  "data": {
+    "flags": "0x80000000000000000000000000000000",
+    "free": 1000000000000,
+    "frozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 0,
+  "providers": 1,
+  "sufficients": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > Local Transfers > AssetHub Local Pool Asset Transfer > local assethub recipients initial pool asset balance 1`] = `
+{
+  "balance": 0,
+  "extra": null,
+  "reason": {
+    "consumer": null,
+  },
+  "status": "Liquid",
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > Local Transfers > AssetHub Local Pool Asset Transfer > local assethub recipients updated pool asset balance 1`] = `
+{
+  "balance": 10,
+  "extra": null,
+  "reason": {
+    "consumer": null,
+  },
+  "status": "Liquid",
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > Local Transfers > Hydration Local HDX Transfer > local hydration recipient initial balance 1`] = `
+{
+  "free": 0,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > Local Transfers > Hydration Local HDX Transfer > local hydration recipient updated balance 1`] = `
+{
+  "free": 1000000000000,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer DOT From AssetHub to Hydration > hydration recipients initial dot balance 1`] = `
+{
+  "free": 0,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer DOT From AssetHub to Hydration > hydration recipients updated dot balance 1`] = `
+{
+  "free": "(rounded 1000000000000)",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer DOT From Hydration to AssetHub > asset hub recipients initial dot balance 1`] = `
+{
+  "consumers": 0,
+  "data": {
+    "flags": "0x80000000000000000000000000000000",
+    "free": 0,
+    "frozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 0,
+  "providers": 0,
+  "sufficients": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer DOT From Hydration to AssetHub > asset hub recipients updated dot balance 1`] = `
+{
+  "consumers": 0,
+  "data": {
+    "flags": "0x80000000000000000000000000000000",
+    "free": "(rounded 1000000000000)",
+    "frozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 0,
+  "providers": 1,
+  "sufficients": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer SnowBridge WETH From AssetHub To Hydration > hydration recipients initial snowbridge weth balance 1`] = `
+{
+  "free": 0,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer SnowBridge WETH From AssetHub To Hydration > hydration recipients updated snowbridge weth balance 1`] = `
+{
+  "free": "(rounded 24500000000000)",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer SnowBridge WETH From Hydration To AssetHub > asset hub recipients initial snowbridge weth balance 1`] = `
+{
+  "balance": 0,
+  "extra": null,
+  "reason": {
+    "consumer": null,
+  },
+  "status": "Liquid",
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer SnowBridge WETH From Hydration To AssetHub > asset hub recipients updated snowbridge weth balance 1`] = `
+{
+  "balance": "(rounded 17300000000000)",
+  "extra": null,
+  "reason": {
+    "sufficient": null,
+  },
+  "status": "Liquid",
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer DOT From AssetHub to Hydration > hydration recipients initial dot balance 1`] = `
+{
+  "free": 0,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer DOT From AssetHub to Hydration > hydration recipients updated dot balance 1`] = `
+{
+  "free": "(rounded 1000000000000)",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer DOT From Hydration to AssetHub > asset hub recipients initial dot balance 1`] = `
+{
+  "consumers": 0,
+  "data": {
+    "flags": "0x80000000000000000000000000000000",
+    "free": 0,
+    "frozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 0,
+  "providers": 0,
+  "sufficients": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer DOT From Hydration to AssetHub > asset hub recipients updated dot balance 1`] = `
+{
+  "consumers": 0,
+  "data": {
+    "flags": "0x80000000000000000000000000000000",
+    "free": "(rounded 1000000000000)",
+    "frozen": 0,
+    "reserved": 0,
+  },
+  "nonce": 0,
+  "providers": 1,
+  "sufficients": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer SnowBridge WETH From AssetHub To Hydration > hydration recipients initial snowbridge weth balance 1`] = `
+{
+  "free": 0,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer SnowBridge WETH From AssetHub To Hydration > hydration recipients updated snowbridge weth balance 1`] = `
+{
+  "free": "(rounded 24500000000000)",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer SnowBridge WETH From Hydration To AssetHub > asset hub recipients initial snowbridge weth balance 1`] = `
+{
+  "balance": 0,
+  "extra": null,
+  "reason": {
+    "consumer": null,
+  },
+  "status": "Liquid",
+}
+`;
+
+exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer SnowBridge WETH From Hydration To AssetHub > asset hub recipients updated snowbridge weth balance 1`] = `
+{
+  "balance": "(rounded 17300000000000)",
+  "extra": null,
+  "reason": {
+    "sufficient": null,
+  },
+  "status": "Liquid",
+}
+`;

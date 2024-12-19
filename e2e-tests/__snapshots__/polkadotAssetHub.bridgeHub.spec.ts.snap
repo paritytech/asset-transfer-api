@@ -1,0 +1,57 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Polkadot AssetHub <> Ethereum > XCM V3 > Snowbridge WETH From AssetHub to Ethereum > bridgehub ethereum outbound queue events 1`] = `
+[
+  {
+    "data": {
+      "id": "(hash)",
+    },
+    "method": "MessageQueued",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "id": "(hash)",
+      "nonce": "(redacted)",
+    },
+    "method": "MessageAccepted",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "count": 1,
+      "root": "(hash)",
+    },
+    "method": "MessagesCommitted",
+    "section": "ethereumOutboundQueue",
+  },
+]
+`;
+
+exports[`Polkadot AssetHub <> Ethereum > XCM V4 > Snowbridge WETH From AssetHub to Ethereum > bridgehub ethereum outbound queue events 1`] = `
+[
+  {
+    "data": {
+      "id": "(hash)",
+    },
+    "method": "MessageQueued",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "id": "(hash)",
+      "nonce": "(redacted)",
+    },
+    "method": "MessageAccepted",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "count": 1,
+      "root": "(hash)",
+    },
+    "method": "MessagesCommitted",
+    "section": "ethereumOutboundQueue",
+  },
+]
+`;

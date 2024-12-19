@@ -10,4 +10,5 @@ export interface CreateXcmCallOpts {
 	feesTransferType?: string;
 	remoteReserveFeesTransferTypeLocation?: string;
 	customXcmOnDest?: string;
+	sendersAddr?: string;
 }

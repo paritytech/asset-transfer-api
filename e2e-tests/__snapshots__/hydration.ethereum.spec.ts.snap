@@ -1,0 +1,147 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Hydration <> Ethereum > XCM V3 > Transfer Snowbridge WETH from Hydration to Ethereum > assetHub xcmp message sent 1`] = `
+[
+  {
+    "data": {
+      "messageHash": "(hash)",
+    },
+    "method": "XcmpMessageSent",
+    "section": "xcmpQueue",
+  },
+]
+`;
+
+exports[`Hydration <> Ethereum > XCM V3 > Transfer Snowbridge WETH from Hydration to Ethereum > assethub foreign assets burned 1`] = `
+[
+  {
+    "data": {
+      "assetId": {
+        "interior": {
+          "X2": [
+            {
+              "GlobalConsensus": {
+                "Ethereum": {
+                  "chainId": 1,
+                },
+              },
+            },
+            {
+              "AccountKey20": {
+                "key": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                "network": null,
+              },
+            },
+          ],
+        },
+        "parents": 2,
+      },
+      "balance": 75000000000000,
+      "owner": "13cKp89Uh2yWgTG28JA1QEvPUMjEPKejqkjHKf9zqLiFKjH6",
+    },
+    "method": "Burned",
+    "section": "foreignAssets",
+  },
+]
+`;
+
+exports[`Hydration <> Ethereum > XCM V3 > Transfer Snowbridge WETH from Hydration to Ethereum > bridgehub ethereum outbound queue events 1`] = `
+[
+  {
+    "data": {
+      "id": 0,
+    },
+    "method": "MessageQueued",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "id": 0,
+      "nonce": "(redacted)",
+    },
+    "method": "MessageAccepted",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "count": 1,
+      "root": "(hash)",
+    },
+    "method": "MessagesCommitted",
+    "section": "ethereumOutboundQueue",
+  },
+]
+`;
+
+exports[`Hydration <> Ethereum > XCM V4 > Transfer Snowbridge WETH from Hydration to Ethereum > assetHub xcmp message sent 1`] = `
+[
+  {
+    "data": {
+      "messageHash": "(hash)",
+    },
+    "method": "XcmpMessageSent",
+    "section": "xcmpQueue",
+  },
+]
+`;
+
+exports[`Hydration <> Ethereum > XCM V4 > Transfer Snowbridge WETH from Hydration to Ethereum > assethub foreign assets burned 1`] = `
+[
+  {
+    "data": {
+      "assetId": {
+        "interior": {
+          "X2": [
+            {
+              "GlobalConsensus": {
+                "Ethereum": {
+                  "chainId": 1,
+                },
+              },
+            },
+            {
+              "AccountKey20": {
+                "key": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                "network": null,
+              },
+            },
+          ],
+        },
+        "parents": 2,
+      },
+      "balance": 75000000000000,
+      "owner": "13cKp89Uh2yWgTG28JA1QEvPUMjEPKejqkjHKf9zqLiFKjH6",
+    },
+    "method": "Burned",
+    "section": "foreignAssets",
+  },
+]
+`;
+
+exports[`Hydration <> Ethereum > XCM V4 > Transfer Snowbridge WETH from Hydration to Ethereum > bridgehub ethereum outbound queue events 1`] = `
+[
+  {
+    "data": {
+      "id": 0,
+    },
+    "method": "MessageQueued",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "id": 0,
+      "nonce": "(redacted)",
+    },
+    "method": "MessageAccepted",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "count": 1,
+      "root": "(hash)",
+    },
+    "method": "MessagesCommitted",
+    "section": "ethereumOutboundQueue",
+  },
+]
+`;

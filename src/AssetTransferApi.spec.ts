@@ -66,6 +66,7 @@ describe('AssetTransferAPI', () => {
 				isDestSystemParachain: true,
 				isDestParachain: false,
 				isDestBridge: false,
+				isDestEthereum: false,
 			};
 			const res = systemAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('SystemToSystem');
@@ -79,6 +80,7 @@ describe('AssetTransferAPI', () => {
 				isDestSystemParachain: false,
 				isDestParachain: true,
 				isDestBridge: false,
+				isDestEthereum: false,
 			};
 			const res = systemAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('SystemToPara');
@@ -92,6 +94,7 @@ describe('AssetTransferAPI', () => {
 				isDestSystemParachain: false,
 				isDestParachain: false,
 				isDestBridge: false,
+				isDestEthereum: false,
 			};
 			const res = systemAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('SystemToRelay');
@@ -105,6 +108,7 @@ describe('AssetTransferAPI', () => {
 				isDestSystemParachain: false,
 				isDestParachain: true,
 				isDestBridge: false,
+				isDestEthereum: false,
 			};
 			const res = relayAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('RelayToPara');
@@ -118,6 +122,7 @@ describe('AssetTransferAPI', () => {
 				isDestSystemParachain: true,
 				isDestParachain: false,
 				isDestBridge: false,
+				isDestEthereum: false,
 			};
 			const res = relayAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('RelayToSystem');
@@ -131,6 +136,7 @@ describe('AssetTransferAPI', () => {
 				isDestSystemParachain: true,
 				isDestParachain: false,
 				isDestBridge: false,
+				isDestEthereum: false,
 			};
 			const res = moonriverAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('ParaToSystem');
@@ -144,6 +150,7 @@ describe('AssetTransferAPI', () => {
 				isDestSystemParachain: false,
 				isDestParachain: true,
 				isDestBridge: false,
+				isDestEthereum: false,
 			};
 			const res = moonriverAssetsApi['establishDirection'](false, info);
 			expect(res).toEqual('ParaToPara');

@@ -84,7 +84,7 @@ export type XcmV2JunctionBase = {
 	Parachain: number | string;
 	AccountId32: { network?: XcmV2Network; id: string };
 	AccountIndex64: { network?: XcmV2Network; id: string };
-	AccountKey20: { network?: XcmV2Network; id: string };
+	AccountKey20: { network?: XcmV2Network; key: string };
 	PalletInstance: number | string;
 	GeneralIndex: string | number;
 	GeneralKey: string;
@@ -126,7 +126,7 @@ export type XcmV3JunctionBase = {
 	Parachain: number;
 	AccountId32: { network?: XcmV2Network; id: string };
 	AccountIndex64: { network?: XcmV2Network; id: string };
-	AccountKey20: { network?: XcmV2Network; id: string };
+	AccountKey20: { network?: XcmV2Network; key: string };
 	PalletInstance: number;
 	GeneralIndex: string | number;
 	GeneralKey: string;
@@ -167,7 +167,7 @@ export type XcmV4JunctionBase = {
 	Parachain: number;
 	AccountId32: { network?: XcmV2Network; id: string };
 	AccountIndex64: { network?: XcmV2Network; id: string };
-	AccountKey20: { network?: XcmV2Network; id: string };
+	AccountKey20: { network?: XcmV2Network; key: string };
 	PalletInstance: number;
 	GeneralIndex: string | number;
 	GeneralKey: string;
@@ -196,6 +196,20 @@ export interface XcmMultiAsset {
 		Fungible: string;
 	};
 }
+
+export interface WildAssetV3 {
+	id: {
+		Concrete: UnionXcmMultiLocation;
+	};
+	fun: string;
+}
+
+export interface WildAssetV4 {
+	id: UnionXcmMultiLocation;
+	fun: string;
+}
+
+export type WildAsset = WildAssetV3 | WildAssetV4;
 
 // XCM V4 Asset
 export interface XcmAsset {

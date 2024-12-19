@@ -1,6 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Direction } from '../types';
+import { ParaToEthereum } from './ParaToEthereum';
 import { ParaToPara } from './ParaToPara';
 import { ParaToRelay } from './ParaToRelay';
 import { ParaToSystem } from './ParaToSystem';
@@ -28,4 +29,5 @@ export const createXcmTypes: ICreateXcmTypeLookup = {
 	ParaToPara,
 	ParaToRelay,
 	ParaToSystem,
+	ParaToEthereum,
 };

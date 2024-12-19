@@ -68,6 +68,10 @@ export enum Direction {
 	 */
 	ParaToSystem = 'ParaToSystem',
 	/**
+	 * Parachain to Ethereum.
+	 */
+	ParaToEthereum = 'ParaToEthereum',
+	/**
 	 * Relay to System Parachain.
 	 */
 	RelayToSystem = 'RelayToSystem',
@@ -111,6 +115,7 @@ export interface ChainOriginDestInfo {
 	isDestSystemParachain: boolean;
 	isDestParachain: boolean;
 	isDestBridge: boolean;
+	isDestEthereum: boolean;
 }
 
 export interface LocalTxOpts extends TransferArgsOpts<Format> {
@@ -180,7 +185,7 @@ export type AssetTransferApiOpts<T extends ChainInfoKeys | InjectedChainInfoKeys
 	/**
 	 * Option to inject chain information into the registry.
 	 */
-	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry<T>>;
+	injectedRegistry?: RequireAtLeastOne<ChainInfoRegistry<T> | ChainInfoRegistry<InjectedChainInfoKeys>>;
 	/**
 	 * Option to override the registry with the supplied chain information.
 	 */

@@ -40,6 +40,7 @@ import { UnionXcmMultiLocation, XcmVersionedAssetId } from './createXcmTypes/typ
 import { assetIdIsLocation } from './createXcmTypes/util/assetIdIsLocation';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
 import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
+import { chainDestIsEthereum } from './createXcmTypes/util/chainDestIsEthereum';
 import { createXcmVersionedAssetId } from './createXcmTypes/util/createXcmVersionedAssetId';
 import { getAssetId } from './createXcmTypes/util/getAssetId';
 import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName';
@@ -230,6 +231,7 @@ export class AssetTransferApi {
 			isDestSystemParachain: isSystemChain(destChainId),
 			isDestParachain: isParachain(destChainId),
 			isDestBridge: chainDestIsBridge(destChainId),
+			isDestEthereum: chainDestIsEthereum(destChainId),
 		};
 
 		/**
@@ -570,6 +572,7 @@ export class AssetTransferApi {
 			isOriginParachain,
 			isOriginSystemParachain,
 			isDestBridge,
+			isDestEthereum,
 		} = chainOriginDestInfo;
 
 		/**
@@ -604,6 +607,11 @@ export class AssetTransferApi {
 
 		if (isOriginRelayChain && isDestBridge) {
 			return Direction.RelayToBridge;
+		}
+
+		// Para To ETH
+		if (isOriginParachain && isDestEthereum) {
+			return Direction.ParaToEthereum;
 		}
 
 		/**
@@ -887,6 +895,11 @@ export class AssetTransferApi {
 		}
 		// system to bridge -> reserve
 		if (xcmDirection === Direction.SystemToBridge) {
+			return AssetCallType.Reserve;
+		}
+
+		// para to assethub to ethereum -> reserve
+		if (xcmDirection === Direction.ParaToEthereum) {
 			return AssetCallType.Reserve;
 		}
 
@@ -1316,7 +1329,9 @@ export class AssetTransferApi {
 				txMethod = 'transferMultiassets';
 			}
 		} else if (api.tx[xcmPallet]) {
-			if (api.tx[xcmPallet].transferAssetsUsingTypeAndThen && baseOpts.assetTransferType) {
+			if (xcmDirection === Direction.ParaToEthereum) {
+				txMethod = 'transferAssetsUsingTypeAndThen';
+			} else if (api.tx[xcmPallet].transferAssetsUsingTypeAndThen && baseOpts.assetTransferType) {
 				txMethod = 'transferAssetsUsingTypeAndThen';
 			} else if (api.tx[xcmPallet].transferAssets) {
 				txMethod = 'transferAssets';

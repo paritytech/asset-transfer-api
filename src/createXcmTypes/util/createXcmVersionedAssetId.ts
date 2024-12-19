@@ -17,7 +17,11 @@ export const createXcmVersionedAssetId = (
 	}
 
 	let remoteFeesId: XcmVersionedAssetId;
-	const location = parseLocationStrToLocation(destFeesAssetId);
+	let location = parseLocationStrToLocation(destFeesAssetId);
+
+	if ('v1' in location) {
+		location = parseLocationStrToLocation(JSON.stringify(location.v1));
+	}
 
 	if (xcmVersion === 3) {
 		remoteFeesId = {
