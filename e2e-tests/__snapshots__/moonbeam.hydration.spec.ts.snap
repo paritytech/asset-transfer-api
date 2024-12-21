@@ -37,3 +37,41 @@ exports[`Moonbeam <> Hydration > XCM V3 > Transfer HDX from Hydration to Moonbea
   "status": "Liquid",
 }
 `;
+
+exports[`Moonbeam <> Hydration > XCM V4 > Transfer GLMR from Moonbeam to Hydration > hydration recipients initial glmr balance 1`] = `
+{
+  "free": 0,
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Moonbeam <> Hydration > XCM V4 > Transfer GLMR from Moonbeam to Hydration > hydration recipients updated glmr balance 1`] = `
+{
+  "free": "(rounded 10000000000000000000)",
+  "frozen": 0,
+  "reserved": 0,
+}
+`;
+
+exports[`Moonbeam <> Hydration > XCM V4 > Transfer HDX from Hydration to Moonbeam > moonbeam recipients initial hdx balance 1`] = `
+{
+  "balance": 0,
+  "extra": null,
+  "reason": {
+    "consumer": null,
+  },
+  "status": "Liquid",
+}
+`;
+
+exports[`Moonbeam <> Hydration > XCM V4 > Transfer HDX from Hydration to Moonbeam > moonbeam recipients updated hdx balance 1`] = `
+{
+  "balance": "(rounded 10000000000000000)",
+  "extra": null,
+  "reason": {
+    "sufficient": null,
+  },
+  "status": "Liquid",
+}
+`;
