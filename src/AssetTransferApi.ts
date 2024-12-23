@@ -990,7 +990,6 @@ export class AssetTransferApi {
 			version: unsignedPayload.version,
 		});
 
-		console.log("Payload asset id---", extrinsicPayload.assetId.toHuman());
 		return extrinsicPayload;
 	};
 
