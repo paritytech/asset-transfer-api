@@ -535,8 +535,8 @@ export class AssetTransferApi {
 				version: EXTRINSIC_VERSION,
 			});
 
-			const call = api.registry.createType('Call', extrinsicPayload.method);
-			const decodedMethodInfo = JSON.stringify(call.toHuman());
+			// const call = api.registry.createType('GenericExtrinsicPayload', extrinsicPayload.method);
+			const decodedMethodInfo = JSON.stringify(extrinsicPayload.toHuman());
 
 			return decodedMethodInfo;
 		} else if (fmt === 'call') {
@@ -990,6 +990,7 @@ export class AssetTransferApi {
 			version: unsignedPayload.version,
 		});
 
+		console.log("Payload asset id---", extrinsicPayload.assetId.toHuman());
 		return extrinsicPayload;
 	};
 
