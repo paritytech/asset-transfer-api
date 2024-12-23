@@ -535,7 +535,6 @@ export class AssetTransferApi {
 				version: EXTRINSIC_VERSION,
 			});
 
-			// const call = api.registry.createType('GenericExtrinsicPayload', extrinsicPayload.method);
 			const decodedMethodInfo = JSON.stringify(extrinsicPayload.toHuman());
 
 			return decodedMethodInfo;
