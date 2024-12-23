@@ -534,11 +534,12 @@ export class AssetTransferApi {
 			const extrinsicPayload = api.registry.createType('ExtrinsicPayload', encodedTransaction, {
 				version: EXTRINSIC_VERSION,
 			});
-
 			const call = api.registry.createType('Call', extrinsicPayload.method);
-			const decodedMethodInfo = JSON.stringify(call.toHuman());
 
-			return decodedMethodInfo;
+			return JSON.stringify({
+				decodedPayload: { ...(extrinsicPayload.toHuman() as object) },
+				decodedCall: { ...call.toHuman() },
+			});
 		} else if (fmt === 'call') {
 			const call = api.registry.createType('Call', encodedTransaction);
 

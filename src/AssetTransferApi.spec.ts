@@ -600,7 +600,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a tx payload extrinsic given its hash for ParaToPara', async () => {
 				const expected =
-					'{"args":{"asset":{"V2":{"id":{"Concrete":{"parents":"1","interior":{"X2":[{"Parachain":"2,092"},{"GeneralKey":"0x000c"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}},"dest":{"V2":{"parents":"1","interior":{"X2":[{"Parachain":"2,092"},{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}]}}},"dest_weight_limit":"Unlimited"},"method":"transferMultiasset","section":"xTokens"}';
+					'{"decodedPayload":{"method":"0x6a010100010200b1200608000c000b00a0724e180901010200b1200100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de1600","era":{"MortalEra":{"period":"64","phase":"36"}},"nonce":"10","tip":"0","specVersion":"2,302","transactionVersion":"4","genesisHash":"0x0000000000000000000000000000000000000000000000000000000000000000","blockHash":"0xbe2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503"},"decodedCall":{"args":{"asset":{"V2":{"id":{"Concrete":{"parents":"1","interior":{"X2":[{"Parachain":"2,092"},{"GeneralKey":"0x000c"}]}}},"fun":{"Fungible":"10,000,000,000,000"}}},"dest":{"V2":{"parents":"1","interior":{"X2":[{"Parachain":"2,092"},{"AccountId32":{"network":"Any","id":"0xc224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16"}}]}}},"dest_weight_limit":"Unlimited"},"method":"transferMultiasset","section":"xTokens"}}';
 
 				const payloadTxResult = await moonriverAssetsApi.createTransferTransaction(
 					'2092',
@@ -660,7 +660,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a payloads extrinsic given its hash for RelayToSystem', async () => {
 				const expected =
-					'{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"250,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"xcmPallet"}';
+					'{"decodedPayload":{"method":"0x630901000100a10f0100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000000000b00a031a95fe30000000000","era":{"MortalEra":{"period":"64","phase":"36"}},"nonce":"10","tip":"0","specVersion":"9,420","transactionVersion":"4","genesisHash":"0x0000000000000000000000000000000000000000000000000000000000000000","blockHash":"0xbe2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503"},"decodedCall":{"args":{"dest":{"V2":{"parents":"0","interior":{"X1":{"Parachain":"1,000"}}}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"0","interior":"Here"}},"fun":{"Fungible":"250,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"xcmPallet"}}';
 				const payloadTxResult = await relayAssetsApi.createTransferTransaction(
 					'1000',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -717,7 +717,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a payloads extrinsic given its hash for SystemToRelay', async () => {
 				const expected =
-					'{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"20,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"polkadotXcm"}';
+					'{"decodedPayload":{"method":"0x1f090101000100010100f5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b0104000100000b0040e59c30120000000000","era":{"MortalEra":{"period":"64","phase":"36"}},"nonce":"10","tip":"0","assetId":{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1,984"}]}},"specVersion":"1,004,000","transactionVersion":"4","genesisHash":"0x0000000000000000000000000000000000000000000000000000000000000000","blockHash":"0xbe2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503"},"decodedCall":{"args":{"dest":{"V2":{"parents":"1","interior":"Here"}},"beneficiary":{"V2":{"parents":"0","interior":{"X1":{"AccountId32":{"network":"Any","id":"0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b"}}}}},"assets":{"V2":[{"id":{"Concrete":{"parents":"1","interior":"Here"}},"fun":{"Fungible":"20,000,000,000,000"}}]},"fee_asset_item":"0","weight_limit":"Unlimited"},"method":"limitedTeleportAssets","section":"polkadotXcm"}}';
 				const payloadTxResult = await systemAssetsApi.createTransferTransaction(
 					'0',
 					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
@@ -776,7 +776,7 @@ describe('AssetTransferAPI', () => {
 
 			it('Should decode a foreign asset tx payload extrinsic given its hash for SystemToPara', async () => {
 				const expected =
-					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"5GTG3EQ159PpSh4kkF5TBrW6jkmc88HdYcsU8bsN83bndWh2"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
+					'{"decodedPayload":{"method":"0x35080102003521050000c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160b00a0724e1809","era":{"MortalEra":{"period":"64","phase":"36"}},"nonce":"10","tip":"0","assetId":{"parents":"0","interior":"Here"},"specVersion":"1,004,000","transactionVersion":"4","genesisHash":"0x0000000000000000000000000000000000000000000000000000000000000000","blockHash":"0xbe2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503"},"decodedCall":{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"5GTG3EQ159PpSh4kkF5TBrW6jkmc88HdYcsU8bsN83bndWh2"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}}';
 
 				const callTxResult = await systemAssetsApi.createTransferTransaction(
 					'1000',
