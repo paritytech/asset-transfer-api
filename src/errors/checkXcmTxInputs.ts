@@ -29,6 +29,27 @@ import { BaseError, BaseErrorsEnum } from './BaseError';
 import type { CheckXcmTxInputsOpts } from './types';
 
 /**
+ * Ensure `destAddr` is a non ethereum address when the destination is a System or Relay chain.
+ * @param destAddr
+ * @param direction
+ */
+export const checkDestAddrIsValid = (destAddr: string, direction: Direction) => {
+	if (
+		isEthereumAddress(destAddr) &&
+		(direction === Direction.RelayToSystem ||
+			direction === Direction.SystemToSystem ||
+			direction === Direction.SystemToRelay ||
+			direction === Direction.ParaToSystem ||
+			direction === Direction.ParaToRelay)
+	) {
+		throw new BaseError(
+			'`destAddr` must be a valid substrate address when the destination chain is not a Parachain or Ethereum.',
+			BaseErrorsEnum.InvalidInput,
+		);
+	}
+};
+
+/**
  * Ensure when sending tx's to or from the relay chain that the length of the assetIds array
  * is zero or 1, and contains the correct token.
  *
@@ -1124,6 +1145,8 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		xcmFeeAsset,
 	} = opts;
 	const relayChainInfo = registry.currentRelayRegistry;
+
+	checkDestAddrIsValid(destAddr, direction);
 
 	/**
 	 * Require `sendersAddr` and `xcmFeeAsset` when dryRunCall option is true
