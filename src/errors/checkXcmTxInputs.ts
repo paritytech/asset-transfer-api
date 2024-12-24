@@ -30,6 +30,7 @@ import type { CheckXcmTxInputsOpts } from './types';
 
 /**
  * Ensure `destAddr` is a non ethereum address when the destination is a System or Relay chain.
+ *
  * @param destAddr
  * @param direction
  */
