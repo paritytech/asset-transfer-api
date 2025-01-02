@@ -14,6 +14,7 @@ import {
 	checkAssetIdsLengthIsValid,
 	checkAssetsAmountMatch,
 	checkBridgeTxInputs,
+	checkDestAddrIsValid,
 	checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset,
 	checkIfNativeRelayChainAssetPresentInMultiAssetIdList,
 	checkLiquidTokenTransferDirectionValidity,
@@ -900,6 +901,35 @@ describe('checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset', () => {
 		const err = () => checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset(dryRunCall, sendersAddr, undefined);
 
 		expect(err).toThrow('xcmFeeAsset option must be provided when the dryRunCall option is set to true');
+	});
+});
+
+describe('checkDestAddrIsValid', () => {
+	it('Should correctly throw an error when destAddr is an ethereum address and the destination is a system chain', () => {
+		const destAddr = '0x6E733286C3Dc52C67b8DAdFDd634eD9c3Fb05B5B';
+		const direction = Direction.ParaToSystem;
+
+		const err = () => checkDestAddrIsValid(destAddr, direction);
+
+		expect(err).toThrow(
+			'`destAddr` must be a valid substrate address when the destination chain is not a Parachain or Ethereum.',
+		);
+	});
+	it('Should correctly not throw an error when destAddr is a substrate address and the destination is a system chain', () => {
+		const destAddr = '5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E';
+		const direction = Direction.ParaToSystem;
+
+		const err = () => checkDestAddrIsValid(destAddr, direction);
+
+		expect(err).not.toThrow();
+	});
+	it('Should correctly not throw an error when the destAddr is an ethereum address and the destination is a parachain', () => {
+		const destAddr = '5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E';
+		const direction = Direction.SystemToPara;
+
+		const err = () => checkDestAddrIsValid(destAddr, direction);
+
+		expect(err).not.toThrow();
 	});
 });
 
