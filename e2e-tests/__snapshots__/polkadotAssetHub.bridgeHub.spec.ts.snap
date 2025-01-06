@@ -1,5 +1,158 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Polkadot AssetHub <> Ethereum > XCM V3 > Snowbridge WETH From AssetHub to Ethereum > assetHub xcm message sent 1`] = `
+[
+  {
+    "data": {
+      "outcome": {
+        "Complete": {
+          "used": {
+            "proofSize": "(rounded 3600)",
+            "refTime": "(rounded 190000000)",
+          },
+        },
+      },
+    },
+    "method": "Attempted",
+    "section": "polkadotXcm",
+  },
+  {
+    "data": {
+      "fees": [
+        {
+          "fun": {
+            "Fungible": "(rounded 62000000000)",
+          },
+          "id": {
+            "interior": "Here",
+            "parents": 1,
+          },
+        },
+      ],
+      "paying": {
+        "interior": {
+          "X1": [
+            {
+              "AccountId32": {
+                "id": "(hash)",
+                "network": "Polkadot",
+              },
+            },
+          ],
+        },
+        "parents": 0,
+      },
+    },
+    "method": "FeesPaid",
+    "section": "polkadotXcm",
+  },
+  {
+    "data": {
+      "destination": {
+        "interior": {
+          "X1": [
+            {
+              "GlobalConsensus": {
+                "Ethereum": {
+                  "chainId": 1,
+                },
+              },
+            },
+          ],
+        },
+        "parents": 2,
+      },
+      "message": [
+        {
+          "WithdrawAsset": [
+            {
+              "fun": {
+                "Fungible": 25000000000000,
+              },
+              "id": {
+                "interior": {
+                  "X1": [
+                    {
+                      "AccountKey20": {
+                        "key": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                        "network": null,
+                      },
+                    },
+                  ],
+                },
+                "parents": 0,
+              },
+            },
+          ],
+        },
+        "ClearOrigin",
+        {
+          "BuyExecution": {
+            "fees": {
+              "fun": {
+                "Fungible": 25000000000000,
+              },
+              "id": {
+                "interior": {
+                  "X1": [
+                    {
+                      "AccountKey20": {
+                        "key": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                        "network": null,
+                      },
+                    },
+                  ],
+                },
+                "parents": 0,
+              },
+            },
+            "weightLimit": "Unlimited",
+          },
+        },
+        {
+          "DepositAsset": {
+            "assets": {
+              "Wild": {
+                "AllCounted": 1,
+              },
+            },
+            "beneficiary": {
+              "interior": {
+                "X1": [
+                  {
+                    "AccountKey20": {
+                      "key": "0xf24ff3a9cf04c71dbc94d0b566f7a27b94566cac",
+                      "network": null,
+                    },
+                  },
+                ],
+              },
+              "parents": 0,
+            },
+          },
+        },
+      ],
+      "messageId": "(redacted)",
+      "origin": {
+        "interior": {
+          "X1": [
+            {
+              "AccountId32": {
+                "id": "(hash)",
+                "network": "Polkadot",
+              },
+            },
+          ],
+        },
+        "parents": 0,
+      },
+    },
+    "method": "Sent",
+    "section": "polkadotXcm",
+  },
+]
+`;
+
 exports[`Polkadot AssetHub <> Ethereum > XCM V3 > Snowbridge WETH From AssetHub to Ethereum > bridgehub ethereum outbound queue events 1`] = `
 [
   {
@@ -24,6 +177,159 @@ exports[`Polkadot AssetHub <> Ethereum > XCM V3 > Snowbridge WETH From AssetHub 
     },
     "method": "MessagesCommitted",
     "section": "ethereumOutboundQueue",
+  },
+]
+`;
+
+exports[`Polkadot AssetHub <> Ethereum > XCM V4 > Snowbridge WETH From AssetHub to Ethereum > assetHub xcm message sent 1`] = `
+[
+  {
+    "data": {
+      "outcome": {
+        "Complete": {
+          "used": {
+            "proofSize": "(rounded 3600)",
+            "refTime": "(rounded 190000000)",
+          },
+        },
+      },
+    },
+    "method": "Attempted",
+    "section": "polkadotXcm",
+  },
+  {
+    "data": {
+      "fees": [
+        {
+          "fun": {
+            "Fungible": "(rounded 62000000000)",
+          },
+          "id": {
+            "interior": "Here",
+            "parents": 1,
+          },
+        },
+      ],
+      "paying": {
+        "interior": {
+          "X1": [
+            {
+              "AccountId32": {
+                "id": "(hash)",
+                "network": "Polkadot",
+              },
+            },
+          ],
+        },
+        "parents": 0,
+      },
+    },
+    "method": "FeesPaid",
+    "section": "polkadotXcm",
+  },
+  {
+    "data": {
+      "destination": {
+        "interior": {
+          "X1": [
+            {
+              "GlobalConsensus": {
+                "Ethereum": {
+                  "chainId": 1,
+                },
+              },
+            },
+          ],
+        },
+        "parents": 2,
+      },
+      "message": [
+        {
+          "WithdrawAsset": [
+            {
+              "fun": {
+                "Fungible": 25000000000000,
+              },
+              "id": {
+                "interior": {
+                  "X1": [
+                    {
+                      "AccountKey20": {
+                        "key": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                        "network": null,
+                      },
+                    },
+                  ],
+                },
+                "parents": 0,
+              },
+            },
+          ],
+        },
+        "ClearOrigin",
+        {
+          "BuyExecution": {
+            "fees": {
+              "fun": {
+                "Fungible": 25000000000000,
+              },
+              "id": {
+                "interior": {
+                  "X1": [
+                    {
+                      "AccountKey20": {
+                        "key": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                        "network": null,
+                      },
+                    },
+                  ],
+                },
+                "parents": 0,
+              },
+            },
+            "weightLimit": "Unlimited",
+          },
+        },
+        {
+          "DepositAsset": {
+            "assets": {
+              "Wild": {
+                "AllCounted": 1,
+              },
+            },
+            "beneficiary": {
+              "interior": {
+                "X1": [
+                  {
+                    "AccountKey20": {
+                      "key": "0xf24ff3a9cf04c71dbc94d0b566f7a27b94566cac",
+                      "network": null,
+                    },
+                  },
+                ],
+              },
+              "parents": 0,
+            },
+          },
+        },
+      ],
+      "messageId": "(redacted)",
+      "origin": {
+        "interior": {
+          "X1": [
+            {
+              "AccountId32": {
+                "id": "(hash)",
+                "network": "Polkadot",
+              },
+            },
+          ],
+        },
+        "parents": 0,
+      },
+    },
+    "method": "Sent",
+    "section": "polkadotXcm",
   },
 ]
 `;
