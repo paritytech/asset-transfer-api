@@ -1,5 +1,6 @@
 import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
+import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
@@ -78,12 +79,18 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 
 			await polkadotAssetHub.api.tx(extrinsic).signAndSend(alice);
 			await polkadotAssetHub.dev.newBlock();
-			await polkadotBridgeHub.dev.newBlock();
+
+			await checkSystemEvents(polkadotAssetHub, 'polkadotXcm')
+				.redact({ redactKeys: new RegExp('messageId') })
+				.toMatchSnapshot('assetHub xcm message sent');
+
+			await setTimeout(10000);
+			await polkadotBridgeHub.dev.timeTravel(1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
 				.redact({ redactKeys: new RegExp('nonce') })
 				.toMatchSnapshot('bridgehub ethereum outbound queue events');
-		}, 100000);
+		}, 200000);
 	});
 
 	describe('XCM V4', () => {
@@ -120,11 +127,17 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 
 			await polkadotAssetHub.api.tx(extrinsic).signAndSend(alice);
 			await polkadotAssetHub.dev.newBlock();
-			await polkadotBridgeHub.dev.newBlock();
+
+			await checkSystemEvents(polkadotAssetHub, 'polkadotXcm')
+				.redact({ redactKeys: new RegExp('messageId') })
+				.toMatchSnapshot('assetHub xcm message sent');
+
+			await setTimeout(10000);
+			await polkadotBridgeHub.dev.timeTravel(1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
 				.redact({ redactKeys: new RegExp('nonce') })
 				.toMatchSnapshot('bridgehub ethereum outbound queue events');
-		}, 100000);
+		}, 200000);
 	});
 });

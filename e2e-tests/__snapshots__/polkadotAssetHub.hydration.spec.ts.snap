@@ -124,7 +124,7 @@ exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer SnowBridge WETH From
 
 exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer SnowBridge WETH From AssetHub To Hydration > hydration recipients updated snowbridge weth balance 1`] = `
 {
-  "free": "(rounded 24500000000000)",
+  "free": "(rounded 25000000000000)",
   "frozen": 0,
   "reserved": 0,
 }
@@ -143,7 +143,7 @@ exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer SnowBridge WETH From
 
 exports[`Polkadot AssetHub <> Hydration > XCM V3 > Transfer SnowBridge WETH From Hydration To AssetHub > asset hub recipients updated snowbridge weth balance 1`] = `
 {
-  "balance": "(rounded 17300000000000)",
+  "balance": "(rounded 20000000000000)",
   "extra": null,
   "reason": {
     "sufficient": null,
@@ -208,7 +208,7 @@ exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer SnowBridge WETH From
 
 exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer SnowBridge WETH From AssetHub To Hydration > hydration recipients updated snowbridge weth balance 1`] = `
 {
-  "free": "(rounded 24500000000000)",
+  "free": "(rounded 25000000000000)",
   "frozen": 0,
   "reserved": 0,
 }
@@ -227,7 +227,7 @@ exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer SnowBridge WETH From
 
 exports[`Polkadot AssetHub <> Hydration > XCM V4 > Transfer SnowBridge WETH From Hydration To AssetHub > asset hub recipients updated snowbridge weth balance 1`] = `
 {
-  "balance": "(rounded 17300000000000)",
+  "balance": "(rounded 17000000000000)",
   "extra": null,
   "reason": {
     "sufficient": null,

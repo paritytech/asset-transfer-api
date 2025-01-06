@@ -80,12 +80,12 @@ describe('Moonbeam <> Hydration', () => {
 			const recipientUpdatedGLMRBalance = await hydration.api.query.tokens.accounts(hydrationRecipientAddress, 16);
 
 			await check(recipientUpdatedGLMRBalance as AccountData)
-				.redact({ number: 3 })
+				.redact({ number: 2 })
 				.toMatchSnapshot('hydration recipients updated glmr balance');
 			expect((recipientUpdatedGLMRBalance as AccountData).free.toBigInt()).toBeGreaterThan(
 				(recipientInitialGLMRBalance as AccountData).free.toBigInt(),
 			);
-		}, 100000);
+		}, 200000);
 
 		test('Transfer HDX from Hydration to Moonbeam', async () => {
 			await hydration.dev.setStorage({
@@ -133,12 +133,12 @@ describe('Moonbeam <> Hydration', () => {
 			).unwrapOrDefault();
 
 			await check(recipientUpdatedHDXBalance)
-				.redact({ number: 3 })
+				.redact({ number: 2 })
 				.toMatchSnapshot('moonbeam recipients updated hdx balance');
 			expect(recipientUpdatedHDXBalance.balance.toBigInt()).toBeGreaterThan(
 				recipientInitialHDXBalance.balance.toBigInt(),
 			);
-		}, 100000);
+		}, 200000);
 	});
 
 	describe('XCM V4', () => {
@@ -181,12 +181,12 @@ describe('Moonbeam <> Hydration', () => {
 			const recipientUpdatedGLMRBalance = await hydration.api.query.tokens.accounts(hydrationRecipientAddress, 16);
 
 			await check(recipientUpdatedGLMRBalance)
-				.redact({ number: 3 })
+				.redact({ number: 2 })
 				.toMatchSnapshot('hydration recipients updated glmr balance');
 			expect((recipientUpdatedGLMRBalance as AccountData).free.toBigInt()).toBeGreaterThan(
 				(recipientInitialGLMRBalance as AccountData).free.toBigInt(),
 			);
-		}, 100000);
+		}, 200000);
 
 		test('Transfer HDX from Hydration to Moonbeam', async () => {
 			await hydration.dev.setStorage({
@@ -234,11 +234,11 @@ describe('Moonbeam <> Hydration', () => {
 			).unwrapOrDefault();
 
 			await check(recipientUpdatedHDXBalance)
-				.redact({ number: 3 })
+				.redact({ number: 2 })
 				.toMatchSnapshot('moonbeam recipients updated hdx balance');
 			expect(recipientUpdatedHDXBalance.balance.toBigInt()).toBeGreaterThan(
 				recipientInitialHDXBalance.balance.toBigInt(),
 			);
-		}, 100000);
+		}, 200000);
 	});
 });

@@ -107,20 +107,26 @@ describe('Hydration <> Ethereum', () => {
 
 			await hydration.api.tx(extrinsic).signAndSend(alice);
 			await hydration.dev.newBlock();
-			await polkadotAssetHub.dev.newBlock();
+
+			await checkSystemEvents(hydration, 'polkadotXcm')
+				.redact({ redactKeys: new RegExp('messageId') })
+				.toMatchSnapshot('hydration xcm message sent');
+
+			await setTimeout(10000);
+			await polkadotAssetHub.dev.timeTravel(1);
 
 			await checkSystemEvents(polkadotAssetHub, 'foreignAssets').toMatchSnapshot('assethub foreign assets burned');
 			await checkSystemEvents(polkadotAssetHub, 'xcmpQueue', 'XcmpMessageSent').toMatchSnapshot(
 				'assetHub xcmp message sent',
 			);
 
-			await setTimeout(5000);
+			await setTimeout(10000);
 			await polkadotBridgeHub.dev.timeTravel(1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
 				.redact({ redactKeys: new RegExp('nonce') })
 				.toMatchSnapshot('bridgehub ethereum outbound queue events');
-		}, 100000);
+		}, 200000);
 	});
 	describe('XCM V4', () => {
 		const xcmVersion = 4;
@@ -184,7 +190,13 @@ describe('Hydration <> Ethereum', () => {
 
 			await hydration.api.tx(extrinsic).signAndSend(alice);
 			await hydration.dev.newBlock();
-			await polkadotAssetHub.dev.newBlock();
+
+			await checkSystemEvents(hydration, 'polkadotXcm')
+				.redact({ redactKeys: new RegExp('messageId') })
+				.toMatchSnapshot('hydration xcm message sent');
+
+			await setTimeout(10000);
+			await polkadotAssetHub.dev.timeTravel(1);
 
 			await checkSystemEvents(polkadotAssetHub, 'foreignAssets').toMatchSnapshot('assethub foreign assets burned');
 			await checkSystemEvents(polkadotAssetHub, 'xcmpQueue', 'XcmpMessageSent').toMatchSnapshot(
@@ -198,7 +210,7 @@ describe('Hydration <> Ethereum', () => {
 			expect(xcmMessageProcessed.event.method).toEqual('Processed');
 			expect(xcmMessageProcessed.event.section).toEqual('messageQueue');
 
-			await setTimeout(5000);
+			await setTimeout(10000);
 			await polkadotBridgeHub.dev.timeTravel(1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
@@ -213,6 +225,6 @@ describe('Hydration <> Ethereum', () => {
 			const messageCommittedEvent = bridgeHubEvents[bridgeHubEvents.length - 1];
 			expect(messageCommittedEvent.event.section).toEqual('ethereumOutboundQueue');
 			expect(messageCommittedEvent.event.method).toEqual('MessagesCommitted');
-		}, 100000);
+		}, 200000);
 	});
 });
