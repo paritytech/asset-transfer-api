@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.5.0](https://github.com/paritytech/asset-transfer-api/compare/v0.4.5..v0.5.0)
+
+### Chore
+
+- chore(deps): update pjs ([#496](https://github.com/paritytech/asset-transfer-api/pull/496))([fa010be](https://github.com/paritytech/asset-transfer-api/commit/8a4b885607fcd4bbe0497d8e487ed6765fa010be))
+- chore(deps-dev): bump typedoc from 0.27.5 to 0.27.6 ([#494](https://github.com/paritytech/asset-transfer-api/pull/494))([b39abae](https://github.com/paritytech/asset-transfer-api/commit/dd558ad6c9b9afb4465b562726c1f669cb39abae))
+- chore(deps-dev): bump chalk from 5.3.0 to 5.4.1 ([#492](https://github.com/paritytech/asset-transfer-api/pull/492))([040adb4](https://github.com/paritytech/asset-transfer-api/commit/d86590a0d1c827c17d0ee3a078eedab39040adb4))
+- chore(deps-dev): bump typedoc-theme-hierarchy from 5.0.3 to 5.0.4 ([#491](https://github.com/paritytech/asset-transfer-api/pull/491))([3a9afd1](https://github.com/paritytech/asset-transfer-api/commit/8065c2ba86e06fb2e904d666710c8448b3a9afd1))
+
+### Fix
+
+- fix: expand dest addr validation ([#493](https://github.com/paritytech/asset-transfer-api/pull/493))([973d8e6](https://github.com/paritytech/asset-transfer-api/commit/a90ca7cf7394c0c4da1d053077073a902973d8e6))
+- fix: update extrinsic payload decoding ([#490](https://github.com/paritytech/asset-transfer-api/pull/490))([0e657a1](https://github.com/paritytech/asset-transfer-api/commit/aa9e26a7c57db28e42c8bd8912e6541600e657a1))
+
+### Test
+
+- test: update e2e tests ([#495](https://github.com/paritytech/asset-transfer-api/pull/495))([5148fc8](https://github.com/paritytech/asset-transfer-api/commit/0ac76918e9adb00447f0755a69ae1c35d5148fc8))
+- test: update xcm v4 e2e tests ([#489](https://github.com/paritytech/asset-transfer-api/pull/489))([5b95137](https://github.com/paritytech/asset-transfer-api/commit/0b974d31f3b9bbd85351125b1953c8e525b95137))
+
+### Feat
+
+- feat: ParaToEthereum ([#487](https://github.com/paritytech/asset-transfer-api/pull/487))([45a1216](https://github.com/paritytech/asset-transfer-api/commit/4a619254d4c17c051c74e5793c2e6c2e945a1216))
+
 ## [0.4.5](https://github.com/paritytech/asset-transfer-api/compare/v0.4.4..v0.4.5)
 
 ### Test
