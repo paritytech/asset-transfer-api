@@ -4,11 +4,11 @@ import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
+import { ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION } from '../src/consts';
 
 const { checkSystemEvents } = withExpect(expect);
 
 describe('Hydration <> Ethereum', () => {
-	const ethereumNetworkGlobalConsensusLocation = `{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`;
 	let hydration: NetworkContext;
 	let polkadotAssetHub: NetworkContext;
 	let polkadotBridgeHub: NetworkContext;
@@ -91,7 +91,7 @@ describe('Hydration <> Ethereum', () => {
 			});
 
 			const tx = await assetTransferApi.createTransferTransaction(
-				ethereumNetworkGlobalConsensusLocation,
+				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				['DOT', 'WETH.snow'],
 				['500000000000', '75000000000000'],
@@ -174,7 +174,7 @@ describe('Hydration <> Ethereum', () => {
 			});
 
 			const tx = await assetTransferApi.createTransferTransaction(
-				ethereumNetworkGlobalConsensusLocation,
+				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				['DOT', 'WETH.snow'],
 				['500000000000', '75000000000000'],

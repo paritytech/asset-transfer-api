@@ -4,11 +4,11 @@ import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
+import { ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION } from '../src/consts';
 
 const { checkSystemEvents } = withExpect(expect);
 
 describe('Moonbeam <> Ethereum', () => {
-	const ethereumNetworkGlobalConsensusLocation = `{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`;
 	let moonbeam: NetworkContext;
 	let polkadotAssetHub: NetworkContext;
 	let polkadotBridgeHub: NetworkContext;
@@ -90,7 +90,7 @@ describe('Moonbeam <> Ethereum', () => {
 			});
 
 			const tx = await assetTransferApi.createTransferTransaction(
-				ethereumNetworkGlobalConsensusLocation,
+				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				['DOT', 'WETH.snow'],
 				['100000000000', '750000000000000'],
@@ -172,7 +172,7 @@ describe('Moonbeam <> Ethereum', () => {
 			});
 
 			const tx = await assetTransferApi.createTransferTransaction(
-				ethereumNetworkGlobalConsensusLocation,
+				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				['DOT', 'WETH.snow'],
 				['100000000000', '750000000000000'],
