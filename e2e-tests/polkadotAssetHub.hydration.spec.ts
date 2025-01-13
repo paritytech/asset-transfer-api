@@ -83,7 +83,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			const recipientsUpdatedDOTBalance = await polkadotAssetHub.api.query.system.account(recipientAddress);
 
 			await check(recipientsUpdatedDOTBalance)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('local assethub recipient updated dot balance');
 			expect(recipientsUpdatedDOTBalance.data.free.toNumber()).toBeGreaterThan(1000000);
 		}, 200000);
@@ -130,7 +130,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			).unwrapOrDefault();
 
 			await check(recipientsUpdatedPoolAssetBalance)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('local assethub recipients updated pool asset balance');
 			expect(recipientsUpdatedPoolAssetBalance.balance.toNumber()).toBeGreaterThan(
 				recipientsInitialPoolAssetBalance.balance.toNumber(),
@@ -177,7 +177,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			const recipientUpdatedHDXBalance = await hydration.api.query.tokens.accounts(recipientAddress, 0);
 
 			await check(recipientUpdatedHDXBalance as AccountData)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('local hydration recipient updated balance');
 			expect((recipientUpdatedHDXBalance as AccountData).free.toNumber()).toBeGreaterThan(
 				(recipientInitialHDXBalance as AccountData).free.toNumber(),
@@ -228,7 +228,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			const recipientsUpdatedDOTBalance = await polkadotAssetHub.api.query.system.account(recipientAddress);
 
 			await check(recipientsUpdatedDOTBalance)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('asset hub recipients updated dot balance');
 			expect(recipientsUpdatedDOTBalance.data.free.toNumber()).toBeGreaterThan(
 				recipientsInitialDOTBalance.data.free.toNumber(),
@@ -272,7 +272,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			const recipientsUpdatedDOTBalance = await hydration.api.query.tokens.accounts(recipientAddress, 5);
 
 			await check(recipientsUpdatedDOTBalance as AccountData)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('hydration recipients updated dot balance');
 			expect((recipientsUpdatedDOTBalance as AccountData).free.toNumber()).toBeGreaterThan(
 				(recipientsInitialDOTBalance as AccountData).free.toNumber(),
@@ -415,7 +415,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			const recipientsUpdatedWETHBalance = await hydration.api.query.tokens.accounts(recipientAddress, 1000189);
 
 			await check(recipientsUpdatedWETHBalance as AccountData)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('hydration recipients updated snowbridge weth balance');
 			expect((recipientsUpdatedWETHBalance as AccountData).free.toNumber()).toBeGreaterThan(
 				(recipientsInitialHydrationWETHBalance as AccountData).free.toNumber(),
@@ -466,7 +466,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			const recipientsUpdatedDOTBalance = await polkadotAssetHub.api.query.system.account(recipientAddress);
 
 			await check(recipientsUpdatedDOTBalance)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('asset hub recipients updated dot balance');
 			expect(recipientsUpdatedDOTBalance.data.free.toNumber()).toBeGreaterThan(
 				recipientsInitialDOTBalance.data.free.toNumber(),
@@ -510,7 +510,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			const recipientsUpdatedDOTBalance = await hydration.api.query.tokens.accounts(recipientAddress, 5);
 
 			await check(recipientsUpdatedDOTBalance as AccountData)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('hydration recipients updated dot balance');
 			expect((recipientsUpdatedDOTBalance as AccountData).free.toNumber()).toBeGreaterThan(
 				(recipientsInitialDOTBalance as AccountData).free.toNumber(),
@@ -594,7 +594,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			).unwrapOrDefault();
 
 			await check(recipientsUpdatedWETHBalance)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('asset hub recipients updated snowbridge weth balance');
 			expect(recipientsUpdatedWETHBalance.balance.toNumber()).toBeGreaterThan(
 				recipientsInitialWETHBalance.balance.toNumber(),
@@ -653,7 +653,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			const recipientsUpdatedWETHBalance = await hydration.api.query.tokens.accounts(recipientAddress, 1000189);
 
 			await check(recipientsUpdatedWETHBalance as AccountData)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('hydration recipients updated snowbridge weth balance');
 			expect((recipientsUpdatedWETHBalance as AccountData).free.toNumber()).toBeGreaterThan(
 				(recipientsInitialHydrationWETHBalance as AccountData).free.toNumber(),
