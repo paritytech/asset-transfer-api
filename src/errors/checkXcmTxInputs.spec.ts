@@ -9,10 +9,10 @@ import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { Direction } from '../types';
 import {
 	checkAssetIdInput,
+	checkAssetIdsAndAmountsMatch,
 	checkAssetIdsAreOfSameAssetIdType,
 	checkAssetIdsHaveNoDuplicates,
 	checkAssetIdsLengthIsValid,
-	checkAssetsAmountMatch,
 	checkBridgeTxInputs,
 	checkDestAddrIsValid,
 	checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset,
@@ -94,13 +94,11 @@ describe('checkRelayAmountsLength', () => {
 	});
 });
 
-describe('checkAssetsAmountMatch', () => {
+describe('checkAssetIdsAndAmountsMatch', () => {
 	it("Should error when inputted assetId's dont match amounts length", () => {
-		const err = () => checkAssetsAmountMatch(['1'], ['10', '10']);
+		const err = () => checkAssetIdsAndAmountsMatch(['1'], ['10', '10']);
 
-		expect(err).toThrow(
-			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.',
-		);
+		expect(err).toThrow('`amounts`, and `assetIds` fields should match in length when constructing a tx.');
 	});
 });
 

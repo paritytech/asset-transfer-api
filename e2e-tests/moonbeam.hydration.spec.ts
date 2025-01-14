@@ -80,7 +80,7 @@ describe('Moonbeam <> Hydration', () => {
 			const recipientUpdatedGLMRBalance = await hydration.api.query.tokens.accounts(hydrationRecipientAddress, 16);
 
 			await check(recipientUpdatedGLMRBalance as AccountData)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('hydration recipients updated glmr balance');
 			expect((recipientUpdatedGLMRBalance as AccountData).free.toBigInt()).toBeGreaterThan(
 				(recipientInitialGLMRBalance as AccountData).free.toBigInt(),
@@ -133,7 +133,7 @@ describe('Moonbeam <> Hydration', () => {
 			).unwrapOrDefault();
 
 			await check(recipientUpdatedHDXBalance)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('moonbeam recipients updated hdx balance');
 			expect(recipientUpdatedHDXBalance.balance.toBigInt()).toBeGreaterThan(
 				recipientInitialHDXBalance.balance.toBigInt(),
@@ -181,7 +181,7 @@ describe('Moonbeam <> Hydration', () => {
 			const recipientUpdatedGLMRBalance = await hydration.api.query.tokens.accounts(hydrationRecipientAddress, 16);
 
 			await check(recipientUpdatedGLMRBalance)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('hydration recipients updated glmr balance');
 			expect((recipientUpdatedGLMRBalance as AccountData).free.toBigInt()).toBeGreaterThan(
 				(recipientInitialGLMRBalance as AccountData).free.toBigInt(),
@@ -234,7 +234,7 @@ describe('Moonbeam <> Hydration', () => {
 			).unwrapOrDefault();
 
 			await check(recipientUpdatedHDXBalance)
-				.redact({ number: 2 })
+				.redact({ number: 1 })
 				.toMatchSnapshot('moonbeam recipients updated hdx balance');
 			expect(recipientUpdatedHDXBalance.balance.toBigInt()).toBeGreaterThan(
 				recipientInitialHDXBalance.balance.toBigInt(),

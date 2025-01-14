@@ -4,6 +4,7 @@ import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
+import { ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION } from '../src/consts';
 
 const { checkSystemEvents } = withExpect(expect);
 
@@ -62,7 +63,7 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 
 			const assetTransferApi = new AssetTransferApi(polkadotAssetHub.api, 'asset-hub-polkadot', xcmVersion);
 			const tx = await assetTransferApi.createTransferTransaction(
-				`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`,
+				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				[
 					`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}},{"AccountKey20":{"network":null,"key":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]}}`,
@@ -110,7 +111,7 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 
 			const assetTransferApi = new AssetTransferApi(polkadotAssetHub.api, 'asset-hub-polkadot', xcmVersion);
 			const tx = await assetTransferApi.createTransferTransaction(
-				`{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`,
+				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				[
 					`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}},{"AccountKey20":{"network":null,"key":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]}}`,

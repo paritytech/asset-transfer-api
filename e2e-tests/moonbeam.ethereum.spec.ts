@@ -8,39 +8,39 @@ import { ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION } from '../src/const
 
 const { checkSystemEvents } = withExpect(expect);
 
-describe('Hydration <> Ethereum', () => {
-	let hydration: NetworkContext;
+describe('Moonbeam <> Ethereum', () => {
+	let moonbeam: NetworkContext;
 	let polkadotAssetHub: NetworkContext;
 	let polkadotBridgeHub: NetworkContext;
 
 	const { alice, alith } = testingPairs();
 
 	beforeEach(async () => {
-		const { hydration1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
-			hydration1: {
-				endpoint: 'wss://rpc.hydradx.cloud',
+		const { moonbeam1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
+			moonbeam1: {
+				endpoint: 'wss://moonbeam-rpc.dwellir.com',
 				db: './db.sqlite',
-				port: 8010,
+				port: 8016,
 			},
 			polkadotBridgeHub1: {
 				endpoint: 'wss://bridge-hub-polkadot-rpc.dwellir.com',
 				db: './db.sqlite',
-				port: 8011,
+				port: 8017,
 			},
 			polkadotAssetHub1: {
 				endpoint: 'wss://asset-hub-polkadot-rpc.dwellir.com',
 				db: './db.sqlite',
-				port: 8012,
+				port: 8018,
 			},
 		});
 
-		hydration = hydration1;
+		moonbeam = moonbeam1;
 		polkadotBridgeHub = polkadotBridgeHub1;
 		polkadotAssetHub = polkadotAssetHub1;
 	}, 1000000);
 
 	afterEach(async () => {
-		await hydration.teardown();
+		await moonbeam.teardown();
 		await polkadotAssetHub.teardown();
 		await polkadotBridgeHub.teardown();
 	}, 1000000);
@@ -48,32 +48,31 @@ describe('Hydration <> Ethereum', () => {
 	describe('XCM V3', () => {
 		const xcmVersion = 3;
 
-		test('Transfer Snowbridge WETH from Hydration to Ethereum', async () => {
-			await hydration.dev.setStorage({
+		test('Transfer Snowbridge WETH from Moonbeam to Ethereum', async () => {
+			await moonbeam.dev.setStorage({
 				System: {
 					Account: [
-						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // HDX
+						[[alith.address], { providers: 1, data: { free: '100000000000000000000000' } }], // GLMR
 					],
 				},
-				Tokens: {
-					Accounts: [
-						[[alice.address, 0], { free: '50000000000000000000000000' }], // HDX
-						[[alice.address, 5], { free: '50000000000000000000000000' }], // DOT
-						[[alice.address, 1000189], { free: '500000000000000000000' }], // Snowbridge WETH
+				Assets: {
+					Account: [
+						[['42259045809535163221576417993425387648', alith.address], { balance: '1000000000000000' }], // DOT
+						[['178794693648360392906933130845919698647', alith.address], { balance: '1000000000000000' }], // Snowbridge WETH
 					],
 				},
 			});
 
-			const assetTransferApi = new AssetTransferApi(hydration.api, 'hydradx', xcmVersion, {
+			const assetTransferApi = new AssetTransferApi(moonbeam.api, 'moonbeam', xcmVersion, {
 				registryType: 'NPM',
 				injectedRegistry: {
 					polkadot: {
-						2034: {
+						2004: {
 							tokens: [],
 							assetsInfo: {},
 							foreignAssetsInfo: {},
 							poolPairsInfo: {},
-							specName: 'hydradx',
+							specName: 'moonbeam',
 							xcAssetsData: [
 								{
 									paraID: 0,
@@ -81,7 +80,7 @@ describe('Hydration <> Ethereum', () => {
 									decimals: 18,
 									xcmV1MultiLocation:
 										'{"v1":{"parents":2,"interior":{"x2":[{"globalConsensus":{"ethereum":{"chainId":1}}},{"accountKey20":{"network":null,"key":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]}}}',
-									asset: '1000189',
+									asset: '178794693648360392906933130845919698647',
 									assetHubReserveLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
 								},
 							],
@@ -94,7 +93,7 @@ describe('Hydration <> Ethereum', () => {
 				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				['DOT', 'WETH.snow'],
-				['500000000000', '75000000000000'],
+				['100000000000', '750000000000000'],
 				{
 					sendersAddr: alice.address,
 					format: 'payload',
@@ -105,12 +104,12 @@ describe('Hydration <> Ethereum', () => {
 
 			const extrinsic = assetTransferApi.api.registry.createType('Extrinsic', { method: tx.tx.method }, { version: 4 });
 
-			await hydration.api.tx(extrinsic).signAndSend(alice);
-			await hydration.dev.newBlock();
+			await moonbeam.api.tx(extrinsic).signAndSend(alith);
+			await moonbeam.dev.newBlock();
 
-			await checkSystemEvents(hydration, 'polkadotXcm')
+			await checkSystemEvents(moonbeam, 'polkadotXcm')
 				.redact({ redactKeys: new RegExp('messageId') })
-				.toMatchSnapshot('hydration xcm message sent');
+				.toMatchSnapshot('Moonbeam xcm message sent');
 
 			await setTimeout(10000);
 			await polkadotAssetHub.dev.timeTravel(1);
@@ -131,32 +130,31 @@ describe('Hydration <> Ethereum', () => {
 	describe('XCM V4', () => {
 		const xcmVersion = 4;
 
-		test('Transfer Snowbridge WETH from Hydration to Ethereum', async () => {
-			await hydration.dev.setStorage({
+		test('Transfer Snowbridge WETH from Moonbeam to Ethereum', async () => {
+			await moonbeam.dev.setStorage({
 				System: {
 					Account: [
-						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // HDX
+						[[alith.address], { providers: 1, data: { free: '100000000000000000000000' } }], // GLMR
 					],
 				},
-				Tokens: {
-					Accounts: [
-						[[alice.address, 0], { free: '50000000000000000000000000' }], // HDX
-						[[alice.address, 5], { free: '50000000000000000000000000' }], // DOT
-						[[alice.address, 1000189], { free: '500000000000000000000' }], // Snowbridge WETH
+				Assets: {
+					Account: [
+						[['42259045809535163221576417993425387648', alith.address], { balance: '1000000000000000' }], // DOT
+						[['178794693648360392906933130845919698647', alith.address], { balance: '1000000000000000' }], // Snowbridge WETH
 					],
 				},
 			});
 
-			const assetTransferApi = new AssetTransferApi(hydration.api, 'hydradx', xcmVersion, {
+			const assetTransferApi = new AssetTransferApi(moonbeam.api, 'moonbeam', xcmVersion, {
 				registryType: 'NPM',
 				injectedRegistry: {
 					polkadot: {
-						2034: {
+						2030: {
 							tokens: [],
 							assetsInfo: {},
 							foreignAssetsInfo: {},
 							poolPairsInfo: {},
-							specName: 'hydradx',
+							specName: 'moonbeam',
 							xcAssetsData: [
 								{
 									paraID: 0,
@@ -164,7 +162,7 @@ describe('Hydration <> Ethereum', () => {
 									decimals: 18,
 									xcmV1MultiLocation:
 										'{"v1":{"parents":2,"interior":{"x2":[{"globalConsensus":{"ethereum":{"chainId":1}}},{"accountKey20":{"network":null,"key":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]}}}',
-									asset: '1000189',
+									asset: { Token2: '13' },
 									assetHubReserveLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
 								},
 							],
@@ -177,7 +175,7 @@ describe('Hydration <> Ethereum', () => {
 				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				['DOT', 'WETH.snow'],
-				['500000000000', '75000000000000'],
+				['100000000000', '750000000000000'],
 				{
 					sendersAddr: alice.address,
 					format: 'payload',
@@ -188,12 +186,12 @@ describe('Hydration <> Ethereum', () => {
 
 			const extrinsic = assetTransferApi.api.registry.createType('Extrinsic', { method: tx.tx.method }, { version: 4 });
 
-			await hydration.api.tx(extrinsic).signAndSend(alice);
-			await hydration.dev.newBlock();
+			await moonbeam.api.tx(extrinsic).signAndSend(alith);
+			await moonbeam.dev.newBlock();
 
-			await checkSystemEvents(hydration, 'polkadotXcm')
+			await checkSystemEvents(moonbeam, 'polkadotXcm')
 				.redact({ redactKeys: new RegExp('messageId') })
-				.toMatchSnapshot('hydration xcm message sent');
+				.toMatchSnapshot('Moonbeam xcm message sent');
 
 			await setTimeout(10000);
 			await polkadotAssetHub.dev.timeTravel(1);
@@ -210,7 +208,7 @@ describe('Hydration <> Ethereum', () => {
 			expect(xcmMessageProcessed.event.method).toEqual('Processed');
 			expect(xcmMessageProcessed.event.section).toEqual('messageQueue');
 
-			await setTimeout(10000);
+			await setTimeout(20000);
 			await polkadotBridgeHub.dev.timeTravel(1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')

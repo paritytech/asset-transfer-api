@@ -137,14 +137,10 @@ export const checkMultiLocationAmountsLength = (amounts: string[]) => {
  * @param assetIds
  * @param amounts
  */
-export const checkAssetsAmountMatch = (
-	assetIds: string[],
-	amounts: string[],
-	isParachainPrimaryNativeAsset?: boolean,
-) => {
-	if (!isParachainPrimaryNativeAsset && assetIds.length !== amounts.length) {
+export const checkAssetIdsAndAmountsMatch = (assetIds: string[], amounts: string[]) => {
+	if (assetIds.length !== amounts.length) {
 		throw new BaseError(
-			'`amounts`, and `assetIds` fields should match in length when constructing a tx from a parachain to a parachain or locally on a system parachain.',
+			'`amounts`, and `assetIds` fields should match in length when constructing a tx.',
 			BaseErrorsEnum.InvalidInput,
 		);
 	}
@@ -1234,15 +1230,15 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		if (isForeignAssetsTransfer) {
 			checkMultiLocationIdLength(assetIds);
 			checkMultiLocationAmountsLength(amounts);
-			checkAssetsAmountMatch(assetIds, amounts);
+			checkAssetIdsAndAmountsMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
-		checkAssetsAmountMatch(assetIds, amounts);
+		checkAssetIdsAndAmountsMatch(assetIds, amounts);
 	}
 
 	if (direction === Direction.SystemToSystem) {
 		if (isForeignAssetsTransfer) {
-			checkAssetsAmountMatch(assetIds, amounts);
+			checkAssetIdsAndAmountsMatch(assetIds, amounts);
 			checkMultiLocationsContainOnlyNativeOrForeignAssetsOfDestChain(direction, destChainId, assetIds);
 		}
 		checkIfNativeRelayChainAssetPresentInMultiAssetIdList(assetIds, registry);
@@ -1251,7 +1247,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	if (direction === Direction.SystemToBridge) {
 		checkMultiLocationIdLength(assetIds);
 		checkMultiLocationAmountsLength(amounts);
-		checkAssetsAmountMatch(assetIds, amounts);
+		checkAssetIdsAndAmountsMatch(assetIds, amounts);
 		getGlobalConsensusSystemName(destChainId);
 		checkBridgeTxInputs(
 			paysWithFeeDest,
@@ -1266,7 +1262,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 
 	if (direction === Direction.ParaToSystem || direction === Direction.ParaToPara) {
 		CheckXTokensPalletOriginIsNonForeignAssetTx(direction, xcmPallet, isForeignAssetsTransfer);
-		checkAssetsAmountMatch(assetIds, amounts, isPrimaryParachainNativeAsset);
+		checkAssetIdsAndAmountsMatch(assetIds, amounts);
 	}
 
 	if (direction === Direction.ParaToRelay) {
@@ -1275,6 +1271,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	}
 
 	if (direction === Direction.ParaToEthereum) {
+		checkAssetIdsAndAmountsMatch(assetIds, amounts);
 		checkParaToEthereum(destAddr, sendersAddr, paysWithFeeDest);
 	}
 };
@@ -1301,7 +1298,7 @@ export const checkParaToEthereum = (destAddr: string, sendersAddr?: string, pays
 };
 
 export const checkClaimAssetsInputs = (assets: string[], amounts: string[]) => {
-	checkAssetsAmountMatch(assets, amounts);
+	checkAssetIdsAndAmountsMatch(assets, amounts);
 	checkAssetIdsAreOfSameAssetIdType(assets);
 };
 
