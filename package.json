@@ -42,7 +42,7 @@
 		"typedoc": "^0.27.5",
 		"typedoc-plugin-missing-exports": "^3.0.0",
 		"typedoc-theme-hierarchy": "^5.0.3",
-		"vitest": "^2.1.8"
+		"vitest": "^3.0.2"
 	},
 	"dependencies": {
 		"@acala-network/chopsticks-core": "^1.0.1",
