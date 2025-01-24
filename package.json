@@ -53,7 +53,7 @@
 		"@polkadot/types-codec": "^15.2.1",
 		"@polkadot/util": "^13.3.1",
 		"@polkadot/util-crypto": "^13.3.1",
-		"@substrate/asset-transfer-api-registry": "^0.2.24"
+		"@substrate/asset-transfer-api-registry": "^0.2.26"
 	},
 	"resolutions": {
 		"@polkadot/api": "^15.2.1",
