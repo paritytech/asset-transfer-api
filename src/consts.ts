@@ -85,3 +85,7 @@ export const SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION = '{"parents":"1","inter
  * The asset location of the native relay chain asset from the perspective of the Relay chain
  */
 export const RELAY_CHAINS_NATIVE_ASSET_LOCATION = '{"parents":"0","interior":{"Here":""}}';
+/**
+ * The global location of the Ethereum Mainnet
+ */
+export const ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION = `{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"1"}}}}}`;

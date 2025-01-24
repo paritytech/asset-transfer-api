@@ -8,39 +8,39 @@ import { ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION } from '../src/const
 
 const { checkSystemEvents } = withExpect(expect);
 
-describe('Hydration <> Ethereum', () => {
-	let hydration: NetworkContext;
+describe('Bifrost Polkadot <> Ethereum', () => {
+	let bifrostPolkadot: NetworkContext;
 	let polkadotAssetHub: NetworkContext;
 	let polkadotBridgeHub: NetworkContext;
 
 	const { alice, alith } = testingPairs();
 
 	beforeEach(async () => {
-		const { hydration1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
-			hydration1: {
-				endpoint: 'wss://rpc.hydradx.cloud',
+		const { bifrostPolkadot1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
+			bifrostPolkadot1: {
+				endpoint: 'wss://bifrost-polkadot-rpc.dwellir.com',
 				db: './db.sqlite',
-				port: 8010,
+				port: 8013,
 			},
 			polkadotBridgeHub1: {
 				endpoint: 'wss://bridge-hub-polkadot-rpc.dwellir.com',
 				db: './db.sqlite',
-				port: 8011,
+				port: 8014,
 			},
 			polkadotAssetHub1: {
 				endpoint: 'wss://asset-hub-polkadot-rpc.dwellir.com',
 				db: './db.sqlite',
-				port: 8012,
+				port: 8015,
 			},
 		});
 
-		hydration = hydration1;
+		bifrostPolkadot = bifrostPolkadot1;
 		polkadotBridgeHub = polkadotBridgeHub1;
 		polkadotAssetHub = polkadotAssetHub1;
 	}, 1000000);
 
 	afterEach(async () => {
-		await hydration.teardown();
+		await bifrostPolkadot.teardown();
 		await polkadotAssetHub.teardown();
 		await polkadotBridgeHub.teardown();
 	}, 1000000);
@@ -48,32 +48,31 @@ describe('Hydration <> Ethereum', () => {
 	describe('XCM V3', () => {
 		const xcmVersion = 3;
 
-		test('Transfer Snowbridge WETH from Hydration to Ethereum', async () => {
-			await hydration.dev.setStorage({
+		test('Transfer Snowbridge WETH from Bifrost Polkadot to Ethereum', async () => {
+			await bifrostPolkadot.dev.setStorage({
 				System: {
 					Account: [
-						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // HDX
+						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // BNC
 					],
 				},
 				Tokens: {
 					Accounts: [
-						[[alice.address, 0], { free: '50000000000000000000000000' }], // HDX
-						[[alice.address, 5], { free: '50000000000000000000000000' }], // DOT
-						[[alice.address, 1000189], { free: '500000000000000000000' }], // Snowbridge WETH
+						[[alice.address, { Token2: 0 }], { free: '1000000000000000000000000000000000' }], // DOT
+						[[alice.address, { Token2: 13 }], { free: '1000000000000000000000000000000' }], // Snowbridge WETH
 					],
 				},
 			});
 
-			const assetTransferApi = new AssetTransferApi(hydration.api, 'hydradx', xcmVersion, {
+			const assetTransferApi = new AssetTransferApi(bifrostPolkadot.api, 'bifrost_polkadot', xcmVersion, {
 				registryType: 'NPM',
 				injectedRegistry: {
 					polkadot: {
-						2034: {
+						2030: {
 							tokens: [],
 							assetsInfo: {},
 							foreignAssetsInfo: {},
 							poolPairsInfo: {},
-							specName: 'hydradx',
+							specName: 'bifrost_polkadot',
 							xcAssetsData: [
 								{
 									paraID: 0,
@@ -81,7 +80,7 @@ describe('Hydration <> Ethereum', () => {
 									decimals: 18,
 									xcmV1MultiLocation:
 										'{"v1":{"parents":2,"interior":{"x2":[{"globalConsensus":{"ethereum":{"chainId":1}}},{"accountKey20":{"network":null,"key":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]}}}',
-									asset: '1000189',
+									asset: { Token2: '13' },
 									assetHubReserveLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
 								},
 							],
@@ -94,7 +93,7 @@ describe('Hydration <> Ethereum', () => {
 				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				['DOT', 'WETH.snow'],
-				['500000000000', '75000000000000'],
+				['100000000000', '750000000000000'],
 				{
 					sendersAddr: alice.address,
 					format: 'payload',
@@ -105,12 +104,12 @@ describe('Hydration <> Ethereum', () => {
 
 			const extrinsic = assetTransferApi.api.registry.createType('Extrinsic', { method: tx.tx.method }, { version: 4 });
 
-			await hydration.api.tx(extrinsic).signAndSend(alice);
-			await hydration.dev.newBlock();
+			await bifrostPolkadot.api.tx(extrinsic).signAndSend(alice);
+			await bifrostPolkadot.dev.newBlock();
 
-			await checkSystemEvents(hydration, 'polkadotXcm')
+			await checkSystemEvents(bifrostPolkadot, 'polkadotXcm')
 				.redact({ redactKeys: new RegExp('messageId') })
-				.toMatchSnapshot('hydration xcm message sent');
+				.toMatchSnapshot('bifrost polkadot xcm message sent');
 
 			await setTimeout(10000);
 			await polkadotAssetHub.dev.timeTravel(1);
@@ -131,32 +130,31 @@ describe('Hydration <> Ethereum', () => {
 	describe('XCM V4', () => {
 		const xcmVersion = 4;
 
-		test('Transfer Snowbridge WETH from Hydration to Ethereum', async () => {
-			await hydration.dev.setStorage({
+		test('Transfer Snowbridge WETH from Bifrost Polkadot to Ethereum', async () => {
+			await bifrostPolkadot.dev.setStorage({
 				System: {
 					Account: [
-						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // HDX
+						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // BNC
 					],
 				},
 				Tokens: {
 					Accounts: [
-						[[alice.address, 0], { free: '50000000000000000000000000' }], // HDX
-						[[alice.address, 5], { free: '50000000000000000000000000' }], // DOT
-						[[alice.address, 1000189], { free: '500000000000000000000' }], // Snowbridge WETH
+						[[alice.address, { Token2: 0 }], { free: '1000000000000000000000000000000000' }], // DOT
+						[[alice.address, { Token2: 13 }], { free: '1000000000000000000000000000000' }], // Snowbridge WETH
 					],
 				},
 			});
 
-			const assetTransferApi = new AssetTransferApi(hydration.api, 'hydradx', xcmVersion, {
+			const assetTransferApi = new AssetTransferApi(bifrostPolkadot.api, 'bifrost_polkadot', xcmVersion, {
 				registryType: 'NPM',
 				injectedRegistry: {
 					polkadot: {
-						2034: {
+						2030: {
 							tokens: [],
 							assetsInfo: {},
 							foreignAssetsInfo: {},
 							poolPairsInfo: {},
-							specName: 'hydradx',
+							specName: 'bifrost_polkadot',
 							xcAssetsData: [
 								{
 									paraID: 0,
@@ -164,7 +162,7 @@ describe('Hydration <> Ethereum', () => {
 									decimals: 18,
 									xcmV1MultiLocation:
 										'{"v1":{"parents":2,"interior":{"x2":[{"globalConsensus":{"ethereum":{"chainId":1}}},{"accountKey20":{"network":null,"key":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]}}}',
-									asset: '1000189',
+									asset: { Token2: '13' },
 									assetHubReserveLocation: '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}',
 								},
 							],
@@ -177,7 +175,7 @@ describe('Hydration <> Ethereum', () => {
 				ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION,
 				alith.address,
 				['DOT', 'WETH.snow'],
-				['500000000000', '75000000000000'],
+				['100000000000', '750000000000000'],
 				{
 					sendersAddr: alice.address,
 					format: 'payload',
@@ -188,12 +186,12 @@ describe('Hydration <> Ethereum', () => {
 
 			const extrinsic = assetTransferApi.api.registry.createType('Extrinsic', { method: tx.tx.method }, { version: 4 });
 
-			await hydration.api.tx(extrinsic).signAndSend(alice);
-			await hydration.dev.newBlock();
+			await bifrostPolkadot.api.tx(extrinsic).signAndSend(alice);
+			await bifrostPolkadot.dev.newBlock();
 
-			await checkSystemEvents(hydration, 'polkadotXcm')
+			await checkSystemEvents(bifrostPolkadot, 'polkadotXcm')
 				.redact({ redactKeys: new RegExp('messageId') })
-				.toMatchSnapshot('hydration xcm message sent');
+				.toMatchSnapshot('bifrost polkadot xcm message sent');
 
 			await setTimeout(10000);
 			await polkadotAssetHub.dev.timeTravel(1);
