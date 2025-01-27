@@ -18,7 +18,7 @@ describe('Bifrost Polkadot <> Ethereum', () => {
 	beforeEach(async () => {
 		const { bifrostPolkadot1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
 			bifrostPolkadot1: {
-				endpoint: 'wss://bifrost-polkadot-rpc.dwellir.com',
+				endpoint: 'wss://bifrost-polkadot.ibp.network',
 				db: './db.sqlite',
 				port: 8013,
 			},
