@@ -39,12 +39,12 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 
 		polkadotBridgeHub = polkadotBridgeHub1;
 		polkadotAssetHub = polkadotAssetHub1;
-	}, 500000);
+	}, 1000000);
 
 	afterEach(async () => {
 		await polkadotBridgeHub.teardown();
 		await polkadotAssetHub.teardown();
-	}, 500000);
+	}, 1000000);
 
 	describe('XCM V3', () => {
 		const xcmVersion = 3;
