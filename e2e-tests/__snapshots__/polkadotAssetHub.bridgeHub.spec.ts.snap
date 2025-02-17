@@ -21,7 +21,7 @@ exports[`Polkadot AssetHub <> Ethereum > XCM V3 > Snowbridge WETH From AssetHub 
       "fees": [
         {
           "fun": {
-            "Fungible": "(rounded 62000000000)",
+            "Fungible": "(rounded 15000000000)",
           },
           "id": {
             "interior": "Here",
@@ -202,7 +202,7 @@ exports[`Polkadot AssetHub <> Ethereum > XCM V4 > Snowbridge WETH From AssetHub 
       "fees": [
         {
           "fun": {
-            "Fungible": "(rounded 62000000000)",
+            "Fungible": "(rounded 15000000000)",
           },
           "id": {
             "interior": "Here",
