@@ -7,7 +7,7 @@ exports[`Moonbeam <> Ethereum > XCM V3 > Transfer Snowbridge WETH from Moonbeam 
       "outcome": {
         "Complete": {
           "used": {
-            "proofSize": "(rounded 19000)",
+            "proofSize": "(redacted)",
             "refTime": "(redacted)",
           },
         },
@@ -225,7 +225,7 @@ exports[`Moonbeam <> Ethereum > XCM V3 > Transfer Snowbridge WETH from Moonbeam 
           "SetTopic": 0,
         },
       ],
-      "messageId": "(hash)",
+      "messageId": "(redacted)",
       "origin": {
         "interior": {
           "X1": [
@@ -326,7 +326,7 @@ exports[`Moonbeam <> Ethereum > XCM V4 > Transfer Snowbridge WETH from Moonbeam 
       "outcome": {
         "Complete": {
           "used": {
-            "proofSize": "(rounded 19000)",
+            "proofSize": "(redacted)",
             "refTime": "(redacted)",
           },
         },
@@ -544,7 +544,7 @@ exports[`Moonbeam <> Ethereum > XCM V4 > Transfer Snowbridge WETH from Moonbeam 
           "SetTopic": 0,
         },
       ],
-      "messageId": "(hash)",
+      "messageId": "(redacted)",
       "origin": {
         "interior": {
           "X1": [
