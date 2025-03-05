@@ -18,7 +18,7 @@ describe('Moonbeam <> Ethereum', () => {
 	beforeEach(async () => {
 		const { moonbeam1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
 			moonbeam1: {
-				endpoint: 'wss://moonbeam-rpc.dwellir.com',
+				endpoint: 'wss://moonbeam-rpc.n.dwellir.com',
 				db: './db.sqlite',
 				port: 8016,
 			},
@@ -109,6 +109,8 @@ describe('Moonbeam <> Ethereum', () => {
 
 			await checkSystemEvents(moonbeam, 'polkadotXcm')
 				.redact({ redactKeys: new RegExp('messageId') })
+				.redact({ redactKeys: new RegExp('proofSize') })
+				.redact({ redactKeys: new RegExp('refTime') })
 				.toMatchSnapshot('Moonbeam xcm message sent');
 
 			await setTimeout(10000);
@@ -191,6 +193,8 @@ describe('Moonbeam <> Ethereum', () => {
 
 			await checkSystemEvents(moonbeam, 'polkadotXcm')
 				.redact({ redactKeys: new RegExp('messageId') })
+				.redact({ redactKeys: new RegExp('proofSize') })
+				.redact({ redactKeys: new RegExp('refTime') })
 				.toMatchSnapshot('Moonbeam xcm message sent');
 
 			await setTimeout(10000);

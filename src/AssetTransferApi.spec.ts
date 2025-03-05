@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
-import type { Weight } from '@polkadot/types/interfaces';
+import type { Weight, WeightV2 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { AssetTransferApi } from './AssetTransferApi';
@@ -505,10 +505,18 @@ describe('AssetTransferAPI', () => {
 			});
 
 			expect(
-				westmintAssetsApi['getXcmWeightToFee'](xcmWeightToFeeAssetResult, {
-					V4: { parents: 1, interior: { Here: '' } },
-				}),
-			).toEqual({ xcmFee: '100000000000' });
+				westmintAssetsApi['getXcmWeightToFee'](
+					'local',
+					xcmWeightToFeeAssetResult,
+					{ refTime: 1000000, proofSize: 0 } as unknown as WeightV2,
+					{ V4: { parents: 1, interior: { Here: '' } } },
+				),
+			).toEqual({
+				xcmDest: '"local"',
+				xcmFee: '100000000000',
+				xcmFeeAsset: '{"V4":{"parents":1,"interior":{"Here":""}}}',
+				xcmWeight: '{"refTime":1000000,"proofSize":0}',
+			});
 		});
 		it('Should correctly throw an error when given an error result', () => {
 			const xcmWeightToFeeAssetResult = westmintAssetsApi.api.registry.createType('Result<u128, XcmPaymentApiError>', {
@@ -517,9 +525,12 @@ describe('AssetTransferAPI', () => {
 			const assetLocation = { V4: { parents: 1, interior: { Here: '' } } };
 
 			const err = () =>
-				westmintAssetsApi['getXcmWeightToFee'](xcmWeightToFeeAssetResult, {
-					V4: { parents: 1, interior: { Here: '' } },
-				});
+				westmintAssetsApi['getXcmWeightToFee'](
+					'local',
+					xcmWeightToFeeAssetResult,
+					{ refTime: 1000000, proofSize: 0 } as unknown as WeightV2,
+					{ V4: { parents: 1, interior: { Here: '' } } },
+				);
 			expect(err).toThrow(`XcmFeeAsset Error: AssetNotFound - asset: ${JSON.stringify(assetLocation)}`);
 		});
 	});
@@ -567,7 +578,12 @@ describe('AssetTransferAPI', () => {
 				},
 			);
 
-			expect(callTxResult.localXcmFees![1]).toEqual({ xcmFee: '3500000000000000' });
+			expect(callTxResult.localXcmFees![1]).toEqual({
+				xcmDest: '"local"',
+				xcmFee: '3500000000000000',
+				xcmFeeAsset: '{"V4":{"Parents":"1","Interior":{"Here":""}}}',
+				xcmWeight: '{"refTime":3500000000,"proofSize":350000000}',
+			});
 
 			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, callTxResult.tx, 'call');
 			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(

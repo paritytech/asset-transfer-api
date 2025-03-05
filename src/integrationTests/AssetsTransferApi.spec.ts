@@ -1,4 +1,7 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
+// Copyright 2024 Parity Technologies (UK) Ltd.
+
+import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
+import { ISubmittableResult } from '@polkadot/types/types';
 
 import { AssetTransferApi } from '../AssetTransferApi';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
@@ -2286,6 +2289,28 @@ describe('AssetTransferApi Integration Tests', () => {
 			}).rejects.toThrow(
 				`Found both symbol usdt and multilocation assetId {"parents":"1","interior":{"Here":""}}. Asset Ids must be symbol and integer or multilocation exclusively.`,
 			);
+		});
+	});
+	describe('getDestinationXcmWeightToFeeAsset', () => {
+		const sendersAddress = '5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E';
+		const mockSubmittableExt = adjustedMockSystemApiV1016000.registry.createType(
+			'Extrinsic',
+			'0xfc041f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160104000002043205040091010000000000',
+		) as SubmittableExtrinsic<'promise', ISubmittableResult>;
+
+		it('Correctly returns the estimated fees for a dry run that is ok', async () => {
+			const dryRunResult = await systemAssetsApiV1016000.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
+			expect(dryRunResult?.isOk).toBe(true);
+
+			const destinationFees = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
+				'bifrost_polkadot',
+				'wss://bifrost-polkadot.ibp.network',
+				4,
+				dryRunResult,
+				'usdt',
+			);
+
+			expect(parseInt(destinationFees[0][1].xcmFee)).toBeGreaterThan(0);
 		});
 	});
 });
