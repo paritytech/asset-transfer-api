@@ -8,7 +8,7 @@ exports[`Polkadot AssetHub <> Ethereum > XCM V3 > Snowbridge WETH From AssetHub 
         "Complete": {
           "used": {
             "proofSize": "(rounded 3600)",
-            "refTime": "(rounded 190000000)",
+            "refTime": "(redacted)",
           },
         },
       },
@@ -132,7 +132,7 @@ exports[`Polkadot AssetHub <> Ethereum > XCM V3 > Snowbridge WETH From AssetHub 
           },
         },
       ],
-      "messageId": "(redacted)",
+      "messageId": "(hash)",
       "origin": {
         "interior": {
           "X1": [
@@ -189,7 +189,7 @@ exports[`Polkadot AssetHub <> Ethereum > XCM V4 > Snowbridge WETH From AssetHub 
         "Complete": {
           "used": {
             "proofSize": "(rounded 3600)",
-            "refTime": "(rounded 190000000)",
+            "refTime": "(redacted)",
           },
         },
       },
@@ -313,7 +313,7 @@ exports[`Polkadot AssetHub <> Ethereum > XCM V4 > Snowbridge WETH From AssetHub 
           },
         },
       ],
-      "messageId": "(redacted)",
+      "messageId": "(hash)",
       "origin": {
         "interior": {
           "X1": [

@@ -109,6 +109,8 @@ describe('Moonbeam <> Ethereum', () => {
 
 			await checkSystemEvents(moonbeam, 'polkadotXcm')
 				.redact({ redactKeys: new RegExp('messageId') })
+				.redact({ redactKeys: new RegExp('proofSize') })
+				.redact({ redactKeys: new RegExp('refTime') })
 				.toMatchSnapshot('Moonbeam xcm message sent');
 
 			await setTimeout(10000);
@@ -191,6 +193,8 @@ describe('Moonbeam <> Ethereum', () => {
 
 			await checkSystemEvents(moonbeam, 'polkadotXcm')
 				.redact({ redactKeys: new RegExp('messageId') })
+				.redact({ redactKeys: new RegExp('proofSize') })
+				.redact({ redactKeys: new RegExp('refTime') })
 				.toMatchSnapshot('Moonbeam xcm message sent');
 
 			await setTimeout(10000);
