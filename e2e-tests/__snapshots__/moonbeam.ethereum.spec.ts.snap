@@ -7,8 +7,8 @@ exports[`Moonbeam <> Ethereum > XCM V3 > Transfer Snowbridge WETH from Moonbeam 
       "outcome": {
         "Complete": {
           "used": {
-            "proofSize": "(rounded 19000)",
-            "refTime": "(rounded 7700000000)",
+            "proofSize": "(redacted)",
+            "refTime": "(redacted)",
           },
         },
       },
@@ -326,8 +326,8 @@ exports[`Moonbeam <> Ethereum > XCM V4 > Transfer Snowbridge WETH from Moonbeam 
       "outcome": {
         "Complete": {
           "used": {
-            "proofSize": "(rounded 19000)",
-            "refTime": "(rounded 7700000000)",
+            "proofSize": "(redacted)",
+            "refTime": "(redacted)",
           },
         },
       },

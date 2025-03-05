@@ -80,8 +80,8 @@ exports[`Hydration <> Ethereum > XCM V3 > Transfer Snowbridge WETH from Hydratio
       "outcome": {
         "Complete": {
           "used": {
-            "proofSize": 0,
-            "refTime": 200000000,
+            "proofSize": "(redacted)",
+            "refTime": "(redacted)",
           },
         },
       },
@@ -399,8 +399,8 @@ exports[`Hydration <> Ethereum > XCM V4 > Transfer Snowbridge WETH from Hydratio
       "outcome": {
         "Complete": {
           "used": {
-            "proofSize": 0,
-            "refTime": 200000000,
+            "proofSize": "(redacted)",
+            "refTime": "(redacted)",
           },
         },
       },

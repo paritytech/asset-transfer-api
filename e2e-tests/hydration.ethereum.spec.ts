@@ -109,7 +109,7 @@ describe('Hydration <> Ethereum', () => {
 			await hydration.dev.newBlock();
 
 			await checkSystemEvents(hydration, 'polkadotXcm')
-				.redact({ redactKeys: new RegExp('messageId') })
+				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('hydration xcm message sent');
 
 			await setTimeout(10000);
@@ -192,7 +192,7 @@ describe('Hydration <> Ethereum', () => {
 			await hydration.dev.newBlock();
 
 			await checkSystemEvents(hydration, 'polkadotXcm')
-				.redact({ redactKeys: new RegExp('messageId') })
+				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('hydration xcm message sent');
 
 			await setTimeout(10000);

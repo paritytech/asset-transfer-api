@@ -82,7 +82,7 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 			await polkadotAssetHub.dev.newBlock();
 
 			await checkSystemEvents(polkadotAssetHub, 'polkadotXcm')
-				.redact({ redactKeys: new RegExp('messageId') })
+				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('assetHub xcm message sent');
 
 			await setTimeout(10000);
@@ -130,7 +130,7 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 			await polkadotAssetHub.dev.newBlock();
 
 			await checkSystemEvents(polkadotAssetHub, 'polkadotXcm')
-				.redact({ redactKeys: new RegExp('messageId') })
+				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('assetHub xcm message sent');
 
 			await setTimeout(10000);
