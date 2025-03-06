@@ -108,9 +108,7 @@ describe('Bifrost Polkadot <> Ethereum', () => {
 			await bifrostPolkadot.dev.newBlock();
 
 			await checkSystemEvents(bifrostPolkadot, 'polkadotXcm')
-				.redact({ redactKeys: new RegExp('messageId') })
-				.redact({ redactKeys: new RegExp('proofSize') })
-				.redact({ redactKeys: new RegExp('refTime') })
+				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('bifrost polkadot xcm message sent');
 
 			await setTimeout(10000);
@@ -192,9 +190,7 @@ describe('Bifrost Polkadot <> Ethereum', () => {
 			await bifrostPolkadot.dev.newBlock();
 
 			await checkSystemEvents(bifrostPolkadot, 'polkadotXcm')
-				.redact({ redactKeys: new RegExp('messageId') })
-				.redact({ redactKeys: new RegExp('proofSize') })
-				.redact({ redactKeys: new RegExp('refTime') })
+				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('bifrost polkadot xcm message sent');
 
 			await setTimeout(10000);
