@@ -5,7 +5,7 @@ __metadata:
   version: 8
   cacheKey: 10
 
-"@acala-network/chopsticks-core@npm:1.0.3":
+"@acala-network/chopsticks-core@npm:1.0.3, @acala-network/chopsticks-core@npm:^1.0.1":
   version: 1.0.3
   resolution: "@acala-network/chopsticks-core@npm:1.0.3"
   dependencies:
@@ -28,29 +28,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks-core@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "@acala-network/chopsticks-core@npm:1.0.2"
-  dependencies:
-    "@acala-network/chopsticks-executor": "npm:1.0.2"
-    "@polkadot/rpc-provider": "npm:^15.0"
-    "@polkadot/types": "npm:^15.0"
-    "@polkadot/types-codec": "npm:^15.0"
-    "@polkadot/types-known": "npm:^15.0"
-    "@polkadot/util": "npm:^13.2"
-    "@polkadot/util-crypto": "npm:^13.2"
-    comlink: "npm:^4.4.2"
-    eventemitter3: "npm:^5.0.1"
-    lodash: "npm:^4.17.21"
-    lru-cache: "npm:^11.0.2"
-    pino: "npm:^9.5.0"
-    pino-pretty: "npm:^13.0.0"
-    rxjs: "npm:^7.8.1"
-    zod: "npm:^3.24.1"
-  checksum: 10/32e6466733efcafbc5313223ce2ca7ec9d133e5922c46d25cd824645873899881c02ea3bb52a3e38a07f04dfdd39256183a0a484ccf51152d21bfbec5e823563
-  languageName: node
-  linkType: hard
-
 "@acala-network/chopsticks-db@npm:1.0.3":
   version: 1.0.3
   resolution: "@acala-network/chopsticks-db@npm:1.0.3"
@@ -61,16 +38,6 @@ __metadata:
     sqlite3: "npm:^5.1.7"
     typeorm: "npm:^0.3.20"
   checksum: 10/a723e3487bd8d44b82ddd4be532ffda32ecf499d62162190a33ba426e0ad6bc9ec801303f282fe3b948e9a478a1acc40ca0f333b788526f43d2bd8356a9abd5d
-  languageName: node
-  linkType: hard
-
-"@acala-network/chopsticks-executor@npm:1.0.2":
-  version: 1.0.2
-  resolution: "@acala-network/chopsticks-executor@npm:1.0.2"
-  dependencies:
-    "@polkadot/util": "npm:^13.2"
-    "@polkadot/wasm-util": "npm:^7.4"
-  checksum: 10/d9146a6e4801a2173b470e13affc7d8f7a789a84709dd50143393b26d52df600400dfa092c2979666dde6a81f39433ef51d00064b7e9c3ec0282c8166be1d4a7
   languageName: node
   linkType: hard
 
@@ -1875,17 +1842,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/networks@npm:^13.3.1":
-  version: 13.3.1
-  resolution: "@polkadot/networks@npm:13.3.1"
-  dependencies:
-    "@polkadot/util": "npm:13.3.1"
-    "@substrate/ss58-registry": "npm:^1.51.0"
-    tslib: "npm:^2.8.0"
-  checksum: 10/bdf806ba36d4989791c8a2b3cc49161dd9541f431c8a03a97da080a29db47ffa33dbf277b45105cb930f2a6fd3bd26c3be1404366816c35db341d013136ea0fb
-  languageName: node
-  linkType: hard
-
 "@polkadot/rpc-augment@npm:15.7.2":
   version: 15.7.2
   resolution: "@polkadot/rpc-augment@npm:15.7.2"
@@ -1982,20 +1938,6 @@ __metadata:
     "@polkadot/util": "npm:^13.4.3"
     tslib: "npm:^2.8.1"
   checksum: 10/727dc19c88a9854e3fbb85dca2395478a82a0c9d2c92233f21166f0ef84795cb855d7d36e7cb525ca51c93a42a823bdea3677582c0d24334204bb09e2b16e9c1
-  languageName: node
-  linkType: hard
-
-"@polkadot/types-known@npm:^15.0":
-  version: 15.5.1
-  resolution: "@polkadot/types-known@npm:15.5.1"
-  dependencies:
-    "@polkadot/networks": "npm:^13.3.1"
-    "@polkadot/types": "npm:15.5.1"
-    "@polkadot/types-codec": "npm:15.5.1"
-    "@polkadot/types-create": "npm:15.5.1"
-    "@polkadot/util": "npm:^13.3.1"
-    tslib: "npm:^2.8.1"
-  checksum: 10/1b6df3c7f38cc189e4eeeb3913a4c2d126d80fd0fc7aa94aff7bb98efbf46309ebd4096d72869d033ed159d34293ec6bb39ae3ec676264ad2bc11ffa791dd914
   languageName: node
   linkType: hard
 
@@ -2129,7 +2071,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/wasm-util@npm:7.4.1, @polkadot/wasm-util@npm:^7.4, @polkadot/wasm-util@npm:^7.4.1":
+"@polkadot/wasm-util@npm:7.4.1, @polkadot/wasm-util@npm:^7.4.1":
   version: 7.4.1
   resolution: "@polkadot/wasm-util@npm:7.4.1"
   dependencies:
@@ -7333,27 +7275,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^9.5.0":
-  version: 9.5.0
-  resolution: "pino@npm:9.5.0"
-  dependencies:
-    atomic-sleep: "npm:^1.0.0"
-    fast-redact: "npm:^3.1.1"
-    on-exit-leak-free: "npm:^2.1.0"
-    pino-abstract-transport: "npm:^2.0.0"
-    pino-std-serializers: "npm:^7.0.0"
-    process-warning: "npm:^4.0.0"
-    quick-format-unescaped: "npm:^4.0.3"
-    real-require: "npm:^0.2.0"
-    safe-stable-stringify: "npm:^2.3.1"
-    sonic-boom: "npm:^4.0.1"
-    thread-stream: "npm:^3.0.0"
-  bin:
-    pino: bin.js
-  checksum: 10/e2dba79524be133e2a0800ad0424bbf2c4c94c46f028a81e514d40951666f3dcec76c582fd5ce6f6155df0f5a9d6d0257924fdf043fe285236d36c76509a59dd
-  languageName: node
-  linkType: hard
-
 "pino@npm:^9.6.0":
   version: 9.6.0
   resolution: "pino@npm:9.6.0"
@@ -9566,13 +9487,6 @@ __metadata:
   version: 2.1.1
   resolution: "yoctocolors@npm:2.1.1"
   checksum: 10/563fbec88bce9716d1044bc98c96c329e1d7a7c503e6f1af68f1ff914adc3ba55ce953c871395e2efecad329f85f1632f51a99c362032940321ff80c42a6f74d
-  languageName: node
-  linkType: hard
-
-"zod@npm:^3.24.1":
-  version: 3.24.1
-  resolution: "zod@npm:3.24.1"
-  checksum: 10/54e25956495dec22acb9399c168c6ba657ff279801a7fcd0530c414d867f1dcca279335e160af9b138dd70c332e17d548be4bc4d2f7eaf627dead50d914fec27
   languageName: node
   linkType: hard
 
