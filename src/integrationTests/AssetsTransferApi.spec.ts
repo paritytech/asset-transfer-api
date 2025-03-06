@@ -2302,7 +2302,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			const dryRunResult = await systemAssetsApiV1016000.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
 			expect(dryRunResult?.isOk).toBe(true);
 
-			const destinationFees = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
+			const destinationFeesInfo = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
 				'bifrost_polkadot',
 				'wss://bifrost-polkadot.ibp.network',
 				4,
@@ -2310,7 +2310,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				'usdt',
 			);
 
-			expect(parseInt(destinationFees[0][1].xcmFee)).toBeGreaterThan(0);
+			expect(parseInt(destinationFeesInfo[0][1].xcmFee)).toBeGreaterThan(0);
 		});
 	});
 });

@@ -392,6 +392,23 @@ api.claimAssets(
 );
 ```
 
+### Estimating XCM Fees on Destination Chain
+
+In combination with the XCM Dry Run API, The api can be used to estimate fees for the xcm's forwarded to other chains.
+
+Example:
+```typescript
+const dryRunResult = await assetsApi.dryRunCall(sendersAddress, extrinsic, 'submittable');
+
+const destinationFeesInfo = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
+    'bifrost_polkadot', // specName
+    'wss://bifrost-polkadot.ibp.network', // chainUrl
+    4, // xcmVersion
+    dryRunResult,
+    'usdt', // feeAsset - Note: the api views the feeAsset from the context of the destination chain being connected to
+);
+```
+
 Note: claimAssets works when pallet-xcm is configured as the AssetTrap for the given runtime. This is true for all relay chains and system parachains but may not be for other chains.
 
 ## E2E Testing
