@@ -1488,6 +1488,8 @@ export class AssetTransferApi {
 					}
 				}
 			}
+
+			await api.disconnect()
 		}
 
 		return forwardedXcmFees;
