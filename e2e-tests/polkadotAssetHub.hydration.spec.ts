@@ -29,7 +29,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 	beforeEach(async () => {
 		const { hydration1, polkadotAssetHub1 } = await setupNetworks({
 			hydration1: {
-				endpoint: 'wss://hydration.ibp.network',
+				endpoint: 'wss://hydration.dotters.network',
 				db: './db.sqlite',
 				port: 8006,
 			},
@@ -227,7 +227,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			expect(destinationFees[0][1].xcmFeeAsset).to.eq(
 				'{"V3":{"Concrete":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}}',
 			);
-		});
+		}, 200000);
 
 		test('getDestinationXcmWeightToFeeAsset should correctly return an empty list for a dry run execution result that is an error', async () => {
 			await polkadotAssetHub.dev.setStorage({
@@ -549,7 +549,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			expect(destinationFees[0][1].xcmFeeAsset).to.eq(
 				'{"V4":{"Parents":"1","Interior":{"X3":[{"Parachain":"1000"},{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}}',
 			);
-		});
+		}, 200000);
 
 		test('getDestinationXcmWeightToFeeAsset should correctly return an empty list for a dry run execution result that is an error', async () => {
 			await polkadotAssetHub.dev.setStorage({

@@ -270,7 +270,7 @@ exports[`Bifrost Polkadot <> Ethereum > XCM V3 > Transfer Snowbridge WETH from B
           "SetTopic": 0,
         },
       ],
-      "messageId": 0,
+      "messageId": "(redacted)",
       "origin": {
         "interior": {
           "X1": [
@@ -589,7 +589,7 @@ exports[`Bifrost Polkadot <> Ethereum > XCM V4 > Transfer Snowbridge WETH from B
           "SetTopic": 0,
         },
       ],
-      "messageId": 0,
+      "messageId": "(redacted)",
       "origin": {
         "interior": {
           "X1": [

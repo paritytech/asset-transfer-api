@@ -1,6 +1,5 @@
 import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
-import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
@@ -18,17 +17,17 @@ describe('Moonbeam <> Ethereum', () => {
 	beforeEach(async () => {
 		const { moonbeam1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
 			moonbeam1: {
-				endpoint: 'wss://moonbeam-rpc.n.dwellir.com',
+				endpoint: 'wss://moonbeam.public.blastapi.io',
 				db: './db.sqlite',
 				port: 8016,
 			},
 			polkadotBridgeHub1: {
-				endpoint: 'wss://bridge-hub-polkadot-rpc.dwellir.com',
+				endpoint: 'wss://polkadot-bridge-hub-rpc.polkadot.io',
 				db: './db.sqlite',
 				port: 8017,
 			},
 			polkadotAssetHub1: {
-				endpoint: 'wss://asset-hub-polkadot-rpc.dwellir.com',
+				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
 				db: './db.sqlite',
 				port: 8018,
 			},
@@ -111,16 +110,18 @@ describe('Moonbeam <> Ethereum', () => {
 				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('Moonbeam xcm message sent');
 
-			await setTimeout(10000);
-			await polkadotAssetHub.dev.timeTravel(1);
+			const polkadotAssetHubCurrentChainHead = polkadotAssetHub.chain.head.number;
+			await polkadotAssetHub.dev.newBlock();
+			await polkadotAssetHub.dev.setHead(polkadotAssetHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotAssetHub, 'foreignAssets').toMatchSnapshot('assethub foreign assets burned');
 			await checkSystemEvents(polkadotAssetHub, 'xcmpQueue', 'XcmpMessageSent').toMatchSnapshot(
 				'assetHub xcmp message sent',
 			);
 
-			await setTimeout(10000);
-			await polkadotBridgeHub.dev.timeTravel(1);
+			const polkadotBridgeHubCurrentChainHead = polkadotBridgeHub.chain.head.number;
+			await polkadotBridgeHub.dev.newBlock();
+			await polkadotBridgeHub.dev.setHead(polkadotBridgeHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
 				.redact({ redactKeys: new RegExp('nonce') })
@@ -193,8 +194,9 @@ describe('Moonbeam <> Ethereum', () => {
 				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('Moonbeam xcm message sent');
 
-			await setTimeout(10000);
-			await polkadotAssetHub.dev.timeTravel(1);
+			const polkadotAssetHubCurrentChainHead = polkadotAssetHub.chain.head.number;
+			await polkadotAssetHub.dev.newBlock();
+			await polkadotAssetHub.dev.setHead(polkadotAssetHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotAssetHub, 'foreignAssets').toMatchSnapshot('assethub foreign assets burned');
 			await checkSystemEvents(polkadotAssetHub, 'xcmpQueue', 'XcmpMessageSent').toMatchSnapshot(
@@ -208,8 +210,9 @@ describe('Moonbeam <> Ethereum', () => {
 			expect(xcmMessageProcessed.event.method).toEqual('Processed');
 			expect(xcmMessageProcessed.event.section).toEqual('messageQueue');
 
-			await setTimeout(20000);
-			await polkadotBridgeHub.dev.timeTravel(1);
+			const polkadotBridgeHubCurrentChainHead = polkadotBridgeHub.chain.head.number;
+			await polkadotBridgeHub.dev.newBlock();
+			await polkadotBridgeHub.dev.setHead(polkadotBridgeHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
 				.redact({ redactKeys: new RegExp('nonce') })

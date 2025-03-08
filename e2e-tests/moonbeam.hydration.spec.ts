@@ -18,12 +18,12 @@ describe('Moonbeam <> Hydration', () => {
 	beforeEach(async () => {
 		const { hydration1, moonbeam1 } = await setupNetworks({
 			hydration1: {
-				endpoint: 'wss://rpc.hydradx.cloud',
+				endpoint: 'wss://hydration.ibp.network',
 				db: './db.sqlite',
 				port: 8000,
 			},
 			moonbeam1: {
-				endpoint: 'wss://moonbeam-rpc.dwellir.com',
+				endpoint: 'wss://moonbeam.public.blastapi.io',
 				db: './db.sqlite',
 				port: 8001,
 			},
