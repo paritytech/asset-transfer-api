@@ -1,6 +1,5 @@
 import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
-import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
@@ -26,12 +25,12 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 	beforeEach(async () => {
 		const { polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
 			polkadotBridgeHub1: {
-				endpoint: 'wss://bridge-hub-polkadot-rpc.dwellir.com',
+				endpoint: 'wss://polkadot-bridge-hub-rpc.polkadot.io',
 				db: './db.sqlite',
 				port: 8003,
 			},
 			polkadotAssetHub1: {
-				endpoint: 'wss://asset-hub-polkadot-rpc.dwellir.com',
+				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
 				db: './db.sqlite',
 				port: 8004,
 			},
@@ -85,8 +84,9 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('assetHub xcm message sent');
 
-			await setTimeout(10000);
-			await polkadotBridgeHub.dev.timeTravel(1);
+			const polkadotBridgeHubCurrentChainHead = polkadotBridgeHub.chain.head.number;
+			await polkadotBridgeHub.dev.newBlock();
+			await polkadotBridgeHub.dev.setHead(polkadotBridgeHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
 				.redact({ redactKeys: new RegExp('nonce') })
@@ -133,8 +133,9 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('assetHub xcm message sent');
 
-			await setTimeout(10000);
-			await polkadotBridgeHub.dev.timeTravel(1);
+			const polkadotBridgeHubCurrentChainHead = polkadotBridgeHub.chain.head.number;
+			await polkadotBridgeHub.dev.newBlock();
+			await polkadotBridgeHub.dev.setHead(polkadotBridgeHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
 				.redact({ redactKeys: new RegExp('nonce') })
