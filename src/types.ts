@@ -250,15 +250,18 @@ export interface TxResult<T> {
 	/**
 	 * @description Weight needed to execute the local segment of a provided XCM.
 	 */
-	localXcmFees?: [VersionedXcm, XcmFee];
+	localXcmFees?: [VersionedXcm, XcmFeeInfo];
 	/**
 	 * @description List of forwarded xcms and the weights needed to execute them.
 	 */
-	forwardedXcmFees?: [VersionedXcm, XcmFee][];
+	forwardedXcmFees?: [VersionedXcm, XcmFeeInfo][];
 }
 
-export type XcmFee = {
+export type XcmFeeInfo = {
+	xcmDest: string;
 	xcmFee: string;
+	xcmFeeAsset: string;
+	xcmWeight: string;
 };
 
 export type SignedOriginCaller = {

@@ -2,7 +2,7 @@
 
 import '@polkadot/api-augment';
 
-import type { ApiPromise } from '@polkadot/api';
+import { ApiPromise, WsProvider } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { GenericExtrinsic, GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 import { EXTRINSIC_VERSION } from '@polkadot/types/extrinsic/v4/Extrinsic';
@@ -10,6 +10,8 @@ import type {
 	CallDryRunEffects,
 	RuntimeDispatchInfo,
 	RuntimeDispatchInfoV1,
+	VersionedMultiLocation,
+	VersionedXcm,
 	WeightV2,
 	XcmDryRunApiError,
 	XcmPaymentApiError,
@@ -88,7 +90,7 @@ import {
 	UnsignedTransaction,
 	type XcmBaseArgs,
 	XcmDirection,
-	XcmFee,
+	XcmFeeInfo,
 	type XcmPalletCallSignature,
 	type XcmPalletTxMethodTransactionMap,
 	type XTokensCallSignature,
@@ -730,29 +732,13 @@ export class AssetTransferApi {
 							const weightToFeeAssetResult: Result<u128, XcmPaymentApiError> =
 								await this.api.call.xcmPaymentApi.queryWeightToAssetFee(localXcmWeight, feeAssetLocation);
 
-							const weightToFee = this.getXcmWeightToFee(weightToFeeAssetResult, feeAssetLocation);
+							const weightToFee = this.getXcmWeightToFee(
+								'local',
+								weightToFeeAssetResult,
+								localXcmWeight,
+								feeAssetLocation,
+							);
 							result.localXcmFees = [localXcm, weightToFee];
-						}
-					}
-
-					if (executionResult.asOk.forwardedXcms && executionResult.asOk.forwardedXcms.length > 0) {
-						result.forwardedXcmFees = [];
-
-						for (const [, xcms] of executionResult.asOk.forwardedXcms) {
-							for (const xcm of xcms) {
-								const forwardedXcmWeightResult: Result<WeightV2, XcmPaymentApiError> =
-									await this.api.call.xcmPaymentApi.queryXcmWeight(xcm);
-
-								if (forwardedXcmWeightResult.isOk) {
-									const forwardedXcmWeight = forwardedXcmWeightResult.asOk;
-
-									const weightToFeeAssetResult: Result<u128, XcmPaymentApiError> =
-										await this.api.call.xcmPaymentApi.queryWeightToAssetFee(forwardedXcmWeight, feeAssetLocation);
-
-									const weightToFee = this.getXcmWeightToFee(weightToFeeAssetResult, feeAssetLocation);
-									result.forwardedXcmFees.push([xcm, weightToFee]);
-								}
-							}
 						}
 					}
 				}
@@ -764,12 +750,19 @@ export class AssetTransferApi {
 		return result;
 	}
 
-	private getXcmWeightToFee(
+	public getXcmWeightToFee(
+		destination: VersionedMultiLocation | 'local',
 		weightToAssetFeeResult: Result<u128, XcmPaymentApiError>,
+		weight: WeightV2,
 		asset: XcmVersionedAssetId,
-	): XcmFee {
+	): XcmFeeInfo {
 		if (weightToAssetFeeResult.isOk) {
-			return { xcmFee: weightToAssetFeeResult.asOk.toString() };
+			return {
+				xcmDest: JSON.stringify(destination),
+				xcmFee: weightToAssetFeeResult.asOk.toString(),
+				xcmFeeAsset: JSON.stringify(asset),
+				xcmWeight: JSON.stringify(weight),
+			};
 		} else {
 			throw new BaseError(
 				`XcmFeeAsset Error: ${weightToAssetFeeResult.asErr.toString()} - asset: ${JSON.stringify(asset)}`,
@@ -1419,5 +1412,86 @@ export class AssetTransferApi {
 				tip: api.registry.createType('Compact<Balance>', 0).toHex(),
 			})
 			.toU8a();
+	}
+
+	/**
+	 * Queries the provided chain and returns the estimated fees for forwarded xcms in an executed dry run
+	 *
+	 * @param specName string
+	 * @param chainUrl string
+	 * @param xcmVersion number
+	 * @param dryRunResult Result<CallDryRunEffects, XcmDryRunApiError> | null
+	 * @param xcmFeeAsset string
+	 * @returns Promise<[VersionedXcm, XcmFeeInfo][]>
+	 */
+	public static async getDestinationXcmWeightToFeeAsset(
+		specName: string,
+		chainUrl: string,
+		xcmVersion: number,
+		dryRunResult: Result<CallDryRunEffects, XcmDryRunApiError> | null,
+		xcmFeeAsset: string,
+	): Promise<[VersionedXcm, XcmFeeInfo][]> {
+		const forwardedXcmFees: [VersionedXcm, XcmFeeInfo][] = [];
+
+		if (!dryRunResult) {
+			return [];
+		}
+
+		if (dryRunResult.isOk) {
+			const forwardedXcms = dryRunResult.asOk.forwardedXcms;
+
+			if (forwardedXcms.length === 0) {
+				return forwardedXcmFees;
+			}
+
+			const provider = new WsProvider(chainUrl);
+			const api = await ApiPromise.create({ provider });
+			await api.isReady;
+			const chainApi = new AssetTransferApi(api, specName, xcmVersion);
+
+			let feeAssetLocation: XcmVersionedAssetId | undefined = undefined;
+
+			if (isRelayNativeAsset(chainApi.registry, xcmFeeAsset)) {
+				const relayAssetLocation = `{"parents":"1","interior":{"Here":""}}`;
+				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, xcmVersion);
+			} else {
+				const feeAsset = await getAssetId(
+					chainApi.api,
+					chainApi.registry,
+					xcmFeeAsset,
+					chainApi.specName,
+					xcmVersion,
+					false,
+				);
+				feeAssetLocation = createXcmVersionedAssetId(feeAsset, xcmVersion);
+			}
+
+			if (feeAssetLocation) {
+				for (const [destination, xcms] of forwardedXcms) {
+					for (const xcm of xcms) {
+						const forwardedXcmWeightResult: Result<WeightV2, XcmPaymentApiError> =
+							await chainApi.api.call.xcmPaymentApi.queryXcmWeight(xcm);
+
+						if (forwardedXcmWeightResult.isOk) {
+							const forwardedXcmWeight = forwardedXcmWeightResult.asOk;
+
+							const weightToFeeAssetResult: Result<u128, XcmPaymentApiError> =
+								await chainApi.api.call.xcmPaymentApi.queryWeightToAssetFee(forwardedXcmWeight, feeAssetLocation);
+							const weightToFee = chainApi.getXcmWeightToFee(
+								destination,
+								weightToFeeAssetResult,
+								forwardedXcmWeight,
+								feeAssetLocation,
+							);
+							forwardedXcmFees.push([xcm, weightToFee]);
+						}
+					}
+				}
+			}
+
+			await api.disconnect();
+		}
+
+		return forwardedXcmFees;
 	}
 }

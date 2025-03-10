@@ -32,14 +32,16 @@ export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number)
 		throw new BaseError(`Invalid XcmVersion for mulitLocation construction`, BaseErrorsEnum.InternalError);
 	}
 
-	let result = parseLocationStrToLocation(multiLocationStr);
+	let result = parseLocationStrToLocation(multiLocationStr, xcmVersion);
 
 	// handle case where result is an xcmV1Multilocation from the registry
 	if ('v1' in result) {
 		result = result.v1 as UnionXcmMultiLocation;
 	}
 
-	if (xcmVersion > 3 && result.interior.X1) {
+	const isX1V4Location = multiLocationStr.includes('"X1":[');
+
+	if (xcmVersion > 3 && result.interior.X1 && !isX1V4Location) {
 		result = {
 			parents: result.parents,
 			interior: {
