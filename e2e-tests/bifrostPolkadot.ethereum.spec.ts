@@ -14,22 +14,30 @@ describe('Bifrost Polkadot <> Ethereum', () => {
 
 	const { alice, alith } = testingPairs();
 
+	const bifrostPort = 8013;
+	const polkadotBridgeHubPort = 8014;
+	const polkadotAssetHubPort = 8015;
+	const runtimeLogLevel = 0;
+
 	beforeEach(async () => {
 		const { bifrostPolkadot1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
 			bifrostPolkadot1: {
 				endpoint: 'wss://bifrost-polkadot.ibp.network',
-				db: './db.sqlite',
-				port: 8013,
+				db: `./chopsticks-db/db.sqlite-bifrost-polkadot-${bifrostPort}`,
+				port: bifrostPort,
+				runtimeLogLevel,
 			},
 			polkadotBridgeHub1: {
 				endpoint: 'wss://polkadot-bridge-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8014,
+				db: `./chopsticks-db/db.sqlite-polkadot-bridge-hub-${polkadotBridgeHubPort}`,
+				port: polkadotBridgeHubPort,
+				runtimeLogLevel,
 			},
 			polkadotAssetHub1: {
 				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8015,
+				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
+				port: polkadotAssetHubPort,
+				runtimeLogLevel,
 			},
 		});
 

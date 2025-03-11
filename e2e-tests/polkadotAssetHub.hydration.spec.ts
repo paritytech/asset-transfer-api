@@ -26,17 +26,23 @@ describe('Polkadot AssetHub <> Hydration', () => {
 		},
 	};
 
+	const hydrationPort = 8006;
+	const polkadotAssetHubPort = 8007;
+	const runtimeLogLevel = 0;
+
 	beforeEach(async () => {
 		const { hydration1, polkadotAssetHub1 } = await setupNetworks({
 			hydration1: {
 				endpoint: 'wss://hydration.dotters.network',
-				db: './db.sqlite',
+				db: `./chopsticks-db/db.sqlite-hydration-${hydrationPort}`,
 				port: 8006,
+				runtimeLogLevel,
 			},
 			polkadotAssetHub1: {
 				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8007,
+				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
+				port: polkadotAssetHubPort,
+				runtimeLogLevel,
 			},
 		});
 

@@ -14,22 +14,30 @@ describe('Hydration <> Ethereum', () => {
 
 	const { alice, alith } = testingPairs();
 
+	const hydrationPort = 8010;
+	const polkadotBridgeHubPort = 8011;
+	const polkadotAssetHubPort = 8012;
+	const runtimeLogLevel = 0;
+
 	beforeEach(async () => {
 		const { hydration1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
 			hydration1: {
 				endpoint: 'wss://rpc.hydradx.cloud',
-				db: './db.sqlite',
-				port: 8010,
+				db: `./chopsticks-db/db.sqlite-hydration-${hydrationPort}`,
+				port: hydrationPort,
+				runtimeLogLevel,
 			},
 			polkadotBridgeHub1: {
 				endpoint: 'wss://polkadot-bridge-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8011,
+				db: `./chopsticks-db/db.sqlite-polkadot-bridge-hub-${polkadotBridgeHubPort}`,
+				port: polkadotBridgeHubPort,
+				runtimeLogLevel,
 			},
 			polkadotAssetHub1: {
 				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8012,
+				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
+				port: polkadotAssetHubPort,
+				runtimeLogLevel,
 			},
 		});
 

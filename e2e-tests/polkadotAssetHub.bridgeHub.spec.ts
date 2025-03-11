@@ -22,17 +22,23 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 
 	const { alice, alith } = testingPairs();
 
+	const polkadotBridgeHubPort = 8003;
+	const polkadotAssetHubPort = 8004;
+	const runtimeLogLevel = 0;
+
 	beforeEach(async () => {
 		const { polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
 			polkadotBridgeHub1: {
 				endpoint: 'wss://polkadot-bridge-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8003,
+				db: `./chopsticks-db/db.sqlite-polkadot-bridge-hub-${polkadotBridgeHubPort}`,
+				port: polkadotBridgeHubPort,
+				runtimeLogLevel,
 			},
 			polkadotAssetHub1: {
 				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8004,
+				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
+				port: polkadotAssetHubPort,
+				runtimeLogLevel,
 			},
 		});
 

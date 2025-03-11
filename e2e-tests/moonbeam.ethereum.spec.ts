@@ -14,22 +14,30 @@ describe('Moonbeam <> Ethereum', () => {
 
 	const { alice, alith } = testingPairs();
 
+	const moonbeamPort = 8016;
+	const polkadotBridgeHubPort = 8017;
+	const polkadotAssetHubPort = 8018;
+	const runtimeLogLevel = 0;
+
 	beforeEach(async () => {
 		const { moonbeam1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
 			moonbeam1: {
 				endpoint: 'wss://moonbeam.public.blastapi.io',
-				db: './db.sqlite',
-				port: 8016,
+				db: `./chopsticks-db/db.sqlite-moonbeam-${moonbeamPort}`,
+				port: moonbeamPort,
+				runtimeLogLevel,
 			},
 			polkadotBridgeHub1: {
 				endpoint: 'wss://polkadot-bridge-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8017,
+				db: `./chopsticks-db/db.sqlite-polkadot-bridge-hub-${polkadotBridgeHubPort}`,
+				port: polkadotBridgeHubPort,
+				runtimeLogLevel,
 			},
 			polkadotAssetHub1: {
 				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8018,
+				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
+				port: polkadotAssetHubPort,
+				runtimeLogLevel,
 			},
 		});
 
