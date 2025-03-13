@@ -394,7 +394,7 @@ api.claimAssets(
 
 ### Estimating XCM Fees on Destination Chain
 
-In combination with the XCM Dry Run API, The api can be used to estimate fees for the xcm's forwarded to other chains.
+In combination with the XCM Dry Run API, this API can be used to estimate fees for XCM messages sent to other chains.
 
 Example:
 ```typescript
