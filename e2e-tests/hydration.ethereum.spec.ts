@@ -1,6 +1,5 @@
 import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
-import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
@@ -15,22 +14,30 @@ describe('Hydration <> Ethereum', () => {
 
 	const { alice, alith } = testingPairs();
 
+	const hydrationPort = 8010;
+	const polkadotBridgeHubPort = 8011;
+	const polkadotAssetHubPort = 8012;
+	const runtimeLogLevel = 0;
+
 	beforeEach(async () => {
 		const { hydration1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
 			hydration1: {
 				endpoint: 'wss://rpc.hydradx.cloud',
-				db: './db.sqlite',
-				port: 8010,
+				db: `./chopsticks-db/db.sqlite-hydration-${hydrationPort}`,
+				port: hydrationPort,
+				runtimeLogLevel,
 			},
 			polkadotBridgeHub1: {
-				endpoint: 'wss://bridge-hub-polkadot-rpc.dwellir.com',
-				db: './db.sqlite',
-				port: 8011,
+				endpoint: 'wss://polkadot-bridge-hub-rpc.polkadot.io',
+				db: `./chopsticks-db/db.sqlite-polkadot-bridge-hub-${polkadotBridgeHubPort}`,
+				port: polkadotBridgeHubPort,
+				runtimeLogLevel,
 			},
 			polkadotAssetHub1: {
-				endpoint: 'wss://asset-hub-polkadot-rpc.dwellir.com',
-				db: './db.sqlite',
-				port: 8012,
+				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
+				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
+				port: polkadotAssetHubPort,
+				runtimeLogLevel,
 			},
 		});
 
@@ -112,16 +119,18 @@ describe('Hydration <> Ethereum', () => {
 				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('hydration xcm message sent');
 
-			await setTimeout(10000);
-			await polkadotAssetHub.dev.timeTravel(1);
+			const polkadotAssetHubCurrentChainHead = polkadotAssetHub.chain.head.number;
+			await polkadotAssetHub.dev.newBlock();
+			await polkadotAssetHub.dev.setHead(polkadotAssetHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotAssetHub, 'foreignAssets').toMatchSnapshot('assethub foreign assets burned');
 			await checkSystemEvents(polkadotAssetHub, 'xcmpQueue', 'XcmpMessageSent').toMatchSnapshot(
 				'assetHub xcmp message sent',
 			);
 
-			await setTimeout(10000);
-			await polkadotBridgeHub.dev.timeTravel(1);
+			const polkadotBridgeHubCurrentChainHead = polkadotBridgeHub.chain.head.number;
+			await polkadotBridgeHub.dev.newBlock();
+			await polkadotBridgeHub.dev.setHead(polkadotBridgeHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
 				.redact({ redactKeys: new RegExp('nonce') })
@@ -195,8 +204,9 @@ describe('Hydration <> Ethereum', () => {
 				.redact({ redactKeys: new RegExp('messageId|proofSize|refTime') })
 				.toMatchSnapshot('hydration xcm message sent');
 
-			await setTimeout(10000);
-			await polkadotAssetHub.dev.timeTravel(1);
+			const polkadotAssetHubCurrentChainHead = polkadotAssetHub.chain.head.number;
+			await polkadotAssetHub.dev.newBlock();
+			await polkadotAssetHub.dev.setHead(polkadotAssetHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotAssetHub, 'foreignAssets').toMatchSnapshot('assethub foreign assets burned');
 			await checkSystemEvents(polkadotAssetHub, 'xcmpQueue', 'XcmpMessageSent').toMatchSnapshot(
@@ -210,8 +220,9 @@ describe('Hydration <> Ethereum', () => {
 			expect(xcmMessageProcessed.event.method).toEqual('Processed');
 			expect(xcmMessageProcessed.event.section).toEqual('messageQueue');
 
-			await setTimeout(10000);
-			await polkadotBridgeHub.dev.timeTravel(1);
+			const polkadotBridgeHubCurrentChainHead = polkadotBridgeHub.chain.head.number;
+			await polkadotBridgeHub.dev.newBlock();
+			await polkadotBridgeHub.dev.setHead(polkadotBridgeHubCurrentChainHead + 1);
 
 			await checkSystemEvents(polkadotBridgeHub, 'ethereumOutboundQueue')
 				.redact({ redactKeys: new RegExp('nonce') })

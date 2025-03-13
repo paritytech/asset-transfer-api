@@ -1,11 +1,12 @@
 import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
-import { AccountData } from '@polkadot/types/interfaces';
+import { AccountData, VersionedXcm } from '@polkadot/types/interfaces';
 import { PalletAssetsAssetAccount } from '@polkadot/types/lookup';
 import { Option } from '@polkadot/types-codec';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
+import { XcmFeeInfo } from '../src/types';
 
 const { check } = withExpect(expect);
 
@@ -25,17 +26,23 @@ describe('Polkadot AssetHub <> Hydration', () => {
 		},
 	};
 
+	const hydrationPort = 8006;
+	const polkadotAssetHubPort = 8007;
+	const runtimeLogLevel = 0;
+
 	beforeEach(async () => {
 		const { hydration1, polkadotAssetHub1 } = await setupNetworks({
 			hydration1: {
-				endpoint: 'wss://hydration.ibp.network',
-				db: './db.sqlite',
+				endpoint: 'wss://hydration.dotters.network',
+				db: `./chopsticks-db/db.sqlite-hydration-${hydrationPort}`,
 				port: 8006,
+				runtimeLogLevel,
 			},
 			polkadotAssetHub1: {
 				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-				db: './db.sqlite',
-				port: 8007,
+				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
+				port: polkadotAssetHubPort,
+				runtimeLogLevel,
 			},
 		});
 
@@ -187,6 +194,89 @@ describe('Polkadot AssetHub <> Hydration', () => {
 
 	describe('XCM V3', () => {
 		const xcmVersion = 3;
+
+		test('getDestinationXcmWeightToFeeAsset should correctly return a list of xcms and their fees for a dry run execution result that is ok', async () => {
+			const hydrationAssetHubUsdtAssetID = '10';
+
+			await polkadotAssetHub.dev.setStorage({
+				System: {
+					Account: [
+						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // DOT
+						[[recipientAddress], { providers: 1, data: { free: 2 * 1e12 } }], // DOT
+					],
+				},
+				Assets: {
+					Account: [[[1984, alice.address], { balance: 75000000000000 }]],
+				},
+			});
+
+			const assetTransferApi = new AssetTransferApi(polkadotAssetHub.api, 'asset-hub-polkadot', xcmVersion);
+			const tx = await assetTransferApi.createTransferTransaction('2034', recipientAddress, [`1984`], ['1000000'], {
+				format: 'payload',
+				xcmVersion,
+				sendersAddr: alice.address,
+				paysWithFeeOrigin: `1984`,
+			});
+
+			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload');
+			expect(dryRunResult?.asOk.executionResult.isOk).toBe(true);
+			const destinationFees = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
+				'hydradx',
+				'wss://hydration.ibp.network',
+				xcmVersion,
+				dryRunResult,
+				hydrationAssetHubUsdtAssetID,
+			);
+
+			expect(parseInt(destinationFees[0][1].xcmFee)).to.toBeGreaterThan(0);
+			expect(destinationFees[0][1].xcmDest).to.eq('{"v4":{"parents":1,"interior":{"x1":[{"parachain":2034}]}}}');
+			expect(destinationFees[0][1].xcmFeeAsset).to.eq(
+				'{"V3":{"Concrete":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}}',
+			);
+		}, 200000);
+
+		test('getDestinationXcmWeightToFeeAsset should correctly return an empty list for a dry run execution result that is an error', async () => {
+			await polkadotAssetHub.dev.setStorage({
+				System: {
+					Account: [
+						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // DOT
+						[[recipientAddress], { providers: 1, data: { free: 2 * 1e12 } }], // DOT
+					],
+				},
+				ForeignAssets: {
+					Account: [
+						[[{ parents: '1', interior: { X1: [{ Parachain: '2011' }] } }, alice.address], { balance: 75000000000000 }],
+					],
+				},
+			});
+
+			const assetTransferApi = new AssetTransferApi(polkadotAssetHub.api, 'asset-hub-polkadot', xcmVersion);
+			const tx = await assetTransferApi.createTransferTransaction(
+				'2034',
+				recipientAddress,
+				[`{"parents":"2","interior":{"X1":[{"GlobalConsensus":"Kusama"}]}}`],
+				['1000000'],
+				{
+					format: 'payload',
+					xcmVersion,
+					sendersAddr: alice.address,
+				},
+			);
+
+			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload');
+			expect(dryRunResult?.asOk.executionResult.isErr).toBe(true);
+			const destinationFees = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
+				'hydradx',
+				'wss://hydration.ibp.network',
+				xcmVersion,
+				dryRunResult,
+				'dot',
+			);
+
+			const expected: [VersionedXcm, XcmFeeInfo][] = [];
+			expect(destinationFees.length).to.eq(expected.length);
+			expect(destinationFees).toEqual(expected);
+		}, 200000);
 
 		test('Transfer DOT From Hydration to AssetHub', async () => {
 			await hydration.dev.setStorage({
@@ -425,6 +515,92 @@ describe('Polkadot AssetHub <> Hydration', () => {
 
 	describe('XCM V4', () => {
 		const xcmVersion = 4;
+
+		test('getDestinationXcmWeightToFeeAsset should correctly return a list of xcms and their fees for a dry run execution result that is ok', async () => {
+			const hydrationAssetHubUsdtAssetID = '10';
+
+			await polkadotAssetHub.dev.setStorage({
+				System: {
+					Account: [
+						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // DOT
+						[[recipientAddress], { providers: 1, data: { free: 2 * 1e12 } }], // DOT
+					],
+				},
+				Assets: {
+					Account: [[[1984, alice.address], { balance: 75000000000000 }]],
+				},
+			});
+
+			const assetTransferApi = new AssetTransferApi(polkadotAssetHub.api, 'asset-hub-polkadot', xcmVersion);
+			const tx = await assetTransferApi.createTransferTransaction('2034', recipientAddress, [`1984`], ['1000000'], {
+				format: 'payload',
+				xcmVersion,
+				sendersAddr: alice.address,
+				paysWithFeeOrigin: `1984`,
+			});
+
+			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload');
+
+			expect(dryRunResult?.asOk.executionResult.isOk).toBe(true);
+
+			const destinationFees = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
+				'hydradx',
+				'wss://hydration.ibp.network',
+				xcmVersion,
+				dryRunResult,
+				hydrationAssetHubUsdtAssetID,
+			);
+			expect(parseInt(destinationFees[0][1].xcmFee)).to.toBeGreaterThan(0);
+			expect(destinationFees[0][1].xcmDest).to.eq('{"v4":{"parents":1,"interior":{"x1":[{"parachain":2034}]}}}');
+			expect(destinationFees[0][1].xcmFeeAsset).to.eq(
+				'{"V4":{"Parents":"1","Interior":{"X3":[{"Parachain":"1000"},{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}}',
+			);
+		}, 200000);
+
+		test('getDestinationXcmWeightToFeeAsset should correctly return an empty list for a dry run execution result that is an error', async () => {
+			await polkadotAssetHub.dev.setStorage({
+				System: {
+					Account: [
+						[[alice.address], { providers: 1, data: { free: 10 * 1e12 } }], // DOT
+						[[recipientAddress], { providers: 1, data: { free: 2 * 1e12 } }], // DOT
+					],
+				},
+				ForeignAssets: {
+					Account: [
+						[[{ parents: '1', interior: { X1: [{ Parachain: '2011' }] } }, alice.address], { balance: 75000000000000 }],
+					],
+				},
+			});
+
+			const assetTransferApi = new AssetTransferApi(polkadotAssetHub.api, 'asset-hub-polkadot', xcmVersion);
+			const tx = await assetTransferApi.createTransferTransaction(
+				'2034',
+				recipientAddress,
+				[`{"parents":"2","interior":{"X1":[{"GlobalConsensus":"Kusama"}]}}`, '1984'],
+				['1000000', '1000000'],
+				{
+					format: 'payload',
+					xcmVersion,
+					sendersAddr: alice.address,
+					paysWithFeeOrigin: '1984',
+					paysWithFeeDest: '1984',
+				},
+			);
+
+			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload');
+			expect(dryRunResult?.asOk.executionResult.isErr).toBe(true);
+			const destinationFees = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
+				'hydradx',
+				'wss://hydration.ibp.network',
+				xcmVersion,
+				dryRunResult,
+				'dot',
+			);
+
+			const expected: [VersionedXcm, XcmFeeInfo][] = [];
+			expect(destinationFees.length).to.eq(expected.length);
+			expect(destinationFees).toEqual(expected);
+		}, 200000);
 
 		test('Transfer DOT From Hydration to AssetHub', async () => {
 			await hydration.dev.setStorage({

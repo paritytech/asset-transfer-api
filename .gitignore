@@ -27,3 +27,4 @@ zombienet/bin/*
 # Chopsticks
 db.sqlite
 db.sqlite-*
+chopsticks-db

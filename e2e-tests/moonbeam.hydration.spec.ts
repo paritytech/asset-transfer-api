@@ -15,17 +15,23 @@ describe('Moonbeam <> Hydration', () => {
 
 	const { alice, alith } = testingPairs();
 
+	const hydrationPort = 8000;
+	const moonbeamPort = 8001;
+	const runtimeLogLevel = 0;
+
 	beforeEach(async () => {
 		const { hydration1, moonbeam1 } = await setupNetworks({
 			hydration1: {
-				endpoint: 'wss://rpc.hydradx.cloud',
-				db: './db.sqlite',
-				port: 8000,
+				endpoint: 'wss://hydration.ibp.network',
+				db: `./chopsticks-db/db.sqlite-hydration-${hydrationPort}`,
+				port: hydrationPort,
+				runtimeLogLevel,
 			},
 			moonbeam1: {
-				endpoint: 'wss://moonbeam-rpc.dwellir.com',
-				db: './db.sqlite',
-				port: 8001,
+				endpoint: 'wss://moonbeam.public.blastapi.io',
+				db: `./chopsticks-db/db.sqlite-moonbeam-${moonbeamPort}`,
+				port: moonbeamPort,
+				runtimeLogLevel,
 			},
 		});
 
