@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.6.0](https://github.com/paritytech/asset-transfer-api/compare/v0.5.0..v0.6.0)
+
+### Feat
+
+- feat: add dest xcm fee check for forwarded xcms ([#519](https://github.com/paritytech/asset-transfer-api/pull/519))([2a70a42](https://github.com/paritytech/asset-transfer-api/commit/ecc2eccd33eaa9cd25c7bf3fdc2bc37162a70a42))
+
+### Chore
+
+- ([#522](https://github.com/paritytech/asset-transfer-api/pull/522))([81db2f8](https://github.com/paritytech/asset-transfer-api/commit/15b493678a626ef1794230d428341b05681db2f8))
+- chore(deps-dev): bump vitest from 3.0.7 to 3.0.8 ([#521](https://github.com/paritytech/asset-transfer-api/pull/521))([9484b42f](https://github.com/paritytech/asset-transfer-api/commit/8f15a3c4d8419d0c9129cf90b8f53bba9484b42f))
+- chore(deps): bump the pjs group with 4 updates ([#520](https://github.com/paritytech/asset-transfer-api/pull/520))([8581846](https://github.com/paritytech/asset-transfer-api/commit/a13c7599dce665fa8074fe9fc9fb7589b8581846))
+- chore(deps-dev): bump vitest from 3.0.6 to 3.0.7 ([#518](https://github.com/paritytech/asset-transfer-api/pull/518))([0ba31ab](https://github.com/paritytech/asset-transfer-api/commit/fd75866e18995e4329dc9532340a07a220ba31ab))
+- chore(deps): bump @acala-network/chopsticks-core from 1.0.2 to 1.0.3 ([#517](https://github.com/paritytech/asset-transfer-api/pull/517))([6ec3325](https://github.com/paritytech/asset-transfer-api/commit/5e291d193af7b77263de6454b403287ba6ec3325))
+- chore(deps-dev): bump typedoc from 0.27.8 to 0.27.9 ([#516](https://github.com/paritytech/asset-transfer-api/pull/516))([7da05a6](https://github.com/paritytech/asset-transfer-api/commit/1bc61c26715e993aa1191784b8c9fa3367da05a6))
+- chore(deps): bump @acala-network/chopsticks-testing from 1.0.2 to 1.0.3 ([#515](https://github.com/paritytech/asset-transfer-api/pull/515))([73e5f9a](https://github.com/paritytech/asset-transfer-api/commit/b78cd868be1f0a2865d08692d9bcb4cbb73e5f9a))
+- chore(deps): bump the pjs group with 4 updates ([#514](https://github.com/paritytech/asset-transfer-api/pull/514))([48e3fb7](https://github.com/paritytech/asset-transfer-api/commit/b5b64311866e00d05eaf6fb36e91a3a3348e3fb7))
+- chore(deps-dev): bump vitest from 3.0.5 to 3.0.6 ([#513](https://github.com/paritytech/asset-transfer-api/pull/513))([c175a97](https://github.com/paritytech/asset-transfer-api/commit/195da9da5c22f22e6f30c048892fb77b9c175a97))
+- chore(deps-dev): bump typedoc from 0.27.7 to 0.27.8 ([#512](https://github.com/paritytech/asset-transfer-api/pull/512))([b57809d](https://github.com/paritytech/asset-transfer-api/commit/71148481df8e181372920bf7d97164ac2b57809d))
+- chore(deps): bump the pjs group with 4 updates ([#511](https://github.com/paritytech/asset-transfer-api/pull/511))([465d2af](https://github.com/paritytech/asset-transfer-api/commit/50d1d83d041e8b768d3d7683045bb1d46465d2af))
+- chore(deps): bump the pjs group with 2 updates ([#510](https://github.com/paritytech/asset-transfer-api/pull/510))([7d9e3b8](https://github.com/paritytech/asset-transfer-api/commit/23aa3eaa4a94147e7efe6cf3f67f296217d9e3b8))
+- chore(deps-dev): bump typedoc from 0.27.6 to 0.27.7 ([#509](https://github.com/paritytech/asset-transfer-api/pull/509))([fc0871a](https://github.com/paritytech/asset-transfer-api/commit/a949bba1d1102eb7f4640c872fdb9c491fc0871a))
+- chore(deps-dev): bump vitest from 3.0.4 to 3.0.5 ([#508](https://github.com/paritytech/asset-transfer-api/pull/508))([21a13e8](https://github.com/paritytech/asset-transfer-api/commit/0ed3e542b84ea9f26ac19239f92f69eb821a13e8))
+- chore(deps): bump the pjs group with 4 updates ([#507](https://github.com/paritytech/asset-transfer-api/pull/507))([8928c27](https://github.com/paritytech/asset-transfer-api/commit/ae61808ecc0b6e19bc6822abed2eec4718928c27))
+- chore(deps-dev): bump vitest from 3.0.2 to 3.0.4 ([#506](https://github.com/paritytech/asset-transfer-api/pull/506))([765f73b](https://github.com/paritytech/asset-transfer-api/commit/30dae18dbe051f2f5e4e9e0a74d1f19d6765f73b))
+- chore(deps): bump @acala-network/chopsticks-core from 1.0.1 to 1.0.2 ([#505](https://github.com/paritytech/asset-transfer-api/pull/505))([88c04cc](https://github.com/paritytech/asset-transfer-api/commit/c721b3b956b72a1fbcf0326ddd36cca0488c04cc))
+- chore(deps): bump @acala-network/chopsticks-testing from 1.0.1 to 1.0.2 ([#504](https://github.com/paritytech/asset-transfer-api/pull/504))([ba16c37](https://github.com/paritytech/asset-transfer-api/commit/41603ceb0d0340ab508433a42b9a9587bba16c37))
+- chore(deps): bump the pjs group with 4 updates ([#503](https://github.com/paritytech/asset-transfer-api/pull/503))([3d99714](https://github.com/paritytech/asset-transfer-api/commit/cf75c7055b68aa5525f62c67c2d27bf193d99714))
+- chore(deps): update asset transfer api registry ([#502](https://github.com/paritytech/asset-transfer-api/pull/502))([ed76677](https://github.com/paritytech/asset-transfer-api/commit/c5fd8e381451810a673af1edc16dedadeed76677))
+- chore(deps-dev): bump vitest from 2.1.8 to 3.0.2 ([#500](https://github.com/paritytech/asset-transfer-api/pull/500))([e88d93c](https://github.com/paritytech/asset-transfer-api/commit/dc3b6aa221a616a5be4b3a4d7cac8bf72e88d93c))
+- chore(deps): bump the pjs group with 4 updates ([#499](https://github.com/paritytech/asset-transfer-api/pull/499))([3f9648d](https://github.com/paritytech/asset-transfer-api/commit/aef4ff6156d99ee5633fd40195eb1925d3f9648d))
+
+### Test 
+
+- test: update e2e tests ([#498](https://github.com/paritytech/asset-transfer-api/pull/498))([21becd0](https://github.com/paritytech/asset-transfer-api/commit/b1b31033c730283f43144b128268ab00421becd0))
+
 ## [0.5.0](https://github.com/paritytech/asset-transfer-api/compare/v0.4.5..v0.5.0)
 
 ### Chore
