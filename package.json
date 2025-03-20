@@ -2,7 +2,7 @@
 	"name": "@substrate/asset-transfer-api",
 	"version": "0.6.0",
 	"description": "",
-	"main": "lib/index.js",
+	"main": "lib/src/index.js",
 	"scripts": {
 		"build": "substrate-exec-rimraf ./lib && substrate-exec-tsc",
 		"build:scripts": "substrate-exec-rimraf scripts/build/ && substrate-exec-tsc --project scripts/tsconfig.json",
