@@ -8854,13 +8854,13 @@ __metadata:
   linkType: hard
 
 "typedoc-theme-hierarchy@npm:^5.0.3":
-  version: 5.0.4
-  resolution: "typedoc-theme-hierarchy@npm:5.0.4"
+  version: 5.0.5
+  resolution: "typedoc-theme-hierarchy@npm:5.0.5"
   dependencies:
     fs-extra: "npm:11.1.1"
   peerDependencies:
     typedoc: ^0.26.0 || ^0.27.0
-  checksum: 10/1b7dcfcc4feda4ad85edc0711360896ed7f4af8b258d5b8305cc0ae6bc206a84abe0ce61c1b0b88e17c429bef4a75623d97ae5d9027c88f27f1160421105bbc5
+  checksum: 10/511e583dc03a696c12e20c5f61f40218fad61f735b8fee468ea0f19938d8be23a240db9c0d7ce910ac938c9b1f8995c660fb27591a8534dd213512456e6baa47
   languageName: node
   linkType: hard
 
