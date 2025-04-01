@@ -1447,6 +1447,14 @@ export class AssetTransferApi {
 			const provider = new WsProvider(chainUrl);
 			const api = await ApiPromise.create({ provider });
 			await api.isReady;
+
+			if (!api.call['xcmPaymentApi']) {
+				throw new BaseError(
+					`Did not find the xcmPaymentApi in ${specName}'s runtime`,
+					BaseErrorsEnum.RuntimeCallNotFound,
+				);
+			}
+
 			const chainApi = new AssetTransferApi(api, specName, xcmVersion);
 
 			let feeAssetLocation: XcmVersionedAssetId | undefined = undefined;
