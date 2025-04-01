@@ -2312,5 +2312,19 @@ describe('AssetTransferApi Integration Tests', () => {
 
 			expect(parseInt(destinationFeesInfo[0][1].xcmFee)).toBeGreaterThan(0);
 		});
+		it('Correctly throws an error when the provided runtime does not support the xcmPaymentApi', async () => {
+			const dryRunResult = await systemAssetsApiV1016000.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
+			expect(dryRunResult?.isOk).toBe(true);
+
+			await expect(async () => {
+				await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
+					'interlay-parachain',
+					'wss://interlay-rpc.dwellir.com',
+					4,
+					dryRunResult,
+					'usdt',
+				);
+			}).rejects.toThrow(`Did not find the xcmPaymentApi in interlay-parachain's runtime`);
+		});
 	});
 });
