@@ -55,7 +55,7 @@ const getNativeAssetLocation = (
 			location = parseLocationStrToLocation(v1LocationStr);
 
 			// handle case where result is an xcmV1Multilocation from the registry
-			if ('v1' in location) {
+			if (typeof location === 'object' && 'v1' in location) {
 				location = location.v1 as UnionXcmMultiLocation;
 			}
 
