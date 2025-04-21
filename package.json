@@ -61,9 +61,9 @@
 		"@polkadot/rpc-provider": "15.8.1",
 		"@polkadot/api-augment": "^15.8.1",
 		"@polkadot/types": "^15.8.1",
-		"@polkadot/types-codec": "15.9.1",
-		"@polkadot/util-crypto": "13.4.3",
-		"@polkadot/util": "13.4.3",
+		"@polkadot/types-codec": "15.9.2",
+		"@polkadot/util-crypto": "13.4.4",
+		"@polkadot/util": "13.4.4",
 		"@polkadot/keyring": "13.4.3"
 	}
 }
