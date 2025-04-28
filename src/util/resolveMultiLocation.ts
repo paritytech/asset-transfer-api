@@ -41,7 +41,7 @@ export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number)
 
 	const isX1V4Location = multiLocationStr.includes('"X1":[');
 
-	if (xcmVersion > 3 && typeof result === 'object' && result.interior.X1 && !isX1V4Location) {
+	if (xcmVersion > 3 && typeof result === 'object' && result.interior?.X1 && !isX1V4Location) {
 		result = {
 			parents: result.parents,
 			interior: {

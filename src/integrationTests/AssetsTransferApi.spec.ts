@@ -2319,7 +2319,7 @@ describe('AssetTransferApi Integration Tests', () => {
 			await expect(async () => {
 				await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
 					'interlay-parachain',
-					'wss://interlay-rpc.dwellir.com',
+					'wss://rpc-interlay.luckyfriday.io',
 					4,
 					dryRunResult,
 					'usdt',
