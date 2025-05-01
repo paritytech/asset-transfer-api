@@ -5,7 +5,7 @@ __metadata:
   version: 8
   cacheKey: 10
 
-"@acala-network/chopsticks-core@npm:1.0.4, @acala-network/chopsticks-core@npm:^1.0.1":
+"@acala-network/chopsticks-core@npm:1.0.4, @acala-network/chopsticks-core@npm:^1.0.4":
   version: 1.0.4
   resolution: "@acala-network/chopsticks-core@npm:1.0.4"
   dependencies:
@@ -51,7 +51,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks-testing@npm:^1.0.1":
+"@acala-network/chopsticks-testing@npm:^1.0.4":
   version: 1.0.4
   resolution: "@acala-network/chopsticks-testing@npm:1.0.4"
   dependencies:
@@ -2409,8 +2409,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@substrate/asset-transfer-api@workspace:."
   dependencies:
-    "@acala-network/chopsticks-core": "npm:^1.0.1"
-    "@acala-network/chopsticks-testing": "npm:^1.0.1"
+    "@acala-network/chopsticks-core": "npm:^1.0.4"
+    "@acala-network/chopsticks-testing": "npm:^1.0.4"
     "@polkadot/api": "npm:^15.9.2"
     "@polkadot/api-augment": "npm:^15.9.2"
     "@polkadot/types": "npm:^15.9.2"
@@ -2419,14 +2419,14 @@ __metadata:
     "@polkadot/util-crypto": "npm:^13.4.4"
     "@substrate/asset-transfer-api-registry": "npm:^0.2.26"
     "@substrate/dev": "npm:^0.9.0"
-    "@types/cli-progress": "npm:^3"
+    "@types/cli-progress": "npm:^3.11.6"
     ansi-colors: "npm:^4.1.3"
     chalk: "npm:5.4.1"
     cli-progress: "npm:^3.12.0"
-    typedoc: "npm:^0.28.0"
+    typedoc: "npm:^0.28.3"
     typedoc-plugin-missing-exports: "npm:^4.0.0"
     typedoc-theme-hierarchy: "npm:^6.0.0"
-    vitest: "npm:^3.0.2"
+    vitest: "npm:^3.1.2"
   languageName: unknown
   linkType: soft
 
@@ -2565,7 +2565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cli-progress@npm:^3":
+"@types/cli-progress@npm:^3.11.6":
   version: 3.11.6
   resolution: "@types/cli-progress@npm:3.11.6"
   dependencies:
@@ -8584,7 +8584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.28.0":
+"typedoc@npm:^0.28.3":
   version: 0.28.3
   resolution: "typedoc@npm:0.28.3"
   dependencies:
@@ -8899,7 +8899,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^3.0.2":
+"vitest@npm:^3.1.2":
   version: 3.1.2
   resolution: "vitest@npm:3.1.2"
   dependencies:
