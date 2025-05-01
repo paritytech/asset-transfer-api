@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.6.1](https://github.com/paritytech/asset-transfer-api/compare/v0.6.0..v0.6.1)
+
+### Chore
+
+- chore(deps): update non pjs deps ([#549](https://github.com/paritytech/asset-transfer-api/pull/549))([67e9f94](https://github.com/paritytech/asset-transfer-api/commit/67e9f94d7f878f9cf9aa286ed405e93998b069b3))
+- chore(deps): update polkadot-js deps ([#548](https://github.com/paritytech/asset-transfer-api/pull/548))([45e93fe](https://github.com/paritytech/asset-transfer-api/commit/45e93fe1a52c22d23fddea6955985bdb06f542c4))
+- chore(deps): bump the pjs group across 1 directory with 6 updates ([#542](https://github.com/paritytech/asset-transfer-api/pull/542))([26fc6e0](https://github.com/paritytech/asset-transfer-api/commit/26fc6e05477af380e84a37625c5d6342f9f71d8c))
+- chore(deps-dev): bump typedoc from 0.28.2 to 0.28.3 ([#541](https://github.com/paritytech/asset-transfer-api/pull/541))([fe6713e](https://github.com/paritytech/asset-transfer-api/commit/fe6713e1824ca86e3ecec4432a6791f467bceb52))
+- chore(deps-dev): bump vitest from 3.1.1 to 3.1.2 ([#543](https://github.com/paritytech/asset-transfer-api/pull/543))([04a32e5](https://github.com/paritytech/asset-transfer-api/commit/04a32e57e2bd410b5ff904d6d462dafc0950715f))
+- chore(deps): bump @acala-network/chopsticks-core from 1.0.3 to 1.0.4 ([#537](https://github.com/paritytech/asset-transfer-api/pull/537))([e5d923e](https://github.com/paritytech/asset-transfer-api/commit/e5d923eeb9cd4d51ee4a63674964c0c641c5fb4f))
+- chore(deps-dev): bump typedoc-theme-hierarchy from 5.0.5 to 6.0.0 ([#535](https://github.com/paritytech/asset-transfer-api/pull/535))([6007bb0](https://github.com/paritytech/asset-transfer-api/commit/6007bb0fd52983b40a53f7c26a78762a480fd401))
+- chore(deps): bump @acala-network/chopsticks-testing from 1.0.3 to 1.0.4 ([#536](https://github.com/paritytech/asset-transfer-api/pull/536))([16f0dc5](https://github.com/paritytech/asset-transfer-api/commit/16f0dc5521027e1befbc36953b8a5d7cc955f542))
+- chore(deps-dev): bump typedoc from 0.28.1 to 0.28.2 ([#534](https://github.com/paritytech/asset-transfer-api/pull/534))([c0c4495](https://github.com/paritytech/asset-transfer-api/commit/c0c4495b3865c2ea0ae84d82bbd59a5deaece2a0))
+- chore(deps-dev): bump typedoc-theme-hierarchy from 5.0.4 to 5.0.5 ([#532](https://github.com/paritytech/asset-transfer-api/pull/532))([7e36951](https://github.com/paritytech/asset-transfer-api/commit/7e369510add74dae5371d53d30845af569b13932))
+- chore(deps-dev): bump vitest from 3.0.9 to 3.1.1 ([#531](https://github.com/paritytech/asset-transfer-api/pull/531))([1459c8b](https://github.com/paritytech/asset-transfer-api/commit/1459c8b56384e631fa90b85810410727e51a2089))
+- chore(deps): bump the pjs group with 4 updates ([#530](https://github.com/paritytech/asset-transfer-api/pull/530))([e9dde78](https://github.com/paritytech/asset-transfer-api/commit/e9dde78ad2befd7f7a532b364dce85c76a73fcf1))
+- chore(deps-dev): bump typedoc-plugin-missing-exports from 3.1.0 to 4.0.0 ([#529](https://github.com/paritytech/asset-transfer-api/pull/529))([5708aa2](https://github.com/paritytech/asset-transfer-api/commit/5708aa2bd210672f16c5539ad8136a334157ac7f))
+- chore(deps-dev): bump typedoc from 0.28.0 to 0.28.1 ([#528](https://github.com/paritytech/asset-transfer-api/pull/528))([4411500](https://github.com/paritytech/asset-transfer-api/commit/4411500b5f4992fc981963c03a8c7a74c1eb813b))
+- chore(deps-dev): bump vitest from 3.0.8 to 3.0.9 ([#525](https://github.com/paritytech/asset-transfer-api/pull/525))([70f1bd8](https://github.com/paritytech/asset-transfer-api/commit/70f1bd8bee8f9cdba8d0af84369f5c7dd6c810c8))
+- chore(deps-dev): bump typedoc from 0.27.9 to 0.28.0 ([#524](https://github.com/paritytech/asset-transfer-api/pull/524))([4e95b4d](https://github.com/paritytech/asset-transfer-api/commit/4e95b4d0243d0578cec6ee59ba1bcbe4aec273ba))
+
+### Fix
+
+- fix: check if X1 exists in multilocation ([#546](https://github.com/paritytech/asset-transfer-api/pull/546))([17874c9](https://github.com/paritytech/asset-transfer-api/commit/17874c91eea6d56afef3ba5c52a95ab75bf8c026))
+- fix: add type guards to fix error from getDestinationXcmWeightToFeeAsset ([#540](https://github.com/paritytech/asset-transfer-api/pull/540))([a19b5fc](https://github.com/paritytech/asset-transfer-api/commit/a19b5fcb63c8f12fa1f8f7932affe5b02dade0ce))
+- fix: handle error when xcmpaymentapi is not found ([#533](https://github.com/paritytech/asset-transfer-api/pull/533))([8d62f7d](https://github.com/paritytech/asset-transfer-api/commit/8d62f7d3134fb88477fe98477d02c48b98581f70))
+- fix: Change package entry point ([#527](https://github.com/paritytech/asset-transfer-api/pull/527))([901482f](https://github.com/paritytech/asset-transfer-api/commit/901482fc36f4f3e1a94e31aee3ec49f1d6ad8af5))
+
 ## [0.6.0](https://github.com/paritytech/asset-transfer-api/compare/v0.5.0..v0.6.0)
 
 ### Feat
