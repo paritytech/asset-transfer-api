@@ -56,14 +56,14 @@
 		"@substrate/asset-transfer-api-registry": "^0.2.26"
 	},
 	"resolutions": {
-		"@polkadot/api": "^15.8.1",
-		"@polkadot/types-create": "15.8.1",
-		"@polkadot/rpc-provider": "15.8.1",
-		"@polkadot/api-augment": "^15.8.1",
-		"@polkadot/types": "^15.8.1",
+		"@polkadot/api": "^15.9.2",
+		"@polkadot/types-create": "15.9.2",
+		"@polkadot/rpc-provider": "15.9.2",
+		"@polkadot/api-augment": "^15.9.2",
+		"@polkadot/types": "^15.9.2",
 		"@polkadot/types-codec": "15.9.2",
 		"@polkadot/util-crypto": "13.4.4",
 		"@polkadot/util": "13.4.4",
-		"@polkadot/keyring": "13.4.3"
+		"@polkadot/keyring": "13.4.4"
 	}
 }
