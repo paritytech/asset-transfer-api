@@ -398,7 +398,9 @@ In combination with the XCM Dry Run API, this API can be used to estimate fees f
 
 Example:
 ```typescript
-const dryRunResult = await assetsApi.dryRunCall(sendersAddress, extrinsic, 'submittable');
+const dryRunResult = await assetsApi.dryRunCall(sendersAddress, extrinsic, 'submittable',
+	4, // xcmVersion
+);
 
 const destinationFeesInfo = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
     'bifrost_polkadot', // specName

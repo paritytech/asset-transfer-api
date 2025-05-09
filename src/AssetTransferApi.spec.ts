@@ -538,7 +538,7 @@ describe('AssetTransferAPI', () => {
 		const sendersAddress = '5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E';
 
 		it('Should correctly execute a dry run for a submittable extrinsic', async () => {
-			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
+			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable', 4);
 
 			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
 				mockDryRunCallResult.Ok.executionResult.Ok.paysFee,
@@ -556,7 +556,7 @@ describe('AssetTransferAPI', () => {
 				{ format: 'payload' },
 			);
 
-			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, payloadTexResult.tx, 'payload');
+			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, payloadTexResult.tx, 'payload', 4);
 			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
 				mockDryRunCallResult.Ok.executionResult.Ok.paysFee,
 			);
@@ -585,7 +585,7 @@ describe('AssetTransferAPI', () => {
 				xcmWeight: '{"refTime":3500000000,"proofSize":350000000}',
 			});
 
-			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, callTxResult.tx, 'call');
+			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, callTxResult.tx, 'call', 4);
 			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
 				mockDryRunCallResult.Ok.executionResult.Ok.paysFee,
 			);
