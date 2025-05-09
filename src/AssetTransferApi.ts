@@ -495,7 +495,7 @@ export class AssetTransferApi {
 		sendersAddr: string,
 		tx: ConstructedFormat<T>,
 		format: T,
-		xcmVersion?: null | number,
+		xcmVersion?: undefined | number,
 	): Promise<Result<CallDryRunEffects, XcmDryRunApiError> | null> {
 		const { api } = this;
 
@@ -519,7 +519,7 @@ export class AssetTransferApi {
 			throw new BaseError(`Unsupported format: ${format}`, BaseErrorsEnum.InvalidInput);
 		}
 
-		return xcmVersion === null
+		return xcmVersion === undefined
 			? await api.call.dryRunApi.dryRunCall(originCaller, callArg)
 			: await api.call.dryRunApi.dryRunCall(originCaller, callArg, xcmVersion);
 	}
