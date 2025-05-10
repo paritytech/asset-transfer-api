@@ -495,6 +495,7 @@ export class AssetTransferApi {
 		sendersAddr: string,
 		tx: ConstructedFormat<T>,
 		format: T,
+		xcmVersion?: undefined | number,
 	): Promise<Result<CallDryRunEffects, XcmDryRunApiError> | null> {
 		const { api } = this;
 
@@ -504,18 +505,23 @@ export class AssetTransferApi {
 			},
 		};
 
+		let callArg;
+
 		if (format === 'payload') {
 			const extrinsicPayload = api.registry.createType('ExtrinsicPayload', tx, {
 				version: EXTRINSIC_VERSION,
 			});
 			const call = api.registry.createType('Call', extrinsicPayload.method);
-
-			return await api.call.dryRunApi.dryRunCall(originCaller, call.toHex());
+			callArg = call.toHex();
 		} else if (format === 'call' || format === 'submittable') {
-			return await api.call.dryRunApi.dryRunCall(originCaller, tx);
+			callArg = tx;
+		} else {
+			throw new BaseError(`Unsupported format: ${format}`, BaseErrorsEnum.InvalidInput);
 		}
 
-		return null;
+		return xcmVersion === undefined
+			? await api.call.dryRunApi.dryRunCall(originCaller, callArg)
+			: await api.call.dryRunApi.dryRunCall(originCaller, callArg, xcmVersion);
 	}
 	/**
 	 * Decodes the hex of an extrinsic into a string readable format.
