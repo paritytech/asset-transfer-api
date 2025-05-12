@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.7.0](https://github.com/paritytech/asset-transfer-api/compare/v0.6.1..v0.7.0)
+
+### Fix
+
+- fix: add xcmVersion arg to DryRunCall ([#553](https://github.com/paritytech/asset-transfer-api/pull/553))([5cda6e6](https://github.com/paritytech/asset-transfer-api/commit/5cda6e61a260cebefd865524622f95df15cb08ba))
+
+  BREAKING CHANGE
+  - The `DryRunCall` now takes also the `xcmVersion` as an argument.
+
+### Docs
+
+- docs: fix broken relative path to e2e examples ([#555](https://github.com/paritytech/asset-transfer-api/pull/555))([820003d](https://github.com/paritytech/asset-transfer-api/commit/820003ddf2119b9d2824fd42dff3312cba86d695))
+
+### Chore
+
+- chore(deps): update deps ([#554](https://github.com/paritytech/asset-transfer-api/pull/554))([04e3de3](https://github.com/paritytech/asset-transfer-api/commit/04e3de3884b13c0b264141a13ffd564bf227c86a))
+- chore(deps-dev): bump typedoc from 0.28.3 to 0.28.4 ([#552](https://github.com/paritytech/asset-transfer-api/pull/552))([6eede23](https://github.com/paritytech/asset-transfer-api/commit/6eede236bc45c0578f0e1c0b5ab62d9aa8fb4ac0))
+- chore(deps-dev): bump vitest from 3.1.2 to 3.1.3 ([#551](https://github.com/paritytech/asset-transfer-api/pull/551))([5ea1dd8](https://github.com/paritytech/asset-transfer-api/commit/5ea1dd8e52baeaed63b9a96c27bca8b420e63127))
+
 ## [0.6.1](https://github.com/paritytech/asset-transfer-api/compare/v0.6.0..v0.6.1)
 
 ### Chore
