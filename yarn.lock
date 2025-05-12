@@ -5,7 +5,7 @@ __metadata:
   version: 8
   cacheKey: 10
 
-"@acala-network/chopsticks-core@npm:1.0.4, @acala-network/chopsticks-core@npm:^1.0.4":
+"@acala-network/chopsticks-core@npm:1.0.4":
   version: 1.0.4
   resolution: "@acala-network/chopsticks-core@npm:1.0.4"
   dependencies:
@@ -25,6 +25,29 @@ __metadata:
     rxjs: "npm:^7.8.2"
     zod: "npm:^3.24.2"
   checksum: 10/817d24decef2ae10cea37733798ae3cec990a2ed251856cb6af8f631df8f6e2ef509dbe6a5dbccd0054c46dc05eb42074138718c3d944bd5a384cde60ad9f4c2
+  languageName: node
+  linkType: hard
+
+"@acala-network/chopsticks-core@npm:^1.0.4":
+  version: 1.0.5
+  resolution: "@acala-network/chopsticks-core@npm:1.0.5"
+  dependencies:
+    "@acala-network/chopsticks-executor": "npm:1.0.5"
+    "@polkadot/rpc-provider": "npm:^15.7.1"
+    "@polkadot/types": "npm:^15.7.1"
+    "@polkadot/types-codec": "npm:^15.7.1"
+    "@polkadot/types-known": "npm:^15.7.1"
+    "@polkadot/util": "npm:^13.4.3"
+    "@polkadot/util-crypto": "npm:^13.4.3"
+    comlink: "npm:^4.4.2"
+    eventemitter3: "npm:^5.0.1"
+    lodash: "npm:^4.17.21"
+    lru-cache: "npm:^11.0.2"
+    pino: "npm:^9.6.0"
+    pino-pretty: "npm:^13.0.0"
+    rxjs: "npm:^7.8.2"
+    zod: "npm:^3.24.2"
+  checksum: 10/dc86e80fdd1a8aba78706bbe301edb0ee384753be85d5926f1367e28a8a439bedbe823233d47c5cf0483995b6425ee1a2e42b8929a6ddfb394d74dc237f37661
   languageName: node
   linkType: hard
 
@@ -48,6 +71,16 @@ __metadata:
     "@polkadot/util": "npm:^13.4.3"
     "@polkadot/wasm-util": "npm:^7.4.1"
   checksum: 10/9b6fd08b6c424a97d3cf1076cbf5629fc880858a7732f9f2cbfcba7f4df48de01fcc1b6ee5cfe5f2704124a3607bbdb6575e3dff32e19c1d6a92efb63122d644
+  languageName: node
+  linkType: hard
+
+"@acala-network/chopsticks-executor@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@acala-network/chopsticks-executor@npm:1.0.5"
+  dependencies:
+    "@polkadot/util": "npm:^13.4.3"
+    "@polkadot/wasm-util": "npm:^7.4.1"
+  checksum: 10/e4d86f4cc7dfc68f1b9e8ac4dc141b828f13af2b8f826253ff3e4fc3deb99fce8d7b86653050fdd6772269a86f5d92e301f754c8cbc43a121042da385dca25d4
   languageName: node
   linkType: hard
 
