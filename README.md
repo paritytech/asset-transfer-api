@@ -415,7 +415,7 @@ Note: claimAssets works when pallet-xcm is configured as the AssetTrap for the g
 
 ## E2E Testing
 
-You can access the E2E tests and their documentation [here](./e2e-tests/).
+You can access the E2E tests and their documentation [here](https://github.com/paritytech/asset-transfer-api/tree/main/e2e-tests).
 
 ## License
 
