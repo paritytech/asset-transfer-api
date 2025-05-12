@@ -5,7 +5,30 @@ __metadata:
   version: 8
   cacheKey: 10
 
-"@acala-network/chopsticks-core@npm:1.0.4, @acala-network/chopsticks-core@npm:^1.0.4":
+"@acala-network/chopsticks-core@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@acala-network/chopsticks-core@npm:1.0.5"
+  dependencies:
+    "@acala-network/chopsticks-executor": "npm:1.0.5"
+    "@polkadot/rpc-provider": "npm:^15.7.1"
+    "@polkadot/types": "npm:^15.7.1"
+    "@polkadot/types-codec": "npm:^15.7.1"
+    "@polkadot/types-known": "npm:^15.7.1"
+    "@polkadot/util": "npm:^13.4.3"
+    "@polkadot/util-crypto": "npm:^13.4.3"
+    comlink: "npm:^4.4.2"
+    eventemitter3: "npm:^5.0.1"
+    lodash: "npm:^4.17.21"
+    lru-cache: "npm:^11.0.2"
+    pino: "npm:^9.6.0"
+    pino-pretty: "npm:^13.0.0"
+    rxjs: "npm:^7.8.2"
+    zod: "npm:^3.24.2"
+  checksum: 10/dc86e80fdd1a8aba78706bbe301edb0ee384753be85d5926f1367e28a8a439bedbe823233d47c5cf0483995b6425ee1a2e42b8929a6ddfb394d74dc237f37661
+  languageName: node
+  linkType: hard
+
+"@acala-network/chopsticks-core@npm:^1.0.4":
   version: 1.0.4
   resolution: "@acala-network/chopsticks-core@npm:1.0.4"
   dependencies:
@@ -28,16 +51,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks-db@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@acala-network/chopsticks-db@npm:1.0.4"
+"@acala-network/chopsticks-db@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@acala-network/chopsticks-db@npm:1.0.5"
   dependencies:
-    "@acala-network/chopsticks-core": "npm:1.0.4"
+    "@acala-network/chopsticks-core": "npm:1.0.5"
     "@polkadot/util": "npm:^13.4.3"
     idb: "npm:^8.0.2"
     sqlite3: "npm:^5.1.7"
     typeorm: "npm:^0.3.20"
-  checksum: 10/35210327b9df26ff1e18b22a4263b9c90f44c72dfe6eab875fd8cddb1a0645aba35cad4d7c108684c10afbfe3c22c2dc0affb40b117d97e574ac66aec012dcc7
+  checksum: 10/926f3cadb550cb366f6d1393c0db266370cf562860769e0a7955b1e17464a0b91c62e96c49f566ee974b57cc8e4e709dca3eec87d9d65a08ae4691414036806e
   languageName: node
   linkType: hard
 
@@ -51,23 +74,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks-testing@npm:^1.0.4":
-  version: 1.0.4
-  resolution: "@acala-network/chopsticks-testing@npm:1.0.4"
+"@acala-network/chopsticks-executor@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@acala-network/chopsticks-executor@npm:1.0.5"
   dependencies:
-    "@acala-network/chopsticks-utils": "npm:1.0.4"
-    "@polkadot/api": "npm:^15.7.1"
-    "@polkadot/types": "npm:^15.7.1"
-  checksum: 10/bd2e76b78021eaebeb591e1c4b596756ab68da7d8bcd108017d625907c92892433180869d6224445009f1fb7d6a13eb0daf783cff50e85edf4200fec005bca7d
+    "@polkadot/util": "npm:^13.4.3"
+    "@polkadot/wasm-util": "npm:^7.4.1"
+  checksum: 10/e4d86f4cc7dfc68f1b9e8ac4dc141b828f13af2b8f826253ff3e4fc3deb99fce8d7b86653050fdd6772269a86f5d92e301f754c8cbc43a121042da385dca25d4
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks-utils@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@acala-network/chopsticks-utils@npm:1.0.4"
+"@acala-network/chopsticks-testing@npm:^1.0.4":
+  version: 1.0.5
+  resolution: "@acala-network/chopsticks-testing@npm:1.0.5"
   dependencies:
-    "@acala-network/chopsticks": "npm:1.0.4"
-    "@acala-network/chopsticks-core": "npm:1.0.4"
+    "@acala-network/chopsticks-utils": "npm:1.0.5"
+    "@polkadot/api": "npm:^15.7.1"
+    "@polkadot/types": "npm:^15.7.1"
+  checksum: 10/ac3451a658c310c821c70f3d885cfa1660e622fccf875278234c918ad27320b6d7eba270a2699b1a87454fe46ff82d3f245b5776122ee792eeda7b2f4df81fc4
+  languageName: node
+  linkType: hard
+
+"@acala-network/chopsticks-utils@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@acala-network/chopsticks-utils@npm:1.0.5"
+  dependencies:
+    "@acala-network/chopsticks": "npm:1.0.5"
+    "@acala-network/chopsticks-core": "npm:1.0.5"
     "@polkadot-labs/hdkd": "npm:^0.0.11"
     "@polkadot-labs/hdkd-helpers": "npm:^0.0.11"
     "@polkadot/api": "npm:^15.7.1"
@@ -76,16 +109,16 @@ __metadata:
     "@polkadot/types": "npm:^15.7.1"
     "@polkadot/util": "npm:^13.4.3"
     polkadot-api: "npm:^1.9.2"
-  checksum: 10/9d7a68c9e62c10a1fb6ed9e1c67f645cba825e7b29d7559db9b96fe12017899e2d13d8ce7b4ec816f46bd4283786b0c3abe11b1e3b676df794f0df62f7d035e5
+  checksum: 10/77d7694daec6d5aa4dfb1430f5f8e649be1f5b804c4132e3c16e0236579eff8f582e31525bf1d1e20de982f89d3adba06b22185415e171b0f126bf681ba0edd0
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks@npm:1.0.4":
-  version: 1.0.4
-  resolution: "@acala-network/chopsticks@npm:1.0.4"
+"@acala-network/chopsticks@npm:1.0.5":
+  version: 1.0.5
+  resolution: "@acala-network/chopsticks@npm:1.0.5"
   dependencies:
-    "@acala-network/chopsticks-core": "npm:1.0.4"
-    "@acala-network/chopsticks-db": "npm:1.0.4"
+    "@acala-network/chopsticks-core": "npm:1.0.5"
+    "@acala-network/chopsticks-db": "npm:1.0.5"
     "@pnpm/npm-conf": "npm:^3.0.0"
     "@polkadot/api": "npm:^15.7.1"
     "@polkadot/api-augment": "npm:^15.7.1"
@@ -93,7 +126,7 @@ __metadata:
     "@polkadot/types": "npm:^15.7.1"
     "@polkadot/util": "npm:^13.4.3"
     "@polkadot/util-crypto": "npm:^13.4.3"
-    axios: "npm:^1.8.2"
+    axios: "npm:^1.8.4"
     comlink: "npm:^4.4.2"
     dotenv: "npm:^16.4.7"
     global-agent: "npm:^3.0.0"
@@ -105,7 +138,7 @@ __metadata:
     zod: "npm:^3.24.2"
   bin:
     chopsticks: ./chopsticks.cjs
-  checksum: 10/ab93dfc692ede5424bd5aa9296be5740767dd53049aa20b08de71071241e92e7259a43c445b9a8b5e7f3df822e84e4fed5360cc284ba043b3ac7aa819fed46c4
+  checksum: 10/54e638b2a685bd2a18ec7b8c432b0c33714756b399091cb79ec1de88a4bc612b10e5d5c56cbae8764e0a5736e557322e09fa0a23858b999c11feb0a72474bfbc
   languageName: node
   linkType: hard
 
@@ -3110,14 +3143,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.8.2":
-  version: 1.8.4
-  resolution: "axios@npm:1.8.4"
+"axios@npm:^1.8.4":
+  version: 1.9.0
+  resolution: "axios@npm:1.9.0"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/a10f0dd836613924e48cf03dc2eff3fd21b14f764807aedaee4880a70c0f142aaebdb21da7ce27104d4c16ca00d0e452a20a20851f60e385a8d5bad1ae909d46
+  checksum: 10/a2f90bba56820883879f32a237e2b9ff25c250365dcafd41cec41b3406a3df334a148f90010182dfdadb4b41dc59f6f0b3e8898ff41b666d1157b5f3f4523497
   languageName: node
   linkType: hard
 
