@@ -39,21 +39,21 @@
 		"ansi-colors": "^4.1.3",
 		"chalk": "5.4.1",
 		"cli-progress": "^3.12.0",
-		"typedoc": "^0.28.3",
+		"typedoc": "^0.28.4",
 		"typedoc-plugin-missing-exports": "^4.0.0",
 		"typedoc-theme-hierarchy": "^6.0.0",
-		"vitest": "^3.1.2"
+		"vitest": "^3.1.3"
 	},
 	"dependencies": {
-		"@acala-network/chopsticks-core": "^1.0.4",
-		"@acala-network/chopsticks-testing": "^1.0.4",
-		"@polkadot/api": "^15.9.2",
-		"@polkadot/api-augment": "^15.9.2",
-		"@polkadot/types": "^15.9.2",
-		"@polkadot/types-codec": "^15.9.2",
+		"@acala-network/chopsticks-core": "^1.0.5",
+		"@acala-network/chopsticks-testing": "^1.0.5",
+		"@polkadot/api": "^15.9.3",
+		"@polkadot/api-augment": "^15.9.3",
+		"@polkadot/types": "^15.9.3",
+		"@polkadot/types-codec": "^15.9.3",
 		"@polkadot/util": "^13.4.4",
 		"@polkadot/util-crypto": "^13.4.4",
-		"@substrate/asset-transfer-api-registry": "^0.2.26"
+		"@substrate/asset-transfer-api-registry": "^0.3.0"
 	},
 	"resolutions": {
 		"@polkadot/api": "^15.9.2",
