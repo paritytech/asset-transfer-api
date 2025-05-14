@@ -19,12 +19,12 @@ import type {
 import type { AnyJson, AnyTuple, ISubmittableResult } from '@polkadot/types/types';
 import type { Result, u128 } from '@polkadot/types-codec';
 
-import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts';
-import * as assets from './createCalls/assets';
-import * as balances from './createCalls/balances';
-import * as foreignAssets from './createCalls/foreignAssets';
-import * as poolAssets from './createCalls/poolAssets';
-import * as tokens from './createCalls/tokens';
+import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts.js';
+import * as assets from './createCalls/assets/index.js';
+import * as balances from './createCalls/balances/index.js';
+import * as foreignAssets from './createCalls/foreignAssets/index.js';
+import * as poolAssets from './createCalls/poolAssets/index.js';
+import * as tokens from './createCalls/tokens/index.js';
 import {
 	claimAssets,
 	limitedReserveTransferAssets,
@@ -34,25 +34,25 @@ import {
 	transferMultiasset,
 	transferMultiassets,
 	transferMultiassetWithFee,
-} from './createXcmCalls';
-import { CreateXcmCallOpts } from './createXcmCalls/types';
-import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
-import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
-import { UnionXcmMultiLocation, XcmVersionedAssetId } from './createXcmTypes/types';
-import { assetIdIsLocation } from './createXcmTypes/util/assetIdIsLocation';
-import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset';
-import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge';
-import { chainDestIsEthereum } from './createXcmTypes/util/chainDestIsEthereum';
-import { createXcmVersionedAssetId } from './createXcmTypes/util/createXcmVersionedAssetId';
-import { getAssetId } from './createXcmTypes/util/getAssetId';
-import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName';
-import { getPaysWithFeeOriginAssetLocationFromRegistry } from './createXcmTypes/util/getPaysWithFeeOriginAssetLocationFromRegistry';
-import { isParachain } from './createXcmTypes/util/isParachain';
-import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset';
-import { isRelayNativeAsset } from './createXcmTypes/util/isRelayNativeAsset';
-import { isSystemChain } from './createXcmTypes/util/isSystemChain';
-import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
-import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation';
+} from './createXcmCalls/index.js';
+import { CreateXcmCallOpts } from './createXcmCalls/types.js';
+import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet.js';
+import { XTokensBaseArgs } from './createXcmCalls/xTokens/types.js';
+import { UnionXcmMultiLocation, XcmVersionedAssetId } from './createXcmTypes/types.js';
+import { assetIdIsLocation } from './createXcmTypes/util/assetIdIsLocation.js';
+import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset.js';
+import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge.js';
+import { chainDestIsEthereum } from './createXcmTypes/util/chainDestIsEthereum.js';
+import { createXcmVersionedAssetId } from './createXcmTypes/util/createXcmVersionedAssetId.js';
+import { getAssetId } from './createXcmTypes/util/getAssetId.js';
+import { getGlobalConsensusSystemName } from './createXcmTypes/util/getGlobalConsensusSystemName.js';
+import { getPaysWithFeeOriginAssetLocationFromRegistry } from './createXcmTypes/util/getPaysWithFeeOriginAssetLocationFromRegistry.js';
+import { isParachain } from './createXcmTypes/util/isParachain.js';
+import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachainPrimaryNativeAsset.js';
+import { isRelayNativeAsset } from './createXcmTypes/util/isRelayNativeAsset.js';
+import { isSystemChain } from './createXcmTypes/util/isSystemChain.js';
+import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset.js';
+import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation.js';
 import {
 	BaseError,
 	BaseErrorsEnum,
@@ -63,12 +63,12 @@ import {
 	checkLocalSystemParachainInput,
 	checkXcmTxInputs,
 	checkXcmVersion,
-} from './errors';
-import { LocalTxType } from './errors/checkLocalTxInput/types';
-import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs';
-import { Registry } from './registry';
-import { ChainInfoKeys, ChainInfoRegistry } from './registry/types';
-import { sanitizeAddress } from './sanitize/sanitizeAddress';
+} from './errors/index.js';
+import { LocalTxType } from './errors/checkLocalTxInput/types.js';
+import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs.js';
+import { Registry } from './registry/index.js';
+import { ChainInfoKeys, ChainInfoRegistry } from './registry/types.js';
+import { sanitizeAddress } from './sanitize/sanitizeAddress.js';
 import {
 	AssetCallType,
 	AssetTransferApiOpts,
@@ -95,12 +95,12 @@ import {
 	type XcmPalletTxMethodTransactionMap,
 	type XTokensCallSignature,
 	type XTokensTxMethodTransactionMap,
-} from './types';
-import { callExistsInRuntime } from './util/callExistsInRuntime';
-import { deepEqual } from './util/deepEqual';
-import { resolveMultiLocation } from './util/resolveMultiLocation';
-import { sanitizeKeys } from './util/sanitizeKeys';
-import { validateNumber } from './validate';
+} from './types.js';
+import { callExistsInRuntime } from './util/callExistsInRuntime.js';
+import { deepEqual } from './util/deepEqual.js';
+import { resolveMultiLocation } from './util/resolveMultiLocation.js';
+import { sanitizeKeys } from './util/sanitizeKeys.js';
+import { validateNumber } from './validate/index.js';
 
 /**
  * Holds open an api connection to a specified chain within the ApiPromise in order to help

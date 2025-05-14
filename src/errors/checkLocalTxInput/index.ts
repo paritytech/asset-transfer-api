@@ -1,3 +1,3 @@
-export { checkLocalParachainInput } from './checkLocalParachainInput';
-export { checkLocalRelayInput } from './checkLocalRelayInput';
-export { checkLocalSystemParachainInput } from './checkLocalSystemParachainInput';
+export { checkLocalParachainInput } from './checkLocalParachainInput.js';
+export { checkLocalRelayInput } from './checkLocalRelayInput.js';
+export { checkLocalSystemParachainInput } from './checkLocalSystemParachainInput.js';

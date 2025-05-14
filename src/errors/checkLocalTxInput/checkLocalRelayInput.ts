@@ -1,10 +1,10 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { RELAY_CHAIN_IDS, RELAY_CHAINS_NATIVE_ASSET_LOCATION } from '../../consts';
-import { isRelayNativeAsset } from '../../createXcmTypes/util/isRelayNativeAsset';
-import { Registry } from '../../registry';
-import { BaseError, BaseErrorsEnum } from '../BaseError';
-import { LocalTxType } from './types';
+import { RELAY_CHAIN_IDS, RELAY_CHAINS_NATIVE_ASSET_LOCATION } from '../../consts.js';
+import { isRelayNativeAsset } from '../../createXcmTypes/util/isRelayNativeAsset.js';
+import { Registry } from '../../registry/index.js';
+import { BaseError, BaseErrorsEnum } from '../BaseError.js';
+import { LocalTxType } from './types.js';
 
 export const checkLocalRelayInput = (assetIds: string[], amounts: string[], registry: Registry): LocalTxType => {
 	if (assetIds.length > 1 || amounts.length !== 1) {

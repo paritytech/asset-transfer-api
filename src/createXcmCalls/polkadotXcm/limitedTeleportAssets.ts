@@ -3,11 +3,11 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../../createXcmTypes';
-import { normalizeArrToStr } from '../../util/normalizeArrToStr';
-import type { CreateXcmCallOpts } from '../types';
-import { establishXcmPallet } from '../util/establishXcmPallet';
-import type { PolkadotXcmBaseArgs } from './types';
+import { createXcmTypes } from '../../createXcmTypes/index.js';
+import { normalizeArrToStr } from '../../util/normalizeArrToStr.js';
+import type { CreateXcmCallOpts } from '../types.js';
+import { establishXcmPallet } from '../util/establishXcmPallet.js';
+import type { PolkadotXcmBaseArgs } from './types.js';
 
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `limitedTeleportAssets` call.

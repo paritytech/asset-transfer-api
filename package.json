@@ -2,12 +2,22 @@
 	"name": "@substrate/asset-transfer-api",
 	"version": "0.7.0",
 	"description": "",
-	"main": "lib/src/index.js",
+	"main": "./dist/src/index.cjs",
+	"module": "./dist/src/index.js",
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"require": "./dist/src/index.cjs",
+			"import": "./dist/src/index.js"
+		}
+	},
 	"scripts": {
-		"build": "substrate-exec-rimraf ./lib && substrate-exec-tsc",
+		"build": "tsc && cp dist/src/index.js dist/src/index.cjs",
 		"build:scripts": "substrate-exec-rimraf scripts/build/ && substrate-exec-tsc --project scripts/tsconfig.json",
 		"build:examples": "substrate-exec-rimraf examples/build/ && substrate-exec-tsc --project examples/tsconfig.json",
 		"build:e2e": "substrate-exec-rimraf e2e-tests/build/ && substrate-exec-tsc --project e2e-tests/tsconfig.json",
+		"clean": "rm -rf dist",
 		"start": "node ./lib/index.js",
 		"lint": "substrate-dev-run-lint",
 		"lint:fix": "substrate-dev-run-lint --fix",

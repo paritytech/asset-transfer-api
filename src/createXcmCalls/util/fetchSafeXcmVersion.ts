@@ -3,8 +3,8 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { Option, u32 } from '@polkadot/types';
 
-import { DEFAULT_XCM_VERSION } from '../../consts';
-import { establishXcmPallet } from './establishXcmPallet';
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
+import { establishXcmPallet } from './establishXcmPallet.js';
 
 /**
  * Fetch for a safe Xcm Version from the chain, if none exists the

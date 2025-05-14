@@ -4,7 +4,7 @@ import { ApiPromise } from '@polkadot/api';
 import type { ApiOptions } from '@polkadot/api/types';
 import { WsProvider } from '@polkadot/rpc-provider';
 
-import { fetchSafeXcmVersion } from './createXcmCalls/util/fetchSafeXcmVersion';
+import { fetchSafeXcmVersion } from './createXcmCalls/util/fetchSafeXcmVersion.js';
 
 /**
  * Return value for `constructApiPromise`
