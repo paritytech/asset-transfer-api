@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import registry from '@substrate/asset-transfer-api-registry' with { type: 'json' };;
+import registry from '@substrate/asset-transfer-api-registry' with { type: 'json' };
 
 import {
 	ASSET_HUB_CHAIN_ID,

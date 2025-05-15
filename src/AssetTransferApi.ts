@@ -53,6 +53,8 @@ import { isRelayNativeAsset } from './createXcmTypes/util/isRelayNativeAsset.js'
 import { isSystemChain } from './createXcmTypes/util/isSystemChain.js';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset.js';
 import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation.js';
+import { LocalTxType } from './errors/checkLocalTxInput/types.js';
+import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs.js';
 import {
 	BaseError,
 	BaseErrorsEnum,
@@ -64,8 +66,6 @@ import {
 	checkXcmTxInputs,
 	checkXcmVersion,
 } from './errors/index.js';
-import { LocalTxType } from './errors/checkLocalTxInput/types.js';
-import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs.js';
 import { Registry } from './registry/index.js';
 import { ChainInfoKeys, ChainInfoRegistry } from './registry/types.js';
 import { sanitizeAddress } from './sanitize/sanitizeAddress.js';
