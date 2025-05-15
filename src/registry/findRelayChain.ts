@@ -5,9 +5,9 @@ import {
 	PASEO_ASSET_HUB_SPEC_NAME,
 	POLKADOT_ASSET_HUB_SPEC_NAMES,
 	WESTEND_ASSET_HUB_SPEC_NAMES,
-} from '../consts';
-import { BaseError, BaseErrorsEnum } from '../errors';
-import type { ChainInfoKeys, ChainInfoRegistry, RelayChains } from './types';
+} from '../consts.js';
+import { BaseError, BaseErrorsEnum } from '../errors/index.js';
+import type { ChainInfoKeys, ChainInfoRegistry, RelayChains } from './types.js';
 /**
  * Finds the name of the relay chain of a given specName. If the chain does not exist within the registry
  * an error will be thrown.

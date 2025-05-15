@@ -4,12 +4,12 @@ import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { Registry } from '../registry';
-import { XCMAssetRegistryMultiLocation } from '../registry/types';
-import { Direction } from '../types';
-import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex';
-import { normalizeArrToStr } from '../util/normalizeArrToStr';
-import { resolveMultiLocation } from '../util/resolveMultiLocation';
+import { Registry } from '../registry/index.js';
+import { XCMAssetRegistryMultiLocation } from '../registry/types.js';
+import { Direction } from '../types.js';
+import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex.js';
+import { normalizeArrToStr } from '../util/normalizeArrToStr.js';
+import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -21,12 +21,12 @@ import type {
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
 	XcmWeight,
-} from './types';
-import { dedupeAssets } from './util/dedupeAssets';
-import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation';
-import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId';
-import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset';
-import { sortAssetsAscending } from './util/sortAssetsAscending';
+} from './types.js';
+import { dedupeAssets } from './util/dedupeAssets.js';
+import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation.js';
+import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId.js';
+import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset.js';
+import { sortAssetsAscending } from './util/sortAssetsAscending.js';
 
 export const ParaToEthereum: ICreateXcmType = {
 	/**

@@ -3,7 +3,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { BaseError, BaseErrorsEnum } from '../errors';
+import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import {
 	CreateWeightLimitOpts,
 	FungibleStrAsset,
@@ -15,8 +15,8 @@ import {
 	XcmDestBeneficiary,
 	XcmV4JunctionDestBeneficiary,
 	XcmWeight,
-} from './types';
-import { parseLocationStrToLocation } from './util/parseLocationStrToLocation';
+} from './types.js';
+import { parseLocationStrToLocation } from './util/parseLocationStrToLocation.js';
 
 export const RelayToBridge: ICreateXcmType = {
 	/**

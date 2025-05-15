@@ -3,7 +3,7 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../../createXcmTypes';
+import { createXcmTypes } from '../../createXcmTypes/index.js';
 import {
 	UnionXcmMultiLocation,
 	WildAsset,
@@ -13,22 +13,22 @@ import {
 	XcmV3Junction,
 	XcmV4Junction,
 	XcmVersionedAssetId,
-} from '../../createXcmTypes/types';
-import { assetIdIsLocation } from '../../createXcmTypes/util/assetIdIsLocation';
-import { createXcmOnDestBeneficiary } from '../../createXcmTypes/util/createXcmOnDestBeneficiary';
-import { createXcmOnDestination } from '../../createXcmTypes/util/createXcmOnDestination';
-import { createXcmVersionedAssetId } from '../../createXcmTypes/util/createXcmVersionedAssetId';
-import { getAssetId } from '../../createXcmTypes/util/getAssetId';
-import { parseLocationStrToLocation } from '../../createXcmTypes/util/parseLocationStrToLocation';
-import { resolveAssetTransferType } from '../../createXcmTypes/util/resolveAssetTransferType';
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { sanitizeAddress } from '../../sanitize/sanitizeAddress';
-import { AssetTransferType, Direction } from '../../types';
-import { normalizeArrToStr } from '../../util/normalizeArrToStr';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation';
-import type { CreateXcmCallOpts } from '../types';
-import { establishXcmPallet } from '../util/establishXcmPallet';
-import type { PolkadotXcmBaseArgs } from './types';
+} from '../../createXcmTypes/types.js';
+import { assetIdIsLocation } from '../../createXcmTypes/util/assetIdIsLocation.js';
+import { createXcmOnDestBeneficiary } from '../../createXcmTypes/util/createXcmOnDestBeneficiary.js';
+import { createXcmOnDestination } from '../../createXcmTypes/util/createXcmOnDestination.js';
+import { createXcmVersionedAssetId } from '../../createXcmTypes/util/createXcmVersionedAssetId.js';
+import { getAssetId } from '../../createXcmTypes/util/getAssetId.js';
+import { parseLocationStrToLocation } from '../../createXcmTypes/util/parseLocationStrToLocation.js';
+import { resolveAssetTransferType } from '../../createXcmTypes/util/resolveAssetTransferType.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { sanitizeAddress } from '../../sanitize/sanitizeAddress.js';
+import { AssetTransferType, Direction } from '../../types.js';
+import { normalizeArrToStr } from '../../util/normalizeArrToStr.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import type { CreateXcmCallOpts } from '../types.js';
+import { establishXcmPallet } from '../util/establishXcmPallet.js';
+import type { PolkadotXcmBaseArgs } from './types.js';
 /**
  * Build a Polkadot-js SubmittableExtrinsic for a `transferAssetsUsingTypeAndThen` call.
  *

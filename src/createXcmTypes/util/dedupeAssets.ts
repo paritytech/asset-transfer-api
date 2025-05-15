@@ -1,6 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { FungibleObjAssetType, FungibleStrAssetType } from '../types';
+import type { FungibleObjAssetType, FungibleStrAssetType } from '../types.js';
 
 /**
  * This removes duplicate assets when given a sorted list

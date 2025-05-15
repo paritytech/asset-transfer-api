@@ -1,9 +1,9 @@
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { Registry } from '../../registry';
-import { SanitizedXcAssetsData } from '../../registry/types';
-import { sanitizeKeys } from '../../util/sanitizeKeys';
-import { UnionXcmMultiLocation, XcmV3Junction } from '../types';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { Registry } from '../../registry/index.js';
+import { SanitizedXcAssetsData } from '../../registry/types.js';
+import { sanitizeKeys } from '../../util/sanitizeKeys.js';
+import { UnionXcmMultiLocation, XcmV3Junction } from '../types.js';
+import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const getParachainNativeAssetLocation = (
 	registry: Registry,

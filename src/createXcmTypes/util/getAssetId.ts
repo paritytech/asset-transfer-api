@@ -3,15 +3,15 @@
 import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
 
-import { ASSET_HUB_CHAIN_ID } from '../../consts';
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { Registry } from '../../registry';
-import { validateNumber } from '../../validate';
-import { UnionXcmMultiLocation } from '../types';
-import { assetIdIsLocation } from './assetIdIsLocation';
-import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry';
-import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation';
+import { ASSET_HUB_CHAIN_ID } from '../../consts.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { Registry } from '../../registry/index.js';
+import { validateNumber } from '../../validate/index.js';
+import { UnionXcmMultiLocation } from '../types.js';
+import { assetIdIsLocation } from './assetIdIsLocation.js';
+import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry.js';
+import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists.js';
+import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 /**
  *

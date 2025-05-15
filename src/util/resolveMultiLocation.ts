@@ -2,11 +2,11 @@
 
 import type { AnyJson } from '@polkadot/types/types';
 
-import { SUPPORTED_XCM_VERSIONS } from '../consts';
-import type { UnionXcmMultiLocation, XcmV4Junction } from '../createXcmTypes/types';
-import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation';
-import { BaseError, BaseErrorsEnum } from '../errors/BaseError';
-import { sanitizeKeys } from './sanitizeKeys';
+import { SUPPORTED_XCM_VERSIONS } from '../consts.js';
+import type { UnionXcmMultiLocation, XcmV4Junction } from '../createXcmTypes/types.js';
+import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation.js';
+import { BaseError, BaseErrorsEnum } from '../errors/BaseError.js';
+import { sanitizeKeys } from './sanitizeKeys.js';
 
 /**
  * This ensures that the given multiLocation does not have certain junctions depending on the xcm version.

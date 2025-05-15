@@ -12,6 +12,7 @@
 # Tsc Build
 **/lib
 **/build
+**/dist
 
 # Zombienet
 zombienet-macos
@@ -28,3 +29,9 @@ zombienet/bin/*
 db.sqlite
 db.sqlite-*
 chopsticks-db
+
+# VS Code
+.vscode/
+
+# Package Lock file
+package-lock.json

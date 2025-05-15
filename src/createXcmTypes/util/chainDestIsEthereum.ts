@@ -1,4 +1,4 @@
-import { parseLocationStrToLocation } from './parseLocationStrToLocation';
+import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const chainDestIsEthereum = (destLocation: string): boolean => {
 	if (!destLocation.toLowerCase().includes('parents') || !destLocation.toLowerCase().includes('interior')) {

@@ -2,8 +2,8 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { BaseError, BaseErrorsEnum } from '../BaseError';
-import { LocalTxType } from './types';
+import { BaseError, BaseErrorsEnum } from '../BaseError.js';
+import { LocalTxType } from './types.js';
 
 export const checkLocalParachainInput = (api: ApiPromise, assetIds: string[], amounts: string[]): LocalTxType => {
 	if (assetIds.length > 1 || amounts.length !== 1) {

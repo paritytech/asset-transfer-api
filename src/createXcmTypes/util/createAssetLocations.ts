@@ -2,10 +2,10 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { Registry } from '../../registry';
-import { RequireOnlyOne } from '../../types';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation';
-import { validateNumber } from '../../validate';
+import { Registry } from '../../registry/index.js';
+import { RequireOnlyOne } from '../../types.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import { validateNumber } from '../../validate/index.js';
 import {
 	FungibleStrAsset,
 	FungibleStrAssetType,
@@ -15,12 +15,12 @@ import {
 	XcmV2Junctions,
 	XcmV3Junctions,
 	XcmV4Junctions,
-} from '../types';
-import { dedupeAssets } from './dedupeAssets';
-import { fetchPalletInstanceId } from './fetchPalletInstanceId';
-import { getAssetId } from './getAssetId';
-import { isRelayNativeAsset } from './isRelayNativeAsset';
-import { sortAssetsAscending } from './sortAssetsAscending';
+} from '../types.js';
+import { dedupeAssets } from './dedupeAssets.js';
+import { fetchPalletInstanceId } from './fetchPalletInstanceId.js';
+import { getAssetId } from './getAssetId.js';
+import { isRelayNativeAsset } from './isRelayNativeAsset.js';
+import { sortAssetsAscending } from './sortAssetsAscending.js';
 
 export const createAssetLocations = async (
 	api: ApiPromise,

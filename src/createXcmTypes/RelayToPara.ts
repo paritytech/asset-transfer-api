@@ -12,7 +12,7 @@ import {
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
 	XcmWeight,
-} from './types';
+} from './types.js';
 
 /**
  * XCM type generation for transactions from the relay chain to a parachain.
