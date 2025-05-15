@@ -2247,6 +2247,7 @@ __metadata:
     ansi-colors: "npm:^4.1.3"
     chalk: "npm:5.4.1"
     cli-progress: "npm:^3.12.0"
+    reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^6.0.1"
     tsup: "npm:^8.4.0"
     typedoc: "npm:^0.28.4"
@@ -7272,6 +7273,13 @@ __metadata:
   version: 0.2.0
   resolution: "real-require@npm:0.2.0"
   checksum: 10/ddf44ee76301c774e9c9f2826da8a3c5c9f8fc87310f4a364e803ef003aa1a43c378b4323051ced212097fff1af459070f4499338b36a7469df1d4f7e8c0ba4c
+  languageName: node
+  linkType: hard
+
+"reflect-metadata@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "reflect-metadata@npm:0.2.2"
+  checksum: 10/1c93f9ac790fea1c852fde80c91b2760420069f4862f28e6fae0c00c6937a56508716b0ed2419ab02869dd488d123c4ab92d062ae84e8739ea7417fae10c4745
   languageName: node
   linkType: hard
 
