@@ -2,22 +2,32 @@
 	"name": "@substrate/asset-transfer-api",
 	"version": "0.7.0",
 	"description": "",
-	"main": "./dist/src/index.cjs",
-	"module": "./dist/src/index.js",
+	"main": "./dist/commonjs/index.js",
+	"module": "./dist/esm/index.js",
 	"type": "module",
-	"types": "./dist/index.d.ts",
+	"types": "./dist/commonjs/index.d.ts",
 	"exports": {
+		"./package.json": "./package.json",
 		".": {
-			"require": "./dist/index.cjs",
-			"import": "./dist/index.js"
+			"import": {
+				"types": "./dist/esm/index.d.ts",
+				"default": "./dist/esm/index.js"
+			},
+			"require": {
+				"types": "./dist/commonjs/index.d.ts",
+				"default": "./dist/commonjs/index.js"
+			}
 		}
 	},
+	"files": [
+		"dist"
+	],
 	"scripts": {
-		"build": "tsup src/index.ts --format esm,cjs --dts",
+		"build": "tshy",
 		"build:scripts": "substrate-exec-rimraf scripts/build/ && substrate-exec-tsc --project scripts/tsconfig.json",
 		"build:examples": "substrate-exec-rimraf examples/build/ && substrate-exec-tsc --project examples/tsconfig.json",
 		"build:e2e": "substrate-exec-rimraf e2e-tests/build/ && substrate-exec-tsc --project e2e-tests/tsconfig.json",
-		"clean": "rimraf dist",
+		"clean": "rimraf dist .tshy .tshy-build",
 		"start": "node ./lib/index.js",
 		"lint": "substrate-dev-run-lint",
 		"lint:fix": "substrate-dev-run-lint --fix",
@@ -27,6 +37,17 @@
 		"test:integration": "vitest --project integration",
 		"test:unit": "vitest --project unit",
 		"test": "vitest"
+	},
+	"tshy": {
+		"project": "./tsconfig.json",
+		"exports": {
+			"./package.json": "./package.json",
+			".": "./src/index.ts"
+		},
+		"exclude": [
+			"./src/**/*.spec.ts",
+			"./src/testHelpers"
+		]
 	},
 	"engines": {
 		"node": ">=18.14"
@@ -53,7 +74,7 @@
 		"cli-progress": "^3.12.0",
 		"reflect-metadata": "^0.2.2",
 		"rimraf": "^6.0.1",
-		"tsup": "^8.4.0",
+		"tshy": "^3.0.2",
 		"typedoc": "^0.28.4",
 		"typedoc-plugin-missing-exports": "^4.0.0",
 		"typedoc-theme-hierarchy": "^6.0.0",

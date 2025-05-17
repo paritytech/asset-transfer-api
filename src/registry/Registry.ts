@@ -1,7 +1,5 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import registry from '@substrate/asset-transfer-api-registry' with { type: 'json' };
-
 import {
 	ASSET_HUB_CHAIN_ID,
 	KUSAMA_ASSET_HUB_SPEC_NAMES,
@@ -11,6 +9,7 @@ import {
 } from '../consts.js';
 import type { AssetTransferApiOpts } from '../types.js';
 import { findRelayChain, parseRegistry } from './index.js';
+import { registry } from './registry-json.js';
 import type {
 	ChainInfo,
 	ChainInfoKeys,
