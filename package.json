@@ -1,6 +1,6 @@
 {
 	"name": "@substrate/asset-transfer-api",
-	"version": "0.7.0",
+	"version": "0.7.1",
 	"description": "",
 	"main": "./dist/commonjs/index.js",
 	"module": "./dist/esm/index.js",
