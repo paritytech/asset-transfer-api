@@ -1,4 +1,4 @@
-import { MAX_NUM_LENGTH } from '../consts';
+import { MAX_NUM_LENGTH } from '../consts.js';
 
 /**
  * Check if a given string input is a valid integer.

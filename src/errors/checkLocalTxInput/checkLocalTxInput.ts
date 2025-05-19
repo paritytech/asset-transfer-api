@@ -2,13 +2,13 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
-import { foreignAssetsMultiLocationExists } from '../../createXcmTypes/util/foreignAssetsMultiLocationExists';
-import { getAssetId } from '../../createXcmTypes/util/getAssetId';
-import type { Registry } from '../../registry';
-import { BaseError, BaseErrorsEnum } from '../BaseError';
-import { checkLiquidTokenValidity } from '../checkXcmTxInputs';
-import { LocalTxType } from './types';
+import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry.js';
+import { foreignAssetsMultiLocationExists } from '../../createXcmTypes/util/foreignAssetsMultiLocationExists.js';
+import { getAssetId } from '../../createXcmTypes/util/getAssetId.js';
+import type { Registry } from '../../registry/index.js';
+import { BaseError, BaseErrorsEnum } from '../BaseError.js';
+import { checkLiquidTokenValidity } from '../checkXcmTxInputs.js';
+import { LocalTxType } from './types.js';
 
 /**
  * Check a local transactions inputs to ensure they are correct.

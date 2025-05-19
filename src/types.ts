@@ -12,12 +12,12 @@ import type {
 import type { AnyJson, ISubmittableResult } from '@polkadot/types/types';
 import BN from 'bn.js';
 
-import { CreateXcmCallOpts } from './createXcmCalls/types';
-import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
-import { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
-import { UnionXcmMultiLocation } from './createXcmTypes/types';
-import type { Registry } from './registry';
-import type { ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './registry/types';
+import { CreateXcmCallOpts } from './createXcmCalls/types.js';
+import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet.js';
+import { XTokensBaseArgs } from './createXcmCalls/xTokens/types.js';
+import { UnionXcmMultiLocation } from './createXcmTypes/types.js';
+import type { Registry } from './registry/index.js';
+import type { ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './registry/types.js';
 
 export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
 	{

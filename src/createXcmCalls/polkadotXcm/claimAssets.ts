@@ -4,12 +4,12 @@ import { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createAssetLocations } from '../../createXcmTypes/util/createAssetLocations';
-import { createBeneficiary } from '../../createXcmTypes/util/createBeneficiary';
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { Registry } from '../../registry';
-import { CreateXcmCallOpts } from '../types';
-import { establishXcmPallet } from '../util/establishXcmPallet';
+import { createAssetLocations } from '../../createXcmTypes/util/createAssetLocations.js';
+import { createBeneficiary } from '../../createXcmTypes/util/createBeneficiary.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { Registry } from '../../registry/index.js';
+import { CreateXcmCallOpts } from '../types.js';
+import { establishXcmPallet } from '../util/establishXcmPallet.js';
 
 /**
  * Allow users to claim assets trapped locally on-chain during failed XCM execution.

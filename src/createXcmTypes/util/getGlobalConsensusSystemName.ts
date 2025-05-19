@@ -1,8 +1,8 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES } from '../../consts';
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation';
+import { KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES } from '../../consts.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const getGlobalConsensusSystemName = (destLocation: string): string => {
 	const location = parseLocationStrToLocation(destLocation);

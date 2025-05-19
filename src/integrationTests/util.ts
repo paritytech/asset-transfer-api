@@ -1,6 +1,6 @@
-import type { AssetTransferApi } from '../AssetTransferApi';
-import { CreateXcmCallOpts } from '../createXcmCalls/types';
-import type { Format, TxResult } from '../types';
+import type { AssetTransferApi } from '../AssetTransferApi.js';
+import { CreateXcmCallOpts } from '../createXcmCalls/types.js';
+import type { Format, TxResult } from '../types.js';
 
 export type TestMultiasset = [parachainId: string, assetId: string, expected: `0x${string}`];
 

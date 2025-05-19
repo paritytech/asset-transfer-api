@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../../registry';
-import { isRelayNativeAsset } from './isRelayNativeAsset';
+import { Registry } from '../../registry/index.js';
+import { isRelayNativeAsset } from './isRelayNativeAsset.js';
 
 export const assetIdsContainRelayAsset = (assetIds: string[], registry: Registry): boolean => {
 	// if assetIds is empty it is the relay asset

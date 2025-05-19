@@ -2,9 +2,9 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { SUPPORTED_XCM_PALLETS } from '../../consts';
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { Direction, XcmPallet } from '../../types';
+import { SUPPORTED_XCM_PALLETS } from '../../consts.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { Direction, XcmPallet } from '../../types.js';
 
 export enum XcmPalletName {
 	xcmPallet = 'xcmPallet',

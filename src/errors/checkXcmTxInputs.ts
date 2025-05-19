@@ -9,24 +9,24 @@ import {
 	RELAY_CHAIN_IDS,
 	RELAY_CHAINS_NATIVE_ASSET_LOCATION,
 	SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION,
-} from '../consts';
-import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
-import { UnionXcmMultiLocation } from '../createXcmTypes/types';
-import { assetIdIsLocation } from '../createXcmTypes/util/assetIdIsLocation';
-import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry';
-import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists';
-import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName';
-import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset';
-import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset';
-import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset';
-import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation';
-import { Registry } from '../registry';
-import type { ChainInfo, ChainInfoKeys } from '../registry/types';
-import type { XcmBaseArgsWithPallet } from '../types';
-import { AssetInfo, Direction } from '../types';
-import { validateNumber } from '../validate';
-import { BaseError, BaseErrorsEnum } from './BaseError';
-import type { CheckXcmTxInputsOpts } from './types';
+} from '../consts.js';
+import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet.js';
+import { UnionXcmMultiLocation } from '../createXcmTypes/types.js';
+import { assetIdIsLocation } from '../createXcmTypes/util/assetIdIsLocation.js';
+import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry.js';
+import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists.js';
+import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalConsensusSystemName.js';
+import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset.js';
+import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset.js';
+import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset.js';
+import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation.js';
+import { Registry } from '../registry/index.js';
+import type { ChainInfo, ChainInfoKeys } from '../registry/types.js';
+import type { XcmBaseArgsWithPallet } from '../types.js';
+import { AssetInfo, Direction } from '../types.js';
+import { validateNumber } from '../validate/index.js';
+import { BaseError, BaseErrorsEnum } from './BaseError.js';
+import type { CheckXcmTxInputsOpts } from './types.js';
 
 /**
  * Ensure `destAddr` is a non ethereum address when the destination is a System or Relay chain.

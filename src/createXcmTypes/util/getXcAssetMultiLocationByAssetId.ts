@@ -2,11 +2,11 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { BaseError, BaseErrorsEnum } from '../../errors';
-import { Registry } from '../../registry';
-import type { SanitizedXcAssetsData } from '../../registry/types';
-import { validateNumber } from '../../validate';
-import { getAssetId } from './getAssetId';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { Registry } from '../../registry/index.js';
+import type { SanitizedXcAssetsData } from '../../registry/types.js';
+import { validateNumber } from '../../validate/index.js';
+import { getAssetId } from './getAssetId.js';
 
 export const getXcAssetMultiLocationByAssetId = async (
 	api: ApiPromise,
