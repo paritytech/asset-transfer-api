@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.7.1](https://github.com/paritytech/asset-transfer-api/compare/v0.7.0..v0.7.1)
+
+### Fix
+
+- feat: Add ESM support while maintaining CJS support ([#561](https://github.com/paritytech/asset-transfer-api/pull/561))
+
 ## [0.7.0](https://github.com/paritytech/asset-transfer-api/compare/v0.6.1..v0.7.0)
 
 ### Fix
