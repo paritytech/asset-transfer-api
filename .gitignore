@@ -1,5 +1,5 @@
 # Node Modules
-/node_modules
+node_modules
 
 # MacOS
 .DS_Store
@@ -35,3 +35,6 @@ chopsticks-db
 
 # Package Lock file
 package-lock.json
+
+.tshy
+.tshy-build
