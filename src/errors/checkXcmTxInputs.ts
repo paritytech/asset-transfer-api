@@ -1274,6 +1274,8 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkAssetIdsAndAmountsMatch(assetIds, amounts);
 		checkParaToEthereum(destAddr, sendersAddr, paysWithFeeDest);
 	}
+
+	// TODO: Add sufficiency test
 };
 
 export const checkParaToEthereum = (destAddr: string, sendersAddr?: string, paysWithFeeDest?: string) => {

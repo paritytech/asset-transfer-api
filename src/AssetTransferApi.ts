@@ -65,6 +65,7 @@ import {
 	checkLocalSystemParachainInput,
 	checkXcmTxInputs,
 	checkXcmVersion,
+	checkDestSufficiency,
 } from './errors/index.js';
 import { Registry } from './registry/index.js';
 import { ChainInfoKeys, ChainInfoRegistry } from './registry/types.js';
@@ -319,6 +320,14 @@ export class AssetTransferApi {
 			isPrimaryParachainNativeAsset,
 			registry,
 		);
+
+		await checkDestSufficiency({
+			destApi: opts.destApi,
+			destAddr,
+			destChainId,
+			assetIds,
+			assetAmounts: amounts,
+		});
 
 		const [txMethod, transaction] = await this.resolveCall(
 			assetIds,
