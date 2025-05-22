@@ -252,6 +252,14 @@ export class AssetTransferApi {
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 
+		await checkDestSufficiency({
+			destApi: opts.destApi,
+			destAddr,
+			destChainId,
+			assetIds,
+			assetAmounts: amounts,
+		});
+
 		/**
 		 * Create a local asset transfer
 		 */
@@ -320,14 +328,6 @@ export class AssetTransferApi {
 			isPrimaryParachainNativeAsset,
 			registry,
 		);
-
-		await checkDestSufficiency({
-			destApi: opts.destApi,
-			destAddr,
-			destChainId,
-			assetIds,
-			assetAmounts: amounts,
-		});
 
 		const [txMethod, transaction] = await this.resolveCall(
 			assetIds,
