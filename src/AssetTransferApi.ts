@@ -60,6 +60,7 @@ import {
 	BaseErrorsEnum,
 	checkBaseInputOptions,
 	checkBaseInputTypes,
+	checkDestSufficiency,
 	checkLocalParachainInput,
 	checkLocalRelayInput,
 	checkLocalSystemParachainInput,
@@ -250,6 +251,14 @@ export class AssetTransferApi {
 		const xcmPallet = establishXcmPallet(api, xcmDirection, xcmPalletOverride);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
+
+		await checkDestSufficiency({
+			destApi: opts.destApi,
+			destAddr,
+			destChainId,
+			assetIds,
+			assetAmounts: amounts,
+		});
 
 		/**
 		 * Create a local asset transfer

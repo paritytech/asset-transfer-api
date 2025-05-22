@@ -1,5 +1,11 @@
 # Changelog
 
+## [X.Y.Z](https://github.com/paritytech/asset-transfer-api/compare/v0.7.1..vX.Y.Z)
+
+### Fix
+
+- feat: Add an optional `destApi` to verify sufficiency of receiving accounts ([#565](https://github.com/paritytech/asset-transfer-api/pull/565))
+
 ## [0.7.1](https://github.com/paritytech/asset-transfer-api/compare/v0.7.0..v0.7.1)
 
 ### Fix
