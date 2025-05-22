@@ -54,7 +54,7 @@ const sendingInsufficientNativeAsset = async () => {
 };
 
 /**
- * In this example we are sending a large amount of USDC (insufficient asset)
+ * In this example we are sending a large amount of an insufficient asset
  * within the Westend Asset Hub to an empty account. Since the account is empty
  * and the asset is insufficient, the acount would still be reaped and funds would be
  * lost, but this is caught by providing the optional `destApi`. Thus an
@@ -70,7 +70,7 @@ const sendingInsufficientNonNativeAsset = async () => {
         callInfo = await assetApi.createTransferTransaction(
             WESTEND_ASSET_HUB_CHAIN_ID,
             EMPTY_ACCOUNT,
-            ['31337'],  // USDC on Westend is not a sufficient asset
+            ['1337'],  // 1337 on Westend is not a sufficient asset
             ['100000000000000000000000000000'],
             {
                 format: 'call',
@@ -93,7 +93,7 @@ const sendingInsufficientNonNativeAsset = async () => {
 
 (async () => {
 	try {
-		// await sendingInsufficientNativeAsset();
+		await sendingInsufficientNativeAsset();
         console.log();
         await sendingInsufficientNonNativeAsset();
 	} catch (err) {
