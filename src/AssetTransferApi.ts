@@ -60,12 +60,12 @@ import {
 	BaseErrorsEnum,
 	checkBaseInputOptions,
 	checkBaseInputTypes,
+	checkDestSufficiency,
 	checkLocalParachainInput,
 	checkLocalRelayInput,
 	checkLocalSystemParachainInput,
 	checkXcmTxInputs,
 	checkXcmVersion,
-	checkDestSufficiency,
 } from './errors/index.js';
 import { Registry } from './registry/index.js';
 import { ChainInfoKeys, ChainInfoRegistry } from './registry/types.js';

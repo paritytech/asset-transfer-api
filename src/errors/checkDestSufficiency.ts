@@ -4,33 +4,33 @@ import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
 
 export class InsufficientDestinationAccount extends Error {
-    address: string;
+	address: string;
 
-    constructor(address: string) {
-        const msg = `Destination is insufficient. Assets may be reaped. account=${address}`;
-        super(msg)
-        this.address = address;
-        this.name = "InsufficientDestinationAccount"
-    }
+	constructor(address: string) {
+		const msg = `Destination is insufficient. Assets may be reaped. account=${address}`;
+		super(msg);
+		this.address = address;
+		this.name = 'InsufficientDestinationAccount';
+	}
 }
 
 export interface CheckDestSufficiencyParams {
-  destApi?: ApiPromise;
-  destAddr: string;
-  destChainId: string;
-  assetIds: string[];
-  assetAmounts: string[];
+	destApi?: ApiPromise;
+	destAddr: string;
+	destChainId: string;
+	assetIds: string[];
+	assetAmounts: string[];
 }
 
 /**
  * Check whether the destination account/address will be sufficient
- * 
+ *
  * If insufficient, the transaction will be successful,
  * but the account will be reaped and assets may be lost.
  * An insufficient account, is one where the balance of
  * all sufficient assets is below the listed existential deposit
  * for that chain.
- * 
+ *
  * WARN: This check is a pass-through if the optional `destApi`
  * is not provided.
  *
@@ -39,109 +39,103 @@ export interface CheckDestSufficiencyParams {
  * @param destAddr
  * @param assetIds
  * @param assetAmounts
- * 
+ *
  * @throws InsufficientDestinationAccount if destination will be reaped.
  */
 export const checkDestSufficiency = async ({
-    destApi,
-    destAddr,
+	destApi,
+	destAddr,
 	destChainId,
-    assetIds,
-    assetAmounts,
+	assetIds,
+	assetAmounts,
 }: CheckDestSufficiencyParams) => {
-    if (!destApi) {
-        // Skip sufficiency check
+	if (!destApi) {
+		// Skip sufficiency check
 		// Allows introducing this feature without breaking the existing API
-        return
-    }
+		return;
+	}
 
 	await verifyChainId(destApi, destChainId);
 
-    const [isSufficient, sufficientAssets] = await checkSufficiency(destApi, destAddr);
-    if (isSufficient) {
-        return;
-    }
-	if (await willBeSufficentAfterTx({
-		api: destApi,
-		addr: destAddr,
-		assetIds,
-		assetAmounts,
-		sufficientAssets
-	})) {
+	const [isSufficient, sufficientAssets] = await checkSufficiency(destApi, destAddr);
+	if (isSufficient) {
+		return;
+	}
+	if (
+		await willBeSufficentAfterTx({
+			api: destApi,
+			addr: destAddr,
+			assetIds,
+			assetAmounts,
+			sufficientAssets,
+		})
+	) {
 		return;
 	}
 
 	throw new InsufficientDestinationAccount(destAddr);
-}
+};
 
 /**
  * Verify that the chainId returned by the API matches the expected chainId.
  *
- * @param api 
- * @param chainId 
+ * @param api
+ * @param chainId
  */
-const verifyChainId = async (
-    api: ApiPromise,
-    chainId: string,
-) => {
-	// TODO: Verify that ChainId will never be a MultiLocation
-	const apiChainId = (await api.query.parachainInfo?.parachainId()).toString();
-	if (chainId !== apiChainId) {
-		throw new Error("API returning unexpected chainId");
+const verifyChainId = async (api: ApiPromise, chainId: string) => {
+	const apiChainId = await api.query.parachainInfo?.parachainId();
+	if (apiChainId && chainId !== apiChainId.toString()) {
+		throw new Error('API returning unexpected chainId');
 	}
-}
-
+};
 
 type SufficientAsset = {
-  id: string;
-  minBalance: number;
+	id: string;
+	minBalance: number;
 };
 
 /**
  * Check if an account is cuurently sufficient.
- * 
+ *
  * Return a boolean and any sufficiency requirements that have been retrieved.
  *
  * @param api
- * @param addr 
+ * @param addr
  * @returns Promise<[boolean, SufficientAsset[]]
  */
-const checkSufficiency = async (
-    api: ApiPromise,
-    addr: string,
-): Promise<[boolean, SufficientAsset[]]> => {
-    const [accountInfo, existentialDeposit] = await Promise.all([
-		await api.query.system.account(addr),
-		await api.consts.balances.existentialDeposit,
+const checkSufficiency = async (api: ApiPromise, addr: string): Promise<[boolean, SufficientAsset[]]> => {
+	const [accountInfo, existentialDeposit] = await Promise.all([
+		api.query.system.account(addr),
+		api.consts.balances.existentialDeposit,
 	]);
-    const free = accountInfo.data.free;
-    const sufficients = accountInfo.sufficients;
+	const free = accountInfo.data.free;
+	const sufficients = accountInfo.sufficients;
 
-    if (free.gte(existentialDeposit)) {
-        return [true, []];
-    }
-    if (sufficients.toNumber() > 0) {
-        return [false, []];
-    }
+	if (free.gte(existentialDeposit)) {
+		return [true, []];
+	}
+	if (sufficients.toNumber() > 0) {
+		return [false, []];
+	}
 
-    const sufficientAssets = await getSufficientAssets(api)
-    if (await accountHasSufficientAsset(api, addr, sufficientAssets)) {
+	const sufficientAssets = await getSufficientAssets(api);
+	if (await accountHasSufficientAsset(api, addr, sufficientAssets)) {
 		return [true, sufficientAssets];
 	}
 
-    return [false, sufficientAssets];
-}
+	return [false, sufficientAssets];
+};
 
 /**
  * Get a list a sufficient assets and their minimum balances.
- * 
+ *
  * WARN: Native assets are not included here.
  *
- * @param api 
- * @returns 
+ * @param api
+ * @returns
  */
 const getSufficientAssets = async (api: ApiPromise): Promise<SufficientAsset[]> => {
-    const assetEntries = await api.query.assets.asset.entries();
+	const assetEntries = await api.query.assets.asset.entries();
 	const sufficientAssets = assetEntries
 		.filter(([_, meta]) => meta.isSome && meta.unwrap().isSufficient.isTrue)
 		.map(([key, meta]) => {
@@ -151,35 +145,35 @@ const getSufficientAssets = async (api: ApiPromise): Promise<SufficientAsset[]> 
 				minBalance: data.minBalance.toNumber(),
 			};
 		});
-    return sufficientAssets;
-}
+	return sufficientAssets;
+};
 
 /**
  * Return true if the account has a sufficient amount of any sufficient asset.
  *
  * @param api
- * @param address 
- * @param sufficientAssets 
- * @returns 
+ * @param address
+ * @param sufficientAssets
+ * @returns
  */
 const accountHasSufficientAsset = async (
 	api: ApiPromise,
 	address: string,
-	sufficientAssets: SufficientAsset[]
+	sufficientAssets: SufficientAsset[],
 ): Promise<boolean> => {
 	try {
 		await Promise.any(
 			sufficientAssets.map(({ id, minBalance }) =>
-			api.query.assets.account(id, address).then(opt => {
-				const account = opt.unwrapOrDefault();
-				const balance = account.balance;
-				if (balance.gte(new BN(minBalance))) {
-					return true;
-				} else {
-					throw new Error('Not sufficient');
-				}
-			})
-			)
+				api.query.assets.account(id, address).then((opt) => {
+					const account = opt.unwrapOrDefault();
+					const balance = account.balance;
+					if (balance.gte(new BN(minBalance))) {
+						return true;
+					} else {
+						throw new Error('Not sufficient');
+					}
+				}),
+			),
 		);
 		return true;
 	} catch (e) {
@@ -197,11 +191,11 @@ const willBeSufficentAfterTx = async ({
 	assetAmounts,
 	sufficientAssets,
 }: {
-	api: ApiPromise,
-	addr: string,
-	assetIds: string[],
-	assetAmounts: string[],
-	sufficientAssets?: SufficientAsset[]
+	api: ApiPromise;
+	addr: string;
+	assetIds: string[];
+	assetAmounts: string[];
+	sufficientAssets?: SufficientAsset[];
 }): Promise<boolean> => {
 	if (assetIds.length === 0) {
 		// We can assume a native transfer
@@ -209,7 +203,7 @@ const willBeSufficentAfterTx = async ({
 			api,
 			addr,
 			amount: assetAmounts[0],
-		})
+		});
 	}
 	return await willNonNativeBeSufficientAfterTx({
 		api,
@@ -217,12 +211,12 @@ const willBeSufficentAfterTx = async ({
 		assetIds,
 		assetAmounts,
 		sufficientAssets,
-	})
-}
+	});
+};
 
 /**
  * Return true if an account will have a sufficient amount of a Native Asset after a transaction.
- * 
+ *
  * WARN: This does not cover NonNative Assets.
  */
 const willNativeBeSufficientAfterTx = async ({
@@ -230,25 +224,25 @@ const willNativeBeSufficientAfterTx = async ({
 	addr,
 	amount,
 }: {
-	api: ApiPromise,
-	addr: string,
-	amount: string,
+	api: ApiPromise;
+	addr: string;
+	amount: string;
 }): Promise<boolean> => {
 	// Potential optimization: reuse call from earlier
 	const [accountInfo, existentialDeposit] = await Promise.all([
-		await api.query.system.account(addr),
-		await api.consts.balances.existentialDeposit,
+		api.query.system.account(addr),
+		api.consts.balances.existentialDeposit,
 	]);
 
-    const free = accountInfo.data.free;
+	const free = accountInfo.data.free;
 	const balance = free.add(new BN(amount));
 
 	return balance.gte(existentialDeposit);
-}
+};
 
 /**
  * Return true if an account will have a sufficient amount of a sufficient asset after a transaction.
- * 
+ *
  * WARN: This does not cover Native Assets.
  */
 const willNonNativeBeSufficientAfterTx = async ({
@@ -258,17 +252,17 @@ const willNonNativeBeSufficientAfterTx = async ({
 	assetAmounts,
 	sufficientAssets,
 }: {
-	api: ApiPromise,
-	addr: string,
-	assetIds: string[],
-	assetAmounts: string[],
-	sufficientAssets?: SufficientAsset[]
+	api: ApiPromise;
+	addr: string;
+	assetIds: string[];
+	assetAmounts: string[];
+	sufficientAssets?: SufficientAsset[];
 }): Promise<boolean> => {
 	if (!sufficientAssets) {
-        sufficientAssets = await getSufficientAssets(api);
-    }
+		sufficientAssets = await getSufficientAssets(api);
+	}
 
-	const sufficientAssetMap = new Map(sufficientAssets.map(asset => [asset.id, asset]));
+	const sufficientAssetMap = new Map(sufficientAssets.map((asset) => [asset.id, asset]));
 
 	const checks = assetIds.map(async (assetId, i) => {
 		const meta = sufficientAssetMap.get(assetId);
@@ -301,5 +295,5 @@ const willNonNativeBeSufficientAfterTx = async ({
 		return true;
 	} catch (e) {
 		return false;
-	};
-}
+	}
+};
