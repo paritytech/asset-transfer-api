@@ -1,7 +1,6 @@
 // TODO: XCM between relay and AssetHub?
 
-import { connectParachains, connectVertical } from '@acala-network/chopsticks';
-import { setupContext, setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
+import { testingPairs } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
 import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
@@ -9,92 +8,24 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
 import { InsufficientDestinationAccount } from '../src/errors/checkDestSufficiency';
-
-// const { check } = withExpect(expect);
-
-// network setup is inspired from https://github.com/open-web3-stack/polkadot-ecosystem-tests
-// const westend = defineChain({
-// 	name: 'westend',
-// 	endpoint: 'wss://westend-rpc.polkadot.io',
-// 	custom: { wnd: { Concrete: { parents: 0, interior: 'Here' } } },
-// 	initStorages: {
-// 		// System: {
-// 		// 	Account: [
-// 		// 		[[defaultAccounts.alice.address], { providers: 1, data: { free: 1000 * 1e10 } }],
-// 		// 		[[defaultAccountsSr25519.alice.address], { providers: 1, data: { free: 1000 * 1e10 } }],
-// 		// 	],
-// 		// },
-// 		ParasDisputes: {
-// 			// these can makes block building super slow
-// 			$removePrefix: ['disputes'],
-// 		},
-// 		Dmp: {
-// 			// clear existing dmp to avoid impacting test result
-// 			$removePrefix: ['downwardMessageQueues'],
-// 		},
-// 	},
-// 	isRelayChain: true,
-// });
+import { configs, setupNetworksWithRelay } from './networks.js';
 
 describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
 	const WESTEND_ASSET_HUB_CHAIN_ID = '1000';
 	const USDC_ASSET_ID = 31337;
 
 	let westend: NetworkContext;
-	const westendPort = 8006;
-
 	let westendAssetHub: NetworkContext;
-	const westendAssetHubPort = 8007;
 
 	const { alice, bob } = testingPairs();
 	const aliceInitialNative = 100 * 1e12;
 	const aliceInitialUsdc = 100 * 1e6;
 
-	const runtimeLogLevel = 0;
+	beforeAll(async () => {
+		[westend, [westendAssetHub]] = await setupNetworksWithRelay(configs.westend, [configs.westendAssetHub]);
+	}, 1000000);
 
 	beforeEach(async () => {
-		// I can import these and call them chainConfigs or similar
-		westend = await setupContext({
-			endpoint: 'wss://westend-rpc.polkadot.io',
-			db: `./chopsticks-db/db.sqlite-westend-${westendPort}`,
-			port: westendPort,
-			runtimeLogLevel,
-		});
-		westendAssetHub = await setupContext({
-			endpoint: 'wss://westend-asset-hub-rpc.polkadot.io',
-			db: `./chopsticks-db/db.sqlite-westend-asset-hub-${westendAssetHubPort}`,
-			port: westendAssetHubPort,
-			runtimeLogLevel,
-		});
-
-		// Only one parachain for now but leaving in case more parachains are added
-		const parachains = [westendAssetHub];
-		await connectParachains(
-			parachains.map(({ chain }) => chain),
-			true,
-		);
-		for (const parachain of parachains) {
-			await connectVertical(westend.chain, parachain.chain);
-		}
-
-		// const { westendAssetHub1 } = await setupNetworks({
-		// 	// const { westend1, westendAssetHub1 } = await setupNetworks({
-		// 	// westend1: {
-		// 	// 	// endpoint: 'wss://hydration.dotters.network',
-		// 	// 	endpoint: 'wss://westend-rpc.polkadot.io',
-		// 	// 	db: `./chopsticks-db/db.sqlite-westend-${westendPort}`,
-		// 	// 	port: westendPort,
-		// 	// 	runtimeLogLevel,
-		// 	// },
-		// 	westendAssetHub1: {
-		// 		endpoint: 'wss://westend-asset-hub-rpc.polkadot.io',
-		// 		db: `./chopsticks-db/db.sqlite-westend-asset-hub-${westendAssetHubPort}`,
-		// 		port: westendAssetHubPort,
-		// 		runtimeLogLevel,
-		// 	},
-		// });
-		// westendAssetHub = westendAssetHub1;
-
 		await westendAssetHub.dev.setStorage({
 			System: {
 				Account: [
