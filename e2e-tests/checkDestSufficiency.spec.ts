@@ -211,9 +211,13 @@ describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
 				{ version: 4 },
 			);
 
+			console.log('=============================');
+			console.log(JSON.stringify(nativeExtrinsic.toHuman(), null, 2));
+			console.log('=============================');
+
 			await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice);
-			await westendAssetHub.dev.newBlock();
-			await westend.dev.newBlock(); // TODO: check that I need this
+			// await westendAssetHub.dev.newBlock();
+			// await westend.dev.newBlock(); // TODO: check that I need this
 		};
 
 		test('TODO', async () => {
