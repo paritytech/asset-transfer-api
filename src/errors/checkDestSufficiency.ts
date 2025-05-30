@@ -131,10 +131,17 @@ const checkSufficiency = async (api: ApiPromise, addr: string): Promise<[boolean
  *
  * WARN: Native assets are not included here.
  *
+ * If pallet-assets is not availble, return an empty array as
+ * there are no sufficient assets.
+ *
  * @param api
  * @returns
  */
 const getSufficientAssets = async (api: ApiPromise): Promise<SufficientAsset[]> => {
+	if (!api.query.assets?.asset) {
+		// pallet-assets is not available on this chain.
+		return [];
+	}
 	const assetEntries = await api.query.assets.asset.entries();
 	const sufficientAssets = assetEntries
 		.filter(([_, meta]) => meta.isSome && meta.unwrap().isSufficient.isTrue)
