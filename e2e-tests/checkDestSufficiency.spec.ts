@@ -221,7 +221,25 @@ describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
 			);
 		}, 200000);
 
-		test('Asset Hub to Relay Chain works'); // TODO: potential ATA bug here. Deserves follow up
+		test('Relay chain to Asset Hub throws error if destination is insufficient after execution fees', async () => {
+			await expectAssetHubBalance(alice.address, aliceInitialNative, 'alice inital asset hub balance is incorrect');
+			await expectUsdcBalance(alice.address, aliceInitialUsdc, 'alice inital USDC balance is incorrect');
+			await expectRelayBalance(alice.address, aliceInitialNative, 'alice inital relay balance is incorrect');
+
+			await expectAssetHubBalance(bob.address, new BN(0), 'bob inital asset hub balance is incorrect');
+			await expectUsdcBalance(bob.address, new BN(0), 'bob inital USDC balance is incorrect');
+			await expectRelayBalance(bob.address, new BN(0), 'bob inital relay balance is incorrect');
+
+			const amountToSend = new BN(8_268_000_000 - 1); // existential deposit + expected fee - 1
+			const executionFee = await sendToAssetHub(bob.address, amountToSend);
+
+			await expectAssetHubBalance(
+				bob.address,
+				amountToSend.sub(executionFee),
+				'bob asset hub balance is incorrect after XCM',
+			);
+			expect(amountToSend.sub(executionFee).gt(new BN(0)), `Fees ate the entire transfer`).toBe(true);
+		}, 200000);
 	});
 });
 
@@ -240,6 +258,7 @@ async function expectNativeBalance({
 	const balance = new BN(account.data.free);
 	const expected = new BN(amount);
 	const diff = expected.sub(balance);
+
 	expect(
 		balance.eq(expected),
 		`${msg} { value: ${balance.toLocaleString()}; expected: ${expected.toLocaleString()}; diff: ${diff.toLocaleString()} }`,
