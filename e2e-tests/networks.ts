@@ -7,9 +7,21 @@ import { NetworkContext, setupContext, SetupOption } from '@acala-network/chopst
 const runtimeLogLevel = 0;
 
 export const configs = {
+	polkadot: {
+		endpoint: 'wss://rpc.polkadot.io',
+		db: `./chopsticks-db/db.sqlite-polkadot`,
+		port: 8004,
+		runtimeLogLevel,
+	},
+	polkadotAssetHub: {
+		endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
+		db: `./chopsticks-db/db.sqlite-polkadot-asset-hub`,
+		port: 8005,
+		runtimeLogLevel,
+	},
 	westend: {
 		endpoint: 'wss://westend-rpc.polkadot.io',
-		db: `./chopsticks-db/db.sqlite-westend-`,
+		db: `./chopsticks-db/db.sqlite-westend`,
 		port: 8006,
 		runtimeLogLevel,
 	},
