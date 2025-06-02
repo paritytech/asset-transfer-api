@@ -495,9 +495,9 @@ export class AssetTransferApi {
 		sendersAddr: string,
 		tx: ConstructedFormat<T>,
 		format: T,
-		xcmVersion?: undefined | number,
+		xcmVersion?: number,
 	): Promise<Result<CallDryRunEffects, XcmDryRunApiError> | null> {
-		const { api } = this;
+		const { api, safeXcmVersion } = this;
 
 		const originCaller: SignedOriginCaller = {
 			System: {
@@ -519,9 +519,8 @@ export class AssetTransferApi {
 			throw new BaseError(`Unsupported format: ${format}`, BaseErrorsEnum.InvalidInput);
 		}
 
-		return xcmVersion === undefined
-			? await api.call.dryRunApi.dryRunCall(originCaller, callArg)
-			: await api.call.dryRunApi.dryRunCall(originCaller, callArg, xcmVersion);
+		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
+		return api.call.dryRunApi.dryRunCall(originCaller, callArg, declaredXcmVersion);
 	}
 	/**
 	 * Decodes the hex of an extrinsic into a string readable format.
@@ -654,7 +653,7 @@ export class AssetTransferApi {
 	private async constructFormat<T extends Format>(
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
 		direction: Direction | 'local',
-		xcmVersion: number | null = null,
+		xcmVersion: number,
 		method: Methods,
 		dest: string,
 		origin: string,
@@ -664,7 +663,6 @@ export class AssetTransferApi {
 			sendersAddr?: string;
 			dryRunCall?: boolean;
 			xcmFeeAsset?: string;
-			xcmVersion?: number;
 		},
 	): Promise<TxResult<T>> {
 		const { format, paysWithFeeOrigin, sendersAddr, dryRunCall, xcmFeeAsset } = opts;
@@ -721,7 +719,7 @@ export class AssetTransferApi {
 				}
 			}
 
-			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt);
+			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt, xcmVersion);
 
 			if (executionResult?.isOk) {
 				result.xcmExecutionResult = executionResult.asOk.executionResult;
@@ -1145,7 +1143,7 @@ export class AssetTransferApi {
 		assetIds: string[],
 		amounts: string[],
 		destChainId: string,
-		declaredXcmVersion: number,
+		xcmVersion: number,
 		xcmDirection: Direction,
 		localTxChainType: LocalTxChainType,
 		opts: LocalTxOpts,
@@ -1170,7 +1168,7 @@ export class AssetTransferApi {
 				this.registry,
 				assetId,
 				this.specName,
-				declaredXcmVersion,
+				xcmVersion,
 				opts.isForeignAssetsTransfer,
 			);
 		}
@@ -1191,7 +1189,7 @@ export class AssetTransferApi {
 				amounts,
 				this.specName,
 				this.registry,
-				declaredXcmVersion,
+				xcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 			); // Throws an error when any of the inputs are incorrect.
@@ -1243,7 +1241,7 @@ export class AssetTransferApi {
 				);
 			}
 
-			return await this.constructFormat(tx, 'local', null, palletMethod, destChainId, this.specName, {
+			return await this.constructFormat(tx, 'local', xcmVersion, palletMethod, destChainId, this.specName, {
 				...opts,
 			});
 		} else if (localTxChainType === LocalTxChainType.Parachain) {
@@ -1261,7 +1259,7 @@ export class AssetTransferApi {
 				} else {
 					tx = balances.transfer(api, addr, amount);
 				}
-				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
+				return this.constructFormat(tx, 'local', xcmVersion, palletMethod, destChainId, specName, {
 					...opts,
 				});
 			} else if (localAssetType === LocalTxType.Tokens) {
@@ -1273,7 +1271,7 @@ export class AssetTransferApi {
 				} else {
 					tx = tokens.transfer(api, addr, assetIds[0], amount);
 				}
-				return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
+				return this.constructFormat(tx, 'local', xcmVersion, palletMethod, destChainId, specName, {
 					...opts,
 				});
 			} else {
@@ -1295,7 +1293,7 @@ export class AssetTransferApi {
 			} else {
 				tx = balances.transfer(api, addr, amount);
 			}
-			return this.constructFormat(tx, 'local', null, palletMethod, destChainId, specName, {
+			return this.constructFormat(tx, 'local', xcmVersion, palletMethod, destChainId, specName, {
 				...opts,
 			});
 		}
