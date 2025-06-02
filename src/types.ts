@@ -373,6 +373,11 @@ export interface TransferArgsOpts<T extends Format> {
 	 * Optionally sets the pallet to be used for the current tx.
 	 */
 	xcmPalletOverride?: XcmPallet;
+
+	/**
+	 * Optional API of the destination chain. Used to verify sufficiency when transacting.
+	 */
+	destApi?: ApiPromise;
 }
 
 export type XcmPallet = 'xcmPallet' | 'polkadotXcm' | 'xtokens' | 'xTokens';

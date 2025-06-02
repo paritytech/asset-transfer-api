@@ -4,6 +4,7 @@
 		"baseUrl": ".",
 		"outDir": "build",
 		"ignoreDeprecations": "5.0",
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+		"target": "ES2021"
 	}
 }
