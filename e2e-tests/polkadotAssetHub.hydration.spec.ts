@@ -218,7 +218,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 				paysWithFeeOrigin: `1984`,
 			});
 
-			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload');
+			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload', xcmVersion);
 			expect(dryRunResult?.asOk.executionResult.isOk).toBe(true);
 			const destinationFees = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
 				'hydradx',
@@ -229,7 +229,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			);
 
 			expect(parseInt(destinationFees[0][1].xcmFee)).to.toBeGreaterThan(0);
-			expect(destinationFees[0][1].xcmDest).to.eq('{"v4":{"parents":1,"interior":{"x1":[{"parachain":2034}]}}}');
+			expect(destinationFees[0][1].xcmDest).to.eq('{"v3":{"parents":1,"interior":{"x1":{"parachain":2034}}}}');
 			expect(destinationFees[0][1].xcmFeeAsset).to.eq(
 				'{"V3":{"Concrete":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}}',
 			);
@@ -263,7 +263,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 				},
 			);
 
-			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload');
+			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload', xcmVersion);
 			expect(dryRunResult?.asOk.executionResult.isErr).toBe(true);
 			const destinationFees = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
 				'hydradx',
@@ -539,7 +539,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 				paysWithFeeOrigin: `1984`,
 			});
 
-			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload');
+			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload', xcmVersion);
 
 			expect(dryRunResult?.asOk.executionResult.isOk).toBe(true);
 
@@ -587,7 +587,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 				},
 			);
 
-			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload');
+			const dryRunResult = await assetTransferApi.dryRunCall(alice.address, tx.tx, 'payload', xcmVersion);
 			expect(dryRunResult?.asOk.executionResult.isErr).toBe(true);
 			const destinationFees = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
 				'hydradx',

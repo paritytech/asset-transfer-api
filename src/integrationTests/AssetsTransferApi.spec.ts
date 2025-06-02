@@ -20,7 +20,8 @@ const relayAssetsApiV1016000 = new AssetTransferApi(adjustedMockRelayApiV1016000
 	registryType: 'NPM',
 });
 const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
-const systemAssetsApiV1016000 = new AssetTransferApi(adjustedMockSystemApiV1016000, 'westmint', 2, {
+const xcmVersion = 2;
+const systemAssetsApiV1016000 = new AssetTransferApi(adjustedMockSystemApiV1016000, 'westmint', xcmVersion, {
 	registryType: 'NPM',
 });
 
@@ -44,7 +45,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'assets::transfer',
 					tx: '0x3208040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `assets::transferKeepAlive` call on a system parachain', async () => {
@@ -65,7 +66,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'assets::transferKeepAlive',
 					tx: '0x3209040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct an `assets::transferAll` call on a system parachain', async () => {
@@ -86,7 +87,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'assets::transferAll',
 					tx: '0x3220040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba266500',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `balances::transfer` call on a system parachain', async () => {
@@ -106,7 +107,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'balances::transfer',
 					tx: '0x0a000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `balances::transferKeepAlive` call on a system parachain', async () => {
@@ -127,7 +128,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'balances::transferKeepAlive',
 					tx: '0x0a030078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `balances::transferAll` call on a system parachain', async () => {
@@ -149,7 +150,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'balances::transferAll',
 					tx: '0x0a040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba266501',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `balances::transferAll` call on a relay chain', async () => {
@@ -170,7 +171,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'balances::transferAll',
 					tx: '0x04040078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba266500',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `balances::transferKeepAlive` call on a relay chain', async () => {
@@ -191,7 +192,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'balances::transferKeepAlive',
 					tx: '0x04030078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `foreignAssets::transfer` call on a system parachain', async () => {
@@ -211,7 +212,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'foreignAssets::transfer',
 					tx: '0x3508010200352105000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `foreignAssets::transferKeepAlive` call on a system parachain', async () => {
@@ -232,17 +233,18 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'foreignAssets::transferKeepAlive',
 					tx: '0x3509010200352105000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `foreignAssets::transferAll` call on a system parachain', async () => {
+				const xcmVersion = 3;
 				const res = await systemAssetsApiV1016000.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',
 					['{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}'],
 					['100'],
 					{
-						xcmVersion: 3,
+						xcmVersion,
 						transferAll: true,
 						format: 'call',
 					},
@@ -254,7 +256,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					format: 'call',
 					method: 'foreignAssets::transferAll',
 					tx: '0x3520020109020078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba266500',
-					xcmVersion: null,
+					xcmVersion,
 				});
 			});
 			it('Should construct a `poolAssets::transfer` call on a system parachain', async () => {
@@ -274,7 +276,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					direction: 'local',
 					format: 'call',
 					method: 'poolAssets::transfer',
-					xcmVersion: null,
+					xcmVersion,
 					tx: '0x3708000000000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
 				});
 			});
@@ -296,7 +298,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					direction: 'local',
 					format: 'call',
 					method: 'poolAssets::transferKeepAlive',
-					xcmVersion: null,
+					xcmVersion,
 					tx: '0x3709000000000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba26659101',
 				});
 			});
@@ -319,7 +321,7 @@ describe('AssetTransferApi Integration Tests', () => {
 					direction: 'local',
 					format: 'call',
 					method: 'poolAssets::transferAll',
-					xcmVersion: null,
+					xcmVersion,
 					tx: '0x3720000000000078b39b0b6dd87cb68009eb570511d21c229bdb5e94129ae570e9b79442ba266501',
 				});
 			});
