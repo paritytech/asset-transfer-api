@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.7.2](https://github.com/paritytech/asset-transfer-api/compare/v0.7.1..v0.7.2)
+
+### Fix
+
+- fix: replace `assert` with `with` to support newer node versions ([#577](https://github.com/paritytech/asset-transfer-api/pull/577))
+- fix: dryRun requires xcmVersion, so use safeXcmVersion if none given ([#571](https://github.com/paritytech/asset-transfer-api/pull/571))
+
+### Chore
+
+- chore(deps-dev): bump @acala-network/chopsticks-core from 1.0.5 to 1.0.6 ([#576](https://github.com/paritytech/asset-transfer-api/pull/576))
+- chore(deps-dev): bump @acala-network/chopsticks-testing from 1.0.5 to 1.0.6 ([#575](https://github.com/paritytech/asset-transfer-api/pull/575))
+- chore(deps): bump @polkadot/types-codec from 16.0.1 to 16.1.1 in the pjs group ([#574](https://github.com/paritytech/asset-transfer-api/pull/574))
+- chore(deps-dev): bump vitest from 3.1.4 to 3.2.0 ([#573](https://github.com/paritytech/asset-transfer-api/pull/573))
+- chore(deps-dev): bump vitest from 3.1.3 to 3.1.4 ([#568](https://github.com/paritytech/asset-transfer-api/pull/568))
+- chore(deps): bump the pjs group with 6 updates ([#567](https://github.com/paritytech/asset-transfer-api/pull/567))
+- chore(deps-dev): bump typedoc from 0.28.4 to 0.28.5 ([#566](https://github.com/paritytech/asset-transfer-api/pull/566))
+- chore(deps): bump @polkadot/types-codec from 15.9.2 to 15.10.2 in the pjs group ([#564](https://github.com/paritytech/asset-transfer-api/pull/564))
+
+### Test
+
+- test: Remove moonbeam e2e tests involving asset (+ lint ignore fix) ([#572](https://github.com/paritytech/asset-transfer-api/pull/572))
+
 ## [0.7.1](https://github.com/paritytech/asset-transfer-api/compare/v0.7.0..v0.7.1)
 
 ### Fix
