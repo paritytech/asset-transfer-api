@@ -28,7 +28,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 	};
 
 	beforeEach(async () => {
-		[hydration, polkadotAssetHub] = await setupParachains([configs.hydration, configs.polkadotAssetHub]);
+		[hydration, polkadotAssetHub] = await setupParachains([configs.hydration, configs.polkadotAssetHub], __filename);
 	}, 1000000);
 
 	afterEach(async () => {

@@ -16,11 +16,10 @@ describe('Hydration <> Ethereum', () => {
 	const { alice, alith } = testingPairs();
 
 	beforeEach(async () => {
-		[hydration, polkadotBridgeHub, polkadotAssetHub] = await setupParachains([
-			configs.hydration,
-			configs.polkadotBridgeHub,
-			configs.polkadotAssetHub,
-		]);
+		[hydration, polkadotBridgeHub, polkadotAssetHub] = await setupParachains(
+			[configs.hydration, configs.polkadotBridgeHub, configs.polkadotAssetHub],
+			__filename,
+		);
 	}, 1000000);
 
 	afterEach(async () => {

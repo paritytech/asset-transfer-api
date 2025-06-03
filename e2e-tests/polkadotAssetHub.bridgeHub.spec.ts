@@ -24,10 +24,10 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 	const { alice, alith } = testingPairs();
 
 	beforeEach(async () => {
-		[polkadotBridgeHub, polkadotAssetHub] = await setupParachains([
-			configs.polkadotBridgeHub,
-			configs.polkadotAssetHub,
-		]);
+		[polkadotBridgeHub, polkadotAssetHub] = await setupParachains(
+			[configs.polkadotBridgeHub, configs.polkadotAssetHub],
+			__filename,
+		);
 	}, 1000000);
 
 	afterEach(async () => {

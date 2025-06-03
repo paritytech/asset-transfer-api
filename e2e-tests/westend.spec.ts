@@ -22,7 +22,11 @@ describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
 	const aliceInitialUsdc = new BN(100 * 1e6);
 
 	beforeAll(async () => {
-		[westend, [westendAssetHub]] = await setupParachainsWithRelay(configs.westend, [configs.westendAssetHub]);
+		[westend, [westendAssetHub]] = await setupParachainsWithRelay(
+			configs.westend,
+			[configs.westendAssetHub],
+			__filename,
+		);
 	}, 1000000);
 
 	beforeEach(async () => {
