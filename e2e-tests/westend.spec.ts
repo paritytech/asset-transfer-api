@@ -2,10 +2,10 @@ import { testingPairs } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
 import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
-import { afterEach, beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
-import { configs, setupNetworksWithRelay } from './networks.js';
+import { configs, setupParachainsWithRelay } from './networks.js';
 
 describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
 	const WESTEND_ASSET_HUB_CHAIN_ID = '1000';
@@ -22,7 +22,7 @@ describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
 	const aliceInitialUsdc = new BN(100 * 1e6);
 
 	beforeAll(async () => {
-		[westend, [westendAssetHub]] = await setupNetworksWithRelay(configs.westend, [configs.westendAssetHub]);
+		[westend, [westendAssetHub]] = await setupParachainsWithRelay(configs.westend, [configs.westendAssetHub]);
 	}, 1000000);
 
 	beforeEach(async () => {
@@ -53,7 +53,7 @@ describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
 		westendAssetHubAta = new AssetTransferApi(westendAssetHub.api, 'asset-hub-westend', safeXcmVersion);
 	}, 1000000);
 
-	afterEach(async () => {
+	afterAll(async () => {
 		await westendAssetHub.teardown();
 		await westend.teardown();
 	}, 1000000);
