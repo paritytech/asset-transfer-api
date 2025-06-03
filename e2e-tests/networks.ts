@@ -6,6 +6,13 @@ import { NetworkContext, setupContext, SetupOption } from '@acala-network/chopst
 
 const runtimeLogLevel = 0;
 
+/**
+ * SetupOptions for networks on Chopsticks
+ *
+ * Iff an indentifier is given during network setup:
+ * Ports will be overwritten
+ * DB will be edited with the new port appended
+ */
 export const configs = {
 	hydration: {
 		endpoint: 'wss://hydration.dotters.network',
@@ -51,11 +58,20 @@ export const configs = {
 	},
 };
 
+/**
+ * Set up a relaychain with connected parachains for testing.
+ *
+ * @param relayChainConfig
+ * @param parachainConfigs
+ * @param id - Optional identifier used to ensure unique ports and dbs
+ * @returns
+ */
 export const setupParachainsWithRelay = async (
 	relayChainConfig: SetupOption,
 	parachainConfigs: SetupOption[],
+	id?: string,
 ): Promise<[NetworkContext, NetworkContext[]]> => {
-	const parachains = await setupParachains(parachainConfigs);
+	const parachains = await setupParachains(parachainConfigs, id);
 
 	const relayChain = await setupContext(relayChainConfig);
 	for (const parachain of parachains) {
@@ -76,8 +92,16 @@ export const setupParachainsWithRelay = async (
 	return [relayChain, parachains];
 };
 
-export const setupParachains = async (parachainConfigs: SetupOption[]): Promise<NetworkContext[]> => {
-	const parachains = await Promise.all(parachainConfigs.map(setupContext));
+/**
+ * Set up a connected parachains for testing.
+ *
+ * @param parachainConfigs
+ * @param id  - Optional identifier used to ensure unique ports and dbs
+ * @returns
+ */
+export const setupParachains = async (parachainConfigs: SetupOption[], id?: string): Promise<NetworkContext[]> => {
+	const modifiedParachainConfigs = parachainConfigs.map((config) => modifyConfig(config, id));
+	const parachains = await Promise.all(modifiedParachainConfigs.map(setupContext));
 
 	await connectParachains(
 		parachains.map(({ chain }) => chain),
@@ -85,4 +109,50 @@ export const setupParachains = async (parachainConfigs: SetupOption[]): Promise<
 	);
 
 	return parachains;
+};
+
+/**
+ * Utility function to convert a string into an unregistered port.
+ *
+ * Ports 49152 - 65535 cannot be registered with IANA.
+ * Using DJB2
+ *
+ * WARN: not secure cryptographically and just to get unique ports
+ * that are consistent between tests.
+ *
+ * @param str
+ * @returns
+ */
+const hashToPort = (str: string): number => {
+	let hash = 5381; // using DJB2
+	for (let i = 0; i < str.length; i++) {
+		hash = (hash << 5) + hash + str.charCodeAt(i);
+	}
+
+	hash = hash >>> 0;
+
+	const min = 49152;
+	const max = 65535;
+	const range = max - min + 1;
+	return (hash % range) + min;
+};
+
+/**
+ * Update a network config with a port and db path
+ * @param config
+ * @param id
+ * @returns
+ */
+const modifyConfig = (config: SetupOption, id?: string): SetupOption => {
+	if (id === undefined) {
+		return config;
+	}
+	const endpoint = Array.isArray(config.endpoint) ? config.endpoint[0] : config.endpoint;
+	const port = hashToPort(`${endpoint}:${id}`);
+	const modifiedConfig = {
+		...config,
+		port,
+		db: `${config.db}-${port}`,
+	};
+	return modifiedConfig;
 };

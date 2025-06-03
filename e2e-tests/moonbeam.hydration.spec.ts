@@ -16,7 +16,7 @@ describe('Moonbeam <> Hydration', () => {
 	const { alith } = testingPairs();
 
 	beforeEach(async () => {
-		[hydration, moonbeam] = await setupParachains([configs.hydration, configs.moonbeam]);
+		[hydration, moonbeam] = await setupParachains([configs.hydration, configs.moonbeam], __filename);
 	}, 1000000);
 
 	afterEach(async () => {
