@@ -1,9 +1,10 @@
-import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
+import { testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
 import { ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION } from '../src/consts';
+import { configs, setupParachains } from './networks.js';
 
 const { checkSystemEvents } = withExpect(expect);
 
@@ -22,28 +23,11 @@ describe('Polkadot AssetHub <> Ethereum', () => {
 
 	const { alice, alith } = testingPairs();
 
-	const polkadotBridgeHubPort = 8003;
-	const polkadotAssetHubPort = 8004;
-	const runtimeLogLevel = 0;
-
 	beforeEach(async () => {
-		const { polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
-			polkadotBridgeHub1: {
-				endpoint: 'wss://polkadot-bridge-hub-rpc.polkadot.io',
-				db: `./chopsticks-db/db.sqlite-polkadot-bridge-hub-${polkadotBridgeHubPort}`,
-				port: polkadotBridgeHubPort,
-				runtimeLogLevel,
-			},
-			polkadotAssetHub1: {
-				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
-				port: polkadotAssetHubPort,
-				runtimeLogLevel,
-			},
-		});
-
-		polkadotBridgeHub = polkadotBridgeHub1;
-		polkadotAssetHub = polkadotAssetHub1;
+		[polkadotBridgeHub, polkadotAssetHub] = await setupParachains([
+			configs.polkadotBridgeHub,
+			configs.polkadotAssetHub,
+		]);
 	}, 1000000);
 
 	afterEach(async () => {
