@@ -2,8 +2,10 @@
 
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { ISubmittableResult } from '@polkadot/types/types';
+import registry from '@substrate/asset-transfer-api-registry' with { type: 'json' };
 
-import { AssetTransferApi } from '../AssetTransferApi';
+import { AssetTransferApi } from '../AssetTransferApi.js';
+import { constructApiPromise } from '../constructApiPromise.js';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockRelayApiV1016000 } from '../testHelpers/adjustedMockRelayApiV1016000';
@@ -2301,19 +2303,51 @@ describe('AssetTransferApi Integration Tests', () => {
 		) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
 		it('Correctly returns the estimated fees for a dry run that is ok', async () => {
-			const dryRunResult = await systemAssetsApiV1016000.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
+			// Construct extinsic sending from Polkadot Asset Hub to BiFrost and pay with USDT
+			const bifrostUrl = 'wss://bifrost-polkadot.ibp.network';
+			const assetHubUrl = 'wss://polkadot-asset-hub-rpc.polkadot.io';
+			const safeXcmVersion = 4;
+
+			const bifrostParachainId = 2030;
+			const assetHubId = 1000;
+			// const sender = '15cZ2zHq5b2fVh8iDqNJKyvHCtwVKWYGqNLQMakHh6e4wicX'; // current highest USDT holder on asset hub
+			const sender = '13vg3Mrxm3GL9eXxLsGgLYRueiwFCiMbkdHBL4ZN5aob5D4N';
+			const recipientAddress = '15GkJa9UtjEmeGr6jPZdSmYSV4PcLLkxj6fSuoM3zFSLtsBS'; // empty address
+			const amountBnc = 10_000_000_000_000; // 10 BNC
+
+			const { api, specName } = await constructApiPromise(assetHubUrl);
+			const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
+
+			const bncMultiLocation = assetApi.registry.registry.polkadot[assetHubId].foreignAssetsInfo.BNC.multiLocation;
+
+			const submittable: TxResult<'submittable'> = await assetApi.createTransferTransaction(
+				bifrostParachainId.toString(),
+				recipientAddress,
+				[bncMultiLocation],
+				[amountBnc.toString()],
+				{
+					format: 'submittable',
+					xcmVersion: safeXcmVersion,
+				},
+			);
+
+			const dryRunResult = await assetApi.dryRunCall(sender, submittable.tx, 'submittable');
 			expect(dryRunResult?.isOk).toBe(true);
 
 			const destinationFeesInfo = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
-				'bifrost_polkadot',
-				'wss://bifrost-polkadot.ibp.network',
-				4,
+				specName,
+				bifrostUrl,
+				safeXcmVersion,
 				dryRunResult,
 				'usdt',
 			);
 
+			console.log('============');
+			console.log(JSON.stringify(destinationFeesInfo, null, 2));
+			console.log('============');
+
 			expect(parseInt(destinationFeesInfo[0][1].xcmFee)).toBeGreaterThan(0);
-		});
+		}, 10000);
 		it('Correctly throws an error when the provided runtime does not support the xcmPaymentApi', async () => {
 			const dryRunResult = await systemAssetsApiV1016000.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
 			expect(dryRunResult?.isOk).toBe(true);
