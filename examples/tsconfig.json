@@ -1,0 +1,13 @@
+{
+	"extends": "../node_modules/@substrate/dev/config/tsconfig.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"outDir": "build",
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"ignoreDeprecations": "5.0"
+	},
+	"typeRoots": ["../node_modules/@types"],
+	"exclude": ["node_modules"],
+	"include": ["./*", "./paseo/**/*.ts", "./kusama/**/*.ts", "./polkadot/**/*.ts", "../src/**/*.ts", "../src/**/*.json"]
+}

@@ -3,9 +3,10 @@
  *
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetTransferApi, constructApiPromise } from '../../../../src';
-import { TxResult } from '../../../../src/types';
-import { GREEN, PURPLE, RESET } from '../../../colors';
+import { AssetTransferApi } from '../src/AssetTransferApi.js';
+import { constructApiPromise } from '../src/constructApiPromise.js';
+import { TxResult } from '../src/types.js';
+import { GREEN, PURPLE, RESET } from './colors.js';
 
 /**
  * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send 1 DOT (foreign asset with location `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`)
@@ -16,7 +17,7 @@ import { GREEN, PURPLE, RESET } from '../../../colors';
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io', , {
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io', {
 		throwOnConnect: true,
 	});
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
