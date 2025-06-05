@@ -57,6 +57,13 @@ exports[`Hydration <> Ethereum > XCM V3 > Transfer Snowbridge WETH from Hydratio
   {
     "data": {
       "id": 0,
+    },
+    "method": "MessageQueued",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "id": 0,
       "nonce": "(redacted)",
     },
     "method": "MessageAccepted",
@@ -64,7 +71,15 @@ exports[`Hydration <> Ethereum > XCM V3 > Transfer Snowbridge WETH from Hydratio
   },
   {
     "data": {
-      "count": 1,
+      "id": 0,
+      "nonce": "(redacted)",
+    },
+    "method": "MessageAccepted",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "count": 2,
       "root": "(hash)",
     },
     "method": "MessagesCommitted",
@@ -376,6 +391,13 @@ exports[`Hydration <> Ethereum > XCM V4 > Transfer Snowbridge WETH from Hydratio
   {
     "data": {
       "id": 0,
+    },
+    "method": "MessageQueued",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "id": 0,
       "nonce": "(redacted)",
     },
     "method": "MessageAccepted",
@@ -383,7 +405,15 @@ exports[`Hydration <> Ethereum > XCM V4 > Transfer Snowbridge WETH from Hydratio
   },
   {
     "data": {
-      "count": 1,
+      "id": 0,
+      "nonce": "(redacted)",
+    },
+    "method": "MessageAccepted",
+    "section": "ethereumOutboundQueue",
+  },
+  {
+    "data": {
+      "count": 2,
       "root": "(hash)",
     },
     "method": "MessagesCommitted",
