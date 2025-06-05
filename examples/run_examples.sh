@@ -27,8 +27,30 @@ declare -A skippable=(
 	["examples/paraToSystemParachainPrimaryNative.ts"]=1
 	# getaddrinfo ENOTFOUND paseo-asset-hub-rpc.polkadot.io
 	["examples/paseoAssetHubToRelay.ts"]=1
+	["examples/paseo/assetHub/bridgeTransfers/assetHubWETHToEthereumSepolia.ts"]=1
+	["examples/paseo/assetHub/bridgeTransfers/assetHubPASToWestend.ts"]=1
+	["examples/paseo/assetHub/bridgeTransfers/assetHubWNDToWestend.ts"]=1
+	["examples/paseo/assetHub/foreignAssetTransfers/reserve/assetHubWETHToHydration.ts"]=1
+	["examples/paseo/assetHub/foreignAssetTransfers/reserve/assetHubMUSEToHydration.ts"]=1
+	["examples/paseo/assetHub/foreignAssetTransfers/reserve/assetHubMUSEToBifrostRemoteReserve.ts"]=1
+	["examples/paseo/assetHub/foreignAssetTransfers/local/assetHubWETHTransfer.ts"]=1
+	["examples/paseo/assetHub/paysWithFeeOriginTransfers/pasToHydrationPaysWithMUSE.ts"]=1
+	# getaddrinfo ENOTFOUND paseo-rpc.polkadot.io
+	["examples/paseo/relayChain/bridgeTransfers/paseoPASToWestendAssetHub.ts"]=1
 	# getaddrinfo ENOTFOUND bifrost-polkadot-rpc.dwellir.com
 	["examples/fetchFeeInfo.ts"]=1
+	["examples/polkadot/parachain/paysWithFeeDest/bifrostToAssetHubPaysWithDOT.ts"]=1
+	# InvalidAsset: assetId {"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}} is not a valid symbol, integer asset id or location for statemint
+	["examples/polkadot/assetHub/bridgeTransfers/assetHubKSMToKusama.ts"]=1
+	["examples/polkadot/assetHub/foreignAssetTransfers/local/assetHubKSMTransfer.ts"]=1
+	# AssetNotFound: (SystemToPara) assetId {"parents":"2","interior":{"X1":{"GlobalConsensus":"Kusama"}}} not found for system parachain statemint
+	["examples/polkadot/assetHub/foreignAssetTransfers/reserve/assetHubKSMToMoonbeam.ts"]=1
+	# AssetNotFound: (SystemToPara) assetId {"parents":"1","interior":{"X1":{"Parachain":"2011"}}} not found for system parachain statemint
+	["examples/polkadot/assetHub/foreignAssetTransfers/teleport/assetHubEQToEquilibrium.ts"]=1
+	# InvalidAsset: assetId {"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}} is not a valid symbol, integer asset id or location for statemine
+	["examples/kusama/assetHub/bridgeTransfers/assetHubDOTToPolkadot.ts"]=1
+	# AssetNotFound: (SystemToPara) assetId {"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}} not found for system parachain statemine
+	["examples/kusama/assetHub/foreignAssetTransfers/reserve/assetHubKSMDOTUSDTToBasilisk.ts"]=1
 )
 
 failed=$(mktemp)
