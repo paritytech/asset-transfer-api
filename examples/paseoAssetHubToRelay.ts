@@ -17,7 +17,9 @@ import { GREEN, PURPLE, RESET } from './colors.js';
  *
  */
 const main = async () => {
-	const { api, safeXcmVersion } = await constructApiPromise('wss://paseo-asset-hub-rpc.polkadot.io');
+	const { api, safeXcmVersion } = await constructApiPromise('wss://paseo-asset-hub-rpc.polkadot.io', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, 'asset-hub-paseo', safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;

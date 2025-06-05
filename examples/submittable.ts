@@ -18,7 +18,7 @@ import { GREEN, PURPLE, RESET } from './colors.js';
  * `sign`, `signAsync`, `dryRun`, `addSignature`, `paymentInfo`, etc.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('ws://127.0.0.1:9944');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('ws://127.0.0.1:9944', { throwOnConnect: true });
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	// When declaring this type it will ensure that the inputted `format` matches it or the type checker will error.

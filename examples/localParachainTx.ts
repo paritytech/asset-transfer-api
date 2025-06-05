@@ -14,7 +14,9 @@ import { GREEN, PURPLE, RESET } from './colors.js';
  * is no asset passed in it will resort to using the balances pallet.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://wss.api.moonbeam.network');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://wss.api.moonbeam.network', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;

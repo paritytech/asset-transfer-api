@@ -15,7 +15,9 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://polkadot-asset-hub-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://polkadot-asset-hub-rpc.polkadot.io', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;

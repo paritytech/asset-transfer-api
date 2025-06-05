@@ -12,7 +12,9 @@ import { GREEN, PURPLE, RESET } from './colors.js';
  * In this example we are creating a call to send LiquidPool Asset '0' locally on westmint, using the `keepAlive` option.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westmint-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westmint-rpc.polkadot.io', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	let callInfo: TxResult<'call'>;

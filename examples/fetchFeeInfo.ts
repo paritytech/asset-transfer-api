@@ -17,7 +17,9 @@ import { GREEN, PURPLE, RESET } from './colors.js';
  */
 const main = async () => {
 	const safeXcmVersion = 3;
-	const { api, specName } = await constructApiPromise('wss://bifrost-polkadot-rpc.dwellir.com');
+	const { api, specName } = await constructApiPromise('wss://bifrost-polkadot-rpc.dwellir.com', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 	let callInfo: TxResult<'call'>;
 	try {

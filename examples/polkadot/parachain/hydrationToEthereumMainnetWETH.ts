@@ -18,7 +18,9 @@ import { GREEN, PURPLE, RESET } from '../../colors';
  */
 const main = async () => {
 	const xcmVersion = 4;
-	const { api, specName } = await constructApiPromise('wss://hydradx-rpc.dwellir.com');
+	const { api, specName } = await constructApiPromise('wss://hydradx-rpc.dwellir.com', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, specName, xcmVersion, {
 		injectedRegistry: {
 			polkadot: {

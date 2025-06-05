@@ -15,7 +15,9 @@ import { GREEN, PURPLE, RESET } from './colors.js';
  *
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.public.blastapi.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://moonriver.public.blastapi.io', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 	let callInfo: TxResult<'call'>;
 	try {

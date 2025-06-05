@@ -12,7 +12,9 @@ import { GREEN, PURPLE, RESET } from './colors';
  *
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westend-asset-hub-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://westend-asset-hub-rpc.polkadot.io', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 	let callInfo: TxResult<'call'>;
 	try {
