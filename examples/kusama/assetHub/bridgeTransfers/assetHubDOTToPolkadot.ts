@@ -3,10 +3,10 @@
  *
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetTransferApi } from '../src/AssetTransferApi.js';
-import { constructApiPromise } from '../src/constructApiPromise.js';
-import { TxResult } from '../src/types.js';
-import { GREEN, PURPLE, RESET } from './colors.js';
+import { AssetTransferApi } from '../../../../src/AssetTransferApi.js';
+import { constructApiPromise } from '../../../../src/constructApiPromise.js';
+import { TxResult } from '../../../../src/types.js';
+import { GREEN, PURPLE, RESET } from '../../../colors.js';
 
 /**
  * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send 1 DOT (foreign asset with location `{"parents":"2","interior":{"X1":{"GlobalConsensus":"Polkadot"}}}`)
