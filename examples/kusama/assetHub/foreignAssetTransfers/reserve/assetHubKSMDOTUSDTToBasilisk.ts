@@ -53,6 +53,13 @@ const main = async () => {
 	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
-main()
-	.catch((err) => console.error(err))
-	.finally(() => process.exit());
+void (async () => {
+	try {
+		await main();
+	} catch (err) {
+		console.error(err);
+		process.exit(1);
+	} finally {
+		process.exit();
+	}
+})();
