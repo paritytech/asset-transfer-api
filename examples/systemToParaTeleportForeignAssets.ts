@@ -3,9 +3,10 @@
  *
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetTransferApi, constructApiPromise } from '../src';
-import { TxResult } from '../src/types';
-import { GREEN, PURPLE, RESET } from './colors';
+import { AssetTransferApi } from '../src/AssetTransferApi.js';
+import { constructApiPromise } from '../src/constructApiPromise.js';
+import { TxResult } from '../src/types.js';
+import { GREEN, PURPLE, RESET } from './colors.js';
 
 /**
  * In this example we are creating a teleport call to send foreign asset '{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'

@@ -2,10 +2,17 @@
 	"extends": "../node_modules/@substrate/dev/config/tsconfig.json",
 	"compilerOptions": {
 		"baseUrl": ".",
-		"outDir": "build",
-		"resolveJsonModule": true,
+		"target": "ES2020",
+		"outDir": "dist",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"declaration": true,
+		"emitDeclarationOnly": false,
 		"esModuleInterop": true,
-		"ignoreDeprecations": "5.0"
+		"allowSyntheticDefaultImports": true,
+		"moduleDetection": "force",
+		"strict": true,
+		"resolveJsonModule": true
 	},
 	"typeRoots": ["../node_modules/@types"],
 	"exclude": ["node_modules"],

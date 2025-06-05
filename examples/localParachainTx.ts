@@ -3,9 +3,10 @@
  *
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetTransferApi, constructApiPromise } from '../src';
-import { TxResult } from '../src/types';
-import { GREEN, PURPLE, RESET } from './colors';
+import { AssetTransferApi } from '../src/AssetTransferApi.js';
+import { constructApiPromise } from '../src/constructApiPromise.js';
+import { TxResult } from '../src/types.js';
+import { GREEN, PURPLE, RESET } from './colors.js';
 
 /**
  * The following example demonstrates a local transaction on a parachain. It is important to note that
