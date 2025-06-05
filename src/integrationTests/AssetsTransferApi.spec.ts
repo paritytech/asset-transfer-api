@@ -3,7 +3,8 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import { ISubmittableResult } from '@polkadot/types/types';
 
-import { AssetTransferApi } from '../AssetTransferApi';
+import { AssetTransferApi } from '../AssetTransferApi.js';
+import { constructApiPromise } from '../constructApiPromise.js';
 import { CreateXcmCallOpts } from '../createXcmCalls/types';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockRelayApiV1016000 } from '../testHelpers/adjustedMockRelayApiV1016000';
@@ -2301,19 +2302,42 @@ describe('AssetTransferApi Integration Tests', () => {
 		) as SubmittableExtrinsic<'promise', ISubmittableResult>;
 
 		it('Correctly returns the estimated fees for a dry run that is ok', async () => {
-			const dryRunResult = await systemAssetsApiV1016000.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
+			const westendBridgeHub = 'wss://westend-bridge-hub-rpc.polkadot.io';
+			const westendAssetHubUrl = 'wss://westend-asset-hub-rpc.polkadot.io';
+			const safeXcmVersion = 4;
+
+			const westendBridgeHubId = 1002;
+			const sender = '5EJWF8s4CEoRU8nDhHBYTT6QGFGqMXTmdQdaQJVEFNrG9sKy';
+			const recipientAddress = '5HBuLJz9LdkUNseUEL6DLeVkx2bqEi6pQr8Ea7fS4bzx7i7E';
+			const amountWnd = 10_000_000_000_000; // 10 WND
+
+			const { api, specName } = await constructApiPromise(westendAssetHubUrl);
+			const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
+
+			const submittable: TxResult<'submittable'> = await assetApi.createTransferTransaction(
+				westendBridgeHubId.toString(),
+				recipientAddress,
+				['wnd'],
+				[amountWnd.toString()],
+				{
+					format: 'submittable',
+					xcmVersion: safeXcmVersion,
+				},
+			);
+
+			const dryRunResult = await assetApi.dryRunCall(sender, submittable.tx, 'submittable');
 			expect(dryRunResult?.isOk).toBe(true);
 
 			const destinationFeesInfo = await AssetTransferApi.getDestinationXcmWeightToFeeAsset(
-				'bifrost_polkadot',
-				'wss://bifrost-polkadot.ibp.network',
-				4,
+				specName,
+				westendBridgeHub,
+				safeXcmVersion,
 				dryRunResult,
-				'usdt',
+				'wnd',
 			);
 
 			expect(parseInt(destinationFeesInfo[0][1].xcmFee)).toBeGreaterThan(0);
-		});
+		}, 10000);
 		it('Correctly throws an error when the provided runtime does not support the xcmPaymentApi', async () => {
 			const dryRunResult = await systemAssetsApiV1016000.dryRunCall(sendersAddress, mockSubmittableExt, 'submittable');
 			expect(dryRunResult?.isOk).toBe(true);
