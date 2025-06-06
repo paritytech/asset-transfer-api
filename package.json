@@ -24,9 +24,6 @@
 	],
 	"scripts": {
 		"build": "tshy",
-		"build:scripts": "substrate-exec-rimraf scripts/build/ && substrate-exec-tsc --project scripts/tsconfig.json",
-		"build:examples": "substrate-exec-rimraf examples/build/ && substrate-exec-tsc --project examples/tsconfig.json",
-		"build:e2e": "substrate-exec-rimraf e2e-tests/build/ && substrate-exec-tsc --project e2e-tests/tsconfig.json",
 		"clean": "rimraf dist .tshy .tshy-build",
 		"start": "node ./lib/index.js",
 		"lint": "substrate-dev-run-lint",
@@ -75,6 +72,7 @@
 		"reflect-metadata": "^0.2.2",
 		"rimraf": "^6.0.1",
 		"tshy": "^3.0.2",
+		"tsx": "^4.19.4",
 		"typedoc": "^0.28.4",
 		"typedoc-plugin-missing-exports": "^4.0.0",
 		"typedoc-theme-hierarchy": "^6.0.0",

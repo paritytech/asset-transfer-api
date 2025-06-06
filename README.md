@@ -73,7 +73,7 @@ When the API is initalized using the `CDN`, `node:fetch` is being used and is st
 2. Then, build and run the desired example:
 
    ```bash
-   yarn build:examples && node ./examples/build/examples/<file_to_run>.js
+   npx tsx ./examples/build/examples/<file_to_run>.ts
 
    ```
 
@@ -307,7 +307,7 @@ api.createTransferTransaction(
 );
 ```
 
-If you would like to run an example to understand the output, run: `yarn build:examples && node ./examples/build/examples/paraToSystemTransferMultiAsset.js`
+If you would like to run an example to understand the output, run: `npx tsx ./examples/build/examples/paraToSystemTransferMultiAsset.js`
 
 ### Foreign Asset Transfers
 
@@ -328,7 +328,7 @@ api.createTransferTransaction(
 );
 ```
 
-If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/systemToParaTeleportForeignAssets.js`
+If you would like to run an example to understand the output run: `npx tsx ./examples/build/examples/systemToParaTeleportForeignAssets.js`
 
 ### Liquid Pool Asset Transfers
 
@@ -344,7 +344,7 @@ api.createTransferTransaction('2023', '0xF977814e90dA44bFA03b6295A0616a897441ace
 });
 ```
 
-If you would like to run an example to understand the output run: `yarn build:examples && node ./examples/build/examples/systemToParaLpToken.js`
+If you would like to run an example to understand the output run: `npx tsx node ./examples/build/examples/systemToParaLpToken.js`
 
 ### Local Transactions
 

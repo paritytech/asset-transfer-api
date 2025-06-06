@@ -17,7 +17,9 @@ import { GREEN, PURPLE, RESET } from '../../../colors';
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://paseo-asset-hub-rpc.polkadot.io');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://paseo-asset-hub-rpc.polkadot.io', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	let payloadInfo: TxResult<'payload'>;
@@ -56,6 +58,13 @@ const main = async () => {
 	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
-main()
-	.catch((err) => console.error(err))
-	.finally(() => process.exit());
+void (async () => {
+	try {
+		await main();
+	} catch (err) {
+		console.error(err);
+		process.exit(1);
+	} finally {
+		process.exit();
+	}
+})();

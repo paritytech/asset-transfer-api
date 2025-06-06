@@ -18,7 +18,9 @@ import { GREEN, PURPLE, RESET } from '../../colors';
  */
 const main = async () => {
 	const xcmVersion = 4;
-	const { api, specName } = await constructApiPromise('wss://hydradx-rpc.dwellir.com');
+	const { api, specName } = await constructApiPromise('wss://hydradx-rpc.dwellir.com', {
+		throwOnConnect: true,
+	});
 	const assetApi = new AssetTransferApi(api, specName, xcmVersion, {
 		injectedRegistry: {
 			polkadot: {
@@ -60,6 +62,13 @@ const main = async () => {
 	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
-main()
-	.catch((err) => console.error(err))
-	.finally(() => process.exit());
+void (async () => {
+	try {
+		await main();
+	} catch (err) {
+		console.error(err);
+		process.exit(1);
+	} finally {
+		process.exit();
+	}
+})();

@@ -6,9 +6,10 @@
 import { Keyring } from '@polkadot/keyring';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
-import { AssetTransferApi, constructApiPromise } from '../src';
-import { TxResult } from '../src/types';
-import { GREEN, PURPLE, RESET } from './colors';
+import { AssetTransferApi } from '../src/AssetTransferApi.js';
+import { constructApiPromise } from '../src/constructApiPromise.js';
+import { TxResult } from '../src/types.js';
+import { GREEN, PURPLE, RESET } from './colors.js';
 
 /**
  * In this example, we are creating a `SubmittableExtrinsic` and showing how one may sign and send it over
@@ -17,7 +18,7 @@ import { GREEN, PURPLE, RESET } from './colors';
  * `sign`, `signAsync`, `dryRun`, `addSignature`, `paymentInfo`, etc.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('ws://127.0.0.1:9944');
+	const { api, specName, safeXcmVersion } = await constructApiPromise('ws://127.0.0.1:9944', { throwOnConnect: true });
 	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
 
 	// When declaring this type it will ensure that the inputted `format` matches it or the type checker will error.
@@ -50,6 +51,13 @@ const main = async () => {
 	await callInfo.tx.signAndSend(alice);
 };
 
-main()
-	.catch((err) => console.error(err))
-	.finally(() => process.exit());
+void (async () => {
+	try {
+		await main();
+	} catch (err) {
+		console.error(err);
+		process.exit(1);
+	} finally {
+		process.exit();
+	}
+})();

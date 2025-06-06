@@ -3,9 +3,10 @@
  *
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
-import { AssetTransferApi, constructApiPromise } from '../src';
-import { TxResult } from '../src/types';
-import { GREEN, PURPLE, RESET } from './colors';
+import { AssetTransferApi } from '../src/AssetTransferApi.js';
+import { constructApiPromise } from '../src/constructApiPromise.js';
+import { TxResult } from '../src/types.js';
+import { GREEN, PURPLE, RESET } from './colors.js';
 
 /**
  * In this example we are creating a `polkadotXcm` pallet `transferAssets` call to send 1 WND (asset with location `{"parents":"1","interior":{"Here":""}}`)
@@ -47,6 +48,13 @@ const main = async () => {
 	console.log(`\n${PURPLE}The following decoded tx:\n${GREEN} ${JSON.stringify(JSON.parse(decoded), null, 4)}${RESET}`);
 };
 
-main()
-	.catch((err) => console.error(err))
-	.finally(() => process.exit());
+void (async () => {
+	try {
+		await main();
+	} catch (err) {
+		console.error(err);
+		process.exit(1);
+	} finally {
+		process.exit();
+	}
+})();
