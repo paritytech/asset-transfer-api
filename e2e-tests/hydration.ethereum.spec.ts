@@ -1,9 +1,10 @@
-import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
+import { testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
 import { ETHEREUM_MAINNET_NETWORK_GLOBAL_CONSENSUS_LOCATION } from '../src/consts';
+import { configs, setupParachains } from './networks.js';
 
 const { checkSystemEvents } = withExpect(expect);
 
@@ -14,36 +15,11 @@ describe('Hydration <> Ethereum', () => {
 
 	const { alice, alith } = testingPairs();
 
-	const hydrationPort = 8010;
-	const polkadotBridgeHubPort = 8011;
-	const polkadotAssetHubPort = 8012;
-	const runtimeLogLevel = 0;
-
 	beforeEach(async () => {
-		const { hydration1, polkadotBridgeHub1, polkadotAssetHub1 } = await setupNetworks({
-			hydration1: {
-				endpoint: 'wss://rpc.hydradx.cloud',
-				db: `./chopsticks-db/db.sqlite-hydration-${hydrationPort}`,
-				port: hydrationPort,
-				runtimeLogLevel,
-			},
-			polkadotBridgeHub1: {
-				endpoint: 'wss://polkadot-bridge-hub-rpc.polkadot.io',
-				db: `./chopsticks-db/db.sqlite-polkadot-bridge-hub-${polkadotBridgeHubPort}`,
-				port: polkadotBridgeHubPort,
-				runtimeLogLevel,
-			},
-			polkadotAssetHub1: {
-				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
-				port: polkadotAssetHubPort,
-				runtimeLogLevel,
-			},
-		});
-
-		hydration = hydration1;
-		polkadotBridgeHub = polkadotBridgeHub1;
-		polkadotAssetHub = polkadotAssetHub1;
+		[hydration, polkadotBridgeHub, polkadotAssetHub] = await setupParachains(
+			[configs.hydration, configs.polkadotBridgeHub, configs.polkadotAssetHub],
+			__filename,
+		);
 	}, 1000000);
 
 	afterEach(async () => {

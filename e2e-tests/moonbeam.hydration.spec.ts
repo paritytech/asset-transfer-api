@@ -1,9 +1,10 @@
-import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
+import { testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
 import { AccountData } from '@polkadot/types/interfaces';
 import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
+import { configs, setupParachains } from './networks.js';
 
 const { check } = withExpect(expect);
 
@@ -14,28 +15,8 @@ describe('Moonbeam <> Hydration', () => {
 
 	const { alith } = testingPairs();
 
-	const hydrationPort = 8000;
-	const moonbeamPort = 8001;
-	const runtimeLogLevel = 0;
-
 	beforeEach(async () => {
-		const { hydration1, moonbeam1 } = await setupNetworks({
-			hydration1: {
-				endpoint: 'wss://hydration.ibp.network',
-				db: `./chopsticks-db/db.sqlite-hydration-${hydrationPort}`,
-				port: hydrationPort,
-				runtimeLogLevel,
-			},
-			moonbeam1: {
-				endpoint: 'wss://moonbeam.public.blastapi.io',
-				db: `./chopsticks-db/db.sqlite-moonbeam-${moonbeamPort}`,
-				port: moonbeamPort,
-				runtimeLogLevel,
-			},
-		});
-
-		hydration = hydration1;
-		moonbeam = moonbeam1;
+		[hydration, moonbeam] = await setupParachains([configs.hydration, configs.moonbeam], __filename);
 	}, 1000000);
 
 	afterEach(async () => {
