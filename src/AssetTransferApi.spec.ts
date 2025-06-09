@@ -158,15 +158,15 @@ describe('AssetTransferAPI', () => {
 	});
 	describe('constructFormat', () => {
 		it('Should construct the correct call', async () => {
-			const res = await systemAssetsApi['constructFormat'](
-				mockSubmittableExt,
-				Direction.SystemToPara,
-				2,
-				'limitedReserveTransferAssets',
-				'2023',
-				'statemine',
-				{ format: 'call' },
-			);
+			const res = await systemAssetsApi['constructFormat']({
+				tx: mockSubmittableExt,
+				direction: Direction.SystemToPara,
+				xcmVersion: 2,
+				method: 'limitedReserveTransferAssets',
+				dest: '2023',
+				origin: 'statemine',
+				opts: { format: 'call' },
+			});
 			expect(res).toEqual({
 				dest: 'moonriver',
 				origin: 'statemine',
@@ -178,30 +178,30 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		it('Should construct the correct payload', async () => {
-			const res = await systemAssetsApi['constructFormat'](
-				mockSubmittableExt,
-				Direction.SystemToPara,
-				2,
-				'limitedReserveTransferAssets',
-				'2023',
-				'statemine',
-				{ format: 'payload' },
-			);
+			const res = await systemAssetsApi['constructFormat']({
+				tx: mockSubmittableExt,
+				direction: Direction.SystemToPara,
+				xcmVersion: 2,
+				method: 'limitedReserveTransferAssets',
+				dest: '2023',
+				origin: 'statemine',
+				opts: { format: 'payload' },
+			});
 			expect(res.format).toEqual('payload');
 			expect(res.tx.toHex()).toEqual(
 				'0xf81f0801010100411f0100010100c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de16010400000204320504009101000000000045022800010000e0510f00040000000000000000000000000000000000000000000000000000000000000000000000be2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503',
 			);
 		});
 		it('Should construct the correct submittable', async () => {
-			const res = await systemAssetsApi['constructFormat'](
-				mockSubmittableExt,
-				Direction.SystemToPara,
-				1,
-				'limitedReserveTransferAssets',
-				'2023',
-				'Statmine',
-				{ format: 'submittable' },
-			);
+			const res = await systemAssetsApi['constructFormat']({
+				tx: mockSubmittableExt,
+				direction: Direction.SystemToPara,
+				xcmVersion: 1,
+				method: 'limitedReserveTransferAssets',
+				dest: '2023',
+				origin: 'Statmine',
+				opts: { format: 'submittable' },
+			});
 			expect(res.tx.toRawType()).toEqual('Extrinsic');
 		});
 	});
@@ -252,188 +252,188 @@ describe('AssetTransferAPI', () => {
 	describe('fetchCallType', () => {
 		describe('RelayToSystem', () => {
 			it('Should correctly return Teleport', () => {
-				const assetCallType = relayAssetsApi['fetchCallType'](
-					'0',
-					'1000',
-					['ksm'],
-					Direction.RelayToSystem,
-					AssetType.Native,
-					false,
-					false,
-					relayAssetsApi.registry,
-				);
+				const assetCallType = relayAssetsApi['fetchCallType']({
+					originChainId: '0',
+					destChainId: '1000',
+					assetIds: ['ksm'],
+					xcmDirection: Direction.RelayToSystem,
+					assetType: AssetType.Native,
+					isForeignAssetsTransfer: false,
+					isParachainPrimaryNativeAsset: false,
+					registry: relayAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Teleport');
 			});
 		});
 		describe('RelayToPara', () => {
 			it('Should correctly return Reserve', () => {
-				const assetCallType = relayAssetsApi['fetchCallType'](
-					'0',
-					'2023',
-					['ksm'],
-					Direction.RelayToPara,
-					AssetType.Native,
-					false,
-					false,
-					relayAssetsApi.registry,
-				);
+				const assetCallType = relayAssetsApi['fetchCallType']({
+					originChainId: '0',
+					destChainId: '2023',
+					assetIds: ['ksm'],
+					xcmDirection: Direction.RelayToPara,
+					assetType: AssetType.Native,
+					isForeignAssetsTransfer: false,
+					isParachainPrimaryNativeAsset: false,
+					registry: relayAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('SystemToRelay', () => {
 			it('Should correctly return Teleport', () => {
-				const assetCallType = systemAssetsApi['fetchCallType'](
-					'1000',
-					'0',
-					['ksm'],
-					Direction.SystemToRelay,
-					AssetType.Native,
-					false,
-					false,
-					systemAssetsApi.registry,
-				);
+				const assetCallType = systemAssetsApi['fetchCallType']({
+					originChainId: '1000',
+					destChainId: '0',
+					assetIds: ['ksm'],
+					xcmDirection: Direction.SystemToRelay,
+					assetType: AssetType.Native,
+					isForeignAssetsTransfer: false,
+					isParachainPrimaryNativeAsset: false,
+					registry: systemAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Teleport');
 			});
 		});
 		describe('SystemToSystem', () => {
 			it('Should correctly return Teleport when sending a native asset', () => {
-				const assetCallType = systemAssetsApi['fetchCallType'](
-					'1000',
-					'1001',
-					['ksm'],
-					Direction.SystemToSystem,
-					AssetType.Native,
-					false,
-					false,
-					systemAssetsApi.registry,
-				);
+				const assetCallType = systemAssetsApi['fetchCallType']({
+					originChainId: '1000',
+					destChainId: '1001',
+					assetIds: ['ksm'],
+					xcmDirection: Direction.SystemToSystem,
+					assetType: AssetType.Native,
+					isForeignAssetsTransfer: false,
+					isParachainPrimaryNativeAsset: false,
+					registry: systemAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Teleport');
 			});
 		});
 		describe('SystemToPara', () => {
 			it('Should correctly return Teleport when sending to origin Parachain', () => {
-				const assetCallType = systemAssetsApi['fetchCallType'](
-					'1000',
-					'2023',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
-					Direction.SystemToPara,
-					AssetType.Foreign,
-					true,
-					false,
-					systemAssetsApi.registry,
-				);
+				const assetCallType = systemAssetsApi['fetchCallType']({
+					originChainId: '1000',
+					destChainId: '2023',
+					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					xcmDirection: Direction.SystemToPara,
+					assetType: AssetType.Foreign,
+					isForeignAssetsTransfer: true,
+					isParachainPrimaryNativeAsset: false,
+					registry: systemAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Teleport');
 			});
 		});
 		describe('SystemToPara', () => {
 			it('Should correctly return Reserve when sending to non origin Parachain', () => {
-				const assetCallType = systemAssetsApi['fetchCallType'](
-					'1000',
-					'2125',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
-					Direction.SystemToPara,
-					AssetType.Foreign,
-					true,
-					false,
-					systemAssetsApi.registry,
-				);
+				const assetCallType = systemAssetsApi['fetchCallType']({
+					originChainId: '1000',
+					destChainId: '2125',
+					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					xcmDirection: Direction.SystemToPara,
+					assetType: AssetType.Foreign,
+					isForeignAssetsTransfer: true,
+					isParachainPrimaryNativeAsset: false,
+					registry: systemAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('ParaToRelay', () => {
 			it('Should correctly return Reserve', () => {
-				const assetCallType = moonriverAssetsApi['fetchCallType'](
-					'2023',
-					'0',
-					['ksm'],
-					Direction.ParaToRelay,
-					AssetType.Foreign,
-					false,
-					false,
-					moonriverAssetsApi.registry,
-				);
+				const assetCallType = moonriverAssetsApi['fetchCallType']({
+					originChainId: '2023',
+					destChainId: '0',
+					assetIds: ['ksm'],
+					xcmDirection: Direction.ParaToRelay,
+					assetType: AssetType.Foreign,
+					isForeignAssetsTransfer: false,
+					isParachainPrimaryNativeAsset: false,
+					registry: moonriverAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('ParaToSystem', () => {
 			it('Should correctly return Teleport when sending a foreign asset that is native to the origin', () => {
-				const assetCallType = moonriverAssetsApi['fetchCallType'](
-					'2023',
-					'1000',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
-					Direction.ParaToSystem,
-					AssetType.Foreign,
-					true,
-					false,
-					moonriverAssetsApi.registry,
-				);
+				const assetCallType = moonriverAssetsApi['fetchCallType']({
+					originChainId: '2023',
+					destChainId: '1000',
+					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					xcmDirection: Direction.ParaToSystem,
+					assetType: AssetType.Foreign,
+					isForeignAssetsTransfer: true,
+					isParachainPrimaryNativeAsset: false,
+					registry: moonriverAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Teleport');
 			});
 			it('Should correctly return Teleport when sending the parachains native asset', () => {
-				const assetCallType = moonriverAssetsApi['fetchCallType'](
-					'2023',
-					'1000',
-					['movr'],
-					Direction.ParaToSystem,
-					AssetType.Foreign,
-					true,
-					true,
-					moonriverAssetsApi.registry,
-				);
+				const assetCallType = moonriverAssetsApi['fetchCallType']({
+					originChainId: '2023',
+					destChainId: '1000',
+					assetIds: ['movr'],
+					xcmDirection: Direction.ParaToSystem,
+					assetType: AssetType.Foreign,
+					isForeignAssetsTransfer: true,
+					isParachainPrimaryNativeAsset: true,
+					registry: moonriverAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Teleport');
 			});
 			it('Should correctly return Reserve when sending a foreign asset that is foreign to the origin', () => {
-				const assetCallType = moonriverAssetsApi['fetchCallType'](
-					'2023',
-					'1000',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2125"}}}`],
-					Direction.ParaToSystem,
-					AssetType.Foreign,
-					true,
-					false,
-					moonriverAssetsApi.registry,
-				);
+				const assetCallType = moonriverAssetsApi['fetchCallType']({
+					originChainId: '2023',
+					destChainId: '1000',
+					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2125"}}}`],
+					xcmDirection: Direction.ParaToSystem,
+					assetType: AssetType.Foreign,
+					isForeignAssetsTransfer: true,
+					isParachainPrimaryNativeAsset: false,
+					registry: moonriverAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('ParaToPara', () => {
 			it('Should correctly return Reserve', () => {
-				const assetCallType = moonriverAssetsApi['fetchCallType'](
-					'2023',
-					'2125',
-					[`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
-					Direction.ParaToPara,
-					AssetType.Foreign,
-					true,
-					false,
-					moonriverAssetsApi.registry,
-				);
+				const assetCallType = moonriverAssetsApi['fetchCallType']({
+					originChainId: '2023',
+					destChainId: '2125',
+					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
+					xcmDirection: Direction.ParaToPara,
+					assetType: AssetType.Foreign,
+					isForeignAssetsTransfer: true,
+					isParachainPrimaryNativeAsset: false,
+					registry: moonriverAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Reserve');
 			});
 		});
 		describe('ParaToRelay', () => {
 			it('Should correctly return Reserve', () => {
-				const assetCallType = moonriverAssetsApi['fetchCallType'](
-					'2023',
-					'0',
-					['KSM'],
-					Direction.ParaToRelay,
-					AssetType.Native,
-					false,
-					false,
-					moonriverAssetsApi.registry,
-				);
+				const assetCallType = moonriverAssetsApi['fetchCallType']({
+					originChainId: '2023',
+					destChainId: '0',
+					assetIds: ['KSM'],
+					xcmDirection: Direction.ParaToRelay,
+					assetType: AssetType.Native,
+					isForeignAssetsTransfer: false,
+					isParachainPrimaryNativeAsset: false,
+					registry: moonriverAssetsApi.registry,
+				});
 
 				expect(assetCallType).toEqual('Reserve');
 			});
@@ -469,30 +469,30 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly fetch estimate for a payload based xcm message', async () => {
-			const payloadTexResult = await systemAssetsApi['constructFormat'](
-				mockSubmittableExt,
-				Direction.SystemToPara,
-				2,
-				'limitedReserveTransferAssets',
-				'2000',
-				'statemine',
-				{ format: 'payload' },
-			);
+			const payloadTexResult = await systemAssetsApi['constructFormat']({
+				tx: mockSubmittableExt,
+				direction: Direction.SystemToPara,
+				xcmVersion: 2,
+				method: 'limitedReserveTransferAssets',
+				dest: '2000',
+				origin: 'statemine',
+				opts: { format: 'payload' },
+			});
 
 			const payloadFeeInfo = await systemAssetsApi.fetchFeeInfo(payloadTexResult.tx, 'payload');
 			expect((payloadFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
 		});
 
 		it('Should correctly fetch estimate for a call based xcm message', async () => {
-			const callTxResult = await systemAssetsApi['constructFormat'](
-				mockSubmittableExt,
-				Direction.SystemToPara,
-				2,
-				'limitedReserveTransferAssets',
-				'2000',
-				'statmine',
-				{ format: 'call' },
-			);
+			const callTxResult = await systemAssetsApi['constructFormat']({
+				tx: mockSubmittableExt,
+				direction: Direction.SystemToPara,
+				xcmVersion: 2,
+				method: 'limitedReserveTransferAssets',
+				dest: '2000',
+				origin: 'statmine',
+				opts: { format: 'call' },
+			});
 			const callFeeInfo = await systemAssetsApi.fetchFeeInfo(callTxResult.tx, 'call');
 			expect((callFeeInfo?.weight as Weight).refTime.toString()).toEqual(mockWeightInfo.weight.refTime);
 		});
@@ -546,15 +546,15 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly execute a dry run for a payload extrinsic', async () => {
-			const payloadTexResult = await westmintAssetsApi['constructFormat'](
-				mockSubmittableExt,
-				Direction.SystemToPara,
-				4,
-				'transferAssets',
-				'0',
-				'asset-hub-westend',
-				{ format: 'payload' },
-			);
+			const payloadTexResult = await westmintAssetsApi['constructFormat']({
+				tx: mockSubmittableExt,
+				direction: Direction.SystemToPara,
+				xcmVersion: 4,
+				method: 'transferAssets',
+				dest: '0',
+				origin: 'asset-hub-westend',
+				opts: { format: 'payload' },
+			});
 
 			const executionResult = await westmintAssetsApi.dryRunCall(sendersAddress, payloadTexResult.tx, 'payload', 4);
 			expect(executionResult?.asOk.executionResult.asOk.paysFee.toString()).toEqual(
@@ -563,20 +563,20 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly execute a dry run for a call', async () => {
-			const callTxResult = await westmintAssetsApi['constructFormat'](
-				mockSubmittableExt,
-				Direction.SystemToPara,
-				4,
-				'transferAssets',
-				'0',
-				'asset-hub-westend',
-				{
+			const callTxResult = await westmintAssetsApi['constructFormat']({
+				tx: mockSubmittableExt,
+				direction: Direction.SystemToPara,
+				xcmVersion: 4,
+				method: 'transferAssets',
+				dest: '0',
+				origin: 'asset-hub-westend',
+				opts: {
 					format: 'call',
 					dryRunCall: true,
 					xcmFeeAsset: 'wnd',
 					sendersAddr: 'FBeL7DanUDs5SZrxZY1CizMaPgG9vZgJgvr52C2dg81SsF1',
 				},
-			);
+			});
 
 			expect(callTxResult.localXcmFees![1]).toEqual({
 				xcmDest: '"local"',
@@ -988,14 +988,14 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['transferAssets', await transferAssets(mockBaseArgs, mockBaseOpts)];
 
-				const result = await westmintAssetsApi['resolveCall'](
-					['usdt'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.SystemToPara,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+				const result = await westmintAssetsApi['resolveCall']({
+					assetIds: ['usdt'],
+					xcmPallet: 'polkadotXcm' as XcmPalletName,
+					xcmDirection: Direction.SystemToPara,
+					assetCallType: 'Reserve' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1025,14 +1025,14 @@ describe('AssetTransferAPI', () => {
 					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsApi['resolveCall'](
-					['usdt'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.SystemToPara,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+				const result = await moonriverAssetsApi['resolveCall']({
+					assetIds: ['usdt'],
+					xcmPallet: 'polkadotXcm' as XcmPalletName,
+					xcmDirection: Direction.SystemToPara,
+					assetCallType: 'Reserve' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1066,14 +1066,14 @@ describe('AssetTransferAPI', () => {
 					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsApi['resolveCall'](
-					['usdt'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.SystemToPara,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+				const result = await moonriverAssetsApi['resolveCall']({
+					assetIds: ['usdt'],
+					xcmPallet: 'polkadotXcm' as XcmPalletName,
+					xcmDirection: Direction.SystemToPara,
+					assetCallType: 'Reserve' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1109,14 +1109,14 @@ describe('AssetTransferAPI', () => {
 					await limitedTeleportAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await systemAssetsApi['resolveCall'](
-					['ksm'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.SystemToRelay,
-					'Teleport' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+				const result = await systemAssetsApi['resolveCall']({
+					assetIds: ['ksm'],
+					xcmPallet: 'polkadotXcm' as XcmPalletName,
+					xcmDirection: Direction.SystemToRelay,
+					assetCallType: 'Teleport' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1152,14 +1152,14 @@ describe('AssetTransferAPI', () => {
 					await limitedTeleportAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await systemAssetsApi['resolveCall'](
-					['ksm'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.SystemToRelay,
-					'Teleport' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+				const result = await systemAssetsApi['resolveCall']({
+					assetIds: ['ksm'],
+					xcmPallet: 'polkadotXcm' as XcmPalletName,
+					xcmDirection: Direction.SystemToRelay,
+					assetCallType: 'Teleport' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1193,14 +1193,14 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['transferMultiasset', await transferMultiasset(mockBaseArgs, mockBaseOpts)];
 
-				const result = await bifrostAssetsApi['resolveCall'](
-					['usdt'],
-					'xTokens' as XcmPalletName,
-					Direction.ParaToSystem,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+				const result = await bifrostAssetsApi['resolveCall']({
+					assetIds: ['usdt'],
+					xcmPallet: 'xTokens' as XcmPalletName,
+					xcmDirection: Direction.ParaToSystem,
+					assetCallType: 'Reserve' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1235,14 +1235,14 @@ describe('AssetTransferAPI', () => {
 					await transferMultiassets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsApi['resolveCall'](
-					['ksm', 'usdt'],
-					'xTokens' as XcmPalletName,
-					Direction.ParaToSystem,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+				const result = await moonriverAssetsApi['resolveCall']({
+					assetIds: ['ksm', 'usdt'],
+					xcmPallet: 'xTokens' as XcmPalletName,
+					xcmDirection: Direction.ParaToSystem,
+					assetCallType: 'Reserve' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1280,15 +1280,15 @@ describe('AssetTransferAPI', () => {
 					await transferMultiassetWithFee(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsApi['resolveCall'](
-					['usdt'],
-					'xTokens' as XcmPalletName,
-					Direction.ParaToSystem,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
+				const result = await moonriverAssetsApi['resolveCall']({
+					assetIds: ['usdt'],
+					xcmPallet: 'xTokens' as XcmPalletName,
+					xcmDirection: Direction.ParaToSystem,
+					assetCallType: 'Reserve' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
 					paysWithFeeDest,
-				);
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1319,14 +1319,14 @@ describe('AssetTransferAPI', () => {
 					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
-					['usdt'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.ParaToSystem,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+				const result = await moonriverAssetsNoXTokensApi['resolveCall']({
+					assetIds: ['usdt'],
+					xcmPallet: 'polkadotXcm' as XcmPalletName,
+					xcmDirection: Direction.ParaToSystem,
+					assetCallType: 'Reserve' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1361,14 +1361,14 @@ describe('AssetTransferAPI', () => {
 					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
-					['usdt'],
-					'polkadotXcm' as XcmPalletName,
-					Direction.ParaToSystem,
-					'Reserve' as AssetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+				const result = await moonriverAssetsNoXTokensApi['resolveCall']({
+					assetIds: ['usdt'],
+					xcmPallet: 'polkadotXcm' as XcmPalletName,
+					xcmDirection: Direction.ParaToSystem,
+					assetCallType: 'Reserve' as AssetCallType,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1406,14 +1406,14 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['transferMultiasset', await transferMultiasset(mockBaseArgs, mockBaseOpts)];
 
-				const result = await bifrostAssetsApi['resolveCall'](
+				const result = await bifrostAssetsApi['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1448,14 +1448,14 @@ describe('AssetTransferAPI', () => {
 					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
+				const result = await moonriverAssetsNoXTokensApi['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1490,14 +1490,14 @@ describe('AssetTransferAPI', () => {
 					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsNoXTokensApi['resolveCall'](
+				const result = await moonriverAssetsNoXTokensApi['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1532,14 +1532,14 @@ describe('AssetTransferAPI', () => {
 
 				const expected: ResolvedCallInfo = ['transferMultiasset', await transferMultiasset(mockBaseArgs, mockBaseOpts)];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await moonriverAssetsApi['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1575,14 +1575,14 @@ describe('AssetTransferAPI', () => {
 					await transferMultiassets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await moonriverAssetsApi['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1621,15 +1621,15 @@ describe('AssetTransferAPI', () => {
 					await transferMultiassetWithFee(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await moonriverAssetsApi['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
 					paysWithFeeDest,
-				);
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1665,14 +1665,14 @@ describe('AssetTransferAPI', () => {
 					await limitedTeleportAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await moonriverAssetsApi['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1709,14 +1709,14 @@ describe('AssetTransferAPI', () => {
 					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await moonriverAssetsApi['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1755,14 +1755,14 @@ describe('AssetTransferAPI', () => {
 					await limitedReserveTransferAssets(mockBaseArgs, mockBaseOpts),
 				];
 
-				const result = await moonriverAssetsApi['resolveCall'](
+				const result = await moonriverAssetsApi['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 
 				expect(JSON.stringify(result)).toEqual(JSON.stringify(expected));
 			});
@@ -1799,14 +1799,14 @@ describe('AssetTransferAPI', () => {
 			};
 
 			await expect(async () => {
-				await relayAssetsApiNoLimitedReserveTransferAssets['resolveCall'](
+				await relayAssetsApiNoLimitedReserveTransferAssets['resolveCall']({
 					assetIds,
 					xcmPallet,
-					direction,
+					xcmDirection: direction,
 					assetCallType,
-					mockBaseArgs,
-					mockBaseOpts,
-				);
+					baseArgs: mockBaseArgs,
+					baseOpts: mockBaseOpts,
+				});
 			}).rejects.toThrow('Did not find limitedReserveTransferAssets from pallet xcmPallet in the current runtime');
 		});
 	});

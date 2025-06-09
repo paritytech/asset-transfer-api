@@ -260,16 +260,16 @@ export class AssetTransferApi {
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 			};
-			return this.createLocalTx(
+			return this.createLocalTx({
 				addr,
 				assetIds,
 				amounts,
 				destChainId,
-				declaredXcmVersion,
+				xcmVersion: declaredXcmVersion,
 				xcmDirection,
 				localTxChainType,
-				LocalTxOpts,
-			);
+				opts: LocalTxOpts,
+			});
 		}
 
 		const baseArgs: XcmBaseArgs = {
@@ -309,18 +309,18 @@ export class AssetTransferApi {
 		);
 
 		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
-		const assetCallType = this.fetchCallType(
+		const assetCallType = this.fetchCallType({
 			originChainId,
 			destChainId,
 			assetIds,
 			xcmDirection,
 			assetType,
 			isForeignAssetsTransfer,
-			isPrimaryParachainNativeAsset,
+			isParachainPrimaryNativeAsset: isPrimaryParachainNativeAsset,
 			registry,
-		);
+		});
 
-		const [txMethod, transaction] = await this.resolveCall(
+		const [txMethod, transaction] = await this.resolveCall({
 			assetIds,
 			xcmPallet,
 			xcmDirection,
@@ -328,14 +328,22 @@ export class AssetTransferApi {
 			baseArgs,
 			baseOpts,
 			paysWithFeeDest,
-		);
+		});
 
-		return this.constructFormat<T>(transaction, xcmDirection, declaredXcmVersion, txMethod, destChainId, specName, {
-			format,
-			paysWithFeeOrigin,
-			sendersAddr,
-			dryRunCall,
-			xcmFeeAsset,
+		return this.constructFormat<T>({
+			tx: transaction,
+			direction: xcmDirection,
+			xcmVersion: declaredXcmVersion,
+			method: txMethod,
+			dest: destChainId,
+			origin: specName,
+			opts: {
+				format,
+				paysWithFeeOrigin,
+				sendersAddr,
+				dryRunCall,
+				xcmFeeAsset,
+			},
 		});
 	}
 
@@ -399,9 +407,17 @@ export class AssetTransferApi {
 			},
 		);
 
-		return await this.constructFormat(ext, 'local', declaredXcmVersion, 'claimAssets', originChainId, originChainId, {
-			format,
-			sendersAddr,
+		return await this.constructFormat({
+			tx: ext,
+			direction: 'local',
+			xcmVersion: declaredXcmVersion,
+			method: 'claimAssets',
+			dest: originChainId,
+			origin: originChainId,
+			opts: {
+				format,
+				sendersAddr,
+			},
 		});
 	}
 
@@ -650,22 +666,29 @@ export class AssetTransferApi {
 	 * @param tx A polkadot-js submittable extrinsic
 	 * @param format The format to return the tx in.
 	 */
-	private async constructFormat<T extends Format>(
-		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		direction: Direction | 'local',
-		xcmVersion: number,
-		method: Methods,
-		dest: string,
-		origin: string,
+	private async constructFormat<T extends Format>({
+		tx,
+		direction,
+		xcmVersion,
+		method,
+		dest,
+		origin,
+		opts: { format, paysWithFeeOrigin, sendersAddr, dryRunCall, xcmFeeAsset },
+	}: {
+		tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
+		direction: Direction | 'local';
+		xcmVersion: number;
+		method: Methods;
+		dest: string;
+		origin: string;
 		opts: {
 			format?: T;
 			paysWithFeeOrigin?: string;
 			sendersAddr?: string;
 			dryRunCall?: boolean;
 			xcmFeeAsset?: string;
-		},
-	): Promise<TxResult<T>> {
-		const { format, paysWithFeeOrigin, sendersAddr, dryRunCall, xcmFeeAsset } = opts;
+		};
+	}): Promise<TxResult<T>> {
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			origin,
@@ -796,16 +819,25 @@ export class AssetTransferApi {
 		return AssetType.Foreign;
 	}
 
-	private fetchCallType(
-		originChainId: string,
-		destChainId: string,
-		assetIds: string[],
-		xcmDirection: Direction,
-		assetType: AssetType,
-		isForeignAssetsTransfer: boolean,
-		isParachainPrimaryNativeAsset: boolean,
-		registry: Registry,
-	): AssetCallType {
+	private fetchCallType({
+		originChainId,
+		destChainId,
+		assetIds,
+		xcmDirection,
+		assetType,
+		isForeignAssetsTransfer,
+		isParachainPrimaryNativeAsset,
+		registry,
+	}: {
+		originChainId: string;
+		destChainId: string;
+		assetIds: string[];
+		xcmDirection: Direction;
+		assetType: AssetType;
+		isForeignAssetsTransfer: boolean;
+		isParachainPrimaryNativeAsset: boolean;
+		registry: Registry;
+	}): AssetCallType {
 		// relay to system -> teleport
 		// system to relay -> teleport
 		if (xcmDirection === Direction.RelayToSystem || xcmDirection === Direction.SystemToRelay) {
@@ -1138,16 +1170,25 @@ export class AssetTransferApi {
 		return LocalTxChainType.None;
 	}
 
-	private async createLocalTx(
-		addr: string,
-		assetIds: string[],
-		amounts: string[],
-		destChainId: string,
-		xcmVersion: number,
-		xcmDirection: Direction,
-		localTxChainType: LocalTxChainType,
-		opts: LocalTxOpts,
-	) {
+	private async createLocalTx({
+		addr,
+		assetIds,
+		amounts,
+		destChainId,
+		xcmVersion,
+		xcmDirection,
+		localTxChainType,
+		opts,
+	}: {
+		addr: string;
+		assetIds: string[];
+		amounts: string[];
+		destChainId: string;
+		xcmVersion: number;
+		xcmDirection: Direction;
+		localTxChainType: LocalTxChainType;
+		opts: LocalTxOpts;
+	}) {
 		const { api, specName } = this;
 		const { isForeignAssetsTransfer, isLiquidTokenTransfer, keepAlive, transferAll } = opts;
 		const transferKeepAlive = keepAlive ? keepAlive : false;
@@ -1241,8 +1282,14 @@ export class AssetTransferApi {
 				);
 			}
 
-			return await this.constructFormat(tx, 'local', xcmVersion, palletMethod, destChainId, this.specName, {
-				...opts,
+			return await this.constructFormat({
+				tx,
+				direction: 'local',
+				xcmVersion,
+				method: palletMethod,
+				dest: destChainId,
+				origin: this.specName,
+				opts,
 			});
 		} else if (localTxChainType === LocalTxChainType.Parachain) {
 			const localAssetType = checkLocalParachainInput(api, assetIds, amounts);
@@ -1259,8 +1306,14 @@ export class AssetTransferApi {
 				} else {
 					tx = balances.transfer(api, addr, amount);
 				}
-				return this.constructFormat(tx, 'local', xcmVersion, palletMethod, destChainId, specName, {
-					...opts,
+				return this.constructFormat({
+					tx,
+					direction: 'local',
+					xcmVersion,
+					method: palletMethod,
+					dest: destChainId,
+					origin: specName,
+					opts,
 				});
 			} else if (localAssetType === LocalTxType.Tokens) {
 				const palletMethod: LocalTransferTypes = `tokens::${method}`;
@@ -1271,8 +1324,14 @@ export class AssetTransferApi {
 				} else {
 					tx = tokens.transfer(api, addr, assetIds[0], amount);
 				}
-				return this.constructFormat(tx, 'local', xcmVersion, palletMethod, destChainId, specName, {
-					...opts,
+				return this.constructFormat({
+					tx,
+					direction: 'local',
+					xcmVersion,
+					method: palletMethod,
+					dest: destChainId,
+					origin: specName,
+					opts,
 				});
 			} else {
 				throw new BaseError(
@@ -1293,21 +1352,35 @@ export class AssetTransferApi {
 			} else {
 				tx = balances.transfer(api, addr, amount);
 			}
-			return this.constructFormat(tx, 'local', xcmVersion, palletMethod, destChainId, specName, {
-				...opts,
+			return this.constructFormat({
+				tx,
+				direction: 'local',
+				xcmVersion,
+				method: palletMethod,
+				dest: destChainId,
+				origin: specName,
+				opts,
 			});
 		}
 	}
 
-	private async resolveCall(
-		assetIds: string[],
-		xcmPallet: XcmPalletName,
-		xcmDirection: Direction,
-		assetCallType: AssetCallType,
-		baseArgs: XcmBaseArgs | XTokensBaseArgs,
-		baseOpts: CreateXcmCallOpts,
-		paysWithFeeDest?: string,
-	): Promise<ResolvedCallInfo> {
+	private async resolveCall({
+		assetIds,
+		xcmPallet,
+		xcmDirection,
+		assetCallType,
+		baseArgs,
+		baseOpts,
+		paysWithFeeDest,
+	}: {
+		assetIds: string[];
+		xcmPallet: XcmPalletName;
+		xcmDirection: Direction;
+		assetCallType: AssetCallType;
+		baseArgs: XcmBaseArgs | XTokensBaseArgs;
+		baseOpts: CreateXcmCallOpts;
+		paysWithFeeDest?: string;
+	}): Promise<ResolvedCallInfo> {
 		const { api } = baseArgs;
 		let txMethod: Methods | undefined = undefined;
 
