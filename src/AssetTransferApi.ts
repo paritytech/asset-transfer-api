@@ -315,7 +315,6 @@ export class AssetTransferApi {
 			assetIds,
 			xcmDirection,
 			assetType,
-			isForeignAssetsTransfer,
 			isParachainPrimaryNativeAsset: isPrimaryParachainNativeAsset,
 			registry,
 		});
@@ -825,7 +824,6 @@ export class AssetTransferApi {
 		assetIds,
 		xcmDirection,
 		assetType,
-		isForeignAssetsTransfer,
 		isParachainPrimaryNativeAsset,
 		registry,
 	}: {
@@ -834,7 +832,6 @@ export class AssetTransferApi {
 		assetIds: string[];
 		xcmDirection: Direction;
 		assetType: AssetType;
-		isForeignAssetsTransfer: boolean;
 		isParachainPrimaryNativeAsset: boolean;
 		registry: Registry;
 	}): AssetCallType {
@@ -852,7 +849,7 @@ export class AssetTransferApi {
 		let originIsMultiLocationsNativeChain = false;
 		let destIsMultiLocationsNativeChain = false;
 
-		if (isForeignAssetsTransfer) {
+		if (assetType === AssetType.Foreign) {
 			if (xcmDirection === Direction.ParaToSystem) {
 				// check if the asset(s) are native to the origin chain
 				for (const assetId of assetIds) {
