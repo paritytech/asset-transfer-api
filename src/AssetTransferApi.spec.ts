@@ -258,7 +258,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: ['ksm'],
 					xcmDirection: Direction.RelayToSystem,
 					assetType: AssetType.Native,
-					isForeignAssetsTransfer: false,
 					isParachainPrimaryNativeAsset: false,
 					registry: relayAssetsApi.registry,
 				});
@@ -274,7 +273,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: ['ksm'],
 					xcmDirection: Direction.RelayToPara,
 					assetType: AssetType.Native,
-					isForeignAssetsTransfer: false,
 					isParachainPrimaryNativeAsset: false,
 					registry: relayAssetsApi.registry,
 				});
@@ -290,7 +288,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: ['ksm'],
 					xcmDirection: Direction.SystemToRelay,
 					assetType: AssetType.Native,
-					isForeignAssetsTransfer: false,
 					isParachainPrimaryNativeAsset: false,
 					registry: systemAssetsApi.registry,
 				});
@@ -306,7 +303,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: ['ksm'],
 					xcmDirection: Direction.SystemToSystem,
 					assetType: AssetType.Native,
-					isForeignAssetsTransfer: false,
 					isParachainPrimaryNativeAsset: false,
 					registry: systemAssetsApi.registry,
 				});
@@ -322,7 +318,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
 					xcmDirection: Direction.SystemToPara,
 					assetType: AssetType.Foreign,
-					isForeignAssetsTransfer: true,
 					isParachainPrimaryNativeAsset: false,
 					registry: systemAssetsApi.registry,
 				});
@@ -338,7 +333,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
 					xcmDirection: Direction.SystemToPara,
 					assetType: AssetType.Foreign,
-					isForeignAssetsTransfer: true,
 					isParachainPrimaryNativeAsset: false,
 					registry: systemAssetsApi.registry,
 				});
@@ -354,7 +348,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: ['ksm'],
 					xcmDirection: Direction.ParaToRelay,
 					assetType: AssetType.Foreign,
-					isForeignAssetsTransfer: false,
 					isParachainPrimaryNativeAsset: false,
 					registry: moonriverAssetsApi.registry,
 				});
@@ -370,7 +363,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
 					xcmDirection: Direction.ParaToSystem,
 					assetType: AssetType.Foreign,
-					isForeignAssetsTransfer: true,
 					isParachainPrimaryNativeAsset: false,
 					registry: moonriverAssetsApi.registry,
 				});
@@ -384,7 +376,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: ['movr'],
 					xcmDirection: Direction.ParaToSystem,
 					assetType: AssetType.Foreign,
-					isForeignAssetsTransfer: true,
 					isParachainPrimaryNativeAsset: true,
 					registry: moonriverAssetsApi.registry,
 				});
@@ -398,7 +389,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2125"}}}`],
 					xcmDirection: Direction.ParaToSystem,
 					assetType: AssetType.Foreign,
-					isForeignAssetsTransfer: true,
 					isParachainPrimaryNativeAsset: false,
 					registry: moonriverAssetsApi.registry,
 				});
@@ -414,7 +404,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: [`{"parents": "1", "interior": { "X1": {"Parachain": "2023"}}}`],
 					xcmDirection: Direction.ParaToPara,
 					assetType: AssetType.Foreign,
-					isForeignAssetsTransfer: true,
 					isParachainPrimaryNativeAsset: false,
 					registry: moonriverAssetsApi.registry,
 				});
@@ -430,7 +419,6 @@ describe('AssetTransferAPI', () => {
 					assetIds: ['KSM'],
 					xcmDirection: Direction.ParaToRelay,
 					assetType: AssetType.Native,
-					isForeignAssetsTransfer: false,
 					isParachainPrimaryNativeAsset: false,
 					registry: moonriverAssetsApi.registry,
 				});
