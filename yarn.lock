@@ -1922,14 +1922,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types-codec@npm:16.1.1":
-  version: 16.1.1
-  resolution: "@polkadot/types-codec@npm:16.1.1"
+"@polkadot/types-codec@npm:16.1.2":
+  version: 16.1.2
+  resolution: "@polkadot/types-codec@npm:16.1.2"
   dependencies:
     "@polkadot/util": "npm:^13.5.1"
     "@polkadot/x-bigint": "npm:^13.5.1"
     tslib: "npm:^2.8.1"
-  checksum: 10/3891c64f390db4f81e763acaf62d5891e03be434369f637714bca92c0540e2e3a385fd67cffce6a9feddf5c8c0281c57fb39d31626f9951962e56aed94e836ab
+  checksum: 10/384e97da54dc25d669742b1cac57ef2c7f64a34b768c8756d9669349aa15b365f8b3d8c3f9305299a3ff22b69e92aa2a08b9293be2c3f530b7ea2955dbdb5d34
   languageName: node
   linkType: hard
 
