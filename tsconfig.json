@@ -15,5 +15,5 @@
   },
 	"typeRoots": ["./node_modules/@types"],
 	"exclude": ["node_modules", "./src/**/*.spec.ts", "./src/testHelpers"],
-	"include": ["./src/**/*.ts", "./src/**/*.json", "./vitest.config.ts", "./vitest.workspace.ts", "./vitest-setup-file.ts"]
+	"include": ["./src/**/*.ts", "./src/**/*.json", "./vitest.config.ts", "./vitest-setup-file.ts"]
 }

@@ -1,4 +1,4 @@
-import { setupNetworks, testingPairs, withExpect } from '@acala-network/chopsticks-testing';
+import { testingPairs, withExpect } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
 import { AccountData, VersionedXcm } from '@polkadot/types/interfaces';
 import { PalletAssetsAssetAccount } from '@polkadot/types/lookup';
@@ -7,6 +7,7 @@ import { afterEach, beforeEach, expect, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
 import { XcmFeeInfo } from '../src/types';
+import { configs, setupParachains } from './networks.js';
 
 const { check } = withExpect(expect);
 
@@ -26,28 +27,8 @@ describe('Polkadot AssetHub <> Hydration', () => {
 		},
 	};
 
-	const hydrationPort = 8006;
-	const polkadotAssetHubPort = 8007;
-	const runtimeLogLevel = 0;
-
 	beforeEach(async () => {
-		const { hydration1, polkadotAssetHub1 } = await setupNetworks({
-			hydration1: {
-				endpoint: 'wss://hydration.dotters.network',
-				db: `./chopsticks-db/db.sqlite-hydration-${hydrationPort}`,
-				port: 8006,
-				runtimeLogLevel,
-			},
-			polkadotAssetHub1: {
-				endpoint: 'wss://polkadot-asset-hub-rpc.polkadot.io',
-				db: `./chopsticks-db/db.sqlite-polkadot-asset-hub-${polkadotAssetHubPort}`,
-				port: polkadotAssetHubPort,
-				runtimeLogLevel,
-			},
-		});
-
-		hydration = hydration1;
-		polkadotAssetHub = polkadotAssetHub1;
+		[hydration, polkadotAssetHub] = await setupParachains([configs.hydration, configs.polkadotAssetHub], __filename);
 	}, 1000000);
 
 	afterEach(async () => {
