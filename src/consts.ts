@@ -41,7 +41,7 @@ export const PASEO_ASSET_HUB_SPEC_NAME = ['asset-hub-paseo'];
 /**
  * The default xcm version to construct a xcm message.
  */
-export const DEFAULT_XCM_VERSION = 2;
+export const DEFAULT_XCM_VERSION = 4;
 /**
  * There should only ever be three supported versions.
  * Therefore supported xcm versions will always have a fixed length of 3.
