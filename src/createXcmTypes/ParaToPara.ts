@@ -31,7 +31,7 @@ import type {
 	XcmDestBeneficiaryXcAssets,
 	XcmV2MultiLocation,
 	XcmV3MultiLocation,
-	XcmV4Location,
+	XcmV4MultiLocation,
 	XcmWeight,
 } from './types.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
@@ -418,7 +418,7 @@ export const ParaToPara: ICreateXcmType = {
 
 			return {
 				V4: {
-					id: paysWithFeeMultiLocation as XcmV4Location,
+					id: paysWithFeeMultiLocation as XcmV4MultiLocation,
 				},
 			};
 		}
