@@ -59,33 +59,39 @@ export type XcmV4JunctionDestBeneficiary =
 			GlobalConsensus: string | AnyJson;
 	  };
 
-export type XcmV2MultiLocation = {
-	parents: number;
-	interior: RequireOnlyOne<XcmV2Junctions>;
+export type Junctions<T> = {
+	Here: '' | null;
+	X1: T;
+	X2: [T, T];
+	X3: [T, T, T];
+	X4: [T, T, T, T];
+	X5: [T, T, T, T, T];
+	X6: [T, T, T, T, T, T];
+	X7: [T, T, T, T, T, T, T];
+	X8: [T, T, T, T, T, T, T, T];
 };
 
-export interface XcmV2Junctions {
-	Here: '' | null;
-	X1: XcmV2Junction;
-	X2: [XcmV2Junction, XcmV2Junction];
-	X3: [XcmV2Junction, XcmV2Junction, XcmV2Junction];
-	X4: [XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction];
-	X5: [XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction];
-	X6: [XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction];
-	X7: [XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction, XcmV2Junction];
-	X8: [
-		XcmV2Junction,
-		XcmV2Junction,
-		XcmV2Junction,
-		XcmV2Junction,
-		XcmV2Junction,
-		XcmV2Junction,
-		XcmV2Junction,
-		XcmV2Junction,
-	];
-}
+export type XcmV2Junctions = Junctions<XcmV2Junction>;
+export type XcmV3Junctions = Junctions<XcmV3Junction>;
+export type XcmV4Junctions = Junctions<XcmV4Junction>;
+export type XcmV5Junctions = Junctions<XcmV5Junction>;
 
-export type XcmV2Junction = RequireOnlyOne<XcmV2JunctionBase>;
+type Junction<T> = RequireOnlyOne<T>;
+
+export type XcmV2Junction = Junction<XcmV2JunctionBase>;
+export type XcmV3Junction = Junction<XcmV3JunctionBase>;
+export type XcmV4Junction = Junction<XcmV4JunctionBase>;
+export type XcmV5Junction = Junction<XcmV5JunctionBase>;
+
+type MultiLocation<J> = {
+	parents: number;
+	interior: RequireOnlyOne<J>;
+};
+
+export type XcmV2MultiLocation = MultiLocation<XcmV2Junctions>;
+export type XcmV3MultiLocation = MultiLocation<XcmV3Junctions>;
+export type XcmV4MultiLocation = MultiLocation<XcmV4Junctions>;
+export type XcmV5MultiLocation = MultiLocation<XcmV5Junctions>;
 
 export type XcmV2JunctionBase = {
 	Parachain: number | string;
@@ -101,34 +107,6 @@ export type XcmV2JunctionBase = {
 
 export type XcmV2Network = string | null;
 
-export type XcmV3MultiLocation = {
-	parents: number;
-	interior: RequireOnlyOne<XcmV3Junctions>;
-};
-
-export interface XcmV3Junctions {
-	Here: '' | null;
-	X1: XcmV3Junction;
-	X2: [XcmV3Junction, XcmV3Junction];
-	X3: [XcmV3Junction, XcmV3Junction, XcmV3Junction];
-	X4: [XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction];
-	X5: [XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction];
-	X6: [XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction];
-	X7: [XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction, XcmV3Junction];
-	X8: [
-		XcmV3Junction,
-		XcmV3Junction,
-		XcmV3Junction,
-		XcmV3Junction,
-		XcmV3Junction,
-		XcmV3Junction,
-		XcmV3Junction,
-		XcmV3Junction,
-	];
-}
-
-export type XcmV3Junction = RequireOnlyOne<XcmV3JunctionBase>;
-
 export type XcmV3JunctionBase = {
 	Parachain: number;
 	AccountId32: { network?: XcmV2Network; id: string };
@@ -142,34 +120,6 @@ export type XcmV3JunctionBase = {
 	GlobalConsensus: string | AnyJson;
 };
 
-export type XcmV4MultiLocation = {
-	parents: number;
-	interior: RequireOnlyOne<XcmV4Junctions>;
-};
-
-export interface XcmV4Junctions {
-	Here: '' | null;
-	X1: [XcmV4Junction];
-	X2: [XcmV4Junction, XcmV4Junction];
-	X3: [XcmV4Junction, XcmV4Junction, XcmV4Junction];
-	X4: [XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction];
-	X5: [XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction];
-	X6: [XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction];
-	X7: [XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction, XcmV4Junction];
-	X8: [
-		XcmV4Junction,
-		XcmV4Junction,
-		XcmV4Junction,
-		XcmV4Junction,
-		XcmV4Junction,
-		XcmV4Junction,
-		XcmV4Junction,
-		XcmV4Junction,
-	];
-}
-
-export type XcmV4Junction = RequireOnlyOne<XcmV4JunctionBase>;
-
 export type XcmV4JunctionBase = {
 	Parachain: number;
 	AccountId32: { network?: XcmV2Network; id: string };
@@ -182,34 +132,6 @@ export type XcmV4JunctionBase = {
 	Plurality: { id: AnyJson; part: AnyJson };
 	GlobalConsensus: string | AnyJson;
 };
-
-export type XcmV5MultiLocation = {
-	parents: number;
-	interior: RequireOnlyOne<XcmV5Junctions>;
-};
-
-export interface XcmV5Junctions {
-	Here: '' | null;
-	X1: [XcmV5Junction];
-	X2: [XcmV5Junction, XcmV5Junction];
-	X3: [XcmV5Junction, XcmV5Junction, XcmV5Junction];
-	X4: [XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction];
-	X5: [XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction];
-	X6: [XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction];
-	X7: [XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction, XcmV5Junction];
-	X8: [
-		XcmV5Junction,
-		XcmV5Junction,
-		XcmV5Junction,
-		XcmV5Junction,
-		XcmV5Junction,
-		XcmV5Junction,
-		XcmV5Junction,
-		XcmV5Junction,
-	];
-}
-
-export type XcmV5Junction = RequireOnlyOne<XcmV5JunctionBase>;
 
 export type XcmV5JunctionBase = {
 	Parachain: number;
