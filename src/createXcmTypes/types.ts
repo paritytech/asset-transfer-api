@@ -3,8 +3,30 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
+import { BaseError, BaseErrorsEnum } from '../errors/BaseError.js';
 import type { Registry } from '../registry/index.js';
 import type { RequireOnlyOne } from '../types.js';
+
+export enum XcmVersionKey {
+	V2 = 'V2',
+	V3 = 'V3',
+	V4 = 'V4',
+	V5 = 'V5',
+}
+export const intToXcmVersionKey = (xcmVersion: number): XcmVersionKey => {
+	switch (xcmVersion) {
+		case 2:
+			return XcmVersionKey.V2;
+		case 3:
+			return XcmVersionKey.V3;
+		case 4:
+			return XcmVersionKey.V4;
+		case 5:
+			return XcmVersionKey.V5;
+		default:
+			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
+	}
+};
 
 export type InteriorValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
 
@@ -268,37 +290,18 @@ export interface XcmAsset {
 	};
 }
 
-export interface XcmV2MultiAssets {
-	V2: XcmMultiAsset[];
-}
+type VersionedXcmAssets<K extends string, T> = {
+	[P in K]: T;
+};
+export type XcmV2MultiAssets = VersionedXcmAssets<XcmVersionKey.V2, XcmMultiAsset[]>;
+export type XcmV3MultiAssets = VersionedXcmAssets<XcmVersionKey.V3, XcmMultiAsset[]>;
+export type XcmV4MultiAssets = VersionedXcmAssets<XcmVersionKey.V4, XcmAsset[]>;
+export type XcmV5MultiAssets = VersionedXcmAssets<XcmVersionKey.V5, XcmAsset[]>;
 
-export interface XcmV3MultiAssets {
-	V3: XcmMultiAsset[];
-}
-
-export interface XcmV4MultiAssets {
-	V4: XcmAsset[];
-}
-
-export interface XcmV5MultiAssets {
-	V5: XcmAsset[];
-}
-
-export interface XcmV2MultiAsset {
-	V2: XcmMultiAsset;
-}
-
-export interface XcmV3MultiAsset {
-	V3: XcmMultiAsset;
-}
-
-export interface XcmV4MultiAsset {
-	V4: XcmAsset;
-}
-
-export interface XcmV5MultiAsset {
-	V5: XcmAsset;
-}
+export type XcmV2MultiAsset = VersionedXcmAssets<XcmVersionKey.V2, XcmMultiAsset>;
+export type XcmV3MultiAsset = VersionedXcmAssets<XcmVersionKey.V3, XcmMultiAsset>;
+export type XcmV4MultiAsset = VersionedXcmAssets<XcmVersionKey.V4, XcmAsset>;
+export type XcmV5MultiAsset = VersionedXcmAssets<XcmVersionKey.V5, XcmAsset>;
 
 export interface XcAssetsV2MultiAssets {
 	V2: FungibleObjMultiAsset[];
