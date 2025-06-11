@@ -7,11 +7,11 @@ import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { XcmDestBeneficiary } from '../types.js';
 
 export const createBeneficiary = (accountId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary => {
-	const versionKey = `v${xcmVersion}`;
+	const versionKey = `V${xcmVersion}`;
 	const beneficiary = {
 		[versionKey]: {
 			parents: 0,
-			interior: {}, // depedant on verison
+			interior: {}, // dependent on verison
 		},
 	};
 	if (xcmVersion == 2) {
