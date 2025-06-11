@@ -2,21 +2,18 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import {
 	CreateWeightLimitOpts,
 	FungibleStrAsset,
 	FungibleStrAssetType,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
-	InteriorValue,
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
-	XcmV4JunctionDestBeneficiary,
 	XcmWeight,
 } from './types.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
-import { parseLocationStrToLocation } from './util/parseLocationStrToLocation.js';
+import { createInteriorValueDest } from './util/createDest.js';
 
 export const RelayToBridge: ICreateXcmType = {
 	/**
@@ -33,55 +30,11 @@ export const RelayToBridge: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
-		const destination = parseLocationStrToLocation(destId);
-		let dest: XcmDestBeneficiary | undefined = undefined;
-
-		if (xcmVersion === 3) {
-			dest =
-				destination.interior && destination.interior.X1
-					? {
-							V3: {
-								parents: 1,
-								interior: {
-									X1: destination.interior.X1 as InteriorValue,
-								},
-							},
-						}
-					: {
-							V3: {
-								parents: 1,
-								interior: {
-									X2: destination.interior.X2 as InteriorValue,
-								},
-							},
-						};
-		} else {
-			if (destination.interior && destination.interior.X1) {
-				dest = {
-					V4: {
-						parents: 1,
-						interior: {
-							X1: [destination.interior.X1 as XcmV4JunctionDestBeneficiary],
-						},
-					},
-				};
-			} else if (destination.interior && destination.interior.X2) {
-				dest = {
-					V4: {
-						parents: 1,
-						interior: {
-							X2: destination.interior.X2 as XcmV4JunctionDestBeneficiary[],
-						},
-					},
-				};
-			}
-		}
-
-		if (!dest) {
-			throw new BaseError('Unable to create XCM Destination location', BaseErrorsEnum.InternalError);
-		}
-
-		return dest;
+		return createInteriorValueDest({
+			destId,
+			parents: 1,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create a VersionedMultiAsset structured type.

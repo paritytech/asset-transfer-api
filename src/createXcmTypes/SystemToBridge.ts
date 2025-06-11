@@ -17,23 +17,21 @@ import {
 	FungibleStrAssetType,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
-	InteriorValue,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
 	XcmV2Junctions,
 	XcmV3Junctions,
-	XcmV4JunctionDestBeneficiary,
 	XcmV4Junctions,
 	XcmWeight,
 } from './types.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
+import { createInteriorValueDest } from './util/createDest.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
 import { getAssetId } from './util/getAssetId.js';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset.js';
 import { isSystemChain } from './util/isSystemChain.js';
-import { parseLocationStrToLocation } from './util/parseLocationStrToLocation.js';
 import { sortAssetsAscending } from './util/sortAssetsAscending.js';
 
 export const SystemToBridge: ICreateXcmType = {
@@ -51,55 +49,11 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
-		const destination = parseLocationStrToLocation(destId);
-		let dest: XcmDestBeneficiary | undefined = undefined;
-
-		if (xcmVersion === 3) {
-			dest =
-				destination.interior && destination.interior.X1
-					? {
-							V3: {
-								parents: 2,
-								interior: {
-									X1: destination.interior.X1 as InteriorValue,
-								},
-							},
-						}
-					: {
-							V3: {
-								parents: 2,
-								interior: {
-									X2: destination.interior.X2 as InteriorValue,
-								},
-							},
-						};
-		} else {
-			if (destination.interior && destination.interior.X1) {
-				dest = {
-					V4: {
-						parents: 2,
-						interior: {
-							X1: [destination.interior.X1 as XcmV4JunctionDestBeneficiary],
-						},
-					},
-				};
-			} else if (destination.interior && destination.interior.X2) {
-				dest = {
-					V4: {
-						parents: 2,
-						interior: {
-							X2: destination.interior.X2 as XcmV4JunctionDestBeneficiary[],
-						},
-					},
-				};
-			}
-		}
-
-		if (!dest) {
-			throw new BaseError('Unable to create XCM Destination location', BaseErrorsEnum.InternalError);
-		}
-
-		return dest;
+		return createInteriorValueDest({
+			destId,
+			parents: 2,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create a VersionedMultiAsset structured type.

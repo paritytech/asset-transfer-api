@@ -13,6 +13,7 @@ import {
 	XcmWeight,
 } from './types.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
+import { createParachainDest } from './util/createDest.js';
 /**
  * XCM type generation for transactions from the relay chain to a system parachain.
  */
@@ -31,44 +32,11 @@ export const RelayToSystem: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version
 	 */
 	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 0,
-					interior: {
-						X1: {
-							Parachain: destId,
-						},
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			return {
-				V3: {
-					parents: 0,
-					interior: {
-						X1: {
-							Parachain: destId,
-						},
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 0,
-				interior: {
-					X1: [
-						{
-							Parachain: destId,
-						},
-					],
-				},
-			},
-		};
+		return createParachainDest({
+			destId,
+			parents: 0,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create a VersionedMultiAsset structured type.

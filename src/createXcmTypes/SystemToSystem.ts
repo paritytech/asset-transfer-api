@@ -23,6 +23,7 @@ import {
 	XcmWeight,
 } from './types.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
+import { createParachainDest } from './util/createDest.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
 import { getAssetId } from './util/getAssetId.js';
@@ -45,44 +46,11 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 1,
-					interior: {
-						X1: {
-							Parachain: destId,
-						},
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			/**
-			 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
-			 * from a system parachain to a sovereign parachain.
-			 */
-			return {
-				V3: {
-					parents: 1,
-					interior: {
-						X1: {
-							Parachain: destId,
-						},
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 1,
-				interior: {
-					X1: [{ Parachain: destId }],
-				},
-			},
-		};
+		return createParachainDest({
+			destId,
+			parents: 1,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create a VersionedMultiAsset structured type.

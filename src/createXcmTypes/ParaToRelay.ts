@@ -18,6 +18,7 @@ import {
 	XcmWeight,
 } from './types.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
+import { createHereDest } from './util/createDest.js';
 
 export const ParaToRelay: ICreateXcmType = {
 	/**
@@ -34,36 +35,7 @@ export const ParaToRelay: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (_: string, xcmVersion: number): XcmDestBeneficiary => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 1,
-					interior: {
-						Here: null,
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			return {
-				V3: {
-					parents: 1,
-					interior: {
-						Here: null,
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 1,
-				interior: {
-					Here: null,
-				},
-			},
-		};
+		return createHereDest({ xcmVersion, parents: 1 });
 	},
 	/**
 	 * Create a VersionedMultiAsset structured type.
