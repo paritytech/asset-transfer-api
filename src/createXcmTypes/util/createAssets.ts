@@ -8,17 +8,8 @@ import {
 	type FungibleStrAsset,
 	type FungibleStrAssetType,
 	type FungibleStrMultiAsset,
-	intToXcmVersionKey,
 	type UnionXcmMultiAssets,
-	type XcmVersionKey,
 } from '../types.js';
-
-type XcmAssetArrayMap = {
-	[XcmVersionKey.V2]: FungibleStrMultiAsset[];
-	[XcmVersionKey.V3]: FungibleStrMultiAsset[];
-	[XcmVersionKey.V4]: FungibleStrAsset[];
-	[XcmVersionKey.V5]: FungibleStrAsset[];
-};
 
 export const createAssets = async ({
 	amounts,
@@ -43,8 +34,6 @@ export const createAssets = async ({
 	}) => Promise<FungibleStrAssetType[]>;
 	xcmVersion: number;
 }): Promise<UnionXcmMultiAssets> => {
-	const versionKey = intToXcmVersionKey(xcmVersion);
-
 	const sortedAndDedupedMultiAssets = await multiAssetCreator({
 		api: opts.api,
 		amounts,
@@ -55,20 +44,16 @@ export const createAssets = async ({
 		destChainId: opts.destChainId,
 	});
 
-	const xcmAssetFactories: {
-		[K in keyof XcmAssetArrayMap]: (assets: FungibleStrAssetType[]) => { [P in K]: XcmAssetArrayMap[K] };
-	} = {
-		V2: (assets) => ({ V2: assets as FungibleStrMultiAsset[] }),
-		V3: (assets) => ({ V3: assets as FungibleStrMultiAsset[] }),
-		V4: (assets) => ({ V4: assets as FungibleStrAsset[] }),
-		V5: (assets) => ({ V5: assets as FungibleStrAsset[] }),
-	};
-
-	const factory = xcmAssetFactories[versionKey];
-
-	if (!factory) {
-		throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
+	switch (xcmVersion) {
+		case 2:
+			return { V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[] };
+		case 3:
+			return { V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[] };
+		case 4:
+			return { V4: sortedAndDedupedMultiAssets as FungibleStrAsset[] };
+		case 5:
+			return { V5: sortedAndDedupedMultiAssets as FungibleStrAsset[] };
+		default:
+			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}
-
-	return factory(sortedAndDedupedMultiAssets);
 };

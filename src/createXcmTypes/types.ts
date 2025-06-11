@@ -3,7 +3,6 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
-import { BaseError, BaseErrorsEnum } from '../errors/BaseError.js';
 import type { Registry } from '../registry/index.js';
 import type { RequireOnlyOne } from '../types.js';
 
@@ -13,20 +12,6 @@ export enum XcmVersionKey {
 	V4 = 'V4',
 	V5 = 'V5',
 }
-export const intToXcmVersionKey = (xcmVersion: number): XcmVersionKey => {
-	switch (xcmVersion) {
-		case 2:
-			return XcmVersionKey.V2;
-		case 3:
-			return XcmVersionKey.V3;
-		case 4:
-			return XcmVersionKey.V4;
-		case 5:
-			return XcmVersionKey.V5;
-		default:
-			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-	}
-};
 
 export type InteriorValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
 
