@@ -1,7 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import type { Registry } from '../registry/index.js';

@@ -2,6 +2,7 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
+import { DEFAULT_XCM_VERSION } from '../consts.js';
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import type { Registry } from '../registry/index.js';
 import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex.js';
@@ -43,7 +44,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion?: number): XcmDestBeneficiary => {
+	createDest: (destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary => {
 		if (xcmVersion === 2) {
 			return {
 				V2: {
