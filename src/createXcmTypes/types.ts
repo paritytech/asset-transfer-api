@@ -13,6 +13,8 @@ export enum XcmVersionKey {
 	V5 = 'V5',
 }
 
+type VersionedWrapper<K extends string, T> = { [P in K]: T };
+
 export type InteriorValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
 
 export type XcmDestBeneficiary = {
@@ -197,50 +199,28 @@ export interface XcmAsset {
 	};
 }
 
-type VersionedXcmAssets<K extends string, T> = {
+type VersionedXcmType<K extends string, T> = {
 	[P in K]: T;
 };
-export type XcmV2MultiAssets = VersionedXcmAssets<XcmVersionKey.V2, XcmMultiAsset[]>;
-export type XcmV3MultiAssets = VersionedXcmAssets<XcmVersionKey.V3, XcmMultiAsset[]>;
-export type XcmV4MultiAssets = VersionedXcmAssets<XcmVersionKey.V4, XcmAsset[]>;
-export type XcmV5MultiAssets = VersionedXcmAssets<XcmVersionKey.V5, XcmAsset[]>;
+export type XcmV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, XcmMultiAsset[]>;
+export type XcmV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, XcmMultiAsset[]>;
+export type XcmV4MultiAssets = VersionedXcmType<XcmVersionKey.V4, XcmAsset[]>;
+export type XcmV5MultiAssets = VersionedXcmType<XcmVersionKey.V5, XcmAsset[]>;
 
-export type XcmV2MultiAsset = VersionedXcmAssets<XcmVersionKey.V2, XcmMultiAsset>;
-export type XcmV3MultiAsset = VersionedXcmAssets<XcmVersionKey.V3, XcmMultiAsset>;
-export type XcmV4MultiAsset = VersionedXcmAssets<XcmVersionKey.V4, XcmAsset>;
-export type XcmV5MultiAsset = VersionedXcmAssets<XcmVersionKey.V5, XcmAsset>;
+export type XcmV2MultiAsset = VersionedXcmType<XcmVersionKey.V2, XcmMultiAsset>;
+export type XcmV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, XcmMultiAsset>;
+export type XcmV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, XcmAsset>;
+export type XcmV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, XcmAsset>;
 
-export interface XcAssetsV2MultiAssets {
-	V2: FungibleObjMultiAsset[];
-}
+export type XcAssetsV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, FungibleObjMultiAsset[]>;
+export type XcAssetsV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, FungibleObjMultiAsset[]>;
+export type XcAssetsV4MultiAssets = VersionedXcmType<XcmVersionKey.V4, FungibleObjAsset[]>;
+export type XcAssetsV5MultiAssets = VersionedXcmType<XcmVersionKey.V5, FungibleObjAsset[]>;
 
-export interface XcAssetsV3MultiAssets {
-	V3: FungibleObjMultiAsset[];
-}
-
-export interface XcAssetsV4MultiAssets {
-	V4: FungibleObjAsset[];
-}
-
-export interface XcAssetsV5MultiAssets {
-	V5: FungibleObjAsset[];
-}
-
-export interface XcAssetsV2MultiAsset {
-	V2: FungibleObjMultiAsset;
-}
-
-export interface XcAssetsV3MultiAsset {
-	V3: FungibleObjMultiAsset;
-}
-
-export interface XcAssetsV4MultiAsset {
-	V4: FungibleObjAsset;
-}
-
-export interface XcAssetsV5MultiAsset {
-	V5: FungibleObjAsset;
-}
+export type XcAssetsV2MultiAsset = VersionedXcmType<XcmVersionKey.V2, FungibleObjMultiAsset>;
+export type XcAssetsV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, FungibleObjMultiAsset>;
+export type XcAssetsV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, FungibleObjAsset>;
+export type XcAssetsV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, FungibleObjAsset>;
 
 export type FungibleStrMultiAsset = {
 	fun: {
@@ -284,69 +264,39 @@ export type UnionXcAssetsMultiLocation =
 	| XcAssetsV4MultiLocation
 	| XcAssetsV5MultiLocation;
 
-export interface XcAssetsV2MultiLocation {
-	V2: {
-		id: {
-			Concrete: XcmV2MultiLocation;
-		};
-	};
-}
+type XcAssetsMultiLocationMap = {
+	V2: { id: { Concrete: XcmV2MultiLocation } };
+	V3: { id: { Concrete: XcmV3MultiLocation } };
+	V4: { id: XcmV4MultiLocation };
+	V5: { id: XcmV5MultiLocation };
+};
+export type XcAssetsV2MultiLocation = VersionedWrapper<XcmVersionKey.V2, XcAssetsMultiLocationMap[XcmVersionKey.V2]>;
+export type XcAssetsV3MultiLocation = VersionedWrapper<XcmVersionKey.V3, XcAssetsMultiLocationMap[XcmVersionKey.V3]>;
+export type XcAssetsV4MultiLocation = VersionedWrapper<XcmVersionKey.V4, XcAssetsMultiLocationMap[XcmVersionKey.V4]>;
+export type XcAssetsV5MultiLocation = VersionedWrapper<XcmVersionKey.V5, XcAssetsMultiLocationMap[XcmVersionKey.V5]>;
 
-export interface XcAssetsV3MultiLocation {
-	V3: {
-		id: {
-			Concrete: XcmV3MultiLocation;
-		};
-	};
-}
-
-export interface XcAssetsV4MultiLocation {
-	V4: {
-		id: XcmV4MultiLocation;
-	};
-}
-
-export interface XcAssetsV5MultiLocation {
-	V5: {
-		id: XcmV5MultiLocation;
-	};
-}
-
-export interface XcmV2DestBeneficiary {
+type XcmDestBeneficiaryMap = {
 	V2: {
 		parents: string | number;
-		interior: {
-			X1: { AccountId32: { id: string } };
-		};
+		interior: { X1: { AccountId32: { id: string } } };
 	};
-}
-
-export interface XcmV3DestBeneficiary {
 	V3: {
 		parents: string | number;
-		interior: {
-			X1: { AccountId32: { id: string } };
-		};
+		interior: { X1: { AccountId32: { id: string } } };
 	};
-}
-
-export interface XcmV4DestBeneficiary {
 	V4: {
 		parents: string | number;
-		interior: {
-			X1: [{ AccountId32: { id: string } }];
-		};
+		interior: { X1: [{ AccountId32: { id: string } }] };
 	};
-}
-
-export interface XcmV5DestBeneficiary {
 	V5: {
 		parents: string | number;
-		interior: {
-			X1: [{ AccountId32: { id: string } }];
-		};
+		interior: { X1: [{ AccountId32: { id: string } }] };
 	};
-}
+};
+export type XcmV2DestBeneficiary = VersionedWrapper<XcmVersionKey.V2, XcmDestBeneficiaryMap[XcmVersionKey.V2]>;
+export type XcmV3DestBeneficiary = VersionedWrapper<XcmVersionKey.V3, XcmDestBeneficiaryMap[XcmVersionKey.V3]>;
+export type XcmV4DestBeneficiary = VersionedWrapper<XcmVersionKey.V4, XcmDestBeneficiaryMap[XcmVersionKey.V4]>;
+export type XcmV5DestBeneficiary = VersionedWrapper<XcmVersionKey.V5, XcmDestBeneficiaryMap[XcmVersionKey.V5]>;
 
 export interface XcmV2ParachainDestBeneficiary {
 	V2: {
@@ -439,22 +389,17 @@ export interface CreateWeightLimitOpts {
 	weightLimit?: WeightV2;
 }
 
-export type XcmVersionedAssetIdV2 = {
-	V2: {
-		Concrete: UnionXcmMultiLocation;
-	};
-};
-export type XcmVersionedAssetIdV3 = {
-	V3: {
-		Concrete: UnionXcmMultiLocation;
-	};
-};
-export type XcmVersionedAssetIdV4 = {
+type XcmAssetIdMap = {
+	V2: { Concrete: UnionXcmMultiLocation };
+	V3: { Concrete: UnionXcmMultiLocation };
 	V4: UnionXcmMultiLocation;
-};
-export type XcmVersionedAssetIdV5 = {
 	V5: UnionXcmMultiLocation;
 };
+
+export type XcmVersionedAssetIdV2 = VersionedWrapper<XcmVersionKey.V2, XcmAssetIdMap[XcmVersionKey.V2]>;
+export type XcmVersionedAssetIdV3 = VersionedWrapper<XcmVersionKey.V3, XcmAssetIdMap[XcmVersionKey.V3]>;
+export type XcmVersionedAssetIdV4 = VersionedWrapper<XcmVersionKey.V4, XcmAssetIdMap[XcmVersionKey.V4]>;
+export type XcmVersionedAssetIdV5 = VersionedWrapper<XcmVersionKey.V5, XcmAssetIdMap[XcmVersionKey.V5]>;
 
 export type XcmVersionedAssetId =
 	| XcmVersionedAssetIdV2
