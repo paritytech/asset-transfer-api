@@ -17,6 +17,7 @@ import {
 	XcmDestBeneficiaryXcAssets,
 	XcmWeight,
 } from './types.js';
+import { createBeneficiary } from './util/createBeneficiary.js';
 
 export const ParaToRelay: ICreateXcmType = {
 	/**
@@ -25,53 +26,7 @@ export const ParaToRelay: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBeneficiary => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 0,
-					interior: {
-						X1: {
-							AccountId32: {
-								network: 'Any',
-								id: accountId,
-							},
-						},
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			return {
-				V3: {
-					parents: 0,
-					interior: {
-						X1: {
-							AccountId32: {
-								id: accountId,
-							},
-						},
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 0,
-				interior: {
-					X1: [
-						{
-							AccountId32: {
-								id: accountId,
-							},
-						},
-					],
-				},
-			},
-		};
-	},
+	createBeneficiary,
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *

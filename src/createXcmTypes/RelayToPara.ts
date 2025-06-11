@@ -1,7 +1,6 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import {
 	CreateWeightLimitOpts,
@@ -13,6 +12,7 @@ import {
 	XcmDestBeneficiary,
 	XcmWeight,
 } from './types.js';
+import { createBeneficiary } from './util/createBeneficiary.js';
 
 /**
  * XCM type generation for transactions from the relay chain to a parachain.
@@ -24,49 +24,7 @@ export const RelayToPara: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBeneficiary => {
-		if (xcmVersion === 2) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { network: 'Any', key: accountId } }
-				: { AccountId32: { network: 'Any', id: accountId } };
-			return {
-				V2: {
-					parents: 0,
-					interior: {
-						X1,
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { key: accountId } }
-				: { AccountId32: { id: accountId } };
-
-			return {
-				V3: {
-					parents: 0,
-					interior: {
-						X1,
-					},
-				},
-			};
-		}
-
-		const X1 = isEthereumAddress(accountId)
-			? [{ AccountKey20: { key: accountId } }]
-			: [{ AccountId32: { id: accountId } }];
-
-		return {
-			V4: {
-				parents: 0,
-				interior: {
-					X1,
-				},
-			},
-		};
-	},
+	createBeneficiary,
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *

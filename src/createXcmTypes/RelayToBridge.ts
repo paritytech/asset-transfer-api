@@ -1,7 +1,6 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import {
@@ -16,6 +15,7 @@ import {
 	XcmV4JunctionDestBeneficiary,
 	XcmWeight,
 } from './types.js';
+import { createBeneficiary } from './util/createBeneficiary.js';
 import { parseLocationStrToLocation } from './util/parseLocationStrToLocation.js';
 
 export const RelayToBridge: ICreateXcmType = {
@@ -25,35 +25,7 @@ export const RelayToBridge: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBeneficiary => {
-		if (xcmVersion === 3) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { key: accountId } }
-				: { AccountId32: { id: accountId } };
-
-			return {
-				V3: {
-					parents: 0,
-					interior: {
-						X1,
-					},
-				},
-			};
-		}
-
-		const X1 = isEthereumAddress(accountId)
-			? [{ AccountKey20: { key: accountId } }]
-			: [{ AccountId32: { id: accountId } }];
-
-		return {
-			V4: {
-				parents: 0,
-				interior: {
-					X1,
-				},
-			},
-		};
-	},
+	createBeneficiary,
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
