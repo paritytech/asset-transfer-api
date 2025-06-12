@@ -302,49 +302,25 @@ export type XcmV3DestBeneficiary = VersionedWrapper<XcmVersionKey.V3, XcmDestBen
 export type XcmV4DestBeneficiary = VersionedWrapper<XcmVersionKey.V4, XcmDestBeneficiaryMap[XcmVersionKey.V4]>;
 export type XcmV5DestBeneficiary = VersionedWrapper<XcmVersionKey.V5, XcmDestBeneficiaryMap[XcmVersionKey.V5]>;
 
-export interface XcmV2ParachainDestBeneficiary {
-	V2: {
-		parents: string | number;
-		interior: {
-			X2:
-				| [{ Parachain: string }, { AccountId32: { id: string } }]
-				| [{ Parachain: string }, { AccountKey20: { key: string } }];
-		};
-	};
-}
+type ParachainX2Interior =
+	| [{ Parachain: string }, { AccountId32: { id: string } }]
+	| [{ Parachain: string }, { AccountKey20: { key: string } }];
 
-export interface XcmV3ParachainDestBeneficiary {
-	V3: {
-		parents: string | number;
-		interior: {
-			X2:
-				| [{ Parachain: string }, { AccountId32: { id: string } }]
-				| [{ Parachain: string }, { AccountKey20: { key: string } }];
-		};
+type ParachainDestBeneficiaryInner = {
+	parents: string | number;
+	interior: {
+		X2: ParachainX2Interior;
 	};
-}
+};
 
-export interface XcmV4ParachainDestBeneficiary {
-	V4: {
-		parents: string | number;
-		interior: {
-			X2:
-				| [{ Parachain: string }, { AccountId32: { id: string } }]
-				| [{ Parachain: string }, { AccountKey20: { key: string } }];
-		};
-	};
-}
+type VersionedParachainDestBeneficiary<K extends string> = {
+	[P in K]: ParachainDestBeneficiaryInner;
+};
 
-export interface XcmV5ParachainDestBeneficiary {
-	V5: {
-		parents: string | number;
-		interior: {
-			X2:
-				| [{ Parachain: string }, { AccountId32: { id: string } }]
-				| [{ Parachain: string }, { AccountKey20: { key: string } }];
-		};
-	};
-}
+export type XcmV2ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V2>;
+export type XcmV3ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V3>;
+export type XcmV4ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V4>;
+export type XcmV5ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V5>;
 
 export type XcmDestBeneficiaryXcAssets =
 	| XcmV2DestBeneficiary
