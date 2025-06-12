@@ -13,7 +13,7 @@ import {
 	XcmDestBeneficiaryXcAssets,
 } from './types.js';
 import { createSingleAsset } from './util/createAssets.js';
-import { createBeneficiary } from './util/createBeneficiary.js';
+import { createBeneficiary, createXTokensDestBeneficiary } from './util/createBeneficiary.js';
 import { createHereDest } from './util/createDest.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 
@@ -61,36 +61,7 @@ export const ParaToRelay: ICreateXcmType = {
 		return await Promise.resolve(0);
 	},
 	createXTokensBeneficiary: (_: string, accountId: string, xcmVersion: number): XcmDestBeneficiaryXcAssets => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 1,
-					interior: {
-						X1: { AccountId32: { id: accountId } },
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			return {
-				V3: {
-					parents: 1,
-					interior: {
-						X1: { AccountId32: { id: accountId } },
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 1,
-				interior: {
-					X1: [{ AccountId32: { id: accountId } }],
-				},
-			},
-		};
+		return createXTokensDestBeneficiary(accountId, xcmVersion);
 	},
 	createXTokensAsset: (amount: string, xcmVersion: number): Promise<UnionXcAssetsMultiAsset> => {
 		let multiAsset: FungibleObjAssetType;

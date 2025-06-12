@@ -23,13 +23,12 @@ import type {
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
-	XcmDestBeneficiaryXcAssets,
 	XcmV2MultiLocation,
 	XcmV3MultiLocation,
 	XcmV4MultiLocation,
 } from './types.js';
 import { createAssets } from './util/createAssets.js';
-import { createBeneficiary } from './util/createBeneficiary.js';
+import { createBeneficiary, createXTokensParachainDestBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
@@ -111,42 +110,7 @@ export const ParaToSystem: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createXTokensBeneficiary: (
-		destChainId: string,
-		accountId: string,
-		xcmVersion: number,
-	): XcmDestBeneficiaryXcAssets => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 1,
-					interior: {
-						X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			return {
-				V3: {
-					parents: 1,
-					interior: {
-						X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 1,
-				interior: {
-					X2: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }],
-				},
-			},
-		};
-	},
+	createXTokensBeneficiary: createXTokensParachainDestBeneficiary,
 	/**
 	 * Create multiple xTokens Assets.
 	 *
