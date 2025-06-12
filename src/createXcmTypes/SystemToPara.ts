@@ -14,9 +14,7 @@ import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	CreateWeightLimitOpts,
-	FungibleStrAsset,
 	FungibleStrAssetType,
-	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
@@ -27,6 +25,7 @@ import type {
 	XcmWeight,
 } from './types.js';
 import { assetIdIsLocation } from './util/assetIdIsLocation.js';
+import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
@@ -73,31 +72,14 @@ export const SystemToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
-		const sortedAndDedupedMultiAssets = await createSystemToParaMultiAssets(
-			api,
+		return await createAssets({
 			amounts,
+			xcmVersion,
 			specName,
 			assets,
-			registry,
-			xcmVersion,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer,
-		);
-
-		if (xcmVersion === 2) {
-			return Promise.resolve({
-				V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
-			});
-		} else if (xcmVersion == 3) {
-			return Promise.resolve({
-				V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
-			});
-		} else {
-			return Promise.resolve({
-				V4: sortedAndDedupedMultiAssets as FungibleStrAsset[],
-			});
-		}
+			opts,
+			multiAssetCreator: createSystemToParaMultiAssets,
+		});
 	},
 	/**
 	 * Create an Xcm WeightLimit structured type.
@@ -132,16 +114,16 @@ export const SystemToPara: ICreateXcmType = {
 			isLiquidTokenTransfer,
 		} = opts;
 		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
-			const multiAssets = await createSystemToParaMultiAssets(
+			const multiAssets = await createSystemToParaMultiAssets({
 				api,
-				normalizeArrToStr(amounts),
+				amounts: normalizeArrToStr(amounts),
 				specName,
-				assetIds,
+				assets: assetIds,
 				registry,
 				xcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-			);
+			});
 
 			const systemChainId = registry.lookupChainIdBySpecName(specName);
 			if (!isSystemChain(systemChainId)) {
@@ -180,16 +162,26 @@ export const SystemToPara: ICreateXcmType = {
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  * @param isLiquidTokenTransfer Whether this transfer is a liquid pool assets transfer.
  */
-export const createSystemToParaMultiAssets = async (
-	api: ApiPromise,
-	amounts: string[],
-	specName: string,
-	assets: string[],
-	registry: Registry,
-	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean,
-): Promise<FungibleStrAssetType[]> => {
+export const createSystemToParaMultiAssets = async ({
+	api,
+	amounts,
+	specName,
+	assets,
+	registry,
+	xcmVersion,
+	isForeignAssetsTransfer,
+	isLiquidTokenTransfer,
+}: {
+	api: ApiPromise;
+	amounts: string[];
+	specName: string;
+	assets: string[];
+	xcmVersion: number;
+	registry: Registry;
+	destChainId?: string;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
+}): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
 	const systemChainId = registry.lookupChainIdBySpecName(specName);

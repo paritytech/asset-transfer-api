@@ -3,16 +3,8 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { DEFAULT_XCM_VERSION } from '../consts.js';
-import {
-	CreateWeightLimitOpts,
-	FungibleStrAsset,
-	FungibleStrAssetType,
-	FungibleStrMultiAsset,
-	ICreateXcmType,
-	UnionXcmMultiAssets,
-	XcmDestBeneficiary,
-	XcmWeight,
-} from './types.js';
+import { CreateWeightLimitOpts, ICreateXcmType, UnionXcmMultiAssets, XcmDestBeneficiary, XcmWeight } from './types.js';
+import { createSingleAsset } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
 
@@ -47,53 +39,11 @@ export const RelayToPara: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
-		const multiAssets = [];
-		let multiAsset: FungibleStrAssetType;
-
-		const amount = amounts[0];
-		if (xcmVersion < 4) {
-			multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					Concrete: {
-						interior: {
-							Here: '',
-						},
-						parents: 0,
-					},
-				},
-			};
-		} else {
-			multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					interior: {
-						Here: '',
-					},
-					parents: 0,
-				},
-			};
-		}
-
-		multiAssets.push(multiAsset);
-
-		if (xcmVersion === 2) {
-			return Promise.resolve({
-				V2: multiAssets as FungibleStrMultiAsset[],
-			});
-		} else if (xcmVersion === 3) {
-			return Promise.resolve({
-				V3: multiAssets as FungibleStrMultiAsset[],
-			});
-		} else {
-			return Promise.resolve({
-				V4: multiAssets as FungibleStrAsset[],
-			});
-		}
+		return createSingleAsset({
+			amounts,
+			parents: 0,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create an Xcm WeightLimit structured type.

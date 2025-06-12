@@ -7,9 +7,6 @@ import {
 	FungibleObjAsset,
 	FungibleObjAssetType,
 	FungibleObjMultiAsset,
-	FungibleStrAsset,
-	FungibleStrAssetType,
-	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcmMultiAssets,
@@ -17,6 +14,7 @@ import {
 	XcmDestBeneficiaryXcAssets,
 	XcmWeight,
 } from './types.js';
+import { createSingleAsset } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createHereDest } from './util/createDest.js';
 
@@ -44,55 +42,11 @@ export const ParaToRelay: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createAssets: (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
-		const multiAssets: FungibleStrAssetType[] = [];
-
-		const amount = amounts[0];
-
-		let multiAsset: FungibleStrAssetType;
-
-		if (xcmVersion < 4) {
-			multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					Concrete: {
-						interior: {
-							Here: '',
-						},
-						parents: 1,
-					},
-				},
-			};
-		} else {
-			multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					interior: {
-						Here: '',
-					},
-					parents: 1,
-				},
-			};
-		}
-
-		multiAssets.push(multiAsset);
-
-		if (xcmVersion === 2) {
-			return Promise.resolve({
-				V2: multiAssets as FungibleStrMultiAsset[],
-			});
-		} else if (xcmVersion === 3) {
-			return Promise.resolve({
-				V3: multiAssets as FungibleStrMultiAsset[],
-			});
-		} else {
-			return Promise.resolve({
-				V4: multiAssets as FungibleStrAsset[],
-			});
-		}
+		return createSingleAsset({
+			amounts,
+			parents: 1,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create an Xcm WeightLimit structured type.

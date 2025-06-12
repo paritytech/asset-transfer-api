@@ -452,16 +452,16 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createSystemToParaMultiAssets(
-				mockSystemApi,
+			const result = await createSystemToParaMultiAssets({
+				api: mockSystemApi,
 				amounts,
 				specName,
 				assets,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmVersion: 2,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -498,16 +498,16 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createSystemToParaMultiAssets(
-				mockSystemApi,
+			const result = await createSystemToParaMultiAssets({
+				api: mockSystemApi,
 				amounts,
 				specName,
 				assets,
 				registry,
-				3,
-				false,
-				false,
-			);
+				xcmVersion: 3,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -540,16 +540,16 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createSystemToParaMultiAssets(
-				mockSystemApi,
+			const result = await createSystemToParaMultiAssets({
+				api: mockSystemApi,
 				amounts,
 				specName,
 				assets,
 				registry,
-				4,
-				false,
-				false,
-			);
+				xcmVersion: 4,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});

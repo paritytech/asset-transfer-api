@@ -18,9 +18,7 @@ import type {
 	FungibleObjAsset,
 	FungibleObjAssetType,
 	FungibleObjMultiAsset,
-	FungibleStrAsset,
 	FungibleStrAssetType,
-	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
@@ -34,6 +32,7 @@ import type {
 	XcmV4MultiLocation,
 	XcmWeight,
 } from './types.js';
+import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
@@ -79,29 +78,14 @@ export const ParaToSystem: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		const sortedAndDedupedMultiAssets = await createParaToSystemMultiAssets(
-			opts.api,
+		return await createAssets({
 			amounts,
+			xcmVersion,
 			specName,
 			assets,
-			xcmVersion,
-			opts.registry,
-			opts.destChainId,
-		);
-
-		if (xcmVersion === 2) {
-			return Promise.resolve({
-				V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
-			});
-		} else if (xcmVersion === 3) {
-			return Promise.resolve({
-				V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
-			});
-		} else {
-			return Promise.resolve({
-				V4: sortedAndDedupedMultiAssets as FungibleStrAsset[],
-			});
-		}
+			opts,
+			multiAssetCreator: createParaToSystemMultiAssets,
+		});
 	},
 	/**
 	 * Create an Xcm WeightLimit structured type.
@@ -127,14 +111,14 @@ export const ParaToSystem: ICreateXcmType = {
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
 		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion } = opts;
 		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
-			const multiAssets = await createParaToSystemMultiAssets(
+			const multiAssets = await createParaToSystemMultiAssets({
 				api,
-				normalizeArrToStr(amounts),
+				amounts: normalizeArrToStr(amounts),
 				specName,
-				assetIds,
+				assets: assetIds,
 				xcmVersion,
 				registry,
-			);
+			});
 
 			const assetIndex = await getFeeAssetItemIndex(
 				api,
@@ -428,15 +412,23 @@ const createXTokensMultiAssets = async (
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  */
-const createParaToSystemMultiAssets = async (
-	api: ApiPromise,
-	amounts: string[],
-	specName: string,
-	assets: string[],
-	xcmVersion: number,
-	registry: Registry,
-	destChainId?: string,
-): Promise<FungibleStrAssetType[]> => {
+const createParaToSystemMultiAssets = async ({
+	api,
+	amounts,
+	specName,
+	assets,
+	xcmVersion,
+	registry,
+	destChainId,
+}: {
+	api: ApiPromise;
+	amounts: string[];
+	specName: string;
+	assets: string[];
+	xcmVersion: number;
+	registry: Registry;
+	destChainId?: string;
+}): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
 	let concreteMultiLocation;

@@ -13,9 +13,7 @@ import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	CreateWeightLimitOpts,
-	FungibleStrAsset,
 	FungibleStrAssetType,
-	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
@@ -25,6 +23,7 @@ import {
 	XcmV4Junctions,
 	XcmWeight,
 } from './types.js';
+import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createInteriorValueDest } from './util/createDest.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
@@ -71,28 +70,14 @@ export const SystemToBridge: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
-
-		const sortedAndDedupedMultiAssets = await createSystemToBridgeAssets(
-			api,
+		return await createAssets({
 			amounts,
+			xcmVersion,
 			specName,
 			assets,
-			registry,
-			xcmVersion,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer,
-		);
-
-		if (xcmVersion === 3) {
-			return Promise.resolve({
-				V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
-			});
-		} else {
-			return Promise.resolve({
-				V4: sortedAndDedupedMultiAssets as FungibleStrAsset[],
-			});
-		}
+			opts,
+			multiAssetCreator: createSystemToBridgeAssets,
+		});
 	},
 	/**
 	 * Create an Xcm WeightLimit structured type.
@@ -127,16 +112,16 @@ export const SystemToBridge: ICreateXcmType = {
 			isLiquidTokenTransfer,
 		} = opts;
 		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
-			const multiAssets = await createSystemToBridgeAssets(
+			const multiAssets = await createSystemToBridgeAssets({
 				api,
-				normalizeArrToStr(amounts),
+				amounts: normalizeArrToStr(amounts),
 				specName,
-				assetIds,
+				assets: assetIds,
 				registry,
 				xcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-			);
+			});
 
 			const systemChainId = registry.lookupChainIdBySpecName(specName);
 
@@ -175,16 +160,26 @@ export const SystemToBridge: ICreateXcmType = {
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  */
-export const createSystemToBridgeAssets = async (
-	api: ApiPromise,
-	amounts: string[],
-	specName: string,
-	assets: string[],
-	registry: Registry,
-	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean,
-): Promise<FungibleStrAssetType[]> => {
+export const createSystemToBridgeAssets = async ({
+	api,
+	amounts,
+	specName,
+	assets,
+	registry,
+	xcmVersion,
+	isForeignAssetsTransfer,
+	isLiquidTokenTransfer,
+}: {
+	api: ApiPromise;
+	amounts: string[];
+	specName: string;
+	assets: string[];
+	xcmVersion: number;
+	registry: Registry;
+	destChainId?: string;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
+}): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
 	let multiAsset: FungibleStrAssetType;
 
