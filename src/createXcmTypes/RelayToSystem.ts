@@ -3,17 +3,16 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import {
-	CreateWeightLimitOpts,
 	FungibleStrAsset,
 	FungibleStrAssetType,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
-	XcmWeight,
 } from './types.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
+import { createWeightLimit } from './util/createWeightLimit.js';
 /**
  * XCM type generation for transactions from the relay chain to a system parachain.
  */
@@ -99,16 +98,7 @@ export const RelayToSystem: ICreateXcmType = {
 	 *
 	 * @param opts Options that are used for WeightLimit.
 	 */
-	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-			? {
-					Limited: {
-						refTime: opts.weightLimit?.refTime,
-						proofSize: opts.weightLimit?.proofSize,
-					},
-				}
-			: { Unlimited: null };
-	},
+	createWeightLimit,
 	/**
 	 * Return the correct feeAssetItem based on XCM direction.
 	 * In this case it will always be zero since there is no `feeAssetItem` for this direction.

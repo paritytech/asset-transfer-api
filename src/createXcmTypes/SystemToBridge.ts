@@ -12,7 +12,6 @@ import { validateNumber } from '../validate/index.js';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
-	CreateWeightLimitOpts,
 	FungibleStrAssetType,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
@@ -21,11 +20,11 @@ import {
 	XcmV2Junctions,
 	XcmV3Junctions,
 	XcmV4Junctions,
-	XcmWeight,
 } from './types.js';
 import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createInteriorValueDest } from './util/createDest.js';
+import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
 import { getAssetId } from './util/getAssetId.js';
@@ -84,16 +83,7 @@ export const SystemToBridge: ICreateXcmType = {
 	 *
 	 * @param opts Options that are used for WeightLimit.
 	 */
-	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-			? {
-					Limited: {
-						refTime: opts.weightLimit?.refTime,
-						proofSize: opts.weightLimit?.proofSize,
-					},
-				}
-			: { Unlimited: null };
-	},
+	createWeightLimit,
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *

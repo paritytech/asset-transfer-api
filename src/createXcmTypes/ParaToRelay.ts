@@ -3,7 +3,6 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import {
-	CreateWeightLimitOpts,
 	FungibleObjAsset,
 	FungibleObjAssetType,
 	FungibleObjMultiAsset,
@@ -12,11 +11,11 @@ import {
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
-	XcmWeight,
 } from './types.js';
 import { createSingleAsset } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createHereDest } from './util/createDest.js';
+import { createWeightLimit } from './util/createWeightLimit.js';
 
 export const ParaToRelay: ICreateXcmType = {
 	/**
@@ -53,16 +52,7 @@ export const ParaToRelay: ICreateXcmType = {
 	 *
 	 * @param opts Options that are used for WeightLimit.
 	 */
-	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-			? {
-					Limited: {
-						refTime: opts.weightLimit?.refTime,
-						proofSize: opts.weightLimit?.proofSize,
-					},
-				}
-			: { Unlimited: null };
-	},
+	createWeightLimit,
 	/**
 	 * Return the correct feeAssetItem based on XCM direction.
 	 * In this case it will always be zero since there is no `feeAssetItem` for this direction.

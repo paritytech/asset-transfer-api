@@ -2,10 +2,11 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { CreateWeightLimitOpts, ICreateXcmType, UnionXcmMultiAssets, XcmDestBeneficiary, XcmWeight } from './types.js';
+import { ICreateXcmType, UnionXcmMultiAssets, XcmDestBeneficiary } from './types.js';
 import { createSingleAsset } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createInteriorValueDest } from './util/createDest.js';
+import { createWeightLimit } from './util/createWeightLimit.js';
 
 export const RelayToBridge: ICreateXcmType = {
 	/**
@@ -46,16 +47,7 @@ export const RelayToBridge: ICreateXcmType = {
 	 *
 	 * @param opts Options that are used for WeightLimit.
 	 */
-	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-			? {
-					Limited: {
-						refTime: opts.weightLimit?.refTime,
-						proofSize: opts.weightLimit?.proofSize,
-					},
-				}
-			: { Unlimited: null };
-	},
+	createWeightLimit,
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *

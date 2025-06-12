@@ -13,17 +13,16 @@ import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
-	CreateWeightLimitOpts,
 	FungibleStrAssetType,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
-	XcmWeight,
 } from './types.js';
 import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
+import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation.js';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId.js';
@@ -81,16 +80,7 @@ export const ParaToEthereum: ICreateXcmType = {
 	 *
 	 * @param opts Options that are used for WeightLimit.
 	 */
-	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-			? {
-					Limited: {
-						refTime: opts.weightLimit.refTime,
-						proofSize: opts.weightLimit.proofSize,
-					},
-				}
-			: { Unlimited: null };
-	},
+	createWeightLimit,
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
