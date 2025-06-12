@@ -61,7 +61,7 @@ export type XcmV4JunctionDestBeneficiary =
 			GlobalConsensus: string | AnyJson;
 	  };
 
-export type Junctions<T> = {
+type Junctions<T> = {
 	Here: '' | null;
 	X1: T;
 	X2: [T, T];
@@ -73,10 +73,14 @@ export type Junctions<T> = {
 	X8: [T, T, T, T, T, T, T, T];
 };
 
+interface V4PlusJunctions<T> extends Omit<Junctions<T>, 'X1'> {
+	X1: [T];
+}
+
 export type XcmV2Junctions = Junctions<XcmV2Junction>;
 export type XcmV3Junctions = Junctions<XcmV3Junction>;
-export type XcmV4Junctions = Junctions<XcmV4Junction>;
-export type XcmV5Junctions = Junctions<XcmV5Junction>;
+export type XcmV4Junctions = V4PlusJunctions<XcmV4Junction>;
+export type XcmV5Junctions = V4PlusJunctions<XcmV5Junction>;
 
 type Junction<T> = RequireOnlyOne<T>;
 
@@ -150,7 +154,7 @@ export type XcmV5JunctionBase = {
 
 export type UnionJunction = XcmV2Junction | XcmV3Junction | XcmV4Junction | XcmV5Junction;
 
-export type UnionXcmMultiLocation = XcmV2MultiLocation | XcmV3MultiLocation | XcmV4MultiLocation;
+export type UnionXcmMultiLocation = XcmV2MultiLocation | XcmV3MultiLocation | XcmV4MultiLocation | XcmV5MultiLocation;
 
 export type UnionXcmMultiAssets = XcmV2MultiAssets | XcmV3MultiAssets | XcmV4MultiAssets | XcmV5MultiAssets;
 
