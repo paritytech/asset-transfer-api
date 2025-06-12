@@ -6,8 +6,6 @@ import { DEFAULT_XCM_VERSION } from '../consts.js';
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import type { Registry } from '../registry/index.js';
 import type { RequireOnlyOne } from '../types.js';
-import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex.js';
-import { normalizeArrToStr } from '../util/normalizeArrToStr.js';
 import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
 import { validateNumber } from '../validate/index.js';
 import type {
@@ -26,6 +24,7 @@ import { assetIdIsLocation } from './util/assetIdIsLocation.js';
 import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
+import { createFeeAssetItem } from './util/createFeeAssetItem.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
@@ -93,50 +92,12 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
-		const {
-			registry,
-			paysWithFeeDest,
-			specName,
-			assetIds,
-			amounts,
-			xcmVersion,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer,
-		} = opts;
-		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
-			const multiAssets = await createSystemToParaMultiAssets({
-				api,
-				amounts: normalizeArrToStr(amounts),
-				specName,
-				assets: assetIds,
-				registry,
-				xcmVersion,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-			});
-
-			const systemChainId = registry.lookupChainIdBySpecName(specName);
-			if (!isSystemChain(systemChainId)) {
-				throw new BaseError(
-					`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`,
-					BaseErrorsEnum.InternalError,
-				);
-			}
-
-			const assetIndex = await getFeeAssetItemIndex(
-				api,
-				registry,
-				paysWithFeeDest,
-				multiAssets,
-				specName,
-				xcmVersion,
-				isForeignAssetsTransfer,
-			);
-
-			return assetIndex;
-		}
-
-		return 0;
+		return await createFeeAssetItem({
+			api,
+			opts,
+			multiAssetCreator: createSystemToParaMultiAssets,
+			verifySystemChain: true,
+		});
 	},
 };
 

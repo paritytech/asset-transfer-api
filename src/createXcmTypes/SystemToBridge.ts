@@ -2,11 +2,8 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import type { Registry } from '../registry/index.js';
 import { RequireOnlyOne } from '../types.js';
-import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex.js';
-import { normalizeArrToStr } from '../util/normalizeArrToStr.js';
 import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
 import { validateNumber } from '../validate/index.js';
 import {
@@ -24,12 +21,12 @@ import {
 import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createInteriorValueDest } from './util/createDest.js';
+import { createFeeAssetItem } from './util/createFeeAssetItem.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
 import { getAssetId } from './util/getAssetId.js';
 import { isRelayNativeAsset } from './util/isRelayNativeAsset.js';
-import { isSystemChain } from './util/isSystemChain.js';
 import { sortAssetsAscending } from './util/sortAssetsAscending.js';
 
 export const SystemToBridge: ICreateXcmType = {
@@ -91,51 +88,12 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
-		const {
-			registry,
-			paysWithFeeDest,
-			specName,
-			assetIds,
-			amounts,
-			xcmVersion,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer,
-		} = opts;
-		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
-			const multiAssets = await createSystemToBridgeAssets({
-				api,
-				amounts: normalizeArrToStr(amounts),
-				specName,
-				assets: assetIds,
-				registry,
-				xcmVersion,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-			});
-
-			const systemChainId = registry.lookupChainIdBySpecName(specName);
-
-			if (!isSystemChain(systemChainId)) {
-				throw new BaseError(
-					`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`,
-					BaseErrorsEnum.InternalError,
-				);
-			}
-
-			const assetIndex = getFeeAssetItemIndex(
-				api,
-				registry,
-				paysWithFeeDest,
-				multiAssets,
-				specName,
-				xcmVersion,
-				opts.isForeignAssetsTransfer,
-			);
-
-			return assetIndex;
-		}
-
-		return 0;
+		return await createFeeAssetItem({
+			api,
+			opts,
+			multiAssetCreator: createSystemToBridgeAssets,
+			verifySystemChain: true,
+		});
 	},
 };
 

@@ -7,8 +7,6 @@ import { DEFAULT_XCM_VERSION } from '../consts.js';
 import { Registry } from '../registry/index.js';
 import { XCMAssetRegistryMultiLocation } from '../registry/types.js';
 import { Direction } from '../types.js';
-import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex.js';
-import { normalizeArrToStr } from '../util/normalizeArrToStr.js';
 import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
 import type {
 	CreateAssetsOpts,
@@ -22,6 +20,7 @@ import type {
 import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
+import { createFeeAssetItem } from './util/createFeeAssetItem.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation.js';
@@ -88,31 +87,11 @@ export const ParaToEthereum: ICreateXcmType = {
 	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
-		const { registry, paysWithFeeDest, specName, assetIds, amounts, xcmVersion, isForeignAssetsTransfer } = opts;
-		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
-			const multiAssets = await createParaToEthereumMultiAssets({
-				api,
-				amounts: normalizeArrToStr(amounts),
-				specName,
-				assets: assetIds,
-				xcmVersion,
-				registry,
-			});
-
-			const assetIndex = getFeeAssetItemIndex(
-				api,
-				registry,
-				paysWithFeeDest,
-				multiAssets,
-				specName,
-				xcmVersion,
-				isForeignAssetsTransfer,
-			);
-
-			return assetIndex;
-		}
-
-		return 0;
+		return await createFeeAssetItem({
+			api,
+			opts,
+			multiAssetCreator: createParaToEthereumMultiAssets,
+		});
 	},
 };
 
