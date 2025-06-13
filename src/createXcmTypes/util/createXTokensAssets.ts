@@ -3,7 +3,6 @@ import { AnyJson } from '@polkadot/types-codec/types';
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { XCMAssetRegistryMultiLocation } from '../../registry/types.js';
 import { Direction } from '../../types.js';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import {
 	CreateAssetsOpts,
 	FungibleObjAsset,
@@ -12,6 +11,7 @@ import {
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 } from '../types.js';
+import { createMultiAsset } from './createMultiAsset.js';
 import { dedupeAssets } from './dedupeAssets.js';
 import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId.js';
 import { isParachainPrimaryNativeAsset } from './isParachainPrimaryNativeAsset.js';
@@ -170,38 +170,5 @@ export const createXTokensAssetToRelay = async ({
 			return Promise.resolve({ V5: multiAsset as FungibleObjAsset });
 		default:
 			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-	}
-};
-
-const createMultiAsset = ({
-	amount,
-	multiLocation,
-	xcmVersion,
-}: {
-	amount: string;
-	multiLocation: AnyJson;
-	xcmVersion: number;
-}): FungibleObjAssetType => {
-	const concreteMultiLocation = resolveMultiLocation(multiLocation, xcmVersion);
-
-	// TODO: consolidate multiAssets creation. This is duplicated a good bit
-	if ([2, 3].includes(xcmVersion)) {
-		return {
-			id: {
-				Concrete: concreteMultiLocation,
-			},
-			fun: {
-				Fungible: { Fungible: amount },
-			},
-		};
-	} else if ([4, 5].includes(xcmVersion)) {
-		return {
-			id: concreteMultiLocation,
-			fun: {
-				Fungible: { Fungible: amount },
-			},
-		};
-	} else {
-		throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}
 };

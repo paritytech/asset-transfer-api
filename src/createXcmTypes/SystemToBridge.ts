@@ -22,6 +22,7 @@ import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createInteriorValueDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
+import { createStrTypeMultiAsset } from './util/createMultiAsset.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
@@ -129,7 +130,6 @@ export const createSystemToBridgeAssets = async ({
 	isLiquidTokenTransfer: boolean;
 }): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
-	let multiAsset: FungibleStrAssetType;
 
 	for (let i = 0; i < assets.length; i++) {
 		let assetId: string = assets[i];
@@ -143,10 +143,10 @@ export const createSystemToBridgeAssets = async ({
 			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 		}
 
-		let assetLocation: UnionXcmMultiLocation;
+		let multiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			assetLocation = resolveMultiLocation(assetId, xcmVersion);
+			multiLocation = resolveMultiLocation(assetId, xcmVersion);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
@@ -155,30 +155,17 @@ export const createSystemToBridgeAssets = async ({
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 					};
 
-			assetLocation = {
+			multiLocation = {
 				parents,
 				interior,
 			};
 		}
 
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: assetLocation,
-				},
-				fun: {
-					Fungible: amount,
-				},
-			};
-		} else {
-			multiAsset = {
-				id: assetLocation,
-				fun: {
-					Fungible: amount,
-				},
-			};
-		}
-
+		const multiAsset = createStrTypeMultiAsset({
+			amount,
+			multiLocation,
+			xcmVersion,
+		});
 		multiAssets.push(multiAsset);
 	}
 

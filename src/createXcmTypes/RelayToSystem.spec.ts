@@ -146,10 +146,10 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 						},
 						id: {
 							Concrete: {
-								interior: {
+								Interior: {
 									Here: '',
 								},
-								parents: 0,
+								Parents: '0',
 							},
 						},
 					},
@@ -174,10 +174,10 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 						},
 						id: {
 							Concrete: {
-								interior: {
+								Interior: {
 									Here: '',
 								},
-								parents: 0,
+								Parents: '0',
 							},
 						},
 					},
@@ -201,10 +201,10 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 							Fungible: '100',
 						},
 						id: {
-							interior: {
+							Interior: {
 								Here: '',
 							},
-							parents: 0,
+							Parents: '0',
 						},
 					},
 				],

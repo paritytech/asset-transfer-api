@@ -4,14 +4,15 @@ import type { ApiPromise } from '@polkadot/api';
 
 import {
 	FungibleStrAsset,
-	FungibleStrAssetType,
 	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
+	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
 } from './types.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
+import { createStrTypeMultiAsset } from './util/createMultiAsset.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 /**
  * XCM type generation for transactions from the relay chain to a system parachain.
@@ -47,36 +48,18 @@ export const RelayToSystem: ICreateXcmType = {
 		const multiAssets = [];
 
 		const amount = amounts[0];
-		let multiAsset: FungibleStrAssetType;
+		const multiLocation: UnionXcmMultiLocation = {
+			interior: {
+				Here: '',
+			},
+			parents: 0,
+		};
 
-		if (xcmVersion < 4) {
-			multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					Concrete: {
-						interior: {
-							Here: '',
-						},
-						parents: 0,
-					},
-				},
-			};
-		} else {
-			multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					interior: {
-						Here: '',
-					},
-					parents: 0,
-				},
-			};
-		}
-
+		const multiAsset = createStrTypeMultiAsset({
+			amount,
+			multiLocation,
+			xcmVersion,
+		});
 		multiAssets.push(multiAsset);
 
 		if (xcmVersion === 2) {

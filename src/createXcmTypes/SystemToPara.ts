@@ -25,6 +25,7 @@ import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
+import { createStrTypeMultiAsset } from './util/createMultiAsset.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
@@ -134,7 +135,6 @@ export const createSystemToParaMultiAssets = async ({
 	isLiquidTokenTransfer: boolean;
 }): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
-	let multiAsset: FungibleStrAssetType;
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 
 	if (!isSystemChain(systemChainId)) {
@@ -157,10 +157,10 @@ export const createSystemToParaMultiAssets = async ({
 			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 		}
 
-		let concreteMultiLocation: UnionXcmMultiLocation;
+		let multiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer && assetIdIsLocation(assetId)) {
-			concreteMultiLocation = resolveMultiLocation(assetId, xcmVersion);
+			multiLocation = resolveMultiLocation(assetId, xcmVersion);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
@@ -169,30 +169,17 @@ export const createSystemToParaMultiAssets = async ({
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 					};
 
-			concreteMultiLocation = {
+			multiLocation = {
 				parents,
 				interior,
 			};
 		}
 
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: concreteMultiLocation,
-				},
-				fun: {
-					Fungible: amount,
-				},
-			};
-		} else {
-			multiAsset = {
-				id: concreteMultiLocation,
-				fun: {
-					Fungible: amount,
-				},
-			};
-		}
-
+		const multiAsset = createStrTypeMultiAsset({
+			amount,
+			multiLocation,
+			xcmVersion,
+		});
 		multiAssets.push(multiAsset);
 	}
 

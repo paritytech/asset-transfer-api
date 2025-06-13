@@ -22,6 +22,7 @@ import { createAssets } from './util/createAssets.js';
 import { createBeneficiary, createXTokensParachainDestBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
+import { createStrTypeMultiAsset } from './util/createMultiAsset.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { createXTokensAsset, createXTokensMultiAssets } from './util/createXTokensAssets.js';
 import { createXTokensFeeAssetItem } from './util/createXTokensFeeAssetItem.js';
@@ -188,8 +189,6 @@ const createParaToSystemMultiAssets = async ({
 	destChainId?: string;
 }): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
-	let multiAsset: FungibleStrAssetType;
-	let concreteMultiLocation;
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 		registry,
 		specName,
@@ -198,28 +197,16 @@ const createParaToSystemMultiAssets = async ({
 	);
 
 	if (isPrimaryParachainNativeAsset) {
-		concreteMultiLocation = resolveMultiLocation(
+		const multiLocation = resolveMultiLocation(
 			getParachainNativeAssetLocation(registry, assets[0], destChainId),
 			xcmVersion,
 		);
 
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: concreteMultiLocation,
-				},
-				fun: {
-					Fungible: amounts[0],
-				},
-			};
-		} else {
-			multiAsset = {
-				id: concreteMultiLocation,
-				fun: {
-					Fungible: amounts[0],
-				},
-			};
-		}
+		const multiAsset = createStrTypeMultiAsset({
+			amount: amounts[0],
+			multiLocation,
+			xcmVersion,
+		});
 
 		multiAssets.push(multiAsset);
 	} else {
@@ -237,26 +224,13 @@ const createParaToSystemMultiAssets = async ({
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
-			concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
+			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
 
-			if (xcmVersion < 4) {
-				multiAsset = {
-					id: {
-						Concrete: concreteMultiLocation,
-					},
-					fun: {
-						Fungible: amount,
-					},
-				};
-			} else {
-				multiAsset = {
-					id: concreteMultiLocation,
-					fun: {
-						Fungible: amount,
-					},
-				};
-			}
-
+			const multiAsset = createStrTypeMultiAsset({
+				amount: amount,
+				multiLocation,
+				xcmVersion,
+			});
 			multiAssets.push(multiAsset);
 		}
 	}
