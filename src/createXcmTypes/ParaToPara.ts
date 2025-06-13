@@ -4,7 +4,6 @@ import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
 import { DEFAULT_XCM_VERSION } from '../consts.js';
-import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import { Registry } from '../registry/index.js';
 import { XCMAssetRegistryMultiLocation } from '../registry/types.js';
 import { Direction } from '../types.js';
@@ -17,12 +16,8 @@ import type {
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
-	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
-	XcmV2MultiLocation,
-	XcmV3MultiLocation,
-	XcmV4MultiLocation,
 } from './types.js';
 import { createAssets } from './util/createAssets.js';
 import { createBeneficiary, createXTokensParachainDestBeneficiary } from './util/createBeneficiary.js';
@@ -30,6 +25,7 @@ import { createParachainDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { createXTokensAsset, createXTokensMultiAssets } from './util/createXTokensAssets.js';
+import { createXTokensFeeAssetItem } from './util/createXTokensFeeAssetItem.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation.js';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId.js';
@@ -162,41 +158,7 @@ export const ParaToPara: ICreateXcmType = {
 	 *
 	 * @param opts Options used for creating `feeAssetItem`.
 	 */
-	createXTokensFeeAssetItem: (opts: CreateFeeAssetItemOpts): UnionXcAssetsMultiLocation => {
-		const { paysWithFeeDest, xcmVersion } = opts;
-
-		if (xcmVersion && paysWithFeeDest) {
-			const paysWithFeeMultiLocation = resolveMultiLocation(paysWithFeeDest, xcmVersion);
-
-			if (xcmVersion === 2) {
-				return {
-					V2: {
-						id: {
-							Concrete: paysWithFeeMultiLocation as XcmV2MultiLocation,
-						},
-					},
-				};
-			}
-
-			if (xcmVersion === 3) {
-				return {
-					V3: {
-						id: {
-							Concrete: paysWithFeeMultiLocation as XcmV3MultiLocation,
-						},
-					},
-				};
-			}
-
-			return {
-				V4: {
-					id: paysWithFeeMultiLocation as XcmV4MultiLocation,
-				},
-			};
-		}
-
-		throw new BaseError('failed to create xTokens fee multilocation', BaseErrorsEnum.InternalError);
-	},
+	createXTokensFeeAssetItem,
 };
 
 /**
