@@ -32,6 +32,7 @@ import { createBeneficiary, createXTokensParachainDestBeneficiary } from './util
 import { createParachainDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
+import { createXTokensMultiAssets } from './util/createXTokensAssets.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation.js';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId.js';
@@ -127,7 +128,13 @@ export const ParaToSystem: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcAssetsMultiAssets> => {
-		return await createXTokensMultiAssets(amounts, xcmVersion, specName, assets, opts);
+		return await createXTokensMultiAssets({
+			amounts,
+			assets,
+			opts,
+			specName,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create a single xToken asset.
@@ -260,79 +267,6 @@ export const ParaToSystem: ICreateXcmType = {
 
 		throw new BaseError('failed to create xTokens fee multilocation', BaseErrorsEnum.InternalError);
 	},
-};
-/**
- * Create `xTokens` MultiAssets.
- *
- * @param amounts Amount per asset. It will match the `assets` length.
- * @param xcmVersion The accepted xcm version.
- * @param specName The specname of the chain the api is connected to.
- * @param assets The assets to create into xcm `MultiAssets`.
- * @param opts Options used to create xTokens `MultiAssets`.
- */
-const createXTokensMultiAssets = async (
-	amounts: string[],
-	xcmVersion: number,
-	specName: string,
-	assets: string[],
-	opts: CreateAssetsOpts,
-): Promise<UnionXcAssetsMultiAssets> => {
-	const { registry, api } = opts;
-	let multiAssets: FungibleObjAssetType[] = [];
-	let multiAsset: FungibleObjAssetType;
-
-	for (let i = 0; i < assets.length; i++) {
-		const amount = amounts[i];
-		const assetId = assets[i];
-
-		const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
-			api,
-			assetId,
-			specName,
-			xcmVersion,
-			registry,
-		);
-		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
-		const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
-
-		const concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
-
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: concreteMultiLocation,
-				},
-				fun: {
-					Fungible: { Fungible: amount },
-				},
-			};
-		} else {
-			multiAsset = {
-				id: concreteMultiLocation,
-				fun: {
-					Fungible: { Fungible: amount },
-				},
-			};
-		}
-
-		multiAssets.push(multiAsset);
-	}
-
-	multiAssets = sortAssetsAscending(multiAssets) as FungibleObjAssetType[];
-	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleObjAssetType[];
-	if (xcmVersion === 2) {
-		return Promise.resolve({
-			V2: sortedAndDedupedMultiAssets as FungibleObjMultiAsset[],
-		});
-	} else if (xcmVersion === 3) {
-		return Promise.resolve({
-			V3: sortedAndDedupedMultiAssets as FungibleObjMultiAsset[],
-		});
-	} else {
-		return Promise.resolve({
-			V4: sortedAndDedupedMultiAssets as FungibleObjAsset[],
-		});
-	}
 };
 /**
  * Create multiassets for ParaToSystem direction.
