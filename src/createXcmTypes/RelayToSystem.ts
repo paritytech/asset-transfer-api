@@ -87,6 +87,6 @@ export const RelayToSystem: ICreateXcmType = {
 	 * In this case it will always be zero since there is no `feeAssetItem` for this direction.
 	 */
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
-		return await Promise.resolve(0);
+		return Promise.resolve(0);
 	},
 };

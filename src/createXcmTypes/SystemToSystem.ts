@@ -66,7 +66,7 @@ export const SystemToSystem: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		return await createAssets({
+		return createAssets({
 			amounts,
 			xcmVersion,
 			specName,
@@ -88,7 +88,7 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
-		return await createFeeAssetItem({
+		return createFeeAssetItem({
 			api,
 			opts,
 			multiAssetCreator: createSystemToSystemMultiAssets,

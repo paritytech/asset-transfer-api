@@ -54,6 +54,6 @@ export const RelayToBridge: ICreateXcmType = {
 	 * @param api ApiPromise
 	 */
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
-		return await Promise.resolve(0);
+		return Promise.resolve(0);
 	},
 };

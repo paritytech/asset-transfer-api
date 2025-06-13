@@ -56,7 +56,7 @@ export const ParaToRelay: ICreateXcmType = {
 	 * In this case it will always be zero since there is no `feeAssetItem` for this direction.
 	 */
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
-		return await Promise.resolve(0);
+		return Promise.resolve(0);
 	},
 	createXTokensBeneficiary: (_: string, accountId: string, xcmVersion: number): XcmDestBeneficiaryXcAssets => {
 		return createXTokensDestBeneficiary(accountId, xcmVersion);
