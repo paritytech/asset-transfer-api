@@ -12,16 +12,12 @@ import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
-	FungibleObjAsset,
-	FungibleObjAssetType,
-	FungibleObjMultiAsset,
 	FungibleStrAssetType,
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
-	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
 	XcmV2MultiLocation,
 	XcmV3MultiLocation,
@@ -32,7 +28,7 @@ import { createBeneficiary, createXTokensParachainDestBeneficiary } from './util
 import { createParachainDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
-import { createXTokensMultiAssets } from './util/createXTokensAssets.js';
+import { createXTokensAsset, createXTokensMultiAssets } from './util/createXTokensAssets.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation.js';
 import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId.js';
@@ -152,80 +148,13 @@ export const ParaToSystem: ICreateXcmType = {
 		assetId: string,
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcAssetsMultiAsset> => {
-		const { registry, api } = opts;
-		let multiAsset: FungibleObjAssetType | undefined;
-		let concreteMultiLocation: UnionXcmMultiLocation;
-
-		// check if asset is the parachains primary native asset
-		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
-			registry,
-			specName,
-			Direction.ParaToPara,
+		return createXTokensAsset({
+			amount,
 			assetId,
-		);
-
-		if (isPrimaryParachainNativeAsset) {
-			const multiLocation =
-				xcmVersion < 4 ? { parents: 0, interior: { Here: '' } } : { parents: 0, interior: { X1: [{ Here: '' }] } };
-
-			concreteMultiLocation = resolveMultiLocation(multiLocation, xcmVersion);
-
-			if (xcmVersion < 4) {
-				multiAsset = {
-					id: {
-						Concrete: concreteMultiLocation,
-					},
-					fun: {
-						Fungible: { Fungible: amount },
-					},
-				};
-			} else {
-				multiAsset = {
-					id: concreteMultiLocation,
-					fun: {
-						Fungible: { Fungible: amount },
-					},
-				};
-			}
-		} else {
-			const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
-				api,
-				assetId,
-				specName,
-				xcmVersion,
-				registry,
-			);
-			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
-			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
-
-			concreteMultiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
-
-			if (xcmVersion < 4) {
-				multiAsset = {
-					id: {
-						Concrete: concreteMultiLocation,
-					},
-					fun: {
-						Fungible: { Fungible: amount },
-					},
-				};
-			} else {
-				multiAsset = {
-					id: concreteMultiLocation,
-					fun: {
-						Fungible: { Fungible: amount },
-					},
-				};
-			}
-		}
-
-		if (xcmVersion === 2) {
-			return { V2: multiAsset as FungibleObjMultiAsset };
-		} else if (xcmVersion === 3) {
-			return { V3: multiAsset as FungibleObjMultiAsset };
-		} else {
-			return { V4: multiAsset as FungibleObjAsset };
-		}
+			opts,
+			specName,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create an xTokens xcm `feeAssetItem`.

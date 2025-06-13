@@ -3,9 +3,6 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import {
-	FungibleObjAsset,
-	FungibleObjAssetType,
-	FungibleObjMultiAsset,
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcmMultiAssets,
@@ -16,6 +13,7 @@ import { createSingleAsset } from './util/createAssets.js';
 import { createBeneficiary, createXTokensDestBeneficiary } from './util/createBeneficiary.js';
 import { createHereDest } from './util/createDest.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
+import { createXTokensAssetToRelay } from './util/createXTokensAssets.js';
 
 export const ParaToRelay: ICreateXcmType = {
 	/**
@@ -64,42 +62,10 @@ export const ParaToRelay: ICreateXcmType = {
 		return createXTokensDestBeneficiary(accountId, xcmVersion);
 	},
 	createXTokensAsset: (amount: string, xcmVersion: number): Promise<UnionXcAssetsMultiAsset> => {
-		let multiAsset: FungibleObjAssetType;
-
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: {
-						parents: 1,
-						interior: {
-							Here: null,
-						},
-					},
-				},
-				fun: {
-					Fungible: { Fungible: amount },
-				},
-			};
-		} else {
-			multiAsset = {
-				id: {
-					parents: 1,
-					interior: {
-						Here: null,
-					},
-				},
-				fun: {
-					Fungible: { Fungible: amount },
-				},
-			};
-		}
-
-		if (xcmVersion === 2) {
-			return Promise.resolve({ V2: multiAsset as FungibleObjMultiAsset });
-		} else if (xcmVersion === 3) {
-			return Promise.resolve({ V3: multiAsset as FungibleObjMultiAsset });
-		} else {
-			return Promise.resolve({ V4: multiAsset as FungibleObjAsset });
-		}
+		return createXTokensAssetToRelay({
+			amount,
+			parents: 1,
+			xcmVersion,
+		});
 	},
 };
