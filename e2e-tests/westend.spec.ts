@@ -15,7 +15,7 @@ describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
 	let westendAssetHub: NetworkContext;
 	let westendAta: AssetTransferApi;
 	let westendAssetHubAta: AssetTransferApi;
-	const safeXcmVersion = 4;
+	const safeXcmVersion = 5;
 
 	const { alice, bob } = testingPairs();
 	const aliceInitialNative = new BN(100 * 1e12);

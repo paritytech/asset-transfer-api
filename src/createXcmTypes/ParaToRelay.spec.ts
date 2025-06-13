@@ -283,8 +283,8 @@ describe('ParaToRelay', () => {
 					V2: {
 						id: {
 							Concrete: {
-								parents: 1,
-								interior: {
+								Parents: '1',
+								Interior: {
 									Here: null,
 								},
 							},
@@ -304,8 +304,8 @@ describe('ParaToRelay', () => {
 					V3: {
 						id: {
 							Concrete: {
-								parents: 1,
-								interior: {
+								Parents: '1',
+								Interior: {
 									Here: null,
 								},
 							},
@@ -324,8 +324,8 @@ describe('ParaToRelay', () => {
 				const expected = {
 					V4: {
 						id: {
-							parents: 1,
-							interior: {
+							Parents: '1',
+							Interior: {
 								Here: null,
 							},
 						},

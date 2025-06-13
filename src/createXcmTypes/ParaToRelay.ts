@@ -3,20 +3,17 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import {
-	CreateWeightLimitOpts,
-	FungibleObjAsset,
-	FungibleObjAssetType,
-	FungibleObjMultiAsset,
-	FungibleStrAsset,
-	FungibleStrAssetType,
-	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
-	XcmWeight,
 } from './types.js';
+import { createSingleAsset } from './util/createAssets.js';
+import { createBeneficiary, createXTokensDestBeneficiary } from './util/createBeneficiary.js';
+import { createHereDest } from './util/createDest.js';
+import { createWeightLimit } from './util/createWeightLimit.js';
+import { createXTokensAssetToRelay } from './util/createXTokensAssets.js';
 
 export const ParaToRelay: ICreateXcmType = {
 	/**
@@ -25,53 +22,7 @@ export const ParaToRelay: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion: number): XcmDestBeneficiary => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 0,
-					interior: {
-						X1: {
-							AccountId32: {
-								network: 'Any',
-								id: accountId,
-							},
-						},
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			return {
-				V3: {
-					parents: 0,
-					interior: {
-						X1: {
-							AccountId32: {
-								id: accountId,
-							},
-						},
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 0,
-				interior: {
-					X1: [
-						{
-							AccountId32: {
-								id: accountId,
-							},
-						},
-					],
-				},
-			},
-		};
-	},
+	createBeneficiary,
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
@@ -79,36 +30,7 @@ export const ParaToRelay: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createDest: (_: string, xcmVersion: number): XcmDestBeneficiary => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 1,
-					interior: {
-						Here: null,
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			return {
-				V3: {
-					parents: 1,
-					interior: {
-						Here: null,
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 1,
-				interior: {
-					Here: null,
-				},
-			},
-		};
+		return createHereDest({ xcmVersion, parents: 1 });
 	},
 	/**
 	 * Create a VersionedMultiAsset structured type.
@@ -117,147 +39,33 @@ export const ParaToRelay: ICreateXcmType = {
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createAssets: (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
-		const multiAssets: FungibleStrAssetType[] = [];
-
-		const amount = amounts[0];
-
-		let multiAsset: FungibleStrAssetType;
-
-		if (xcmVersion < 4) {
-			multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					Concrete: {
-						interior: {
-							Here: '',
-						},
-						parents: 1,
-					},
-				},
-			};
-		} else {
-			multiAsset = {
-				fun: {
-					Fungible: amount,
-				},
-				id: {
-					interior: {
-						Here: '',
-					},
-					parents: 1,
-				},
-			};
-		}
-
-		multiAssets.push(multiAsset);
-
-		if (xcmVersion === 2) {
-			return Promise.resolve({
-				V2: multiAssets as FungibleStrMultiAsset[],
-			});
-		} else if (xcmVersion === 3) {
-			return Promise.resolve({
-				V3: multiAssets as FungibleStrMultiAsset[],
-			});
-		} else {
-			return Promise.resolve({
-				V4: multiAssets as FungibleStrAsset[],
-			});
-		}
+		return createSingleAsset({
+			amounts,
+			parents: 1,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create an Xcm WeightLimit structured type.
 	 *
 	 * @param opts Options that are used for WeightLimit.
 	 */
-	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-			? {
-					Limited: {
-						refTime: opts.weightLimit?.refTime,
-						proofSize: opts.weightLimit?.proofSize,
-					},
-				}
-			: { Unlimited: null };
-	},
+	createWeightLimit,
 	/**
 	 * Return the correct feeAssetItem based on XCM direction.
 	 * In this case it will always be zero since there is no `feeAssetItem` for this direction.
 	 */
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
-		return await Promise.resolve(0);
+		return Promise.resolve(0);
 	},
 	createXTokensBeneficiary: (_: string, accountId: string, xcmVersion: number): XcmDestBeneficiaryXcAssets => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 1,
-					interior: {
-						X1: { AccountId32: { id: accountId } },
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			return {
-				V3: {
-					parents: 1,
-					interior: {
-						X1: { AccountId32: { id: accountId } },
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 1,
-				interior: {
-					X1: [{ AccountId32: { id: accountId } }],
-				},
-			},
-		};
+		return createXTokensDestBeneficiary(accountId, xcmVersion);
 	},
 	createXTokensAsset: (amount: string, xcmVersion: number): Promise<UnionXcAssetsMultiAsset> => {
-		let multiAsset: FungibleObjAssetType;
-
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: {
-						parents: 1,
-						interior: {
-							Here: null,
-						},
-					},
-				},
-				fun: {
-					Fungible: { Fungible: amount },
-				},
-			};
-		} else {
-			multiAsset = {
-				id: {
-					parents: 1,
-					interior: {
-						Here: null,
-					},
-				},
-				fun: {
-					Fungible: { Fungible: amount },
-				},
-			};
-		}
-
-		if (xcmVersion === 2) {
-			return Promise.resolve({ V2: multiAsset as FungibleObjMultiAsset });
-		} else if (xcmVersion === 3) {
-			return Promise.resolve({ V3: multiAsset as FungibleObjMultiAsset });
-		} else {
-			return Promise.resolve({ V4: multiAsset as FungibleObjAsset });
-		}
+		return createXTokensAssetToRelay({
+			amount,
+			parents: 1,
+			xcmVersion,
+		});
 	},
 };

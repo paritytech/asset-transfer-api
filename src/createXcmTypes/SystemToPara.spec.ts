@@ -4,7 +4,6 @@ import { Registry } from '../registry';
 import { mockSystemApi } from '../testHelpers/mockSystemApi';
 import { SystemToPara } from './SystemToPara';
 import { createSystemToParaMultiAssets } from './SystemToPara';
-import { FungibleStrAsset, FungibleStrMultiAsset } from './types';
 
 describe('SystemToPara XcmVersioned Generation', () => {
 	const registry = new Registry('statemine', {});
@@ -204,8 +203,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 								},
 							},
@@ -217,8 +216,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '2' }],
 								},
 							},
@@ -245,8 +244,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 								},
 							},
@@ -258,8 +257,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '2' }],
 								},
 							},
@@ -285,8 +284,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				V4: [
 					{
 						id: {
-							parents: 0,
-							interior: {
+							Parents: '0',
+							Interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 							},
 						},
@@ -296,8 +295,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					{
 						id: {
-							parents: 0,
-							interior: {
+							Parents: '0',
+							Interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '2' }],
 							},
 						},
@@ -323,8 +322,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									X2: [{ PalletInstance: '55' }, { GeneralIndex: '1' }],
 								},
 							},
@@ -336,8 +335,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									X2: [{ PalletInstance: '55' }, { GeneralIndex: '2' }],
 								},
 							},
@@ -363,8 +362,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				V4: [
 					{
 						id: {
-							parents: 0,
-							interior: {
+							Parents: '0',
+							Interior: {
 								X2: [{ PalletInstance: '55' }, { GeneralIndex: '1' }],
 							},
 						},
@@ -374,8 +373,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					{
 						id: {
-							parents: 0,
-							interior: {
+							Parents: '0',
+							Interior: {
 								X2: [{ PalletInstance: '55' }, { GeneralIndex: '2' }],
 							},
 						},
@@ -420,17 +419,17 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 	describe('createSystemToParaMultiAssets', () => {
 		it('Should correctly create system multi assets for SystemToPara xcm direction for V2', async () => {
-			const expected: FungibleStrMultiAsset[] = [
+			const expected = [
 				{
 					fun: {
 						Fungible: '300000000000000',
 					},
 					id: {
 						Concrete: {
-							interior: {
+							Interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 							},
-							parents: 0,
+							Parents: '0',
 						},
 					},
 				},
@@ -440,10 +439,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					id: {
 						Concrete: {
-							interior: {
+							Interior: {
 								Here: '',
 							},
-							parents: 1,
+							Parents: '1',
 						},
 					},
 				},
@@ -452,31 +451,31 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createSystemToParaMultiAssets(
-				mockSystemApi,
+			const result = await createSystemToParaMultiAssets({
+				api: mockSystemApi,
 				amounts,
 				specName,
 				assets,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmVersion: 2,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
 		it('Should correctly create system multi assets for SystemToPara xcm direction for V3', async () => {
-			const expected: FungibleStrMultiAsset[] = [
+			const expected = [
 				{
 					fun: {
 						Fungible: '300000000000000',
 					},
 					id: {
 						Concrete: {
-							interior: {
+							Interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 							},
-							parents: 0,
+							Parents: '0',
 						},
 					},
 				},
@@ -486,10 +485,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					id: {
 						Concrete: {
-							interior: {
+							Interior: {
 								Here: '',
 							},
-							parents: 1,
+							Parents: '1',
 						},
 					},
 				},
@@ -498,30 +497,30 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createSystemToParaMultiAssets(
-				mockSystemApi,
+			const result = await createSystemToParaMultiAssets({
+				api: mockSystemApi,
 				amounts,
 				specName,
 				assets,
 				registry,
-				3,
-				false,
-				false,
-			);
+				xcmVersion: 3,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
 		it('Should correctly create system multi assets for SystemToPara xcm direction for V4', async () => {
-			const expected: FungibleStrAsset[] = [
+			const expected = [
 				{
 					fun: {
 						Fungible: '300000000000000',
 					},
 					id: {
-						interior: {
+						Interior: {
 							X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 						},
-						parents: 0,
+						Parents: '0',
 					},
 				},
 				{
@@ -529,10 +528,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 						Fungible: '100000000000000',
 					},
 					id: {
-						interior: {
+						Interior: {
 							Here: '',
 						},
-						parents: 1,
+						Parents: '1',
 					},
 				},
 			];
@@ -540,16 +539,16 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createSystemToParaMultiAssets(
-				mockSystemApi,
+			const result = await createSystemToParaMultiAssets({
+				api: mockSystemApi,
 				amounts,
 				specName,
 				assets,
 				registry,
-				4,
-				false,
-				false,
-			);
+				xcmVersion: 4,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
