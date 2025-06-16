@@ -1911,14 +1911,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types-codec@npm:16.1.2":
-  version: 16.1.2
-  resolution: "@polkadot/types-codec@npm:16.1.2"
+"@polkadot/types-codec@npm:16.2.1":
+  version: 16.2.1
+  resolution: "@polkadot/types-codec@npm:16.2.1"
   dependencies:
     "@polkadot/util": "npm:^13.5.1"
     "@polkadot/x-bigint": "npm:^13.5.1"
     tslib: "npm:^2.8.1"
-  checksum: 10/384e97da54dc25d669742b1cac57ef2c7f64a34b768c8756d9669349aa15b365f8b3d8c3f9305299a3ff22b69e92aa2a08b9293be2c3f530b7ea2955dbdb5d34
+  checksum: 10/abc3d334a05bc9cc0c42828a5067d3861bc68646cbe6eb5f0244845e962b393fc2310fe6fb6bba8cdef01e710050c311beb6301a95d2e85a5c8851269fbb72dd
   languageName: node
   linkType: hard
 
@@ -2431,10 +2431,10 @@ __metadata:
   dependencies:
     "@acala-network/chopsticks-core": "npm:^1.0.5"
     "@acala-network/chopsticks-testing": "npm:^1.0.5"
-    "@polkadot/api": "npm:16.1.2"
-    "@polkadot/api-augment": "npm:16.1.2"
-    "@polkadot/types": "npm:16.1.2"
-    "@polkadot/types-codec": "npm:16.1.2"
+    "@polkadot/api": "npm:16.2.1"
+    "@polkadot/api-augment": "npm:16.2.1"
+    "@polkadot/types": "npm:16.2.1"
+    "@polkadot/types-codec": "npm:16.2.1"
     "@polkadot/util": "npm:^13.4.4"
     "@polkadot/util-crypto": "npm:^13.4.4"
     "@substrate/asset-transfer-api-registry": "npm:^0.3.0"
