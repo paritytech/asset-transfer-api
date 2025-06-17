@@ -41,7 +41,7 @@ export const PASEO_ASSET_HUB_SPEC_NAME = ['asset-hub-paseo'];
 /**
  * The default xcm version to construct a xcm message.
  */
-export const DEFAULT_XCM_VERSION = 2;
+export const DEFAULT_XCM_VERSION = 4;
 /**
  * Parity officially supports 3 versions at a time,
  * but older chain could still accept older versions.
