@@ -1,22 +1,17 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
-import { isEthereumAddress } from '@polkadot/util-crypto';
 
+import { DEFAULT_XCM_VERSION } from '../consts.js';
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import type { Registry } from '../registry/index.js';
 import type { RequireOnlyOne } from '../types.js';
-import { getFeeAssetItemIndex } from '../util/getFeeAssetItemIndex.js';
-import { normalizeArrToStr } from '../util/normalizeArrToStr.js';
 import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
 import { validateNumber } from '../validate/index.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
-	CreateWeightLimitOpts,
-	FungibleStrAsset,
 	FungibleStrAssetType,
-	FungibleStrMultiAsset,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
@@ -24,9 +19,14 @@ import type {
 	XcmV2Junctions,
 	XcmV3Junctions,
 	XcmV4Junctions,
-	XcmWeight,
 } from './types.js';
 import { assetIdIsLocation } from './util/assetIdIsLocation.js';
+import { createAssets } from './util/createAssets.js';
+import { createBeneficiary } from './util/createBeneficiary.js';
+import { createParachainDest } from './util/createDest.js';
+import { createFeeAssetItem } from './util/createFeeAssetItem.js';
+import { createStrTypeMultiAsset } from './util/createMultiAsset.js';
+import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
 import { getAssetId } from './util/getAssetId.js';
@@ -41,99 +41,19 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary: (accountId: string, xcmVersion?: number): XcmDestBeneficiary => {
-		if (xcmVersion == 2) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { network: 'Any', key: accountId } }
-				: { AccountId32: { network: 'Any', id: accountId } };
-
-			return {
-				V2: {
-					parents: 0,
-					interior: {
-						X1,
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			const X1 = isEthereumAddress(accountId)
-				? { AccountKey20: { key: accountId } }
-				: { AccountId32: { id: accountId } };
-
-			return {
-				V3: {
-					parents: 0,
-					interior: {
-						X1,
-					},
-				},
-			};
-		}
-
-		const X1 = isEthereumAddress(accountId)
-			? [{ AccountKey20: { key: accountId } }]
-			: [{ AccountId32: { id: accountId } }];
-
-		return {
-			V4: {
-				parents: 0,
-				interior: {
-					X1,
-				},
-			},
-		};
-	},
+	createBeneficiary,
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion?: number): XcmDestBeneficiary => {
-		if (xcmVersion === 2) {
-			return {
-				V2: {
-					parents: 1,
-					interior: {
-						X1: {
-							Parachain: destId,
-						},
-					},
-				},
-			};
-		}
-
-		if (xcmVersion === 3) {
-			/**
-			 * Ensure that the `parents` field is a `1` when sending a destination MultiLocation
-			 * from a system parachain to a sovereign parachain.
-			 */
-			return {
-				V3: {
-					parents: 1,
-					interior: {
-						X1: {
-							Parachain: destId,
-						},
-					},
-				},
-			};
-		}
-
-		return {
-			V4: {
-				parents: 1,
-				interior: {
-					X1: [
-						{
-							Parachain: destId,
-						},
-					],
-				},
-			},
-		};
+	createDest: (destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary => {
+		return createParachainDest({
+			destId,
+			parents: 1,
+			xcmVersion,
+		});
 	},
 	/**
 	 * Create a VersionedMultiAsset structured type.
@@ -151,47 +71,21 @@ export const SystemToPara: ICreateXcmType = {
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> => {
-		const { registry, isForeignAssetsTransfer, isLiquidTokenTransfer, api } = opts;
-		const sortedAndDedupedMultiAssets = await createSystemToParaMultiAssets(
-			api,
+		return createAssets({
 			amounts,
+			xcmVersion,
 			specName,
 			assets,
-			registry,
-			xcmVersion,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer,
-		);
-
-		if (xcmVersion === 2) {
-			return Promise.resolve({
-				V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
-			});
-		} else if (xcmVersion == 3) {
-			return Promise.resolve({
-				V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
-			});
-		} else {
-			return Promise.resolve({
-				V4: sortedAndDedupedMultiAssets as FungibleStrAsset[],
-			});
-		}
+			opts,
+			multiAssetCreator: createSystemToParaMultiAssets,
+		});
 	},
 	/**
 	 * Create an Xcm WeightLimit structured type.
 	 *
 	 * @param opts Options that are used for WeightLimit.
 	 */
-	createWeightLimit: (opts: CreateWeightLimitOpts): XcmWeight => {
-		return opts.weightLimit?.refTime && opts.weightLimit?.proofSize
-			? {
-					Limited: {
-						refTime: opts.weightLimit?.refTime,
-						proofSize: opts.weightLimit?.proofSize,
-					},
-				}
-			: { Unlimited: null };
-	},
+	createWeightLimit,
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
@@ -199,50 +93,12 @@ export const SystemToPara: ICreateXcmType = {
 	 * @param opts Options that are used for fee asset construction.
 	 */
 	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
-		const {
-			registry,
-			paysWithFeeDest,
-			specName,
-			assetIds,
-			amounts,
-			xcmVersion,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer,
-		} = opts;
-		if (xcmVersion && xcmVersion >= 3 && specName && amounts && assetIds && paysWithFeeDest) {
-			const multiAssets = await createSystemToParaMultiAssets(
-				api,
-				normalizeArrToStr(amounts),
-				specName,
-				assetIds,
-				registry,
-				xcmVersion,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-			);
-
-			const systemChainId = registry.lookupChainIdBySpecName(specName);
-			if (!isSystemChain(systemChainId)) {
-				throw new BaseError(
-					`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`,
-					BaseErrorsEnum.InternalError,
-				);
-			}
-
-			const assetIndex = await getFeeAssetItemIndex(
-				api,
-				registry,
-				paysWithFeeDest,
-				multiAssets,
-				specName,
-				xcmVersion,
-				isForeignAssetsTransfer,
-			);
-
-			return assetIndex;
-		}
-
-		return 0;
+		return createFeeAssetItem({
+			api,
+			opts,
+			multiAssetCreator: createSystemToParaMultiAssets,
+			verifySystemChain: true,
+		});
 	},
 };
 
@@ -258,18 +114,27 @@ export const SystemToPara: ICreateXcmType = {
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  * @param isLiquidTokenTransfer Whether this transfer is a liquid pool assets transfer.
  */
-export const createSystemToParaMultiAssets = async (
-	api: ApiPromise,
-	amounts: string[],
-	specName: string,
-	assets: string[],
-	registry: Registry,
-	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean,
-): Promise<FungibleStrAssetType[]> => {
+export const createSystemToParaMultiAssets = async ({
+	api,
+	amounts,
+	specName,
+	assets,
+	registry,
+	xcmVersion,
+	isForeignAssetsTransfer,
+	isLiquidTokenTransfer,
+}: {
+	api: ApiPromise;
+	amounts: string[];
+	specName: string;
+	assets: string[];
+	xcmVersion: number;
+	registry: Registry;
+	destChainId?: string;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
+}): Promise<FungibleStrAssetType[]> => {
 	let multiAssets: FungibleStrAssetType[] = [];
-	let multiAsset: FungibleStrAssetType;
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 
 	if (!isSystemChain(systemChainId)) {
@@ -292,10 +157,10 @@ export const createSystemToParaMultiAssets = async (
 			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
 		}
 
-		let concreteMultiLocation: UnionXcmMultiLocation;
+		let multiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer && assetIdIsLocation(assetId)) {
-			concreteMultiLocation = resolveMultiLocation(assetId, xcmVersion);
+			multiLocation = resolveMultiLocation(assetId, xcmVersion);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
@@ -304,30 +169,17 @@ export const createSystemToParaMultiAssets = async (
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 					};
 
-			concreteMultiLocation = {
+			multiLocation = {
 				parents,
 				interior,
 			};
 		}
 
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: concreteMultiLocation,
-				},
-				fun: {
-					Fungible: amount,
-				},
-			};
-		} else {
-			multiAsset = {
-				id: concreteMultiLocation,
-				fun: {
-					Fungible: amount,
-				},
-			};
-		}
-
+		const multiAsset = createStrTypeMultiAsset({
+			amount,
+			multiLocation,
+			xcmVersion,
+		});
 		multiAssets.push(multiAsset);
 	}
 

@@ -110,11 +110,54 @@ describe('ParaToPara test', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
+		it('Should work for V5', () => {
+			const beneficiary = ParaToPara.createBeneficiary(
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				5,
+			);
+
+			const expectedRes = {
+				V5: {
+					parents: 0,
+					interior: {
+						X1: [
+							{
+								AccountId32: {
+									id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								},
+							},
+						],
+					},
+				},
+			};
+
+			expect(beneficiary).toStrictEqual(expectedRes);
+		});
 		it('Should work for V4 for an Ethereum Address', () => {
 			const beneficiary = ParaToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
 
 			const expectedRes = {
 				V4: {
+					parents: 0,
+					interior: {
+						X1: [
+							{
+								AccountKey20: {
+									key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
+								},
+							},
+						],
+					},
+				},
+			};
+
+			expect(beneficiary).toStrictEqual(expectedRes);
+		});
+		it('Should work for V5 for an Ethereum Address', () => {
+			const beneficiary = ParaToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
+
+			const expectedRes = {
+				V5: {
 					parents: 0,
 					interior: {
 						X1: [
@@ -169,6 +212,24 @@ describe('ParaToPara test', () => {
 
 			const expectedRes = {
 				V4: {
+					parents: 1,
+					interior: {
+						X1: [
+							{
+								Parachain: '100',
+							},
+						],
+					},
+				},
+			};
+
+			expect(destination).toStrictEqual(expectedRes);
+		});
+		it('Should work for V5', () => {
+			const destination = ParaToPara.createDest('100', 5);
+
+			const expectedRes = {
+				V5: {
 					parents: 1,
 					interior: {
 						X1: [
@@ -296,6 +357,49 @@ describe('ParaToPara test', () => {
 
 			const expectedRes = {
 				V4: [
+					{
+						id: {
+							Parents: '1',
+							Interior: {
+								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
+							},
+						},
+						fun: {
+							Fungible: '1000000',
+						},
+					},
+					{
+						id: {
+							Parents: '1',
+							Interior: {
+								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+							},
+						},
+						fun: {
+							Fungible: '20000000000',
+						},
+					},
+				],
+			};
+
+			expect(assets).toStrictEqual(expectedRes);
+		});
+		it('Should work for V5', async () => {
+			const assets = await ParaToPara.createAssets(
+				['1000000', '20000000000'],
+				5,
+				'moonriver',
+				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+					api: mockMoonriverParachainApi,
+				},
+			);
+
+			const expectedRes = {
+				V5: [
 					{
 						id: {
 							Parents: '1',

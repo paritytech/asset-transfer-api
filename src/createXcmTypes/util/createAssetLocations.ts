@@ -2,6 +2,8 @@
 
 import { ApiPromise } from '@polkadot/api';
 
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { Registry } from '../../registry/index.js';
 import { RequireOnlyOne } from '../../types.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
@@ -16,6 +18,7 @@ import {
 	XcmV3Junctions,
 	XcmV4Junctions,
 } from '../types.js';
+import { createStrTypeMultiAsset } from './createMultiAsset.js';
 import { dedupeAssets } from './dedupeAssets.js';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId.js';
 import { getAssetId } from './getAssetId.js';
@@ -27,19 +30,18 @@ export const createAssetLocations = async (
 	assetIds: string[],
 	specName: string,
 	amounts: string[],
-	xcmVersion: number,
+	xcmVersion: number = DEFAULT_XCM_VERSION,
 	registry: Registry,
 	originChainId: string,
 	assetIdsContainLocations: boolean,
 	isLiquidTokenTransfer: boolean,
 ): Promise<UnionXcmMultiAssets> => {
 	let multiAssets: FungibleStrAssetType[] = [];
-	let multiAsset: FungibleStrAssetType;
 
 	const isRelayChain = originChainId === '0' ? true : false;
 
 	for (let i = 0; i < assetIds.length; i++) {
-		let concreteMultiLocation: UnionXcmMultiLocation;
+		let multiLocation: UnionXcmMultiLocation;
 		const amount = amounts[i];
 		let assetId = assetIds[i];
 
@@ -53,7 +55,7 @@ export const createAssetLocations = async (
 		}
 
 		if (assetIdsContainLocations) {
-			concreteMultiLocation = resolveMultiLocation(assetId, xcmVersion);
+			multiLocation = resolveMultiLocation(assetId, xcmVersion);
 		} else {
 			const parents = isRelayNative && !isRelayChain ? 1 : 0;
 			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
@@ -62,46 +64,33 @@ export const createAssetLocations = async (
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 					};
 
-			concreteMultiLocation = {
+			multiLocation = {
 				parents,
 				interior,
 			};
 		}
-
-		if (xcmVersion < 4) {
-			multiAsset = {
-				id: {
-					Concrete: concreteMultiLocation,
-				},
-				fun: {
-					Fungible: amount,
-				},
-			};
-		} else {
-			multiAsset = {
-				id: concreteMultiLocation,
-				fun: {
-					Fungible: amount,
-				},
-			};
-		}
+		const multiAsset = createStrTypeMultiAsset({
+			amount,
+			multiLocation,
+			xcmVersion,
+		});
 
 		multiAssets.push(multiAsset);
 	}
 
 	multiAssets = sortAssetsAscending(multiAssets) as FungibleStrAssetType[];
 	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleStrAssetType[];
-	if (xcmVersion === 2) {
-		return Promise.resolve({
-			V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
-		});
-	} else if (xcmVersion === 3) {
-		return Promise.resolve({
-			V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[],
-		});
-	} else {
-		return Promise.resolve({
-			V4: sortedAndDedupedMultiAssets as FungibleStrAsset[],
-		});
+
+	switch (xcmVersion) {
+		case 2:
+			return { V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[] };
+		case 3:
+			return { V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[] };
+		case 4:
+			return { V4: sortedAndDedupedMultiAssets as FungibleStrAsset[] };
+		case 5:
+			return { V5: sortedAndDedupedMultiAssets as FungibleStrAsset[] };
+		default:
+			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}
 };

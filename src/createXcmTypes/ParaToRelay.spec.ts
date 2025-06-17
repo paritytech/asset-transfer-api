@@ -79,6 +79,29 @@ describe('ParaToRelay', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
+		it('Should work for V5', () => {
+			const beneficiary = ParaToRelay.createBeneficiary(
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				5,
+			);
+
+			const expectedRes = {
+				V5: {
+					parents: 0,
+					interior: {
+						X1: [
+							{
+								AccountId32: {
+									id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								},
+							},
+						],
+					},
+				},
+			};
+
+			expect(beneficiary).toStrictEqual(expectedRes);
+		});
 	});
 	describe('Dest', () => {
 		it('Should work for V2', () => {
@@ -109,6 +132,18 @@ describe('ParaToRelay', () => {
 			const dest = ParaToRelay.createDest('', 4);
 			const expected = {
 				V4: {
+					parents: 1,
+					interior: {
+						Here: null,
+					},
+				},
+			};
+			expect(dest).toStrictEqual(expected);
+		});
+		it('Should work for V5', () => {
+			const dest = ParaToRelay.createDest('', 5);
+			const expected = {
+				V5: {
 					parents: 1,
 					interior: {
 						Here: null,
@@ -165,6 +200,25 @@ describe('ParaToRelay', () => {
 			const asset = await ParaToRelay.createAssets(['1000000'], 4, 'Moonriver', ['ksm'], assetOpts);
 			const expected = {
 				V4: [
+					{
+						fun: {
+							Fungible: '1000000',
+						},
+						id: {
+							interior: {
+								Here: '',
+							},
+							parents: 1,
+						},
+					},
+				],
+			};
+			expect(asset).toStrictEqual(expected);
+		});
+		it('Should work for V5', async () => {
+			const asset = await ParaToRelay.createAssets(['1000000'], 5, 'Moonriver', ['ksm'], assetOpts);
+			const expected = {
+				V5: [
 					{
 						fun: {
 							Fungible: '1000000',
@@ -274,6 +328,25 @@ describe('ParaToRelay', () => {
 				expect(xTokensBeneficiary).toStrictEqual(expected);
 			}
 		});
+		it('Should work for V5', () => {
+			if (ParaToRelay.createXTokensBeneficiary) {
+				const xTokensBeneficiary = ParaToRelay.createXTokensBeneficiary(
+					'',
+					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+					5,
+				);
+				const expected = {
+					V5: {
+						parents: 1,
+						interior: {
+							X1: [{ AccountId32: { id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b' } }],
+						},
+					},
+				};
+
+				expect(xTokensBeneficiary).toStrictEqual(expected);
+			}
+		});
 	});
 	describe('XTokensAsset', () => {
 		it('Should work for V2', async () => {
@@ -283,8 +356,8 @@ describe('ParaToRelay', () => {
 					V2: {
 						id: {
 							Concrete: {
-								parents: 1,
-								interior: {
+								Parents: '1',
+								Interior: {
 									Here: null,
 								},
 							},
@@ -304,8 +377,8 @@ describe('ParaToRelay', () => {
 					V3: {
 						id: {
 							Concrete: {
-								parents: 1,
-								interior: {
+								Parents: '1',
+								Interior: {
 									Here: null,
 								},
 							},
@@ -324,8 +397,27 @@ describe('ParaToRelay', () => {
 				const expected = {
 					V4: {
 						id: {
-							parents: 1,
-							interior: {
+							Parents: '1',
+							Interior: {
+								Here: null,
+							},
+						},
+						fun: {
+							Fungible: { Fungible: '1000000' },
+						},
+					},
+				};
+				expect(xTokensAsset).toStrictEqual(expected);
+			}
+		});
+		it('Should work for V5', async () => {
+			if (ParaToRelay.createXTokensAsset) {
+				const xTokensAsset = await ParaToRelay.createXTokensAsset('1000000', 5, 'Moonriver', 'KSM', assetOpts);
+				const expected = {
+					V5: {
+						id: {
+							Parents: '1',
+							Interior: {
 								Here: null,
 							},
 						},

@@ -43,10 +43,10 @@ export const PASEO_ASSET_HUB_SPEC_NAME = ['asset-hub-paseo'];
  */
 export const DEFAULT_XCM_VERSION = 2;
 /**
- * There should only ever be three supported versions.
- * Therefore supported xcm versions will always have a fixed length of 3.
+ * Parity officially supports 3 versions at a time,
+ * but older chain could still accept older versions.
  */
-export const SUPPORTED_XCM_VERSIONS: [number, number, number] = [2, 3, 4];
+export const SUPPORTED_XCM_VERSIONS: number[] = [2, 3, 4, 5];
 /**
  * Currently supported xcm pallets
  */
