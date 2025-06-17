@@ -42,6 +42,24 @@ describe('resolveAssetTransferType', () => {
 
 			expect(resolveAssetTransferType(assetTransferType, xcmVersion, remoteTransferLocationStr)).toEqual(expected);
 		});
+		it('Should correctly resolve the asset transfer RemoteReserve type for XCM V5', () => {
+			const assetTransferType = 'RemoteReserve';
+			const xcmVersion = 5;
+			const remoteTransferLocationStr = '{"parents":"1","interior":{"X1":{"Parachain":"1000"}}}';
+
+			const expected = {
+				RemoteReserve: {
+					V4: {
+						Parents: '1',
+						Interior: {
+							X1: [{ Parachain: '1000' }],
+						},
+					},
+				},
+			};
+
+			expect(resolveAssetTransferType(assetTransferType, xcmVersion, remoteTransferLocationStr)).toEqual(expected);
+		});
 	});
 	describe('LocalReserve', () => {
 		it('Should correctly resolve the asset transfer LocalReserve type', () => {

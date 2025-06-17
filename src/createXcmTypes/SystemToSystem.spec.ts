@@ -74,6 +74,29 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
+		it('Should work for V5', () => {
+			const beneficiary = SystemToSystem.createBeneficiary(
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				5,
+			);
+
+			const expectedRes = {
+				V5: {
+					parents: 0,
+					interior: {
+						X1: [
+							{
+								AccountId32: {
+									id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								},
+							},
+						],
+					},
+				},
+			};
+
+			expect(beneficiary).toStrictEqual(expectedRes);
+		});
 	});
 	describe('Destination', () => {
 		it('Should work for V2', () => {
@@ -113,6 +136,24 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 
 			const expectedRes = {
 				V4: {
+					parents: 1,
+					interior: {
+						X1: [
+							{
+								Parachain: '1002',
+							},
+						],
+					},
+				},
+			};
+
+			expect(destination).toStrictEqual(expectedRes);
+		});
+		it('Should work for V5', () => {
+			const destination = SystemToSystem.createDest('1002', 5);
+
+			const expectedRes = {
+				V5: {
 					parents: 1,
 					interior: {
 						X1: [
@@ -198,6 +239,32 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 
 			const expectedRes = {
 				V4: [
+					{
+						id: {
+							Parents: '1',
+							Interior: {
+								Here: '',
+							},
+						},
+						fun: {
+							Fungible: '100',
+						},
+					},
+				],
+			};
+
+			expect(assets).toStrictEqual(expectedRes);
+		});
+		it('Should work for V5', async () => {
+			const assets = await SystemToSystem.createAssets(['100'], 5, 'bridge-hub-kusama', ['ksm'], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+				api: mockSystemApi,
+			});
+
+			const expectedRes = {
+				V5: [
 					{
 						id: {
 							Parents: '1',

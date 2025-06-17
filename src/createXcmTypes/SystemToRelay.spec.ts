@@ -74,6 +74,29 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
+		it('Should work for V5', () => {
+			const beneficiary = SystemToRelay.createBeneficiary(
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				5,
+			);
+
+			const expectedRes = {
+				V5: {
+					parents: 0,
+					interior: {
+						X1: [
+							{
+								AccountId32: {
+									id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+								},
+							},
+						],
+					},
+				},
+			};
+
+			expect(beneficiary).toStrictEqual(expectedRes);
+		});
 	});
 	describe('Destination', () => {
 		it('Should work for V2', () => {
@@ -109,6 +132,20 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 
 			const expectedRes = {
 				V4: {
+					parents: 1,
+					interior: {
+						Here: null,
+					},
+				},
+			};
+
+			expect(destination).toStrictEqual(expectedRes);
+		});
+		it('Should work for V5', () => {
+			const destination = SystemToRelay.createDest('0', 5);
+
+			const expectedRes = {
+				V5: {
 					parents: 1,
 					interior: {
 						Here: null,
@@ -188,6 +225,32 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 
 			const expectedRes = {
 				V4: [
+					{
+						id: {
+							parents: 1,
+							interior: {
+								Here: '',
+							},
+						},
+						fun: {
+							Fungible: '100',
+						},
+					},
+				],
+			};
+
+			expect(assets).toStrictEqual(expectedRes);
+		});
+		it('Should work for V5', async () => {
+			const assets = await SystemToRelay.createAssets(['100'], 5, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+				api: mockSystemApi,
+			});
+
+			const expectedRes = {
+				V5: [
 					{
 						id: {
 							parents: 1,
