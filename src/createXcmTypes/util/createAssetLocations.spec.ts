@@ -125,8 +125,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 								},
 							},
@@ -138,8 +138,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 1,
-								interior: {
+								Parents: '1',
+								Interior: {
 									Here: '',
 								},
 							},
@@ -174,8 +174,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 								},
 							},
@@ -187,8 +187,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 1,
-								interior: {
+								Parents: '1',
+								Interior: {
 									Here: '',
 								},
 							},
@@ -295,8 +295,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									Here: '',
 								},
 							},
@@ -331,8 +331,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
-								interior: {
+								Parents: '0',
+								Interior: {
 									Here: '',
 								},
 							},
