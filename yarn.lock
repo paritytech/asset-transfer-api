@@ -5,7 +5,7 @@ __metadata:
   version: 8
   cacheKey: 10
 
-"@acala-network/chopsticks-core@npm:1.1.0":
+"@acala-network/chopsticks-core@npm:1.1.0, @acala-network/chopsticks-core@npm:^1.0.5":
   version: 1.1.0
   resolution: "@acala-network/chopsticks-core@npm:1.1.0"
   dependencies:
@@ -28,29 +28,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks-core@npm:^1.0.5":
-  version: 1.0.6
-  resolution: "@acala-network/chopsticks-core@npm:1.0.6"
-  dependencies:
-    "@acala-network/chopsticks-executor": "npm:1.0.6"
-    "@polkadot/rpc-provider": "npm:^15.7.1"
-    "@polkadot/types": "npm:^15.7.1"
-    "@polkadot/types-codec": "npm:^15.7.1"
-    "@polkadot/types-known": "npm:^15.7.1"
-    "@polkadot/util": "npm:^13.4.3"
-    "@polkadot/util-crypto": "npm:^13.4.3"
-    comlink: "npm:^4.4.2"
-    eventemitter3: "npm:^5.0.1"
-    lodash: "npm:^4.17.21"
-    lru-cache: "npm:^11.0.2"
-    pino: "npm:^9.6.0"
-    pino-pretty: "npm:^13.0.0"
-    rxjs: "npm:^7.8.2"
-    zod: "npm:^3.24.2"
-  checksum: 10/cbc3e72eaba03016155eb0cb70367316f984239a97b6770c9e2d56e060790f685bfd24c7b0badef760732eccb4411bac4014efa1e5445d5a1196445ee90fa42e
-  languageName: node
-  linkType: hard
-
 "@acala-network/chopsticks-db@npm:1.1.0":
   version: 1.1.0
   resolution: "@acala-network/chopsticks-db@npm:1.1.0"
@@ -62,16 +39,6 @@ __metadata:
     sqlite3: "npm:^5.1.7"
     typeorm: "npm:^0.3.24"
   checksum: 10/e6bfc4bac07d67153bdb08a194dd2f116697e38a1f4f2e015a830169c3f06e592cbfd684eef515d0cfb11f8ced5c7e6e2a940cd276a5e717b182fb6761806cd0
-  languageName: node
-  linkType: hard
-
-"@acala-network/chopsticks-executor@npm:1.0.6":
-  version: 1.0.6
-  resolution: "@acala-network/chopsticks-executor@npm:1.0.6"
-  dependencies:
-    "@polkadot/util": "npm:^13.4.3"
-    "@polkadot/wasm-util": "npm:^7.4.1"
-  checksum: 10/c6d1bf5ff9c899900b4e43137b5bbb82a3069c34e5fa49c732bf80ea34e30e96b129903dbb00bc2fc105dfdd6d57637af82c8269944d9c888ece387a087da3b2
   languageName: node
   linkType: hard
 
@@ -2016,7 +1983,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types-known@npm:15.10.2, @polkadot/types-known@npm:^15.7.1":
+"@polkadot/types-known@npm:15.10.2":
   version: 15.10.2
   resolution: "@polkadot/types-known@npm:15.10.2"
   dependencies:
@@ -6485,7 +6452,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^11.0.0, lru-cache@npm:^11.0.2, lru-cache@npm:^11.1.0":
+"lru-cache@npm:^11.0.0, lru-cache@npm:^11.1.0":
   version: 11.1.0
   resolution: "lru-cache@npm:11.1.0"
   checksum: 10/5011011675ca98428902de774d0963b68c3a193cd959347cb63b781dad4228924124afab82159fd7b8b4db18285d9aff462b877b8f6efd2b41604f806c1d9db4
@@ -7455,27 +7422,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^9.6.0":
-  version: 9.6.0
-  resolution: "pino@npm:9.6.0"
-  dependencies:
-    atomic-sleep: "npm:^1.0.0"
-    fast-redact: "npm:^3.1.1"
-    on-exit-leak-free: "npm:^2.1.0"
-    pino-abstract-transport: "npm:^2.0.0"
-    pino-std-serializers: "npm:^7.0.0"
-    process-warning: "npm:^4.0.0"
-    quick-format-unescaped: "npm:^4.0.3"
-    real-require: "npm:^0.2.0"
-    safe-stable-stringify: "npm:^2.3.1"
-    sonic-boom: "npm:^4.0.1"
-    thread-stream: "npm:^3.0.0"
-  bin:
-    pino: bin.js
-  checksum: 10/0a36125718dc2350bbaff243e4856108a80805dc1b305da1e246460cd22396d11a8b3a78b39b0b270cce4fb8ae6aa6e584f5387f6c2ee47348aae5db49d919e6
-  languageName: node
-  linkType: hard
-
 "pino@npm:^9.7.0":
   version: 9.7.0
   resolution: "pino@npm:9.7.0"
@@ -7668,13 +7614,6 @@ __metadata:
   version: 5.0.0
   resolution: "proc-log@npm:5.0.0"
   checksum: 10/35610bdb0177d3ab5d35f8827a429fb1dc2518d9e639f2151ac9007f01a061c30e0c635a970c9b00c39102216160f6ec54b62377c92fac3b7bfc2ad4b98d195c
-  languageName: node
-  linkType: hard
-
-"process-warning@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "process-warning@npm:4.0.1"
-  checksum: 10/8b0ec9129845215c1e4a72f3a66082e3aa76f81e265374de6c70f2213f4516856316ed88338b8520e9274dab947d6b3750684b448f45148f57757f365e96793f
   languageName: node
   linkType: hard
 
@@ -9727,13 +9666,6 @@ __metadata:
   version: 2.1.1
   resolution: "yoctocolors@npm:2.1.1"
   checksum: 10/563fbec88bce9716d1044bc98c96c329e1d7a7c503e6f1af68f1ff914adc3ba55ce953c871395e2efecad329f85f1632f51a99c362032940321ff80c42a6f74d
-  languageName: node
-  linkType: hard
-
-"zod@npm:^3.24.2":
-  version: 3.24.4
-  resolution: "zod@npm:3.24.4"
-  checksum: 10/3d545792fa54bb27ee5dbc34a5709e81f603185fcc94c8204b5d95c20dc4c81d870ff9c51f3884a30ef05cdc601449f4c4df254ac4783f0827b1faed7c1cdb48
   languageName: node
   linkType: hard
 
