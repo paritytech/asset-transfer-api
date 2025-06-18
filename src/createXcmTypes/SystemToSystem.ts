@@ -10,7 +10,7 @@ import { validateNumber } from '../validate/index.js';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
-	FungibleStrAssetType,
+	FungibleAssetType,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
@@ -20,7 +20,7 @@ import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
-import { createStrTypeMultiAsset } from './util/createMultiAsset.js';
+import { createMultiAsset } from './util/createMultiAsset.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
@@ -128,8 +128,8 @@ export const createSystemToSystemMultiAssets = async ({
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 	destChainId?: string;
-}): Promise<FungibleStrAssetType[]> => {
-	let multiAssets: FungibleStrAssetType[] = [];
+}): Promise<FungibleAssetType[]> => {
+	let multiAssets: FungibleAssetType[] = [];
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 
 	if (!isSystemChain(systemChainId)) {
@@ -172,7 +172,7 @@ export const createSystemToSystemMultiAssets = async ({
 			);
 		}
 
-		const multiAsset = createStrTypeMultiAsset({
+		const multiAsset = createMultiAsset({
 			amount,
 			multiLocation,
 			xcmVersion,
@@ -180,9 +180,9 @@ export const createSystemToSystemMultiAssets = async ({
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortAssetsAscending(multiAssets) as FungibleStrAssetType[];
+	multiAssets = sortAssetsAscending(multiAssets);
 
-	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleStrAssetType[];
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets);
 
 	return sortedAndDedupedMultiAssets;
 };

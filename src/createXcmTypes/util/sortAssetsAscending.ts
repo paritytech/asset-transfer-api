@@ -8,31 +8,21 @@ import { BN } from 'bn.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { RequireOnlyOne } from '../../types.js';
 import { validateNumber } from '../../validate/index.js';
-import type {
-	FungibleObjAssetType,
-	FungibleStrAssetType,
-	UnionJunction,
-	XcmV2Junctions,
-	XcmV3Junctions,
-	XcmV4Junctions,
-} from '../types.js';
+import type { FungibleAssetType, UnionJunction, XcmV2Junctions, XcmV3Junctions, XcmV4Junctions } from '../types.js';
 
 /**
  * This sorts a list of multiassets in ascending order based on their id.
  *
- * @param assets FungibleStrAssetType[] | FungibleObjAssetType[]
+ * @param assets FungibleAssetType[]
  */
-export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObjAssetType[]) => {
+export const sortAssetsAscending = (assets: FungibleAssetType[]) => {
 	return assets.sort((a, b) => {
 		let parentSortOrder = 0; // sort order based on parents value
 		let interiorMultiLocationTypeSortOrder = 0; // sort order based on interior multilocation type value (e.g. X1 < X2)
 		let interiorMultiLocationSortOrder = 0; // sort order based on multilocation junction values
 		let fungibleSortOrder = 0; // sort order based on fungible value
-		if (typeof a.fun.Fungible === 'string' && typeof b.fun.Fungible === 'string') {
-			fungibleSortOrder = a.fun.Fungible.localeCompare(b.fun.Fungible);
-		} else if (typeof a.fun.Fungible === 'object' && typeof b.fun.Fungible === 'object') {
-			fungibleSortOrder = a.fun.Fungible.Fungible.localeCompare(b.fun.Fungible.Fungible);
-		}
+		fungibleSortOrder = a.fun.Fungible.localeCompare(b.fun.Fungible);
+
 		let aParents: string | number | undefined = undefined;
 		let bParents: string | number | undefined = undefined;
 		if ('Concrete' in a.id && 'Concrete' in b.id) {
@@ -152,10 +142,7 @@ export const sortAssetsAscending = (assets: FungibleStrAssetType[] | FungibleObj
 	});
 };
 
-const getSameJunctionMultiLocationSortOrder = (
-	a: FungibleStrAssetType | FungibleObjAssetType,
-	b: FungibleStrAssetType | FungibleObjAssetType,
-): number => {
+const getSameJunctionMultiLocationSortOrder = (a: FungibleAssetType, b: FungibleAssetType): number => {
 	let sortOrder = 0;
 
 	let aInterior:

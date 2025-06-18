@@ -5,9 +5,9 @@ import { XCMAssetRegistryMultiLocation } from '../../registry/types.js';
 import { Direction } from '../../types.js';
 import {
 	CreateAssetsOpts,
-	FungibleObjAsset,
-	FungibleObjAssetType,
-	FungibleObjMultiAsset,
+	FungibleAsset,
+	FungibleAssetType,
+	FungibleMultiAsset,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 } from '../types.js';
@@ -39,7 +39,7 @@ export const createXTokensMultiAssets = async ({
 	specName: string;
 	xcmVersion: number;
 }): Promise<UnionXcAssetsMultiAssets> => {
-	let multiAssets: FungibleObjAssetType[] = [];
+	let multiAssets: FungibleAssetType[] = [];
 
 	for (let i = 0; i < assets.length; i++) {
 		const amount = amounts[i];
@@ -59,18 +59,18 @@ export const createXTokensMultiAssets = async ({
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortAssetsAscending(multiAssets) as FungibleObjAssetType[];
-	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleObjAssetType[];
+	multiAssets = sortAssetsAscending(multiAssets);
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets);
 
 	switch (xcmVersion) {
 		case 2:
-			return { V2: sortedAndDedupedMultiAssets as FungibleObjMultiAsset[] };
+			return { V2: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
 		case 3:
-			return { V3: sortedAndDedupedMultiAssets as FungibleObjMultiAsset[] };
+			return { V3: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
 		case 4:
-			return { V4: sortedAndDedupedMultiAssets as FungibleObjAsset[] };
+			return { V4: sortedAndDedupedMultiAssets as FungibleAsset[] };
 		case 5:
-			return { V5: sortedAndDedupedMultiAssets as FungibleObjAsset[] };
+			return { V5: sortedAndDedupedMultiAssets as FungibleAsset[] };
 		default:
 			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}
@@ -98,7 +98,7 @@ export const createXTokensAsset = async ({
 	specName: string;
 	xcmVersion: number;
 }): Promise<UnionXcAssetsMultiAsset> => {
-	let multiAsset: FungibleObjAssetType | undefined;
+	let multiAsset: FungibleAssetType | undefined;
 
 	// check if asset is the parachains primary native asset
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
@@ -133,13 +133,13 @@ export const createXTokensAsset = async ({
 
 	switch (xcmVersion) {
 		case 2:
-			return { V2: multiAsset as FungibleObjMultiAsset };
+			return { V2: multiAsset as FungibleMultiAsset };
 		case 3:
-			return { V3: multiAsset as FungibleObjMultiAsset };
+			return { V3: multiAsset as FungibleMultiAsset };
 		case 4:
-			return { V4: multiAsset as FungibleObjAsset };
+			return { V4: multiAsset as FungibleAsset };
 		case 5:
-			return { V5: multiAsset as FungibleObjAsset };
+			return { V5: multiAsset as FungibleAsset };
 		default:
 			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}
@@ -161,13 +161,13 @@ export const createXTokensAssetToRelay = async ({
 	const multiAsset = createMultiAsset({ amount, multiLocation, xcmVersion });
 	switch (xcmVersion) {
 		case 2:
-			return Promise.resolve({ V2: multiAsset as FungibleObjMultiAsset });
+			return Promise.resolve({ V2: multiAsset as FungibleMultiAsset });
 		case 3:
-			return Promise.resolve({ V3: multiAsset as FungibleObjMultiAsset });
+			return Promise.resolve({ V3: multiAsset as FungibleMultiAsset });
 		case 4:
-			return Promise.resolve({ V4: multiAsset as FungibleObjAsset });
+			return Promise.resolve({ V4: multiAsset as FungibleAsset });
 		case 5:
-			return Promise.resolve({ V5: multiAsset as FungibleObjAsset });
+			return Promise.resolve({ V5: multiAsset as FungibleAsset });
 		default:
 			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}

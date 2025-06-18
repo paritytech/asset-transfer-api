@@ -2,7 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { FungibleStrAssetType } from '../createXcmTypes/types.js';
+import { FungibleAssetType } from '../createXcmTypes/types.js';
 import { getAssetId } from '../createXcmTypes/util/getAssetId.js';
 import { isParachain } from '../createXcmTypes/util/isParachain.js';
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
@@ -22,7 +22,7 @@ export const getFeeAssetItemIndex = async (
 	api: ApiPromise,
 	registry: Registry,
 	paysWithFeeDest: string,
-	multiAssets: FungibleStrAssetType[],
+	multiAssets: FungibleAssetType[],
 	specName: string,
 	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean,

@@ -363,7 +363,7 @@ describe('ParaToRelay', () => {
 							},
 						},
 						fun: {
-							Fungible: { Fungible: '1000000' },
+							Fungible: '1000000',
 						},
 					},
 				};
@@ -384,7 +384,7 @@ describe('ParaToRelay', () => {
 							},
 						},
 						fun: {
-							Fungible: { Fungible: '1000000' },
+							Fungible: '1000000',
 						},
 					},
 				};
@@ -403,7 +403,7 @@ describe('ParaToRelay', () => {
 							},
 						},
 						fun: {
-							Fungible: { Fungible: '1000000' },
+							Fungible: '1000000',
 						},
 					},
 				};
@@ -422,7 +422,7 @@ describe('ParaToRelay', () => {
 							},
 						},
 						fun: {
-							Fungible: { Fungible: '1000000' },
+							Fungible: '1000000',
 						},
 					},
 				};

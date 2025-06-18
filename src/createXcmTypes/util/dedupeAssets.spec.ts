@@ -1,11 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import type { FungibleStrMultiAsset } from '../types';
+import type { FungibleMultiAsset } from '../types';
 import { dedupeAssets } from './dedupeAssets';
 
 describe('dedupeAssets', () => {
 	it('Should dedupe a sorted list of Assets', () => {
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleMultiAsset[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -33,7 +33,7 @@ describe('dedupeAssets', () => {
 				},
 			},
 		];
-		const Assets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleMultiAsset[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -83,7 +83,7 @@ describe('dedupeAssets', () => {
 	});
 
 	it('Should correctly dedupe a sorted list of foreign asset Assets', () => {
-		const Assets: FungibleStrMultiAsset[] = [
+		const Assets: FungibleMultiAsset[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -133,7 +133,7 @@ describe('dedupeAssets', () => {
 			},
 		];
 
-		const expected: FungibleStrMultiAsset[] = [
+		const expected: FungibleMultiAsset[] = [
 			{
 				fun: {
 					Fungible: '200000000',

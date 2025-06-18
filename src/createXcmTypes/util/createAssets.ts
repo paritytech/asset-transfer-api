@@ -5,9 +5,9 @@ import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { Registry } from '../../registry/Registry.js';
 import {
 	type CreateAssetsOpts,
-	type FungibleStrAsset,
-	type FungibleStrAssetType,
-	type FungibleStrMultiAsset,
+	type FungibleAsset,
+	type FungibleAssetType,
+	type FungibleMultiAsset,
 	type UnionXcmMultiAssets,
 } from '../types.js';
 
@@ -33,7 +33,7 @@ export const createAssets = async ({
 		destChainId?: string;
 		isForeignAssetsTransfer: boolean;
 		isLiquidTokenTransfer: boolean;
-	}) => Promise<FungibleStrAssetType[]>;
+	}) => Promise<FungibleAssetType[]>;
 	xcmVersion: number;
 }): Promise<UnionXcmMultiAssets> => {
 	const sortedAndDedupedMultiAssets = await multiAssetCreator({
@@ -50,13 +50,13 @@ export const createAssets = async ({
 
 	switch (xcmVersion) {
 		case 2:
-			return { V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[] };
+			return { V2: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
 		case 3:
-			return { V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[] };
+			return { V3: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
 		case 4:
-			return { V4: sortedAndDedupedMultiAssets as FungibleStrAsset[] };
+			return { V4: sortedAndDedupedMultiAssets as FungibleAsset[] };
 		case 5:
-			return { V5: sortedAndDedupedMultiAssets as FungibleStrAsset[] };
+			return { V5: sortedAndDedupedMultiAssets as FungibleAsset[] };
 		default:
 			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}
@@ -77,14 +77,14 @@ export const createSingleAsset = ({
 	parents: number;
 	xcmVersion: number;
 }): Promise<UnionXcmMultiAssets> => {
-	const multiAssets: FungibleStrAssetType[] = [];
+	const multiAssets: FungibleAssetType[] = [];
 
 	if (amounts.length != 1) {
 		throw new BaseError(`Expected amounts of length 1, amounts=[${amounts.toString()}]`, BaseErrorsEnum.InvalidInput);
 	}
 	const amount = amounts[0];
 
-	let multiAsset: FungibleStrAssetType;
+	let multiAsset: FungibleAssetType;
 
 	if ([2, 3].includes(xcmVersion)) {
 		multiAsset = {
@@ -116,13 +116,13 @@ export const createSingleAsset = ({
 
 	switch (xcmVersion) {
 		case 2:
-			return Promise.resolve({ V2: multiAssets as FungibleStrMultiAsset[] });
+			return Promise.resolve({ V2: multiAssets as FungibleMultiAsset[] });
 		case 3:
-			return Promise.resolve({ V3: multiAssets as FungibleStrMultiAsset[] });
+			return Promise.resolve({ V3: multiAssets as FungibleMultiAsset[] });
 		case 4:
-			return Promise.resolve({ V4: multiAssets as FungibleStrAsset[] });
+			return Promise.resolve({ V4: multiAssets as FungibleAsset[] });
 		case 5:
-			return Promise.resolve({ V5: multiAssets as FungibleStrAsset[] });
+			return Promise.resolve({ V5: multiAssets as FungibleAsset[] });
 		default:
 			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}

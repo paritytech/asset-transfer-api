@@ -9,16 +9,16 @@ import { RequireOnlyOne } from '../../types.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { validateNumber } from '../../validate/index.js';
 import {
-	FungibleStrAsset,
-	FungibleStrAssetType,
-	FungibleStrMultiAsset,
+	FungibleAsset,
+	FungibleAssetType,
+	FungibleMultiAsset,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmV2Junctions,
 	XcmV3Junctions,
 	XcmV4Junctions,
 } from '../types.js';
-import { createStrTypeMultiAsset } from './createMultiAsset.js';
+import { createMultiAsset } from './createMultiAsset.js';
 import { dedupeAssets } from './dedupeAssets.js';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId.js';
 import { getAssetId } from './getAssetId.js';
@@ -36,7 +36,7 @@ export const createAssetLocations = async (
 	assetIdsContainLocations: boolean,
 	isLiquidTokenTransfer: boolean,
 ): Promise<UnionXcmMultiAssets> => {
-	let multiAssets: FungibleStrAssetType[] = [];
+	let multiAssets: FungibleAssetType[] = [];
 
 	const isRelayChain = originChainId === '0' ? true : false;
 
@@ -69,7 +69,7 @@ export const createAssetLocations = async (
 				interior,
 			};
 		}
-		const multiAsset = createStrTypeMultiAsset({
+		const multiAsset = createMultiAsset({
 			amount,
 			multiLocation,
 			xcmVersion,
@@ -78,18 +78,18 @@ export const createAssetLocations = async (
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortAssetsAscending(multiAssets) as FungibleStrAssetType[];
-	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleStrAssetType[];
+	multiAssets = sortAssetsAscending(multiAssets);
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets);
 
 	switch (xcmVersion) {
 		case 2:
-			return { V2: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[] };
+			return { V2: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
 		case 3:
-			return { V3: sortedAndDedupedMultiAssets as FungibleStrMultiAsset[] };
+			return { V3: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
 		case 4:
-			return { V4: sortedAndDedupedMultiAssets as FungibleStrAsset[] };
+			return { V4: sortedAndDedupedMultiAssets as FungibleAsset[] };
 		case 5:
-			return { V5: sortedAndDedupedMultiAssets as FungibleStrAsset[] };
+			return { V5: sortedAndDedupedMultiAssets as FungibleAsset[] };
 		default:
 			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}

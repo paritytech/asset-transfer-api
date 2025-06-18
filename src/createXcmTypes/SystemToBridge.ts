@@ -9,7 +9,7 @@ import { validateNumber } from '../validate/index.js';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
-	FungibleStrAssetType,
+	FungibleAssetType,
 	ICreateXcmType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
@@ -22,7 +22,7 @@ import { createAssets } from './util/createAssets.js';
 import { createBeneficiary } from './util/createBeneficiary.js';
 import { createInteriorValueDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
-import { createStrTypeMultiAsset } from './util/createMultiAsset.js';
+import { createMultiAsset } from './util/createMultiAsset.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { dedupeAssets } from './util/dedupeAssets.js';
 import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
@@ -128,8 +128,8 @@ export const createSystemToBridgeAssets = async ({
 	destChainId?: string;
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
-}): Promise<FungibleStrAssetType[]> => {
-	let multiAssets: FungibleStrAssetType[] = [];
+}): Promise<FungibleAssetType[]> => {
+	let multiAssets: FungibleAssetType[] = [];
 
 	for (let i = 0; i < assets.length; i++) {
 		let assetId: string = assets[i];
@@ -161,7 +161,7 @@ export const createSystemToBridgeAssets = async ({
 			};
 		}
 
-		const multiAsset = createStrTypeMultiAsset({
+		const multiAsset = createMultiAsset({
 			amount,
 			multiLocation,
 			xcmVersion,
@@ -169,9 +169,9 @@ export const createSystemToBridgeAssets = async ({
 		multiAssets.push(multiAsset);
 	}
 
-	multiAssets = sortAssetsAscending(multiAssets) as FungibleStrAssetType[];
+	multiAssets = sortAssetsAscending(multiAssets);
 
-	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleStrAssetType[];
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets);
 
 	return sortedAndDedupedMultiAssets;
 };
