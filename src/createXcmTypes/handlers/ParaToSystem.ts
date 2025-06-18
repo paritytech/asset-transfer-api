@@ -3,37 +3,36 @@
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
-import { DEFAULT_XCM_VERSION } from '../consts.js';
-import { Registry } from '../registry/index.js';
-import { XCMAssetRegistryMultiLocation } from '../registry/types.js';
-import { Direction } from '../types.js';
-import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
+import { Registry } from '../../registry/index.js';
+import { XCMAssetRegistryMultiLocation } from '../../registry/types.js';
+import { Direction } from '../../types.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
-	FungibleMultiAsset,
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
-} from './types.js';
-import { createAssets } from './util/createAssets.js';
-import { createBeneficiary, createXTokensParachainDestBeneficiary } from './util/createBeneficiary.js';
-import { createParachainDest } from './util/createDest.js';
-import { createFeeAssetItem } from './util/createFeeAssetItem.js';
-import { createMultiAsset } from './util/createMultiAsset.js';
-import { createWeightLimit } from './util/createWeightLimit.js';
-import { createXTokensAsset, createXTokensMultiAssets } from './util/createXTokensAssets.js';
-import { createXTokensFeeAssetItem } from './util/createXTokensFeeAssetItem.js';
-import { dedupeAssets } from './util/dedupeAssets.js';
-import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation.js';
-import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId.js';
-import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset.js';
-import { sortAssetsAscending } from './util/sortAssetsAscending.js';
+} from '../types.js';
+import { createAssets } from '../util/createAssets.js';
+import { createBeneficiary, createXTokensParachainDestBeneficiary } from '../util/createBeneficiary.js';
+import { createParachainDest } from '../util/createDest.js';
+import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
+import { createMultiAsset } from '../util/createMultiAsset.js';
+import { createWeightLimit } from '../util/createWeightLimit.js';
+import { createXTokensAsset, createXTokensMultiAssets } from '../util/createXTokensAssets.js';
+import { createXTokensFeeAssetItem } from '../util/createXTokensFeeAssetItem.js';
+import { dedupeAssets } from '../util/dedupeAssets.js';
+import { getParachainNativeAssetLocation } from '../util/getParachainNativeAssetLocation.js';
+import { getXcAssetMultiLocationByAssetId } from '../util/getXcAssetMultiLocationByAssetId.js';
+import { isParachainPrimaryNativeAsset } from '../util/isParachainPrimaryNativeAsset.js';
+import { sortAssetsAscending } from '../util/sortAssetsAscending.js';
 
-export const ParaToPara: ICreateXcmType = {
+export const ParaToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a beneficiary.
 	 *
@@ -76,7 +75,7 @@ export const ParaToPara: ICreateXcmType = {
 			specName,
 			assets,
 			opts,
-			multiAssetCreator: createParaToParaMultiAssets,
+			multiAssetCreator: createParaToSystemMultiAssets,
 		});
 	},
 	/**
@@ -95,7 +94,7 @@ export const ParaToPara: ICreateXcmType = {
 		return createFeeAssetItem({
 			api,
 			opts,
-			multiAssetCreator: createParaToParaMultiAssets,
+			multiAssetCreator: createParaToSystemMultiAssets,
 		});
 	},
 	/**
@@ -125,8 +124,8 @@ export const ParaToPara: ICreateXcmType = {
 		return createXTokensMultiAssets({
 			amounts,
 			assets,
-			specName,
 			opts,
+			specName,
 			xcmVersion,
 		});
 	},
@@ -161,9 +160,8 @@ export const ParaToPara: ICreateXcmType = {
 	 */
 	createXTokensFeeAssetItem,
 };
-
 /**
- * Create multiassets for ParaToPara direction.
+ * Create multiassets for ParaToSystem direction.
  *
  * @param api ApiPromise
  * @param amounts Amount per asset. It will match the `assets` length.
@@ -173,7 +171,7 @@ export const ParaToPara: ICreateXcmType = {
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  */
-const createParaToParaMultiAssets = async ({
+const createParaToSystemMultiAssets = async ({
 	api,
 	amounts,
 	specName,
@@ -194,7 +192,7 @@ const createParaToParaMultiAssets = async ({
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 		registry,
 		specName,
-		Direction.ParaToPara,
+		Direction.ParaToSystem,
 		assets[0],
 	);
 
@@ -209,6 +207,7 @@ const createParaToParaMultiAssets = async ({
 			multiLocation,
 			xcmVersion,
 		});
+
 		multiAssets.push(multiAsset);
 	} else {
 		for (let i = 0; i < assets.length; i++) {
@@ -237,8 +236,7 @@ const createParaToParaMultiAssets = async ({
 	}
 
 	multiAssets = sortAssetsAscending(multiAssets);
-
-	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleMultiAsset[];
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets);
 
 	return sortedAndDedupedMultiAssets;
 };

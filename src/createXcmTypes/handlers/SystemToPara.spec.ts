@@ -1,7 +1,7 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { mockSystemApi } from '../testHelpers/mockSystemApi';
+import { Registry } from '../../registry';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { SystemToPara } from './SystemToPara';
 import { createSystemToParaMultiAssets } from './SystemToPara';
 

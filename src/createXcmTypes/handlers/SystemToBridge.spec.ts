@@ -1,16 +1,16 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystemApiV1016000';
-import { RelayToBridge } from './RelayToBridge';
+import { Registry } from '../../registry';
+import { adjustedMockSystemApiV1016000 } from '../../testHelpers/adjustedMockSystemApiV1016000';
+import { SystemToBridge } from './SystemToBridge';
 
-describe('RelayToBridge', () => {
-	const registry = new Registry('paseo', {});
+describe('SystemToBridge', () => {
+	const registry = new Registry('asset-hub-paseo', {});
 	const isForeignAssetsTransfer = true;
 	const isLiquidTokenTransfer = false;
 	describe('Beneficiary', () => {
 		it('Should work for V3', () => {
-			const beneficiary = RelayToBridge.createBeneficiary(
+			const beneficiary = SystemToBridge.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3,
 			);
@@ -31,7 +31,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 for an Ethereum Address', () => {
-			const beneficiary = RelayToBridge.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
+			const beneficiary = SystemToBridge.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
 
 			const expectedRes = {
 				V3: {
@@ -49,7 +49,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const beneficiary = RelayToBridge.createBeneficiary(
+			const beneficiary = SystemToBridge.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				4,
 			);
@@ -72,7 +72,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const beneficiary = RelayToBridge.createBeneficiary(
+			const beneficiary = SystemToBridge.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				5,
 			);
@@ -95,7 +95,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4 for an Ethereum Address', () => {
-			const beneficiary = RelayToBridge.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
+			const beneficiary = SystemToBridge.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
 
 			const expectedRes = {
 				V4: {
@@ -115,7 +115,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5 for an Ethereum Address', () => {
-			const beneficiary = RelayToBridge.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
+			const beneficiary = SystemToBridge.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
 
 			const expectedRes = {
 				V5: {
@@ -138,11 +138,11 @@ describe('RelayToBridge', () => {
 	describe('Destination', () => {
 		it('Should work for V3', () => {
 			const destId = `{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`;
-			const destination = RelayToBridge.createDest(destId, 3);
+			const destination = SystemToBridge.createDest(destId, 3);
 
 			const expectedRes = {
 				V3: {
-					parents: 1,
+					parents: 2,
 					interior: {
 						X1: {
 							GlobalConsensus: {
@@ -160,11 +160,11 @@ describe('RelayToBridge', () => {
 		it('Should work for V4', () => {
 			const destId = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}`;
 
-			const destination = RelayToBridge.createDest(destId, 4);
+			const destination = SystemToBridge.createDest(destId, 4);
 
 			const expectedRes = {
 				V4: {
-					parents: 1,
+					parents: 2,
 					interior: {
 						X2: [
 							{
@@ -183,11 +183,11 @@ describe('RelayToBridge', () => {
 		it('Should work for V5', () => {
 			const destId = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}`;
 
-			const destination = RelayToBridge.createDest(destId, 5);
+			const destination = SystemToBridge.createDest(destId, 5);
 
 			const expectedRes = {
 				V5: {
-					parents: 1,
+					parents: 2,
 					interior: {
 						X2: [
 							{
@@ -206,11 +206,11 @@ describe('RelayToBridge', () => {
 	});
 	describe('Assets', () => {
 		it('Should work for V3', async () => {
-			const assets = await RelayToBridge.createAssets(
+			const assets = await SystemToBridge.createAssets(
 				['10000000000'],
 				3,
-				'paseo',
-				[`{"parents":"0","interior":{"Here":""}}`],
+				'asset-hub-westend',
+				[`{"parents":"2","interior":{"X1":{"GlobalConsensus":"Paseo"}}}`],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -224,9 +224,9 @@ describe('RelayToBridge', () => {
 					{
 						id: {
 							Concrete: {
-								parents: 0,
+								parents: '2',
 								interior: {
-									Here: '',
+									X1: { GlobalConsensus: 'Paseo' },
 								},
 							},
 						},
@@ -240,11 +240,13 @@ describe('RelayToBridge', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await RelayToBridge.createAssets(
+			const assets = await SystemToBridge.createAssets(
 				['10000000000'],
 				4,
-				'paseo',
-				[`{"parents":"0","interior":{"Here":""}}`],
+				'asset-hub-westend',
+				[
+					`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
+				],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -257,9 +259,23 @@ describe('RelayToBridge', () => {
 				V4: [
 					{
 						id: {
-							parents: 0,
+							parents: '2',
 							interior: {
-								Here: '',
+								X2: [
+									{
+										GlobalConsensus: {
+											Ethereum: {
+												chainId: '11155111',
+											},
+										},
+									},
+									{
+										AccountKey20: {
+											network: null,
+											key: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
+										},
+									},
+								],
 							},
 						},
 						fun: {
@@ -272,11 +288,13 @@ describe('RelayToBridge', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', async () => {
-			const assets = await RelayToBridge.createAssets(
+			const assets = await SystemToBridge.createAssets(
 				['10000000000'],
 				5,
-				'paseo',
-				[`{"parents":"0","interior":{"Here":""}}`],
+				'asset-hub-westend',
+				[
+					`{"parents":"2","interior":{"X2":[{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}},{"AccountKey20":{"network":null,"key":"0xfff9976782d46cc05630d1f6ebab18b2324d6b14"}}]}}`,
+				],
 				{
 					registry,
 					isForeignAssetsTransfer,
@@ -289,9 +307,23 @@ describe('RelayToBridge', () => {
 				V5: [
 					{
 						id: {
-							parents: 0,
+							parents: '2',
 							interior: {
-								Here: '',
+								X2: [
+									{
+										GlobalConsensus: {
+											Ethereum: {
+												chainId: '11155111',
+											},
+										},
+									},
+									{
+										AccountKey20: {
+											network: null,
+											key: '0xfff9976782d46cc05630d1f6ebab18b2324d6b14',
+										},
+									},
+								],
 							},
 						},
 						fun: {

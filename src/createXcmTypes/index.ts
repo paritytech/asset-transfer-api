@@ -1,17 +1,17 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
 import { Direction } from '../types.js';
-import { ParaToEthereum } from './ParaToEthereum.js';
-import { ParaToPara } from './ParaToPara.js';
-import { ParaToRelay } from './ParaToRelay.js';
-import { ParaToSystem } from './ParaToSystem.js';
-import { RelayToBridge } from './RelayToBridge.js';
-import { RelayToPara } from './RelayToPara.js';
-import { RelayToSystem } from './RelayToSystem.js';
-import { SystemToBridge } from './SystemToBridge.js';
-import { SystemToPara } from './SystemToPara.js';
-import { SystemToRelay } from './SystemToRelay.js';
-import { SystemToSystem } from './SystemToSystem.js';
+import { ParaToEthereum } from './handlers/ParaToEthereum.js';
+import { ParaToPara } from './handlers/ParaToPara.js';
+import { ParaToRelay } from './handlers/ParaToRelay.js';
+import { ParaToSystem } from './handlers/ParaToSystem.js';
+import { RelayToBridge } from './handlers/RelayToBridge.js';
+import { RelayToPara } from './handlers/RelayToPara.js';
+import { RelayToSystem } from './handlers/RelayToSystem.js';
+import { SystemToBridge } from './handlers/SystemToBridge.js';
+import { SystemToPara } from './handlers/SystemToPara.js';
+import { SystemToRelay } from './handlers/SystemToRelay.js';
+import { SystemToSystem } from './handlers/SystemToSystem.js';
 import { ICreateXcmType } from './types.js';
 
 type ICreateXcmTypeLookup = {

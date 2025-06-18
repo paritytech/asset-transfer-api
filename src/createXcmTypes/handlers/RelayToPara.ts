@@ -2,15 +2,17 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { ICreateXcmType, UnionXcmMultiAssets, XcmDestBeneficiary } from './types.js';
-import { createSingleAsset } from './util/createAssets.js';
-import { createBeneficiary } from './util/createBeneficiary.js';
-import { createParachainDest } from './util/createDest.js';
-import { createWeightLimit } from './util/createWeightLimit.js';
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
+import { ICreateXcmType, UnionXcmMultiAssets, XcmDestBeneficiary } from '../types.js';
+import { createSingleAsset } from '../util/createAssets.js';
+import { createBeneficiary } from '../util/createBeneficiary.js';
+import { createParachainDest } from '../util/createDest.js';
+import { createWeightLimit } from '../util/createWeightLimit.js';
+
 /**
- * XCM type generation for transactions from the relay chain to a system parachain.
+ * XCM type generation for transactions from the relay chain to a parachain.
  */
-export const RelayToSystem: ICreateXcmType = {
+export const RelayToPara: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
 	 *
@@ -21,10 +23,10 @@ export const RelayToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
-	 * @param destId The parachain Id of the destination
-	 * @param xcmVersion The accepted xcm version
+	 * @param destId The parachain Id of the destination.
+	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
+	createDest: (destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary => {
 		return createParachainDest({
 			destId,
 			parents: 0,

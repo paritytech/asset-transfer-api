@@ -2,12 +2,12 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { DEFAULT_XCM_VERSION } from '../consts.js';
-import { BaseError, BaseErrorsEnum } from '../errors/index.js';
-import type { Registry } from '../registry/index.js';
-import type { RequireOnlyOne } from '../types.js';
-import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
-import { validateNumber } from '../validate/index.js';
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import type { Registry } from '../../registry/index.js';
+import type { RequireOnlyOne } from '../../types.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import { validateNumber } from '../../validate/index.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -19,20 +19,20 @@ import type {
 	XcmV2Junctions,
 	XcmV3Junctions,
 	XcmV4Junctions,
-} from './types.js';
-import { assetIdIsLocation } from './util/assetIdIsLocation.js';
-import { createAssets } from './util/createAssets.js';
-import { createBeneficiary } from './util/createBeneficiary.js';
-import { createParachainDest } from './util/createDest.js';
-import { createFeeAssetItem } from './util/createFeeAssetItem.js';
-import { createMultiAsset } from './util/createMultiAsset.js';
-import { createWeightLimit } from './util/createWeightLimit.js';
-import { dedupeAssets } from './util/dedupeAssets.js';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
-import { getAssetId } from './util/getAssetId.js';
-import { isRelayNativeAsset } from './util/isRelayNativeAsset.js';
-import { isSystemChain } from './util/isSystemChain.js';
-import { sortAssetsAscending } from './util/sortAssetsAscending.js';
+} from '../types.js';
+import { assetIdIsLocation } from '../util/assetIdIsLocation.js';
+import { createAssets } from '../util/createAssets.js';
+import { createBeneficiary } from '../util/createBeneficiary.js';
+import { createParachainDest } from '../util/createDest.js';
+import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
+import { createMultiAsset } from '../util/createMultiAsset.js';
+import { createWeightLimit } from '../util/createWeightLimit.js';
+import { dedupeAssets } from '../util/dedupeAssets.js';
+import { fetchPalletInstanceId } from '../util/fetchPalletInstanceId.js';
+import { getAssetId } from '../util/getAssetId.js';
+import { isRelayNativeAsset } from '../util/isRelayNativeAsset.js';
+import { isSystemChain } from '../util/isSystemChain.js';
+import { sortAssetsAscending } from '../util/sortAssetsAscending.js';
 
 export const SystemToPara: ICreateXcmType = {
 	/**

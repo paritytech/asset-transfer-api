@@ -1,14 +1,14 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { mockRelayApiV9420 } from '../testHelpers/mockRelayApiV9420';
-import { RelayToPara } from './RelayToPara';
+import { Registry } from '../../registry';
+import { mockRelayApiV9420 } from '../../testHelpers/mockRelayApiV9420';
+import { RelayToSystem } from './RelayToSystem';
 
-describe('RelayToPara XcmVersioned Generation', () => {
+describe('RelayToSystem XcmVersioned Generation', () => {
 	const registry = new Registry('kusama', {});
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
-			const beneficiary = RelayToPara.createBeneficiary(
+			const beneficiary = RelayToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2,
 			);
@@ -29,27 +29,8 @@ describe('RelayToPara XcmVersioned Generation', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
-		it('Should work for V2 Ethereum address', () => {
-			const beneficiary = RelayToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 2);
-
-			const expectedRes = {
-				V2: {
-					parents: 0,
-					interior: {
-						X1: {
-							AccountKey20: {
-								key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-								network: 'Any',
-							},
-						},
-					},
-				},
-			};
-
-			expect(beneficiary).toStrictEqual(expectedRes);
-		});
 		it('Should work for V3', () => {
-			const beneficiary = RelayToPara.createBeneficiary(
+			const beneficiary = RelayToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3,
 			);
@@ -69,27 +50,8 @@ describe('RelayToPara XcmVersioned Generation', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
-		it('Should work for V3 Ethereum address', () => {
-			const beneficiary = RelayToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
-
-			const expectedRes = {
-				V3: {
-					parents: 0,
-					interior: {
-						X1: {
-							AccountKey20: {
-								key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-							},
-						},
-					},
-				},
-			};
-
-			expect(beneficiary).toStrictEqual(expectedRes);
-		});
-
 		it('Should work for V4', () => {
-			const beneficiary = RelayToPara.createBeneficiary(
+			const beneficiary = RelayToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				4,
 			);
@@ -112,7 +74,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const beneficiary = RelayToPara.createBeneficiary(
+			const beneficiary = RelayToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				5,
 			);
@@ -134,51 +96,11 @@ describe('RelayToPara XcmVersioned Generation', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
-		it('Should work for V4 Ethereum address', () => {
-			const beneficiary = RelayToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
-
-			const expectedRes = {
-				V4: {
-					parents: 0,
-					interior: {
-						X1: [
-							{
-								AccountKey20: {
-									key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-								},
-							},
-						],
-					},
-				},
-			};
-
-			expect(beneficiary).toStrictEqual(expectedRes);
-		});
-		it('Should work for V5 Ethereum address', () => {
-			const beneficiary = RelayToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
-
-			const expectedRes = {
-				V5: {
-					parents: 0,
-					interior: {
-						X1: [
-							{
-								AccountKey20: {
-									key: '0x96Bd611EbE3Af39544104e26764F4939924F6Ece',
-								},
-							},
-						],
-					},
-				},
-			};
-
-			expect(beneficiary).toStrictEqual(expectedRes);
-		});
 	});
 
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = RelayToPara.createDest('100', 2);
+			const destination = RelayToSystem.createDest('100', 2);
 
 			const expectedRes = {
 				V2: {
@@ -194,7 +116,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = RelayToPara.createDest('100', 3);
+			const destination = RelayToSystem.createDest('100', 3);
 
 			const expectedRes = {
 				V3: {
@@ -210,7 +132,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const destination = RelayToPara.createDest('100', 4);
+			const destination = RelayToSystem.createDest('100', 4);
 
 			const expectedRes = {
 				V4: {
@@ -228,7 +150,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const destination = RelayToPara.createDest('100', 5);
+			const destination = RelayToSystem.createDest('100', 5);
 
 			const expectedRes = {
 				V5: {
@@ -249,9 +171,8 @@ describe('RelayToPara XcmVersioned Generation', () => {
 	describe('Assets', () => {
 		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
-
 		it('Should work for V2', async () => {
-			const assets = await RelayToPara.createAssets(['100'], 2, '', [], {
+			const assets = await RelayToSystem.createAssets(['100'], 2, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -279,7 +200,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await RelayToPara.createAssets(['100'], 3, '', [], {
+			const assets = await RelayToSystem.createAssets(['100'], 3, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -307,7 +228,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await RelayToPara.createAssets(['100'], 4, '', [], {
+			const assets = await RelayToSystem.createAssets(['100'], 4, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -333,7 +254,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', async () => {
-			const assets = await RelayToPara.createAssets(['100'], 5, '', [], {
+			const assets = await RelayToSystem.createAssets(['100'], 5, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -366,7 +287,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
-			const weightLimit = RelayToPara.createWeightLimit({
+			const weightLimit = RelayToSystem.createWeightLimit({
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -380,7 +301,7 @@ describe('RelayToPara XcmVersioned Generation', () => {
 			});
 		});
 		it('Should work when weightLimit option is not provided', () => {
-			const weightLimit = RelayToPara.createWeightLimit({});
+			const weightLimit = RelayToSystem.createWeightLimit({});
 
 			expect(weightLimit).toStrictEqual({
 				Unlimited: null,

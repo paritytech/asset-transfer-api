@@ -2,13 +2,20 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { ICreateXcmType, UnionXcmMultiAssets, XcmDestBeneficiary } from './types.js';
-import { createSingleAsset } from './util/createAssets.js';
-import { createBeneficiary } from './util/createBeneficiary.js';
-import { createHereDest } from './util/createDest.js';
-import { createWeightLimit } from './util/createWeightLimit.js';
+import {
+	ICreateXcmType,
+	UnionXcAssetsMultiAsset,
+	UnionXcmMultiAssets,
+	XcmDestBeneficiary,
+	XcmDestBeneficiaryXcAssets,
+} from '../types.js';
+import { createSingleAsset } from '../util/createAssets.js';
+import { createBeneficiary, createXTokensDestBeneficiary } from '../util/createBeneficiary.js';
+import { createHereDest } from '../util/createDest.js';
+import { createWeightLimit } from '../util/createWeightLimit.js';
+import { createXTokensAssetToRelay } from '../util/createXTokensAssets.js';
 
-export const SystemToRelay: ICreateXcmType = {
+export const ParaToRelay: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
 	 *
@@ -31,7 +38,7 @@ export const SystemToRelay: ICreateXcmType = {
 	 * @param amounts The amount for a relay native asset. The length will always be one.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
+	createAssets: (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
 		return createSingleAsset({
 			amounts,
 			parents: 1,
@@ -50,5 +57,15 @@ export const SystemToRelay: ICreateXcmType = {
 	 */
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
 		return Promise.resolve(0);
+	},
+	createXTokensBeneficiary: (_: string, accountId: string, xcmVersion: number): XcmDestBeneficiaryXcAssets => {
+		return createXTokensDestBeneficiary(accountId, xcmVersion);
+	},
+	createXTokensAsset: (amount: string, xcmVersion: number): Promise<UnionXcAssetsMultiAsset> => {
+		return createXTokensAssetToRelay({
+			amount,
+			parents: 1,
+			xcmVersion,
+		});
 	},
 };

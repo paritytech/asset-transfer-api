@@ -1,15 +1,14 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { mockSystemApi } from '../testHelpers/mockSystemApi';
-import { SystemToSystem } from './SystemToSystem';
+import { Registry } from '../../registry';
+import { mockMoonriverParachainApi } from '../../testHelpers/mockMoonriverParachainApi';
+import { ParaToSystem } from './ParaToSystem';
 
-describe('SystemToSystem XcmVersioned Generation', () => {
-	const registry = new Registry('statemine', {});
-
+describe('ParaToSystem', () => {
+	const registry = new Registry('kusama', {});
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
-			const beneficiary = SystemToSystem.createBeneficiary(
+			const beneficiary = ParaToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2,
 			);
@@ -31,7 +30,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const beneficiary = SystemToSystem.createBeneficiary(
+			const beneficiary = ParaToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3,
 			);
@@ -52,7 +51,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const beneficiary = SystemToSystem.createBeneficiary(
+			const beneficiary = ParaToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				4,
 			);
@@ -75,7 +74,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const beneficiary = SystemToSystem.createBeneficiary(
+			const beneficiary = ParaToSystem.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				5,
 			);
@@ -100,14 +99,14 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 	});
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = SystemToSystem.createDest('1000', 2);
+			const destination = ParaToSystem.createDest('100', 2);
 
 			const expectedRes = {
 				V2: {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: '1000',
+							Parachain: '100',
 						},
 					},
 				},
@@ -116,14 +115,14 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = SystemToSystem.createDest('1002', 3);
+			const destination = ParaToSystem.createDest('100', 3);
 
 			const expectedRes = {
 				V3: {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: '1002',
+							Parachain: '100',
 						},
 					},
 				},
@@ -132,7 +131,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const destination = SystemToSystem.createDest('1002', 4);
+			const destination = ParaToSystem.createDest('100', 4);
 
 			const expectedRes = {
 				V4: {
@@ -140,7 +139,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					interior: {
 						X1: [
 							{
-								Parachain: '1002',
+								Parachain: '100',
 							},
 						],
 					},
@@ -150,7 +149,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const destination = SystemToSystem.createDest('1002', 5);
+			const destination = ParaToSystem.createDest('100', 5);
 
 			const expectedRes = {
 				V5: {
@@ -158,7 +157,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					interior: {
 						X1: [
 							{
-								Parachain: '1002',
+								Parachain: '100',
 							},
 						],
 					},
@@ -168,32 +167,49 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 	});
-
 	describe('Assets', () => {
-		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
-
+		const isForeignAssetsTransfer = false;
 		it('Should work for V2', async () => {
-			const assets = await SystemToSystem.createAssets(['100'], 2, 'statemine', ['USDT'], {
-				registry,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-				api: mockSystemApi,
-			});
+			const assets = await ParaToSystem.createAssets(
+				['1000000000000', '2000000000'],
+				2,
+				'moonriver',
+				['42259045809535163221576417993425387648', '182365888117048807484804376330534607370'],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+					api: mockMoonriverParachainApi,
+				},
+			);
 
 			const expectedRes = {
 				V2: [
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
+								Parents: '1',
 								Interior: {
-									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
+									Here: null,
 								},
 							},
 						},
 						fun: {
-							Fungible: '100',
+							Fungible: '1000000000000',
+						},
+					},
+					{
+						id: {
+							Concrete: {
+								Parents: '1',
+								Interior: {
+									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
+								},
+							},
+						},
+						fun: {
+							Fungible: '2000000000',
 						},
 					},
 				],
@@ -202,12 +218,18 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await SystemToSystem.createAssets(['100'], 3, 'bridge-hub-kusama', ['ksm'], {
-				registry,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-				api: mockSystemApi,
-			});
+			const assets = await ParaToSystem.createAssets(
+				['1000000', '20000000000'],
+				3,
+				'moonriver',
+				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+					api: mockMoonriverParachainApi,
+				},
+			);
 
 			const expectedRes = {
 				V3: [
@@ -216,12 +238,25 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 							Concrete: {
 								Parents: '1',
 								Interior: {
-									Here: '',
+									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
 								},
 							},
 						},
 						fun: {
-							Fungible: '100',
+							Fungible: '1000000',
+						},
+					},
+					{
+						id: {
+							Concrete: {
+								Parents: '1',
+								Interior: {
+									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+								},
+							},
+						},
+						fun: {
+							Fungible: '20000000000',
 						},
 					},
 				],
@@ -230,12 +265,18 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await SystemToSystem.createAssets(['100'], 4, 'bridge-hub-kusama', ['ksm'], {
-				registry,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-				api: mockSystemApi,
-			});
+			const assets = await ParaToSystem.createAssets(
+				['1000000', '20000000000'],
+				4,
+				'moonriver',
+				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+					api: mockMoonriverParachainApi,
+				},
+			);
 
 			const expectedRes = {
 				V4: [
@@ -243,11 +284,22 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 						id: {
 							Parents: '1',
 							Interior: {
-								Here: '',
+								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
 							},
 						},
 						fun: {
-							Fungible: '100',
+							Fungible: '1000000',
+						},
+					},
+					{
+						id: {
+							Parents: '1',
+							Interior: {
+								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+							},
+						},
+						fun: {
+							Fungible: '20000000000',
 						},
 					},
 				],
@@ -256,12 +308,18 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', async () => {
-			const assets = await SystemToSystem.createAssets(['100'], 5, 'bridge-hub-kusama', ['ksm'], {
-				registry,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer,
-				api: mockSystemApi,
-			});
+			const assets = await ParaToSystem.createAssets(
+				['1000000', '20000000000'],
+				5,
+				'moonriver',
+				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
+				{
+					registry,
+					isForeignAssetsTransfer,
+					isLiquidTokenTransfer,
+					api: mockMoonriverParachainApi,
+				},
+			);
 
 			const expectedRes = {
 				V5: [
@@ -269,52 +327,22 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 						id: {
 							Parents: '1',
 							Interior: {
-								Here: '',
+								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
 							},
 						},
 						fun: {
-							Fungible: '100',
+							Fungible: '1000000',
 						},
 					},
-				],
-			};
-
-			expect(assets).toStrictEqual(expectedRes);
-		});
-
-		it('Should error when asset ID is not found for V3', async () => {
-			const expectedErrorMessage = 'bridge-hub-kusama has no associated token symbol usdc';
-
-			await expect(async () => {
-				await SystemToSystem.createAssets(['100'], 3, 'bridge-hub-kusama', ['usdc'], {
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-					api: mockSystemApi,
-				});
-			}).rejects.toThrow(expectedErrorMessage);
-		});
-		it('Should work for a liquid token transfer', async () => {
-			const assets = await SystemToSystem.createAssets(['100'], 2, 'statemine', ['USDT'], {
-				registry,
-				isForeignAssetsTransfer,
-				isLiquidTokenTransfer: true,
-				api: mockSystemApi,
-			});
-
-			const expectedRes = {
-				V2: [
 					{
 						id: {
-							Concrete: {
-								Parents: '0',
-								Interior: {
-									X2: [{ PalletInstance: '55' }, { GeneralIndex: '11' }],
-								},
+							Parents: '1',
+							Interior: {
+								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
 							},
 						},
 						fun: {
-							Fungible: '100',
+							Fungible: '20000000000',
 						},
 					},
 				],
@@ -328,7 +356,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
-			const weightLimit = SystemToSystem.createWeightLimit({
+			const weightLimit = ParaToSystem.createWeightLimit({
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -336,13 +364,13 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 			});
 			expect(weightLimit).toStrictEqual({
 				Limited: {
-					refTime: '100000000',
 					proofSize: '1000',
+					refTime: '100000000',
 				},
 			});
 		});
 		it('Should work when weightLimit option is not provided', () => {
-			const weightLimit = SystemToSystem.createWeightLimit({});
+			const weightLimit = ParaToSystem.createWeightLimit({});
 
 			expect(weightLimit).toStrictEqual({
 				Unlimited: null,

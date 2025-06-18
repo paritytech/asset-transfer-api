@@ -1,14 +1,16 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
+// Copyright 2023 Parity Technologies (UK) Ltd.
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { ICreateXcmType, UnionXcmMultiAssets, XcmDestBeneficiary } from './types.js';
-import { createSingleAsset } from './util/createAssets.js';
-import { createBeneficiary } from './util/createBeneficiary.js';
-import { createInteriorValueDest } from './util/createDest.js';
-import { createWeightLimit } from './util/createWeightLimit.js';
-
-export const RelayToBridge: ICreateXcmType = {
+import { ICreateXcmType, UnionXcmMultiAssets, XcmDestBeneficiary } from '../types.js';
+import { createSingleAsset } from '../util/createAssets.js';
+import { createBeneficiary } from '../util/createBeneficiary.js';
+import { createParachainDest } from '../util/createDest.js';
+import { createWeightLimit } from '../util/createWeightLimit.js';
+/**
+ * XCM type generation for transactions from the relay chain to a system parachain.
+ */
+export const RelayToSystem: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
 	 *
@@ -19,20 +21,20 @@ export const RelayToBridge: ICreateXcmType = {
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
-	 * @param destId The chainId of the destination.
-	 * @param xcmVersion The accepted xcm version.
+	 * @param destId The parachain Id of the destination
+	 * @param xcmVersion The accepted xcm version
 	 */
 	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
-		return createInteriorValueDest({
+		return createParachainDest({
 			destId,
-			parents: 1,
+			parents: 0,
 			xcmVersion,
 		});
 	},
 	/**
 	 * Create a VersionedMultiAsset structured type.
 	 *
-	 * @param amounts Amount per asset. It will match the `assets` length.
+	 * @param amounts The amount for a relay native asset. The length will always be one.
 	 * @param xcmVersion The accepted xcm version.
 	 */
 	createAssets: async (amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> => {
@@ -49,9 +51,8 @@ export const RelayToBridge: ICreateXcmType = {
 	 */
 	createWeightLimit,
 	/**
-	 * Returns the correct `feeAssetItem` based on XCM direction.
-	 *
-	 * @param api ApiPromise
+	 * Return the correct feeAssetItem based on XCM direction.
+	 * In this case it will always be zero since there is no `feeAssetItem` for this direction.
 	 */
 	createFeeAssetItem: async (_: ApiPromise): Promise<number> => {
 		return Promise.resolve(0);

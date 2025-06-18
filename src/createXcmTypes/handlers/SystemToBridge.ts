@@ -2,10 +2,10 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import type { Registry } from '../registry/index.js';
-import { RequireOnlyOne } from '../types.js';
-import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
-import { validateNumber } from '../validate/index.js';
+import type { Registry } from '../../registry/index.js';
+import { RequireOnlyOne } from '../../types.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import { validateNumber } from '../../validate/index.js';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -17,18 +17,18 @@ import {
 	XcmV2Junctions,
 	XcmV3Junctions,
 	XcmV4Junctions,
-} from './types.js';
-import { createAssets } from './util/createAssets.js';
-import { createBeneficiary } from './util/createBeneficiary.js';
-import { createInteriorValueDest } from './util/createDest.js';
-import { createFeeAssetItem } from './util/createFeeAssetItem.js';
-import { createMultiAsset } from './util/createMultiAsset.js';
-import { createWeightLimit } from './util/createWeightLimit.js';
-import { dedupeAssets } from './util/dedupeAssets.js';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
-import { getAssetId } from './util/getAssetId.js';
-import { isRelayNativeAsset } from './util/isRelayNativeAsset.js';
-import { sortAssetsAscending } from './util/sortAssetsAscending.js';
+} from '../types.js';
+import { createAssets } from '../util/createAssets.js';
+import { createBeneficiary } from '../util/createBeneficiary.js';
+import { createInteriorValueDest } from '../util/createDest.js';
+import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
+import { createMultiAsset } from '../util/createMultiAsset.js';
+import { createWeightLimit } from '../util/createWeightLimit.js';
+import { dedupeAssets } from '../util/dedupeAssets.js';
+import { fetchPalletInstanceId } from '../util/fetchPalletInstanceId.js';
+import { getAssetId } from '../util/getAssetId.js';
+import { isRelayNativeAsset } from '../util/isRelayNativeAsset.js';
+import { sortAssetsAscending } from '../util/sortAssetsAscending.js';
 
 export const SystemToBridge: ICreateXcmType = {
 	/**
