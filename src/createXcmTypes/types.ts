@@ -209,23 +209,15 @@ export type XcAssetsV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, FungibleMu
 export type XcAssetsV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, FungibleAsset>;
 export type XcAssetsV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, FungibleAsset>;
 
-export type FungibleMultiAsset = {
+export type FungibleAsset<T = UnionXcmMultiLocation> = {
 	fun: {
 		Fungible: string;
 	};
-	id: {
-		Concrete: UnionXcmMultiLocation;
-	};
+	id: T;
 };
 
-export type FungibleAsset = {
-	fun: {
-		Fungible: string;
-	};
-	id: UnionXcmMultiLocation;
-};
-
-export type FungibleAssetType = FungibleMultiAsset | FungibleAsset;
+export type FungibleMultiAsset = FungibleAsset<{ Concrete: UnionXcmMultiLocation }>;
+export type FungibleAssetType = FungibleAsset | FungibleMultiAsset;
 
 export type UnionXcAssetsMultiLocation =
 	| XcAssetsV2MultiLocation
