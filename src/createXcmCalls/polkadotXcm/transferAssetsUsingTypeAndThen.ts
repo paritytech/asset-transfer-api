@@ -5,10 +5,10 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createXcmTypes } from '../../createXcmTypes/index.js';
 import {
+	FungibleAsset,
+	FungibleMultiAsset,
 	UnionXcmMultiLocation,
 	WildAsset,
-	XcmAsset,
-	XcmMultiAsset,
 	XcmV2Junction,
 	XcmV3Junction,
 	XcmV4Junction,
@@ -122,7 +122,7 @@ export const transferAssetsUsingTypeAndThen = async (
 			);
 		}
 
-		const reanchoredERC20AccountLocation: XcmMultiAsset | XcmAsset =
+		const reanchoredERC20AccountLocation: FungibleMultiAsset | FungibleAsset =
 			xcmVersion === 3
 				? {
 						id: {

@@ -172,15 +172,6 @@ export type UnionXcAssetsMultiAsset =
 	| XcAssetsV4MultiAsset
 	| XcAssetsV5MultiAsset;
 
-export interface XcmMultiAsset {
-	id: {
-		Concrete: UnionXcmMultiLocation;
-	};
-	fun: {
-		Fungible: string;
-	};
-}
-
 export interface WildAssetV3 {
 	id: {
 		Concrete: UnionXcmMultiLocation;
@@ -195,26 +186,18 @@ export interface WildAssetV4 {
 
 export type WildAsset = WildAssetV3 | WildAssetV4;
 
-// XCM V4 Asset
-export interface XcmAsset {
-	id: UnionXcmMultiLocation;
-	fun: {
-		Fungible: string;
-	};
-}
-
 type VersionedXcmType<K extends string, T> = {
 	[P in K]: T;
 };
-export type XcmV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, XcmMultiAsset[]>;
-export type XcmV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, XcmMultiAsset[]>;
-export type XcmV4MultiAssets = VersionedXcmType<XcmVersionKey.V4, XcmAsset[]>;
-export type XcmV5MultiAssets = VersionedXcmType<XcmVersionKey.V5, XcmAsset[]>;
+export type XcmV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset[]>;
+export type XcmV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset[]>;
+export type XcmV4MultiAssets = VersionedXcmType<XcmVersionKey.V4, FungibleAsset[]>;
+export type XcmV5MultiAssets = VersionedXcmType<XcmVersionKey.V5, FungibleAsset[]>;
 
-export type XcmV2MultiAsset = VersionedXcmType<XcmVersionKey.V2, XcmMultiAsset>;
-export type XcmV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, XcmMultiAsset>;
-export type XcmV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, XcmAsset>;
-export type XcmV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, XcmAsset>;
+export type XcmV2MultiAsset = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset>;
+export type XcmV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset>;
+export type XcmV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, FungibleAsset>;
+export type XcmV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, FungibleAsset>;
 
 export type XcAssetsV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset[]>;
 export type XcAssetsV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset[]>;
