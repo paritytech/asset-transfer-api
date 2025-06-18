@@ -3,7 +3,7 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { AssetTransferApi } from '../AssetTransferApi';
-import { FungibleStrMultiAsset } from '../createXcmTypes/types';
+import { FungibleMultiAsset } from '../createXcmTypes/types';
 import { Registry } from '../registry';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
@@ -12,7 +12,7 @@ import { getFeeAssetItemIndex } from './getFeeAssetItemIndex';
 type Test = [
 	paysWithFeeDest: string,
 	specName: string,
-	multiAssets: FungibleStrMultiAsset[],
+	multiAssets: FungibleMultiAsset[],
 	api: ApiPromise,
 	expected: number,
 ];
@@ -253,7 +253,7 @@ describe('getFeeAssetItemIndex', () => {
 		const paysWithFeeDest = '1984';
 		const specName = 'statemine';
 
-		const multiAssets: FungibleStrMultiAsset[] = [
+		const multiAssets: FungibleMultiAsset[] = [
 			{
 				id: {
 					Concrete: {

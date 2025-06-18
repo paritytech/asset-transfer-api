@@ -172,15 +172,6 @@ export type UnionXcAssetsMultiAsset =
 	| XcAssetsV4MultiAsset
 	| XcAssetsV5MultiAsset;
 
-export interface XcmMultiAsset {
-	id: {
-		Concrete: UnionXcmMultiLocation;
-	};
-	fun: {
-		Fungible: string;
-	};
-}
-
 export interface WildAssetV3 {
 	id: {
 		Concrete: UnionXcmMultiLocation;
@@ -195,72 +186,38 @@ export interface WildAssetV4 {
 
 export type WildAsset = WildAssetV3 | WildAssetV4;
 
-// XCM V4 Asset
-export interface XcmAsset {
-	id: UnionXcmMultiLocation;
-	fun: {
-		Fungible: string;
-	};
-}
-
 type VersionedXcmType<K extends string, T> = {
 	[P in K]: T;
 };
-export type XcmV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, XcmMultiAsset[]>;
-export type XcmV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, XcmMultiAsset[]>;
-export type XcmV4MultiAssets = VersionedXcmType<XcmVersionKey.V4, XcmAsset[]>;
-export type XcmV5MultiAssets = VersionedXcmType<XcmVersionKey.V5, XcmAsset[]>;
+export type XcmV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset[]>;
+export type XcmV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset[]>;
+export type XcmV4MultiAssets = VersionedXcmType<XcmVersionKey.V4, FungibleAsset[]>;
+export type XcmV5MultiAssets = VersionedXcmType<XcmVersionKey.V5, FungibleAsset[]>;
 
-export type XcmV2MultiAsset = VersionedXcmType<XcmVersionKey.V2, XcmMultiAsset>;
-export type XcmV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, XcmMultiAsset>;
-export type XcmV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, XcmAsset>;
-export type XcmV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, XcmAsset>;
+export type XcmV2MultiAsset = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset>;
+export type XcmV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset>;
+export type XcmV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, FungibleAsset>;
+export type XcmV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, FungibleAsset>;
 
-export type XcAssetsV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, FungibleObjMultiAsset[]>;
-export type XcAssetsV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, FungibleObjMultiAsset[]>;
-export type XcAssetsV4MultiAssets = VersionedXcmType<XcmVersionKey.V4, FungibleObjAsset[]>;
-export type XcAssetsV5MultiAssets = VersionedXcmType<XcmVersionKey.V5, FungibleObjAsset[]>;
+export type XcAssetsV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset[]>;
+export type XcAssetsV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset[]>;
+export type XcAssetsV4MultiAssets = VersionedXcmType<XcmVersionKey.V4, FungibleAsset[]>;
+export type XcAssetsV5MultiAssets = VersionedXcmType<XcmVersionKey.V5, FungibleAsset[]>;
 
-export type XcAssetsV2MultiAsset = VersionedXcmType<XcmVersionKey.V2, FungibleObjMultiAsset>;
-export type XcAssetsV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, FungibleObjMultiAsset>;
-export type XcAssetsV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, FungibleObjAsset>;
-export type XcAssetsV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, FungibleObjAsset>;
+export type XcAssetsV2MultiAsset = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset>;
+export type XcAssetsV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset>;
+export type XcAssetsV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, FungibleAsset>;
+export type XcAssetsV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, FungibleAsset>;
 
-export type FungibleStrMultiAsset = {
+export type FungibleAsset<T = UnionXcmMultiLocation> = {
 	fun: {
 		Fungible: string;
 	};
-	id: {
-		Concrete: UnionXcmMultiLocation;
-	};
+	id: T;
 };
 
-export type FungibleStrAsset = {
-	fun: {
-		Fungible: string;
-	};
-	id: UnionXcmMultiLocation;
-};
-
-export type FungibleStrAssetType = FungibleStrMultiAsset | FungibleStrAsset;
-
-export type FungibleObjMultiAsset = {
-	fun: {
-		Fungible: { Fungible: string };
-	};
-	id: {
-		Concrete: UnionXcmMultiLocation;
-	};
-};
-
-export type FungibleObjAsset = {
-	fun: {
-		Fungible: { Fungible: string };
-	};
-	id: UnionXcmMultiLocation;
-};
-
-export type FungibleObjAssetType = FungibleObjMultiAsset | FungibleObjAsset;
+export type FungibleMultiAsset = FungibleAsset<{ Concrete: UnionXcmMultiLocation }>;
+export type FungibleAssetType = FungibleAsset | FungibleMultiAsset;
 
 export type UnionXcAssetsMultiLocation =
 	| XcAssetsV2MultiLocation

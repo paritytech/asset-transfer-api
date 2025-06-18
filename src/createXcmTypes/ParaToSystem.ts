@@ -11,7 +11,7 @@ import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
-	FungibleStrAssetType,
+	FungibleAssetType,
 	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
@@ -22,7 +22,7 @@ import { createAssets } from './util/createAssets.js';
 import { createBeneficiary, createXTokensParachainDestBeneficiary } from './util/createBeneficiary.js';
 import { createParachainDest } from './util/createDest.js';
 import { createFeeAssetItem } from './util/createFeeAssetItem.js';
-import { createStrTypeMultiAsset } from './util/createMultiAsset.js';
+import { createMultiAsset } from './util/createMultiAsset.js';
 import { createWeightLimit } from './util/createWeightLimit.js';
 import { createXTokensAsset, createXTokensMultiAssets } from './util/createXTokensAssets.js';
 import { createXTokensFeeAssetItem } from './util/createXTokensFeeAssetItem.js';
@@ -187,8 +187,8 @@ const createParaToSystemMultiAssets = async ({
 	xcmVersion: number;
 	registry: Registry;
 	destChainId?: string;
-}): Promise<FungibleStrAssetType[]> => {
-	let multiAssets: FungibleStrAssetType[] = [];
+}): Promise<FungibleAssetType[]> => {
+	let multiAssets: FungibleAssetType[] = [];
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
 		registry,
 		specName,
@@ -202,7 +202,7 @@ const createParaToSystemMultiAssets = async ({
 			xcmVersion,
 		);
 
-		const multiAsset = createStrTypeMultiAsset({
+		const multiAsset = createMultiAsset({
 			amount: amounts[0],
 			multiLocation,
 			xcmVersion,
@@ -226,7 +226,7 @@ const createParaToSystemMultiAssets = async ({
 
 			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
 
-			const multiAsset = createStrTypeMultiAsset({
+			const multiAsset = createMultiAsset({
 				amount: amount,
 				multiLocation,
 				xcmVersion,
@@ -235,8 +235,8 @@ const createParaToSystemMultiAssets = async ({
 		}
 	}
 
-	multiAssets = sortAssetsAscending(multiAssets) as FungibleStrAssetType[];
-	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets) as FungibleStrAssetType[];
+	multiAssets = sortAssetsAscending(multiAssets);
+	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets);
 
 	return sortedAndDedupedMultiAssets;
 };

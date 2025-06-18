@@ -4,7 +4,7 @@ import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { Registry } from '../../registry/Registry.js';
 import { getFeeAssetItemIndex } from '../../util/getFeeAssetItemIndex.js';
-import { type CreateFeeAssetItemOpts, type FungibleStrAssetType } from '../types.js';
+import { type CreateFeeAssetItemOpts, type FungibleAssetType } from '../types.js';
 import { isSystemChain } from './isSystemChain.js';
 
 /**
@@ -42,7 +42,7 @@ export const createFeeAssetItem = async ({
 		destChainId?: string;
 		isForeignAssetsTransfer: boolean;
 		isLiquidTokenTransfer: boolean;
-	}) => Promise<FungibleStrAssetType[]>;
+	}) => Promise<FungibleAssetType[]>;
 	verifySystemChain?: boolean;
 }): Promise<number> => {
 	if (xcmVersion === 2) {

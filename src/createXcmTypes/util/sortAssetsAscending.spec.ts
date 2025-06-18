@@ -1,11 +1,11 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { FungibleObjAssetType, FungibleStrAssetType } from '../types';
+import { FungibleAssetType } from '../types';
 import { sortAssetsAscending } from './sortAssetsAscending';
 
 describe('sortAssetsAscending', () => {
 	it('Should sort an unsorted multi asset array in ascending order', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '300000000',
@@ -47,7 +47,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -98,7 +98,7 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should sort an unsorted multi foreign asset array of X1s in ascending order', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -146,7 +146,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -203,7 +203,7 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should correctly sort an unsorted multi asset array with the same `parents` and `Junction`type based on their `Junction` keys', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -236,7 +236,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -278,7 +278,7 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should correctly sort an unsorted multiasset array with in ascending order when parents values are different', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -326,7 +326,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -383,7 +383,7 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should correctly sort based on differing first Junction key value for X2s when other fields are the same', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -412,7 +412,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -450,7 +450,7 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should correctly sort based on differing third Junction key value for X3s when all other fields are the same', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -479,7 +479,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -517,7 +517,7 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should correctly sort different X2 MultiLocations', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -559,7 +559,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -610,10 +610,10 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should correctly sort based on differing GeneralIndex values for X3s when all other fields are the same', () => {
-		const Assets: FungibleObjAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
-					Fungible: { Fungible: '200000000' },
+					Fungible: '200000000',
 				},
 				id: {
 					Concrete: {
@@ -626,7 +626,7 @@ describe('sortAssetsAscending', () => {
 			},
 			{
 				fun: {
-					Fungible: { Fungible: '200000000' },
+					Fungible: '200000000',
 				},
 				id: {
 					Concrete: {
@@ -639,10 +639,10 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleObjAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
-					Fungible: { Fungible: '200000000' },
+					Fungible: '200000000',
 				},
 				id: {
 					Concrete: {
@@ -655,7 +655,7 @@ describe('sortAssetsAscending', () => {
 			},
 			{
 				fun: {
-					Fungible: { Fungible: '200000000' },
+					Fungible: '200000000',
 				},
 				id: {
 					Concrete: {
@@ -668,7 +668,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const res = sortAssetsAscending(Assets) as FungibleObjAssetType[];
+		const res = sortAssetsAscending(Assets);
 
 		expect(res.length).toEqual(expected.length);
 		expect(res[0].id).toEqual(expected[0].id);
@@ -677,7 +677,7 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should correctly sort based on differing third Junction keys for X3s when all other fields are the same', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -710,7 +710,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -752,7 +752,7 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should sort an unsorted multi foreign asset array of Here, X1s and X2s in ascending order', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
@@ -904,7 +904,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000000',
@@ -1065,7 +1065,7 @@ describe('sortAssetsAscending', () => {
 	});
 
 	it('Should correctly sort an unsorted multiasset array based on fungible value when all other values are the same', () => {
-		const Assets: FungibleStrAssetType[] = [
+		const Assets: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '200000',
@@ -1098,7 +1098,7 @@ describe('sortAssetsAscending', () => {
 			},
 		];
 
-		const expected: FungibleStrAssetType[] = [
+		const expected: FungibleAssetType[] = [
 			{
 				fun: {
 					Fungible: '100000',
