@@ -31,11 +31,6 @@ const createXcmTypes: ICreateXcmTypeLookup = {
 	ParaToEthereum,
 };
 
-export const getXcmCreator = (xcmVersion: number): XcmCreator => {
-	console.log(xcmVersion);
-	return {} as XcmCreator;
-};
-
 // TODO rethink name
 export const getTypeCreator = (direction: ValidDirection, xcmVersion: number): ICreateXcmType => {
 	const constructor = createXcmTypes[direction];

@@ -3,7 +3,7 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../../createXcmTypes/index.js';
+import { getTypeCreator } from '../../createXcmTypes/index.js';
 import {
 	FungibleAsset,
 	FungibleMultiAsset,
@@ -53,7 +53,7 @@ export const transferAssetsUsingTypeAndThen = async (
 	} = opts;
 	let { customXcmOnDest: customXcmOnDestStr, sendersAddr } = opts;
 
-	const typeCreator = createXcmTypes[direction];
+	const typeCreator = getTypeCreator(direction, xcmVersion);
 	const beneficiary = createXcmOnDestBeneficiary(destAddr, xcmVersion);
 	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
 		registry,

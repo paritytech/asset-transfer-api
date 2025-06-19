@@ -1,6 +1,5 @@
 import type { ApiPromise } from '@polkadot/api';
 
-import { getXcmCreator } from '../index.js';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -17,6 +16,11 @@ import { createBeneficiary } from '../util/createBeneficiary.js';
 import { createWeightLimit } from '../util/createWeightLimit.js';
 import { createXTokensMultiAssets } from '../util/createXTokensAssets.js';
 import { createXTokensFeeAssetItem } from '../util/createXTokensFeeAssetItem.js';
+
+export const getXcmCreator = (xcmVersion: number): XcmCreator => {
+	console.log(xcmVersion);
+	return {} as XcmCreator;
+};
 
 /**
  * These methods are uniform across all handlers / directions
