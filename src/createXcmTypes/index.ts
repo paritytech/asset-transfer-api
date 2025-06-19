@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { Direction } from '../types.js';
 import { ParaToEthereum } from './handlers/ParaToEthereum.js';
 import { ParaToPara } from './handlers/ParaToPara.js';
@@ -12,13 +10,14 @@ import { SystemToBridge } from './handlers/SystemToBridge.js';
 import { SystemToPara } from './handlers/SystemToPara.js';
 import { SystemToRelay } from './handlers/SystemToRelay.js';
 import { SystemToSystem } from './handlers/SystemToSystem.js';
-import { ICreateXcmType, XcmCreator } from './types.js';
+import { ICreateXcmType, ICreateXcmTypeConstructor, XcmCreator } from './types.js';
 
+type ValidDirection = Exclude<Direction, Direction.Local>;
 type ICreateXcmTypeLookup = {
-	[key in Exclude<Direction, Direction.Local>]: ICreateXcmType;
+	[key in ValidDirection]: ICreateXcmTypeConstructor;
 };
 
-export const createXcmTypes: ICreateXcmTypeLookup = {
+const createXcmTypes: ICreateXcmTypeLookup = {
 	SystemToSystem,
 	SystemToPara,
 	SystemToRelay,
@@ -35,4 +34,10 @@ export const createXcmTypes: ICreateXcmTypeLookup = {
 export const getXcmCreator = (xcmVersion: number): XcmCreator => {
 	console.log(xcmVersion);
 	return {} as XcmCreator;
+};
+
+// TODO rethink name
+export const getTypeCreator = (direction: ValidDirection, xcmVersion: number): ICreateXcmType => {
+	const constructor = createXcmTypes[direction];
+	return new constructor(xcmVersion);
 };
