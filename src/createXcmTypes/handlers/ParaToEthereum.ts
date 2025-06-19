@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
@@ -13,43 +11,34 @@ import type {
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
 	FungibleMultiAsset,
-	ICreateXcmType,
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
-import { createBeneficiary } from '../util/createBeneficiary.js';
 import { createParachainDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
 import { createMultiAsset } from '../util/createMultiAsset.js';
-import { createWeightLimit } from '../util/createWeightLimit.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { getParachainNativeAssetLocation } from '../util/getParachainNativeAssetLocation.js';
 import { getXcAssetMultiLocationByAssetId } from '../util/getXcAssetMultiLocationByAssetId.js';
 import { isParachainPrimaryNativeAsset } from '../util/isParachainPrimaryNativeAsset.js';
 import { sortAssetsAscending } from '../util/sortAssetsAscending.js';
+import { DefaultHandler } from './default.js';
 
-export const ParaToEthereum: ICreateXcmType = {
-	/**
-	 * Create a XcmVersionedMultiLocation type for a beneficiary.
-	 *
-	 * @param accountId The accountId of the beneficiary.
-	 * @param xcmVersion The accepted xcm version.
-	 */
-	createBeneficiary,
+export class ParaToEthereum extends DefaultHandler {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary => {
+	createDest(destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary {
 		return createParachainDest({
 			destId,
 			parents: 1,
 			xcmVersion,
 		});
-	},
+	}
 	/**
 	 * Create a VersionedMultiAsset structured type.
 	 *
@@ -59,13 +48,13 @@ export const ParaToEthereum: ICreateXcmType = {
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
-	createAssets: async (
+	async createAssets(
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> => {
+	): Promise<UnionXcmMultiAssets> {
 		return createAssets({
 			amounts,
 			xcmVersion,
@@ -74,27 +63,22 @@ export const ParaToEthereum: ICreateXcmType = {
 			opts,
 			multiAssetCreator: createParaToEthereumMultiAssets,
 		});
-	},
-	/**
-	 * Create an Xcm WeightLimit structured type.
-	 *
-	 * @param opts Options that are used for WeightLimit.
-	 */
-	createWeightLimit,
+	}
+
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
 	 * @param api ApiPromise
 	 * @param opts Options that are used for fee asset construction.
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
+	async createFeeAssetItem(api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> {
 		return createFeeAssetItem({
 			api,
 			opts,
 			multiAssetCreator: createParaToEthereumMultiAssets,
 		});
-	},
-};
+	}
+}
 
 /**
  * Create multiassets for ParaToEthereum direction.

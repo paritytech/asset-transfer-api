@@ -13,47 +13,39 @@ import type {
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
 	FungibleMultiAsset,
-	ICreateXcmType,
 	UnionXcAssetsMultiAsset,
-	UnionXcAssetsMultiAssets,
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
+	XcmDestBeneficiaryXcAssets,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
-import { createBeneficiary, createXTokensParachainDestBeneficiary } from '../util/createBeneficiary.js';
+import { createXTokensParachainDestBeneficiary } from '../util/createBeneficiary.js';
 import { createParachainDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
 import { createMultiAsset } from '../util/createMultiAsset.js';
-import { createWeightLimit } from '../util/createWeightLimit.js';
-import { createXTokensAsset, createXTokensMultiAssets } from '../util/createXTokensAssets.js';
-import { createXTokensFeeAssetItem } from '../util/createXTokensFeeAssetItem.js';
+import { createXTokensAsset } from '../util/createXTokensAssets.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { getParachainNativeAssetLocation } from '../util/getParachainNativeAssetLocation.js';
 import { getXcAssetMultiLocationByAssetId } from '../util/getXcAssetMultiLocationByAssetId.js';
 import { isParachainPrimaryNativeAsset } from '../util/isParachainPrimaryNativeAsset.js';
 import { sortAssetsAscending } from '../util/sortAssetsAscending.js';
+import { DefaultHandler } from './default.js';
 
-export const ParaToPara: ICreateXcmType = {
-	/**
-	 * Create a XcmVersionedMultiLocation type for a beneficiary.
-	 *
-	 * @param accountId The accountId of the beneficiary.
-	 * @param xcmVersion The accepted xcm version.
-	 */
-	createBeneficiary,
+export class ParaToPara extends DefaultHandler {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary => {
+	createDest(destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary {
 		return createParachainDest({
 			destId,
 			parents: 1,
 			xcmVersion,
 		});
-	},
+	}
+
 	/**
 	 * Create a VersionedMultiAsset structured type.
 	 *
@@ -63,13 +55,13 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
-	createAssets: async (
+	async createAssets(
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> => {
+	): Promise<UnionXcmMultiAssets> {
 		return createAssets({
 			amounts,
 			xcmVersion,
@@ -78,26 +70,22 @@ export const ParaToPara: ICreateXcmType = {
 			opts,
 			multiAssetCreator: createParaToParaMultiAssets,
 		});
-	},
-	/**
-	 * Create an Xcm WeightLimit structured type.
-	 *
-	 * @param opts Options that are used for WeightLimit.
-	 */
-	createWeightLimit,
+	}
+
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
 	 * @param api ApiPromise
 	 * @param opts Options that are used for fee asset construction.
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
+	async createFeeAssetItem(api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> {
 		return createFeeAssetItem({
 			api,
 			opts,
 			multiAssetCreator: createParaToParaMultiAssets,
 		});
-	},
+	}
+
 	/**
 	 * Create xTokens beneficiary structured type.
 	 *
@@ -105,31 +93,10 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createXTokensBeneficiary: createXTokensParachainDestBeneficiary,
-	/**
-	 * Create multiple xTokens Assets.
-	 *
-	 * @param amounts Amount per asset. It will match the `assets` length.
-	 * @param xcmVersion The accepted xcm version.
-	 * @param specName The specname of the chain the api is connected to.
-	 * @param assets The assets to create into xcm `MultiAssets`.
-	 * @param opts Options used to create xTokens `MultiAssets`.
-	 */
-	createXTokensAssets: async (
-		amounts: string[],
-		xcmVersion: number,
-		specName: string,
-		assets: string[],
-		opts: CreateAssetsOpts,
-	): Promise<UnionXcAssetsMultiAssets> => {
-		return createXTokensMultiAssets({
-			amounts,
-			assets,
-			specName,
-			opts,
-			xcmVersion,
-		});
-	},
+	createXTokensBeneficiary(destChainId: string, accountId: string, xcmVersion: number): XcmDestBeneficiaryXcAssets {
+		return createXTokensParachainDestBeneficiary(destChainId, accountId, xcmVersion);
+	}
+
 	/**
 	 * Create a single xToken asset.
 	 *
@@ -139,13 +106,13 @@ export const ParaToPara: ICreateXcmType = {
 	 * @param assetId Single asset to be created into a `MultiAsset`.
 	 * @param opts Options to create a single Asset.
 	 */
-	createXTokensAsset: async (
+	async createXTokensAsset(
 		amount: string,
 		xcmVersion: number,
 		specName: string,
 		assetId: string,
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcAssetsMultiAsset> => {
+	): Promise<UnionXcAssetsMultiAsset> {
 		return createXTokensAsset({
 			amount,
 			assetId,
@@ -153,14 +120,8 @@ export const ParaToPara: ICreateXcmType = {
 			specName,
 			xcmVersion,
 		});
-	},
-	/**
-	 * Create an xTokens xcm `feeAssetItem`.
-	 *
-	 * @param opts Options used for creating `feeAssetItem`.
-	 */
-	createXTokensFeeAssetItem,
-};
+	}
+}
 
 /**
  * Create multiassets for ParaToPara direction.

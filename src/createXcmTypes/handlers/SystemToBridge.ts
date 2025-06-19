@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 
 import type { Registry } from '../../registry/index.js';
@@ -10,7 +8,6 @@ import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
-	ICreateXcmType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
@@ -19,38 +16,31 @@ import {
 	XcmV4Junctions,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
-import { createBeneficiary } from '../util/createBeneficiary.js';
 import { createInteriorValueDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
 import { createMultiAsset } from '../util/createMultiAsset.js';
-import { createWeightLimit } from '../util/createWeightLimit.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { fetchPalletInstanceId } from '../util/fetchPalletInstanceId.js';
 import { getAssetId } from '../util/getAssetId.js';
 import { isRelayNativeAsset } from '../util/isRelayNativeAsset.js';
 import { sortAssetsAscending } from '../util/sortAssetsAscending.js';
+import { DefaultHandler } from './default.js';
 
-export const SystemToBridge: ICreateXcmType = {
-	/**
-	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
-	 *
-	 * @param accountId The accountId of the beneficiary.
-	 * @param xcmVersion The accepted xcm version.
-	 */
-	createBeneficiary,
+export class SystemToBridge extends DefaultHandler {
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The chainId of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
+	createDest(destId: string, xcmVersion: number): XcmDestBeneficiary {
 		return createInteriorValueDest({
 			destId,
 			parents: 2,
 			xcmVersion,
 		});
-	},
+	}
+
 	/**
 	 * Create a VersionedMultiAsset structured type.
 	 *
@@ -60,13 +50,13 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
-	createAssets: async (
+	async createAssets(
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> => {
+	): Promise<UnionXcmMultiAssets> {
 		return createAssets({
 			amounts,
 			xcmVersion,
@@ -75,28 +65,23 @@ export const SystemToBridge: ICreateXcmType = {
 			opts,
 			multiAssetCreator: createSystemToBridgeAssets,
 		});
-	},
-	/**
-	 * Create an Xcm WeightLimit structured type.
-	 *
-	 * @param opts Options that are used for WeightLimit.
-	 */
-	createWeightLimit,
+	}
+
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
 	 * @param api ApiPromise
 	 * @param opts Options that are used for fee asset construction.
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
+	async createFeeAssetItem(api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> {
 		return createFeeAssetItem({
 			api,
 			opts,
 			multiAssetCreator: createSystemToBridgeAssets,
 			verifySystemChain: true,
 		});
-	},
-};
+	}
+}
 
 /**
  * Create multiassets for SystemToBridge direction.
