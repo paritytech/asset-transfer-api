@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 
 import { DEFAULT_XCM_VERSION } from '../../consts.js';
@@ -11,45 +9,37 @@ import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
-	ICreateXcmType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmDestBeneficiary,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
-import { createBeneficiary } from '../util/createBeneficiary.js';
 import { createParachainDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
 import { createMultiAsset } from '../util/createMultiAsset.js';
-import { createWeightLimit } from '../util/createWeightLimit.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { fetchPalletInstanceId } from '../util/fetchPalletInstanceId.js';
 import { getAssetId } from '../util/getAssetId.js';
 import { isRelayNativeAsset } from '../util/isRelayNativeAsset.js';
 import { isSystemChain } from '../util/isSystemChain.js';
 import { sortAssetsAscending } from '../util/sortAssetsAscending.js';
+import { DefaultHandler } from './default.js';
 
-export const SystemToSystem: ICreateXcmType = {
-	/**
-	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
-	 *
-	 * @param accountId The accountId of the beneficiary.
-	 * @param xcmVersion The accepted xcm version.
-	 */
-	createBeneficiary,
+export class SystemToSystem extends DefaultHandler {
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary => {
+	createDest(destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary {
 		return createParachainDest({
 			destId,
 			parents: 1,
 			xcmVersion,
 		});
-	},
+	}
+
 	/**
 	 * Create a VersionedMultiAsset structured type.
 	 *
@@ -59,13 +49,13 @@ export const SystemToSystem: ICreateXcmType = {
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
-	createAssets: async (
+	async createAssets(
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> => {
+	): Promise<UnionXcmMultiAssets> {
 		return createAssets({
 			amounts,
 			xcmVersion,
@@ -74,28 +64,23 @@ export const SystemToSystem: ICreateXcmType = {
 			opts,
 			multiAssetCreator: createSystemToSystemMultiAssets,
 		});
-	},
-	/**
-	 * Create an Xcm WeightLimit structured type.
-	 *
-	 * @param opts Options that are used for WeightLimit.
-	 */
-	createWeightLimit,
+	}
+
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
 	 * @param api ApiPromise
 	 * @param opts Options that are used for fee asset construction.
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
+	async createFeeAssetItem(api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> {
 		return createFeeAssetItem({
 			api,
 			opts,
 			multiAssetCreator: createSystemToSystemMultiAssets,
 			verifySystemChain: true,
 		});
-	},
-};
+	}
+}
 
 /**
  * Create multiassets for SystemToSystem direction.

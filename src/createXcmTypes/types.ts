@@ -345,17 +345,19 @@ export type XcmVersionedAssetId =
 	| XcmVersionedAssetIdV5;
 
 export interface ICreateXcmType {
-	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;
-	createDest: (destId: string, xcmVersion: number) => XcmDestBeneficiary;
-	createAssets: (
-		amounts: string[],
-		xcmVersion: number,
-		specName: string,
-		assets: string[],
-		opts: CreateAssetsOpts,
-	) => Promise<UnionXcmMultiAssets>;
-	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
-	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
+	xcmCreator: XcmCreator;
+
+	// createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;
+	// createDest: (destId: string, xcmVersion: number) => XcmDestBeneficiary;
+	// createAssets: (
+	// 	amounts: string[],
+	// 	xcmVersion: number,
+	// 	specName: string,
+	// 	assets: string[],
+	// 	opts: CreateAssetsOpts,
+	// ) => Promise<UnionXcmMultiAssets>;
+	// createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
+	// createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
 	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBeneficiaryXcAssets;
 	createXTokensAssets?: (
 		amounts: string[],
@@ -374,3 +376,5 @@ export interface ICreateXcmType {
 	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createXTokensFeeAssetItem?: (opts: CreateFeeAssetItemOpts) => UnionXcAssetsMultiLocation;
 }
+
+export interface XcmCreator {}

@@ -12,7 +12,7 @@ import { SystemToBridge } from './handlers/SystemToBridge.js';
 import { SystemToPara } from './handlers/SystemToPara.js';
 import { SystemToRelay } from './handlers/SystemToRelay.js';
 import { SystemToSystem } from './handlers/SystemToSystem.js';
-import { ICreateXcmType } from './types.js';
+import { ICreateXcmType, XcmCreator } from './types.js';
 
 type ICreateXcmTypeLookup = {
 	[key in Exclude<Direction, Direction.Local>]: ICreateXcmType;
@@ -30,4 +30,9 @@ export const createXcmTypes: ICreateXcmTypeLookup = {
 	ParaToRelay,
 	ParaToSystem,
 	ParaToEthereum,
+};
+
+export const getXcmCreator = (xcmVersion: number): XcmCreator => {
+	console.log(xcmVersion);
+	return {} as XcmCreator;
 };
