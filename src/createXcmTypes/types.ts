@@ -382,6 +382,7 @@ export interface ICreateXcmType {
 }
 
 export interface XcmCreator {
+	xcmVersion: number;
 	createBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiary;
 	createXTokensParachainDestBeneficiary: (opts: {
 		accountId: string;

@@ -16,9 +16,9 @@ import {
 import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
 import { createParachainDestBeneficiaryInner } from './common.js';
 
-const xcmVersion = 4;
-
 export const V4: XcmCreator = {
+	xcmVersion: 4,
+
 	createBeneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
 		const X1 = isEthereumAddress(accountId)
 			? [{ AccountKey20: { key: accountId } }]
@@ -65,7 +65,6 @@ export const V4: XcmCreator = {
 	},
 
 	createMultiAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
-		// TODO: Remove xcmVersion arg and cleanup
 		const concreteMultiLocation = this.resolveMultiLocation(multiLocation);
 		return {
 			id: concreteMultiLocation,
@@ -81,7 +80,7 @@ export const V4: XcmCreator = {
 		const hasGlobalConsensus =
 			multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
 
-		let result = parseLocationStrToLocation(multiLocationStr, xcmVersion);
+		let result = parseLocationStrToLocation(multiLocationStr, this.xcmVersion);
 
 		// handle case where result is an xcmV1Multilocation from the registry
 		if (typeof result === 'object' && 'v1' in result) {

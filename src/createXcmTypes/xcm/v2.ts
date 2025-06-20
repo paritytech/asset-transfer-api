@@ -16,9 +16,9 @@ import {
 import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
 import { createParachainDestBeneficiaryInner } from './common.js';
 
-const xcmVersion = 2;
-
 export const V2: XcmCreator = {
+	xcmVersion: 2,
+
 	createBeneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
 		const X1 = isEthereumAddress(accountId)
 			? { AccountKey20: { network: 'Any', key: accountId } }
@@ -90,7 +90,7 @@ export const V2: XcmCreator = {
 			);
 		}
 
-		let result = parseLocationStrToLocation(multiLocationStr, xcmVersion);
+		let result = parseLocationStrToLocation(multiLocationStr, this.xcmVersion);
 
 		// handle case where result is an xcmV1Multilocation from the registry
 		if (typeof result === 'object' && 'v1' in result) {

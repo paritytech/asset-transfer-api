@@ -74,7 +74,7 @@ export abstract class DefaultHandler implements ICreateXcmType {
 
 	createXTokensAssets(
 		amounts: string[],
-		xcmVersion: number,
+		_xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
@@ -84,7 +84,6 @@ export abstract class DefaultHandler implements ICreateXcmType {
 			assets,
 			specName,
 			opts,
-			xcmVersion,
 			xcmCreator: this.xcmCreator,
 		});
 	}

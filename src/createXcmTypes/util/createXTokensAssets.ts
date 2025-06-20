@@ -31,14 +31,12 @@ export const createXTokensMultiAssets = async ({
 	assets,
 	opts: { api, registry },
 	specName,
-	xcmVersion,
 	xcmCreator,
 }: {
 	amounts: string[];
 	assets: string[];
 	opts: CreateAssetsOpts;
 	specName: string;
-	xcmVersion: number;
 	xcmCreator: XcmCreator;
 }): Promise<UnionXcAssetsMultiAssets> => {
 	let multiAssets: FungibleAssetType[] = [];
@@ -51,7 +49,7 @@ export const createXTokensMultiAssets = async ({
 			api,
 			assetId,
 			specName,
-			xcmVersion,
+			xcmCreator.xcmVersion,
 			registry,
 		);
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;

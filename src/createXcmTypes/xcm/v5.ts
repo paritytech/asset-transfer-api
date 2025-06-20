@@ -13,6 +13,8 @@ import { createParachainDestBeneficiaryInner } from './common.js';
 import { V4 } from './v4.js';
 
 export const V5: XcmCreator = {
+	xcmVersion: 5,
+
 	// Same as V4
 	createBeneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
 		const v4 = V4.createBeneficiary({ accountId, parents });
