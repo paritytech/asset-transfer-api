@@ -378,7 +378,7 @@ export interface ICreateXcmType {
 		opts: CreateAssetsOpts,
 	) => Promise<UnionXcAssetsMultiAsset>;
 	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
-	createXTokensFeeAssetItem?: (opts: CreateFeeAssetItemOpts) => UnionXcAssetsMultiLocation;
+	createXTokensFeeAssetItem?: (opts: { paysWithFeeDest?: string }) => UnionXcAssetsMultiLocation;
 }
 
 export interface XcmCreator {
@@ -394,8 +394,6 @@ export interface XcmCreator {
 	resolveMultiLocation: (multiLocation: AnyJson) => UnionXcmMultiLocation;
 	multiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
 	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
-
-	// createXTokensFeeAssetItem
 
 	// getXcAssetMultiLocationByAssetId
 	// createMultiAssets ??? - for things like createXTokensAssets

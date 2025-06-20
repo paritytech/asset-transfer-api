@@ -92,7 +92,7 @@ export abstract class DefaultHandler implements ICreateXcmType {
 		throw new Error('Not Implemented');
 	}
 
-	createXTokensFeeAssetItem(opts: CreateFeeAssetItemOpts): UnionXcAssetsMultiLocation {
-		return createXTokensFeeAssetItem(opts);
+	createXTokensFeeAssetItem({ paysWithFeeDest }: { paysWithFeeDest?: string }): UnionXcAssetsMultiLocation {
+		return createXTokensFeeAssetItem({ paysWithFeeDest, xcmCreator: this.xcmCreator });
 	}
 }

@@ -35,11 +35,7 @@ export const transferMultiassetWithFee = async (
 			api,
 		});
 		const fee = typeCreator.createXTokensFeeAssetItem({
-			registry,
 			paysWithFeeDest,
-			xcmVersion,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer,
 		});
 
 		const beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);

@@ -1,7 +1,6 @@
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
-import { CreateFeeAssetItemOpts, UnionXcAssetsMultiLocation } from '../types.js';
-import { getXcmCreator } from '../xcm/index.js';
+import { UnionXcAssetsMultiLocation, XcmCreator } from '../types.js';
 
 /**
  * Create an xTokens xcm `feeAssetItem`.
@@ -10,18 +9,18 @@ import { getXcmCreator } from '../xcm/index.js';
  */
 export const createXTokensFeeAssetItem = ({
 	paysWithFeeDest,
-	xcmVersion,
-}: CreateFeeAssetItemOpts): UnionXcAssetsMultiLocation => {
-	if (!(xcmVersion && paysWithFeeDest)) {
+	xcmCreator,
+}: {
+	paysWithFeeDest?: string;
+	xcmCreator: XcmCreator;
+}): UnionXcAssetsMultiLocation => {
+	if (!paysWithFeeDest) {
 		throw new BaseError(
-			'failed to create xTokens fee multilocation. "paysWithFeeDest" and "xcmVersion" are both required.',
+			'failed to create xTokens fee multilocation. "paysWithFeeDest" is required.',
 			BaseErrorsEnum.InternalError,
 		);
 	}
 
-	const xcmCreator = getXcmCreator(xcmVersion);
-
 	const paysWithFeeMultiLocation = resolveMultiLocation(paysWithFeeDest, xcmCreator);
-
 	return xcmCreator.multiLocation(paysWithFeeMultiLocation);
 };
