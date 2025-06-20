@@ -75,7 +75,14 @@ export const transferAssetsUsingTypeAndThen = async (
 
 		// get erc20 Asset Location from assetIds
 		for (const assetId of assetIds) {
-			const assetIdLocationStr = await getAssetId(api, registry, assetId, specName, xcmVersion, true);
+			const assetIdLocationStr = await getAssetId({
+				api,
+				registry,
+				asset: assetId,
+				specName,
+				xcmVersion,
+				isForeignAssetsTransfer: true,
+			});
 			if (!assetIdLocationStr.toLowerCase().includes('ethereum')) {
 				continue;
 			}
@@ -204,7 +211,7 @@ export const transferAssetsUsingTypeAndThen = async (
 
 	let remoteFeesId: XcmVersionedAssetId;
 	if (paysWithFeeDest && !assetIdIsLocation(paysWithFeeDest)) {
-		const remoteFeesAssetLocation = await getAssetId(api, registry, paysWithFeeDest, specName, xcmVersion);
+		const remoteFeesAssetLocation = await getAssetId({ api, registry, asset: paysWithFeeDest, specName, xcmVersion });
 		remoteFeesId = createXcmVersionedAssetId(remoteFeesAssetLocation, xcmVersion, xcmCreator);
 	} else {
 		remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmVersion, xcmCreator);

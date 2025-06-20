@@ -52,7 +52,14 @@ export const createAssetLocations = async (
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
 
 		if (!assetIdsContainLocations && !isRelayNative && !isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, assetIdsContainLocations);
+			assetId = await getAssetId({
+				api,
+				registry,
+				asset: assetId,
+				specName,
+				xcmVersion,
+				isForeignAssetsTransfer: assetIdsContainLocations,
+			});
 		}
 
 		if (assetIdsContainLocations) {

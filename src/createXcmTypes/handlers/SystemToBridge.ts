@@ -129,7 +129,14 @@ export const createSystemToBridgeAssets = async ({
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
 		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
+			assetId = await getAssetId({
+				api,
+				registry,
+				asset: assetId,
+				specName,
+				xcmVersion,
+				isForeignAssetsTransfer,
+			});
 		}
 
 		let multiLocation: UnionXcmMultiLocation;

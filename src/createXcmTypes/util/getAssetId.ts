@@ -26,17 +26,24 @@ import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
  * @param specName string
  * @param isForeignAssetsTransfer boolean
  */
-export const getAssetId = async (
-	api: ApiPromise,
-	registry: Registry,
-	asset: string,
-	specName: string,
-	xcmVersion: number,
-	isForeignAssetsTransfer?: boolean,
-): Promise<string> => {
+export const getAssetId = async ({
+	api,
+	registry,
+	asset,
+	specName,
+	xcmVersion,
+	isForeignAssetsTransfer,
+}: {
+	api: ApiPromise;
+	registry: Registry;
+	asset: string;
+	specName: string;
+	xcmVersion: number;
+	isForeignAssetsTransfer?: boolean;
+}): Promise<string> => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
-	const isParachain = new BN(currentChainId).gte(new BN(2000));
+	const isParachain = new BN(currentChainId).gte(new BN(2000)); // TODO: Move magic number to constants
 	const xcmCreator = getXcmCreator(xcmVersion);
 
 	// if assets pallet, check the cache and return the cached assetId if found

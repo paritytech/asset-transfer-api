@@ -731,14 +731,14 @@ export class AssetTransferApi {
 				const relayAssetLocation = `{"parents":"1","interior":{"Here":""}}`;
 				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, currentXcmVersion, xcmCreator);
 			} else {
-				const feeAsset = await getAssetId(
-					this.api,
-					this.registry,
-					xcmFeeAsset,
-					this.specName,
-					currentXcmVersion,
-					false,
-				);
+				const feeAsset = await getAssetId({
+					api: this.api,
+					registry: this.registry,
+					asset: xcmFeeAsset,
+					specName: this.specName,
+					xcmVersion: currentXcmVersion,
+					isForeignAssetsTransfer: false,
+				});
 
 				if (feeAsset) {
 					const location = getPaysWithFeeOriginAssetLocationFromRegistry(this, feeAsset);
@@ -1210,14 +1210,14 @@ export class AssetTransferApi {
 			// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 			// check for the general index of the assetId and assign the correct value for the local tx
 			// throws an error if the general index is not found
-			assetId = await getAssetId(
-				this.api,
-				this.registry,
-				assetId,
-				this.specName,
+			assetId = await getAssetId({
+				api: this.api,
+				registry: this.registry,
+				asset: assetId,
+				specName: this.specName,
 				xcmVersion,
-				opts.isForeignAssetsTransfer,
-			);
+				isForeignAssetsTransfer: opts.isForeignAssetsTransfer,
+			});
 		}
 		let method: LocalMethodName;
 		if (transferAll) {
@@ -1552,14 +1552,14 @@ export class AssetTransferApi {
 				const relayAssetLocation = `{"parents":"1","interior":{"Here":""}}`;
 				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, xcmVersion, xcmCreator);
 			} else {
-				const feeAsset = await getAssetId(
-					chainApi.api,
-					chainApi.registry,
-					xcmFeeAsset,
-					chainApi.specName,
+				const feeAsset = await getAssetId({
+					api: chainApi.api,
+					registry: chainApi.registry,
+					asset: xcmFeeAsset,
+					specName: chainApi.specName,
 					xcmVersion,
-					false,
-				);
+					isForeignAssetsTransfer: false,
+				});
 				feeAssetLocation = createXcmVersionedAssetId(feeAsset, xcmVersion, xcmCreator);
 			}
 

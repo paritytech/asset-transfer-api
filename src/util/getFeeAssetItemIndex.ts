@@ -60,14 +60,14 @@ export const getFeeAssetItemIndex = async (
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
 				if (!isValidNumber) {
-					const paysWithFeeDestAssetLocationStr = await getAssetId(
+					const paysWithFeeDestAssetLocationStr = await getAssetId({
 						api,
 						registry,
-						paysWithFeeDest,
+						asset: paysWithFeeDest,
 						specName,
 						xcmVersion,
 						isForeignAssetsTransfer,
-					);
+					});
 					// if isForeignAssetsTransfer or parachain origin, compare the multiAsset interior to the the paysWithFeeDestAssetLocationStr as a multilocation
 					if (isForeignAssetsTransfer || isParaOrigin) {
 						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestAssetLocationStr, xcmCreator);

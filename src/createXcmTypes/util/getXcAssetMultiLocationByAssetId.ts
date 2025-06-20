@@ -17,7 +17,13 @@ export const getXcAssetMultiLocationByAssetId = async (
 ): Promise<string> => {
 	// if symbol, get the integer or multilocation assetId
 	if (!validateNumber(assetId)) {
-		assetId = await getAssetId(api, registry, assetId, specName, xcmVersion);
+		assetId = await getAssetId({
+			api,
+			registry,
+			asset: assetId,
+			specName,
+			xcmVersion,
+		});
 	}
 
 	const paraId = registry.lookupChainIdBySpecName(specName);
