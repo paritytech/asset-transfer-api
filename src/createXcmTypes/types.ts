@@ -259,11 +259,11 @@ export type XcmV3DestBeneficiary = VersionedWrapper<XcmVersionKey.V3, XcmDestBen
 export type XcmV4DestBeneficiary = VersionedWrapper<XcmVersionKey.V4, XcmDestBeneficiaryMap[XcmVersionKey.V4]>;
 export type XcmV5DestBeneficiary = VersionedWrapper<XcmVersionKey.V5, XcmDestBeneficiaryMap[XcmVersionKey.V5]>;
 
-type ParachainX2Interior =
+export type ParachainX2Interior =
 	| [{ Parachain: string }, { AccountId32: { id: string } }]
 	| [{ Parachain: string }, { AccountKey20: { key: string } }];
 
-type ParachainDestBeneficiaryInner = {
+export type ParachainDestBeneficiaryInner = {
 	parents: string | number;
 	interior: {
 		X2: ParachainX2Interior;
@@ -344,7 +344,13 @@ export type XcmVersionedAssetId =
 	| XcmVersionedAssetIdV4
 	| XcmVersionedAssetIdV5;
 
+export interface ICreateXcmTypeConstructor {
+	new (xcmVersion: number): ICreateXcmType;
+}
+
 export interface ICreateXcmType {
+	xcmCreator: XcmCreator;
+
 	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;
 	createDest: (destId: string, xcmVersion: number) => XcmDestBeneficiary;
 	createAssets: (
@@ -372,5 +378,24 @@ export interface ICreateXcmType {
 		opts: CreateAssetsOpts,
 	) => Promise<UnionXcAssetsMultiAsset>;
 	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
-	createXTokensFeeAssetItem?: (opts: CreateFeeAssetItemOpts) => UnionXcAssetsMultiLocation;
+	createXTokensFeeAssetItem?: (opts: { paysWithFeeDest?: string }) => UnionXcAssetsMultiLocation;
+}
+
+export interface XcmCreator {
+	xcmVersion: number;
+	createBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiary;
+	createXTokensParachainDestBeneficiary: (opts: {
+		accountId: string;
+		destChainId: string;
+		parents: number;
+	}) => XcmDestBeneficiaryXcAssets;
+	createXTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiaryXcAssets;
+	createMultiAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
+	resolveMultiLocation: (multiLocation: AnyJson) => UnionXcmMultiLocation;
+	multiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
+	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
+
+	// getXcAssetMultiLocationByAssetId
+	// createMultiAssets ??? - for things like createXTokensAssets
+	// resolveAssetTransferType
 }

@@ -1,56 +1,45 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 
-import type { Registry } from '../registry/index.js';
-import { RequireOnlyOne } from '../types.js';
-import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
-import { validateNumber } from '../validate/index.js';
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import type { Registry } from '../../registry/index.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import { validateNumber } from '../../validate/index.js';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
-	ICreateXcmType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
+	XcmCreator,
 	XcmDestBeneficiary,
-	XcmV2Junctions,
-	XcmV3Junctions,
-	XcmV4Junctions,
-} from './types.js';
-import { createAssets } from './util/createAssets.js';
-import { createBeneficiary } from './util/createBeneficiary.js';
-import { createInteriorValueDest } from './util/createDest.js';
-import { createFeeAssetItem } from './util/createFeeAssetItem.js';
-import { createMultiAsset } from './util/createMultiAsset.js';
-import { createWeightLimit } from './util/createWeightLimit.js';
-import { dedupeAssets } from './util/dedupeAssets.js';
-import { fetchPalletInstanceId } from './util/fetchPalletInstanceId.js';
-import { getAssetId } from './util/getAssetId.js';
-import { isRelayNativeAsset } from './util/isRelayNativeAsset.js';
-import { sortAssetsAscending } from './util/sortAssetsAscending.js';
+} from '../types.js';
+import { createAssets } from '../util/createAssets.js';
+import { createParachainDest } from '../util/createDest.js';
+import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
+import { dedupeAssets } from '../util/dedupeAssets.js';
+import { fetchPalletInstanceId } from '../util/fetchPalletInstanceId.js';
+import { getAssetId } from '../util/getAssetId.js';
+import { isRelayNativeAsset } from '../util/isRelayNativeAsset.js';
+import { isSystemChain } from '../util/isSystemChain.js';
+import { sortAssetsAscending } from '../util/sortAssetsAscending.js';
+import { DefaultHandler } from './default.js';
 
-export const SystemToBridge: ICreateXcmType = {
-	/**
-	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
-	 *
-	 * @param accountId The accountId of the beneficiary.
-	 * @param xcmVersion The accepted xcm version.
-	 */
-	createBeneficiary,
+export class SystemToSystem extends DefaultHandler {
 	/**
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
-	 * @param destId The chainId of the destination.
+	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion: number): XcmDestBeneficiary => {
-		return createInteriorValueDest({
+	createDest(destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary {
+		return createParachainDest({
 			destId,
-			parents: 2,
+			parents: 1,
 			xcmVersion,
 		});
-	},
+	}
+
 	/**
 	 * Create a VersionedMultiAsset structured type.
 	 *
@@ -60,46 +49,43 @@ export const SystemToBridge: ICreateXcmType = {
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
-	createAssets: async (
+	async createAssets(
 		amounts: string[],
 		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> => {
+	): Promise<UnionXcmMultiAssets> {
 		return createAssets({
 			amounts,
 			xcmVersion,
 			specName,
 			assets,
 			opts,
-			multiAssetCreator: createSystemToBridgeAssets,
+			multiAssetCreator: createSystemToSystemMultiAssets,
+			xcmCreator: this.xcmCreator,
 		});
-	},
-	/**
-	 * Create an Xcm WeightLimit structured type.
-	 *
-	 * @param opts Options that are used for WeightLimit.
-	 */
-	createWeightLimit,
+	}
+
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
 	 * @param api ApiPromise
 	 * @param opts Options that are used for fee asset construction.
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
+	async createFeeAssetItem(api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> {
 		return createFeeAssetItem({
 			api,
 			opts,
-			multiAssetCreator: createSystemToBridgeAssets,
+			multiAssetCreator: createSystemToSystemMultiAssets,
 			verifySystemChain: true,
+			xcmCreator: this.xcmCreator,
 		});
-	},
-};
+	}
+}
 
 /**
- * Create multiassets for SystemToBridge direction.
+ * Create multiassets for SystemToSystem direction.
  *
  * @param api ApiPromise
  * @param amounts Amount per asset. It will match the `assets` length.
@@ -108,28 +94,37 @@ export const SystemToBridge: ICreateXcmType = {
  * @param xcmVersion The accepted xcm version.
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
+ * @param isLiquidTokenTransfer Whether this transfer is a liquid pool assets transfer.
  */
-export const createSystemToBridgeAssets = async ({
+export const createSystemToSystemMultiAssets = async ({
 	api,
 	amounts,
 	specName,
 	assets,
 	registry,
-	xcmVersion,
 	isForeignAssetsTransfer,
 	isLiquidTokenTransfer,
+	xcmCreator,
 }: {
 	api: ApiPromise;
 	amounts: string[];
 	specName: string;
 	assets: string[];
-	xcmVersion: number;
 	registry: Registry;
-	destChainId?: string;
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
+	destChainId?: string;
+	xcmCreator: XcmCreator;
 }): Promise<FungibleAssetType[]> => {
 	let multiAssets: FungibleAssetType[] = [];
+	const systemChainId = registry.lookupChainIdBySpecName(specName);
+
+	if (!isSystemChain(systemChainId)) {
+		throw new BaseError(
+			`specName ${specName} did not match a valid system chain ID. Found ID ${systemChainId}`,
+			BaseErrorsEnum.InternalError,
+		);
+	}
 
 	for (let i = 0; i < assets.length; i++) {
 		let assetId: string = assets[i];
@@ -139,32 +134,34 @@ export const createSystemToBridgeAssets = async ({
 
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
+
 		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
+			assetId = await getAssetId({ api, registry, asset: assetId, specName, xcmCreator, isForeignAssetsTransfer });
 		}
 
 		let multiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			multiLocation = resolveMultiLocation(assetId, xcmVersion);
+			multiLocation = resolveMultiLocation(assetId, xcmCreator);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
-			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
+			const interior = isRelayNative
 				? { Here: '' }
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 					};
-
-			multiLocation = {
-				parents,
-				interior,
-			};
+			multiLocation = resolveMultiLocation(
+				{
+					parents,
+					interior,
+				},
+				xcmCreator,
+			);
 		}
 
-		const multiAsset = createMultiAsset({
+		const multiAsset = xcmCreator.createMultiAsset({
 			amount,
 			multiLocation,
-			xcmVersion,
 		});
 		multiAssets.push(multiAsset);
 	}

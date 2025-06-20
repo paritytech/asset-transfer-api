@@ -1,9 +1,7 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../../createXcmTypes/index.js';
+import { getTypeCreator } from '../../createXcmTypes/index.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { CreateXcmCallOpts } from '../types.js';
 import type { XTokensBaseArgs } from './types.js';
@@ -22,7 +20,7 @@ export const transferMultiassetWithFee = async (
 	const { api, direction, destAddr, assetIds, amounts, destChainId, xcmVersion, specName, registry } = baseArgs;
 	const { weightLimit, paysWithFeeDest, isForeignAssetsTransfer, isLiquidTokenTransfer } = opts;
 	const ext = api.tx[baseArgs.xcmPallet].transferMultiassetWithFee;
-	const typeCreator = createXcmTypes[direction];
+	const typeCreator = getTypeCreator(direction, xcmVersion);
 	const destWeightLimit = typeCreator.createWeightLimit({
 		weightLimit,
 	});
@@ -37,11 +35,7 @@ export const transferMultiassetWithFee = async (
 			api,
 		});
 		const fee = typeCreator.createXTokensFeeAssetItem({
-			registry,
 			paysWithFeeDest,
-			xcmVersion,
-			isForeignAssetsTransfer,
-			isLiquidTokenTransfer,
 		});
 
 		const beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);

@@ -4,7 +4,7 @@ import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { Registry } from '../../registry/Registry.js';
 import { getFeeAssetItemIndex } from '../../util/getFeeAssetItemIndex.js';
-import { type CreateFeeAssetItemOpts, type FungibleAssetType } from '../types.js';
+import { type CreateFeeAssetItemOpts, type FungibleAssetType, XcmCreator } from '../types.js';
 import { isSystemChain } from './isSystemChain.js';
 
 /**
@@ -29,6 +29,7 @@ export const createFeeAssetItem = async ({
 	},
 	multiAssetCreator,
 	verifySystemChain = false,
+	xcmCreator,
 }: {
 	api: ApiPromise;
 	opts: CreateFeeAssetItemOpts;
@@ -42,8 +43,10 @@ export const createFeeAssetItem = async ({
 		destChainId?: string;
 		isForeignAssetsTransfer: boolean;
 		isLiquidTokenTransfer: boolean;
+		xcmCreator: XcmCreator;
 	}) => Promise<FungibleAssetType[]>;
 	verifySystemChain?: boolean;
+	xcmCreator: XcmCreator;
 }): Promise<number> => {
 	if (xcmVersion === 2) {
 		return 0;
@@ -60,6 +63,7 @@ export const createFeeAssetItem = async ({
 		registry,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
+		xcmCreator,
 	});
 
 	if (verifySystemChain) {

@@ -15,6 +15,7 @@ import {
 } from './createXcmCalls';
 import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet';
 import type { XTokensBaseArgs } from './createXcmCalls/xTokens/types';
+import { getXcmCreator } from './createXcmTypes/xcm';
 import { Registry } from './registry';
 import { adjustedMockBifrostParachainApi } from './testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from './testHelpers/adjustedMockMoonriverParachainApi';
@@ -158,10 +159,12 @@ describe('AssetTransferAPI', () => {
 	});
 	describe('constructFormat', () => {
 		it('Should construct the correct call', async () => {
+			const xcmCreator = getXcmCreator(2);
 			const res = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
 				xcmVersion: 2,
+				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2023',
 				origin: 'statemine',
@@ -178,10 +181,12 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		it('Should construct the correct payload', async () => {
+			const xcmCreator = getXcmCreator(4);
 			const res = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
 				xcmVersion: 2,
+				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2023',
 				origin: 'statemine',
@@ -193,10 +198,12 @@ describe('AssetTransferAPI', () => {
 			);
 		});
 		it('Should construct the correct submittable', async () => {
+			const xcmCreator = getXcmCreator(2);
 			const res = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
-				xcmVersion: 1,
+				xcmVersion: 2,
+				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2023',
 				origin: 'Statmine',
@@ -457,10 +464,12 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly fetch estimate for a payload based xcm message', async () => {
+			const xcmCreator = getXcmCreator(2);
 			const payloadTexResult = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
 				xcmVersion: 2,
+				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2000',
 				origin: 'statemine',
@@ -472,10 +481,12 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly fetch estimate for a call based xcm message', async () => {
+			const xcmCreator = getXcmCreator(2);
 			const callTxResult = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
 				xcmVersion: 2,
+				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2000',
 				origin: 'statmine',
@@ -534,10 +545,12 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly execute a dry run for a payload extrinsic', async () => {
+			const xcmCreator = getXcmCreator(4);
 			const payloadTexResult = await westmintAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
 				xcmVersion: 4,
+				xcmCreator,
 				method: 'transferAssets',
 				dest: '0',
 				origin: 'asset-hub-westend',
@@ -551,10 +564,12 @@ describe('AssetTransferAPI', () => {
 		});
 
 		it('Should correctly execute a dry run for a call', async () => {
+			const xcmCreator = getXcmCreator(4);
 			const callTxResult = await westmintAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
 				xcmVersion: 4,
+				xcmCreator,
 				method: 'transferAssets',
 				dest: '0',
 				origin: 'asset-hub-westend',

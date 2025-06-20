@@ -20,6 +20,7 @@ import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachai
 import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset.js';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset.js';
 import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation.js';
+import { getXcmCreator } from '../createXcmTypes/xcm/index.js';
 import { Registry } from '../registry/index.js';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types.js';
 import type { XcmBaseArgsWithPallet } from '../types.js';
@@ -405,10 +406,11 @@ const checkSystemAssets = async (
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer?: boolean,
 ) => {
+	const xcmCreator = getXcmCreator(xcmVersion);
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	if (isForeignAssetsTransfer && assetIdIsLocation(assetId)) {
 		// check that the asset id is a valid multilocation
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmVersion);
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmCreator);
 
 		if (!multiLocationIsInRegistry) {
 			const isValidForeignAsset = await foreignAssetsMultiLocationExists(api, registry, assetId);

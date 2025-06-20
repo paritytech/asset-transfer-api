@@ -1,14 +1,18 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { mockMoonriverParachainApi } from '../testHelpers/mockMoonriverParachainApi';
-import { ParaToPara } from './ParaToPara';
+import { Registry } from '../../registry';
+import { mockRelayApiV9420 } from '../../testHelpers/mockRelayApiV9420';
+import { RelayToPara } from './RelayToPara';
 
-describe('ParaToPara test', () => {
+describe('RelayToPara XcmVersioned Generation', () => {
+	const v2Handler = new RelayToPara(2);
+	const v3Handler = new RelayToPara(3);
+	const v4Handler = new RelayToPara(4);
+	const v5Handler = new RelayToPara(5);
 	const registry = new Registry('kusama', {});
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
-			const beneficiary = ParaToPara.createBeneficiary(
+			const beneficiary = v2Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2,
 			);
@@ -29,8 +33,8 @@ describe('ParaToPara test', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
-		it('Should work for V2 for an Ethereum Address', () => {
-			const beneficiary = ParaToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 2);
+		it('Should work for V2 Ethereum address', () => {
+			const beneficiary = v2Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 2);
 
 			const expectedRes = {
 				V2: {
@@ -49,7 +53,7 @@ describe('ParaToPara test', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const beneficiary = ParaToPara.createBeneficiary(
+			const beneficiary = v3Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3,
 			);
@@ -69,8 +73,8 @@ describe('ParaToPara test', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
-		it('Should work for V3 for an Ethereum Address', () => {
-			const beneficiary = ParaToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
+		it('Should work for V3 Ethereum address', () => {
+			const beneficiary = v3Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
 
 			const expectedRes = {
 				V3: {
@@ -87,8 +91,9 @@ describe('ParaToPara test', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
+
 		it('Should work for V4', () => {
-			const beneficiary = ParaToPara.createBeneficiary(
+			const beneficiary = v4Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				4,
 			);
@@ -111,7 +116,7 @@ describe('ParaToPara test', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const beneficiary = ParaToPara.createBeneficiary(
+			const beneficiary = v5Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				5,
 			);
@@ -133,8 +138,8 @@ describe('ParaToPara test', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
-		it('Should work for V4 for an Ethereum Address', () => {
-			const beneficiary = ParaToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
+		it('Should work for V4 Ethereum address', () => {
+			const beneficiary = v4Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
 
 			const expectedRes = {
 				V4: {
@@ -153,8 +158,8 @@ describe('ParaToPara test', () => {
 
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
-		it('Should work for V5 for an Ethereum Address', () => {
-			const beneficiary = ParaToPara.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
+		it('Should work for V5 Ethereum address', () => {
+			const beneficiary = v5Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
 
 			const expectedRes = {
 				V5: {
@@ -174,13 +179,14 @@ describe('ParaToPara test', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 	});
+
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = ParaToPara.createDest('100', 2);
+			const destination = v2Handler.createDest('100', 2);
 
 			const expectedRes = {
 				V2: {
-					parents: 1,
+					parents: 0,
 					interior: {
 						X1: {
 							Parachain: '100',
@@ -192,11 +198,11 @@ describe('ParaToPara test', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = ParaToPara.createDest('100', 3);
+			const destination = v3Handler.createDest('100', 3);
 
 			const expectedRes = {
 				V3: {
-					parents: 1,
+					parents: 0,
 					interior: {
 						X1: {
 							Parachain: '100',
@@ -208,11 +214,11 @@ describe('ParaToPara test', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const destination = ParaToPara.createDest('100', 4);
+			const destination = v4Handler.createDest('100', 4);
 
 			const expectedRes = {
 				V4: {
-					parents: 1,
+					parents: 0,
 					interior: {
 						X1: [
 							{
@@ -226,11 +232,11 @@ describe('ParaToPara test', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const destination = ParaToPara.createDest('100', 5);
+			const destination = v5Handler.createDest('100', 5);
 
 			const expectedRes = {
 				V5: {
-					parents: 1,
+					parents: 0,
 					interior: {
 						X1: [
 							{
@@ -245,48 +251,30 @@ describe('ParaToPara test', () => {
 		});
 	});
 	describe('Assets', () => {
-		const isLiquidTokenTransfer = false;
 		const isForeignAssetsTransfer = false;
+		const isLiquidTokenTransfer = false;
+
 		it('Should work for V2', async () => {
-			const assets = await ParaToPara.createAssets(
-				['1000000000000', '2000000000'],
-				2,
-				'moonriver',
-				['42259045809535163221576417993425387648', '182365888117048807484804376330534607370'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-					api: mockMoonriverParachainApi,
-				},
-			);
+			const assets = await v2Handler.createAssets(['100'], 2, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+				api: mockRelayApiV9420,
+			});
 
 			const expectedRes = {
 				V2: [
 					{
+						fun: {
+							Fungible: '100',
+						},
 						id: {
 							Concrete: {
-								Parents: '1',
-								Interior: {
-									Here: null,
+								interior: {
+									Here: '',
 								},
+								parents: 0,
 							},
-						},
-						fun: {
-							Fungible: '1000000000000',
-						},
-					},
-					{
-						id: {
-							Concrete: {
-								Parents: '1',
-								Interior: {
-									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
-								},
-							},
-						},
-						fun: {
-							Fungible: '2000000000',
 						},
 					},
 				],
@@ -295,45 +283,26 @@ describe('ParaToPara test', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await ParaToPara.createAssets(
-				['1000000', '20000000000'],
-				3,
-				'moonriver',
-				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-					api: mockMoonriverParachainApi,
-				},
-			);
+			const assets = await v3Handler.createAssets(['100'], 3, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+				api: mockRelayApiV9420,
+			});
 
 			const expectedRes = {
 				V3: [
 					{
+						fun: {
+							Fungible: '100',
+						},
 						id: {
 							Concrete: {
-								Parents: '1',
-								Interior: {
-									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
+								interior: {
+									Here: '',
 								},
+								parents: 0,
 							},
-						},
-						fun: {
-							Fungible: '1000000',
-						},
-					},
-					{
-						id: {
-							Concrete: {
-								Parents: '1',
-								Interior: {
-									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
-								},
-							},
-						},
-						fun: {
-							Fungible: '20000000000',
 						},
 					},
 				],
@@ -342,41 +311,24 @@ describe('ParaToPara test', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await ParaToPara.createAssets(
-				['1000000', '20000000000'],
-				4,
-				'moonriver',
-				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-					api: mockMoonriverParachainApi,
-				},
-			);
+			const assets = await v4Handler.createAssets(['100'], 4, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+				api: mockRelayApiV9420,
+			});
 
 			const expectedRes = {
 				V4: [
 					{
-						id: {
-							Parents: '1',
-							Interior: {
-								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
-							},
-						},
 						fun: {
-							Fungible: '1000000',
+							Fungible: '100',
 						},
-					},
-					{
 						id: {
-							Parents: '1',
-							Interior: {
-								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+							interior: {
+								Here: '',
 							},
-						},
-						fun: {
-							Fungible: '20000000000',
+							parents: 0,
 						},
 					},
 				],
@@ -385,41 +337,24 @@ describe('ParaToPara test', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', async () => {
-			const assets = await ParaToPara.createAssets(
-				['1000000', '20000000000'],
-				5,
-				'moonriver',
-				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
-				{
-					registry,
-					isForeignAssetsTransfer,
-					isLiquidTokenTransfer,
-					api: mockMoonriverParachainApi,
-				},
-			);
+			const assets = await v5Handler.createAssets(['100'], 5, '', [], {
+				registry,
+				isForeignAssetsTransfer,
+				isLiquidTokenTransfer,
+				api: mockRelayApiV9420,
+			});
 
 			const expectedRes = {
 				V5: [
 					{
-						id: {
-							Parents: '1',
-							Interior: {
-								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
-							},
-						},
 						fun: {
-							Fungible: '1000000',
+							Fungible: '100',
 						},
-					},
-					{
 						id: {
-							Parents: '1',
-							Interior: {
-								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+							interior: {
+								Here: '',
 							},
-						},
-						fun: {
-							Fungible: '20000000000',
+							parents: 0,
 						},
 					},
 				],
@@ -429,11 +364,13 @@ describe('ParaToPara test', () => {
 		});
 	});
 	describe('WeightLimit', () => {
-		it('Should work when weightLimit is set', () => {
+		// NOTE: for V0, V1, and V2 Weightlimit just uses V2 so we only need to test once.
+		// No matter the version if its equal to or less than 2, it will alwyas default to V2.
+		it('Should work when weightLimit option is provided', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
-			const weightLimit = ParaToPara.createWeightLimit({
+			const weightLimit = v5Handler.createWeightLimit({
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -441,13 +378,13 @@ describe('ParaToPara test', () => {
 			});
 			expect(weightLimit).toStrictEqual({
 				Limited: {
-					proofSize: '1000',
 					refTime: '100000000',
+					proofSize: '1000',
 				},
 			});
 		});
 		it('Should work when weightLimit option is not provided', () => {
-			const weightLimit = ParaToPara.createWeightLimit({});
+			const weightLimit = v5Handler.createWeightLimit({});
 
 			expect(weightLimit).toStrictEqual({
 				Unlimited: null,

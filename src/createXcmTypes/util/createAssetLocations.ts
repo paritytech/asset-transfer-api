@@ -14,11 +14,11 @@ import {
 	FungibleMultiAsset,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
+	XcmCreator,
 	XcmV2Junctions,
 	XcmV3Junctions,
 	XcmV4Junctions,
 } from '../types.js';
-import { createMultiAsset } from './createMultiAsset.js';
 import { dedupeAssets } from './dedupeAssets.js';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId.js';
 import { getAssetId } from './getAssetId.js';
@@ -35,6 +35,7 @@ export const createAssetLocations = async (
 	originChainId: string,
 	assetIdsContainLocations: boolean,
 	isLiquidTokenTransfer: boolean,
+	xcmCreator: XcmCreator,
 ): Promise<UnionXcmMultiAssets> => {
 	let multiAssets: FungibleAssetType[] = [];
 
@@ -51,11 +52,18 @@ export const createAssetLocations = async (
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
 
 		if (!assetIdsContainLocations && !isRelayNative && !isValidInt) {
-			assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, assetIdsContainLocations);
+			assetId = await getAssetId({
+				api,
+				registry,
+				asset: assetId,
+				specName,
+				xcmCreator,
+				isForeignAssetsTransfer: assetIdsContainLocations,
+			});
 		}
 
 		if (assetIdsContainLocations) {
-			multiLocation = resolveMultiLocation(assetId, xcmVersion);
+			multiLocation = resolveMultiLocation(assetId, xcmCreator);
 		} else {
 			const parents = isRelayNative && !isRelayChain ? 1 : 0;
 			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
@@ -69,10 +77,9 @@ export const createAssetLocations = async (
 				interior,
 			};
 		}
-		const multiAsset = createMultiAsset({
+		const multiAsset = xcmCreator.createMultiAsset({
 			amount,
 			multiLocation,
-			xcmVersion,
 		});
 
 		multiAssets.push(multiAsset);

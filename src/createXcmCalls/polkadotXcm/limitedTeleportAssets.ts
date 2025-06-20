@@ -3,7 +3,7 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../../createXcmTypes/index.js';
+import { getTypeCreator } from '../../createXcmTypes/index.js';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr.js';
 import type { CreateXcmCallOpts } from '../types.js';
 import { establishXcmPallet } from '../util/establishXcmPallet.js';
@@ -23,7 +23,7 @@ export const limitedTeleportAssets = async (
 	const { weightLimit, paysWithFeeDest, isForeignAssetsTransfer } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedTeleportAssets;
-	const typeCreator = createXcmTypes[direction];
+	const typeCreator = getTypeCreator(direction, xcmVersion);
 	const beneficiary = typeCreator.createBeneficiary(destAddr, xcmVersion);
 	const dest = typeCreator.createDest(destChainId, xcmVersion);
 	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {

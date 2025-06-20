@@ -3,7 +3,7 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../../createXcmTypes/index.js';
+import { getTypeCreator } from '../../createXcmTypes/index.js';
 import {
 	FungibleAsset,
 	FungibleMultiAsset,
@@ -21,6 +21,7 @@ import { createXcmVersionedAssetId } from '../../createXcmTypes/util/createXcmVe
 import { getAssetId } from '../../createXcmTypes/util/getAssetId.js';
 import { parseLocationStrToLocation } from '../../createXcmTypes/util/parseLocationStrToLocation.js';
 import { resolveAssetTransferType } from '../../createXcmTypes/util/resolveAssetTransferType.js';
+import { getXcmCreator } from '../../createXcmTypes/xcm/index.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { sanitizeAddress } from '../../sanitize/sanitizeAddress.js';
 import { AssetTransferType, Direction } from '../../types.js';
@@ -53,7 +54,9 @@ export const transferAssetsUsingTypeAndThen = async (
 	} = opts;
 	let { customXcmOnDest: customXcmOnDestStr, sendersAddr } = opts;
 
-	const typeCreator = createXcmTypes[direction];
+	const xcmCreator = getXcmCreator(xcmVersion);
+
+	const typeCreator = getTypeCreator(direction, xcmVersion);
 	const beneficiary = createXcmOnDestBeneficiary(destAddr, xcmVersion);
 	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
 		registry,
@@ -72,7 +75,14 @@ export const transferAssetsUsingTypeAndThen = async (
 
 		// get erc20 Asset Location from assetIds
 		for (const assetId of assetIds) {
-			const assetIdLocationStr = await getAssetId(api, registry, assetId, specName, xcmVersion, true);
+			const assetIdLocationStr = await getAssetId({
+				api,
+				registry,
+				asset: assetId,
+				specName,
+				xcmCreator,
+				isForeignAssetsTransfer: true,
+			});
 			if (!assetIdLocationStr.toLowerCase().includes('ethereum')) {
 				continue;
 			}
@@ -168,7 +178,7 @@ export const transferAssetsUsingTypeAndThen = async (
 
 		sendersAddr = sanitizeAddress(sendersAddr);
 		const sendersAccount = createXcmOnDestBeneficiary(sendersAddr, xcmVersion);
-		const resolvedDestChainId = resolveMultiLocation(destChainId, xcmVersion);
+		const resolvedDestChainId = resolveMultiLocation(destChainId, xcmCreator);
 		customXcmOnDestStr = `[{"setAppendix":[{"depositAsset":{"assets":{"Wild":"All"},"beneficiary":${JSON.stringify(sendersAccount)}}}]},{"initiateReserveWithdraw":{"assets":{"Wild":{"AllOf":${JSON.stringify(erc20Location)}}},"reserve":${JSON.stringify(resolvedDestChainId)},"xcm":[{"buyExecution":{"fees":${JSON.stringify(reanchoredERC20AccountLocation)},"weightLimit":"Unlimited"}},{"depositAsset":{"assets":{"Wild":{"AllCounted":"1"}},"beneficiary":${JSON.stringify(beneficiary)}}},{"setTopic":"0x0000000000000000000000000000000000000000000000000000000000000000"}]}},{"setTopic":"0x0000000000000000000000000000000000000000000000000000000000000000"}]`;
 
 		feeAssetTransferType = {
@@ -201,10 +211,10 @@ export const transferAssetsUsingTypeAndThen = async (
 
 	let remoteFeesId: XcmVersionedAssetId;
 	if (paysWithFeeDest && !assetIdIsLocation(paysWithFeeDest)) {
-		const remoteFeesAssetLocation = await getAssetId(api, registry, paysWithFeeDest, specName, xcmVersion);
-		remoteFeesId = createXcmVersionedAssetId(remoteFeesAssetLocation, xcmVersion);
+		const remoteFeesAssetLocation = await getAssetId({ api, registry, asset: paysWithFeeDest, specName, xcmCreator });
+		remoteFeesId = createXcmVersionedAssetId(remoteFeesAssetLocation, xcmVersion, xcmCreator);
 	} else {
-		remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmVersion);
+		remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmVersion, xcmCreator);
 	}
 
 	const customXcmOnDestination = createXcmOnDestination(assetIds, beneficiary, xcmVersion, customXcmOnDestStr);

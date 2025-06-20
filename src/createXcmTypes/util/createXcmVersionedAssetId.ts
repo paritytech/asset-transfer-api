@@ -1,14 +1,13 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
-import { XcmVersionedAssetId } from '../types.js';
+import { XcmCreator, XcmVersionedAssetId } from '../types.js';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const createXcmVersionedAssetId = (
 	destFeesAssetId: string | undefined,
 	xcmVersion: number = DEFAULT_XCM_VERSION,
+	xcmCreator: XcmCreator,
 ): XcmVersionedAssetId => {
 	if (!destFeesAssetId) {
 		throw new BaseError('resolveAssetTransferType: destFeesAssetId not found', BaseErrorsEnum.InvalidInput);
@@ -28,9 +27,9 @@ export const createXcmVersionedAssetId = (
 		case 3:
 			return { V3: { Concrete: location } };
 		case 4:
-			return { V4: resolveMultiLocation(location, xcmVersion) };
+			return { V4: resolveMultiLocation(location, xcmCreator) };
 		case 5:
-			return { V5: resolveMultiLocation(location, xcmVersion) };
+			return { V5: resolveMultiLocation(location, xcmCreator) };
 		default:
 			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}

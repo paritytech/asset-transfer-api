@@ -1,14 +1,19 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { mockRelayApiV9420 } from '../testHelpers/mockRelayApiV9420';
-import { RelayToSystem } from './RelayToSystem';
+import { Registry } from '../../registry';
+import { mockSystemApi } from '../../testHelpers/mockSystemApi';
+import { SystemToRelay } from './SystemToRelay';
 
-describe('RelayToSystem XcmVersioned Generation', () => {
-	const registry = new Registry('kusama', {});
+describe('SystemToRelay XcmVersioned Generation', () => {
+	const v2Handler = new SystemToRelay(2);
+	const v3Handler = new SystemToRelay(3);
+	const v4Handler = new SystemToRelay(4);
+	const v5Handler = new SystemToRelay(5);
+	const registry = new Registry('statemine', {});
+
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
-			const beneficiary = RelayToSystem.createBeneficiary(
+			const beneficiary = v2Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2,
 			);
@@ -30,7 +35,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const beneficiary = RelayToSystem.createBeneficiary(
+			const beneficiary = v3Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3,
 			);
@@ -51,7 +56,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const beneficiary = RelayToSystem.createBeneficiary(
+			const beneficiary = v4Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				4,
 			);
@@ -74,7 +79,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const beneficiary = RelayToSystem.createBeneficiary(
+			const beneficiary = v5Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				5,
 			);
@@ -97,18 +102,15 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 	});
-
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = RelayToSystem.createDest('100', 2);
+			const destination = v2Handler.createDest('0', 2);
 
 			const expectedRes = {
 				V2: {
-					parents: 0,
+					parents: 1,
 					interior: {
-						X1: {
-							Parachain: '100',
-						},
+						Here: null,
 					},
 				},
 			};
@@ -116,15 +118,13 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = RelayToSystem.createDest('100', 3);
+			const destination = v3Handler.createDest('0', 3);
 
 			const expectedRes = {
 				V3: {
-					parents: 0,
+					parents: 1,
 					interior: {
-						X1: {
-							Parachain: '100',
-						},
+						Here: null,
 					},
 				},
 			};
@@ -132,17 +132,13 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const destination = RelayToSystem.createDest('100', 4);
+			const destination = v4Handler.createDest('0', 4);
 
 			const expectedRes = {
 				V4: {
-					parents: 0,
+					parents: 1,
 					interior: {
-						X1: [
-							{
-								Parachain: '100',
-							},
-						],
+						Here: null,
 					},
 				},
 			};
@@ -150,17 +146,13 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const destination = RelayToSystem.createDest('100', 5);
+			const destination = v5Handler.createDest('0', 5);
 
 			const expectedRes = {
 				V5: {
-					parents: 0,
+					parents: 1,
 					interior: {
-						X1: [
-							{
-								Parachain: '100',
-							},
-						],
+						Here: null,
 					},
 				},
 			};
@@ -172,26 +164,26 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
 		it('Should work for V2', async () => {
-			const assets = await RelayToSystem.createAssets(['100'], 2, '', [], {
+			const assets = await v2Handler.createAssets(['100'], 2, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockRelayApiV9420,
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
 				V2: [
 					{
-						fun: {
-							Fungible: '100',
-						},
 						id: {
 							Concrete: {
+								parents: 1,
 								interior: {
 									Here: '',
 								},
-								parents: 0,
 							},
+						},
+						fun: {
+							Fungible: '100',
 						},
 					},
 				],
@@ -200,26 +192,26 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await RelayToSystem.createAssets(['100'], 3, '', [], {
+			const assets = await v3Handler.createAssets(['100'], 3, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockRelayApiV9420,
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
 				V3: [
 					{
-						fun: {
-							Fungible: '100',
-						},
 						id: {
 							Concrete: {
+								parents: 1,
 								interior: {
 									Here: '',
 								},
-								parents: 0,
 							},
+						},
+						fun: {
+							Fungible: '100',
 						},
 					},
 				],
@@ -228,24 +220,24 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await RelayToSystem.createAssets(['100'], 4, '', [], {
+			const assets = await v4Handler.createAssets(['100'], 4, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockRelayApiV9420,
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
 				V4: [
 					{
-						fun: {
-							Fungible: '100',
-						},
 						id: {
+							parents: 1,
 							interior: {
 								Here: '',
 							},
-							parents: 0,
+						},
+						fun: {
+							Fungible: '100',
 						},
 					},
 				],
@@ -254,24 +246,24 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', async () => {
-			const assets = await RelayToSystem.createAssets(['100'], 5, '', [], {
+			const assets = await v5Handler.createAssets(['100'], 5, '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-				api: mockRelayApiV9420,
+				api: mockSystemApi,
 			});
 
 			const expectedRes = {
 				V5: [
 					{
-						fun: {
-							Fungible: '100',
-						},
 						id: {
+							parents: 1,
 							interior: {
 								Here: '',
 							},
-							parents: 0,
+						},
+						fun: {
+							Fungible: '100',
 						},
 					},
 				],
@@ -281,13 +273,11 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 		});
 	});
 	describe('WeightLimit', () => {
-		// NOTE: for V0, V1, and V2 Weightlimit just uses V2 so we only need to test once.
-		// No matter the version if its equal to or less than 2, it will alwyas default to V2.
 		it('Should work when weightLimit option is provided', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
-			const weightLimit = RelayToSystem.createWeightLimit({
+			const weightLimit = v5Handler.createWeightLimit({
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -301,7 +291,7 @@ describe('RelayToSystem XcmVersioned Generation', () => {
 			});
 		});
 		it('Should work when weightLimit option is not provided', () => {
-			const weightLimit = RelayToSystem.createWeightLimit({});
+			const weightLimit = v5Handler.createWeightLimit({});
 
 			expect(weightLimit).toStrictEqual({
 				Unlimited: null,
