@@ -5,10 +5,14 @@ import { mockMoonriverParachainApi } from '../../testHelpers/mockMoonriverParach
 import { ParaToSystem } from './ParaToSystem';
 
 describe('ParaToSystem', () => {
+	const v2Handler = new ParaToSystem(2);
+	const v3Handler = new ParaToSystem(3);
+	const v4Handler = new ParaToSystem(4);
+	const v5Handler = new ParaToSystem(5);
 	const registry = new Registry('kusama', {});
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
-			const beneficiary = ParaToSystem.createBeneficiary(
+			const beneficiary = v2Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2,
 			);
@@ -30,7 +34,7 @@ describe('ParaToSystem', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const beneficiary = ParaToSystem.createBeneficiary(
+			const beneficiary = v3Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3,
 			);
@@ -51,7 +55,7 @@ describe('ParaToSystem', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const beneficiary = ParaToSystem.createBeneficiary(
+			const beneficiary = v4Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				4,
 			);
@@ -74,7 +78,7 @@ describe('ParaToSystem', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const beneficiary = ParaToSystem.createBeneficiary(
+			const beneficiary = v5Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				5,
 			);
@@ -99,7 +103,7 @@ describe('ParaToSystem', () => {
 	});
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = ParaToSystem.createDest('100', 2);
+			const destination = v2Handler.createDest('100', 2);
 
 			const expectedRes = {
 				V2: {
@@ -115,7 +119,7 @@ describe('ParaToSystem', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = ParaToSystem.createDest('100', 3);
+			const destination = v3Handler.createDest('100', 3);
 
 			const expectedRes = {
 				V3: {
@@ -131,7 +135,7 @@ describe('ParaToSystem', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const destination = ParaToSystem.createDest('100', 4);
+			const destination = v4Handler.createDest('100', 4);
 
 			const expectedRes = {
 				V4: {
@@ -149,7 +153,7 @@ describe('ParaToSystem', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const destination = ParaToSystem.createDest('100', 5);
+			const destination = v5Handler.createDest('100', 5);
 
 			const expectedRes = {
 				V5: {
@@ -171,7 +175,7 @@ describe('ParaToSystem', () => {
 		const isLiquidTokenTransfer = false;
 		const isForeignAssetsTransfer = false;
 		it('Should work for V2', async () => {
-			const assets = await ParaToSystem.createAssets(
+			const assets = await v2Handler.createAssets(
 				['1000000000000', '2000000000'],
 				2,
 				'moonriver',
@@ -218,7 +222,7 @@ describe('ParaToSystem', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await ParaToSystem.createAssets(
+			const assets = await v3Handler.createAssets(
 				['1000000', '20000000000'],
 				3,
 				'moonriver',
@@ -265,7 +269,7 @@ describe('ParaToSystem', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await ParaToSystem.createAssets(
+			const assets = await v4Handler.createAssets(
 				['1000000', '20000000000'],
 				4,
 				'moonriver',
@@ -308,7 +312,7 @@ describe('ParaToSystem', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', async () => {
-			const assets = await ParaToSystem.createAssets(
+			const assets = await v5Handler.createAssets(
 				['1000000', '20000000000'],
 				5,
 				'moonriver',
@@ -356,7 +360,7 @@ describe('ParaToSystem', () => {
 			const refTime = '100000000';
 			const proofSize = '1000';
 
-			const weightLimit = ParaToSystem.createWeightLimit({
+			const weightLimit = v5Handler.createWeightLimit({
 				weightLimit: {
 					refTime,
 					proofSize,
@@ -370,7 +374,7 @@ describe('ParaToSystem', () => {
 			});
 		});
 		it('Should work when weightLimit option is not provided', () => {
-			const weightLimit = ParaToSystem.createWeightLimit({});
+			const weightLimit = v5Handler.createWeightLimit({});
 
 			expect(weightLimit).toStrictEqual({
 				Unlimited: null,

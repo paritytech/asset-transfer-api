@@ -5,12 +5,15 @@ import { adjustedMockSystemApiV1016000 } from '../../testHelpers/adjustedMockSys
 import { RelayToBridge } from './RelayToBridge';
 
 describe('RelayToBridge', () => {
+	const v3Handler = new RelayToBridge(3);
+	const v4Handler = new RelayToBridge(4);
+	const v5Handler = new RelayToBridge(5);
 	const registry = new Registry('paseo', {});
 	const isForeignAssetsTransfer = true;
 	const isLiquidTokenTransfer = false;
 	describe('Beneficiary', () => {
 		it('Should work for V3', () => {
-			const beneficiary = RelayToBridge.createBeneficiary(
+			const beneficiary = v3Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3,
 			);
@@ -31,7 +34,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 for an Ethereum Address', () => {
-			const beneficiary = RelayToBridge.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
+			const beneficiary = v3Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
 
 			const expectedRes = {
 				V3: {
@@ -49,7 +52,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const beneficiary = RelayToBridge.createBeneficiary(
+			const beneficiary = v4Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				4,
 			);
@@ -72,7 +75,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const beneficiary = RelayToBridge.createBeneficiary(
+			const beneficiary = v5Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				5,
 			);
@@ -95,7 +98,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4 for an Ethereum Address', () => {
-			const beneficiary = RelayToBridge.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
+			const beneficiary = v4Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
 
 			const expectedRes = {
 				V4: {
@@ -115,7 +118,7 @@ describe('RelayToBridge', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5 for an Ethereum Address', () => {
-			const beneficiary = RelayToBridge.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
+			const beneficiary = v5Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
 
 			const expectedRes = {
 				V5: {
@@ -138,7 +141,7 @@ describe('RelayToBridge', () => {
 	describe('Destination', () => {
 		it('Should work for V3', () => {
 			const destId = `{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`;
-			const destination = RelayToBridge.createDest(destId, 3);
+			const destination = v3Handler.createDest(destId, 3);
 
 			const expectedRes = {
 				V3: {
@@ -160,7 +163,7 @@ describe('RelayToBridge', () => {
 		it('Should work for V4', () => {
 			const destId = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}`;
 
-			const destination = RelayToBridge.createDest(destId, 4);
+			const destination = v4Handler.createDest(destId, 4);
 
 			const expectedRes = {
 				V4: {
@@ -183,7 +186,7 @@ describe('RelayToBridge', () => {
 		it('Should work for V5', () => {
 			const destId = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}`;
 
-			const destination = RelayToBridge.createDest(destId, 5);
+			const destination = v5Handler.createDest(destId, 5);
 
 			const expectedRes = {
 				V5: {
@@ -206,7 +209,7 @@ describe('RelayToBridge', () => {
 	});
 	describe('Assets', () => {
 		it('Should work for V3', async () => {
-			const assets = await RelayToBridge.createAssets(
+			const assets = await v3Handler.createAssets(
 				['10000000000'],
 				3,
 				'paseo',
@@ -240,7 +243,7 @@ describe('RelayToBridge', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await RelayToBridge.createAssets(
+			const assets = await v4Handler.createAssets(
 				['10000000000'],
 				4,
 				'paseo',
@@ -272,7 +275,7 @@ describe('RelayToBridge', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', async () => {
-			const assets = await RelayToBridge.createAssets(
+			const assets = await v5Handler.createAssets(
 				['10000000000'],
 				5,
 				'paseo',
