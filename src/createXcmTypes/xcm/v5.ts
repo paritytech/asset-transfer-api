@@ -1,6 +1,5 @@
 import { AnyJson } from '@polkadot/types-codec/types';
 
-import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import {
 	FungibleAssetType,
 	XcmCreator,
@@ -11,17 +10,15 @@ import {
 import { createParachainDestBeneficiaryInner } from './common.js';
 import { V4 } from './v4.js';
 
-const xcmVersion = 5;
-
 export const V5: XcmCreator = {
 	// Same as V4
-	createBeneficiary: ({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary => {
+	createBeneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
 		const v4 = V4.createBeneficiary({ accountId, parents });
 		return { V5: v4.V4 };
 	},
 
 	// Same across all versions
-	createXTokensParachainDestBeneficiary: ({
+	createXTokensParachainDestBeneficiary({
 		accountId,
 		destChainId,
 		parents = 1,
@@ -29,7 +26,7 @@ export const V5: XcmCreator = {
 		accountId: string;
 		destChainId: string;
 		parents: number;
-	}): XcmDestBeneficiaryXcAssets => {
+	}): XcmDestBeneficiaryXcAssets {
 		const beneficiary = createParachainDestBeneficiaryInner({
 			accountId,
 			destChainId,
@@ -39,13 +36,13 @@ export const V5: XcmCreator = {
 	},
 
 	// Same as V4
-	createXTokensDestBeneficiary: ({
+	createXTokensDestBeneficiary({
 		accountId,
 		parents = 1,
 	}: {
 		accountId: string;
 		parents: number;
-	}): XcmDestBeneficiaryXcAssets => {
+	}): XcmDestBeneficiaryXcAssets {
 		const X1 = [{ AccountId32: { id: accountId } }]; // Now in array
 		const beneficiary = {
 			parents,
@@ -55,9 +52,8 @@ export const V5: XcmCreator = {
 	},
 
 	// Same as V4
-	createMultiAsset: ({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType => {
-		// TODO: Remove xcmVersion arg and cleanup
-		const concreteMultiLocation = resolveMultiLocation(multiLocation, xcmVersion);
+	createMultiAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
+		const concreteMultiLocation = this.resolveMultiLocation(multiLocation);
 		return {
 			id: concreteMultiLocation,
 			fun: {
@@ -65,4 +61,7 @@ export const V5: XcmCreator = {
 			},
 		};
 	},
+
+	// Same as V4
+	resolveMultiLocation: V4.resolveMultiLocation,
 };

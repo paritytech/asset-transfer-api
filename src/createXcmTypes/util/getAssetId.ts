@@ -8,6 +8,7 @@ import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import { validateNumber } from '../../validate/index.js';
 import { UnionXcmMultiLocation } from '../types.js';
+import { getXcmCreator } from '../xcm/index.js';
 import { assetIdIsLocation } from './assetIdIsLocation.js';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry.js';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists.js';
@@ -36,6 +37,7 @@ export const getAssetId = async (
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
 	const isParachain = new BN(currentChainId).gte(new BN(2000));
+	const xcmCreator = getXcmCreator(xcmVersion);
 
 	// if assets pallet, check the cache and return the cached assetId if found
 	if (!isForeignAssetsTransfer) {
@@ -79,7 +81,7 @@ export const getAssetId = async (
 
 	if (isAssetHub && isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the cache or registry
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(asset, registry, xcmVersion);
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(asset, registry, xcmCreator);
 
 		if (multiLocationIsInRegistry) {
 			assetId = asset;

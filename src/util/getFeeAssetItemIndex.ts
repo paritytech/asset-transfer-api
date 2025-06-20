@@ -5,6 +5,7 @@ import { ApiPromise } from '@polkadot/api';
 import { FungibleAssetType } from '../createXcmTypes/types.js';
 import { getAssetId } from '../createXcmTypes/util/getAssetId.js';
 import { isParachain } from '../createXcmTypes/util/isParachain.js';
+import { getXcmCreator } from '../createXcmTypes/xcm/index.js';
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import { Registry } from '../registry/index.js';
 import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
@@ -27,6 +28,7 @@ export const getFeeAssetItemIndex = async (
 	xcmVersion: number,
 	isForeignAssetsTransfer?: boolean,
 ): Promise<number> => {
+	const xcmCreator = getXcmCreator(xcmVersion);
 	const chainId = registry.lookupChainIdBySpecName(specName);
 	const isParaOrigin = isParachain(chainId);
 	let result = -1;
@@ -68,7 +70,7 @@ export const getFeeAssetItemIndex = async (
 					);
 					// if isForeignAssetsTransfer or parachain origin, compare the multiAsset interior to the the paysWithFeeDestAssetLocationStr as a multilocation
 					if (isForeignAssetsTransfer || isParaOrigin) {
-						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestAssetLocationStr, xcmVersion);
+						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestAssetLocationStr, xcmCreator);
 						const paysWithFeeDestMultiLocationInterior =
 							paysWithFeeDestMultiLocation.interior ||
 							(paysWithFeeDestMultiLocation as { [key: string]: unknown })['Interior'];

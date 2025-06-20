@@ -1,20 +1,23 @@
 import { AnyJson } from '@polkadot/types-codec/types';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
+import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAssetType,
+	UnionXcmMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
 	XcmV2DestBeneficiary,
 } from '../types.js';
+import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
 import { createParachainDestBeneficiaryInner } from './common.js';
 
 const xcmVersion = 2;
 
 export const V2: XcmCreator = {
-	createBeneficiary: ({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary => {
+	createBeneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
 		const X1 = isEthereumAddress(accountId)
 			? { AccountKey20: { network: 'Any', key: accountId } }
 			: { AccountId32: { network: 'Any', id: accountId } };
@@ -27,7 +30,7 @@ export const V2: XcmCreator = {
 	},
 
 	// Same across all versions
-	createXTokensParachainDestBeneficiary: ({
+	createXTokensParachainDestBeneficiary({
 		accountId,
 		destChainId,
 		parents = 1,
@@ -35,7 +38,7 @@ export const V2: XcmCreator = {
 		accountId: string;
 		destChainId: string;
 		parents: number;
-	}): XcmDestBeneficiaryXcAssets => {
+	}): XcmDestBeneficiaryXcAssets {
 		const beneficiary = createParachainDestBeneficiaryInner({
 			accountId,
 			destChainId,
@@ -44,13 +47,13 @@ export const V2: XcmCreator = {
 		return { V2: beneficiary };
 	},
 
-	createXTokensDestBeneficiary: ({
+	createXTokensDestBeneficiary({
 		accountId,
 		parents = 1,
 	}: {
 		accountId: string;
 		parents: number;
-	}): XcmDestBeneficiaryXcAssets => {
+	}): XcmDestBeneficiaryXcAssets {
 		const X1 = { AccountId32: { id: accountId } };
 		const beneficiary = {
 			parents,
@@ -59,9 +62,8 @@ export const V2: XcmCreator = {
 		return { V2: beneficiary } as XcmV2DestBeneficiary;
 	},
 
-	createMultiAsset: ({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType => {
-		// TODO: Remove xcmVersion arg and cleanup
-		const concreteMultiLocation = resolveMultiLocation(multiLocation, xcmVersion);
+	createMultiAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
+		const concreteMultiLocation = this.resolveMultiLocation(multiLocation);
 		return {
 			id: {
 				Concrete: concreteMultiLocation,
@@ -70,5 +72,29 @@ export const V2: XcmCreator = {
 				Fungible: amount,
 			},
 		};
+	},
+
+	resolveMultiLocation: (multiLocation: AnyJson): UnionXcmMultiLocation => {
+		const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
+
+		// Ensure we check this first since the main difference between v2, and later versions is the `globalConsensus` junction
+		const hasGlobalConsensus =
+			multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
+
+		if (hasGlobalConsensus) {
+			throw new BaseError(
+				'XcmVersion must be greater than 2 for MultiLocations that contain a GlobalConsensus junction.',
+				BaseErrorsEnum.InvalidXcmVersion,
+			);
+		}
+
+		let result = parseLocationStrToLocation(multiLocationStr, xcmVersion);
+
+		// handle case where result is an xcmV1Multilocation from the registry
+		if (typeof result === 'object' && 'v1' in result) {
+			result = result.v1 as UnionXcmMultiLocation;
+		}
+
+		return sanitizeKeys(result);
 	},
 };

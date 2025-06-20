@@ -163,7 +163,7 @@ const createParaToSystemMultiAssets = async ({
 	if (isPrimaryParachainNativeAsset) {
 		const multiLocation = resolveMultiLocation(
 			getParachainNativeAssetLocation(registry, assets[0], destChainId),
-			xcmVersion,
+			xcmCreator,
 		);
 
 		const multiAsset = xcmCreator.createMultiAsset({
@@ -187,7 +187,7 @@ const createParaToSystemMultiAssets = async ({
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
-			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
+			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmCreator);
 
 			const multiAsset = xcmCreator.createMultiAsset({
 				amount: amount,

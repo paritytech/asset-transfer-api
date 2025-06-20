@@ -8,6 +8,7 @@ import {
 	XcmV4MultiLocation,
 	XcmV5MultiLocation,
 } from '../types.js';
+import { getXcmCreator } from '../xcm/index.js';
 
 /**
  * Create an xTokens xcm `feeAssetItem`.
@@ -25,7 +26,9 @@ export const createXTokensFeeAssetItem = ({
 		);
 	}
 
-	const paysWithFeeMultiLocation = resolveMultiLocation(paysWithFeeDest, xcmVersion);
+	const xcmCreator = getXcmCreator(xcmVersion);
+
+	const paysWithFeeMultiLocation = resolveMultiLocation(paysWithFeeDest, xcmCreator);
 
 	switch (xcmVersion) {
 		case 2:

@@ -4,12 +4,14 @@ import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { AssetTransferType } from '../../types.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { UnionXcmMultiLocation } from '../types.js';
+import { getXcmCreator } from '../xcm/index.js';
 
 export const resolveAssetTransferType = (
 	assetTransferType: string | undefined,
 	xcmVersion: number,
 	remoteTransferLocationStr?: string,
 ): AssetTransferType => {
+	const xcmCreator = getXcmCreator(xcmVersion);
 	if (!assetTransferType) {
 		throw new BaseError('resolveAssetTransferType: assetTransferType not found', BaseErrorsEnum.InvalidInput);
 	}
@@ -20,7 +22,7 @@ export const resolveAssetTransferType = (
 	let transferType: AssetTransferType;
 	let remoteTransferLocation: UnionXcmMultiLocation;
 	if (remoteTransferLocationStr && assetTransferType === 'RemoteReserve') {
-		remoteTransferLocation = resolveMultiLocation(remoteTransferLocationStr, xcmVersion);
+		remoteTransferLocation = resolveMultiLocation(remoteTransferLocationStr, xcmCreator);
 		transferType =
 			xcmVersion === 3
 				? { RemoteReserve: { V3: remoteTransferLocation } }

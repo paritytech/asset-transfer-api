@@ -56,7 +56,7 @@ export const createAssetLocations = async (
 		}
 
 		if (assetIdsContainLocations) {
-			multiLocation = resolveMultiLocation(assetId, xcmVersion);
+			multiLocation = resolveMultiLocation(assetId, xcmCreator);
 		} else {
 			const parents = isRelayNative && !isRelayChain ? 1 : 0;
 			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative

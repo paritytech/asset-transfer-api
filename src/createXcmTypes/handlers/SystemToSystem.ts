@@ -144,7 +144,7 @@ export const createSystemToSystemMultiAssets = async ({
 		let multiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			multiLocation = resolveMultiLocation(assetId, xcmVersion);
+			multiLocation = resolveMultiLocation(assetId, xcmCreator);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior = isRelayNative
@@ -157,7 +157,7 @@ export const createSystemToSystemMultiAssets = async ({
 					parents,
 					interior,
 				},
-				xcmVersion,
+				xcmCreator,
 			);
 		}
 
