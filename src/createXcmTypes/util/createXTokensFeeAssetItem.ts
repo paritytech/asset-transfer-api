@@ -1,13 +1,6 @@
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
-import {
-	CreateFeeAssetItemOpts,
-	UnionXcAssetsMultiLocation,
-	XcmV2MultiLocation,
-	XcmV3MultiLocation,
-	XcmV4MultiLocation,
-	XcmV5MultiLocation,
-} from '../types.js';
+import { CreateFeeAssetItemOpts, UnionXcAssetsMultiLocation } from '../types.js';
 import { getXcmCreator } from '../xcm/index.js';
 
 /**
@@ -30,20 +23,5 @@ export const createXTokensFeeAssetItem = ({
 
 	const paysWithFeeMultiLocation = resolveMultiLocation(paysWithFeeDest, xcmCreator);
 
-	switch (xcmVersion) {
-		case 2:
-			return {
-				V2: { id: { Concrete: paysWithFeeMultiLocation as XcmV2MultiLocation } },
-			};
-		case 3:
-			return {
-				V3: { id: { Concrete: paysWithFeeMultiLocation as XcmV3MultiLocation } },
-			};
-		case 4:
-			return { V4: { id: paysWithFeeMultiLocation as XcmV4MultiLocation } };
-		case 5:
-			return { V5: { id: paysWithFeeMultiLocation as XcmV5MultiLocation } };
-		default:
-			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-	}
+	return xcmCreator.multiLocation(paysWithFeeMultiLocation);
 };

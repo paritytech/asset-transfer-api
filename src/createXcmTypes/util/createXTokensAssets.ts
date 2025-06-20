@@ -62,7 +62,7 @@ export const createXTokensMultiAssets = async ({
 	multiAssets = sortAssetsAscending(multiAssets);
 	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets);
 
-	return xcmCreator.createUnionXcAssetsMultiAssets(sortedAndDedupedMultiAssets);
+	return xcmCreator.multiAssets(sortedAndDedupedMultiAssets);
 };
 
 /**

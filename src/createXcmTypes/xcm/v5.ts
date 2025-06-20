@@ -4,9 +4,12 @@ import {
 	FungibleAsset,
 	FungibleAssetType,
 	UnionXcAssetsMultiAssets,
+	UnionXcAssetsMultiLocation,
+	UnionXcmMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
+	XcmV4MultiLocation,
 	XcmV5DestBeneficiary,
 } from '../types.js';
 import { createParachainDestBeneficiaryInner } from './common.js';
@@ -70,7 +73,12 @@ export const V5: XcmCreator = {
 	resolveMultiLocation: V4.resolveMultiLocation,
 
 	// Save as V4
-	createUnionXcAssetsMultiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
+	multiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
 		return { V4: assets as FungibleAsset[] };
+	},
+
+	// Same as V4
+	multiLocation(multiLocation: UnionXcmMultiLocation): UnionXcAssetsMultiLocation {
+		return { V4: { id: multiLocation as XcmV4MultiLocation } };
 	},
 };
