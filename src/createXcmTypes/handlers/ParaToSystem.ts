@@ -90,8 +90,8 @@ export class ParaToSystem extends DefaultHandler {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createXTokensBeneficiary(destChainId: string, accountId: string, xcmVersion: number): XcmDestBeneficiaryXcAssets {
-		return createXTokensParachainDestBeneficiary(destChainId, accountId, xcmVersion);
+	createXTokensBeneficiary(destChainId: string, accountId: string, _xcmVersion: number): XcmDestBeneficiaryXcAssets {
+		return createXTokensParachainDestBeneficiary(destChainId, accountId, this.xcmCreator);
 	}
 
 	/**

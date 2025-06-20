@@ -16,11 +16,7 @@ import { createBeneficiary } from '../util/createBeneficiary.js';
 import { createWeightLimit } from '../util/createWeightLimit.js';
 import { createXTokensMultiAssets } from '../util/createXTokensAssets.js';
 import { createXTokensFeeAssetItem } from '../util/createXTokensFeeAssetItem.js';
-
-export const getXcmCreator = (xcmVersion: number): XcmCreator => {
-	console.log(xcmVersion);
-	return {} as XcmCreator;
-};
+import { getXcmCreator } from '../xcm/index.js';
 
 /**
  * These methods are uniform across all handlers / directions
@@ -38,8 +34,8 @@ export abstract class DefaultHandler implements ICreateXcmType {
 	 * @param accountId The accountId of the beneficiary.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary(accountId: string, xcmVersion: number): XcmDestBeneficiary {
-		return createBeneficiary(accountId, xcmVersion);
+	createBeneficiary(accountId: string, _xcmVersion: number): XcmDestBeneficiary {
+		return createBeneficiary(accountId, this.xcmCreator);
 	}
 
 	/**

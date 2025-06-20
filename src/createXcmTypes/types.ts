@@ -259,11 +259,11 @@ export type XcmV3DestBeneficiary = VersionedWrapper<XcmVersionKey.V3, XcmDestBen
 export type XcmV4DestBeneficiary = VersionedWrapper<XcmVersionKey.V4, XcmDestBeneficiaryMap[XcmVersionKey.V4]>;
 export type XcmV5DestBeneficiary = VersionedWrapper<XcmVersionKey.V5, XcmDestBeneficiaryMap[XcmVersionKey.V5]>;
 
-type ParachainX2Interior =
+export type ParachainX2Interior =
 	| [{ Parachain: string }, { AccountId32: { id: string } }]
 	| [{ Parachain: string }, { AccountKey20: { key: string } }];
 
-type ParachainDestBeneficiaryInner = {
+export type ParachainDestBeneficiaryInner = {
 	parents: string | number;
 	interior: {
 		X2: ParachainX2Interior;
@@ -381,4 +381,12 @@ export interface ICreateXcmType {
 	createXTokensFeeAssetItem?: (opts: CreateFeeAssetItemOpts) => UnionXcAssetsMultiLocation;
 }
 
-export interface XcmCreator {}
+export interface XcmCreator {
+	createBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiary;
+	createXTokensParachainDestBeneficiary: (opts: {
+		accountId: string;
+		destChainId: string;
+		parents: number;
+	}) => XcmDestBeneficiaryXcAssets;
+	createXTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiaryXcAssets;
+}

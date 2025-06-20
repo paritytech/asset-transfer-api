@@ -53,8 +53,8 @@ export class ParaToRelay extends DefaultHandler {
 		return Promise.resolve(0);
 	}
 
-	createXTokensBeneficiary(_: string, accountId: string, xcmVersion: number): XcmDestBeneficiaryXcAssets {
-		return createXTokensDestBeneficiary(accountId, xcmVersion);
+	createXTokensBeneficiary(_: string, accountId: string, _xcmVersion: number): XcmDestBeneficiaryXcAssets {
+		return createXTokensDestBeneficiary(accountId, this.xcmCreator);
 	}
 
 	createXTokensAsset(
