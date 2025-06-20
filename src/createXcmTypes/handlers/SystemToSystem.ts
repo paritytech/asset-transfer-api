@@ -102,7 +102,6 @@ export const createSystemToSystemMultiAssets = async ({
 	specName,
 	assets,
 	registry,
-	xcmVersion,
 	isForeignAssetsTransfer,
 	isLiquidTokenTransfer,
 	xcmCreator,
@@ -111,7 +110,6 @@ export const createSystemToSystemMultiAssets = async ({
 	amounts: string[];
 	specName: string;
 	assets: string[];
-	xcmVersion: number;
 	registry: Registry;
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
@@ -138,7 +136,7 @@ export const createSystemToSystemMultiAssets = async ({
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
 
 		if (!isRelayNative && !isValidInt) {
-			assetId = await getAssetId({ api, registry, asset: assetId, specName, xcmVersion, isForeignAssetsTransfer });
+			assetId = await getAssetId({ api, registry, asset: assetId, specName, xcmCreator, isForeignAssetsTransfer });
 		}
 
 		let multiLocation: UnionXcmMultiLocation;

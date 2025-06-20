@@ -98,7 +98,7 @@ export const checkLocalTxInput = async (
 		}
 
 		// not a number so we check the registry using the symbol
-		assetId = await getAssetId({ api, registry, asset: assetId, specName, xcmVersion, isForeignAssetsTransfer });
+		assetId = await getAssetId({ api, registry, asset: assetId, specName, xcmCreator, isForeignAssetsTransfer });
 
 		if (assetId.length > 0) {
 			return LocalTxType.Assets;

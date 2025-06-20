@@ -80,7 +80,7 @@ export const transferAssetsUsingTypeAndThen = async (
 				registry,
 				asset: assetId,
 				specName,
-				xcmVersion,
+				xcmCreator,
 				isForeignAssetsTransfer: true,
 			});
 			if (!assetIdLocationStr.toLowerCase().includes('ethereum')) {
@@ -211,7 +211,7 @@ export const transferAssetsUsingTypeAndThen = async (
 
 	let remoteFeesId: XcmVersionedAssetId;
 	if (paysWithFeeDest && !assetIdIsLocation(paysWithFeeDest)) {
-		const remoteFeesAssetLocation = await getAssetId({ api, registry, asset: paysWithFeeDest, specName, xcmVersion });
+		const remoteFeesAssetLocation = await getAssetId({ api, registry, asset: paysWithFeeDest, specName, xcmCreator });
 		remoteFeesId = createXcmVersionedAssetId(remoteFeesAssetLocation, xcmVersion, xcmCreator);
 	} else {
 		remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmVersion, xcmCreator);

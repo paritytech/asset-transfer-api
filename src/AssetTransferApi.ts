@@ -736,7 +736,7 @@ export class AssetTransferApi {
 					registry: this.registry,
 					asset: xcmFeeAsset,
 					specName: this.specName,
-					xcmVersion: currentXcmVersion,
+					xcmCreator,
 					isForeignAssetsTransfer: false,
 				});
 
@@ -1215,7 +1215,7 @@ export class AssetTransferApi {
 				registry: this.registry,
 				asset: assetId,
 				specName: this.specName,
-				xcmVersion,
+				xcmCreator,
 				isForeignAssetsTransfer: opts.isForeignAssetsTransfer,
 			});
 		}
@@ -1557,7 +1557,7 @@ export class AssetTransferApi {
 					registry: chainApi.registry,
 					asset: xcmFeeAsset,
 					specName: chainApi.specName,
-					xcmVersion,
+					xcmCreator,
 					isForeignAssetsTransfer: false,
 				});
 				feeAssetLocation = createXcmVersionedAssetId(feeAsset, xcmVersion, xcmCreator);

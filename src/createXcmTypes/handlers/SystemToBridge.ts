@@ -102,7 +102,6 @@ export const createSystemToBridgeAssets = async ({
 	specName,
 	assets,
 	registry,
-	xcmVersion,
 	isForeignAssetsTransfer,
 	isLiquidTokenTransfer,
 	xcmCreator,
@@ -111,7 +110,6 @@ export const createSystemToBridgeAssets = async ({
 	amounts: string[];
 	specName: string;
 	assets: string[];
-	xcmVersion: number;
 	registry: Registry;
 	destChainId?: string;
 	isForeignAssetsTransfer: boolean;
@@ -134,7 +132,7 @@ export const createSystemToBridgeAssets = async ({
 				registry,
 				asset: assetId,
 				specName,
-				xcmVersion,
+				xcmCreator,
 				isForeignAssetsTransfer,
 			});
 		}

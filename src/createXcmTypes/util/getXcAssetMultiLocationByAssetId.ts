@@ -6,6 +6,7 @@ import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import type { SanitizedXcAssetsData } from '../../registry/types.js';
 import { validateNumber } from '../../validate/index.js';
+import { getXcmCreator } from '../xcm/index.js';
 import { getAssetId } from './getAssetId.js';
 
 export const getXcAssetMultiLocationByAssetId = async (
@@ -15,6 +16,7 @@ export const getXcAssetMultiLocationByAssetId = async (
 	xcmVersion: number,
 	registry: Registry,
 ): Promise<string> => {
+	const xcmCreator = getXcmCreator(xcmVersion);
 	// if symbol, get the integer or multilocation assetId
 	if (!validateNumber(assetId)) {
 		assetId = await getAssetId({
@@ -22,7 +24,7 @@ export const getXcAssetMultiLocationByAssetId = async (
 			registry,
 			asset: assetId,
 			specName,
-			xcmVersion,
+			xcmCreator,
 		});
 	}
 

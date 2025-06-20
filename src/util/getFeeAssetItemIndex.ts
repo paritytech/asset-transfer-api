@@ -65,7 +65,7 @@ export const getFeeAssetItemIndex = async (
 						registry,
 						asset: paysWithFeeDest,
 						specName,
-						xcmVersion,
+						xcmCreator,
 						isForeignAssetsTransfer,
 					});
 					// if isForeignAssetsTransfer or parachain origin, compare the multiAsset interior to the the paysWithFeeDestAssetLocationStr as a multilocation

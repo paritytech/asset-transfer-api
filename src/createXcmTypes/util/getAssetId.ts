@@ -7,8 +7,7 @@ import { ASSET_HUB_CHAIN_ID } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import { validateNumber } from '../../validate/index.js';
-import { UnionXcmMultiLocation } from '../types.js';
-import { getXcmCreator } from '../xcm/index.js';
+import { UnionXcmMultiLocation, XcmCreator } from '../types.js';
 import { assetIdIsLocation } from './assetIdIsLocation.js';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry.js';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists.js';
@@ -31,20 +30,19 @@ export const getAssetId = async ({
 	registry,
 	asset,
 	specName,
-	xcmVersion,
+	xcmCreator,
 	isForeignAssetsTransfer,
 }: {
 	api: ApiPromise;
 	registry: Registry;
 	asset: string;
 	specName: string;
-	xcmVersion: number;
+	xcmCreator: XcmCreator;
 	isForeignAssetsTransfer?: boolean;
 }): Promise<string> => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
 	const isParachain = new BN(currentChainId).gte(new BN(2000)); // TODO: Move magic number to constants
-	const xcmCreator = getXcmCreator(xcmVersion);
 
 	// if assets pallet, check the cache and return the cached assetId if found
 	if (!isForeignAssetsTransfer) {

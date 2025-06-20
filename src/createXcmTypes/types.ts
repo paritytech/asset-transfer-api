@@ -396,6 +396,5 @@ export interface XcmCreator {
 
 	// getXcAssetMultiLocationByAssetId
 	// createMultiAssets ??? - for things like createXTokensAssets
-	// getAssetId
 	// resolveAssetTransferType
 }

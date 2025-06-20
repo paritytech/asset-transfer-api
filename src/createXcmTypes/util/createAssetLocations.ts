@@ -57,7 +57,7 @@ export const createAssetLocations = async (
 				registry,
 				asset: assetId,
 				specName,
-				xcmVersion,
+				xcmCreator,
 				isForeignAssetsTransfer: assetIdsContainLocations,
 			});
 		}

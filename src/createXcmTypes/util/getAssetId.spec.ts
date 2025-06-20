@@ -5,9 +5,11 @@ import { Registry } from '../../registry';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
 import { adjustedMockSystemApi } from '../../testHelpers/adjustedMockSystemApiV1004000';
+import { getXcmCreator } from '../xcm';
 import { getAssetId } from './getAssetId';
 
 describe('getAssetId', () => {
+	const xcmCreator = getXcmCreator(2);
 	describe('Statemine', () => {
 		const registry = new Registry('statemine', {});
 		const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
@@ -19,7 +21,7 @@ describe('getAssetId', () => {
 				registry,
 				asset: 'USDC',
 				specName: 'statemine',
-				xcmVersion: 2,
+				xcmCreator,
 				isForeignAssetsTransfer: false,
 			});
 
@@ -34,7 +36,7 @@ describe('getAssetId', () => {
 				registry,
 				asset: 'RMRK',
 				specName: 'statemine',
-				xcmVersion: 2,
+				xcmCreator,
 				isForeignAssetsTransfer: false,
 			});
 
@@ -48,7 +50,7 @@ describe('getAssetId', () => {
 					registry,
 					asset: 'hello',
 					specName: 'statemine',
-					xcmVersion: 2,
+					xcmCreator,
 					isForeignAssetsTransfer: false,
 				});
 			}).rejects.toThrow('assetId hello is not a valid symbol, integer asset id or location for statemine');
@@ -63,7 +65,7 @@ describe('getAssetId', () => {
 				registry,
 				asset: multiLocation,
 				specName: 'statemine',
-				xcmVersion: 2,
+				xcmCreator,
 				isForeignAssetsTransfer: true,
 			});
 
@@ -79,7 +81,7 @@ describe('getAssetId', () => {
 					registry,
 					asset: multiLocation,
 					specName: 'statemine',
-					xcmVersion: 2,
+					xcmCreator,
 					isForeignAssetsTransfer: true,
 				});
 			}).rejects.toThrow(`MultiLocation ${multiLocation} not found`);
@@ -100,7 +102,7 @@ describe('getAssetId', () => {
 				registry,
 				asset: 'movr',
 				specName: 'bifrost',
-				xcmVersion: 2,
+				xcmCreator,
 				isForeignAssetsTransfer: false,
 			});
 
@@ -114,7 +116,7 @@ describe('getAssetId', () => {
 					registry,
 					asset: 'TEST',
 					specName: 'bifrost',
-					xcmVersion: 2,
+					xcmCreator,
 					isForeignAssetsTransfer: true,
 				});
 			}).rejects.toThrow(`parachain assetId TEST is not a valid symbol assetId in bifrost`);
@@ -135,7 +137,7 @@ describe('getAssetId', () => {
 				registry,
 				asset: 'xcKSM',
 				specName: 'bifrost',
-				xcmVersion: 2,
+				xcmCreator,
 				isForeignAssetsTransfer: false,
 			});
 
@@ -150,7 +152,7 @@ describe('getAssetId', () => {
 				registry,
 				asset: '42259045809535163221576417993425387648',
 				specName: 'moonriver',
-				xcmVersion: 2,
+				xcmCreator,
 				isForeignAssetsTransfer: false,
 			});
 
@@ -164,7 +166,7 @@ describe('getAssetId', () => {
 					registry,
 					asset: 'TEST',
 					specName: 'moonriver',
-					xcmVersion: 2,
+					xcmCreator,
 					isForeignAssetsTransfer: true,
 				});
 			}).rejects.toThrow(`parachain assetId TEST is not a valid symbol assetIid in moonriver`);
@@ -177,7 +179,7 @@ describe('getAssetId', () => {
 					registry,
 					asset: '25830838603860',
 					specName: 'moonriver',
-					xcmVersion: 2,
+					xcmCreator,
 					isForeignAssetsTransfer: true,
 				});
 			}).rejects.toThrow(`parachain assetId 25830838603860 is not a valid integer assetIid in moonriver`);
