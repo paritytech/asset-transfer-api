@@ -1,7 +1,17 @@
+import { AnyJson } from '@polkadot/types-codec/types';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { XcmCreator, XcmDestBeneficiary, XcmDestBeneficiaryXcAssets, XcmV4DestBeneficiary } from '../types.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
+import {
+	FungibleAssetType,
+	XcmCreator,
+	XcmDestBeneficiary,
+	XcmDestBeneficiaryXcAssets,
+	XcmV4DestBeneficiary,
+} from '../types.js';
 import { createParachainDestBeneficiaryInner } from './common.js';
+
+const xcmVersion = 4;
 
 export const V4: XcmCreator = {
 	createBeneficiary: ({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary => {
@@ -16,6 +26,7 @@ export const V4: XcmCreator = {
 		};
 	},
 
+	// Same across all versions
 	createXTokensParachainDestBeneficiary: ({
 		accountId,
 		destChainId,
@@ -46,5 +57,16 @@ export const V4: XcmCreator = {
 			interior: { X1 },
 		};
 		return { V4: beneficiary } as XcmV4DestBeneficiary;
+	},
+
+	createMultiAsset: ({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType => {
+		// TODO: Remove xcmVersion arg and cleanup
+		const concreteMultiLocation = resolveMultiLocation(multiLocation, xcmVersion);
+		return {
+			id: concreteMultiLocation,
+			fun: {
+				Fungible: amount,
+			},
+		};
 	},
 };

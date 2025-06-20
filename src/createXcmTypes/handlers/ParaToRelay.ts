@@ -68,6 +68,7 @@ export class ParaToRelay extends DefaultHandler {
 			amount,
 			parents: 1,
 			xcmVersion,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 }

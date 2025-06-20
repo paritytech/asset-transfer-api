@@ -9,6 +9,7 @@ import {
 	type FungibleAssetType,
 	type FungibleMultiAsset,
 	type UnionXcmMultiAssets,
+	XcmCreator,
 } from '../types.js';
 
 export const createAssets = async ({
@@ -18,6 +19,7 @@ export const createAssets = async ({
 	opts,
 	multiAssetCreator,
 	xcmVersion = DEFAULT_XCM_VERSION,
+	xcmCreator,
 }: {
 	amounts: string[];
 	specName: string;
@@ -33,8 +35,10 @@ export const createAssets = async ({
 		destChainId?: string;
 		isForeignAssetsTransfer: boolean;
 		isLiquidTokenTransfer: boolean;
+		xcmCreator: XcmCreator;
 	}) => Promise<FungibleAssetType[]>;
 	xcmVersion: number;
+	xcmCreator: XcmCreator;
 }): Promise<UnionXcmMultiAssets> => {
 	const sortedAndDedupedMultiAssets = await multiAssetCreator({
 		api: opts.api,
@@ -46,6 +50,7 @@ export const createAssets = async ({
 		destChainId: opts.destChainId,
 		isForeignAssetsTransfer: opts.isForeignAssetsTransfer,
 		isLiquidTokenTransfer: opts.isLiquidTokenTransfer,
+		xcmCreator,
 	});
 
 	switch (xcmVersion) {

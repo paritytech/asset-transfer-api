@@ -14,11 +14,11 @@ import {
 	FungibleMultiAsset,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
+	XcmCreator,
 	XcmV2Junctions,
 	XcmV3Junctions,
 	XcmV4Junctions,
 } from '../types.js';
-import { createMultiAsset } from './createMultiAsset.js';
 import { dedupeAssets } from './dedupeAssets.js';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId.js';
 import { getAssetId } from './getAssetId.js';
@@ -35,6 +35,7 @@ export const createAssetLocations = async (
 	originChainId: string,
 	assetIdsContainLocations: boolean,
 	isLiquidTokenTransfer: boolean,
+	xcmCreator: XcmCreator,
 ): Promise<UnionXcmMultiAssets> => {
 	let multiAssets: FungibleAssetType[] = [];
 
@@ -69,10 +70,9 @@ export const createAssetLocations = async (
 				interior,
 			};
 		}
-		const multiAsset = createMultiAsset({
+		const multiAsset = xcmCreator.createMultiAsset({
 			amount,
 			multiLocation,
-			xcmVersion,
 		});
 
 		multiAssets.push(multiAsset);

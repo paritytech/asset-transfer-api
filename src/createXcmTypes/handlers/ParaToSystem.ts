@@ -12,6 +12,7 @@ import type {
 	FungibleAssetType,
 	UnionXcAssetsMultiAsset,
 	UnionXcmMultiAssets,
+	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
 } from '../types.js';
@@ -19,7 +20,6 @@ import { createAssets } from '../util/createAssets.js';
 import { createXTokensParachainDestBeneficiary } from '../util/createBeneficiary.js';
 import { createParachainDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
-import { createMultiAsset } from '../util/createMultiAsset.js';
 import { createXTokensAsset } from '../util/createXTokensAssets.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { getParachainNativeAssetLocation } from '../util/getParachainNativeAssetLocation.js';
@@ -66,6 +66,7 @@ export class ParaToSystem extends DefaultHandler {
 			assets,
 			opts,
 			multiAssetCreator: createParaToSystemMultiAssets,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 
@@ -80,6 +81,7 @@ export class ParaToSystem extends DefaultHandler {
 			api,
 			opts,
 			multiAssetCreator: createParaToSystemMultiAssets,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 
@@ -116,6 +118,7 @@ export class ParaToSystem extends DefaultHandler {
 			opts,
 			specName,
 			xcmVersion,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 }
@@ -138,6 +141,7 @@ const createParaToSystemMultiAssets = async ({
 	xcmVersion,
 	registry,
 	destChainId,
+	xcmCreator,
 }: {
 	api: ApiPromise;
 	amounts: string[];
@@ -146,6 +150,7 @@ const createParaToSystemMultiAssets = async ({
 	xcmVersion: number;
 	registry: Registry;
 	destChainId?: string;
+	xcmCreator: XcmCreator;
 }): Promise<FungibleAssetType[]> => {
 	let multiAssets: FungibleAssetType[] = [];
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
@@ -161,10 +166,9 @@ const createParaToSystemMultiAssets = async ({
 			xcmVersion,
 		);
 
-		const multiAsset = createMultiAsset({
+		const multiAsset = xcmCreator.createMultiAsset({
 			amount: amounts[0],
 			multiLocation,
-			xcmVersion,
 		});
 
 		multiAssets.push(multiAsset);
@@ -185,10 +189,9 @@ const createParaToSystemMultiAssets = async ({
 
 			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
 
-			const multiAsset = createMultiAsset({
+			const multiAsset = xcmCreator.createMultiAsset({
 				amount: amount,
 				multiLocation,
-				xcmVersion,
 			});
 			multiAssets.push(multiAsset);
 		}

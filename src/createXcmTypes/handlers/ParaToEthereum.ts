@@ -12,12 +12,12 @@ import type {
 	FungibleAssetType,
 	FungibleMultiAsset,
 	UnionXcmMultiAssets,
+	XcmCreator,
 	XcmDestBeneficiary,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createParachainDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
-import { createMultiAsset } from '../util/createMultiAsset.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { getParachainNativeAssetLocation } from '../util/getParachainNativeAssetLocation.js';
 import { getXcAssetMultiLocationByAssetId } from '../util/getXcAssetMultiLocationByAssetId.js';
@@ -62,6 +62,7 @@ export class ParaToEthereum extends DefaultHandler {
 			assets,
 			opts,
 			multiAssetCreator: createParaToEthereumMultiAssets,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 
@@ -76,6 +77,7 @@ export class ParaToEthereum extends DefaultHandler {
 			api,
 			opts,
 			multiAssetCreator: createParaToEthereumMultiAssets,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 }
@@ -99,6 +101,7 @@ const createParaToEthereumMultiAssets = async ({
 	xcmVersion,
 	registry,
 	destChainId,
+	xcmCreator,
 }: {
 	api: ApiPromise;
 	amounts: string[];
@@ -107,6 +110,7 @@ const createParaToEthereumMultiAssets = async ({
 	xcmVersion: number;
 	registry: Registry;
 	destChainId?: string;
+	xcmCreator: XcmCreator;
 }): Promise<FungibleAssetType[]> => {
 	const multiAssets: FungibleAssetType[] = [];
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
@@ -122,10 +126,9 @@ const createParaToEthereumMultiAssets = async ({
 			xcmVersion,
 		);
 
-		const multiAsset = createMultiAsset({
+		const multiAsset = xcmCreator.createMultiAsset({
 			amount: amounts[0],
 			multiLocation,
-			xcmVersion,
 		});
 
 		multiAssets.push(multiAsset);
@@ -145,10 +148,9 @@ const createParaToEthereumMultiAssets = async ({
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
 			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
-			const multiAsset = createMultiAsset({
+			const multiAsset = xcmCreator.createMultiAsset({
 				amount,
 				multiLocation,
-				xcmVersion,
 			});
 
 			multiAssets.push(multiAsset);

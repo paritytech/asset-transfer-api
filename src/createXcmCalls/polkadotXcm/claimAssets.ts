@@ -46,6 +46,7 @@ export const claimAssets = async (
 		originChainId,
 		assetIdsContainLocations,
 		isLiquidTokenTransfer,
+		xcmCreator,
 	);
 
 	const pallet = establishXcmPallet(api);

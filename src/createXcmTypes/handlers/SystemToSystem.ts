@@ -11,12 +11,12 @@ import {
 	FungibleAssetType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
+	XcmCreator,
 	XcmDestBeneficiary,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createParachainDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
-import { createMultiAsset } from '../util/createMultiAsset.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { fetchPalletInstanceId } from '../util/fetchPalletInstanceId.js';
 import { getAssetId } from '../util/getAssetId.js';
@@ -63,6 +63,7 @@ export class SystemToSystem extends DefaultHandler {
 			assets,
 			opts,
 			multiAssetCreator: createSystemToSystemMultiAssets,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 
@@ -78,6 +79,7 @@ export class SystemToSystem extends DefaultHandler {
 			opts,
 			multiAssetCreator: createSystemToSystemMultiAssets,
 			verifySystemChain: true,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 }
@@ -103,6 +105,7 @@ export const createSystemToSystemMultiAssets = async ({
 	xcmVersion,
 	isForeignAssetsTransfer,
 	isLiquidTokenTransfer,
+	xcmCreator,
 }: {
 	api: ApiPromise;
 	amounts: string[];
@@ -113,6 +116,7 @@ export const createSystemToSystemMultiAssets = async ({
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 	destChainId?: string;
+	xcmCreator: XcmCreator;
 }): Promise<FungibleAssetType[]> => {
 	let multiAssets: FungibleAssetType[] = [];
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
@@ -157,10 +161,9 @@ export const createSystemToSystemMultiAssets = async ({
 			);
 		}
 
-		const multiAsset = createMultiAsset({
+		const multiAsset = xcmCreator.createMultiAsset({
 			amount,
 			multiLocation,
-			xcmVersion,
 		});
 		multiAssets.push(multiAsset);
 	}

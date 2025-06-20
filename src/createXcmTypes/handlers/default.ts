@@ -85,6 +85,7 @@ export abstract class DefaultHandler implements ICreateXcmType {
 			specName,
 			opts,
 			xcmVersion,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 	createXTokensWeightLimit(_opts: CreateWeightLimitOpts): XcmWeight {

@@ -10,6 +10,7 @@ import {
 	FungibleAssetType,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
+	XcmCreator,
 	XcmDestBeneficiary,
 	XcmV2Junctions,
 	XcmV3Junctions,
@@ -18,7 +19,6 @@ import {
 import { createAssets } from '../util/createAssets.js';
 import { createInteriorValueDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
-import { createMultiAsset } from '../util/createMultiAsset.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { fetchPalletInstanceId } from '../util/fetchPalletInstanceId.js';
 import { getAssetId } from '../util/getAssetId.js';
@@ -64,6 +64,7 @@ export class SystemToBridge extends DefaultHandler {
 			assets,
 			opts,
 			multiAssetCreator: createSystemToBridgeAssets,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 
@@ -79,6 +80,7 @@ export class SystemToBridge extends DefaultHandler {
 			opts,
 			multiAssetCreator: createSystemToBridgeAssets,
 			verifySystemChain: true,
+			xcmCreator: this.xcmCreator,
 		});
 	}
 }
@@ -103,6 +105,7 @@ export const createSystemToBridgeAssets = async ({
 	xcmVersion,
 	isForeignAssetsTransfer,
 	isLiquidTokenTransfer,
+	xcmCreator,
 }: {
 	api: ApiPromise;
 	amounts: string[];
@@ -113,6 +116,7 @@ export const createSystemToBridgeAssets = async ({
 	destChainId?: string;
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
+	xcmCreator: XcmCreator;
 }): Promise<FungibleAssetType[]> => {
 	let multiAssets: FungibleAssetType[] = [];
 
@@ -146,10 +150,9 @@ export const createSystemToBridgeAssets = async ({
 			};
 		}
 
-		const multiAsset = createMultiAsset({
+		const multiAsset = xcmCreator.createMultiAsset({
 			amount,
 			multiLocation,
-			xcmVersion,
 		});
 		multiAssets.push(multiAsset);
 	}
