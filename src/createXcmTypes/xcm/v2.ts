@@ -5,6 +5,8 @@ import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAssetType,
+	FungibleMultiAsset,
+	UnionXcAssetsMultiAssets,
 	UnionXcmMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
@@ -74,7 +76,7 @@ export const V2: XcmCreator = {
 		};
 	},
 
-	resolveMultiLocation: (multiLocation: AnyJson): UnionXcmMultiLocation => {
+	resolveMultiLocation(multiLocation: AnyJson): UnionXcmMultiLocation {
 		const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
 
 		// Ensure we check this first since the main difference between v2, and later versions is the `globalConsensus` junction
@@ -96,5 +98,9 @@ export const V2: XcmCreator = {
 		}
 
 		return sanitizeKeys(result);
+	},
+
+	createUnionXcAssetsMultiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
+		return { V2: assets as FungibleMultiAsset[] };
 	},
 };

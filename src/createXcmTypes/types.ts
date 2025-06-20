@@ -391,6 +391,7 @@ export interface XcmCreator {
 	createXTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiaryXcAssets;
 	createMultiAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
 	resolveMultiLocation: (multiLocation: AnyJson) => UnionXcmMultiLocation;
+	createUnionXcAssetsMultiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
 
 	// createXTokensFeeAssetItem
 

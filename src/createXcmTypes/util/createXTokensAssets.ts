@@ -64,18 +64,7 @@ export const createXTokensMultiAssets = async ({
 	multiAssets = sortAssetsAscending(multiAssets);
 	const sortedAndDedupedMultiAssets = dedupeAssets(multiAssets);
 
-	switch (xcmVersion) {
-		case 2:
-			return { V2: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
-		case 3:
-			return { V3: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
-		case 4:
-			return { V4: sortedAndDedupedMultiAssets as FungibleAsset[] };
-		case 5:
-			return { V5: sortedAndDedupedMultiAssets as FungibleAsset[] };
-		default:
-			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-	}
+	return xcmCreator.createUnionXcAssetsMultiAssets(sortedAndDedupedMultiAssets);
 };
 
 /**

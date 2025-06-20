@@ -1,7 +1,9 @@
 import { AnyJson } from '@polkadot/types-codec/types';
 
 import {
+	FungibleAsset,
 	FungibleAssetType,
+	UnionXcAssetsMultiAssets,
 	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
@@ -64,4 +66,9 @@ export const V5: XcmCreator = {
 
 	// Same as V4
 	resolveMultiLocation: V4.resolveMultiLocation,
+
+	// Save as V4
+	createUnionXcAssetsMultiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
+		return { V4: assets as FungibleAsset[] };
+	},
 };

@@ -4,6 +4,8 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAssetType,
+	FungibleMultiAsset,
+	UnionXcAssetsMultiAssets,
 	UnionXcmMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
@@ -92,5 +94,10 @@ export const V3: XcmCreator = {
 		} else {
 			return result;
 		}
+	},
+
+	// Same as V2
+	createUnionXcAssetsMultiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
+		return { V3: assets as FungibleMultiAsset[] };
 	},
 };
