@@ -10,7 +10,7 @@ import { SystemToBridge } from './handlers/SystemToBridge.js';
 import { SystemToPara } from './handlers/SystemToPara.js';
 import { SystemToRelay } from './handlers/SystemToRelay.js';
 import { SystemToSystem } from './handlers/SystemToSystem.js';
-import { ICreateXcmType, ICreateXcmTypeConstructor, XcmCreator } from './types.js';
+import { ICreateXcmType, ICreateXcmTypeConstructor } from './types.js';
 
 type ValidDirection = Exclude<Direction, Direction.Local>;
 type ICreateXcmTypeLookup = {

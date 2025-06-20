@@ -1,7 +1,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { DEFAULT_XCM_VERSION } from '../../consts.js';
-import { UnionXcmMultiAssets, XcmDestBeneficiary } from '../types.js';
+import { CreateAssetsOpts, UnionXcmMultiAssets, XcmDestBeneficiary } from '../types.js';
 import { createSingleAsset } from '../util/createAssets.js';
 import { createParachainDest } from '../util/createDest.js';
 import { DefaultHandler } from './default.js';
@@ -30,7 +30,13 @@ export class RelayToPara extends DefaultHandler {
 	 * @param amounts The amount for a relay native asset. The length will always be one.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	async createAssets(amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> {
+	async createAssets(
+		amounts: string[],
+		xcmVersion: number,
+		_specName: string,
+		_assets: string[],
+		_opts: CreateAssetsOpts,
+	): Promise<UnionXcmMultiAssets> {
 		return createSingleAsset({
 			amounts,
 			parents: 0,

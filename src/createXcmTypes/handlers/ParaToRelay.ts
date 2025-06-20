@@ -1,6 +1,8 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import {
+	CreateAssetsOpts,
+	CreateFeeAssetItemOpts,
 	UnionXcAssetsMultiAsset,
 	UnionXcmMultiAssets,
 	XcmDestBeneficiary,
@@ -29,7 +31,13 @@ export class ParaToRelay extends DefaultHandler {
 	 * @param amounts The amount for a relay native asset. The length will always be one.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createAssets(amounts: string[], xcmVersion: number): Promise<UnionXcmMultiAssets> {
+	createAssets(
+		amounts: string[],
+		xcmVersion: number,
+		_specName: string,
+		_assets: string[],
+		_opts: CreateAssetsOpts,
+	): Promise<UnionXcmMultiAssets> {
 		return createSingleAsset({
 			amounts,
 			parents: 1,
@@ -41,7 +49,7 @@ export class ParaToRelay extends DefaultHandler {
 	 * Return the correct feeAssetItem based on XCM direction.
 	 * In this case it will always be zero since there is no `feeAssetItem` for this direction.
 	 */
-	async createFeeAssetItem(_: ApiPromise): Promise<number> {
+	async createFeeAssetItem(_api: ApiPromise, _opts: CreateFeeAssetItemOpts): Promise<number> {
 		return Promise.resolve(0);
 	}
 
@@ -49,7 +57,13 @@ export class ParaToRelay extends DefaultHandler {
 		return createXTokensDestBeneficiary(accountId, xcmVersion);
 	}
 
-	createXTokensAsset(amount: string, xcmVersion: number): Promise<UnionXcAssetsMultiAsset> {
+	createXTokensAsset(
+		amount: string,
+		xcmVersion: number,
+		_specName: string,
+		_asset: string,
+		_opts: CreateAssetsOpts,
+	): Promise<UnionXcAssetsMultiAsset> {
 		return createXTokensAssetToRelay({
 			amount,
 			parents: 1,
