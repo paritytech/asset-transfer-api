@@ -403,6 +403,8 @@ export interface XcmCreator {
 	hereAsset: (opts: { amount: string; parents: number }) => UnionXcmMultiAssets;
 
 	// TODO:
+	// createAssetLocations
+	// createXcmOnDestination
 	// clean up _xcmVersion
 
 	// go through handlers one by one

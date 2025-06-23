@@ -1,6 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
 
-import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { Registry } from '../../registry/index.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
@@ -20,18 +19,29 @@ import { getAssetId } from './getAssetId.js';
 import { isRelayNativeAsset } from './isRelayNativeAsset.js';
 import { sortAssetsAscending } from './sortAssetsAscending.js';
 
-export const createAssetLocations = async (
-	api: ApiPromise,
-	assetIds: string[],
-	specName: string,
-	amounts: string[],
-	xcmVersion: number = DEFAULT_XCM_VERSION,
-	registry: Registry,
-	originChainId: string,
-	assetIdsContainLocations: boolean,
-	isLiquidTokenTransfer: boolean,
-	xcmCreator: XcmCreator,
-): Promise<UnionXcmMultiAssets> => {
+export const createAssetLocations = async ({
+	api,
+	assetIds,
+	specName,
+	amounts,
+	xcmVersion,
+	registry,
+	originChainId,
+	assetIdsContainLocations,
+	isLiquidTokenTransfer,
+	xcmCreator,
+}: {
+	api: ApiPromise;
+	assetIds: string[];
+	specName: string;
+	amounts: string[];
+	xcmVersion: number;
+	registry: Registry;
+	originChainId: string;
+	assetIdsContainLocations: boolean;
+	isLiquidTokenTransfer: boolean;
+	xcmCreator: XcmCreator;
+}): Promise<UnionXcmMultiAssets> => {
 	let multiAssets: FungibleAssetType[] = [];
 
 	const isRelayChain = originChainId === '0' ? true : false;

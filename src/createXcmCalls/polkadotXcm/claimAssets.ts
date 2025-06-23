@@ -36,7 +36,7 @@ export const claimAssets = async (
 	const xcmCreator = getXcmCreator(xcmVersion);
 	const beneficiary = createBeneficiary(beneficiaryAddress, xcmCreator);
 
-	const assets = await createAssetLocations(
+	const assets = await createAssetLocations({
 		api,
 		assetIds,
 		specName,
@@ -47,7 +47,7 @@ export const claimAssets = async (
 		assetIdsContainLocations,
 		isLiquidTokenTransfer,
 		xcmCreator,
-	);
+	});
 
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].claimAssets;
