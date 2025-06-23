@@ -217,7 +217,12 @@ export const transferAssetsUsingTypeAndThen = async (
 		remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmCreator);
 	}
 
-	const customXcmOnDestination = createXcmOnDestination(assetIds, beneficiary, xcmVersion, customXcmOnDestStr);
+	const customXcmOnDestination = createXcmOnDestination({
+		assets: assetIds,
+		beneficiary,
+		customXcmOnDest: customXcmOnDestStr,
+		xcmCreator,
+	});
 
 	return ext(
 		dest,

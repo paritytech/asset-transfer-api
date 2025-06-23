@@ -401,15 +401,8 @@ export interface XcmCreator {
 	hereDest: (opts: { parents: number }) => XcmDestBeneficiary;
 	interiorDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
 	hereAsset: (opts: { amount: string; parents: number }) => UnionXcmMultiAssets;
+	xcmMessage: (msg: AnyJson) => AnyJson;
 
 	// TODO:
-	// createAssetLocations
-	// createXcmOnDestination
 	// clean up _xcmVersion
-
-	// go through handlers one by one
-	// and then check for any stragglers, search V3
-
-	// search for
-	// switch / case
 }

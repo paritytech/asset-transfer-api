@@ -196,4 +196,9 @@ export const V4: XcmCreator = {
 
 		return { V4: multiAssets as FungibleAsset[] };
 	},
+
+	// Same across all versions
+	xcmMessage(msg: AnyJson): AnyJson {
+		return { V4: msg };
+	},
 };
