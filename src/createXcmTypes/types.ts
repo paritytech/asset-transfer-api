@@ -399,8 +399,10 @@ export interface XcmCreator {
 	parachainDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
 	hereDest: (opts: { parents: number }) => XcmDestBeneficiary;
 	interiorDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
+	hereAsset: (opts: { amount: string; parents: number }) => UnionXcmMultiAssets;
 
 	// TODO:
+	// createAssets.ts
 	// clean up _xcmVersion
 
 	// go through handlers one by one

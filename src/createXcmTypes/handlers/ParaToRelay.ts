@@ -8,7 +8,6 @@ import {
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
 } from '../types.js';
-import { createSingleAsset } from '../util/createAssets.js';
 import { createXTokensDestBeneficiary } from '../util/createBeneficiary.js';
 import { createXTokensAssetToRelay } from '../util/createXTokensAssets.js';
 import { DefaultHandler } from './default.js';
@@ -32,16 +31,17 @@ export class ParaToRelay extends DefaultHandler {
 	 */
 	createAssets(
 		amounts: string[],
-		xcmVersion: number,
+		_xcmVersion: number,
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> {
-		return createSingleAsset({
-			amounts,
-			parents: 1,
-			xcmVersion,
-		});
+		return Promise.resolve(
+			this.xcmCreator.hereAsset({
+				amount: amounts[0],
+				parents: 1,
+			}),
+		);
 	}
 
 	/**

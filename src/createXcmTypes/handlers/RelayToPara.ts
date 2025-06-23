@@ -2,7 +2,6 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { CreateAssetsOpts, UnionXcmMultiAssets, XcmDestBeneficiary } from '../types.js';
-import { createSingleAsset } from '../util/createAssets.js';
 import { DefaultHandler } from './default.js';
 
 /**
@@ -30,16 +29,17 @@ export class RelayToPara extends DefaultHandler {
 	 */
 	async createAssets(
 		amounts: string[],
-		xcmVersion: number,
+		_xcmVersion: number,
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> {
-		return createSingleAsset({
-			amounts,
-			parents: 0,
-			xcmVersion,
-		});
+		return Promise.resolve(
+			this.xcmCreator.hereAsset({
+				amount: amounts[0],
+				parents: 0,
+			}),
+		);
 	}
 
 	async createFeeAssetItem(_: ApiPromise): Promise<number> {

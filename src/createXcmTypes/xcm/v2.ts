@@ -9,6 +9,7 @@ import {
 	FungibleMultiAsset,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
+	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
@@ -142,5 +143,23 @@ export const V2: XcmCreator = {
 
 	interiorDest(_opts: { destId: string; parents: number }): XcmDestBeneficiary {
 		throw new BaseError('XcmVersion not supported.', BaseErrorsEnum.InvalidXcmVersion);
+	},
+
+	hereAsset({ amount, parents }: { amount: string; parents: number }): UnionXcmMultiAssets {
+		const multiAssets: FungibleAssetType[] = [];
+		const multiAsset: FungibleAssetType = {
+			fun: {
+				Fungible: amount,
+			},
+			id: {
+				Concrete: {
+					interior: { Here: '' },
+					parents,
+				},
+			},
+		};
+		multiAssets.push(multiAsset);
+
+		return { V2: multiAssets as FungibleMultiAsset[] };
 	},
 };

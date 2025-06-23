@@ -8,6 +8,7 @@ import {
 	InteriorKey,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
+	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
@@ -142,5 +143,22 @@ export const V5: XcmCreator = {
 				interior,
 			},
 		};
+	},
+
+	// Same as V5
+	hereAsset({ amount, parents }: { amount: string; parents: number }): UnionXcmMultiAssets {
+		const multiAssets: FungibleAssetType[] = [];
+		const multiAsset: FungibleAssetType = {
+			fun: {
+				Fungible: amount,
+			},
+			id: {
+				interior: { Here: '' },
+				parents,
+			},
+		};
+		multiAssets.push(multiAsset);
+
+		return { V5: multiAssets as FungibleAsset[] };
 	},
 };
