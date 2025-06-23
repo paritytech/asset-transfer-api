@@ -41,7 +41,6 @@ export const claimAssets = async (
 		assetIds,
 		specName,
 		amounts,
-		xcmVersion,
 		registry,
 		originChainId,
 		assetIdsContainLocations,
