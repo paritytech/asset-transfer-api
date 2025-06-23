@@ -55,14 +55,13 @@ export class ParaToPara extends DefaultHandler {
 	 */
 	async createAssets(
 		amounts: string[],
-		xcmVersion: number,
+		_xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
 	): Promise<UnionXcmMultiAssets> {
 		return createAssets({
 			amounts,
-			xcmVersion,
 			specName,
 			assets,
 			opts,
