@@ -8,9 +8,8 @@ export class SystemToRelay extends DefaultHandler {
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The destId in this case, which is the relay chain.
-	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(_: string, _xcmVersion: number): XcmDestBeneficiary {
+	createDest(_: string): XcmDestBeneficiary {
 		return this.xcmCreator.hereDest({ parents: 1 });
 	}
 
@@ -18,11 +17,9 @@ export class SystemToRelay extends DefaultHandler {
 	 * Create a VersionedMultiAsset structured type.
 	 *
 	 * @param amounts The amount for a relay native asset. The length will always be one.
-	 * @param xcmVersion The accepted xcm version.
 	 */
 	async createAssets(
 		amounts: string[],
-		_xcmVersion: number,
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,

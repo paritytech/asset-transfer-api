@@ -31,13 +31,13 @@ export const transferMultiasset = async (
 		const amount = amounts[0];
 		const assetId = assetIds[0];
 
-		const asset = await typeCreator.createXTokensAsset(amount, xcmVersion, specName, assetId, {
+		const asset = await typeCreator.createXTokensAsset(amount, specName, assetId, {
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
 			api,
 		});
-		const beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);
+		const beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr);
 
 		return ext(asset, beneficiary, destWeightLimit);
 	}

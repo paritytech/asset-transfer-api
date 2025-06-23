@@ -18,7 +18,6 @@ import { sortAssetsAscending } from './sortAssetsAscending.js';
  * Create `xTokens` MultiAssets.
  *
  * @param amounts Amount per asset. It will match the `assets` length.
- * @param xcmVersion The accepted xcm version.
  * @param specName The specname of the chain the api is connected to.
  * @param assets The assets to create into xcm `MultiAssets`.
  * @param opts Options used to create xTokens `MultiAssets`.
@@ -66,7 +65,6 @@ export const createXTokensMultiAssets = async ({
  * Create a single xToken asset.
  *
  * @param amount Amount per asset. This will be of length 1.
- * @param xcmVersion The accepted xcm version.
  * @param specName The specname of the chain the api is connected to.
  * @param assetId Single asset to be created into a `MultiAsset`.
  * @param opts Options to create a single Asset.

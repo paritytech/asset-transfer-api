@@ -28,7 +28,7 @@ export const transferMultiassetWithFee = async (
 	if (typeCreator.createXTokensAsset && typeCreator.createXTokensFeeAssetItem && typeCreator.createXTokensBeneficiary) {
 		const amount = amounts[0];
 		const assetId = assetIds[0];
-		const asset = await typeCreator.createXTokensAsset(amount, xcmVersion, specName, assetId, {
+		const asset = await typeCreator.createXTokensAsset(amount, specName, assetId, {
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
@@ -38,7 +38,7 @@ export const transferMultiassetWithFee = async (
 			paysWithFeeDest,
 		});
 
-		const beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);
+		const beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr);
 
 		return ext(asset, fee, beneficiary, destWeightLimit);
 	}

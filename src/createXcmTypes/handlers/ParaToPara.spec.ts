@@ -14,7 +14,6 @@ describe('ParaToPara test', () => {
 		it('Should work for V2', () => {
 			const beneficiary = v2Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				2,
 			);
 
 			const expectedRes = {
@@ -34,7 +33,7 @@ describe('ParaToPara test', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V2 for an Ethereum Address', () => {
-			const beneficiary = v2Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 2);
+			const beneficiary = v2Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece');
 
 			const expectedRes = {
 				V2: {
@@ -55,7 +54,6 @@ describe('ParaToPara test', () => {
 		it('Should work for V3', () => {
 			const beneficiary = v3Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				3,
 			);
 
 			const expectedRes = {
@@ -74,7 +72,7 @@ describe('ParaToPara test', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 for an Ethereum Address', () => {
-			const beneficiary = v3Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
+			const beneficiary = v3Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece');
 
 			const expectedRes = {
 				V3: {
@@ -94,7 +92,6 @@ describe('ParaToPara test', () => {
 		it('Should work for V4', () => {
 			const beneficiary = v4Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				4,
 			);
 
 			const expectedRes = {
@@ -117,7 +114,6 @@ describe('ParaToPara test', () => {
 		it('Should work for V5', () => {
 			const beneficiary = v5Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				5,
 			);
 
 			const expectedRes = {
@@ -138,7 +134,7 @@ describe('ParaToPara test', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4 for an Ethereum Address', () => {
-			const beneficiary = v4Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
+			const beneficiary = v4Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece');
 
 			const expectedRes = {
 				V4: {
@@ -158,7 +154,7 @@ describe('ParaToPara test', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5 for an Ethereum Address', () => {
-			const beneficiary = v5Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
+			const beneficiary = v5Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece');
 
 			const expectedRes = {
 				V5: {
@@ -180,7 +176,7 @@ describe('ParaToPara test', () => {
 	});
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = v2Handler.createDest('100', 2);
+			const destination = v2Handler.createDest('100');
 
 			const expectedRes = {
 				V2: {
@@ -196,7 +192,7 @@ describe('ParaToPara test', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = v3Handler.createDest('100', 3);
+			const destination = v3Handler.createDest('100');
 
 			const expectedRes = {
 				V3: {
@@ -212,7 +208,7 @@ describe('ParaToPara test', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const destination = v4Handler.createDest('100', 4);
+			const destination = v4Handler.createDest('100');
 
 			const expectedRes = {
 				V4: {
@@ -230,7 +226,7 @@ describe('ParaToPara test', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const destination = v5Handler.createDest('100', 5);
+			const destination = v5Handler.createDest('100');
 
 			const expectedRes = {
 				V5: {
@@ -254,7 +250,6 @@ describe('ParaToPara test', () => {
 		it('Should work for V2', async () => {
 			const assets = await v2Handler.createAssets(
 				['1000000000000', '2000000000'],
-				2,
 				'moonriver',
 				['42259045809535163221576417993425387648', '182365888117048807484804376330534607370'],
 				{
@@ -301,7 +296,6 @@ describe('ParaToPara test', () => {
 		it('Should work for V3', async () => {
 			const assets = await v3Handler.createAssets(
 				['1000000', '20000000000'],
-				3,
 				'moonriver',
 				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
 				{
@@ -348,7 +342,6 @@ describe('ParaToPara test', () => {
 		it('Should work for V4', async () => {
 			const assets = await v4Handler.createAssets(
 				['1000000', '20000000000'],
-				4,
 				'moonriver',
 				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
 				{
@@ -391,7 +384,6 @@ describe('ParaToPara test', () => {
 		it('Should work for V5', async () => {
 			const assets = await v5Handler.createAssets(
 				['1000000', '20000000000'],
-				5,
 				'moonriver',
 				['182365888117048807484804376330534607370', '311091173110107856861649819128533077277'],
 				{

@@ -32,9 +32,8 @@ export abstract class DefaultHandler implements ICreateXcmType {
 	 * Create a XcmVersionedMultiLocation structured type for a beneficiary.
 	 *
 	 * @param accountId The accountId of the beneficiary.
-	 * @param xcmVersion The accepted xcm version.
 	 */
-	createBeneficiary(accountId: string, _xcmVersion: number): XcmDestBeneficiary {
+	createBeneficiary(accountId: string): XcmDestBeneficiary {
 		return createBeneficiary(accountId, this.xcmCreator);
 	}
 
@@ -49,13 +48,12 @@ export abstract class DefaultHandler implements ICreateXcmType {
 
 	// Unique per handler
 
-	createDest(_destId: string, _xcmVersion: number): XcmDestBeneficiary {
+	createDest(_destId: string): XcmDestBeneficiary {
 		throw new Error('Not Implemented');
 	}
 
 	createAssets(
 		_amounts: string[],
-		_xcmVersion: number,
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,
@@ -74,7 +72,6 @@ export abstract class DefaultHandler implements ICreateXcmType {
 
 	createXTokensAssets(
 		amounts: string[],
-		_xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,

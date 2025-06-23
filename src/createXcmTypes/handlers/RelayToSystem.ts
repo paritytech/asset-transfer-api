@@ -12,9 +12,8 @@ export class RelayToSystem extends DefaultHandler {
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The parachain Id of the destination
-	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest(destId: string, _xcmVersion: number): XcmDestBeneficiary {
+	createDest(destId: string): XcmDestBeneficiary {
 		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 0,
@@ -25,11 +24,9 @@ export class RelayToSystem extends DefaultHandler {
 	 * Create a VersionedMultiAsset structured type.
 	 *
 	 * @param amounts The amount for a relay native asset. The length will always be one.
-	 * @param xcmVersion The accepted xcm version.
 	 */
 	async createAssets(
 		amounts: string[],
-		_xcmVersion: number,
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,

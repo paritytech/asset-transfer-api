@@ -17,9 +17,8 @@ export class ParaToRelay extends DefaultHandler {
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The destId in this case, which is the relay chain.
-	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(_: string, _xcmVersion: number): XcmDestBeneficiary {
+	createDest(_: string): XcmDestBeneficiary {
 		return this.xcmCreator.hereDest({ parents: 1 });
 	}
 
@@ -27,11 +26,9 @@ export class ParaToRelay extends DefaultHandler {
 	 * Create a VersionedMultiAsset structured type.
 	 *
 	 * @param amounts The amount for a relay native asset. The length will always be one.
-	 * @param xcmVersion The accepted xcm version.
 	 */
 	createAssets(
 		amounts: string[],
-		_xcmVersion: number,
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,
@@ -52,13 +49,12 @@ export class ParaToRelay extends DefaultHandler {
 		return Promise.resolve(0);
 	}
 
-	createXTokensBeneficiary(_: string, accountId: string, _xcmVersion: number): XcmDestBeneficiaryXcAssets {
+	createXTokensBeneficiary(_: string, accountId: string): XcmDestBeneficiaryXcAssets {
 		return createXTokensDestBeneficiary(accountId, this.xcmCreator);
 	}
 
 	createXTokensAsset(
 		amount: string,
-		_xcmVersion: number,
 		_specName: string,
 		_asset: string,
 		_opts: CreateAssetsOpts,

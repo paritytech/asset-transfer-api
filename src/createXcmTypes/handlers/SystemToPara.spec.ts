@@ -16,7 +16,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		it('Should work for V2', () => {
 			const beneficiary = v2Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				2,
 			);
 
 			const expectedRes = {
@@ -36,7 +35,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V2 for an Ethereum Address', () => {
-			const beneficiary = v2Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 2);
+			const beneficiary = v2Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece');
 
 			const expectedRes = {
 				V2: {
@@ -57,7 +56,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		it('Should work for V3', () => {
 			const beneficiary = v3Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				3,
 			);
 
 			const expectedRes = {
@@ -76,7 +74,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3 for an Ethereum Address', () => {
-			const beneficiary = v3Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 3);
+			const beneficiary = v3Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece');
 
 			const expectedRes = {
 				V3: {
@@ -96,7 +94,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		it('Should work for V4', () => {
 			const beneficiary = v4Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				4,
 			);
 
 			const expectedRes = {
@@ -119,7 +116,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		it('Should work for V5', () => {
 			const beneficiary = v5Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				5,
 			);
 
 			const expectedRes = {
@@ -140,7 +136,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4 for an Ethereum Address', () => {
-			const beneficiary = v4Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 4);
+			const beneficiary = v4Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece');
 
 			const expectedRes = {
 				V4: {
@@ -160,7 +156,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5 for an Ethereum Address', () => {
-			const beneficiary = v5Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece', 5);
+			const beneficiary = v5Handler.createBeneficiary('0x96Bd611EbE3Af39544104e26764F4939924F6Ece');
 
 			const expectedRes = {
 				V5: {
@@ -183,7 +179,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = v2Handler.createDest('100', 2);
+			const destination = v2Handler.createDest('100');
 
 			const expectedRes = {
 				V2: {
@@ -199,7 +195,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = v3Handler.createDest('100', 3);
+			const destination = v3Handler.createDest('100');
 
 			const expectedRes = {
 				V3: {
@@ -215,7 +211,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const destination = v4Handler.createDest('100', 4);
+			const destination = v4Handler.createDest('100');
 
 			const expectedRes = {
 				V4: {
@@ -233,7 +229,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const destination = v5Handler.createDest('100', 5);
+			const destination = v5Handler.createDest('100');
 
 			const expectedRes = {
 				V5: {
@@ -257,7 +253,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 		const isLiquidTokenTransfer = false;
 
 		it('Should work for V2', async () => {
-			const assets = await v2Handler.createAssets(['100', '100'], 2, 'statemine', ['1', '2'], {
+			const assets = await v2Handler.createAssets(['100', '100'], 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -298,7 +294,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await v3Handler.createAssets(['100', '100'], 3, 'statemine', ['1', '2'], {
+			const assets = await v3Handler.createAssets(['100', '100'], 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -339,7 +335,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await v4Handler.createAssets(['100', '100'], 4, 'statemine', ['1', '2'], {
+			const assets = await v4Handler.createAssets(['100', '100'], 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -376,7 +372,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', async () => {
-			const assets = await v5Handler.createAssets(['100', '100'], 5, 'statemine', ['1', '2'], {
+			const assets = await v5Handler.createAssets(['100', '100'], 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -413,7 +409,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should correctly construct a liquid token transfer for V3', async () => {
-			const assets = await v3Handler.createAssets(['100', '100'], 3, 'statemine', ['1', '2'], {
+			const assets = await v3Handler.createAssets(['100', '100'], 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
@@ -454,7 +450,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should correctly construct a liquid token transfer for V4', async () => {
-			const assets = await v4Handler.createAssets(['100', '100'], 4, 'statemine', ['1', '2'], {
+			const assets = await v4Handler.createAssets(['100', '100'], 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
@@ -491,7 +487,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should correctly construct a liquid token transfer for V5', async () => {
-			const assets = await v5Handler.createAssets(['100', '100'], 5, 'statemine', ['1', '2'], {
+			const assets = await v5Handler.createAssets(['100', '100'], 'statemine', ['1', '2'], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer: true,
@@ -598,7 +594,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				specName,
 				assets,
 				registry,
-				xcmVersion: 2,
 				isForeignAssetsTransfer: false,
 				isLiquidTokenTransfer: false,
 				xcmCreator,
@@ -646,7 +641,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				specName,
 				assets,
 				registry,
-				xcmVersion: 3,
 				isForeignAssetsTransfer: false,
 				isLiquidTokenTransfer: false,
 				xcmCreator,
@@ -690,7 +684,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				specName,
 				assets,
 				registry,
-				xcmVersion: 4,
 				isForeignAssetsTransfer: false,
 				isLiquidTokenTransfer: false,
 				xcmCreator,
@@ -734,7 +727,6 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				specName,
 				assets,
 				registry,
-				xcmVersion: 5,
 				isForeignAssetsTransfer: false,
 				isLiquidTokenTransfer: false,
 				xcmCreator,

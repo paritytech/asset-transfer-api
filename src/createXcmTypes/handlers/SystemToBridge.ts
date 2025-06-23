@@ -27,9 +27,8 @@ export class SystemToBridge extends DefaultHandler {
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The chainId of the destination.
-	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(destId: string, _xcmVersion: number): XcmDestBeneficiary {
+	createDest(destId: string): XcmDestBeneficiary {
 		return this.xcmCreator.interiorDest({
 			destId,
 			parents: 2,
@@ -40,14 +39,12 @@ export class SystemToBridge extends DefaultHandler {
 	 * Create a VersionedMultiAsset structured type.
 	 *
 	 * @param amounts Amount per asset. It will match the `assets` length.
-	 * @param xcmVersion The accepted xcm version.
 	 * @param specName The specname of the chain the api is connected to.
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
 	async createAssets(
 		amounts: string[],
-		_xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
@@ -86,7 +83,6 @@ export class SystemToBridge extends DefaultHandler {
  * @param amounts Amount per asset. It will match the `assets` length.
  * @param specName The specname of the chain the api is connected to.
  * @param assets The assets to create into xcm `MultiAssets`.
- * @param xcmVersion The accepted xcm version.
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  */

@@ -1,9 +1,6 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
-import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { Registry } from '../../registry/index.js';
 import { XCMAssetRegistryMultiLocation } from '../../registry/types.js';
 import { Direction } from '../../types.js';
@@ -35,9 +32,8 @@ export class ParaToPara extends DefaultHandler {
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
 	 * @param destId The parachain Id of the destination.
-	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(destId: string, _xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary {
+	createDest(destId: string): XcmDestBeneficiary {
 		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 1,
@@ -48,14 +44,12 @@ export class ParaToPara extends DefaultHandler {
 	 * Create a VersionedMultiAsset structured type.
 	 *
 	 * @param amounts Amount per asset. It will match the `assets` length.
-	 * @param xcmVersion The accepted xcm version.
 	 * @param specName The specname of the chain the api is connected to.
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
 	async createAssets(
 		amounts: string[],
-		_xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
@@ -90,9 +84,8 @@ export class ParaToPara extends DefaultHandler {
 	 *
 	 * @param destChainId The parachain Id of the destination.
 	 * @param accountId The accountId of the beneficiary.
-	 * @param xcmVersion The accepted xcm version.
 	 */
-	createXTokensBeneficiary(destChainId: string, accountId: string, _xcmVersion: number): XcmDestBeneficiaryXcAssets {
+	createXTokensBeneficiary(destChainId: string, accountId: string): XcmDestBeneficiaryXcAssets {
 		return createXTokensParachainDestBeneficiary(destChainId, accountId, this.xcmCreator);
 	}
 
@@ -100,14 +93,12 @@ export class ParaToPara extends DefaultHandler {
 	 * Create a single xToken asset.
 	 *
 	 * @param amount Amount per asset. This will be of length 1.
-	 * @param xcmVersion The accepted xcm version.
 	 * @param specName The specname of the chain the api is connected to.
 	 * @param assetId Single asset to be created into a `MultiAsset`.
 	 * @param opts Options to create a single Asset.
 	 */
 	async createXTokensAsset(
 		amount: string,
-		_xcmVersion: number,
 		specName: string,
 		assetId: string,
 		opts: CreateAssetsOpts,
@@ -129,7 +120,6 @@ export class ParaToPara extends DefaultHandler {
  * @param amounts Amount per asset. It will match the `assets` length.
  * @param specName The specname of the chain the api is connected to.
  * @param assets The assets to create into xcm `MultiAssets`.
- * @param xcmVersion The accepted xcm version.
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  */

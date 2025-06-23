@@ -316,7 +316,6 @@ export interface CreateFeeAssetItemOpts {
 	specName?: string;
 	assetIds?: string[];
 	amounts?: string[];
-	xcmVersion?: number;
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 }
@@ -351,28 +350,25 @@ export interface ICreateXcmTypeConstructor {
 export interface ICreateXcmType {
 	xcmCreator: XcmCreator;
 
-	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;
-	createDest: (destId: string, xcmVersion: number) => XcmDestBeneficiary;
+	createBeneficiary: (accountId: string) => XcmDestBeneficiary;
+	createDest: (destId: string) => XcmDestBeneficiary;
 	createAssets: (
 		amounts: string[],
-		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
 	) => Promise<UnionXcmMultiAssets>;
 	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
-	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBeneficiaryXcAssets;
+	createXTokensBeneficiary?: (destChainId: string, accountId: string) => XcmDestBeneficiaryXcAssets;
 	createXTokensAssets?: (
 		amounts: string[],
-		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
 	) => Promise<UnionXcAssetsMultiAssets>;
 	createXTokensAsset?: (
 		amount: string,
-		xcmVersion: number,
 		specName: string,
 		asset: string,
 		opts: CreateAssetsOpts,
@@ -402,7 +398,4 @@ export interface XcmCreator {
 	interiorDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
 	hereAsset: (opts: { amount: string; parents: number }) => UnionXcmMultiAssets;
 	xcmMessage: (msg: AnyJson) => AnyJson;
-
-	// TODO:
-	// clean up _xcmVersion
 }

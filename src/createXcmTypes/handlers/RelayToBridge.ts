@@ -8,9 +8,8 @@ export class RelayToBridge extends DefaultHandler {
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The chainId of the destination.
-	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(destId: string, _xcmVersion: number): XcmDestBeneficiary {
+	createDest(destId: string): XcmDestBeneficiary {
 		return this.xcmCreator.interiorDest({
 			destId,
 			parents: 1,
@@ -21,11 +20,9 @@ export class RelayToBridge extends DefaultHandler {
 	 * Create a VersionedMultiAsset structured type.
 	 *
 	 * @param amounts Amount per asset. It will match the `assets` length.
-	 * @param xcmVersion The accepted xcm version.
 	 */
 	async createAssets(
 		amounts: string[],
-		_xcmVersion: number,
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,

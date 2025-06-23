@@ -58,7 +58,7 @@ export const transferAssetsUsingTypeAndThen = async (
 
 	const typeCreator = getTypeCreator(direction, xcmVersion);
 	const beneficiary = createXcmOnDestBeneficiary(destAddr, xcmVersion);
-	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
+	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), specName, assetIds, {
 		registry,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
@@ -203,7 +203,7 @@ export const transferAssetsUsingTypeAndThen = async (
 
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].transferAssetsUsingTypeAndThen;
-	const dest = typeCreator.createDest(destChainId, xcmVersion);
+	const dest = typeCreator.createDest(destChainId);
 
 	const weightLimitValue = typeCreator.createWeightLimit({
 		weightLimit,

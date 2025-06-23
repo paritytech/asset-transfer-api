@@ -38,14 +38,14 @@ export const transferMultiassets = async (
 		typeCreator.createXTokensFeeAssetItem &&
 		typeCreator.createXTokensBeneficiary
 	) {
-		assets = await typeCreator.createXTokensAssets(amounts, xcmVersion, specName, assetIds, {
+		assets = await typeCreator.createXTokensAssets(amounts, specName, assetIds, {
 			registry,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
 			api,
 		});
 
-		beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr, xcmVersion);
+		beneficiary = typeCreator.createXTokensBeneficiary(destChainId, destAddr);
 		return ext(assets, paysWithFeeDest, beneficiary, destWeightLimit);
 	}
 

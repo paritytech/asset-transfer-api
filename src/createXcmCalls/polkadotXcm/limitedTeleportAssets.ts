@@ -24,9 +24,9 @@ export const limitedTeleportAssets = async (
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedTeleportAssets;
 	const typeCreator = getTypeCreator(direction, xcmVersion);
-	const beneficiary = typeCreator.createBeneficiary(destAddr, xcmVersion);
-	const dest = typeCreator.createDest(destChainId, xcmVersion);
-	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
+	const beneficiary = typeCreator.createBeneficiary(destAddr);
+	const dest = typeCreator.createDest(destChainId);
+	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), specName, assetIds, {
 		registry,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer: false,

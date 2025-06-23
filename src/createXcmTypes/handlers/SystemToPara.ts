@@ -2,7 +2,6 @@
 
 import type { ApiPromise } from '@polkadot/api';
 
-import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { Registry } from '../../registry/index.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
@@ -33,9 +32,8 @@ export class SystemToPara extends DefaultHandler {
 	 * Create a XcmVersionedMultiLocation structured type for a destination.
 	 *
 	 * @param destId The parachain Id of the destination.
-	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(destId: string, _xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary {
+	createDest(destId: string): XcmDestBeneficiary {
 		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 1,
@@ -46,14 +44,12 @@ export class SystemToPara extends DefaultHandler {
 	 * Create a VersionedMultiAsset structured type.
 	 *
 	 * @param amounts Amount per asset. It will match the `assets` length.
-	 * @param xcmVersion The accepted xcm version.
 	 * @param specName The specname of the chain the api is connected to.
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
 	async createAssets(
 		amounts: string[],
-		_xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
@@ -92,7 +88,6 @@ export class SystemToPara extends DefaultHandler {
  * @param amounts Amount per asset. It will match the `assets` length.
  * @param specName The specname of the chain the api is connected to.
  * @param assets The assets to create into xcm `MultiAssets`.
- * @param xcmVersion The accepted xcm version.
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  * @param isLiquidTokenTransfer Whether this transfer is a liquid pool assets transfer.
