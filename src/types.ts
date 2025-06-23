@@ -519,7 +519,6 @@ export type XcmPalletTxMethodTransactionMap = {
 	[x: string]: [XcmPalletCallSignature, CallArgs];
 };
 
-// TODO: Move this into XCM types
 type XcmVersionKey = 'V3' | 'V4' | 'V5';
 export type RemoteReserve = {
 	[K in XcmVersionKey]: {

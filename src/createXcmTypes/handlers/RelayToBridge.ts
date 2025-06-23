@@ -2,7 +2,6 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { CreateAssetsOpts, UnionXcmMultiAssets, XcmDestBeneficiary } from '../types.js';
 import { createSingleAsset } from '../util/createAssets.js';
-import { createInteriorValueDest } from '../util/createDest.js';
 import { DefaultHandler } from './default.js';
 
 export class RelayToBridge extends DefaultHandler {
@@ -12,11 +11,10 @@ export class RelayToBridge extends DefaultHandler {
 	 * @param destId The chainId of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(destId: string, xcmVersion: number): XcmDestBeneficiary {
-		return createInteriorValueDest({
+	createDest(destId: string, _xcmVersion: number): XcmDestBeneficiary {
+		return this.xcmCreator.interiorDest({
 			destId,
 			parents: 1,
-			xcmVersion,
 		});
 	}
 

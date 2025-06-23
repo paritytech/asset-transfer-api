@@ -14,7 +14,6 @@ import {
 	XcmDestBeneficiary,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
-import { createInteriorValueDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { fetchPalletInstanceId } from '../util/fetchPalletInstanceId.js';
@@ -30,11 +29,10 @@ export class SystemToBridge extends DefaultHandler {
 	 * @param destId The chainId of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(destId: string, xcmVersion: number): XcmDestBeneficiary {
-		return createInteriorValueDest({
+	createDest(destId: string, _xcmVersion: number): XcmDestBeneficiary {
+		return this.xcmCreator.interiorDest({
 			destId,
 			parents: 2,
-			xcmVersion,
 		});
 	}
 

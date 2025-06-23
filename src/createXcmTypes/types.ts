@@ -398,9 +398,9 @@ export interface XcmCreator {
 	versionedAssetId: (multiLocation: UnionXcmMultiLocation) => XcmVersionedAssetId;
 	parachainDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
 	hereDest: (opts: { parents: number }) => XcmDestBeneficiary;
+	interiorDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
 
 	// TODO:
-	// createDest.ts
 	// clean up _xcmVersion
 
 	// go through handlers one by one

@@ -139,4 +139,8 @@ export const V2: XcmCreator = {
 			},
 		};
 	},
+
+	interiorDest(_opts: { destId: string; parents: number }): XcmDestBeneficiary {
+		throw new BaseError('XcmVersion not supported.', BaseErrorsEnum.InvalidXcmVersion);
+	},
 };

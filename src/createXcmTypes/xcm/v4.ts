@@ -1,11 +1,13 @@
 import { AnyJson } from '@polkadot/types-codec/types';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
+import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { RemoteReserve } from '../../types.js';
 import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAsset,
 	FungibleAssetType,
+	InteriorKey,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiLocation,
@@ -14,6 +16,7 @@ import {
 	XcmDestBeneficiaryXcAssets,
 	XcmV4DestBeneficiary,
 	XcmV4Junction,
+	XcmV4JunctionDestBeneficiary,
 	XcmV4MultiLocation,
 	XcmVersionedAssetId,
 } from '../types.js';
@@ -146,6 +149,28 @@ export const V4: XcmCreator = {
 			V4: {
 				parents,
 				interior: { Here: null },
+			},
+		};
+	},
+
+	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmDestBeneficiary {
+		const multiLocation = parseLocationStrToLocation(destId);
+
+		let interior: InteriorKey | undefined = undefined;
+		if (multiLocation && multiLocation.interior.X1) {
+			interior = { X1: [multiLocation.interior.X1 as XcmV4JunctionDestBeneficiary] };
+		} else {
+			interior = { X2: multiLocation.interior.X2 as XcmV4JunctionDestBeneficiary[] };
+		}
+
+		if (!interior) {
+			throw new BaseError('Unable to create XCM Destination location', BaseErrorsEnum.InternalError);
+		}
+
+		return {
+			V4: {
+				parents,
+				interior,
 			},
 		};
 	},
