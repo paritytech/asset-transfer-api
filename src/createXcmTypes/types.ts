@@ -395,10 +395,9 @@ export interface XcmCreator {
 	multiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
 	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
 	remoteReserve: (multiLocation: UnionXcmMultiLocation) => RemoteReserve;
+	versionedAssetId: (multiLocation: UnionXcmMultiLocation) => XcmVersionedAssetId;
 
 	// TODO:
-	// createXcmVersionedAssetId
-
 	// move RemoteReserve to proper place
 
 	// and then

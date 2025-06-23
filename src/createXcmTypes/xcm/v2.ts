@@ -15,6 +15,7 @@ import {
 	XcmDestBeneficiaryXcAssets,
 	XcmV2DestBeneficiary,
 	XcmV2MultiLocation,
+	XcmVersionedAssetId,
 } from '../types.js';
 import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
 import { createParachainDestBeneficiaryInner } from './common.js';
@@ -113,5 +114,9 @@ export const V2: XcmCreator = {
 
 	remoteReserve(_multiLocation: UnionXcmMultiLocation): RemoteReserve {
 		throw new BaseError('XcmVersion must be greater than 2 for RemoteReserve.', BaseErrorsEnum.InvalidXcmVersion);
+	},
+
+	versionedAssetId(multiLocation: UnionXcmMultiLocation): XcmVersionedAssetId {
+		return { V2: { Concrete: this.resolveMultiLocation(multiLocation) } };
 	},
 };

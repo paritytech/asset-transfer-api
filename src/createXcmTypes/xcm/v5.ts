@@ -12,6 +12,7 @@ import {
 	XcmDestBeneficiaryXcAssets,
 	XcmV4MultiLocation,
 	XcmV5DestBeneficiary,
+	XcmVersionedAssetId,
 } from '../types.js';
 import { createParachainDestBeneficiaryInner } from './common.js';
 import { V4 } from './v4.js';
@@ -88,5 +89,10 @@ export const V5: XcmCreator = {
 		return {
 			RemoteReserve: { V5: multiLocation },
 		};
+	},
+
+	// Same as V4
+	versionedAssetId(multiLocation: UnionXcmMultiLocation): XcmVersionedAssetId {
+		return { V5: this.resolveMultiLocation(multiLocation) };
 	},
 };

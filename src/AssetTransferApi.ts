@@ -726,10 +726,9 @@ export class AssetTransferApi {
 
 		if (dryRunCall && sendersAddr && xcmFeeAsset) {
 			let feeAssetLocation: XcmVersionedAssetId | undefined = undefined;
-			const currentXcmVersion = xcmVersion ? xcmVersion : this.safeXcmVersion;
 			if (isRelayNativeAsset(this.registry, xcmFeeAsset)) {
 				const relayAssetLocation = `{"parents":"1","interior":{"Here":""}}`;
-				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, currentXcmVersion, xcmCreator);
+				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, xcmCreator);
 			} else {
 				const feeAsset = await getAssetId({
 					api: this.api,
@@ -743,7 +742,7 @@ export class AssetTransferApi {
 				if (feeAsset) {
 					const location = getPaysWithFeeOriginAssetLocationFromRegistry(this, feeAsset);
 					if (location) {
-						feeAssetLocation = createXcmVersionedAssetId(JSON.stringify(location), currentXcmVersion, xcmCreator);
+						feeAssetLocation = createXcmVersionedAssetId(JSON.stringify(location), xcmCreator);
 					}
 				}
 			}
@@ -1550,7 +1549,7 @@ export class AssetTransferApi {
 
 			if (isRelayNativeAsset(chainApi.registry, xcmFeeAsset)) {
 				const relayAssetLocation = `{"parents":"1","interior":{"Here":""}}`;
-				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, xcmVersion, xcmCreator);
+				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, xcmCreator);
 			} else {
 				const feeAsset = await getAssetId({
 					api: chainApi.api,
@@ -1560,7 +1559,7 @@ export class AssetTransferApi {
 					xcmCreator,
 					isForeignAssetsTransfer: false,
 				});
-				feeAssetLocation = createXcmVersionedAssetId(feeAsset, xcmVersion, xcmCreator);
+				feeAssetLocation = createXcmVersionedAssetId(feeAsset, xcmCreator);
 			}
 
 			if (feeAssetLocation) {

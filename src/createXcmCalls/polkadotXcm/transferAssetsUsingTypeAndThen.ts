@@ -212,9 +212,9 @@ export const transferAssetsUsingTypeAndThen = async (
 	let remoteFeesId: XcmVersionedAssetId;
 	if (paysWithFeeDest && !assetIdIsLocation(paysWithFeeDest)) {
 		const remoteFeesAssetLocation = await getAssetId({ api, registry, asset: paysWithFeeDest, specName, xcmCreator });
-		remoteFeesId = createXcmVersionedAssetId(remoteFeesAssetLocation, xcmVersion, xcmCreator);
+		remoteFeesId = createXcmVersionedAssetId(remoteFeesAssetLocation, xcmCreator);
 	} else {
-		remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmVersion, xcmCreator);
+		remoteFeesId = createXcmVersionedAssetId(paysWithFeeDest, xcmCreator);
 	}
 
 	const customXcmOnDestination = createXcmOnDestination(assetIds, beneficiary, xcmVersion, customXcmOnDestStr);
