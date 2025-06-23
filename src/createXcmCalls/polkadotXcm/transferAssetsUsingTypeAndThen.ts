@@ -191,12 +191,12 @@ export const transferAssetsUsingTypeAndThen = async (
 	} else {
 		assetTransferType = resolveAssetTransferType(
 			assetTransferTypeStr,
-			xcmVersion,
+			xcmCreator,
 			remoteReserveAssetTransferTypeLocation,
 		);
 		feeAssetTransferType = resolveAssetTransferType(
 			feesTransferTypeStr,
-			xcmVersion,
+			xcmCreator,
 			remoteReserveFeesTransferTypeLocation,
 		);
 	}

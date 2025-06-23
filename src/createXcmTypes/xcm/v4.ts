@@ -1,6 +1,7 @@
 import { AnyJson } from '@polkadot/types-codec/types';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
+import { RemoteReserve } from '../../types.js';
 import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAsset,
@@ -115,5 +116,12 @@ export const V4: XcmCreator = {
 
 	multiLocation(multiLocation: UnionXcmMultiLocation): UnionXcAssetsMultiLocation {
 		return { V4: { id: multiLocation as XcmV4MultiLocation } };
+	},
+
+	// Same as V3
+	remoteReserve(multiLocation: UnionXcmMultiLocation): RemoteReserve {
+		return {
+			RemoteReserve: { V4: multiLocation },
+		};
 	},
 };

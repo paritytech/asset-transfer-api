@@ -4,7 +4,7 @@ import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
 import type { Registry } from '../registry/index.js';
-import type { RequireOnlyOne } from '../types.js';
+import type { RemoteReserve, RequireOnlyOne } from '../types.js';
 
 export enum XcmVersionKey {
 	V2 = 'V2',
@@ -394,10 +394,12 @@ export interface XcmCreator {
 	resolveMultiLocation: (multiLocation: AnyJson) => UnionXcmMultiLocation;
 	multiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
 	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
+	remoteReserve: (multiLocation: UnionXcmMultiLocation) => RemoteReserve;
 
 	// TODO:
-	// resolveAssetTransferType
 	// createXcmVersionedAssetId
+
+	// move RemoteReserve to proper place
 
 	// and then
 

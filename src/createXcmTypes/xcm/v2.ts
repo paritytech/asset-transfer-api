@@ -2,6 +2,7 @@ import { AnyJson } from '@polkadot/types-codec/types';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
+import { RemoteReserve } from '../../types.js';
 import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAssetType,
@@ -108,5 +109,9 @@ export const V2: XcmCreator = {
 
 	multiLocation(multiLocation: UnionXcmMultiLocation): UnionXcAssetsMultiLocation {
 		return { V2: { id: { Concrete: multiLocation as XcmV2MultiLocation } } };
+	},
+
+	remoteReserve(_multiLocation: UnionXcmMultiLocation): RemoteReserve {
+		throw new BaseError('XcmVersion must be greater than 2 for RemoteReserve.', BaseErrorsEnum.InvalidXcmVersion);
 	},
 };

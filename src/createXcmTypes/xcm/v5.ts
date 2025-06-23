@@ -1,5 +1,6 @@
 import { AnyJson } from '@polkadot/types-codec/types';
 
+import { RemoteReserve } from '../../types.js';
 import {
 	FungibleAsset,
 	FungibleAssetType,
@@ -80,5 +81,12 @@ export const V5: XcmCreator = {
 	// Same as V4
 	multiLocation(multiLocation: UnionXcmMultiLocation): UnionXcAssetsMultiLocation {
 		return { V4: { id: multiLocation as XcmV4MultiLocation } };
+	},
+
+	// Same as V3
+	remoteReserve(multiLocation: UnionXcmMultiLocation): RemoteReserve {
+		return {
+			RemoteReserve: { V5: multiLocation },
+		};
 	},
 };
