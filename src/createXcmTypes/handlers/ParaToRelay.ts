@@ -58,16 +58,17 @@ export class ParaToRelay extends DefaultHandler {
 
 	createXTokensAsset(
 		amount: string,
-		xcmVersion: number,
+		_xcmVersion: number,
 		_specName: string,
 		_asset: string,
 		_opts: CreateAssetsOpts,
 	): Promise<UnionXcAssetsMultiAsset> {
-		return createXTokensAssetToRelay({
-			amount,
-			parents: 1,
-			xcmVersion,
-			xcmCreator: this.xcmCreator,
-		});
+		return Promise.resolve(
+			createXTokensAssetToRelay({
+				amount,
+				parents: 1,
+				xcmCreator: this.xcmCreator,
+			}),
+		);
 	}
 }

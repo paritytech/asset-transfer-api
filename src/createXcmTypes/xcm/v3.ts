@@ -9,6 +9,7 @@ import {
 	FungibleMultiAsset,
 	InteriorKey,
 	InteriorValue,
+	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
@@ -71,7 +72,7 @@ export const V3: XcmCreator = {
 	},
 
 	// Same as V2
-	multiAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
+	fungibleAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
 		const concreteMultiLocation = this.resolveMultiLocation(multiLocation);
 		return {
 			id: {
@@ -102,6 +103,11 @@ export const V3: XcmCreator = {
 		} else {
 			return result;
 		}
+	},
+
+	// Same as V2
+	multiAsset(asset: FungibleAssetType): UnionXcAssetsMultiAsset {
+		return { V3: asset as FungibleMultiAsset };
 	},
 
 	// Same as V2

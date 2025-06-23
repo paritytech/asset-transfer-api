@@ -107,7 +107,7 @@ export class ParaToPara extends DefaultHandler {
 	 */
 	async createXTokensAsset(
 		amount: string,
-		xcmVersion: number,
+		_xcmVersion: number,
 		specName: string,
 		assetId: string,
 		opts: CreateAssetsOpts,
@@ -117,7 +117,6 @@ export class ParaToPara extends DefaultHandler {
 			assetId,
 			opts,
 			specName,
-			xcmVersion,
 			xcmCreator: this.xcmCreator,
 		});
 	}
@@ -165,7 +164,7 @@ const createParaToParaMultiAssets = async ({
 			xcmCreator,
 		);
 
-		const multiAsset = xcmCreator.multiAsset({
+		const multiAsset = xcmCreator.fungibleAsset({
 			amount: amounts[0],
 			multiLocation,
 		});
@@ -187,7 +186,7 @@ const createParaToParaMultiAssets = async ({
 
 			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmCreator);
 
-			const multiAsset = xcmCreator.multiAsset({
+			const multiAsset = xcmCreator.fungibleAsset({
 				amount: amount,
 				multiLocation,
 			});

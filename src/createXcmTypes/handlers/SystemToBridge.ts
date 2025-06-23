@@ -149,7 +149,7 @@ export const createSystemToBridgeAssets = async ({
 			};
 		}
 
-		const multiAsset = xcmCreator.multiAsset({
+		const multiAsset = xcmCreator.fungibleAsset({
 			amount,
 			multiLocation,
 		});

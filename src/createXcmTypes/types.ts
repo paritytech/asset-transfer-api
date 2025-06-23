@@ -390,8 +390,9 @@ export interface XcmCreator {
 		parents: number;
 	}) => XcmDestBeneficiaryXcAssets;
 	xTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiaryXcAssets;
-	multiAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
+	fungibleAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
 	resolveMultiLocation: (multiLocation: AnyJson) => UnionXcmMultiLocation;
+	multiAsset: (asset: FungibleAssetType) => UnionXcAssetsMultiAsset;
 	multiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
 	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
 	remoteReserve: (multiLocation: UnionXcmMultiLocation) => RemoteReserve;
@@ -402,13 +403,11 @@ export interface XcmCreator {
 	hereAsset: (opts: { amount: string; parents: number }) => UnionXcmMultiAssets;
 
 	// TODO:
-	// createAssets.ts
 	// clean up _xcmVersion
 
 	// go through handlers one by one
 	// and then check for any stragglers, search V3
 
 	// search for
-	// [2,]
 	// switch / case
 }

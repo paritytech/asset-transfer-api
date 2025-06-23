@@ -7,6 +7,7 @@ import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAssetType,
 	FungibleMultiAsset,
+	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
@@ -69,7 +70,7 @@ export const V2: XcmCreator = {
 		return { V2: beneficiary } as XcmV2DestBeneficiary;
 	},
 
-	multiAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
+	fungibleAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
 		const concreteMultiLocation = this.resolveMultiLocation(multiLocation);
 		return {
 			id: {
@@ -103,6 +104,10 @@ export const V2: XcmCreator = {
 		}
 
 		return sanitizeKeys(result);
+	},
+
+	multiAsset(asset: FungibleAssetType): UnionXcAssetsMultiAsset {
+		return { V2: asset as FungibleMultiAsset };
 	},
 
 	multiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {

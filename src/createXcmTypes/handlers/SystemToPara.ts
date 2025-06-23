@@ -158,7 +158,7 @@ export const createSystemToParaMultiAssets = async ({
 			};
 		}
 
-		const multiAsset = xcmCreator.multiAsset({
+		const multiAsset = xcmCreator.fungibleAsset({
 			amount,
 			multiLocation,
 		});

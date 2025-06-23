@@ -1,13 +1,10 @@
 import { AnyJson } from '@polkadot/types-codec/types';
 
-import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { XCMAssetRegistryMultiLocation } from '../../registry/types.js';
 import { Direction } from '../../types.js';
 import {
 	CreateAssetsOpts,
-	FungibleAsset,
 	FungibleAssetType,
-	FungibleMultiAsset,
 	UnionXcAssetsMultiAsset,
 	UnionXcAssetsMultiAssets,
 	XcmCreator,
@@ -55,7 +52,7 @@ export const createXTokensMultiAssets = async ({
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const multiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
-		const multiAsset = xcmCreator.multiAsset({ amount, multiLocation });
+		const multiAsset = xcmCreator.fungibleAsset({ amount, multiLocation });
 		multiAssets.push(multiAsset);
 	}
 
@@ -79,14 +76,12 @@ export const createXTokensAsset = async ({
 	assetId,
 	opts: { api, registry },
 	specName,
-	xcmVersion,
 	xcmCreator,
 }: {
 	amount: string;
 	assetId: string;
 	opts: CreateAssetsOpts;
 	specName: string;
-	xcmVersion: number;
 	xcmCreator: XcmCreator;
 }): Promise<UnionXcAssetsMultiAsset> => {
 	let multiAsset: FungibleAssetType | undefined;
@@ -100,15 +95,8 @@ export const createXTokensAsset = async ({
 	);
 
 	if (isPrimaryParachainNativeAsset) {
-		let multiLocation: AnyJson;
-		if ([2, 3].includes(xcmVersion)) {
-			multiLocation = { parents: 0, interior: { Here: '' } };
-		} else if ([4, 5].includes(xcmVersion)) {
-			multiLocation = { parents: 0, interior: { X1: [{ Here: '' }] } };
-		} else {
-			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-		}
-		multiAsset = xcmCreator.multiAsset({ amount, multiLocation });
+		const multiLocation = xcmCreator.hereDest({ parents: 0 });
+		multiAsset = xcmCreator.fungibleAsset({ amount, multiLocation });
 	} else {
 		const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId({
 			api,
@@ -119,49 +107,25 @@ export const createXTokensAsset = async ({
 		});
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const multiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
-		multiAsset = xcmCreator.multiAsset({ amount, multiLocation });
+		multiAsset = xcmCreator.fungibleAsset({ amount, multiLocation });
 	}
 
-	switch (xcmVersion) {
-		case 2:
-			return { V2: multiAsset as FungibleMultiAsset };
-		case 3:
-			return { V3: multiAsset as FungibleMultiAsset };
-		case 4:
-			return { V4: multiAsset as FungibleAsset };
-		case 5:
-			return { V5: multiAsset as FungibleAsset };
-		default:
-			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-	}
+	return xcmCreator.multiAsset(multiAsset);
 };
 
-export const createXTokensAssetToRelay = async ({
+export const createXTokensAssetToRelay = ({
 	amount,
 	parents,
-	xcmVersion,
 	xcmCreator,
 }: {
 	amount: string;
 	parents: number;
-	xcmVersion: number;
 	xcmCreator: XcmCreator;
-}): Promise<UnionXcAssetsMultiAsset> => {
+}): UnionXcAssetsMultiAsset => {
 	const multiLocation: AnyJson = {
 		Parents: parents,
 		Interior: { Here: null },
 	};
-	const multiAsset = xcmCreator.multiAsset({ amount, multiLocation });
-	switch (xcmVersion) {
-		case 2:
-			return Promise.resolve({ V2: multiAsset as FungibleMultiAsset });
-		case 3:
-			return Promise.resolve({ V3: multiAsset as FungibleMultiAsset });
-		case 4:
-			return Promise.resolve({ V4: multiAsset as FungibleAsset });
-		case 5:
-			return Promise.resolve({ V5: multiAsset as FungibleAsset });
-		default:
-			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-	}
+	const multiAsset = xcmCreator.fungibleAsset({ amount, multiLocation });
+	return xcmCreator.multiAsset(multiAsset);
 };

@@ -72,7 +72,7 @@ export const createAssetLocations = async (
 				interior,
 			};
 		}
-		const multiAsset = xcmCreator.multiAsset({
+		const multiAsset = xcmCreator.fungibleAsset({
 			amount,
 			multiLocation,
 		});
