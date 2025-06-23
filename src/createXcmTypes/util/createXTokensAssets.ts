@@ -45,13 +45,13 @@ export const createXTokensMultiAssets = async ({
 		const amount = amounts[i];
 		const assetId = assets[i];
 
-		const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
+		const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId({
 			api,
 			assetId,
 			specName,
-			xcmCreator.xcmVersion,
+			xcmCreator,
 			registry,
-		);
+		});
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const multiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
@@ -110,13 +110,13 @@ export const createXTokensAsset = async ({
 		}
 		multiAsset = xcmCreator.createMultiAsset({ amount, multiLocation });
 	} else {
-		const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
+		const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId({
 			api,
 			assetId,
 			specName,
-			xcmVersion,
+			xcmCreator,
 			registry,
-		);
+		});
 		const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 		const multiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 		multiAsset = xcmCreator.createMultiAsset({ amount, multiLocation });

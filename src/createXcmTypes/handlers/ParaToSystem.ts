@@ -138,7 +138,6 @@ const createParaToSystemMultiAssets = async ({
 	amounts,
 	specName,
 	assets,
-	xcmVersion,
 	registry,
 	destChainId,
 	xcmCreator,
@@ -147,7 +146,6 @@ const createParaToSystemMultiAssets = async ({
 	amounts: string[];
 	specName: string;
 	assets: string[];
-	xcmVersion: number;
 	registry: Registry;
 	destChainId?: string;
 	xcmCreator: XcmCreator;
@@ -177,13 +175,13 @@ const createParaToSystemMultiAssets = async ({
 			const amount = amounts[i];
 			const assetId = assets[i];
 
-			const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
+			const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId({
 				api,
 				assetId,
 				specName,
-				xcmVersion,
+				xcmCreator,
 				registry,
-			);
+			});
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 

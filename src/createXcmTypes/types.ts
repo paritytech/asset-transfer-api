@@ -395,7 +395,12 @@ export interface XcmCreator {
 	multiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
 	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
 
-	// getXcAssetMultiLocationByAssetId
+	// TODO:
 	// createMultiAssets ??? - for things like createXTokensAssets
 	// resolveAssetTransferType
+
+	// and then
+
+	// go through handlers one by one
+	// and then check for any stragglers, search V3
 }
