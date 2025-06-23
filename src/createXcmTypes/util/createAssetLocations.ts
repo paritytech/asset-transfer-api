@@ -1,13 +1,10 @@
 import { ApiPromise } from '@polkadot/api';
 
-import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { Registry } from '../../registry/index.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { validateNumber } from '../../validate/index.js';
 import {
-	FungibleAsset,
 	FungibleAssetType,
-	FungibleMultiAsset,
 	OneOfXcmJunctions,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
@@ -24,7 +21,6 @@ export const createAssetLocations = async ({
 	assetIds,
 	specName,
 	amounts,
-	xcmVersion,
 	registry,
 	originChainId,
 	assetIdsContainLocations,
@@ -35,7 +31,6 @@ export const createAssetLocations = async ({
 	assetIds: string[];
 	specName: string;
 	amounts: string[];
-	xcmVersion: number;
 	registry: Registry;
 	originChainId: string;
 	assetIdsContainLocations: boolean;
