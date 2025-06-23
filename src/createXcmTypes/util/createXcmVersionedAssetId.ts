@@ -10,7 +10,7 @@ export const createXcmVersionedAssetId = (
 	xcmCreator: XcmCreator,
 ): XcmVersionedAssetId => {
 	if (!destFeesAssetId) {
-		throw new BaseError('resolveAssetTransferType: destFeesAssetId not found', BaseErrorsEnum.InvalidInput);
+		throw new BaseError('createXcmVersionedAssetId: destFeesAssetId not found', BaseErrorsEnum.InvalidInput);
 	}
 	if (xcmVersion < 3) {
 		throw new BaseError('XcmVersion must be greater than 2', BaseErrorsEnum.InvalidXcmVersion);

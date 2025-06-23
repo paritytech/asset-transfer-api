@@ -396,8 +396,8 @@ export interface XcmCreator {
 	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
 
 	// TODO:
-	// createMultiAssets ??? - for things like createXTokensAssets
 	// resolveAssetTransferType
+	// createXcmVersionedAssetId
 
 	// and then
 
