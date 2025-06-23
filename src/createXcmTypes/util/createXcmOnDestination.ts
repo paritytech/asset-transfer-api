@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import type { AnyJson } from '@polkadot/types/types';
 
 import { UnionXcmMultiLocation, XcmCreator } from '../types.js';
