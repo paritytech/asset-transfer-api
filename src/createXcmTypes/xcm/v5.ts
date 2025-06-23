@@ -81,12 +81,12 @@ export const V5: XcmCreator = {
 
 	// Save as V4
 	multiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
-		return { V4: assets as FungibleAsset[] };
+		return { V5: assets as FungibleAsset[] };
 	},
 
 	// Same as V4
 	multiLocation(multiLocation: UnionXcmMultiLocation): UnionXcAssetsMultiLocation {
-		return { V4: { id: multiLocation as XcmV4MultiLocation } };
+		return { V5: { id: multiLocation as XcmV4MultiLocation } };
 	},
 
 	// Same as V3

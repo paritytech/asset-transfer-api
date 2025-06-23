@@ -1,16 +1,8 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { DEFAULT_XCM_VERSION } from '../../consts.js';
-import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { Registry } from '../../registry/Registry.js';
-import {
-	type CreateAssetsOpts,
-	type FungibleAsset,
-	type FungibleAssetType,
-	type FungibleMultiAsset,
-	type UnionXcmMultiAssets,
-	XcmCreator,
-} from '../types.js';
+import { type CreateAssetsOpts, type FungibleAssetType, type UnionXcmMultiAssets, XcmCreator } from '../types.js';
 
 export const createAssets = async ({
 	amounts,
@@ -53,16 +45,5 @@ export const createAssets = async ({
 		xcmCreator,
 	});
 
-	switch (xcmVersion) {
-		case 2:
-			return { V2: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
-		case 3:
-			return { V3: sortedAndDedupedMultiAssets as FungibleMultiAsset[] };
-		case 4:
-			return { V4: sortedAndDedupedMultiAssets as FungibleAsset[] };
-		case 5:
-			return { V5: sortedAndDedupedMultiAssets as FungibleAsset[] };
-		default:
-			throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-	}
+	return xcmCreator.multiAssets(sortedAndDedupedMultiAssets);
 };
