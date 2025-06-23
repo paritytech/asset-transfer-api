@@ -212,7 +212,7 @@ describe('Polkadot AssetHub <> Hydration', () => {
 			expect(parseInt(destinationFees[0][1].xcmFee)).to.toBeGreaterThan(0);
 			expect(destinationFees[0][1].xcmDest).to.eq('{"v3":{"parents":1,"interior":{"x1":{"parachain":2034}}}}');
 			expect(destinationFees[0][1].xcmFeeAsset).to.eq(
-				'{"V3":{"Concrete":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}}',
+				'{"V3":{"Concrete":{"Parents":"1","Interior":{"X3":[{"Parachain":"1000"},{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}}}',
 			);
 		}, 200000);
 
