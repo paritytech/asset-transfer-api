@@ -157,7 +157,7 @@ export const createSystemToSystemMultiAssets = async ({
 			);
 		}
 
-		const multiAsset = xcmCreator.createMultiAsset({
+		const multiAsset = xcmCreator.multiAsset({
 			amount,
 			multiLocation,
 		});

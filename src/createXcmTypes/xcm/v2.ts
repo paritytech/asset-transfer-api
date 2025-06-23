@@ -23,7 +23,7 @@ import { createParachainDestBeneficiaryInner } from './common.js';
 export const V2: XcmCreator = {
 	xcmVersion: 2,
 
-	createBeneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
+	beneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
 		const X1 = isEthereumAddress(accountId)
 			? { AccountKey20: { network: 'Any', key: accountId } }
 			: { AccountId32: { network: 'Any', id: accountId } };
@@ -36,7 +36,7 @@ export const V2: XcmCreator = {
 	},
 
 	// Same across all versions
-	createXTokensParachainDestBeneficiary({
+	xTokensParachainDestBeneficiary({
 		accountId,
 		destChainId,
 		parents = 1,
@@ -53,7 +53,7 @@ export const V2: XcmCreator = {
 		return { V2: beneficiary };
 	},
 
-	createXTokensDestBeneficiary({
+	xTokensDestBeneficiary({
 		accountId,
 		parents = 1,
 	}: {
@@ -68,7 +68,7 @@ export const V2: XcmCreator = {
 		return { V2: beneficiary } as XcmV2DestBeneficiary;
 	},
 
-	createMultiAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
+	multiAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
 		const concreteMultiLocation = this.resolveMultiLocation(multiLocation);
 		return {
 			id: {

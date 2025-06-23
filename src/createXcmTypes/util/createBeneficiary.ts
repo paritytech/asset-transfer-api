@@ -4,7 +4,7 @@ import { XcmCreator, XcmDestBeneficiary, XcmDestBeneficiaryXcAssets } from '../t
 
 export const createBeneficiary = (accountId: string, xcmCreator: XcmCreator): XcmDestBeneficiary => {
 	const parents = 0; // always 0
-	return xcmCreator.createBeneficiary({ accountId, parents });
+	return xcmCreator.beneficiary({ accountId, parents });
 };
 
 export const createXTokensParachainDestBeneficiary = (
@@ -13,7 +13,7 @@ export const createXTokensParachainDestBeneficiary = (
 	xcmCreator: XcmCreator,
 ): XcmDestBeneficiaryXcAssets => {
 	const parents = 1; // always 1
-	return xcmCreator.createXTokensParachainDestBeneficiary({
+	return xcmCreator.xTokensParachainDestBeneficiary({
 		accountId,
 		destChainId,
 		parents,
@@ -22,5 +22,5 @@ export const createXTokensParachainDestBeneficiary = (
 
 export const createXTokensDestBeneficiary = (accountId: string, xcmCreator: XcmCreator): XcmDestBeneficiaryXcAssets => {
 	const parents = 1; // always 1
-	return xcmCreator.createXTokensDestBeneficiary({ accountId, parents });
+	return xcmCreator.xTokensDestBeneficiary({ accountId, parents });
 };

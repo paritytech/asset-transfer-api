@@ -166,7 +166,7 @@ const createParaToParaMultiAssets = async ({
 			xcmCreator,
 		);
 
-		const multiAsset = xcmCreator.createMultiAsset({
+		const multiAsset = xcmCreator.multiAsset({
 			amount: amounts[0],
 			multiLocation,
 		});
@@ -188,7 +188,7 @@ const createParaToParaMultiAssets = async ({
 
 			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmCreator);
 
-			const multiAsset = xcmCreator.createMultiAsset({
+			const multiAsset = xcmCreator.multiAsset({
 				amount: amount,
 				multiLocation,
 			});

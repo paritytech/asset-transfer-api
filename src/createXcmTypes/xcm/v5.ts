@@ -21,13 +21,13 @@ export const V5: XcmCreator = {
 	xcmVersion: 5,
 
 	// Same as V4
-	createBeneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
-		const v4 = V4.createBeneficiary({ accountId, parents });
+	beneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
+		const v4 = V4.beneficiary({ accountId, parents });
 		return { V5: v4.V4 };
 	},
 
 	// Same across all versions
-	createXTokensParachainDestBeneficiary({
+	xTokensParachainDestBeneficiary({
 		accountId,
 		destChainId,
 		parents = 1,
@@ -45,7 +45,7 @@ export const V5: XcmCreator = {
 	},
 
 	// Same as V4
-	createXTokensDestBeneficiary({
+	xTokensDestBeneficiary({
 		accountId,
 		parents = 1,
 	}: {
@@ -61,7 +61,7 @@ export const V5: XcmCreator = {
 	},
 
 	// Same as V4
-	createMultiAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
+	multiAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
 		const concreteMultiLocation = this.resolveMultiLocation(multiLocation);
 		return {
 			id: concreteMultiLocation,

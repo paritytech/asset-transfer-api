@@ -383,14 +383,14 @@ export interface ICreateXcmType {
 
 export interface XcmCreator {
 	xcmVersion: number;
-	createBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiary;
-	createXTokensParachainDestBeneficiary: (opts: {
+	beneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiary;
+	xTokensParachainDestBeneficiary: (opts: {
 		accountId: string;
 		destChainId: string;
 		parents: number;
 	}) => XcmDestBeneficiaryXcAssets;
-	createXTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiaryXcAssets;
-	createMultiAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
+	xTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiaryXcAssets;
+	multiAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
 	resolveMultiLocation: (multiLocation: AnyJson) => UnionXcmMultiLocation;
 	multiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
 	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;

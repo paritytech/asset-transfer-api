@@ -122,7 +122,7 @@ const createParaToEthereumMultiAssets = async ({
 			xcmCreator,
 		);
 
-		const multiAsset = xcmCreator.createMultiAsset({
+		const multiAsset = xcmCreator.multiAsset({
 			amount: amounts[0],
 			multiLocation,
 		});
@@ -144,7 +144,7 @@ const createParaToEthereumMultiAssets = async ({
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
 			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmCreator);
-			const multiAsset = xcmCreator.createMultiAsset({
+			const multiAsset = xcmCreator.multiAsset({
 				amount,
 				multiLocation,
 			});
