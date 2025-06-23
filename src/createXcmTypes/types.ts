@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
@@ -81,6 +79,8 @@ export type XcmV2Junctions = Junctions<XcmV2Junction>;
 export type XcmV3Junctions = Junctions<XcmV3Junction>;
 export type XcmV4Junctions = V4PlusJunctions<XcmV4Junction>;
 export type XcmV5Junctions = V4PlusJunctions<XcmV5Junction>;
+
+export type OneOfXcmJunctions = RequireOnlyOne<XcmV5Junctions | XcmV4Junctions | XcmV3Junctions | XcmV2Junctions>;
 
 type Junction<T> = RequireOnlyOne<T>;
 
@@ -398,10 +398,6 @@ export interface XcmCreator {
 	versionedAssetId: (multiLocation: UnionXcmMultiLocation) => XcmVersionedAssetId;
 
 	// TODO:
-	// move RemoteReserve to proper place
-
-	// and then
-
 	// go through handlers one by one
 	// and then check for any stragglers, search V3
 }

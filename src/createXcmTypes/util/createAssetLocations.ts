@@ -1,23 +1,18 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { ApiPromise } from '@polkadot/api';
 
 import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { Registry } from '../../registry/index.js';
-import { RequireOnlyOne } from '../../types.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { validateNumber } from '../../validate/index.js';
 import {
 	FungibleAsset,
 	FungibleAssetType,
 	FungibleMultiAsset,
+	OneOfXcmJunctions,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmCreator,
-	XcmV2Junctions,
-	XcmV3Junctions,
-	XcmV4Junctions,
 } from '../types.js';
 import { dedupeAssets } from './dedupeAssets.js';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId.js';
@@ -66,7 +61,7 @@ export const createAssetLocations = async (
 			multiLocation = resolveMultiLocation(assetId, xcmCreator);
 		} else {
 			const parents = isRelayNative && !isRelayChain ? 1 : 0;
-			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
+			const interior: OneOfXcmJunctions = isRelayNative
 				? { Here: '' }
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],

@@ -1,20 +1,17 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import type { Registry } from '../../registry/index.js';
-import { RequireOnlyOne } from '../../types.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { validateNumber } from '../../validate/index.js';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
+	OneOfXcmJunctions,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
-	XcmV2Junctions,
-	XcmV3Junctions,
-	XcmV4Junctions,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createInteriorValueDest } from '../util/createDest.js';
@@ -143,7 +140,7 @@ export const createSystemToBridgeAssets = async ({
 			multiLocation = resolveMultiLocation(assetId, xcmCreator);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
-			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
+			const interior: OneOfXcmJunctions = isRelayNative
 				? { Here: '' }
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],

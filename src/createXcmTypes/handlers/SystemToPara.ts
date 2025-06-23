@@ -5,20 +5,17 @@ import type { ApiPromise } from '@polkadot/api';
 import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { Registry } from '../../registry/index.js';
-import type { RequireOnlyOne } from '../../types.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { validateNumber } from '../../validate/index.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
+	OneOfXcmJunctions,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
-	XcmV2Junctions,
-	XcmV3Junctions,
-	XcmV4Junctions,
 } from '../types.js';
 import { assetIdIsLocation } from '../util/assetIdIsLocation.js';
 import { createAssets } from '../util/createAssets.js';
@@ -152,7 +149,7 @@ export const createSystemToParaMultiAssets = async ({
 			multiLocation = resolveMultiLocation(assetId, xcmCreator);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
-			const interior: RequireOnlyOne<XcmV4Junctions | XcmV3Junctions | XcmV2Junctions> = isRelayNative
+			const interior: OneOfXcmJunctions = isRelayNative
 				? { Here: '' }
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
