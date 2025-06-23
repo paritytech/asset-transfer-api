@@ -1,31 +1,7 @@
-import { DEFAULT_XCM_VERSION, SUPPORTED_XCM_VERSIONS } from '../../consts.js';
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { InteriorKey, InteriorValue, XcmDestBeneficiary, XcmV4JunctionDestBeneficiary } from '../types.js';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
-
-/**
- * Create a XcmVersionedMultiLocation type for a destination with Here
- */
-export const createHereDest = ({
-	parents,
-	xcmVersion = DEFAULT_XCM_VERSION,
-}: {
-	parents: number;
-	xcmVersion: number;
-}): XcmDestBeneficiary => {
-	const versionKey = `V${xcmVersion}`;
-	const destination = {
-		[versionKey]: {
-			parents,
-			interior: { Here: null },
-		},
-	};
-	if (!SUPPORTED_XCM_VERSIONS.includes(xcmVersion)) {
-		throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-	}
-
-	return destination;
-};
 
 /**
  * Create a XcmVersionedMultiLocation type for a destination with InteriorValue

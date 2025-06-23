@@ -131,4 +131,14 @@ export const V3: XcmCreator = {
 			},
 		};
 	},
+
+	// Same across all versions
+	hereDest({ parents }: { parents: number }): XcmDestBeneficiary {
+		return {
+			V3: {
+				parents,
+				interior: { Here: null },
+			},
+		};
+	},
 };

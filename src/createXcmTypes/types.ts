@@ -397,6 +397,7 @@ export interface XcmCreator {
 	remoteReserve: (multiLocation: UnionXcmMultiLocation) => RemoteReserve;
 	versionedAssetId: (multiLocation: UnionXcmMultiLocation) => XcmVersionedAssetId;
 	parachainDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
+	hereDest: (opts: { parents: number }) => XcmDestBeneficiary;
 
 	// TODO:
 	// createDest.ts

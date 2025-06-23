@@ -106,4 +106,14 @@ export const V5: XcmCreator = {
 			},
 		};
 	},
+
+	// Same across all versions
+	hereDest({ parents }: { parents: number }): XcmDestBeneficiary {
+		return {
+			V5: {
+				parents,
+				interior: { Here: null },
+			},
+		};
+	},
 };

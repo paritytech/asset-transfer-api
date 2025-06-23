@@ -2,7 +2,6 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { CreateAssetsOpts, UnionXcmMultiAssets, XcmDestBeneficiary } from '../types.js';
 import { createSingleAsset } from '../util/createAssets.js';
-import { createHereDest } from '../util/createDest.js';
 import { DefaultHandler } from './default.js';
 
 export class SystemToRelay extends DefaultHandler {
@@ -12,8 +11,8 @@ export class SystemToRelay extends DefaultHandler {
 	 * @param destId The destId in this case, which is the relay chain.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(_: string, xcmVersion: number): XcmDestBeneficiary {
-		return createHereDest({ xcmVersion, parents: 1 });
+	createDest(_: string, _xcmVersion: number): XcmDestBeneficiary {
+		return this.xcmCreator.hereDest({ parents: 1 });
 	}
 
 	/**
