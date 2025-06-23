@@ -1,6 +1,5 @@
 import { ApiPromise } from '@polkadot/api';
 
-import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { Registry } from '../../registry/Registry.js';
 import { getFeeAssetItemIndex } from '../../util/getFeeAssetItemIndex.js';
@@ -13,7 +12,6 @@ import { isSystemChain } from './isSystemChain.js';
  *
  * Default values are hacks to avoid unraveling the CreateFeeAssetItemOpts type
  * and everything that it touches.
- * TODO: Clean up the input parameters and types here eventually.
  */
 export const createFeeAssetItem = async ({
 	api,
@@ -25,7 +23,6 @@ export const createFeeAssetItem = async ({
 		paysWithFeeDest = '',
 		registry,
 		specName = '',
-		xcmVersion = DEFAULT_XCM_VERSION,
 	},
 	multiAssetCreator,
 	verifySystemChain = false,
@@ -38,7 +35,6 @@ export const createFeeAssetItem = async ({
 		amounts: string[];
 		specName: string;
 		assets: string[];
-		xcmVersion: number;
 		registry: Registry;
 		destChainId?: string;
 		isForeignAssetsTransfer: boolean;
@@ -48,18 +44,14 @@ export const createFeeAssetItem = async ({
 	verifySystemChain?: boolean;
 	xcmCreator: XcmCreator;
 }): Promise<number> => {
-	if (xcmVersion === 2) {
+	if (xcmCreator.xcmVersion === 2) {
 		return 0;
-	}
-	if (![3, 4, 5].includes(xcmVersion)) {
-		throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
 	}
 	const multiAssets = await multiAssetCreator({
 		api,
 		amounts,
 		specName,
 		assets: assetIds,
-		xcmVersion,
 		registry,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
@@ -76,15 +68,15 @@ export const createFeeAssetItem = async ({
 		}
 	}
 
-	const assetIndex = getFeeAssetItemIndex(
+	const assetIndex = getFeeAssetItemIndex({
 		api,
 		registry,
 		paysWithFeeDest,
 		multiAssets,
 		specName,
-		xcmVersion,
+		xcmCreator,
 		isForeignAssetsTransfer,
-	);
+	});
 
 	return assetIndex;
 };

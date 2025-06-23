@@ -2,10 +2,9 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { FungibleAssetType } from '../createXcmTypes/types.js';
+import { FungibleAssetType, XcmCreator } from '../createXcmTypes/types.js';
 import { getAssetId } from '../createXcmTypes/util/getAssetId.js';
 import { isParachain } from '../createXcmTypes/util/isParachain.js';
-import { getXcmCreator } from '../createXcmTypes/xcm/index.js';
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import { Registry } from '../registry/index.js';
 import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
@@ -19,16 +18,23 @@ import { validateNumber } from '../validate/validateNumber.js';
  * @param multiAssets MultiAsset[]
  * @param specName string
  */
-export const getFeeAssetItemIndex = async (
-	api: ApiPromise,
-	registry: Registry,
-	paysWithFeeDest: string,
-	multiAssets: FungibleAssetType[],
-	specName: string,
-	xcmVersion: number,
-	isForeignAssetsTransfer?: boolean,
-): Promise<number> => {
-	const xcmCreator = getXcmCreator(xcmVersion);
+export const getFeeAssetItemIndex = async ({
+	api,
+	registry,
+	paysWithFeeDest,
+	multiAssets,
+	specName,
+	xcmCreator,
+	isForeignAssetsTransfer,
+}: {
+	api: ApiPromise;
+	registry: Registry;
+	paysWithFeeDest: string;
+	multiAssets: FungibleAssetType[];
+	specName: string;
+	xcmCreator: XcmCreator;
+	isForeignAssetsTransfer?: boolean;
+}): Promise<number> => {
 	const chainId = registry.lookupChainIdBySpecName(specName);
 	const isParaOrigin = isParachain(chainId);
 	let result = -1;
