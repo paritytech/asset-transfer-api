@@ -19,7 +19,6 @@ import type {
 } from '../types.js';
 import { assetIdIsLocation } from '../util/assetIdIsLocation.js';
 import { createAssets } from '../util/createAssets.js';
-import { createParachainDest } from '../util/createDest.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
 import { dedupeAssets } from '../util/dedupeAssets.js';
 import { fetchPalletInstanceId } from '../util/fetchPalletInstanceId.js';
@@ -36,11 +35,10 @@ export class SystemToPara extends DefaultHandler {
 	 * @param destId The parachain Id of the destination.
 	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest(destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary {
-		return createParachainDest({
+	createDest(destId: string, _xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary {
+		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 1,
-			xcmVersion,
 		});
 	}
 

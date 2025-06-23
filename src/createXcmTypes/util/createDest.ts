@@ -4,38 +4,6 @@ import { InteriorKey, InteriorValue, XcmDestBeneficiary, XcmV4JunctionDestBenefi
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 /**
- * Create a XcmVersionedMultiLocation type for a destination with X1 Parachain
- */
-export const createParachainDest = ({
-	destId,
-	parents,
-	xcmVersion = DEFAULT_XCM_VERSION,
-}: {
-	destId: string;
-	parents: number;
-	xcmVersion: number;
-}): XcmDestBeneficiary => {
-	const versionKey = `V${xcmVersion}`;
-	const destination = {
-		[versionKey]: {
-			parents,
-			interior: {}, // dependent on verison
-		},
-	};
-	if ([2, 3].includes(xcmVersion)) {
-		const X1 = { Parachain: destId };
-		destination[versionKey].interior = { X1 };
-	} else if ([4, 5].includes(xcmVersion)) {
-		const X1 = [{ Parachain: destId }];
-		destination[versionKey].interior = { X1 };
-	} else {
-		throw new BaseError(`XCM version ${xcmVersion} not supported.`, BaseErrorsEnum.InvalidXcmVersion);
-	}
-
-	return destination;
-};
-
-/**
  * Create a XcmVersionedMultiLocation type for a destination with Here
  */
 export const createHereDest = ({

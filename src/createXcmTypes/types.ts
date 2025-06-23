@@ -396,8 +396,16 @@ export interface XcmCreator {
 	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
 	remoteReserve: (multiLocation: UnionXcmMultiLocation) => RemoteReserve;
 	versionedAssetId: (multiLocation: UnionXcmMultiLocation) => XcmVersionedAssetId;
+	parachainDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
 
 	// TODO:
+	// createDest.ts
+	// clean up _xcmVersion
+
 	// go through handlers one by one
 	// and then check for any stragglers, search V3
+
+	// search for
+	// [2,]
+	// switch / case
 }

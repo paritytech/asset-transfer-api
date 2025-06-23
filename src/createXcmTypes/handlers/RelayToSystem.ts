@@ -4,7 +4,6 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { CreateAssetsOpts, UnionXcmMultiAssets, XcmDestBeneficiary } from '../types.js';
 import { createSingleAsset } from '../util/createAssets.js';
-import { createParachainDest } from '../util/createDest.js';
 import { DefaultHandler } from './default.js';
 /**
  * XCM type generation for transactions from the relay chain to a system parachain.
@@ -16,11 +15,10 @@ export class RelayToSystem extends DefaultHandler {
 	 * @param destId The parachain Id of the destination
 	 * @param xcmVersion The accepted xcm version
 	 */
-	createDest(destId: string, xcmVersion: number): XcmDestBeneficiary {
-		return createParachainDest({
+	createDest(destId: string, _xcmVersion: number): XcmDestBeneficiary {
+		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 0,
-			xcmVersion,
 		});
 	}
 

@@ -129,4 +129,14 @@ export const V4: XcmCreator = {
 	versionedAssetId(multiLocation: UnionXcmMultiLocation): XcmVersionedAssetId {
 		return { V4: this.resolveMultiLocation(multiLocation) };
 	},
+
+	parachainDest({ destId, parents }: { destId: string; parents: number }): XcmDestBeneficiary {
+		const X1 = [{ Parachain: destId }];
+		return {
+			V4: {
+				parents,
+				interior: { X1 },
+			},
+		};
+	},
 };
