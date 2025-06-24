@@ -6,8 +6,8 @@ import { resolveMultiLocation } from './resolveMultiLocation';
 describe('resolveMultiLocation', () => {
 	it('Should correctly not throw an error when xcmVersion is 3 and the multiLocation does not contain a generalKey Junction', () => {
 		const str = `{"parents":0,"interior":{"here": null}}`;
-		const err = () => resolveMultiLocation(str, xcmCreator);
 		const xcmCreator = getXcmCreator(3);
+		const err = () => resolveMultiLocation(str, xcmCreator);
 
 		expect(err).not.toThrow();
 	});
