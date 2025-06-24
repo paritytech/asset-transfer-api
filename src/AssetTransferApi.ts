@@ -1277,7 +1277,7 @@ export class AssetTransferApi {
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
 				if (xcmCreator.xcmVersion < MIN_XCM_VERSION_FOREIGN_ASSETS) {
 					throw new BaseError(
-						`XCM version 4 or high is required for ForeignAsset transfers.`,
+						`XCM version 4 or higher is required for ForeignAsset transfers.`,
 						BaseErrorsEnum.InvalidXcmVersion,
 					);
 				}
