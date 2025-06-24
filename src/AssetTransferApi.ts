@@ -256,6 +256,11 @@ export class AssetTransferApi {
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
 		const xcmPallet = establishXcmPallet(api, xcmDirection, xcmPalletOverride);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
+		console.log('==============================');
+		console.log(xcmVersion);
+		console.log(safeXcmVersion);
+		console.log(declaredXcmVersion);
+		console.log('==============================');
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
 		const xcmCreator = getXcmCreator(declaredXcmVersion);
 

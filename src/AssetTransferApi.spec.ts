@@ -775,10 +775,14 @@ describe('AssetTransferAPI', () => {
 
 		describe('SystemToPara', () => {
 			it('Should decode a foreign asset tx call extrinsic given its hash for SystemToPara', async () => {
+				const xcmVersion = 4; // Must be V4 or higher for ForeignAssets
+				const assetTransferApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', xcmVersion, {
+					registryType: 'NPM',
+				});
 				const expected =
 					'{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"5GTG3EQ159PpSh4kkF5TBrW6jkmc88HdYcsU8bsN83bndWh2"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}';
 
-				const callTxResult = await systemAssetsApi.createTransferTransaction(
+				const callTxResult = await assetTransferApi.createTransferTransaction(
 					'1000',
 					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
 					['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
@@ -794,10 +798,14 @@ describe('AssetTransferAPI', () => {
 			});
 
 			it('Should decode a foreign asset tx payload extrinsic given its hash for SystemToPara', async () => {
+				const xcmVersion = 4; // Must be V4 or higher for ForeignAssets
+				const assetTransferApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', xcmVersion, {
+					registryType: 'NPM',
+				});
 				const expected =
 					'{"decodedPayload":{"method":"0x35080102003521050000c224aad9c6f3bbd784120e9fceee5bfd22a62c69144ee673f76d6a34d280de160b00a0724e1809","era":{"MortalEra":{"period":"64","phase":"36"}},"nonce":"10","tip":"0","assetId":{"parents":"0","interior":"Here"},"specVersion":"1,004,000","transactionVersion":"4","genesisHash":"0x0000000000000000000000000000000000000000000000000000000000000000","blockHash":"0xbe2554aa8a0151eb4d706308c47d16996af391e4c5e499c7cbef24259b7d4503"},"decodedCall":{"args":{"id":{"parents":"1","interior":{"X2":[{"Parachain":"2,125"},{"GeneralIndex":"0"}]}},"target":{"Id":"5GTG3EQ159PpSh4kkF5TBrW6jkmc88HdYcsU8bsN83bndWh2"},"amount":"10,000,000,000,000"},"method":"transfer","section":"foreignAssets"}}';
 
-				const callTxResult = await systemAssetsApi.createTransferTransaction(
+				const callTxResult = await assetTransferApi.createTransferTransaction(
 					'1000',
 					'GxshYjshWQkCLtCWwtW5os6tM3qvo6ozziDXG9KbqpHNVfZ',
 					['{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}'],
