@@ -19,7 +19,13 @@ import type {
 import type { AnyJson, AnyTuple, ISubmittableResult } from '@polkadot/types/types';
 import type { Result, u128 } from '@polkadot/types-codec';
 
-import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts.js';
+import {
+	CDN_URL,
+	MIN_XCM_VERSION_FOREIGN_ASSETS,
+	RELAY_CHAIN_IDS,
+	RELAY_CHAIN_NAMES,
+	SYSTEM_PARACHAINS_NAMES,
+} from './consts.js';
 import * as assets from './createCalls/assets/index.js';
 import * as balances from './createCalls/balances/index.js';
 import * as foreignAssets from './createCalls/foreignAssets/index.js';
@@ -1269,7 +1275,7 @@ export class AssetTransferApi {
 				}
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				if (xcmCreator.xcmVersion < 4) {
+				if (xcmCreator.xcmVersion < MIN_XCM_VERSION_FOREIGN_ASSETS) {
 					throw new BaseError(
 						`XCM version 4 or high is required for ForeignAsset transfers.`,
 						BaseErrorsEnum.InvalidXcmVersion,

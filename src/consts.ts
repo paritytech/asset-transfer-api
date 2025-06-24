@@ -18,6 +18,11 @@ export const RELAY_CHAIN_IDS = ['0'];
 export const ASSET_HUB_CHAIN_ID = '1000';
 
 /**
+ * Chain IDs greater than or equal to MIN_PARACHAIN_ID as Parachains
+ */
+export const MIN_PARACHAIN_ID = 2000;
+
+/**
  * List of all known system parachains.
  */
 export const SYSTEM_PARACHAINS_NAMES = [
@@ -47,6 +52,12 @@ export const DEFAULT_XCM_VERSION = 4;
  * but older chain could still accept older versions.
  */
 export const SUPPORTED_XCM_VERSIONS: number[] = [2, 3, 4, 5];
+
+/**
+ * ForeignAsset transfers must be XCM V4 or greater.
+ */
+export const MIN_XCM_VERSION_FOREIGN_ASSETS = 4;
+
 /**
  * Currently supported xcm pallets
  */

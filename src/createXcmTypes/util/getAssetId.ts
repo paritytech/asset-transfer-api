@@ -3,7 +3,7 @@
 import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
 
-import { ASSET_HUB_CHAIN_ID } from '../../consts.js';
+import { ASSET_HUB_CHAIN_ID, MIN_PARACHAIN_ID } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import { validateNumber } from '../../validate/index.js';
@@ -42,7 +42,7 @@ export const getAssetId = async ({
 }): Promise<string> => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
-	const isParachain = new BN(currentChainId).gte(new BN(2000)); // TODO: Move magic number to constants
+	const isParachain = new BN(currentChainId).gte(new BN(MIN_PARACHAIN_ID));
 
 	// if assets pallet, check the cache and return the cached assetId if found
 	if (!isForeignAssetsTransfer) {
