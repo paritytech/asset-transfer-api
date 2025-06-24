@@ -65,10 +65,7 @@ export abstract class DefaultHandler implements ICreateXcmType {
 		throw new Error('Not Implemented');
 	}
 
-	// XTokens methods don't need to be included here
-	// I don't think it hurts to include them,
-	// BUT there may be code that checks if a method exists
-	// So be careful and double check this before merge.
+	// XTokens methods
 
 	createXTokensAssets(
 		amounts: string[],
