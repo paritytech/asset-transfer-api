@@ -1269,8 +1269,12 @@ export class AssetTransferApi {
 				}
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				const foreignAssetsXcmVersion = 4; // TODO: Clean up and don't imply xcm versions
-				const xcmCreator = getXcmCreator(foreignAssetsXcmVersion);
+				if (xcmCreator.xcmVersion < 4) {
+					throw new BaseError(
+						`XCM version 4 or high is required for ForeignAsset transfers.`,
+						BaseErrorsEnum.InvalidXcmVersion,
+					);
+				}
 				const location = resolveMultiLocation(JSON.parse(assetId) as AnyJson, xcmCreator);
 
 				if (method === 'transferKeepAlive') {
