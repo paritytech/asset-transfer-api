@@ -345,7 +345,6 @@ export class AssetTransferApi {
 		return this.constructFormat<T>({
 			tx: transaction,
 			direction: xcmDirection,
-			xcmVersion: declaredXcmVersion,
 			xcmCreator,
 			method: txMethod,
 			dest: destChainId,
@@ -424,7 +423,6 @@ export class AssetTransferApi {
 		return await this.constructFormat({
 			tx: ext,
 			direction: 'local',
-			xcmVersion: declaredXcmVersion,
 			xcmCreator,
 			method: 'claimAssets',
 			dest: originChainId,
@@ -684,7 +682,6 @@ export class AssetTransferApi {
 	private async constructFormat<T extends Format>({
 		tx,
 		direction,
-		xcmVersion,
 		xcmCreator,
 		method,
 		dest,
@@ -693,7 +690,6 @@ export class AssetTransferApi {
 	}: {
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 		direction: Direction | 'local';
-		xcmVersion: number;
 		xcmCreator: XcmCreator;
 		method: Methods;
 		dest: string;
@@ -711,7 +707,7 @@ export class AssetTransferApi {
 			origin,
 			dest: this.getDestinationSpecName(dest, this.registry),
 			direction,
-			xcmVersion,
+			xcmVersion: xcmCreator.xcmVersion,
 			method,
 			format: fmt as Format | 'local',
 			tx: '' as ConstructedFormat<T>,
@@ -758,7 +754,7 @@ export class AssetTransferApi {
 				}
 			}
 
-			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt, xcmVersion);
+			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt, xcmCreator.xcmVersion);
 
 			if (executionResult?.isOk) {
 				result.xcmExecutionResult = executionResult.asOk.executionResult;
@@ -1306,7 +1302,6 @@ export class AssetTransferApi {
 			return await this.constructFormat({
 				tx,
 				direction: 'local',
-				xcmVersion,
 				xcmCreator,
 				method: palletMethod,
 				dest: destChainId,
@@ -1331,7 +1326,6 @@ export class AssetTransferApi {
 				return this.constructFormat({
 					tx,
 					direction: 'local',
-					xcmVersion,
 					xcmCreator,
 					method: palletMethod,
 					dest: destChainId,
@@ -1350,7 +1344,6 @@ export class AssetTransferApi {
 				return this.constructFormat({
 					tx,
 					direction: 'local',
-					xcmVersion,
 					xcmCreator,
 					method: palletMethod,
 					dest: destChainId,
@@ -1379,7 +1372,6 @@ export class AssetTransferApi {
 			return this.constructFormat({
 				tx,
 				direction: 'local',
-				xcmVersion,
 				xcmCreator,
 				method: palletMethod,
 				dest: destChainId,

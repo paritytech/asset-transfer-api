@@ -163,7 +163,6 @@ describe('AssetTransferAPI', () => {
 			const res = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
-				xcmVersion: 2,
 				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2023',
@@ -181,11 +180,10 @@ describe('AssetTransferAPI', () => {
 			});
 		});
 		it('Should construct the correct payload', async () => {
-			const xcmCreator = getXcmCreator(4);
+			const xcmCreator = getXcmCreator(2);
 			const res = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
-				xcmVersion: 2,
 				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2023',
@@ -202,7 +200,6 @@ describe('AssetTransferAPI', () => {
 			const res = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
-				xcmVersion: 2,
 				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2023',
@@ -468,7 +465,6 @@ describe('AssetTransferAPI', () => {
 			const payloadTexResult = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
-				xcmVersion: 2,
 				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2000',
@@ -485,7 +481,6 @@ describe('AssetTransferAPI', () => {
 			const callTxResult = await systemAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
-				xcmVersion: 2,
 				xcmCreator,
 				method: 'limitedReserveTransferAssets',
 				dest: '2000',
@@ -549,7 +544,6 @@ describe('AssetTransferAPI', () => {
 			const payloadTexResult = await westmintAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
-				xcmVersion: 4,
 				xcmCreator,
 				method: 'transferAssets',
 				dest: '0',
@@ -568,7 +562,6 @@ describe('AssetTransferAPI', () => {
 			const callTxResult = await westmintAssetsApi['constructFormat']({
 				tx: mockSubmittableExt,
 				direction: Direction.SystemToPara,
-				xcmVersion: 4,
 				xcmCreator,
 				method: 'transferAssets',
 				dest: '0',
