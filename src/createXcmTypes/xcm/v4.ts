@@ -86,9 +86,6 @@ export const V4: XcmCreator = {
 	resolveMultiLocation(multiLocation: AnyJson): UnionXcmMultiLocation {
 		const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
 
-		const hasGlobalConsensus =
-			multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
-
 		let result = parseLocationStrToLocation(multiLocationStr, this.xcmVersion);
 
 		// handle case where result is an xcmV1Multilocation from the registry
@@ -108,12 +105,7 @@ export const V4: XcmCreator = {
 			};
 		}
 
-		// TODO: Clean up - not sure why we don't always sanitize
-		if (!hasGlobalConsensus) {
-			return sanitizeKeys(result);
-		} else {
-			return result;
-		}
+		return sanitizeKeys(result);
 	},
 
 	multiAsset(asset: FungibleAssetType): UnionXcAssetsMultiAsset {

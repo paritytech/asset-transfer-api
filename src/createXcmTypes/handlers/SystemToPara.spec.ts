@@ -265,8 +265,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 								},
 							},
@@ -278,8 +278,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '2' }],
 								},
 							},
@@ -306,8 +306,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 								},
 							},
@@ -319,8 +319,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '2' }],
 								},
 							},
@@ -346,8 +346,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				V4: [
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 							},
 						},
@@ -357,8 +357,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '2' }],
 							},
 						},
@@ -383,8 +383,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				V5: [
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '1' }],
 							},
 						},
@@ -394,8 +394,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '2' }],
 							},
 						},
@@ -421,8 +421,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '55' }, { GeneralIndex: '1' }],
 								},
 							},
@@ -434,8 +434,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '55' }, { GeneralIndex: '2' }],
 								},
 							},
@@ -461,8 +461,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				V4: [
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [{ PalletInstance: '55' }, { GeneralIndex: '1' }],
 							},
 						},
@@ -472,8 +472,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [{ PalletInstance: '55' }, { GeneralIndex: '2' }],
 							},
 						},
@@ -498,8 +498,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 				V5: [
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [{ PalletInstance: '55' }, { GeneralIndex: '1' }],
 							},
 						},
@@ -509,8 +509,8 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [{ PalletInstance: '55' }, { GeneralIndex: '2' }],
 							},
 						},
@@ -562,10 +562,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					id: {
 						Concrete: {
-							Interior: {
+							interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 							},
-							Parents: '0',
+							parents: '0',
 						},
 					},
 				},
@@ -575,10 +575,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					id: {
 						Concrete: {
-							Interior: {
+							interior: {
 								Here: '',
 							},
-							Parents: '1',
+							parents: '1',
 						},
 					},
 				},
@@ -609,10 +609,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					id: {
 						Concrete: {
-							Interior: {
+							interior: {
 								X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 							},
-							Parents: '0',
+							parents: '0',
 						},
 					},
 				},
@@ -622,10 +622,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					},
 					id: {
 						Concrete: {
-							Interior: {
+							interior: {
 								Here: '',
 							},
-							Parents: '1',
+							parents: '1',
 						},
 					},
 				},
@@ -655,10 +655,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 						Fungible: '300000000000000',
 					},
 					id: {
-						Interior: {
+						interior: {
 							X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 						},
-						Parents: '0',
+						parents: '0',
 					},
 				},
 				{
@@ -666,10 +666,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 						Fungible: '100000000000000',
 					},
 					id: {
-						Interior: {
+						interior: {
 							Here: '',
 						},
-						Parents: '1',
+						parents: '1',
 					},
 				},
 			];
@@ -698,10 +698,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 						Fungible: '300000000000000',
 					},
 					id: {
-						Interior: {
+						interior: {
 							X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 						},
-						Parents: '0',
+						parents: '0',
 					},
 				},
 				{
@@ -709,10 +709,10 @@ describe('SystemToPara XcmVersioned Generation', () => {
 						Fungible: '100000000000000',
 					},
 					id: {
-						Interior: {
+						interior: {
 							Here: '',
 						},
-						Parents: '1',
+						parents: '1',
 					},
 				},
 			];

@@ -11,6 +11,12 @@ enum MultiLocationJunctionTypeKeys {
 	'onlychild' = 'OnlyChild',
 	'plurality' = 'Plurality',
 	'globalconsensus' = 'GlobalConsensus',
+	// Hack around some exceptions
+	'parents' = 'parents',
+	'key' = 'key',
+	'network' = 'network',
+	'chainid' = 'chainId',
+	'interior' = 'interior',
 }
 
 const isPlainObject = (input: unknown) => {
