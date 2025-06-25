@@ -6,18 +6,31 @@ import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import type { SanitizedXcAssetsData } from '../../registry/types.js';
 import { validateNumber } from '../../validate/index.js';
+import { XcmCreator } from '../types.js';
 import { getAssetId } from './getAssetId.js';
 
-export const getXcAssetMultiLocationByAssetId = async (
-	api: ApiPromise,
-	assetId: string,
-	specName: string,
-	xcmVersion: number,
-	registry: Registry,
-): Promise<string> => {
+export const getXcAssetMultiLocationByAssetId = async ({
+	api,
+	assetId,
+	specName,
+	xcmCreator,
+	registry,
+}: {
+	api: ApiPromise;
+	assetId: string;
+	specName: string;
+	xcmCreator: XcmCreator;
+	registry: Registry;
+}): Promise<string> => {
 	// if symbol, get the integer or multilocation assetId
 	if (!validateNumber(assetId)) {
-		assetId = await getAssetId(api, registry, assetId, specName, xcmVersion);
+		assetId = await getAssetId({
+			api,
+			registry,
+			asset: assetId,
+			specName,
+			xcmCreator,
+		});
 	}
 
 	const paraId = registry.lookupChainIdBySpecName(specName);

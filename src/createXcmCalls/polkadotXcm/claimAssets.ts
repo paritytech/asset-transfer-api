@@ -6,6 +6,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { createAssetLocations } from '../../createXcmTypes/util/createAssetLocations.js';
 import { createBeneficiary } from '../../createXcmTypes/util/createBeneficiary.js';
+import { getXcmCreator } from '../../createXcmTypes/xcm/index.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import { CreateXcmCallOpts } from '../types.js';
@@ -32,19 +33,20 @@ export const claimAssets = async (
 	opts: CreateXcmCallOpts,
 ): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const { isForeignAssetsTransfer: assetIdsContainLocations, isLiquidTokenTransfer } = opts;
-	const beneficiary = createBeneficiary(beneficiaryAddress, xcmVersion);
+	const xcmCreator = getXcmCreator(xcmVersion);
+	const beneficiary = createBeneficiary(beneficiaryAddress, xcmCreator);
 
-	const assets = await createAssetLocations(
+	const assets = await createAssetLocations({
 		api,
 		assetIds,
 		specName,
 		amounts,
-		xcmVersion,
 		registry,
 		originChainId,
 		assetIdsContainLocations,
 		isLiquidTokenTransfer,
-	);
+		xcmCreator,
+	});
 
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].claimAssets;

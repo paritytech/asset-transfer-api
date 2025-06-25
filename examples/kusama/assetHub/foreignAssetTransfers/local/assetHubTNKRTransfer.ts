@@ -4,6 +4,7 @@
  * import { AssetTransferApi, constructApiPromise } from '@substrate/asset-transfer-api'
  */
 import { AssetTransferApi, constructApiPromise } from '../../../../../src';
+import { MIN_XCM_VERSION_FOREIGN_ASSETS } from '../../../../../src/consts';
 import { TxResult } from '../../../../../src/types';
 import { GREEN, PURPLE, RESET } from '../../../../colors';
 
@@ -15,10 +16,11 @@ import { GREEN, PURPLE, RESET } from '../../../../colors';
  * NOTE: To specify the amount of weight for the tx to use provide a `weightLimit` option containing desired values for `refTime` and `proofSize`.
  */
 const main = async () => {
-	const { api, specName, safeXcmVersion } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io', {
+	const { api, specName } = await constructApiPromise('wss://kusama-asset-hub-rpc.polkadot.io', {
 		throwOnConnect: true,
 	});
-	const assetApi = new AssetTransferApi(api, specName, safeXcmVersion);
+	const xcmVersion = MIN_XCM_VERSION_FOREIGN_ASSETS;
+	const assetApi = new AssetTransferApi(api, specName, xcmVersion);
 
 	let callInfo: TxResult<'call'>;
 	try {

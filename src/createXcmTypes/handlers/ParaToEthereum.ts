@@ -1,100 +1,79 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
-import { DEFAULT_XCM_VERSION } from '../consts.js';
-import { Registry } from '../registry/index.js';
-import { XCMAssetRegistryMultiLocation } from '../registry/types.js';
-import { Direction } from '../types.js';
-import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
+import { Registry } from '../../registry/index.js';
+import { XCMAssetRegistryMultiLocation } from '../../registry/types.js';
+import { Direction } from '../../types.js';
+import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
 	FungibleMultiAsset,
-	ICreateXcmType,
 	UnionXcmMultiAssets,
+	XcmCreator,
 	XcmDestBeneficiary,
-} from './types.js';
-import { createAssets } from './util/createAssets.js';
-import { createBeneficiary } from './util/createBeneficiary.js';
-import { createParachainDest } from './util/createDest.js';
-import { createFeeAssetItem } from './util/createFeeAssetItem.js';
-import { createMultiAsset } from './util/createMultiAsset.js';
-import { createWeightLimit } from './util/createWeightLimit.js';
-import { dedupeAssets } from './util/dedupeAssets.js';
-import { getParachainNativeAssetLocation } from './util/getParachainNativeAssetLocation.js';
-import { getXcAssetMultiLocationByAssetId } from './util/getXcAssetMultiLocationByAssetId.js';
-import { isParachainPrimaryNativeAsset } from './util/isParachainPrimaryNativeAsset.js';
-import { sortAssetsAscending } from './util/sortAssetsAscending.js';
+} from '../types.js';
+import { createAssets } from '../util/createAssets.js';
+import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
+import { dedupeAssets } from '../util/dedupeAssets.js';
+import { getParachainNativeAssetLocation } from '../util/getParachainNativeAssetLocation.js';
+import { getXcAssetMultiLocationByAssetId } from '../util/getXcAssetMultiLocationByAssetId.js';
+import { isParachainPrimaryNativeAsset } from '../util/isParachainPrimaryNativeAsset.js';
+import { sortAssetsAscending } from '../util/sortAssetsAscending.js';
+import { DefaultHandler } from './default.js';
 
-export const ParaToEthereum: ICreateXcmType = {
-	/**
-	 * Create a XcmVersionedMultiLocation type for a beneficiary.
-	 *
-	 * @param accountId The accountId of the beneficiary.
-	 * @param xcmVersion The accepted xcm version.
-	 */
-	createBeneficiary,
+export class ParaToEthereum extends DefaultHandler {
 	/**
 	 * Create a XcmVersionedMultiLocation type for a destination.
 	 *
 	 * @param destId The parachain Id of the destination.
-	 * @param xcmVersion The accepted xcm version.
 	 */
-	createDest: (destId: string, xcmVersion: number = DEFAULT_XCM_VERSION): XcmDestBeneficiary => {
-		return createParachainDest({
+	createDest(destId: string): XcmDestBeneficiary {
+		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 1,
-			xcmVersion,
 		});
-	},
+	}
 	/**
 	 * Create a VersionedMultiAsset structured type.
 	 *
 	 * @param amounts Amount per asset. It will match the `assets` length.
-	 * @param xcmVersion The accepted xcm version.
 	 * @param specName The specname of the chain the api is connected to.
 	 * @param assets The assets to create into xcm `MultiAssets`.
 	 * @param opts Options regarding the registry, and types of asset transfers.
 	 */
-	createAssets: async (
+	async createAssets(
 		amounts: string[],
-		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> => {
+	): Promise<UnionXcmMultiAssets> {
 		return createAssets({
 			amounts,
-			xcmVersion,
 			specName,
 			assets,
 			opts,
 			multiAssetCreator: createParaToEthereumMultiAssets,
+			xcmCreator: this.xcmCreator,
 		});
-	},
-	/**
-	 * Create an Xcm WeightLimit structured type.
-	 *
-	 * @param opts Options that are used for WeightLimit.
-	 */
-	createWeightLimit,
+	}
+
 	/**
 	 * Returns the correct `feeAssetItem` based on XCM direction.
 	 *
 	 * @param api ApiPromise
 	 * @param opts Options that are used for fee asset construction.
 	 */
-	createFeeAssetItem: async (api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> => {
+	async createFeeAssetItem(api: ApiPromise, opts: CreateFeeAssetItemOpts): Promise<number> {
 		return createFeeAssetItem({
 			api,
 			opts,
 			multiAssetCreator: createParaToEthereumMultiAssets,
+			xcmCreator: this.xcmCreator,
 		});
-	},
-};
+	}
+}
 
 /**
  * Create multiassets for ParaToEthereum direction.
@@ -103,7 +82,6 @@ export const ParaToEthereum: ICreateXcmType = {
  * @param amounts Amount per asset. It will match the `assets` length.
  * @param specName The specname of the chain the api is connected to.
  * @param assets The assets to create into xcm `MultiAssets`.
- * @param xcmVersion The accepted xcm version.
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  */
@@ -112,17 +90,17 @@ const createParaToEthereumMultiAssets = async ({
 	amounts,
 	specName,
 	assets,
-	xcmVersion,
 	registry,
 	destChainId,
+	xcmCreator,
 }: {
 	api: ApiPromise;
 	amounts: string[];
 	specName: string;
 	assets: string[];
-	xcmVersion: number;
 	registry: Registry;
 	destChainId?: string;
+	xcmCreator: XcmCreator;
 }): Promise<FungibleAssetType[]> => {
 	const multiAssets: FungibleAssetType[] = [];
 	const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(
@@ -135,13 +113,12 @@ const createParaToEthereumMultiAssets = async ({
 	if (isPrimaryParachainNativeAsset) {
 		const multiLocation = resolveMultiLocation(
 			getParachainNativeAssetLocation(registry, assets[0], destChainId),
-			xcmVersion,
+			xcmCreator,
 		);
 
-		const multiAsset = createMultiAsset({
+		const multiAsset = xcmCreator.fungibleAsset({
 			amount: amounts[0],
 			multiLocation,
-			xcmVersion,
 		});
 
 		multiAssets.push(multiAsset);
@@ -150,21 +127,20 @@ const createParaToEthereumMultiAssets = async ({
 			const amount = amounts[i];
 			const assetId = assets[i];
 
-			const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId(
+			const xcAssetMultiLocationStr = await getXcAssetMultiLocationByAssetId({
 				api,
 				assetId,
 				specName,
-				xcmVersion,
+				xcmCreator,
 				registry,
-			);
+			});
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
-			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmVersion);
-			const multiAsset = createMultiAsset({
+			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmCreator);
+			const multiAsset = xcmCreator.fungibleAsset({
 				amount,
 				multiLocation,
-				xcmVersion,
 			});
 
 			multiAssets.push(multiAsset);

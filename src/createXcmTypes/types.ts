@@ -1,10 +1,8 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 import type { AnyJson } from '@polkadot/types/types';
 
 import type { Registry } from '../registry/index.js';
-import type { RequireOnlyOne } from '../types.js';
+import type { RemoteReserve, RequireOnlyOne } from '../types.js';
 
 export enum XcmVersionKey {
 	V2 = 'V2',
@@ -81,6 +79,8 @@ export type XcmV2Junctions = Junctions<XcmV2Junction>;
 export type XcmV3Junctions = Junctions<XcmV3Junction>;
 export type XcmV4Junctions = V4PlusJunctions<XcmV4Junction>;
 export type XcmV5Junctions = V4PlusJunctions<XcmV5Junction>;
+
+export type OneOfXcmJunctions = RequireOnlyOne<XcmV5Junctions | XcmV4Junctions | XcmV3Junctions | XcmV2Junctions>;
 
 type Junction<T> = RequireOnlyOne<T>;
 
@@ -259,11 +259,11 @@ export type XcmV3DestBeneficiary = VersionedWrapper<XcmVersionKey.V3, XcmDestBen
 export type XcmV4DestBeneficiary = VersionedWrapper<XcmVersionKey.V4, XcmDestBeneficiaryMap[XcmVersionKey.V4]>;
 export type XcmV5DestBeneficiary = VersionedWrapper<XcmVersionKey.V5, XcmDestBeneficiaryMap[XcmVersionKey.V5]>;
 
-type ParachainX2Interior =
+export type ParachainX2Interior =
 	| [{ Parachain: string }, { AccountId32: { id: string } }]
 	| [{ Parachain: string }, { AccountKey20: { key: string } }];
 
-type ParachainDestBeneficiaryInner = {
+export type ParachainDestBeneficiaryInner = {
 	parents: string | number;
 	interior: {
 		X2: ParachainX2Interior;
@@ -316,7 +316,6 @@ export interface CreateFeeAssetItemOpts {
 	specName?: string;
 	assetIds?: string[];
 	amounts?: string[];
-	xcmVersion?: number;
 	isForeignAssetsTransfer: boolean;
 	isLiquidTokenTransfer: boolean;
 }
@@ -344,33 +343,59 @@ export type XcmVersionedAssetId =
 	| XcmVersionedAssetIdV4
 	| XcmVersionedAssetIdV5;
 
+export interface ICreateXcmTypeConstructor {
+	new (xcmVersion: number): ICreateXcmType;
+}
+
 export interface ICreateXcmType {
-	createBeneficiary: (accountId: string, xcmVersion: number) => XcmDestBeneficiary;
-	createDest: (destId: string, xcmVersion: number) => XcmDestBeneficiary;
+	xcmCreator: XcmCreator;
+
+	createBeneficiary: (accountId: string) => XcmDestBeneficiary;
+	createDest: (destId: string) => XcmDestBeneficiary;
 	createAssets: (
 		amounts: string[],
-		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
 	) => Promise<UnionXcmMultiAssets>;
 	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
-	createXTokensBeneficiary?: (destChainId: string, accountId: string, xcmVersion: number) => XcmDestBeneficiaryXcAssets;
+	createXTokensBeneficiary?: (destChainId: string, accountId: string) => XcmDestBeneficiaryXcAssets;
 	createXTokensAssets?: (
 		amounts: string[],
-		xcmVersion: number,
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
 	) => Promise<UnionXcAssetsMultiAssets>;
 	createXTokensAsset?: (
 		amount: string,
-		xcmVersion: number,
 		specName: string,
 		asset: string,
 		opts: CreateAssetsOpts,
 	) => Promise<UnionXcAssetsMultiAsset>;
 	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
-	createXTokensFeeAssetItem?: (opts: CreateFeeAssetItemOpts) => UnionXcAssetsMultiLocation;
+	createXTokensFeeAssetItem?: (opts: { paysWithFeeDest?: string }) => UnionXcAssetsMultiLocation;
+}
+
+export interface XcmCreator {
+	xcmVersion: number;
+	beneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiary;
+	xTokensParachainDestBeneficiary: (opts: {
+		accountId: string;
+		destChainId: string;
+		parents: number;
+	}) => XcmDestBeneficiaryXcAssets;
+	xTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiaryXcAssets;
+	fungibleAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
+	resolveMultiLocation: (multiLocation: AnyJson) => UnionXcmMultiLocation;
+	multiAsset: (asset: FungibleAssetType) => UnionXcAssetsMultiAsset;
+	multiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
+	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
+	remoteReserve: (multiLocation: UnionXcmMultiLocation) => RemoteReserve;
+	versionedAssetId: (multiLocation: UnionXcmMultiLocation) => XcmVersionedAssetId;
+	parachainDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
+	hereDest: (opts: { parents: number }) => XcmDestBeneficiary;
+	interiorDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
+	hereAsset: (opts: { amount: string; parents: number }) => UnionXcmMultiAssets;
+	xcmMessage: (msg: AnyJson) => AnyJson;
 }

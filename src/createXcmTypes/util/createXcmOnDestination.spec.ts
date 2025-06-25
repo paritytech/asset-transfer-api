@@ -1,6 +1,7 @@
 // Copyright 2024 Parity Technologies (UK) Ltd.
 
 import { UnionXcmMultiLocation } from '../types';
+import { getXcmCreator } from '../xcm';
 import { createXcmOnDestination } from './createXcmOnDestination';
 
 describe('createXcmOnDestination', () => {
@@ -18,6 +19,7 @@ describe('createXcmOnDestination', () => {
 		} as UnionXcmMultiLocation;
 
 		const xcmVersion = 3;
+		const xcmCreator = getXcmCreator(xcmVersion);
 
 		const expected = {
 			V3: [
@@ -34,7 +36,13 @@ describe('createXcmOnDestination', () => {
 			],
 		};
 
-		expect(createXcmOnDestination(assetIds, beneficiary, xcmVersion)).toEqual(expected);
+		expect(
+			createXcmOnDestination({
+				assets: assetIds,
+				beneficiary,
+				xcmCreator,
+			}),
+		).toEqual(expected);
 	});
 	it('Should correctly construct the default XCM message for V4', () => {
 		const assetIds = [
@@ -51,6 +59,7 @@ describe('createXcmOnDestination', () => {
 		} as UnionXcmMultiLocation;
 
 		const xcmVersion = 4;
+		const xcmCreator = getXcmCreator(xcmVersion);
 
 		const expected = {
 			V4: [
@@ -67,7 +76,13 @@ describe('createXcmOnDestination', () => {
 			],
 		};
 
-		expect(createXcmOnDestination(assetIds, beneficiary, xcmVersion)).toEqual(expected);
+		expect(
+			createXcmOnDestination({
+				assets: assetIds,
+				beneficiary,
+				xcmCreator,
+			}),
+		).toEqual(expected);
 	});
 	it('Should correctly construct the default XCM message for V5', () => {
 		const assetIds = [
@@ -84,6 +99,7 @@ describe('createXcmOnDestination', () => {
 		} as UnionXcmMultiLocation;
 
 		const xcmVersion = 5;
+		const xcmCreator = getXcmCreator(xcmVersion);
 
 		const expected = {
 			V5: [
@@ -100,6 +116,12 @@ describe('createXcmOnDestination', () => {
 			],
 		};
 
-		expect(createXcmOnDestination(assetIds, beneficiary, xcmVersion)).toEqual(expected);
+		expect(
+			createXcmOnDestination({
+				assets: assetIds,
+				beneficiary,
+				xcmCreator,
+			}),
+		).toEqual(expected);
 	});
 });

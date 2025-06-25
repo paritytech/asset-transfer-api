@@ -19,7 +19,13 @@ import type {
 import type { AnyJson, AnyTuple, ISubmittableResult } from '@polkadot/types/types';
 import type { Result, u128 } from '@polkadot/types-codec';
 
-import { CDN_URL, RELAY_CHAIN_IDS, RELAY_CHAIN_NAMES, SYSTEM_PARACHAINS_NAMES } from './consts.js';
+import {
+	CDN_URL,
+	MIN_XCM_VERSION_FOREIGN_ASSETS,
+	RELAY_CHAIN_IDS,
+	RELAY_CHAIN_NAMES,
+	SYSTEM_PARACHAINS_NAMES,
+} from './consts.js';
 import * as assets from './createCalls/assets/index.js';
 import * as balances from './createCalls/balances/index.js';
 import * as foreignAssets from './createCalls/foreignAssets/index.js';
@@ -38,7 +44,7 @@ import {
 import { CreateXcmCallOpts } from './createXcmCalls/types.js';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet.js';
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types.js';
-import { UnionXcmMultiLocation, XcmVersionedAssetId } from './createXcmTypes/types.js';
+import { UnionXcmMultiLocation, XcmCreator, XcmVersionedAssetId } from './createXcmTypes/types.js';
 import { assetIdIsLocation } from './createXcmTypes/util/assetIdIsLocation.js';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset.js';
 import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge.js';
@@ -53,6 +59,7 @@ import { isRelayNativeAsset } from './createXcmTypes/util/isRelayNativeAsset.js'
 import { isSystemChain } from './createXcmTypes/util/isSystemChain.js';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset.js';
 import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation.js';
+import { getXcmCreator } from './createXcmTypes/xcm/index.js';
 import { LocalTxType } from './errors/checkLocalTxInput/types.js';
 import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs.js';
 import {
@@ -250,6 +257,7 @@ export class AssetTransferApi {
 		const xcmPallet = establishXcmPallet(api, xcmDirection, xcmPalletOverride);
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
+		const xcmCreator = getXcmCreator(declaredXcmVersion);
 
 		/**
 		 * Create a local asset transfer
@@ -332,7 +340,7 @@ export class AssetTransferApi {
 		return this.constructFormat<T>({
 			tx: transaction,
 			direction: xcmDirection,
-			xcmVersion: declaredXcmVersion,
+			xcmCreator,
 			method: txMethod,
 			dest: destChainId,
 			origin: specName,
@@ -406,10 +414,11 @@ export class AssetTransferApi {
 			},
 		);
 
+		const xcmCreator = getXcmCreator(declaredXcmVersion);
 		return await this.constructFormat({
 			tx: ext,
 			direction: 'local',
-			xcmVersion: declaredXcmVersion,
+			xcmCreator,
 			method: 'claimAssets',
 			dest: originChainId,
 			origin: originChainId,
@@ -668,7 +677,7 @@ export class AssetTransferApi {
 	private async constructFormat<T extends Format>({
 		tx,
 		direction,
-		xcmVersion,
+		xcmCreator,
 		method,
 		dest,
 		origin,
@@ -676,7 +685,7 @@ export class AssetTransferApi {
 	}: {
 		tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
 		direction: Direction | 'local';
-		xcmVersion: number;
+		xcmCreator: XcmCreator;
 		method: Methods;
 		dest: string;
 		origin: string;
@@ -693,7 +702,7 @@ export class AssetTransferApi {
 			origin,
 			dest: this.getDestinationSpecName(dest, this.registry),
 			direction,
-			xcmVersion,
+			xcmVersion: xcmCreator.xcmVersion,
 			method,
 			format: fmt as Format | 'local',
 			tx: '' as ConstructedFormat<T>,
@@ -719,29 +728,28 @@ export class AssetTransferApi {
 
 		if (dryRunCall && sendersAddr && xcmFeeAsset) {
 			let feeAssetLocation: XcmVersionedAssetId | undefined = undefined;
-			const currentXcmVersion = xcmVersion ? xcmVersion : this.safeXcmVersion;
 			if (isRelayNativeAsset(this.registry, xcmFeeAsset)) {
 				const relayAssetLocation = `{"parents":"1","interior":{"Here":""}}`;
-				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, currentXcmVersion);
+				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, xcmCreator);
 			} else {
-				const feeAsset = await getAssetId(
-					this.api,
-					this.registry,
-					xcmFeeAsset,
-					this.specName,
-					currentXcmVersion,
-					false,
-				);
+				const feeAsset = await getAssetId({
+					api: this.api,
+					registry: this.registry,
+					asset: xcmFeeAsset,
+					specName: this.specName,
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+				});
 
 				if (feeAsset) {
 					const location = getPaysWithFeeOriginAssetLocationFromRegistry(this, feeAsset);
 					if (location) {
-						feeAssetLocation = createXcmVersionedAssetId(JSON.stringify(location), currentXcmVersion);
+						feeAssetLocation = createXcmVersionedAssetId(JSON.stringify(location), xcmCreator);
 					}
 				}
 			}
 
-			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt, xcmVersion);
+			const executionResult = await this.dryRunCall(sendersAddr, result.tx, fmt, xcmCreator.xcmVersion);
 
 			if (executionResult?.isOk) {
 				result.xcmExecutionResult = executionResult.asOk.executionResult;
@@ -1197,18 +1205,20 @@ export class AssetTransferApi {
 			isNativeRelayChainAsset = true;
 		}
 
+		const xcmCreator = getXcmCreator(xcmVersion);
+
 		if (xcmDirection === Direction.SystemToSystem && !isValidNumber && !isNativeRelayChainAsset) {
 			// for SystemToSystem, assetId is not the native relayChains asset and is not a number
 			// check for the general index of the assetId and assign the correct value for the local tx
 			// throws an error if the general index is not found
-			assetId = await getAssetId(
-				this.api,
-				this.registry,
-				assetId,
-				this.specName,
-				xcmVersion,
-				opts.isForeignAssetsTransfer,
-			);
+			assetId = await getAssetId({
+				api: this.api,
+				registry: this.registry,
+				asset: assetId,
+				specName: this.specName,
+				xcmCreator,
+				isForeignAssetsTransfer: opts.isForeignAssetsTransfer,
+			});
 		}
 		let method: LocalMethodName;
 		if (transferAll) {
@@ -1261,8 +1271,13 @@ export class AssetTransferApi {
 				}
 				palletMethod = `poolAssets::${method}`;
 			} else if (localAssetType === LocalTxType.ForeignAssets) {
-				const foreignAssetsXcmVersion = 4;
-				const location = resolveMultiLocation(JSON.parse(assetId) as AnyJson, foreignAssetsXcmVersion);
+				if (xcmCreator.xcmVersion < MIN_XCM_VERSION_FOREIGN_ASSETS) {
+					throw new BaseError(
+						`XCM version 4 or higher is required for ForeignAsset transfers.`,
+						BaseErrorsEnum.InvalidXcmVersion,
+					);
+				}
+				const location = resolveMultiLocation(JSON.parse(assetId) as AnyJson, xcmCreator);
 
 				if (method === 'transferKeepAlive') {
 					tx = foreignAssets.transferKeepAlive(api, addr, location, amount);
@@ -1282,7 +1297,7 @@ export class AssetTransferApi {
 			return await this.constructFormat({
 				tx,
 				direction: 'local',
-				xcmVersion,
+				xcmCreator,
 				method: palletMethod,
 				dest: destChainId,
 				origin: this.specName,
@@ -1306,7 +1321,7 @@ export class AssetTransferApi {
 				return this.constructFormat({
 					tx,
 					direction: 'local',
-					xcmVersion,
+					xcmCreator,
 					method: palletMethod,
 					dest: destChainId,
 					origin: specName,
@@ -1324,7 +1339,7 @@ export class AssetTransferApi {
 				return this.constructFormat({
 					tx,
 					direction: 'local',
-					xcmVersion,
+					xcmCreator,
 					method: palletMethod,
 					dest: destChainId,
 					origin: specName,
@@ -1352,7 +1367,7 @@ export class AssetTransferApi {
 			return this.constructFormat({
 				tx,
 				direction: 'local',
-				xcmVersion,
+				xcmCreator,
 				method: palletMethod,
 				dest: destChainId,
 				origin: specName,
@@ -1506,6 +1521,7 @@ export class AssetTransferApi {
 		xcmFeeAsset: string,
 	): Promise<[VersionedXcm, XcmFeeInfo][]> {
 		const forwardedXcmFees: [VersionedXcm, XcmFeeInfo][] = [];
+		const xcmCreator = getXcmCreator(xcmVersion);
 
 		if (!dryRunResult) {
 			return [];
@@ -1535,17 +1551,17 @@ export class AssetTransferApi {
 
 			if (isRelayNativeAsset(chainApi.registry, xcmFeeAsset)) {
 				const relayAssetLocation = `{"parents":"1","interior":{"Here":""}}`;
-				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, xcmVersion);
+				feeAssetLocation = createXcmVersionedAssetId(relayAssetLocation, xcmCreator);
 			} else {
-				const feeAsset = await getAssetId(
-					chainApi.api,
-					chainApi.registry,
-					xcmFeeAsset,
-					chainApi.specName,
-					xcmVersion,
-					false,
-				);
-				feeAssetLocation = createXcmVersionedAssetId(feeAsset, xcmVersion);
+				const feeAsset = await getAssetId({
+					api: chainApi.api,
+					registry: chainApi.registry,
+					asset: xcmFeeAsset,
+					specName: chainApi.specName,
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+				});
+				feeAssetLocation = createXcmVersionedAssetId(feeAsset, xcmCreator);
 			}
 
 			if (feeAssetLocation) {

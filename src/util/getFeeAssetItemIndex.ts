@@ -2,7 +2,7 @@
 
 import { ApiPromise } from '@polkadot/api';
 
-import { FungibleAssetType } from '../createXcmTypes/types.js';
+import { FungibleAssetType, XcmCreator } from '../createXcmTypes/types.js';
 import { getAssetId } from '../createXcmTypes/util/getAssetId.js';
 import { isParachain } from '../createXcmTypes/util/isParachain.js';
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
@@ -18,15 +18,23 @@ import { validateNumber } from '../validate/validateNumber.js';
  * @param multiAssets MultiAsset[]
  * @param specName string
  */
-export const getFeeAssetItemIndex = async (
-	api: ApiPromise,
-	registry: Registry,
-	paysWithFeeDest: string,
-	multiAssets: FungibleAssetType[],
-	specName: string,
-	xcmVersion: number,
-	isForeignAssetsTransfer?: boolean,
-): Promise<number> => {
+export const getFeeAssetItemIndex = async ({
+	api,
+	registry,
+	paysWithFeeDest,
+	multiAssets,
+	specName,
+	xcmCreator,
+	isForeignAssetsTransfer,
+}: {
+	api: ApiPromise;
+	registry: Registry;
+	paysWithFeeDest: string;
+	multiAssets: FungibleAssetType[];
+	specName: string;
+	xcmCreator: XcmCreator;
+	isForeignAssetsTransfer?: boolean;
+}): Promise<number> => {
 	const chainId = registry.lookupChainIdBySpecName(specName);
 	const isParaOrigin = isParachain(chainId);
 	let result = -1;
@@ -58,17 +66,17 @@ export const getFeeAssetItemIndex = async (
 				// if not a number, get the general index of the pays with fee asset
 				// to compare against the current multi asset
 				if (!isValidNumber) {
-					const paysWithFeeDestAssetLocationStr = await getAssetId(
+					const paysWithFeeDestAssetLocationStr = await getAssetId({
 						api,
 						registry,
-						paysWithFeeDest,
+						asset: paysWithFeeDest,
 						specName,
-						xcmVersion,
+						xcmCreator,
 						isForeignAssetsTransfer,
-					);
+					});
 					// if isForeignAssetsTransfer or parachain origin, compare the multiAsset interior to the the paysWithFeeDestAssetLocationStr as a multilocation
 					if (isForeignAssetsTransfer || isParaOrigin) {
-						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestAssetLocationStr, xcmVersion);
+						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestAssetLocationStr, xcmCreator);
 						const paysWithFeeDestMultiLocationInterior =
 							paysWithFeeDestMultiLocation.interior ||
 							(paysWithFeeDestMultiLocation as { [key: string]: unknown })['Interior'];

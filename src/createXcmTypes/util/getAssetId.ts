@@ -3,11 +3,11 @@
 import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
 
-import { ASSET_HUB_CHAIN_ID } from '../../consts.js';
+import { ASSET_HUB_CHAIN_ID, MIN_PARACHAIN_ID } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import { validateNumber } from '../../validate/index.js';
-import { UnionXcmMultiLocation } from '../types.js';
+import { UnionXcmMultiLocation, XcmCreator } from '../types.js';
 import { assetIdIsLocation } from './assetIdIsLocation.js';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry.js';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists.js';
@@ -25,17 +25,24 @@ import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
  * @param specName string
  * @param isForeignAssetsTransfer boolean
  */
-export const getAssetId = async (
-	api: ApiPromise,
-	registry: Registry,
-	asset: string,
-	specName: string,
-	xcmVersion: number,
-	isForeignAssetsTransfer?: boolean,
-): Promise<string> => {
+export const getAssetId = async ({
+	api,
+	registry,
+	asset,
+	specName,
+	xcmCreator,
+	isForeignAssetsTransfer,
+}: {
+	api: ApiPromise;
+	registry: Registry;
+	asset: string;
+	specName: string;
+	xcmCreator: XcmCreator;
+	isForeignAssetsTransfer?: boolean;
+}): Promise<string> => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
 	const assetIsValidInt = validateNumber(asset);
-	const isParachain = new BN(currentChainId).gte(new BN(2000));
+	const isParachain = new BN(currentChainId).gte(new BN(MIN_PARACHAIN_ID));
 
 	// if assets pallet, check the cache and return the cached assetId if found
 	if (!isForeignAssetsTransfer) {
@@ -79,7 +86,7 @@ export const getAssetId = async (
 
 	if (isAssetHub && isForeignAssetsTransfer) {
 		// determine if we already have the multilocation in the cache or registry
-		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(asset, registry, xcmVersion);
+		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(asset, registry, xcmCreator);
 
 		if (multiLocationIsInRegistry) {
 			assetId = asset;

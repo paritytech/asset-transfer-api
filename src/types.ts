@@ -519,17 +519,15 @@ export type XcmPalletTxMethodTransactionMap = {
 	[x: string]: [XcmPalletCallSignature, CallArgs];
 };
 
-export type RemoteReserveV3 = {
-	RemoteReserve: {
-		V3: UnionXcmMultiLocation;
+type XcmVersionKey = 'V3' | 'V4' | 'V5';
+export type RemoteReserve = {
+	[K in XcmVersionKey]: {
+		RemoteReserve: {
+			[P in K]: UnionXcmMultiLocation;
+		};
 	};
-};
-export type RemoteReserveV4 = {
-	RemoteReserve: {
-		V4: UnionXcmMultiLocation;
-	};
-};
-export type RemoteReserve = RemoteReserveV3 | RemoteReserveV4;
+}[XcmVersionKey];
+
 export type LocalReserve = {
 	LocalReserve: 'null';
 };

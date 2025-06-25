@@ -4,6 +4,7 @@ import { AssetTransferApi } from '../../AssetTransferApi';
 import { Registry } from '../../registry';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
+import { getXcmCreator } from '../xcm';
 import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId';
 
 const bifrostRegistry = new Registry('bifrost', {});
@@ -42,17 +43,18 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 		it('Should correctly return the multilocation when given a valid symbol assetId', async () => {
 			const assetId = 'USDT';
 			const xcmVersion = 3;
+			const xcmCreator = getXcmCreator(xcmVersion);
 			const specName = 'bifrost';
 
 			const expected =
 				'{"v1":{"parents":1,"interior":{"x3":[{"parachain":1000},{"palletInstance":50},{"generalIndex":1984}]}}}';
-			const result = await getXcAssetMultiLocationByAssetId(
-				bifrostApi.api,
+			const result = await getXcAssetMultiLocationByAssetId({
+				api: bifrostApi.api,
 				assetId,
 				specName,
-				xcmVersion,
-				bifrostRegistry,
-			);
+				xcmCreator,
+				registry: bifrostRegistry,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -60,10 +62,17 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 		it('Should correctly error when given an invalid symbol assetId', async () => {
 			const assetId = 'vmover';
 			const xcmVersion = 2;
+			const xcmCreator = getXcmCreator(xcmVersion);
 			const specName = 'bifrost';
 
 			await expect(async () => {
-				await getXcAssetMultiLocationByAssetId(bifrostApi.api, assetId, specName, xcmVersion, bifrostRegistry);
+				await getXcAssetMultiLocationByAssetId({
+					api: bifrostApi.api,
+					assetId,
+					specName,
+					xcmCreator,
+					registry: bifrostRegistry,
+				});
 			}).rejects.toThrow(`parachain assetId vmover is not a valid symbol assetId in bifrost`);
 		});
 	});
@@ -90,16 +99,17 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 		it('Should correctly return the multilocation when given a valid integer assetId', async () => {
 			const assetId = '203223821023327994093278529517083736593';
 			const xcmVersion = 2;
+			const xcmCreator = getXcmCreator(xcmVersion);
 			const specName = 'moonriver';
 
 			const expected = '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x010a"}]}}}';
-			const result = await getXcAssetMultiLocationByAssetId(
-				moonriverApi.api,
+			const result = await getXcAssetMultiLocationByAssetId({
+				api: moonriverApi.api,
 				assetId,
 				specName,
-				xcmVersion,
-				moonriverRegistry,
-			);
+				xcmCreator,
+				registry: moonriverRegistry,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -107,16 +117,17 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 		it('Should correctly return the multilocation when given a valid symbol assetId', async () => {
 			const assetId = 'vbnc';
 			const xcmVersion = 2;
+			const xcmCreator = getXcmCreator(xcmVersion);
 			const specName = 'moonriver';
 
 			const expected = '{"v1":{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x0101"}]}}}';
-			const result = await getXcAssetMultiLocationByAssetId(
-				moonriverApi.api,
+			const result = await getXcAssetMultiLocationByAssetId({
+				api: moonriverApi.api,
 				assetId,
 				specName,
-				xcmVersion,
-				moonriverRegistry,
-			);
+				xcmCreator,
+				registry: moonriverRegistry,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -124,20 +135,34 @@ describe('getXcAssetMultiLocationByAssetId', () => {
 		it('Should correctly error when given an invalid asset symbol', async () => {
 			const assetId = 'mover';
 			const xcmVersion = 2;
+			const xcmCreator = getXcmCreator(xcmVersion);
 			const specName = 'moonriver';
 
 			await expect(async () => {
-				await getXcAssetMultiLocationByAssetId(moonriverApi.api, assetId, specName, xcmVersion, moonriverRegistry);
+				await getXcAssetMultiLocationByAssetId({
+					api: moonriverApi.api,
+					assetId,
+					specName,
+					xcmCreator,
+					registry: moonriverRegistry,
+				});
 			}).rejects.toThrow(`parachain assetId mover is not a valid symbol assetIid in moonriver`);
 		});
 
 		it('Should correctly error when given an invalid integer assetId ', async () => {
 			const assetId = '242424332422323423424';
 			const xcmVersion = 2;
+			const xcmCreator = getXcmCreator(xcmVersion);
 			const specName = 'moonriver';
 
 			await expect(async () => {
-				await getXcAssetMultiLocationByAssetId(moonriverApi.api, assetId, specName, xcmVersion, moonriverRegistry);
+				await getXcAssetMultiLocationByAssetId({
+					api: moonriverApi.api,
+					assetId,
+					specName,
+					xcmCreator,
+					registry: moonriverRegistry,
+				});
 			}).rejects.toThrow(`assetId 242424332422323423424 is not a valid symbol or integer asset id for moonriver`);
 		});
 	});

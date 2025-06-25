@@ -3,7 +3,7 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { createXcmTypes } from '../../createXcmTypes/index.js';
+import { getTypeCreator } from '../../createXcmTypes/index.js';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr.js';
 import type { CreateXcmCallOpts } from '../types.js';
 import { establishXcmPallet } from '../util/establishXcmPallet.js';
@@ -24,10 +24,10 @@ export const limitedReserveTransferAssets = async (
 	const { weightLimit, paysWithFeeDest, isLiquidTokenTransfer, isForeignAssetsTransfer } = opts;
 	const pallet = establishXcmPallet(api);
 	const ext = api.tx[pallet].limitedReserveTransferAssets;
-	const typeCreator = createXcmTypes[direction];
-	const beneficiary = typeCreator.createBeneficiary(destAddr, xcmVersion);
-	const dest = typeCreator.createDest(destChainId, xcmVersion);
-	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), xcmVersion, specName, assetIds, {
+	const typeCreator = getTypeCreator(direction, xcmVersion);
+	const beneficiary = typeCreator.createBeneficiary(destAddr);
+	const dest = typeCreator.createDest(destChainId);
+	const assets = await typeCreator.createAssets(normalizeArrToStr(amounts), specName, assetIds, {
 		registry,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
@@ -45,7 +45,6 @@ export const limitedReserveTransferAssets = async (
 				specName,
 				assetIds,
 				amounts,
-				xcmVersion,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
 			})

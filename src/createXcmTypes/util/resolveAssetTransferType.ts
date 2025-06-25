@@ -1,30 +1,25 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { AssetTransferType } from '../../types.js';
 import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
-import { UnionXcmMultiLocation } from '../types.js';
+import { UnionXcmMultiLocation, XcmCreator } from '../types.js';
 
 export const resolveAssetTransferType = (
 	assetTransferType: string | undefined,
-	xcmVersion: number,
+	xcmCreator: XcmCreator,
 	remoteTransferLocationStr?: string,
 ): AssetTransferType => {
 	if (!assetTransferType) {
 		throw new BaseError('resolveAssetTransferType: assetTransferType not found', BaseErrorsEnum.InvalidInput);
 	}
-	if (xcmVersion < 3) {
+	if (xcmCreator.xcmVersion < 3) {
 		throw new BaseError('Bridge txs require XCM version 3 or higher', BaseErrorsEnum.InvalidXcmVersion);
 	}
 
 	let transferType: AssetTransferType;
 	let remoteTransferLocation: UnionXcmMultiLocation;
 	if (remoteTransferLocationStr && assetTransferType === 'RemoteReserve') {
-		remoteTransferLocation = resolveMultiLocation(remoteTransferLocationStr, xcmVersion);
-		transferType =
-			xcmVersion === 3
-				? { RemoteReserve: { V3: remoteTransferLocation } }
-				: { RemoteReserve: { V4: remoteTransferLocation } };
+		remoteTransferLocation = resolveMultiLocation(remoteTransferLocationStr, xcmCreator);
+		transferType = xcmCreator.remoteReserve(remoteTransferLocation);
 	} else {
 		transferType =
 			assetTransferType === 'LocalReserve'

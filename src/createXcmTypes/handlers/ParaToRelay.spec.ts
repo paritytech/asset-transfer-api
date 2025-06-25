@@ -1,10 +1,14 @@
 // Copyright 2023 Parity Technologies (UK) Ltd.
 
-import { Registry } from '../registry';
-import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi';
+import { Registry } from '../../registry';
+import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
 import { ParaToRelay } from './ParaToRelay';
 
 describe('ParaToRelay', () => {
+	const v2Handler = new ParaToRelay(2);
+	const v3Handler = new ParaToRelay(3);
+	const v4Handler = new ParaToRelay(4);
+	const v5Handler = new ParaToRelay(5);
 	const registry = new Registry('Moonriver', {});
 	const assetOpts = {
 		registry,
@@ -14,7 +18,7 @@ describe('ParaToRelay', () => {
 	};
 	describe('Beneficiary', () => {
 		it('Should work for V2', () => {
-			const beneficiary = ParaToRelay.createBeneficiary(
+			const beneficiary = v2Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				2,
 			);
@@ -36,7 +40,7 @@ describe('ParaToRelay', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const beneficiary = ParaToRelay.createBeneficiary(
+			const beneficiary = v3Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				3,
 			);
@@ -57,7 +61,7 @@ describe('ParaToRelay', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const beneficiary = ParaToRelay.createBeneficiary(
+			const beneficiary = v4Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				4,
 			);
@@ -80,7 +84,7 @@ describe('ParaToRelay', () => {
 			expect(beneficiary).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const beneficiary = ParaToRelay.createBeneficiary(
+			const beneficiary = v5Handler.createBeneficiary(
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
 				5,
 			);
@@ -105,7 +109,7 @@ describe('ParaToRelay', () => {
 	});
 	describe('Dest', () => {
 		it('Should work for V2', () => {
-			const dest = ParaToRelay.createDest('', 2);
+			const dest = v2Handler.createDest('', 2);
 			const expected = {
 				V2: {
 					parents: 1,
@@ -117,7 +121,7 @@ describe('ParaToRelay', () => {
 			expect(dest).toStrictEqual(expected);
 		});
 		it('Should work for V3', () => {
-			const dest = ParaToRelay.createDest('', 3);
+			const dest = v3Handler.createDest('', 3);
 			const expected = {
 				V3: {
 					parents: 1,
@@ -129,7 +133,7 @@ describe('ParaToRelay', () => {
 			expect(dest).toStrictEqual(expected);
 		});
 		it('Should work for V4', () => {
-			const dest = ParaToRelay.createDest('', 4);
+			const dest = v4Handler.createDest('', 4);
 			const expected = {
 				V4: {
 					parents: 1,
@@ -141,7 +145,7 @@ describe('ParaToRelay', () => {
 			expect(dest).toStrictEqual(expected);
 		});
 		it('Should work for V5', () => {
-			const dest = ParaToRelay.createDest('', 5);
+			const dest = v5Handler.createDest('', 5);
 			const expected = {
 				V5: {
 					parents: 1,
@@ -155,7 +159,7 @@ describe('ParaToRelay', () => {
 	});
 	describe('Assets', () => {
 		it('Should work for V2', async () => {
-			const asset = await ParaToRelay.createAssets(['1000000'], 2, 'Moonriver', ['ksm'], assetOpts);
+			const asset = await v2Handler.createAssets(['1000000'], 2, 'Moonriver', ['ksm'], assetOpts);
 			const expected = {
 				V2: [
 					{
@@ -176,7 +180,7 @@ describe('ParaToRelay', () => {
 			expect(asset).toStrictEqual(expected);
 		});
 		it('Should work for V3', async () => {
-			const asset = await ParaToRelay.createAssets(['1000000'], 3, 'Moonriver', ['ksm'], assetOpts);
+			const asset = await v3Handler.createAssets(['1000000'], 3, 'Moonriver', ['ksm'], assetOpts);
 			const expected = {
 				V3: [
 					{
@@ -197,7 +201,7 @@ describe('ParaToRelay', () => {
 			expect(asset).toStrictEqual(expected);
 		});
 		it('Should work for V4', async () => {
-			const asset = await ParaToRelay.createAssets(['1000000'], 4, 'Moonriver', ['ksm'], assetOpts);
+			const asset = await v4Handler.createAssets(['1000000'], 4, 'Moonriver', ['ksm'], assetOpts);
 			const expected = {
 				V4: [
 					{
@@ -216,7 +220,7 @@ describe('ParaToRelay', () => {
 			expect(asset).toStrictEqual(expected);
 		});
 		it('Should work for V5', async () => {
-			const asset = await ParaToRelay.createAssets(['1000000'], 5, 'Moonriver', ['ksm'], assetOpts);
+			const asset = await v5Handler.createAssets(['1000000'], 5, 'Moonriver', ['ksm'], assetOpts);
 			const expected = {
 				V5: [
 					{
@@ -237,14 +241,14 @@ describe('ParaToRelay', () => {
 	});
 	describe('WeightLimit', () => {
 		it('Should work for unlimited', () => {
-			const weightLimit = ParaToRelay.createWeightLimit({});
+			const weightLimit = v5Handler.createWeightLimit({});
 			const expected = {
 				Unlimited: null,
 			};
 			expect(weightLimit).toStrictEqual(expected);
 		});
 		it('Should work for a custom weightLimit', () => {
-			const weightLimit = ParaToRelay.createWeightLimit({
+			const weightLimit = v5Handler.createWeightLimit({
 				weightLimit: {
 					refTime: '100000000',
 					proofSize: '10000',
@@ -266,168 +270,152 @@ describe('ParaToRelay', () => {
 			isForeignAssetsTransfer: false,
 		};
 		it('Should return zero', async () => {
-			const feeAssetItem = await ParaToRelay.createFeeAssetItem(adjustedMockMoonriverParachainApi, opts);
+			const feeAssetItem = await v5Handler.createFeeAssetItem(adjustedMockMoonriverParachainApi, opts);
 			expect(feeAssetItem).toStrictEqual(0);
 		});
 	});
 	describe('XTokensBeneficiaryDest', () => {
 		it('Should work for V2', () => {
-			if (ParaToRelay.createXTokensBeneficiary) {
-				const xTokensBeneficiary = ParaToRelay.createXTokensBeneficiary(
-					'',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					2,
-				);
-				const expected = {
-					V2: {
-						parents: 1,
-						interior: {
-							X1: { AccountId32: { id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b' } },
-						},
+			const xTokensBeneficiary = v2Handler.createXTokensBeneficiary(
+				'',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				2,
+			);
+			const expected = {
+				V2: {
+					parents: 1,
+					interior: {
+						X1: { AccountId32: { id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b' } },
 					},
-				};
+				},
+			};
 
-				expect(xTokensBeneficiary).toStrictEqual(expected);
-			}
+			expect(xTokensBeneficiary).toStrictEqual(expected);
 		});
 		it('Should work for V3', () => {
-			if (ParaToRelay.createXTokensBeneficiary) {
-				const xTokensBeneficiary = ParaToRelay.createXTokensBeneficiary(
-					'',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					3,
-				);
-				const expected = {
-					V3: {
-						parents: 1,
-						interior: {
-							X1: { AccountId32: { id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b' } },
-						},
+			const xTokensBeneficiary = v3Handler.createXTokensBeneficiary(
+				'',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				3,
+			);
+			const expected = {
+				V3: {
+					parents: 1,
+					interior: {
+						X1: { AccountId32: { id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b' } },
 					},
-				};
+				},
+			};
 
-				expect(xTokensBeneficiary).toStrictEqual(expected);
-			}
+			expect(xTokensBeneficiary).toStrictEqual(expected);
 		});
 		it('Should work for V4', () => {
-			if (ParaToRelay.createXTokensBeneficiary) {
-				const xTokensBeneficiary = ParaToRelay.createXTokensBeneficiary(
-					'',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					4,
-				);
-				const expected = {
-					V4: {
-						parents: 1,
-						interior: {
-							X1: [{ AccountId32: { id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b' } }],
-						},
+			const xTokensBeneficiary = v4Handler.createXTokensBeneficiary(
+				'',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				4,
+			);
+			const expected = {
+				V4: {
+					parents: 1,
+					interior: {
+						X1: [{ AccountId32: { id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b' } }],
 					},
-				};
+				},
+			};
 
-				expect(xTokensBeneficiary).toStrictEqual(expected);
-			}
+			expect(xTokensBeneficiary).toStrictEqual(expected);
 		});
 		it('Should work for V5', () => {
-			if (ParaToRelay.createXTokensBeneficiary) {
-				const xTokensBeneficiary = ParaToRelay.createXTokensBeneficiary(
-					'',
-					'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-					5,
-				);
-				const expected = {
-					V5: {
-						parents: 1,
-						interior: {
-							X1: [{ AccountId32: { id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b' } }],
-						},
+			const xTokensBeneficiary = v5Handler.createXTokensBeneficiary(
+				'',
+				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
+				5,
+			);
+			const expected = {
+				V5: {
+					parents: 1,
+					interior: {
+						X1: [{ AccountId32: { id: '0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b' } }],
 					},
-				};
+				},
+			};
 
-				expect(xTokensBeneficiary).toStrictEqual(expected);
-			}
+			expect(xTokensBeneficiary).toStrictEqual(expected);
 		});
 	});
 	describe('XTokensAsset', () => {
 		it('Should work for V2', async () => {
-			if (ParaToRelay.createXTokensAsset) {
-				const xTokensAsset = await ParaToRelay.createXTokensAsset('1000000', 2, 'Moonriver', 'KSM', assetOpts);
-				const expected = {
-					V2: {
-						id: {
-							Concrete: {
-								Parents: '1',
-								Interior: {
-									Here: null,
-								},
+			const xTokensAsset = await v2Handler.createXTokensAsset('1000000', 2, 'Moonriver', 'KSM', assetOpts);
+			const expected = {
+				V2: {
+					id: {
+						Concrete: {
+							Parents: '1',
+							Interior: {
+								Here: null,
 							},
 						},
-						fun: {
-							Fungible: '1000000',
-						},
 					},
-				};
-				expect(xTokensAsset).toStrictEqual(expected);
-			}
+					fun: {
+						Fungible: '1000000',
+					},
+				},
+			};
+			expect(xTokensAsset).toStrictEqual(expected);
 		});
 		it('Should work for V3', async () => {
-			if (ParaToRelay.createXTokensAsset) {
-				const xTokensAsset = await ParaToRelay.createXTokensAsset('1000000', 3, 'Moonriver', 'KSM', assetOpts);
-				const expected = {
-					V3: {
-						id: {
-							Concrete: {
-								Parents: '1',
-								Interior: {
-									Here: null,
-								},
+			const xTokensAsset = await v3Handler.createXTokensAsset('1000000', 3, 'Moonriver', 'KSM', assetOpts);
+			const expected = {
+				V3: {
+					id: {
+						Concrete: {
+							Parents: '1',
+							Interior: {
+								Here: null,
 							},
 						},
-						fun: {
-							Fungible: '1000000',
-						},
 					},
-				};
-				expect(xTokensAsset).toStrictEqual(expected);
-			}
+					fun: {
+						Fungible: '1000000',
+					},
+				},
+			};
+			expect(xTokensAsset).toStrictEqual(expected);
 		});
 		it('Should work for V4', async () => {
-			if (ParaToRelay.createXTokensAsset) {
-				const xTokensAsset = await ParaToRelay.createXTokensAsset('1000000', 4, 'Moonriver', 'KSM', assetOpts);
-				const expected = {
-					V4: {
-						id: {
-							Parents: '1',
-							Interior: {
-								Here: null,
-							},
-						},
-						fun: {
-							Fungible: '1000000',
+			const xTokensAsset = await v4Handler.createXTokensAsset('1000000', 4, 'Moonriver', 'KSM', assetOpts);
+			const expected = {
+				V4: {
+					id: {
+						Parents: '1',
+						Interior: {
+							Here: null,
 						},
 					},
-				};
-				expect(xTokensAsset).toStrictEqual(expected);
-			}
+					fun: {
+						Fungible: '1000000',
+					},
+				},
+			};
+			expect(xTokensAsset).toStrictEqual(expected);
 		});
 		it('Should work for V5', async () => {
-			if (ParaToRelay.createXTokensAsset) {
-				const xTokensAsset = await ParaToRelay.createXTokensAsset('1000000', 5, 'Moonriver', 'KSM', assetOpts);
-				const expected = {
-					V5: {
-						id: {
-							Parents: '1',
-							Interior: {
-								Here: null,
-							},
-						},
-						fun: {
-							Fungible: '1000000',
+			const xTokensAsset = await v5Handler.createXTokensAsset('1000000', 5, 'Moonriver', 'KSM', assetOpts);
+			const expected = {
+				V5: {
+					id: {
+						Parents: '1',
+						Interior: {
+							Here: null,
 						},
 					},
-				};
-				expect(xTokensAsset).toStrictEqual(expected);
-			}
+					fun: {
+						Fungible: '1000000',
+					},
+				},
+			};
+			expect(xTokensAsset).toStrictEqual(expected);
 		});
 	});
 });

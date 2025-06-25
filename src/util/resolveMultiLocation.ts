@@ -2,57 +2,15 @@
 
 import type { AnyJson } from '@polkadot/types/types';
 
-import { SUPPORTED_XCM_VERSIONS } from '../consts.js';
-import type { UnionXcmMultiLocation, XcmV4Junction } from '../createXcmTypes/types.js';
-import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation.js';
-import { BaseError, BaseErrorsEnum } from '../errors/BaseError.js';
-import { sanitizeKeys } from './sanitizeKeys.js';
+import type { UnionXcmMultiLocation, XcmCreator } from '../createXcmTypes/types.js';
 
 /**
  * This ensures that the given multiLocation does not have certain junctions depending on the xcm version.
  *
  * @param multiLocation
- * @param xcmVersion
+ * @param xcmCreator
  * @returns
  */
-export const resolveMultiLocation = (multiLocation: AnyJson, xcmVersion: number): UnionXcmMultiLocation => {
-	const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
-
-	// Ensure we check this first since the main difference between v2, and later versions is the `globalConsensus` junction
-	const hasGlobalConsensus =
-		multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
-	if (xcmVersion < 3 && hasGlobalConsensus) {
-		throw new BaseError(
-			'XcmVersion must be greater than 2 for MultiLocations that contain a GlobalConsensus junction.',
-			BaseErrorsEnum.InvalidXcmVersion,
-		);
-	}
-
-	if (!SUPPORTED_XCM_VERSIONS.includes(xcmVersion)) {
-		throw new BaseError(`Invalid XcmVersion for mulitLocation construction`, BaseErrorsEnum.InternalError);
-	}
-
-	let result = parseLocationStrToLocation(multiLocationStr, xcmVersion);
-
-	// handle case where result is an xcmV1Multilocation from the registry
-	if (typeof result === 'object' && 'v1' in result) {
-		result = result.v1 as UnionXcmMultiLocation;
-	}
-
-	const isX1V4Location = multiLocationStr.includes('"X1":[');
-
-	if (xcmVersion > 3 && typeof result === 'object' && result.interior?.X1 && !isX1V4Location) {
-		result = {
-			parents: result.parents,
-			interior: {
-				X1: [result.interior.X1 as XcmV4Junction],
-			},
-		};
-	}
-
-	if (!hasGlobalConsensus) {
-		return sanitizeKeys(result);
-	} else {
-		return result;
-	}
+export const resolveMultiLocation = (multiLocation: AnyJson, xcmCreator: XcmCreator): UnionXcmMultiLocation => {
+	return xcmCreator.resolveMultiLocation(multiLocation);
 };

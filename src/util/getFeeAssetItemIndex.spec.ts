@@ -4,6 +4,7 @@ import { ApiPromise } from '@polkadot/api';
 
 import { AssetTransferApi } from '../AssetTransferApi';
 import { FungibleMultiAsset } from '../createXcmTypes/types';
+import { getXcmCreator } from '../createXcmTypes/xcm';
 import { Registry } from '../registry';
 import { adjustedMockRelayApi } from '../testHelpers/adjustedMockRelayApiV9420';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
@@ -23,6 +24,8 @@ describe('getFeeAssetItemIndex', () => {
 	const registry = new Registry('statemine', {});
 
 	it('Should select and return the index of the correct multiassets when given their token symbols', async () => {
+		const xcmVersion = 2;
+		const xcmCreator = getXcmCreator(xcmVersion);
 		const tests: Test[] = [
 			[
 				'rmrk',
@@ -106,13 +109,23 @@ describe('getFeeAssetItemIndex', () => {
 		for (const test of tests) {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
-			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, 2, false)).toEqual(
-				expected,
-			);
+			expect(
+				await getFeeAssetItemIndex({
+					api,
+					registry,
+					paysWithFeeDest,
+					multiAssets,
+					specName,
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+				}),
+			).toEqual(expected);
 		}
 	});
 
 	it('Should select and return the index of the correct multiasset when given an assets Id as a string', async () => {
+		const xcmVersion = 2;
+		const xcmCreator = getXcmCreator(xcmVersion);
 		const tests: Test[] = [
 			[
 				'8',
@@ -209,13 +222,23 @@ describe('getFeeAssetItemIndex', () => {
 		for (const test of tests) {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
-			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, 2, false)).toEqual(
-				expected,
-			);
+			expect(
+				await getFeeAssetItemIndex({
+					api,
+					registry,
+					paysWithFeeDest,
+					multiAssets,
+					specName,
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+				}),
+			).toEqual(expected);
 		}
 	});
 
 	it('Should correctly select and return the index of the correct multiassets when given a foreign assets multilocation', async () => {
+		const xcmVersion = 2;
+		const xcmCreator = getXcmCreator(xcmVersion);
 		const tests: Test[] = [
 			[
 				`{"parents":"1","interior":{"X2":[{"Parachain":"2125"},{"GeneralIndex":"0"}]}}`,
@@ -243,15 +266,25 @@ describe('getFeeAssetItemIndex', () => {
 		for (const test of tests) {
 			const [paysWithFeeDest, specName, multiAssets, api, expected] = test;
 
-			expect(await getFeeAssetItemIndex(api, registry, paysWithFeeDest, multiAssets, specName, 2, true)).toEqual(
-				expected,
-			);
+			expect(
+				await getFeeAssetItemIndex({
+					api,
+					registry,
+					paysWithFeeDest,
+					multiAssets,
+					specName,
+					xcmCreator,
+					isForeignAssetsTransfer: true,
+				}),
+			).toEqual(expected);
 		}
 	});
 
 	it('Should throw an error indicating the general index was not found for an invalid paysWithFeeDest value', async () => {
 		const paysWithFeeDest = '1984';
 		const specName = 'statemine';
+		const xcmVersion = 2;
+		const xcmCreator = getXcmCreator(xcmVersion);
 
 		const multiAssets: FungibleMultiAsset[] = [
 			{
@@ -281,7 +314,15 @@ describe('getFeeAssetItemIndex', () => {
 		];
 
 		await expect(async () => {
-			await getFeeAssetItemIndex(systemAssetsApi.api, registry, paysWithFeeDest, multiAssets, specName, 2, false);
+			await getFeeAssetItemIndex({
+				api: systemAssetsApi.api,
+				registry,
+				paysWithFeeDest,
+				multiAssets,
+				specName,
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+			});
 		}).rejects.toThrow(
 			'Invalid paysWithFeeDest value. 1984 did not match any asset in assets: {"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1337"}]},{"Here":""}',
 		);

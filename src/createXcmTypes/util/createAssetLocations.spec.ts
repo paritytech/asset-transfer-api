@@ -3,6 +3,7 @@
 import { Registry } from '../../registry';
 import { adjustedMockRelayApi } from '../../testHelpers/adjustedMockRelayApiV9420';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
+import { getXcmCreator } from '../xcm';
 import { createAssetLocations } from './createAssetLocations';
 
 describe('createAssetLocations', () => {
@@ -50,17 +51,18 @@ describe('createAssetLocations', () => {
 			];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createAssetLocations(
-				mockSystemApi,
-				assets,
+			const xcmCreator = getXcmCreator(5);
+			const result = await createAssetLocations({
+				api: mockSystemApi,
+				assetIds: assets,
 				specName,
 				amounts,
-				5,
 				registry,
-				'1000',
-				true,
-				false,
-			);
+				originChainId: '1000',
+				assetIdsContainLocations: true,
+				isLiquidTokenTransfer: false,
+				xcmCreator,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -105,17 +107,18 @@ describe('createAssetLocations', () => {
 			];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createAssetLocations(
-				mockSystemApi,
-				assets,
+			const xcmCreator = getXcmCreator(4);
+			const result = await createAssetLocations({
+				api: mockSystemApi,
+				assetIds: assets,
 				specName,
 				amounts,
-				4,
 				registry,
-				'1000',
-				true,
-				false,
-			);
+				originChainId: '1000',
+				assetIdsContainLocations: true,
+				isLiquidTokenTransfer: false,
+				xcmCreator,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -154,17 +157,18 @@ describe('createAssetLocations', () => {
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createAssetLocations(
-				mockSystemApi,
-				assets,
+			const xcmCreator = getXcmCreator(3);
+			const result = await createAssetLocations({
+				api: mockSystemApi,
+				assetIds: assets,
 				specName,
 				amounts,
-				3,
 				registry,
-				'1000',
-				false,
-				false,
-			);
+				originChainId: '1000',
+				assetIdsContainLocations: false,
+				isLiquidTokenTransfer: false,
+				xcmCreator,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -203,17 +207,18 @@ describe('createAssetLocations', () => {
 			const assets = ['ksm', 'usdt'];
 			const amounts = ['100000000000000', '300000000000000'];
 			const specName = 'statemine';
-			const result = await createAssetLocations(
-				mockSystemApi,
-				assets,
+			const xcmCreator = getXcmCreator(2);
+			const result = await createAssetLocations({
+				api: mockSystemApi,
+				assetIds: assets,
 				specName,
 				amounts,
-				2,
 				registry,
-				'1000',
-				false,
-				false,
-			);
+				originChainId: '1000',
+				assetIdsContainLocations: false,
+				isLiquidTokenTransfer: false,
+				xcmCreator,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -241,17 +246,18 @@ describe('createAssetLocations', () => {
 			const assets = [`{"parents":"0","interior":{"Here":""}}`];
 			const amounts = ['100000000000000'];
 			const specName = 'kusama';
-			const result = await createAssetLocations(
-				adjustedMockRelayApi,
-				assets,
+			const xcmCreator = getXcmCreator(5);
+			const result = await createAssetLocations({
+				api: adjustedMockRelayApi,
+				assetIds: assets,
 				specName,
 				amounts,
-				5,
 				registry,
-				'0',
-				true,
-				false,
-			);
+				originChainId: '0',
+				assetIdsContainLocations: true,
+				isLiquidTokenTransfer: false,
+				xcmCreator,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -275,17 +281,18 @@ describe('createAssetLocations', () => {
 			const assets = [`{"parents":"0","interior":{"Here":""}}`];
 			const amounts = ['100000000000000'];
 			const specName = 'kusama';
-			const result = await createAssetLocations(
-				adjustedMockRelayApi,
-				assets,
+			const xcmCreator = getXcmCreator(4);
+			const result = await createAssetLocations({
+				api: adjustedMockRelayApi,
+				assetIds: assets,
 				specName,
 				amounts,
-				4,
 				registry,
-				'0',
-				true,
-				false,
-			);
+				originChainId: '0',
+				assetIdsContainLocations: true,
+				isLiquidTokenTransfer: false,
+				xcmCreator,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -311,17 +318,18 @@ describe('createAssetLocations', () => {
 			const assets = ['ksm'];
 			const amounts = ['100000000000000'];
 			const specName = 'kusama';
-			const result = await createAssetLocations(
-				adjustedMockRelayApi,
-				assets,
+			const xcmCreator = getXcmCreator(3);
+			const result = await createAssetLocations({
+				api: adjustedMockRelayApi,
+				assetIds: assets,
 				specName,
 				amounts,
-				3,
 				registry,
-				'0',
-				false,
-				false,
-			);
+				originChainId: '0',
+				assetIdsContainLocations: false,
+				isLiquidTokenTransfer: false,
+				xcmCreator,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});
@@ -347,17 +355,18 @@ describe('createAssetLocations', () => {
 			const assets = ['ksm'];
 			const amounts = ['100000000000000'];
 			const specName = 'kusama';
-			const result = await createAssetLocations(
-				adjustedMockRelayApi,
-				assets,
+			const xcmCreator = getXcmCreator(2);
+			const result = await createAssetLocations({
+				api: adjustedMockRelayApi,
+				assetIds: assets,
 				specName,
 				amounts,
-				2,
 				registry,
-				'0',
-				false,
-				false,
-			);
+				originChainId: '0',
+				assetIdsContainLocations: false,
+				isLiquidTokenTransfer: false,
+				xcmCreator,
+			});
 
 			expect(result).toStrictEqual(expected);
 		});

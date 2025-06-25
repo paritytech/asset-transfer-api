@@ -13,15 +13,15 @@ import { adjustedMockSystemApiV1016000 } from '../testHelpers/adjustedMockSystem
 import { adjustedMockWestendRelayApiV1007001 } from '../testHelpers/adjustedMockWestendRelayApiV1007001';
 import type { Format, TxResult } from '../types';
 
-const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', 2, { registryType: 'NPM' });
-const relayAssetsApiV1007001 = new AssetTransferApi(adjustedMockWestendRelayApiV1007001, 'westend', 2, {
+const xcmVersion = 4;
+const relayAssetsApi = new AssetTransferApi(adjustedMockRelayApi, 'kusama', xcmVersion, { registryType: 'NPM' });
+const relayAssetsApiV1007001 = new AssetTransferApi(adjustedMockWestendRelayApiV1007001, 'westend', xcmVersion, {
 	registryType: 'NPM',
 });
-const relayAssetsApiV1016000 = new AssetTransferApi(adjustedMockRelayApiV1016000, 'westend', 2, {
+const relayAssetsApiV1016000 = new AssetTransferApi(adjustedMockRelayApiV1016000, 'westend', xcmVersion, {
 	registryType: 'NPM',
 });
-const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
-const xcmVersion = 2;
+const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', xcmVersion, { registryType: 'NPM' });
 const systemAssetsApiV1016000 = new AssetTransferApi(adjustedMockSystemApiV1016000, 'westmint', xcmVersion, {
 	registryType: 'NPM',
 });
@@ -238,7 +238,7 @@ describe('AssetTransferApi Integration Tests', () => {
 				});
 			});
 			it('Should construct a `foreignAssets::transferAll` call on a system parachain', async () => {
-				const xcmVersion = 3;
+				const xcmVersion = 4;
 				const res = await systemAssetsApiV1016000.createTransferTransaction(
 					'1000',
 					'5EnxxUmEbw8DkENKiYuZ1DwQuMoB2UWEQJZZXrTsxoz7SpgG',

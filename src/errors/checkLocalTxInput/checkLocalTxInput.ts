@@ -5,6 +5,7 @@ import type { ApiPromise } from '@polkadot/api';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry.js';
 import { foreignAssetsMultiLocationExists } from '../../createXcmTypes/util/foreignAssetsMultiLocationExists.js';
 import { getAssetId } from '../../createXcmTypes/util/getAssetId.js';
+import { getXcmCreator } from '../../createXcmTypes/xcm/index.js';
 import type { Registry } from '../../registry/index.js';
 import { BaseError, BaseErrorsEnum } from '../BaseError.js';
 import { checkLiquidTokenValidity } from '../checkXcmTxInputs.js';
@@ -27,6 +28,8 @@ export const checkLocalTxInput = async (
 	isForeignAssetsTransfer: boolean,
 	isLiquidTokenTransfer: boolean,
 ): Promise<LocalTxType> => {
+	const xcmCreator = getXcmCreator(xcmVersion);
+
 	// Ensure the lengths in assetIds and amounts is correct
 	if (assetIds.length > 1 || amounts.length !== 1) {
 		throw new BaseError(
@@ -48,7 +51,7 @@ export const checkLocalTxInput = async (
 		const foreignAssetIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(
 			multiLocationStr,
 			registry,
-			xcmVersion,
+			xcmCreator,
 		);
 
 		if (foreignAssetIsInRegistry) {
@@ -95,7 +98,7 @@ export const checkLocalTxInput = async (
 		}
 
 		// not a number so we check the registry using the symbol
-		assetId = await getAssetId(api, registry, assetId, specName, xcmVersion, isForeignAssetsTransfer);
+		assetId = await getAssetId({ api, registry, asset: assetId, specName, xcmCreator, isForeignAssetsTransfer });
 
 		if (assetId.length > 0) {
 			return LocalTxType.Assets;
