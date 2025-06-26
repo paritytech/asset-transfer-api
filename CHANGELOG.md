@@ -1,5 +1,53 @@
 # Changelog
 
+## [1.0.0](https://github.com/paritytech/asset-transfer-api/compare/v0.7.2..v1.0.0)
+
+### Breaking Changes
+
+- No longer implicitly change XCM version when dealing with ForeignAssets
+- Changed default XCM version to 4
+
+### Feat
+
+- feat: Improve fetchSafeXcmVersion to throw error on unsupported versions ([#589](https://github.com/paritytech/asset-transfer-api/pull/589))
+- feat: XCM v5 ([#590](https://github.com/paritytech/asset-transfer-api/pull/590))
+- feat: Add CI job to unit test code across node versions. ([#583](https://github.com/paritytech/asset-transfer-api/pull/583))
+
+### Refactor
+
+- refactor: Decouple XCM versioning from Direction logic handlers ([#598](https://github.com/paritytech/asset-transfer-api/pull/598))
+    - **BREAKING CHANGE**: `xcmVersion` is no longer implicitly change to V4 when dealing with ForeignAssets transfers. `xcmVersion` must be explicitly set to V4 or greater.
+- refactor: Consolidate FungibleStrAssetType and FungibleObjAssetType ([#596](https://github.com/paritytech/asset-transfer-api/pull/596))
+- refactor: Remove isForeignAssetsTransfer from `fetchCallType` ([#585](https://github.com/paritytech/asset-transfer-api/pull/585))
+- refactor: Move to object params for private methods with many arguments ([#584](https://github.com/paritytech/asset-transfer-api/pull/584))
+
+### Fix
+
+- fix: example building + add CI step to catch failure of any example code ([#581](https://github.com/paritytech/asset-transfer-api/pull/581))
+- test: fix failing integration test ([#580](https://github.com/paritytech/asset-transfer-api/pull/580))
+
+## Docs
+
+- docs: add top level NOTICE and remove individual copyright headers ([#601](https://github.com/paritytech/asset-transfer-api/pull/601))
+
+### Chore
+
+- chore(deps-dev): bump vitest from 3.2.3 to 3.2.4 ([#599](https://github.com/paritytech/asset-transfer-api/pull/599))
+- chore(deps): bump the pjs group across 1 directory with 6 updates ([#595](https://github.com/paritytech/asset-transfer-api/pull/595))
+- chore(deps-dev): bump @acala-network/chopsticks-core from 1.0.6 to 1.1.0 ([#593](https://github.com/paritytech/asset-transfer-api/pull/593))
+- chore(deps): bump the pjs group with 4 updates ([#594](https://github.com/paritytech/asset-transfer-api/pull/594))
+- chore(deps-dev): bump tsx from 4.19.4 to 4.20.3 ([#592](https://github.com/paritytech/asset-transfer-api/pull/592))
+- chore(deps-dev): bump @acala-network/chopsticks-testing from 1.0.6 to 1.1.0 ([#591](https://github.com/paritytech/asset-transfer-api/pull/591))
+- chore: Update default xcm version from v2 to v4. ([#588](https://github.com/paritytech/asset-transfer-api/pull/588))
+    - **BREAKING CHANGE**: Default behaviour may change if xcmVersion has not been explicitly set.
+- chore(deps-dev): bump vitest from 3.2.0 to 3.2.3 ([#587](https://github.com/paritytech/asset-transfer-api/pull/587))
+- chore(deps): bump @polkadot/types-codec from 16.1.1 to 16.1.2 in the pjs group ([#586](https://github.com/paritytech/asset-transfer-api/pull/586))
+
+### Test
+
+- test: refactor e2e + add simple westend / westend asset hub e2e test ([#579](https://github.com/paritytech/asset-transfer-api/pull/579))
+
+
 ## [0.7.2](https://github.com/paritytech/asset-transfer-api/compare/v0.7.1..v0.7.2)
 
 ### Fix
