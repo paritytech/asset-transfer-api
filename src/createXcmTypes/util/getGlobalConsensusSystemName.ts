@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';

@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 
 import type { Registry } from '../../registry/index.js';

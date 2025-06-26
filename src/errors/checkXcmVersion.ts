@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { SUPPORTED_XCM_VERSIONS } from '../consts.js';
 import { BaseError, BaseErrorsEnum } from './BaseError.js';
 

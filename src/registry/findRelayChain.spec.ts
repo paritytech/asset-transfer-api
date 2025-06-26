@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import reg from '@substrate/asset-transfer-api-registry';
 
 import { findRelayChain } from './findRelayChain';

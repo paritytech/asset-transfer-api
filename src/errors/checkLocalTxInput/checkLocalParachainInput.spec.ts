@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi';
 import { mockMoonriverParachainApi } from '../../testHelpers/mockMoonriverParachainApi';
 import { checkLocalParachainInput } from './checkLocalParachainInput';

@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { assetIdIsLocation } from './assetIdIsLocation';
 
 describe('assetIdIsLocation', () => {

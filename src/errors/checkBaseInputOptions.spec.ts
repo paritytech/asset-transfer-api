@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { Format, TransferArgsOpts } from '../types';
 import { checkBaseInputOptions } from './checkBaseInputOptions';
 

@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 export const mockQueryXcmWeightResult = {
 	Ok: {
 		refTime: 3500000000,

@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { FungibleAssetType } from '../types.js';
 
 /**

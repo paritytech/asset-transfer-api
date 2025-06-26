@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 // import { UnionXcmMultiLocation } from "../types";
 import { createXcmOnDestBeneficiary } from './createXcmOnDestBeneficiary';
 

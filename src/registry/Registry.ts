@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import {
 	ASSET_HUB_CHAIN_ID,
 	KUSAMA_ASSET_HUB_SPEC_NAMES,

@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { ASSET_HUB_CHAIN_ID } from '../../consts.js';
 import { Registry } from '../../registry/index.js';
 import type { ForeignAssetsInfo } from '../../registry/types.js';

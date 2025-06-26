@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { FungibleAssetType } from '../types';
 import { sortAssetsAscending } from './sortAssetsAscending';
 

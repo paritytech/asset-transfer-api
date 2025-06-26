@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 export interface CreateXcmCallOpts {
 	weightLimit?: { refTime?: string; proofSize?: string };
 	paysWithFeeDest?: string;

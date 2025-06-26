@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { AssetTransferApi } from '../AssetTransferApi';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
 import { Registry } from '../registry';

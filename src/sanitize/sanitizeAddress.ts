@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { isHex, u8aToHex } from '@polkadot/util';
 import { decodeAddress } from '@polkadot/util-crypto';
 

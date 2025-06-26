@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { BaseError, BaseErrorsEnum } from '../errors/BaseError.js';
 import { Format, TransferArgsOpts } from '../types.js';
 

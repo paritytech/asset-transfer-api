@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { Weight, WeightV2 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';

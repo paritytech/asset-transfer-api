@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 export const normalizeArrToStr = (arr: (string | number)[]): string[] => {
 	return arr.map((val) => {
 		if (typeof val === 'string') {

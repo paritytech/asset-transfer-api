@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { getXcmCreator } from '../xcm';
 import { createXcmVersionedAssetId } from './createXcmVersionedAssetId';
 

@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import type { ApiPromise } from '@polkadot/api';
 import type { Header } from '@polkadot/types/interfaces';
 

@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { MappedOpts } from '../config/disabledOpts.js';
 import { disabledOpts } from '../config/disabledOpts.js';
 import type { Format, TransferArgsOpts } from '../types.js';

@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { UnionXcmMultiLocation } from '../../createXcmTypes/types';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { transferKeepAlive } from './transferKeepAlive';

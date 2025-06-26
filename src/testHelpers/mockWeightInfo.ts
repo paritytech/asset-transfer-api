@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 export const mockWeightInfo = {
 	weight: {
 		refTime: '133179000',

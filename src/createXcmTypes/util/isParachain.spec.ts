@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { isParachain } from './isParachain';
 
 describe('isParachain', () => {

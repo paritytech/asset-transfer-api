@@ -1,4 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
 import BN from 'bn.js';
 
 import { validateNumber } from '../../validate/index.js';

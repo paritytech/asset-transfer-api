@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import '@polkadot/api-augment';
 
 import { ApiPromise, WsProvider } from '@polkadot/api';

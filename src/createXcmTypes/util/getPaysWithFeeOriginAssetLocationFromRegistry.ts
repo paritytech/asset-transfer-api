@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { AssetTransferApi } from '../../AssetTransferApi.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { AssetsInfo } from '../../registry/types.js';
