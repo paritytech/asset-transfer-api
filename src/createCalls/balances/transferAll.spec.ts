@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { transferAll } from './transferAll';
 

@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { Registry } from '../../registry';
 import { isRelayNativeAsset } from './isRelayNativeAsset';
 

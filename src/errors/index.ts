@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 export { BaseError, BaseErrorsEnum } from './BaseError.js';
 export { checkBaseInputOptions } from './checkBaseInputOptions.js';
 export { checkBaseInputTypes } from './checkBaseInputTypes.js';

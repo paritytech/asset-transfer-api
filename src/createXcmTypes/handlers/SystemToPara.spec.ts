@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { Registry } from '../../registry';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { getXcmCreator } from '../xcm';

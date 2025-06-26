@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { RELAY_CHAIN_IDS, RELAY_CHAINS_NATIVE_ASSET_LOCATION } from '../../consts.js';
 import { isRelayNativeAsset } from '../../createXcmTypes/util/isRelayNativeAsset.js';
 import { Registry } from '../../registry/index.js';

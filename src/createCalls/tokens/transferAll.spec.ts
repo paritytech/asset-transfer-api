@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { mockBifrostParachainApi } from '../../testHelpers/mockBifrostParachainApi';
 import { transferAll } from './transferAll';
 

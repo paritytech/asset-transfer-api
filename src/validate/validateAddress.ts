@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { hexToU8a, isHex } from '@polkadot/util';
 import { base58Decode, checkAddressChecksum, encodeAddress, isEthereumAddress } from '@polkadot/util-crypto';
 import { defaults } from '@polkadot/util-crypto/address/defaults';

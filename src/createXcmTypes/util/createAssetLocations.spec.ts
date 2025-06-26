@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { Registry } from '../../registry';
 import { adjustedMockRelayApi } from '../../testHelpers/adjustedMockRelayApiV9420';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';

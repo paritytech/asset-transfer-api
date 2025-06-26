@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { V2, V3, V4, V5 } from '../xcm/index.js';
 import { createBeneficiary } from './createBeneficiary';
 

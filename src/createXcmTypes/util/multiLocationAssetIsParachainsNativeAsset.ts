@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 /**
  * Returns whether a provided multilocation is native to a parachain
  *

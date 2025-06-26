@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { AssetTransferApi } from '../../AssetTransferApi';
 import { adjustedMockSystemApiV1016000 } from '../../testHelpers/adjustedMockSystemApiV1016000';
 import { getPaysWithFeeOriginAssetLocationFromRegistry } from './getPaysWithFeeOriginAssetLocationFromRegistry';

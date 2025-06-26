@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { JS_ENV } from '../consts.js';
 
 /**

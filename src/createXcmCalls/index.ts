@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 export { claimAssets } from './polkadotXcm/claimAssets.js';
 export { limitedReserveTransferAssets } from './polkadotXcm/limitedReserveTransferAssets.js';
 export { limitedTeleportAssets } from './polkadotXcm/limitedTeleportAssets.js';

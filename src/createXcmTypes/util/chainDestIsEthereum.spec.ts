@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { chainDestIsEthereum } from './chainDestIsEthereum';
 
 describe('chainDestIsEthereum', () => {

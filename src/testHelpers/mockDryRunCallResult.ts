@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 export const mockDryRunCallResult = {
 	Ok: {
 		executionResult: {

@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import type { GenericExtrinsicPayload } from '@polkadot/types/extrinsic';
 
 import { AssetTransferApi } from '../../AssetTransferApi';

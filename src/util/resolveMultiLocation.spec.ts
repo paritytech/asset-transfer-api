@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { getXcmCreator } from '../createXcmTypes/xcm';
 import { resolveMultiLocation } from './resolveMultiLocation';
 

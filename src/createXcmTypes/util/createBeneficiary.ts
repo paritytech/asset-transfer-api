@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { XcmCreator, XcmDestBeneficiary, XcmDestBeneficiaryXcAssets } from '../types.js';
 
 export const createBeneficiary = (accountId: string, xcmCreator: XcmCreator): XcmDestBeneficiary => {

@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const assetIdIsLocation = (assetId: string): boolean => {

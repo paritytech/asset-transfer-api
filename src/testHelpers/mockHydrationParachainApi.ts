@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { createApiWithAugmentations } from './createApiWithAugmentations';
 import { hydrationV3100 } from './metadata/hydrationV3100';
 

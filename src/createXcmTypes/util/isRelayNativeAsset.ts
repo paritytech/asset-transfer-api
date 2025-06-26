@@ -1,5 +1,3 @@
-// Copyright 2024 Parity Technologies (UK) Ltd.
-
 import { RELAY_CHAIN_IDS } from '../../consts.js';
 import { Registry } from '../../registry/index.js';
 

@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { Registry } from '../../registry';
 import { mockRelayApiV9420 } from '../../testHelpers/mockRelayApiV9420';
 import { RelayToPara } from './RelayToPara';

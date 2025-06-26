@@ -1,5 +1,3 @@
-// Copyright 2023 Parity Technologies (UK) Ltd.
-
 import { checkXcmVersion } from './checkXcmVersion';
 
 describe('checkXcmVersion', () => {
