@@ -11,7 +11,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 
 	describe('Destination', () => {
 		it('Should work for V2', () => {
-			const destination = v2Handler.createDest('0', 2);
+			const destination = v2Handler.createDest('0');
 
 			const expectedRes = {
 				V2: {
@@ -25,7 +25,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', () => {
-			const destination = v3Handler.createDest('0', 3);
+			const destination = v3Handler.createDest('0');
 
 			const expectedRes = {
 				V3: {
@@ -39,7 +39,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', () => {
-			const destination = v4Handler.createDest('0', 4);
+			const destination = v4Handler.createDest('0');
 
 			const expectedRes = {
 				V4: {
@@ -53,7 +53,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 			expect(destination).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', () => {
-			const destination = v5Handler.createDest('0', 5);
+			const destination = v5Handler.createDest('0');
 
 			const expectedRes = {
 				V5: {
@@ -71,7 +71,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 		const isForeignAssetsTransfer = false;
 		const isLiquidTokenTransfer = false;
 		it('Should work for V2', async () => {
-			const assets = await v2Handler.createAssets(['100'], 2, '', [], {
+			const assets = await v2Handler.createAssets(['100'], '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -99,7 +99,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V3', async () => {
-			const assets = await v3Handler.createAssets(['100'], 3, '', [], {
+			const assets = await v3Handler.createAssets(['100'], '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -127,7 +127,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V4', async () => {
-			const assets = await v4Handler.createAssets(['100'], 4, '', [], {
+			const assets = await v4Handler.createAssets(['100'], '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
@@ -153,7 +153,7 @@ describe('SystemToRelay XcmVersioned Generation', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 		it('Should work for V5', async () => {
-			const assets = await v5Handler.createAssets(['100'], 5, '', [], {
+			const assets = await v5Handler.createAssets(['100'], '', [], {
 				registry,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
