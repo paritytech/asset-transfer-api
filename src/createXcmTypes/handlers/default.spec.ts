@@ -1,6 +1,3 @@
-// TODO:
-// createXTokensAssets
-// createXTokensFeeAssetItem
 import { DefaultHandler } from './default';
 
 describe('DefaultHandler', () => {
@@ -69,8 +66,6 @@ describe('DefaultHandler', () => {
 			expect(weightLimit).toStrictEqual({ Unlimited: null });
 		});
 	});
-
-	describe.skip('createXTokensAssets', () => {});
 
 	describe.skip('createXTokensFeeAssetItem', () => {});
 });
