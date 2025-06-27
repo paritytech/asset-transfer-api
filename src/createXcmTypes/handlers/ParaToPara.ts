@@ -4,7 +4,6 @@ import type { AnyJson } from '@polkadot/types/types';
 import { Registry } from '../../registry/index.js';
 import { XCMAssetRegistryMultiLocation } from '../../registry/types.js';
 import { Direction } from '../../types.js';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import type {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -149,9 +148,8 @@ const createParaToParaMultiAssets = async ({
 	);
 
 	if (isPrimaryParachainNativeAsset) {
-		const multiLocation = resolveMultiLocation(
+		const multiLocation = xcmCreator.resolveMultiLocation(
 			getParachainNativeAssetLocation(registry, assets[0], destChainId),
-			xcmCreator,
 		);
 
 		const multiAsset = xcmCreator.fungibleAsset({
@@ -174,7 +172,7 @@ const createParaToParaMultiAssets = async ({
 			const parsedMultiLocation = JSON.parse(xcAssetMultiLocationStr) as XCMAssetRegistryMultiLocation;
 			const xcAssetMultiLocation = parsedMultiLocation.v1 as unknown as AnyJson;
 
-			const multiLocation = resolveMultiLocation(xcAssetMultiLocation, xcmCreator);
+			const multiLocation = xcmCreator.resolveMultiLocation(xcAssetMultiLocation);
 
 			const multiAsset = xcmCreator.fungibleAsset({
 				amount: amount,

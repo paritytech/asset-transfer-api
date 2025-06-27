@@ -1,7 +1,6 @@
 import { ASSET_HUB_CHAIN_ID } from '../../consts.js';
 import { Registry } from '../../registry/index.js';
 import type { ForeignAssetsInfo } from '../../registry/types.js';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import { XcmCreator } from '../types.js';
 
@@ -26,7 +25,7 @@ const checkForeignAssetExists = (
 	multiLocationStr: string,
 	xcmCreator: XcmCreator,
 ): boolean => {
-	const multiLocation = resolveMultiLocation(multiLocationStr, xcmCreator);
+	const multiLocation = xcmCreator.resolveMultiLocation(multiLocationStr);
 
 	if (Object.keys(foreignAssetsInfo).length > 0) {
 		const foreignAssets = Object.entries(foreignAssetsInfo).map((data) => {

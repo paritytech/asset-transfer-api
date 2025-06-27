@@ -2,7 +2,6 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { Registry } from '../../registry/index.js';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { validateNumber } from '../../validate/index.js';
 import {
 	CreateAssetsOpts,
@@ -134,7 +133,7 @@ export const createSystemToSystemMultiAssets = async ({
 		let multiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
-			multiLocation = resolveMultiLocation(assetId, xcmCreator);
+			multiLocation = xcmCreator.resolveMultiLocation(assetId);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior = isRelayNative
@@ -142,13 +141,10 @@ export const createSystemToSystemMultiAssets = async ({
 				: {
 						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 					};
-			multiLocation = resolveMultiLocation(
-				{
-					parents,
-					interior,
-				},
-				xcmCreator,
-			);
+			multiLocation = xcmCreator.resolveMultiLocation({
+				parents,
+				interior,
+			});
 		}
 
 		const multiAsset = xcmCreator.fungibleAsset({

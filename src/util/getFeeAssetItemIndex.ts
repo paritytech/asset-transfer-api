@@ -5,7 +5,6 @@ import { getAssetId } from '../createXcmTypes/util/getAssetId.js';
 import { isParachain } from '../createXcmTypes/util/isParachain.js';
 import { BaseError, BaseErrorsEnum } from '../errors/index.js';
 import { Registry } from '../registry/index.js';
-import { resolveMultiLocation } from '../util/resolveMultiLocation.js';
 import { validateNumber } from '../validate/validateNumber.js';
 
 /**
@@ -74,7 +73,7 @@ export const getFeeAssetItemIndex = async ({
 					});
 					// if isForeignAssetsTransfer or parachain origin, compare the multiAsset interior to the the paysWithFeeDestAssetLocationStr as a multilocation
 					if (isForeignAssetsTransfer || isParaOrigin) {
-						const paysWithFeeDestMultiLocation = resolveMultiLocation(paysWithFeeDestAssetLocationStr, xcmCreator);
+						const paysWithFeeDestMultiLocation = xcmCreator.resolveMultiLocation(paysWithFeeDestAssetLocationStr);
 						const paysWithFeeDestMultiLocationInterior =
 							paysWithFeeDestMultiLocation.interior ||
 							(paysWithFeeDestMultiLocation as { [key: string]: unknown })['Interior'];
