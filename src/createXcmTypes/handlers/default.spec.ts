@@ -67,5 +67,34 @@ describe('DefaultHandler', () => {
 		});
 	});
 
-	describe.skip('createXTokensFeeAssetItem', () => {});
+	describe('createXTokensFeeAssetItem', () => {
+		const dest = {
+			parents: '1',
+			interior: {
+				X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
+			},
+		};
+		const paysWithFeeDest = JSON.stringify(dest);
+		test.each([2, 3, 4, 5])('V%i', (xcmVersion) => {
+			const handler = new DefaultHandler(xcmVersion);
+			const feeAssetItem = handler.createXTokensFeeAssetItem({ paysWithFeeDest });
+			let expected;
+			if (xcmVersion <= 3) {
+				expected = {
+					[`V${xcmVersion}`]: {
+						id: {
+							Concrete: dest,
+						},
+					},
+				};
+			} else {
+				expected = {
+					[`V${xcmVersion}`]: {
+						id: dest,
+					},
+				};
+			}
+			expect(feeAssetItem).toStrictEqual(expected);
+		});
+	});
 });
