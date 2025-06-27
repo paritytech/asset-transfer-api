@@ -13,8 +13,8 @@ describe('createAssetLocations', () => {
 				V5: [
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [
 									{
 										PalletInstance: '50',
@@ -31,8 +31,8 @@ describe('createAssetLocations', () => {
 					},
 					{
 						id: {
-							Parents: '1',
-							Interior: {
+							parents: '1',
+							interior: {
 								Here: '',
 							},
 						},
@@ -69,8 +69,8 @@ describe('createAssetLocations', () => {
 				V4: [
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								X2: [
 									{
 										PalletInstance: '50',
@@ -87,8 +87,8 @@ describe('createAssetLocations', () => {
 					},
 					{
 						id: {
-							Parents: '1',
-							Interior: {
+							parents: '1',
+							interior: {
 								Here: '',
 							},
 						},
@@ -126,8 +126,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 								},
 							},
@@ -139,8 +139,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '1',
-								Interior: {
+								parents: '1',
+								interior: {
 									Here: '',
 								},
 							},
@@ -176,8 +176,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 								},
 							},
@@ -189,8 +189,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '1',
-								Interior: {
+								parents: '1',
+								interior: {
 									Here: '',
 								},
 							},
@@ -229,8 +229,8 @@ describe('createAssetLocations', () => {
 				V5: [
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								Here: '',
 							},
 						},
@@ -264,8 +264,8 @@ describe('createAssetLocations', () => {
 				V4: [
 					{
 						id: {
-							Parents: '0',
-							Interior: {
+							parents: '0',
+							interior: {
 								Here: '',
 							},
 						},
@@ -300,8 +300,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									Here: '',
 								},
 							},
@@ -337,8 +337,8 @@ describe('createAssetLocations', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									Here: '',
 								},
 							},

@@ -11,7 +11,7 @@ describe('resolveMultiLocation', () => {
 	});
 	it('Should correctly return a resolved multilocation object given a correct value', () => {
 		const str = `{"parents":1,"interior":{"x2":[{"parachain":2001},{"generalKey":"0x0001"}]}}`;
-		const exp = { Parents: '1', Interior: { X2: [{ Parachain: '2001' }, { GeneralKey: '0x0001' }] } };
+		const exp = { parents: '1', interior: { X2: [{ Parachain: '2001' }, { GeneralKey: '0x0001' }] } };
 		const xcmCreator = getXcmCreator(2);
 
 		expect(resolveMultiLocation(str, xcmCreator)).toStrictEqual(exp);
@@ -35,11 +35,11 @@ describe('resolveMultiLocation', () => {
 	it('Should correctly resolve an xcmV1Multilocation values location', () => {
 		const str = `{"v1":{"parents":1,"interior":{"x2":[{"globalConsensus":{"ethereum":{"chainId":1}}},{"accountKey20":{"network":null,"key":"0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}}]}}}`;
 		const exp = {
-			parents: 1,
+			parents: '1',
 			interior: {
-				x2: [
-					{ globalConsensus: { ethereum: { chainId: 1 } } },
-					{ accountKey20: { network: null, key: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' } },
+				X2: [
+					{ GlobalConsensus: { Ethereum: { chainId: '1' } } },
+					{ AccountKey20: { network: null, key: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' } },
 				],
 			},
 		};

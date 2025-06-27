@@ -184,8 +184,8 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '50' }, { GeneralIndex: '11' }],
 								},
 							},
@@ -212,8 +212,8 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '1',
-								Interior: {
+								parents: '1',
+								interior: {
 									Here: '',
 								},
 							},
@@ -239,8 +239,8 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				V4: [
 					{
 						id: {
-							Parents: '1',
-							Interior: {
+							parents: '1',
+							interior: {
 								Here: '',
 							},
 						},
@@ -265,8 +265,8 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 				V5: [
 					{
 						id: {
-							Parents: '1',
-							Interior: {
+							parents: '1',
+							interior: {
 								Here: '',
 							},
 						},
@@ -305,8 +305,8 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '0',
-								Interior: {
+								parents: '0',
+								interior: {
 									X2: [{ PalletInstance: '55' }, { GeneralIndex: '11' }],
 								},
 							},

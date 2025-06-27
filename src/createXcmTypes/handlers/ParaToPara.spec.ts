@@ -263,8 +263,8 @@ describe('ParaToPara test', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '1',
-								Interior: {
+								parents: '1',
+								interior: {
 									Here: null,
 								},
 							},
@@ -276,8 +276,8 @@ describe('ParaToPara test', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '1',
-								Interior: {
+								parents: '1',
+								interior: {
 									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
 								},
 							},
@@ -309,8 +309,8 @@ describe('ParaToPara test', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '1',
-								Interior: {
+								parents: '1',
+								interior: {
 									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
 								},
 							},
@@ -322,8 +322,8 @@ describe('ParaToPara test', () => {
 					{
 						id: {
 							Concrete: {
-								Parents: '1',
-								Interior: {
+								parents: '1',
+								interior: {
 									X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
 								},
 							},
@@ -354,8 +354,8 @@ describe('ParaToPara test', () => {
 				V4: [
 					{
 						id: {
-							Parents: '1',
-							Interior: {
+							parents: '1',
+							interior: {
 								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
 							},
 						},
@@ -365,8 +365,8 @@ describe('ParaToPara test', () => {
 					},
 					{
 						id: {
-							Parents: '1',
-							Interior: {
+							parents: '1',
+							interior: {
 								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
 							},
 						},
@@ -396,8 +396,8 @@ describe('ParaToPara test', () => {
 				V5: [
 					{
 						id: {
-							Parents: '1',
-							Interior: {
+							parents: '1',
+							interior: {
 								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '8' }],
 							},
 						},
@@ -407,8 +407,8 @@ describe('ParaToPara test', () => {
 					},
 					{
 						id: {
-							Parents: '1',
-							Interior: {
+							parents: '1',
+							interior: {
 								X3: [{ Parachain: '1000' }, { PalletInstance: '50' }, { GeneralIndex: '1984' }],
 							},
 						},

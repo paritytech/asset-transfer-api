@@ -575,7 +575,7 @@ describe('AssetTransferAPI', () => {
 			expect(callTxResult.localXcmFees![1]).toEqual({
 				xcmDest: '"local"',
 				xcmFee: '3500000000000000',
-				xcmFeeAsset: '{"V4":{"Parents":"1","Interior":{"Here":""}}}',
+				xcmFeeAsset: '{"V4":{"parents":"1","interior":{"Here":""}}}',
 				xcmWeight: '{"refTime":3500000000,"proofSize":350000000}',
 			});
 
@@ -1819,8 +1819,8 @@ describe('AssetTransferAPI', () => {
 			expect(await systemAssetsApi['checkAssetLpTokenPairExists'](paysWithFeeOrigin)).toEqual([
 				true,
 				{
-					Parents: '0',
-					Interior: {
+					parents: '0',
+					interior: {
 						X2: [{ PalletInstance: '50' }, { GeneralIndex: '1984' }],
 					},
 				},
@@ -1832,8 +1832,8 @@ describe('AssetTransferAPI', () => {
 			expect(await systemAssetsApi['checkAssetLpTokenPairExists'](paysWithFeeOrigin)).toEqual([
 				false,
 				{
-					Parents: '0',
-					Interior: {
+					parents: '0',
+					interior: {
 						X2: [{ PalletInstance: '50' }, { GeneralIndex: '2000' }],
 					},
 				},

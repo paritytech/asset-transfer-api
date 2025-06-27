@@ -12,8 +12,8 @@ describe('resolveAssetTransferType', () => {
 			const expected = {
 				RemoteReserve: {
 					V3: {
-						Parents: '1',
-						Interior: {
+						parents: '1',
+						interior: {
 							X1: {
 								Parachain: '1000',
 							},
@@ -33,8 +33,8 @@ describe('resolveAssetTransferType', () => {
 			const expected = {
 				RemoteReserve: {
 					V4: {
-						Parents: '1',
-						Interior: {
+						parents: '1',
+						interior: {
 							X1: [{ Parachain: '1000' }],
 						},
 					},
@@ -52,8 +52,8 @@ describe('resolveAssetTransferType', () => {
 			const expected = {
 				RemoteReserve: {
 					V5: {
-						Parents: '1',
-						Interior: {
+						parents: '1',
+						interior: {
 							X1: [{ Parachain: '1000' }],
 						},
 					},
