@@ -1,7 +1,6 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry/index.js';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { validateNumber } from '../../validate/index.js';
 import {
 	FungibleAssetType,
@@ -63,7 +62,7 @@ export const createAssetLocations = async ({
 		}
 
 		if (assetIdsContainLocations) {
-			multiLocation = resolveMultiLocation(assetId, xcmCreator);
+			multiLocation = xcmCreator.resolveMultiLocation(assetId);
 		} else {
 			const parents = isRelayNative && !isRelayChain ? 1 : 0;
 			const interior: OneOfXcmJunctions = isRelayNative

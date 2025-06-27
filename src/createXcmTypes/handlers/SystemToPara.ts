@@ -2,7 +2,6 @@ import type { ApiPromise } from '@polkadot/api';
 
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { Registry } from '../../registry/index.js';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import { validateNumber } from '../../validate/index.js';
 import type {
 	CreateAssetsOpts,
@@ -136,7 +135,7 @@ export const createSystemToParaMultiAssets = async ({
 		let multiLocation: UnionXcmMultiLocation;
 
 		if (isForeignAssetsTransfer && assetIdIsLocation(assetId)) {
-			multiLocation = resolveMultiLocation(assetId, xcmCreator);
+			multiLocation = xcmCreator.resolveMultiLocation(assetId);
 		} else {
 			const parents = isRelayNative ? 1 : 0;
 			const interior: OneOfXcmJunctions = isRelayNative

@@ -103,7 +103,6 @@ import {
 } from './types.js';
 import { callExistsInRuntime } from './util/callExistsInRuntime.js';
 import { deepEqual } from './util/deepEqual.js';
-import { resolveMultiLocation } from './util/resolveMultiLocation.js';
 import { sanitizeKeys } from './util/sanitizeKeys.js';
 import { validateNumber } from './validate/index.js';
 
@@ -1275,7 +1274,7 @@ export class AssetTransferApi {
 						BaseErrorsEnum.InvalidXcmVersion,
 					);
 				}
-				const location = resolveMultiLocation(JSON.parse(assetId) as AnyJson, xcmCreator);
+				const location = xcmCreator.resolveMultiLocation(JSON.parse(assetId) as AnyJson);
 
 				if (method === 'transferKeepAlive') {
 					tx = foreignAssets.transferKeepAlive(api, addr, location, amount);

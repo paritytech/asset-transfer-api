@@ -24,7 +24,6 @@ import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { sanitizeAddress } from '../../sanitize/sanitizeAddress.js';
 import { AssetTransferType, Direction } from '../../types.js';
 import { normalizeArrToStr } from '../../util/normalizeArrToStr.js';
-import { resolveMultiLocation } from '../../util/resolveMultiLocation.js';
 import type { CreateXcmCallOpts } from '../types.js';
 import { establishXcmPallet } from '../util/establishXcmPallet.js';
 import type { PolkadotXcmBaseArgs } from './types.js';
@@ -176,7 +175,7 @@ export const transferAssetsUsingTypeAndThen = async (
 
 		sendersAddr = sanitizeAddress(sendersAddr);
 		const sendersAccount = createXcmOnDestBeneficiary(sendersAddr, xcmVersion);
-		const resolvedDestChainId = resolveMultiLocation(destChainId, xcmCreator);
+		const resolvedDestChainId = xcmCreator.resolveMultiLocation(destChainId);
 		customXcmOnDestStr = `[{"setAppendix":[{"depositAsset":{"assets":{"Wild":"All"},"beneficiary":${JSON.stringify(sendersAccount)}}}]},{"initiateReserveWithdraw":{"assets":{"Wild":{"AllOf":${JSON.stringify(erc20Location)}}},"reserve":${JSON.stringify(resolvedDestChainId)},"xcm":[{"buyExecution":{"fees":${JSON.stringify(reanchoredERC20AccountLocation)},"weightLimit":"Unlimited"}},{"depositAsset":{"assets":{"Wild":{"AllCounted":"1"}},"beneficiary":${JSON.stringify(beneficiary)}}},{"setTopic":"0x0000000000000000000000000000000000000000000000000000000000000000"}]}},{"setTopic":"0x0000000000000000000000000000000000000000000000000000000000000000"}]`;
 
 		feeAssetTransferType = {

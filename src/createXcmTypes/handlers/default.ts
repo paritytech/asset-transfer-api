@@ -1,5 +1,6 @@
 import type { ApiPromise } from '@polkadot/api';
 
+import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
@@ -15,13 +16,12 @@ import {
 import { createBeneficiary } from '../util/createBeneficiary.js';
 import { createWeightLimit } from '../util/createWeightLimit.js';
 import { createXTokensMultiAssets } from '../util/createXTokensAssets.js';
-import { createXTokensFeeAssetItem } from '../util/createXTokensFeeAssetItem.js';
 import { getXcmCreator } from '../xcm/index.js';
 
 /**
  * These methods are uniform across all handlers / directions
  */
-export abstract class DefaultHandler implements ICreateXcmType {
+export class DefaultHandler implements ICreateXcmType {
 	xcmCreator: XcmCreator;
 
 	constructor(xcmVersion: number) {
@@ -87,6 +87,14 @@ export abstract class DefaultHandler implements ICreateXcmType {
 	}
 
 	createXTokensFeeAssetItem({ paysWithFeeDest }: { paysWithFeeDest?: string }): UnionXcAssetsMultiLocation {
-		return createXTokensFeeAssetItem({ paysWithFeeDest, xcmCreator: this.xcmCreator });
+		if (!paysWithFeeDest) {
+			throw new BaseError(
+				'failed to create xTokens fee multilocation. "paysWithFeeDest" is required.',
+				BaseErrorsEnum.InternalError,
+			);
+		}
+
+		const paysWithFeeMultiLocation = this.xcmCreator.resolveMultiLocation(paysWithFeeDest);
+		return this.xcmCreator.multiLocation(paysWithFeeMultiLocation);
 	}
 }
