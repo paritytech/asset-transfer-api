@@ -26,7 +26,7 @@
 - fix: example building + add CI step to catch failure of any example code ([#581](https://github.com/paritytech/asset-transfer-api/pull/581))
 - test: fix failing integration test ([#580](https://github.com/paritytech/asset-transfer-api/pull/580))
 
-## Docs
+### Docs
 
 - docs: add top level NOTICE and remove individual copyright headers ([#601](https://github.com/paritytech/asset-transfer-api/pull/601))
 

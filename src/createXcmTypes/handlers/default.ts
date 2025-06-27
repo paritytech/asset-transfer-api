@@ -21,7 +21,7 @@ import { getXcmCreator } from '../xcm/index.js';
 /**
  * These methods are uniform across all handlers / directions
  */
-export abstract class DefaultHandler implements ICreateXcmType {
+export class DefaultHandler implements ICreateXcmType {
 	xcmCreator: XcmCreator;
 
 	constructor(xcmVersion: number) {
