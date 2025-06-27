@@ -13,7 +13,7 @@ describe('RelayToBridge', () => {
 	describe('Destination', () => {
 		it('Should work for V3', () => {
 			const destId = `{"parents":"2","interior":{"X1":{"GlobalConsensus":{"Ethereum":{"chainId":"11155111"}}}}}`;
-			const destination = v3Handler.createDest(destId, 3);
+			const destination = v3Handler.createDest(destId);
 
 			const expectedRes = {
 				V3: {
@@ -35,7 +35,7 @@ describe('RelayToBridge', () => {
 		it('Should work for V4', () => {
 			const destId = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}`;
 
-			const destination = v4Handler.createDest(destId, 4);
+			const destination = v4Handler.createDest(destId);
 
 			const expectedRes = {
 				V4: {
@@ -58,7 +58,7 @@ describe('RelayToBridge', () => {
 		it('Should work for V5', () => {
 			const destId = `{"parents":"2","interior":{"X2":[{"GlobalConsensus":"Kusama"},{"Parachain":"1000"}]}}`;
 
-			const destination = v5Handler.createDest(destId, 5);
+			const destination = v5Handler.createDest(destId);
 
 			const expectedRes = {
 				V5: {
@@ -83,7 +83,6 @@ describe('RelayToBridge', () => {
 		it('Should work for V3', async () => {
 			const assets = await v3Handler.createAssets(
 				['10000000000'],
-				3,
 				'paseo',
 				[`{"parents":"0","interior":{"Here":""}}`],
 				{
@@ -117,7 +116,6 @@ describe('RelayToBridge', () => {
 		it('Should work for V4', async () => {
 			const assets = await v4Handler.createAssets(
 				['10000000000'],
-				4,
 				'paseo',
 				[`{"parents":"0","interior":{"Here":""}}`],
 				{
@@ -149,7 +147,6 @@ describe('RelayToBridge', () => {
 		it('Should work for V5', async () => {
 			const assets = await v5Handler.createAssets(
 				['10000000000'],
-				5,
 				'paseo',
 				[`{"parents":"0","interior":{"Here":""}}`],
 				{

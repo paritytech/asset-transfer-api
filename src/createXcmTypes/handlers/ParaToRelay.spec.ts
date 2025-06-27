@@ -17,7 +17,7 @@ describe('ParaToRelay', () => {
 
 	describe('Dest', () => {
 		it('Should work for V2', () => {
-			const dest = v2Handler.createDest('', 2);
+			const dest = v2Handler.createDest('');
 			const expected = {
 				V2: {
 					parents: 1,
@@ -29,7 +29,7 @@ describe('ParaToRelay', () => {
 			expect(dest).toStrictEqual(expected);
 		});
 		it('Should work for V3', () => {
-			const dest = v3Handler.createDest('', 3);
+			const dest = v3Handler.createDest('');
 			const expected = {
 				V3: {
 					parents: 1,
@@ -41,7 +41,7 @@ describe('ParaToRelay', () => {
 			expect(dest).toStrictEqual(expected);
 		});
 		it('Should work for V4', () => {
-			const dest = v4Handler.createDest('', 4);
+			const dest = v4Handler.createDest('');
 			const expected = {
 				V4: {
 					parents: 1,
@@ -53,7 +53,7 @@ describe('ParaToRelay', () => {
 			expect(dest).toStrictEqual(expected);
 		});
 		it('Should work for V5', () => {
-			const dest = v5Handler.createDest('', 5);
+			const dest = v5Handler.createDest('');
 			const expected = {
 				V5: {
 					parents: 1,
@@ -67,7 +67,7 @@ describe('ParaToRelay', () => {
 	});
 	describe('Assets', () => {
 		it('Should work for V2', async () => {
-			const asset = await v2Handler.createAssets(['1000000'], 2, 'Moonriver', ['ksm'], assetOpts);
+			const asset = await v2Handler.createAssets(['1000000'], 'Moonriver', ['ksm'], assetOpts);
 			const expected = {
 				V2: [
 					{
@@ -88,7 +88,7 @@ describe('ParaToRelay', () => {
 			expect(asset).toStrictEqual(expected);
 		});
 		it('Should work for V3', async () => {
-			const asset = await v3Handler.createAssets(['1000000'], 3, 'Moonriver', ['ksm'], assetOpts);
+			const asset = await v3Handler.createAssets(['1000000'], 'Moonriver', ['ksm'], assetOpts);
 			const expected = {
 				V3: [
 					{
@@ -109,7 +109,7 @@ describe('ParaToRelay', () => {
 			expect(asset).toStrictEqual(expected);
 		});
 		it('Should work for V4', async () => {
-			const asset = await v4Handler.createAssets(['1000000'], 4, 'Moonriver', ['ksm'], assetOpts);
+			const asset = await v4Handler.createAssets(['1000000'], 'Moonriver', ['ksm'], assetOpts);
 			const expected = {
 				V4: [
 					{
@@ -128,7 +128,7 @@ describe('ParaToRelay', () => {
 			expect(asset).toStrictEqual(expected);
 		});
 		it('Should work for V5', async () => {
-			const asset = await v5Handler.createAssets(['1000000'], 5, 'Moonriver', ['ksm'], assetOpts);
+			const asset = await v5Handler.createAssets(['1000000'], 'Moonriver', ['ksm'], assetOpts);
 			const expected = {
 				V5: [
 					{
@@ -187,7 +187,6 @@ describe('ParaToRelay', () => {
 			const xTokensBeneficiary = v2Handler.createXTokensBeneficiary(
 				'',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				2,
 			);
 			const expected = {
 				V2: {
@@ -204,7 +203,6 @@ describe('ParaToRelay', () => {
 			const xTokensBeneficiary = v3Handler.createXTokensBeneficiary(
 				'',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				3,
 			);
 			const expected = {
 				V3: {
@@ -221,7 +219,6 @@ describe('ParaToRelay', () => {
 			const xTokensBeneficiary = v4Handler.createXTokensBeneficiary(
 				'',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				4,
 			);
 			const expected = {
 				V4: {
@@ -238,7 +235,6 @@ describe('ParaToRelay', () => {
 			const xTokensBeneficiary = v5Handler.createXTokensBeneficiary(
 				'',
 				'0xf5d5714c084c112843aca74f8c498da06cc5a2d63153b825189baa51043b1f0b',
-				5,
 			);
 			const expected = {
 				V5: {
@@ -254,7 +250,7 @@ describe('ParaToRelay', () => {
 	});
 	describe('XTokensAsset', () => {
 		it('Should work for V2', async () => {
-			const xTokensAsset = await v2Handler.createXTokensAsset('1000000', 2, 'Moonriver', 'KSM', assetOpts);
+			const xTokensAsset = await v2Handler.createXTokensAsset('1000000', 'Moonriver', 'KSM', assetOpts);
 			const expected = {
 				V2: {
 					id: {
@@ -273,7 +269,7 @@ describe('ParaToRelay', () => {
 			expect(xTokensAsset).toStrictEqual(expected);
 		});
 		it('Should work for V3', async () => {
-			const xTokensAsset = await v3Handler.createXTokensAsset('1000000', 3, 'Moonriver', 'KSM', assetOpts);
+			const xTokensAsset = await v3Handler.createXTokensAsset('1000000', 'Moonriver', 'KSM', assetOpts);
 			const expected = {
 				V3: {
 					id: {
@@ -292,7 +288,7 @@ describe('ParaToRelay', () => {
 			expect(xTokensAsset).toStrictEqual(expected);
 		});
 		it('Should work for V4', async () => {
-			const xTokensAsset = await v4Handler.createXTokensAsset('1000000', 4, 'Moonriver', 'KSM', assetOpts);
+			const xTokensAsset = await v4Handler.createXTokensAsset('1000000', 'Moonriver', 'KSM', assetOpts);
 			const expected = {
 				V4: {
 					id: {
@@ -309,7 +305,7 @@ describe('ParaToRelay', () => {
 			expect(xTokensAsset).toStrictEqual(expected);
 		});
 		it('Should work for V5', async () => {
-			const xTokensAsset = await v5Handler.createXTokensAsset('1000000', 5, 'Moonriver', 'KSM', assetOpts);
+			const xTokensAsset = await v5Handler.createXTokensAsset('1000000', 'Moonriver', 'KSM', assetOpts);
 			const expected = {
 				V5: {
 					id: {
