@@ -147,30 +147,7 @@ describe('ParaToRelay', () => {
 			expect(asset).toStrictEqual(expected);
 		});
 	});
-	describe('WeightLimit', () => {
-		it('Should work for unlimited', () => {
-			const weightLimit = v5Handler.createWeightLimit({});
-			const expected = {
-				Unlimited: null,
-			};
-			expect(weightLimit).toStrictEqual(expected);
-		});
-		it('Should work for a custom weightLimit', () => {
-			const weightLimit = v5Handler.createWeightLimit({
-				weightLimit: {
-					refTime: '100000000',
-					proofSize: '10000',
-				},
-			});
-			const expected = {
-				Limited: {
-					refTime: '100000000',
-					proofSize: '10000',
-				},
-			};
-			expect(weightLimit).toStrictEqual(expected);
-		});
-	});
+
 	describe('FeeAssetItem', () => {
 		const opts = {
 			registry,
@@ -182,6 +159,7 @@ describe('ParaToRelay', () => {
 			expect(feeAssetItem).toStrictEqual(0);
 		});
 	});
+
 	describe('XTokensBeneficiaryDest', () => {
 		it('Should work for V2', () => {
 			const xTokensBeneficiary = v2Handler.createXTokensBeneficiary(

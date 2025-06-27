@@ -1,8 +1,6 @@
-// createBeneficiary
-// createWeightLimit
+// TODO:
 // createXTokensAssets
 // createXTokensFeeAssetItem
-
 import { DefaultHandler } from './default';
 
 describe('DefaultHandler', () => {
@@ -45,4 +43,34 @@ describe('DefaultHandler', () => {
 			expect(beneficiary).toStrictEqual(expected);
 		});
 	});
+
+	describe('createWeightLimit', () => {
+		const refTime = '100000000';
+		const proofSize = '1000';
+		const expected = {
+			Limited: {
+				proofSize: '1000',
+				refTime: '100000000',
+			},
+		};
+		test.each([2, 3, 4, 5])('V%i should work when weight limit is provided', (xcmVersion) => {
+			const handler = new DefaultHandler(xcmVersion);
+			const weightLimit = handler.createWeightLimit({
+				weightLimit: {
+					refTime,
+					proofSize,
+				},
+			});
+			expect(weightLimit).toStrictEqual(expected);
+		});
+		test.each([2, 3, 4, 5])('V%i should work when weight limit is provided', (xcmVersion) => {
+			const handler = new DefaultHandler(xcmVersion);
+			const weightLimit = handler.createWeightLimit({});
+			expect(weightLimit).toStrictEqual({ Unlimited: null });
+		});
+	});
+
+	describe.skip('createXTokensAssets', () => {});
+
+	describe.skip('createXTokensFeeAssetItem', () => {});
 });

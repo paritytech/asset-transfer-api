@@ -259,30 +259,4 @@ describe('ParaToEthereum', () => {
 			expect(assets).toStrictEqual(expectedRes);
 		});
 	});
-	describe('WeightLimit', () => {
-		it('Should work when weightLimit option is provided', () => {
-			const refTime = '100000000';
-			const proofSize = '1000';
-
-			const weightLimit = v5Handler.createWeightLimit({
-				weightLimit: {
-					refTime,
-					proofSize,
-				},
-			});
-			expect(weightLimit).toStrictEqual({
-				Limited: {
-					proofSize: '1000',
-					refTime: '100000000',
-				},
-			});
-		});
-		it('Should work when weightLimit option is not provided', () => {
-			const weightLimit = v5Handler.createWeightLimit({});
-
-			expect(weightLimit).toStrictEqual({
-				Unlimited: null,
-			});
-		});
-	});
 });
