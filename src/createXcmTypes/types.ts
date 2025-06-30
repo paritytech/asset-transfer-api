@@ -332,16 +332,11 @@ type XcmAssetIdMap = {
 	V5: UnionXcmMultiLocation;
 };
 
-export type XcmVersionedAssetIdV2 = VersionedWrapper<XcmVersionKey.V2, XcmAssetIdMap[XcmVersionKey.V2]>;
-export type XcmVersionedAssetIdV3 = VersionedWrapper<XcmVersionKey.V3, XcmAssetIdMap[XcmVersionKey.V3]>;
-export type XcmVersionedAssetIdV4 = VersionedWrapper<XcmVersionKey.V4, XcmAssetIdMap[XcmVersionKey.V4]>;
-export type XcmVersionedAssetIdV5 = VersionedWrapper<XcmVersionKey.V5, XcmAssetIdMap[XcmVersionKey.V5]>;
+type XcmVersionedAssetIdMap = {
+	[V in XcmVersionKey]: VersionedWrapper<V, XcmAssetIdMap[V]>;
+};
 
-export type XcmVersionedAssetId =
-	| XcmVersionedAssetIdV2
-	| XcmVersionedAssetIdV3
-	| XcmVersionedAssetIdV4
-	| XcmVersionedAssetIdV5;
+export type XcmVersionedAssetId = XcmVersionedAssetIdMap[XcmVersionKey];
 
 export interface ICreateXcmTypeConstructor {
 	new (xcmVersion: number): ICreateXcmType;
