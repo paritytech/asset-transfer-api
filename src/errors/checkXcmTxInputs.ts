@@ -113,7 +113,7 @@ export const checkParaPrimaryAssetAmountsLength = (amounts: string[]) => {
  *
  * @param assetIds
  */
-export const checkMultiLocationIdLength = (assetIds: string[]) => {
+const checkMultiLocationIdLength = (assetIds: string[]) => {
 	if (assetIds.length === 0) {
 		throw new BaseError('multilocation `assetIds` cannot be empty', BaseErrorsEnum.InvalidInput);
 	}
@@ -124,7 +124,7 @@ export const checkMultiLocationIdLength = (assetIds: string[]) => {
  *
  * @param amounts
  */
-export const checkMultiLocationAmountsLength = (amounts: string[]) => {
+const checkMultiLocationAmountsLength = (amounts: string[]) => {
 	if (amounts.length === 0) {
 		throw new BaseError('multilocation `amounts` cannot be empty', BaseErrorsEnum.InvalidInput);
 	}
@@ -184,7 +184,7 @@ const checkIfAssetIdIsBlankSpace = (assetId: string) => {
  * @param relayChainAsset string
  * @returns boolean
  */
-export const containsNativeRelayAsset = (assetIds: string[], relayChainAsset: string): boolean => {
+const containsNativeRelayAsset = (assetIds: string[], relayChainAsset: string): boolean => {
 	// We assume when the assetId's input is empty that the native token is to be transferred.
 	if (assetIds.length === 0) {
 		return true;
@@ -703,7 +703,7 @@ const checkSystemToParaAssetId = async (
 	);
 };
 
-export const checkIsValidSystemChainAssetId = async (
+const checkIsValidSystemChainAssetId = async (
 	api: ApiPromise,
 	assetId: string,
 	specName: string,
