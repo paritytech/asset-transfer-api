@@ -8,7 +8,6 @@ import {
 	FungibleAssetType,
 	FungibleMultiAsset,
 	UnionXcAssetsMultiAsset,
-	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
@@ -110,7 +109,7 @@ export const V2: XcmCreator = {
 		return { V2: asset as FungibleMultiAsset };
 	},
 
-	multiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
+	multiAssets(assets: FungibleAssetType[]): UnionXcmMultiAssets {
 		return { V2: assets as FungibleMultiAsset[] };
 	},
 

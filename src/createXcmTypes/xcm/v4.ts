@@ -9,7 +9,6 @@ import {
 	FungibleAssetType,
 	InteriorKey,
 	UnionXcAssetsMultiAsset,
-	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
 	UnionXcmMultiLocation,
@@ -112,7 +111,7 @@ export const V4: XcmCreator = {
 		return { V4: asset as FungibleAsset };
 	},
 
-	multiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
+	multiAssets(assets: FungibleAssetType[]): UnionXcmMultiAssets {
 		return { V4: assets as FungibleAsset[] };
 	},
 

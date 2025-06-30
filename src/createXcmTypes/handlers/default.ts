@@ -6,7 +6,6 @@ import {
 	CreateFeeAssetItemOpts,
 	CreateWeightLimitOpts,
 	ICreateXcmType,
-	UnionXcAssetsMultiAssets,
 	UnionXcAssetsMultiLocation,
 	UnionXcmMultiAssets,
 	XcmCreator,
@@ -72,7 +71,7 @@ export class DefaultHandler implements ICreateXcmType {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcAssetsMultiAssets> {
+	): Promise<UnionXcmMultiAssets> {
 		return createXTokensMultiAssets({
 			amounts,
 			assets,

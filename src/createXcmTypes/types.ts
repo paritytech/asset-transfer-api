@@ -168,11 +168,6 @@ export type UnionXcAssetsMultiAsset = {
 	[V in XcmVersionKey]: XcAssetsMultiAsset<V>;
 }[XcmVersionKey];
 
-type XcAssetsMultiAssets<V extends XcmVersionKey> = VersionedXcmType<V, AssetTypeForVersion<V>[]>;
-export type UnionXcAssetsMultiAssets = {
-	[V in XcmVersionKey]: XcAssetsMultiAssets<V>;
-}[XcmVersionKey];
-
 type XcmMultiAssets<V extends XcmVersionKey> = VersionedXcmType<V, AssetTypeForVersion<V>[]>;
 export type UnionXcmMultiAssets = {
 	[V in XcmVersionKey]: XcmMultiAssets<V>;
@@ -334,7 +329,7 @@ export interface ICreateXcmType {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	) => Promise<UnionXcAssetsMultiAssets>;
+	) => Promise<UnionXcmMultiAssets>;
 	createXTokensAsset?: (
 		amount: string,
 		specName: string,
@@ -357,7 +352,7 @@ export interface XcmCreator {
 	fungibleAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
 	resolveMultiLocation: (multiLocation: AnyJson) => UnionXcmMultiLocation;
 	multiAsset: (asset: FungibleAssetType) => UnionXcAssetsMultiAsset;
-	multiAssets: (assets: FungibleAssetType[]) => UnionXcAssetsMultiAssets;
+	multiAssets: (assets: FungibleAssetType[]) => UnionXcmMultiAssets;
 	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
 	remoteReserve: (multiLocation: UnionXcmMultiLocation) => RemoteReserve;
 	versionedAssetId: (multiLocation: UnionXcmMultiLocation) => XcmVersionedAssetId;

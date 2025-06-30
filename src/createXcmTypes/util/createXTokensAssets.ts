@@ -6,7 +6,7 @@ import {
 	CreateAssetsOpts,
 	FungibleAssetType,
 	UnionXcAssetsMultiAsset,
-	UnionXcAssetsMultiAssets,
+	UnionXcmMultiAssets,
 	XcmCreator,
 } from '../types.js';
 import { dedupeAssets } from './dedupeAssets.js';
@@ -34,7 +34,7 @@ export const createXTokensMultiAssets = async ({
 	opts: CreateAssetsOpts;
 	specName: string;
 	xcmCreator: XcmCreator;
-}): Promise<UnionXcAssetsMultiAssets> => {
+}): Promise<UnionXcmMultiAssets> => {
 	let multiAssets: FungibleAssetType[] = [];
 
 	for (let i = 0; i < assets.length; i++) {
