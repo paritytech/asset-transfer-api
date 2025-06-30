@@ -35,10 +35,6 @@ export enum BaseErrorsEnum {
 	 */
 	TokensNotProvided = 'TokensNotProvided',
 	/**
-	 * The direction in which these assets are going to be sent is incorrect.
-	 */
-	InvalidDirection = 'InvalidDirection',
-	/**
 	 * The inputted multilocation is incorrect.
 	 */
 	InvalidMultiLocationAsset = 'InvalidMultiLocationAsset',
@@ -47,17 +43,9 @@ export enum BaseErrorsEnum {
 	 */
 	MultipleNonUniqueAssetsFound = 'MultipleNonUniqueAssetsFound',
 	/**
-	 * Not able to find the pertinent registry to gather certain information. This can refer to xcAssets.
-	 */
-	RegistryNotFound = 'RegistryNotFound',
-	/**
 	 * The xcm version is invalid.
 	 */
 	InvalidXcmVersion = 'InvalidXcmVersion',
-	/**
-	 * Not Implemented yet.
-	 */
-	NotImplemented = 'NotImplemented',
 	/**
 	 * An issue has happened internally.
 	 */
