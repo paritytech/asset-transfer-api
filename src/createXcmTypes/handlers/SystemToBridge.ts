@@ -85,7 +85,7 @@ export class SystemToBridge extends DefaultHandler {
  * @param registry The asset registry used to construct MultiLocations.
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  */
-export const createSystemToBridgeAssets = async ({
+const createSystemToBridgeAssets = async ({
 	api,
 	amounts,
 	specName,
