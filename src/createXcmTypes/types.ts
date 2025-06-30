@@ -158,8 +158,6 @@ export type UnionXcmMultiLocation = XcmV2MultiLocation | XcmV3MultiLocation | Xc
 
 export type UnionXcmMultiAssets = XcmV2MultiAssets | XcmV3MultiAssets | XcmV4MultiAssets | XcmV5MultiAssets;
 
-export type UnionXcmMultiAsset = XcmV2MultiAsset | XcmV3MultiAsset | XcmV4MultiAsset | XcmV5MultiAsset;
-
 export type UnionXcAssetsMultiAssets =
 	| XcAssetsV2MultiAssets
 	| XcAssetsV3MultiAssets
@@ -193,11 +191,6 @@ type XcmV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset[]>
 type XcmV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset[]>;
 type XcmV4MultiAssets = VersionedXcmType<XcmVersionKey.V4, FungibleAsset[]>;
 type XcmV5MultiAssets = VersionedXcmType<XcmVersionKey.V5, FungibleAsset[]>;
-
-type XcmV2MultiAsset = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset>;
-type XcmV3MultiAsset = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset>;
-type XcmV4MultiAsset = VersionedXcmType<XcmVersionKey.V4, FungibleAsset>;
-type XcmV5MultiAsset = VersionedXcmType<XcmVersionKey.V5, FungibleAsset>;
 
 type XcAssetsV2MultiAssets = VersionedXcmType<XcmVersionKey.V2, FungibleMultiAsset[]>;
 type XcAssetsV3MultiAssets = VersionedXcmType<XcmVersionKey.V3, FungibleMultiAsset[]>;
