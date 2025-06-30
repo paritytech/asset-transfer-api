@@ -12,7 +12,7 @@ export interface ForeignAssetsInfo {
 	[key: string]: ForeignAssetsData;
 }
 
-export type PoolPairsData = {
+type PoolPairsData = {
 	[key: string]: {
 		lpToken: string;
 		pairInfo: string;
@@ -51,19 +51,19 @@ export type ChainInfoRegistry<T extends ChainInfoKeys | InjectedChainInfoKeys> =
 
 export type RelayChains = 'polkadot' | 'kusama' | 'westend' | 'paseo';
 
-export type InterMultiLocationJunctionType = 'here' | 'x1' | 'x2' | 'x3' | 'x4' | 'x5' | 'x6' | 'x7' | 'x8';
+type InterMultiLocationJunctionType = 'here' | 'x1' | 'x2' | 'x3' | 'x4' | 'x5' | 'x6' | 'x7' | 'x8';
 type XCMRegistryInteriorMultiLocation = Partial<
 	Record<InterMultiLocationJunctionType, null | XCMRegistryJunction | XCMRegistryJunctions>
 >;
 
-export type XCMRegistryJunction = {
+type XCMRegistryJunction = {
 	[x: string]: string | number | undefined | null | Partial<Record<string, string | number | undefined | null>>;
 };
-export type XCMRegistryJunctions = {
+type XCMRegistryJunctions = {
 	[x: string]: string | number | undefined | null | Partial<Record<string, string | number | undefined | null>>;
 }[];
 
-export interface XCMRegistryMultiLocation {
+interface XCMRegistryMultiLocation {
 	parents: number;
 	interior: XCMRegistryInteriorMultiLocation;
 }
@@ -91,5 +91,3 @@ export type SanitizedXcAssetsData = {
 	assetHubReserveLocation?: string;
 	originChainReserveLocation?: string;
 };
-
-export type AssetsInfoType = 'assetsInfo' | 'foreignAssetsInfo' | 'poolPairsInfo';
