@@ -99,7 +99,7 @@ export type XcmV3MultiLocation = MultiLocation<XcmV3Junctions>;
 export type XcmV4MultiLocation = MultiLocation<XcmV4Junctions>;
 export type XcmV5MultiLocation = MultiLocation<XcmV5Junctions>;
 
-export type XcmV2JunctionBase = {
+type XcmV2JunctionBase = {
 	Parachain: number | string;
 	AccountId32: { network?: XcmV2Network; id: string };
 	AccountIndex64: { network?: XcmV2Network; id: string };
@@ -111,7 +111,7 @@ export type XcmV2JunctionBase = {
 	Plurality: { id: AnyJson; part: AnyJson };
 };
 
-export type XcmV2Network = string | null;
+type XcmV2Network = string | null;
 
 type XcmV3JunctionBase = {
 	Parachain: number;
