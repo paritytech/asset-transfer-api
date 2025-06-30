@@ -2,11 +2,11 @@ import type { ApiPromise } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
-import { UnionXcmMultiLocation } from '../../createXcmTypes/types.js';
+import { XcmMultiLocation } from '../../createXcmTypes/types.js';
 
 export const transferAll = (
 	api: ApiPromise,
-	assetId: UnionXcmMultiLocation,
+	assetId: XcmMultiLocation,
 	destAddr: string,
 	keepAlive: boolean,
 ): SubmittableExtrinsic<'promise', ISubmittableResult> => {

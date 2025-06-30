@@ -6,10 +6,10 @@ import {
 	CreateFeeAssetItemOpts,
 	CreateWeightLimitOpts,
 	ICreateXcmType,
-	UnionXcAssetsMultiLocation,
-	UnionXcmMultiAssets,
+	XcAssetsMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
+	XcmMultiAssets,
 	XcmWeight,
 } from '../types.js';
 import { createBeneficiary } from '../util/createBeneficiary.js';
@@ -56,7 +56,7 @@ export class DefaultHandler implements ICreateXcmType {
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> {
+	): Promise<XcmMultiAssets> {
 		throw new Error('Not Implemented');
 	}
 
@@ -71,7 +71,7 @@ export class DefaultHandler implements ICreateXcmType {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> {
+	): Promise<XcmMultiAssets> {
 		return createXTokensMultiAssets({
 			amounts,
 			assets,
@@ -85,7 +85,7 @@ export class DefaultHandler implements ICreateXcmType {
 		throw new Error('Not Implemented');
 	}
 
-	createXTokensFeeAssetItem({ paysWithFeeDest }: { paysWithFeeDest?: string }): UnionXcAssetsMultiLocation {
+	createXTokensFeeAssetItem({ paysWithFeeDest }: { paysWithFeeDest?: string }): XcAssetsMultiLocation {
 		if (!paysWithFeeDest) {
 			throw new BaseError(
 				'failed to create xTokens fee multilocation. "paysWithFeeDest" is required.',

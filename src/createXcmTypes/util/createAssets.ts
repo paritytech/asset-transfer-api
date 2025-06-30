@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry/Registry.js';
-import { type CreateAssetsOpts, type FungibleAssetType, type UnionXcmMultiAssets, XcmCreator } from '../types.js';
+import { type CreateAssetsOpts, type FungibleAssetType, XcmCreator, type XcmMultiAssets } from '../types.js';
 
 export const createAssets = async ({
 	amounts,
@@ -27,7 +27,7 @@ export const createAssets = async ({
 		xcmCreator: XcmCreator;
 	}) => Promise<FungibleAssetType[]>;
 	xcmCreator: XcmCreator;
-}): Promise<UnionXcmMultiAssets> => {
+}): Promise<XcmMultiAssets> => {
 	const sortedAndDedupedMultiAssets = await multiAssetCreator({
 		api: opts.api,
 		amounts,

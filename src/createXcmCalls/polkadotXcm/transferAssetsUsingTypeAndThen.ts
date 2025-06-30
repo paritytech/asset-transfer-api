@@ -5,8 +5,8 @@ import { getTypeCreator } from '../../createXcmTypes/index.js';
 import {
 	FungibleAsset,
 	FungibleMultiAsset,
-	UnionXcmMultiLocation,
 	WildAsset,
+	XcmMultiLocation,
 	XcmV2Junction,
 	XcmV3Junction,
 	XcmV4Junction,
@@ -83,7 +83,7 @@ export const transferAssetsUsingTypeAndThen = async (
 			if (!assetIdLocationStr.toLowerCase().includes('ethereum')) {
 				continue;
 			}
-			let assetLocation = JSON.parse(assetIdLocationStr) as UnionXcmMultiLocation;
+			let assetLocation = JSON.parse(assetIdLocationStr) as XcmMultiLocation;
 
 			if ('v1' in assetLocation) {
 				assetLocation = parseLocationStrToLocation(JSON.stringify(assetLocation.v1));
@@ -99,7 +99,7 @@ export const transferAssetsUsingTypeAndThen = async (
 										Concrete: {
 											parents: assetLocation.parents,
 											interior: assetLocation.interior,
-										} as UnionXcmMultiLocation,
+										} as XcmMultiLocation,
 									},
 									fun: 'Fungible',
 								}
@@ -107,7 +107,7 @@ export const transferAssetsUsingTypeAndThen = async (
 									id: {
 										parents: assetLocation.parents,
 										interior: assetLocation.interior,
-									} as UnionXcmMultiLocation,
+									} as XcmMultiLocation,
 									fun: 'Fungible',
 								};
 					const erc20KeyX2 = assetLocation.interior?.x2 as
@@ -142,7 +142,7 @@ export const transferAssetsUsingTypeAndThen = async (
 										},
 									},
 								},
-							} as UnionXcmMultiLocation,
+							} as XcmMultiLocation,
 						},
 						fun: {
 							Fungible: '1',
@@ -160,7 +160,7 @@ export const transferAssetsUsingTypeAndThen = async (
 									},
 								],
 							},
-						} as UnionXcmMultiLocation,
+						} as XcmMultiLocation,
 						fun: {
 							Fungible: '1',
 						},

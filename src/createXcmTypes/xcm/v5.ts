@@ -6,13 +6,13 @@ import {
 	FungibleAsset,
 	FungibleAssetType,
 	InteriorKey,
-	UnionXcAssetsMultiAsset,
-	UnionXcAssetsMultiLocation,
-	UnionXcmMultiAssets,
-	UnionXcmMultiLocation,
+	XcAssetsMultiAsset,
+	XcAssetsMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
+	XcmMultiAssets,
+	XcmMultiLocation,
 	XcmV4JunctionDestBeneficiary,
 	XcmV4MultiLocation,
 	XcmV5DestBeneficiary,
@@ -80,29 +80,29 @@ export const V5: XcmCreator = {
 	resolveMultiLocation: V4.resolveMultiLocation,
 
 	// Same as V4
-	multiAsset(asset: FungibleAssetType): UnionXcAssetsMultiAsset {
+	multiAsset(asset: FungibleAssetType): XcAssetsMultiAsset {
 		return { V5: asset as FungibleAsset };
 	},
 
 	// Save as V4
-	multiAssets(assets: FungibleAssetType[]): UnionXcmMultiAssets {
+	multiAssets(assets: FungibleAssetType[]): XcmMultiAssets {
 		return { V5: assets as FungibleAsset[] };
 	},
 
 	// Same as V4
-	multiLocation(multiLocation: UnionXcmMultiLocation): UnionXcAssetsMultiLocation {
+	multiLocation(multiLocation: XcmMultiLocation): XcAssetsMultiLocation {
 		return { V5: { id: multiLocation as XcmV4MultiLocation } };
 	},
 
 	// Same as V3
-	remoteReserve(multiLocation: UnionXcmMultiLocation): RemoteReserve {
+	remoteReserve(multiLocation: XcmMultiLocation): RemoteReserve {
 		return {
 			RemoteReserve: { V5: multiLocation },
 		};
 	},
 
 	// Same as V4
-	versionedAssetId(multiLocation: UnionXcmMultiLocation): XcmVersionedAssetId {
+	versionedAssetId(multiLocation: XcmMultiLocation): XcmVersionedAssetId {
 		return { V5: this.resolveMultiLocation(multiLocation) };
 	},
 
@@ -151,7 +151,7 @@ export const V5: XcmCreator = {
 	},
 
 	// Same as V4
-	hereAsset({ amount, parents }: { amount: string; parents: number }): UnionXcmMultiAssets {
+	hereAsset({ amount, parents }: { amount: string; parents: number }): XcmMultiAssets {
 		const multiAssets: FungibleAssetType[] = [];
 		const multiAsset: FungibleAssetType = {
 			fun: {

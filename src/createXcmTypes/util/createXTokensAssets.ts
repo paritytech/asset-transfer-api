@@ -2,13 +2,7 @@ import { AnyJson } from '@polkadot/types-codec/types';
 
 import { XCMAssetRegistryMultiLocation } from '../../registry/types.js';
 import { Direction } from '../../types.js';
-import {
-	CreateAssetsOpts,
-	FungibleAssetType,
-	UnionXcAssetsMultiAsset,
-	UnionXcmMultiAssets,
-	XcmCreator,
-} from '../types.js';
+import { CreateAssetsOpts, FungibleAssetType, XcAssetsMultiAsset, XcmCreator, XcmMultiAssets } from '../types.js';
 import { dedupeAssets } from './dedupeAssets.js';
 import { getXcAssetMultiLocationByAssetId } from './getXcAssetMultiLocationByAssetId.js';
 import { isParachainPrimaryNativeAsset } from './isParachainPrimaryNativeAsset.js';
@@ -34,7 +28,7 @@ export const createXTokensMultiAssets = async ({
 	opts: CreateAssetsOpts;
 	specName: string;
 	xcmCreator: XcmCreator;
-}): Promise<UnionXcmMultiAssets> => {
+}): Promise<XcmMultiAssets> => {
 	let multiAssets: FungibleAssetType[] = [];
 
 	for (let i = 0; i < assets.length; i++) {
@@ -81,7 +75,7 @@ export const createXTokensAsset = async ({
 	opts: CreateAssetsOpts;
 	specName: string;
 	xcmCreator: XcmCreator;
-}): Promise<UnionXcAssetsMultiAsset> => {
+}): Promise<XcAssetsMultiAsset> => {
 	let multiAsset: FungibleAssetType | undefined;
 
 	// check if asset is the parachains primary native asset
@@ -119,7 +113,7 @@ export const createXTokensAssetToRelay = ({
 	amount: string;
 	parents: number;
 	xcmCreator: XcmCreator;
-}): UnionXcAssetsMultiAsset => {
+}): XcAssetsMultiAsset => {
 	const multiLocation: AnyJson = {
 		Parents: parents,
 		Interior: { Here: null },

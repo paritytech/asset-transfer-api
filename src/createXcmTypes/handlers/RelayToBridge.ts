@@ -1,6 +1,6 @@
 import type { ApiPromise } from '@polkadot/api';
 
-import { CreateAssetsOpts, UnionXcmMultiAssets, XcmDestBeneficiary } from '../types.js';
+import { CreateAssetsOpts, XcmDestBeneficiary, XcmMultiAssets } from '../types.js';
 import { DefaultHandler } from './default.js';
 
 export class RelayToBridge extends DefaultHandler {
@@ -26,7 +26,7 @@ export class RelayToBridge extends DefaultHandler {
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> {
+	): Promise<XcmMultiAssets> {
 		return Promise.resolve(
 			this.xcmCreator.hereAsset({
 				amount: amounts[0],

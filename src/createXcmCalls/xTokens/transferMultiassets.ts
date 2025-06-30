@@ -3,7 +3,7 @@ import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { getTypeCreator } from '../../createXcmTypes/index.js';
 import type { XcmDestBeneficiaryXcAssets } from '../../createXcmTypes/types.js';
-import { UnionXcmMultiAssets } from '../../createXcmTypes/types.js';
+import { XcmMultiAssets } from '../../createXcmTypes/types.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { CreateXcmCallOpts } from '../types.js';
 import type { XTokensBaseArgs } from './types.js';
@@ -28,7 +28,7 @@ export const transferMultiassets = async (
 		weightLimit,
 	});
 
-	let assets: UnionXcmMultiAssets;
+	let assets: XcmMultiAssets;
 	let beneficiary: XcmDestBeneficiaryXcAssets;
 
 	if (

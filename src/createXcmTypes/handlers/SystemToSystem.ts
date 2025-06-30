@@ -7,10 +7,10 @@ import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
-	UnionXcmMultiAssets,
-	UnionXcmMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
+	XcmMultiAssets,
+	XcmMultiLocation,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
@@ -48,7 +48,7 @@ export class SystemToSystem extends DefaultHandler {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> {
+	): Promise<XcmMultiAssets> {
 		return createAssets({
 			amounts,
 			specName,
@@ -130,7 +130,7 @@ const createSystemToSystemMultiAssets = async ({
 			assetId = await getAssetId({ api, registry, asset: assetId, specName, xcmCreator, isForeignAssetsTransfer });
 		}
 
-		let multiLocation: UnionXcmMultiLocation;
+		let multiLocation: XcmMultiLocation;
 
 		if (isForeignAssetsTransfer) {
 			multiLocation = xcmCreator.resolveMultiLocation(assetId);

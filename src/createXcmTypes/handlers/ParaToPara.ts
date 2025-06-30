@@ -9,11 +9,11 @@ import type {
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
 	FungibleMultiAsset,
-	UnionXcAssetsMultiAsset,
-	UnionXcmMultiAssets,
+	XcAssetsMultiAsset,
 	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
+	XcmMultiAssets,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createXTokensParachainDestBeneficiary } from '../util/createBeneficiary.js';
@@ -52,7 +52,7 @@ export class ParaToPara extends DefaultHandler {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> {
+	): Promise<XcmMultiAssets> {
 		return createAssets({
 			amounts,
 			specName,
@@ -101,7 +101,7 @@ export class ParaToPara extends DefaultHandler {
 		specName: string,
 		assetId: string,
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcAssetsMultiAsset> {
+	): Promise<XcAssetsMultiAsset> {
 		return createXTokensAsset({
 			amount,
 			assetId,

@@ -13,7 +13,7 @@ import BN from 'bn.js';
 import { CreateXcmCallOpts } from './createXcmCalls/types.js';
 import { XcmPalletName } from './createXcmCalls/util/establishXcmPallet.js';
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types.js';
-import { UnionXcmMultiLocation } from './createXcmTypes/types.js';
+import { XcmMultiLocation } from './createXcmTypes/types.js';
 import type { Registry } from './registry/index.js';
 import type { ChainInfoKeys, ChainInfoRegistry, InjectedChainInfoKeys } from './registry/types.js';
 
@@ -521,7 +521,7 @@ type XcmVersionKey = 'V3' | 'V4' | 'V5';
 export type RemoteReserve = {
 	[K in XcmVersionKey]: {
 		RemoteReserve: {
-			[P in K]: UnionXcmMultiLocation;
+			[P in K]: XcmMultiLocation;
 		};
 	};
 }[XcmVersionKey];

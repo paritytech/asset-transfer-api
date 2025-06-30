@@ -82,22 +82,22 @@ export type XcmV5Junctions = V4PlusJunctions<XcmV5Junction>;
 
 export type OneOfXcmJunctions = RequireOnlyOne<XcmV5Junctions | XcmV4Junctions | XcmV3Junctions | XcmV2Junctions>;
 
-type Junction<T> = RequireOnlyOne<T>;
+type JunctionVariant<T> = RequireOnlyOne<T>;
 
-export type XcmV2Junction = Junction<XcmV2JunctionBase>;
-export type XcmV3Junction = Junction<XcmV3JunctionBase>;
-export type XcmV4Junction = Junction<XcmV4JunctionBase>;
-export type XcmV5Junction = Junction<XcmV5JunctionBase>;
+export type XcmV2Junction = JunctionVariant<XcmV2JunctionBase>;
+export type XcmV3Junction = JunctionVariant<XcmV3JunctionBase>;
+export type XcmV4Junction = JunctionVariant<XcmV4JunctionBase>;
+export type XcmV5Junction = JunctionVariant<XcmV5JunctionBase>;
 
-type MultiLocation<J> = {
+type MultiLocationVariant<J> = {
 	parents: number;
 	interior: RequireOnlyOne<J>;
 };
 
-export type XcmV2MultiLocation = MultiLocation<XcmV2Junctions>;
-export type XcmV3MultiLocation = MultiLocation<XcmV3Junctions>;
-export type XcmV4MultiLocation = MultiLocation<XcmV4Junctions>;
-export type XcmV5MultiLocation = MultiLocation<XcmV5Junctions>;
+export type XcmV2MultiLocation = MultiLocationVariant<XcmV2Junctions>;
+export type XcmV3MultiLocation = MultiLocationVariant<XcmV3Junctions>;
+export type XcmV4MultiLocation = MultiLocationVariant<XcmV4Junctions>;
+export type XcmV5MultiLocation = MultiLocationVariant<XcmV5Junctions>;
 
 type XcmV2JunctionBase = {
 	Parachain: number | string;
@@ -152,9 +152,9 @@ type XcmV5JunctionBase = {
 	GlobalConsensus: string | AnyJson;
 };
 
-export type UnionJunction = XcmV2Junction | XcmV3Junction | XcmV4Junction | XcmV5Junction;
+export type Junction = XcmV2Junction | XcmV3Junction | XcmV4Junction | XcmV5Junction;
 
-export type UnionXcmMultiLocation = XcmV2MultiLocation | XcmV3MultiLocation | XcmV4MultiLocation | XcmV5MultiLocation;
+export type XcmMultiLocation = XcmV2MultiLocation | XcmV3MultiLocation | XcmV4MultiLocation | XcmV5MultiLocation;
 
 type VersionedXcmType<K extends string, T> = {
 	[P in K]: T;
@@ -163,41 +163,41 @@ type VersionedXcmType<K extends string, T> = {
 type AssetTypeForVersion<V extends XcmVersionKey> = V extends XcmVersionKey.V2 | XcmVersionKey.V3
 	? FungibleMultiAsset
 	: FungibleAsset;
-type XcAssetsMultiAsset<V extends XcmVersionKey> = VersionedXcmType<V, AssetTypeForVersion<V>>;
-export type UnionXcAssetsMultiAsset = {
-	[V in XcmVersionKey]: XcAssetsMultiAsset<V>;
+type XcAssetsMultiAssetVariant<V extends XcmVersionKey> = VersionedXcmType<V, AssetTypeForVersion<V>>;
+export type XcAssetsMultiAsset = {
+	[V in XcmVersionKey]: XcAssetsMultiAssetVariant<V>;
 }[XcmVersionKey];
 
-type XcmMultiAssets<V extends XcmVersionKey> = VersionedXcmType<V, AssetTypeForVersion<V>[]>;
-export type UnionXcmMultiAssets = {
-	[V in XcmVersionKey]: XcmMultiAssets<V>;
+type XcmMultiAssetsVariant<V extends XcmVersionKey> = VersionedXcmType<V, AssetTypeForVersion<V>[]>;
+export type XcmMultiAssets = {
+	[V in XcmVersionKey]: XcmMultiAssetsVariant<V>;
 }[XcmVersionKey];
 
 interface WildAssetV3 {
 	id: {
-		Concrete: UnionXcmMultiLocation;
+		Concrete: XcmMultiLocation;
 	};
 	fun: string;
 }
 
 interface WildAssetV4 {
-	id: UnionXcmMultiLocation;
+	id: XcmMultiLocation;
 	fun: string;
 }
 
 export type WildAsset = WildAssetV3 | WildAssetV4;
 
-export type FungibleAsset<T = UnionXcmMultiLocation> = {
+export type FungibleAsset<T = XcmMultiLocation> = {
 	fun: {
 		Fungible: string;
 	};
 	id: T;
 };
 
-export type FungibleMultiAsset = FungibleAsset<{ Concrete: UnionXcmMultiLocation }>;
+export type FungibleMultiAsset = FungibleAsset<{ Concrete: XcmMultiLocation }>;
 export type FungibleAssetType = FungibleAsset | FungibleMultiAsset;
 
-export type UnionXcAssetsMultiLocation =
+export type XcAssetsMultiLocation =
 	| XcAssetsV2MultiLocation
 	| XcAssetsV3MultiLocation
 	| XcAssetsV4MultiLocation
@@ -294,10 +294,10 @@ export interface CreateWeightLimitOpts {
 }
 
 type XcmAssetIdMap = {
-	V2: { Concrete: UnionXcmMultiLocation };
-	V3: { Concrete: UnionXcmMultiLocation };
-	V4: UnionXcmMultiLocation;
-	V5: UnionXcmMultiLocation;
+	V2: { Concrete: XcmMultiLocation };
+	V3: { Concrete: XcmMultiLocation };
+	V4: XcmMultiLocation;
+	V5: XcmMultiLocation;
 };
 
 type XcmVersionedAssetIdMap = {
@@ -320,7 +320,7 @@ export interface ICreateXcmType {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	) => Promise<UnionXcmMultiAssets>;
+	) => Promise<XcmMultiAssets>;
 	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
 	createXTokensBeneficiary?: (destChainId: string, accountId: string) => XcmDestBeneficiaryXcAssets;
@@ -329,15 +329,15 @@ export interface ICreateXcmType {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	) => Promise<UnionXcmMultiAssets>;
+	) => Promise<XcmMultiAssets>;
 	createXTokensAsset?: (
 		amount: string,
 		specName: string,
 		asset: string,
 		opts: CreateAssetsOpts,
-	) => Promise<UnionXcAssetsMultiAsset>;
+	) => Promise<XcAssetsMultiAsset>;
 	createXTokensWeightLimit?: (opts: CreateWeightLimitOpts) => XcmWeight;
-	createXTokensFeeAssetItem?: (opts: { paysWithFeeDest?: string }) => UnionXcAssetsMultiLocation;
+	createXTokensFeeAssetItem?: (opts: { paysWithFeeDest?: string }) => XcAssetsMultiLocation;
 }
 
 export interface XcmCreator {
@@ -350,15 +350,15 @@ export interface XcmCreator {
 	}) => XcmDestBeneficiaryXcAssets;
 	xTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiaryXcAssets;
 	fungibleAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
-	resolveMultiLocation: (multiLocation: AnyJson) => UnionXcmMultiLocation;
-	multiAsset: (asset: FungibleAssetType) => UnionXcAssetsMultiAsset;
-	multiAssets: (assets: FungibleAssetType[]) => UnionXcmMultiAssets;
-	multiLocation: (multiLocation: UnionXcmMultiLocation) => UnionXcAssetsMultiLocation;
-	remoteReserve: (multiLocation: UnionXcmMultiLocation) => RemoteReserve;
-	versionedAssetId: (multiLocation: UnionXcmMultiLocation) => XcmVersionedAssetId;
+	resolveMultiLocation: (multiLocation: AnyJson) => XcmMultiLocation;
+	multiAsset: (asset: FungibleAssetType) => XcAssetsMultiAsset;
+	multiAssets: (assets: FungibleAssetType[]) => XcmMultiAssets;
+	multiLocation: (multiLocation: XcmMultiLocation) => XcAssetsMultiLocation;
+	remoteReserve: (multiLocation: XcmMultiLocation) => RemoteReserve;
+	versionedAssetId: (multiLocation: XcmMultiLocation) => XcmVersionedAssetId;
 	parachainDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
 	hereDest: (opts: { parents: number }) => XcmDestBeneficiary;
 	interiorDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
-	hereAsset: (opts: { amount: string; parents: number }) => UnionXcmMultiAssets;
+	hereAsset: (opts: { amount: string; parents: number }) => XcmMultiAssets;
 	xcmMessage: (msg: AnyJson) => AnyJson;
 }

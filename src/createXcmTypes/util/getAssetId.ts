@@ -5,7 +5,7 @@ import { ASSET_HUB_CHAIN_ID, MIN_PARACHAIN_ID } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import { validateNumber } from '../../validate/index.js';
-import { UnionXcmMultiLocation, XcmCreator } from '../types.js';
+import { XcmCreator, XcmMultiLocation } from '../types.js';
 import { assetIdIsLocation } from './assetIdIsLocation.js';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry.js';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists.js';
@@ -204,7 +204,7 @@ export const getAssetId = async ({
 						assetId = info.xcmV1MultiLocation;
 						registry.setAssetInCache(asset, assetId);
 					} else if (assetIdIsLocation(asset)) {
-						const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as UnionXcmMultiLocation;
+						const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as XcmMultiLocation;
 
 						if ('v1' in v1AssetLocation) {
 							const registryAssetLocation = parseLocationStrToLocation(JSON.stringify(v1AssetLocation.v1));

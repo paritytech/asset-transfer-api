@@ -6,7 +6,7 @@ import { BN } from 'bn.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { RequireOnlyOne } from '../../types.js';
 import { validateNumber } from '../../validate/index.js';
-import type { FungibleAssetType, UnionJunction, XcmV2Junctions, XcmV3Junctions, XcmV4Junctions } from '../types.js';
+import type { FungibleAssetType, Junction, XcmV2Junctions, XcmV3Junctions, XcmV4Junctions } from '../types.js';
 
 /**
  * This sorts a list of multiassets in ascending order based on their id.
@@ -237,22 +237,13 @@ const getSameJunctionMultiLocationSortOrder = (a: FungibleAssetType, b: Fungible
 };
 
 type MultiLocationJunctions =
-	| [UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
-	| [
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-	  ];
+	| [Junction, Junction]
+	| [Junction, Junction, Junction]
+	| [Junction, Junction, Junction, Junction]
+	| [Junction, Junction, Junction, Junction, Junction]
+	| [Junction, Junction, Junction, Junction, Junction, Junction]
+	| [Junction, Junction, Junction, Junction, Junction, Junction, Junction]
+	| [Junction, Junction, Junction, Junction, Junction, Junction, Junction, Junction];
 
 enum MultiLocationJunctionType {
 	Parachain,

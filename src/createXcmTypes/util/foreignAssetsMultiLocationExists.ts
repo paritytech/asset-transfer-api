@@ -4,7 +4,7 @@ import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import type { ForeignAssetsData } from '../../registry/types.js';
 import type { AssetMetadata } from '../../types.js';
-import { UnionXcmMultiLocation } from '../types.js';
+import { XcmMultiLocation } from '../types.js';
 
 export const foreignAssetsMultiLocationExists = async (
 	assetHubApi: ApiPromise,
@@ -12,7 +12,7 @@ export const foreignAssetsMultiLocationExists = async (
 	multilocationStr: string,
 ): Promise<boolean> => {
 	try {
-		const rawMultiLocation = JSON.parse(multilocationStr) as UnionXcmMultiLocation;
+		const rawMultiLocation = JSON.parse(multilocationStr) as XcmMultiLocation;
 		const foreignAsset = await assetHubApi.query.foreignAssets.asset(rawMultiLocation);
 
 		// check if foreign asset exists

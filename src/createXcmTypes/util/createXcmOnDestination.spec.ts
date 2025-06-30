@@ -1,4 +1,4 @@
-import { UnionXcmMultiLocation } from '../types';
+import { XcmMultiLocation } from '../types';
 import { getXcmCreator } from '../xcm';
 import { createXcmOnDestination } from './createXcmOnDestination';
 
@@ -14,7 +14,7 @@ describe('createXcmOnDestination', () => {
 			interior: {
 				X1: { AccountId32: { id: accountId } },
 			},
-		} as UnionXcmMultiLocation;
+		} as XcmMultiLocation;
 
 		const xcmVersion = 3;
 		const xcmCreator = getXcmCreator(xcmVersion);
@@ -54,7 +54,7 @@ describe('createXcmOnDestination', () => {
 			interior: {
 				X1: { AccountId32: { id: accountId } },
 			},
-		} as UnionXcmMultiLocation;
+		} as XcmMultiLocation;
 
 		const xcmVersion = 4;
 		const xcmCreator = getXcmCreator(xcmVersion);
@@ -94,7 +94,7 @@ describe('createXcmOnDestination', () => {
 			interior: {
 				X1: { AccountId32: { id: accountId } },
 			},
-		} as UnionXcmMultiLocation;
+		} as XcmMultiLocation;
 
 		const xcmVersion = 5;
 		const xcmCreator = getXcmCreator(xcmVersion);

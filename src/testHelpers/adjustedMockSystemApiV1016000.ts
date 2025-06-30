@@ -13,7 +13,7 @@ import { ITuple } from '@polkadot/types-codec/types';
 import { getSpecTypes } from '@polkadot/types-known';
 import BN from 'bn.js';
 
-import type { UnionXcmMultiLocation } from '../createXcmTypes/types';
+import type { XcmMultiLocation } from '../createXcmTypes/types';
 import { createApiWithAugmentations } from './createApiWithAugmentations';
 import { assetHubWestendV1016000 } from './metadata/assetHubWestendV1016000';
 import { mockDryRunCallResult } from './mockDryRunCallResult';
@@ -199,7 +199,7 @@ const assetsMetadata = (assetId: number | string | BN): Promise<PalletAssetsAsse
 		return mockSystemApi.registry.createType('PalletAssetsAssetMetadata', {});
 	});
 
-const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssetsAssetDetails>> =>
+const foreignAsset = (asset: XcmMultiLocation): Promise<Option<PalletAssetsAssetDetails>> =>
 	Promise.resolve().then(() => {
 		const assets: Map<string, PalletAssetsAssetDetails> = new Map();
 		const assetMultiLocation = JSON.stringify(asset);
@@ -252,7 +252,7 @@ const foreignAsset = (asset: UnionXcmMultiLocation): Promise<Option<PalletAssets
 		return mockSystemApi.registry.createType('Option<PalletAssetsAssetDetails>', undefined);
 	});
 
-const foreignAssetsMetadata = (assetId: UnionXcmMultiLocation): Promise<PalletAssetsAssetMetadata> =>
+const foreignAssetsMetadata = (assetId: XcmMultiLocation): Promise<PalletAssetsAssetMetadata> =>
 	Promise.resolve().then(() => {
 		const metadata: Map<string, PalletAssetsAssetMetadata> = new Map();
 		const assetIdMultiLocation = JSON.stringify(assetId);

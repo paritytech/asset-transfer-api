@@ -42,7 +42,7 @@ import {
 import { CreateXcmCallOpts } from './createXcmCalls/types.js';
 import { establishXcmPallet, XcmPalletName } from './createXcmCalls/util/establishXcmPallet.js';
 import { XTokensBaseArgs } from './createXcmCalls/xTokens/types.js';
-import { UnionXcmMultiLocation, XcmCreator, XcmVersionedAssetId } from './createXcmTypes/types.js';
+import { XcmCreator, XcmMultiLocation, XcmVersionedAssetId } from './createXcmTypes/types.js';
 import { assetIdIsLocation } from './createXcmTypes/util/assetIdIsLocation.js';
 import { assetIdsContainRelayAsset } from './createXcmTypes/util/assetIdsContainsRelayAsset.js';
 import { chainDestIsBridge } from './createXcmTypes/util/chainDestIsBridge.js';
@@ -1103,16 +1103,14 @@ export class AssetTransferApi {
 	/**
 	 * checks the chains state and determines whether an asset location is a part of a valid token liquidity pool pair
 	 *
-	 * @param paysWithFeeOrigin UnionXcmMultiLocation
+	 * @param paysWithFeeOrigin XcmMultiLocation
 	 * @returns Promise<boolean>
 	 */
-	private checkAssetLpTokenPairExists = async (
-		paysWithFeeOrigin: string,
-	): Promise<[boolean, UnionXcmMultiLocation]> => {
-		let feeAsset: UnionXcmMultiLocation;
+	private checkAssetLpTokenPairExists = async (paysWithFeeOrigin: string): Promise<[boolean, XcmMultiLocation]> => {
+		let feeAsset: XcmMultiLocation;
 
 		try {
-			feeAsset = sanitizeKeys(JSON.parse(paysWithFeeOrigin)) as UnionXcmMultiLocation;
+			feeAsset = sanitizeKeys(JSON.parse(paysWithFeeOrigin)) as XcmMultiLocation;
 		} catch (err: unknown) {
 			throw new BaseError(
 				`paysWithFeeOrigin value must be a valid asset location. Received: ${paysWithFeeOrigin}`,
@@ -1126,7 +1124,7 @@ export class AssetTransferApi {
 
 				for (const poolPairsData of liquidityPools) {
 					const lpTokens = poolPairsData[0].toHuman(); // get asset location tuple
-					const lpTokenLocations = lpTokens as UnionXcmMultiLocation[];
+					const lpTokenLocations = lpTokens as XcmMultiLocation[];
 
 					if (Array.isArray(lpTokenLocations[0])) {
 						// convert json into locations

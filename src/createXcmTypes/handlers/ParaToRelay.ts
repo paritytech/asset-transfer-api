@@ -3,10 +3,10 @@ import type { ApiPromise } from '@polkadot/api';
 import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
-	UnionXcAssetsMultiAsset,
-	UnionXcmMultiAssets,
+	XcAssetsMultiAsset,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
+	XcmMultiAssets,
 } from '../types.js';
 import { createXTokensDestBeneficiary } from '../util/createBeneficiary.js';
 import { createXTokensAssetToRelay } from '../util/createXTokensAssets.js';
@@ -32,7 +32,7 @@ export class ParaToRelay extends DefaultHandler {
 		_specName: string,
 		_assets: string[],
 		_opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> {
+	): Promise<XcmMultiAssets> {
 		return Promise.resolve(
 			this.xcmCreator.hereAsset({
 				amount: amounts[0],
@@ -58,7 +58,7 @@ export class ParaToRelay extends DefaultHandler {
 		_specName: string,
 		_asset: string,
 		_opts: CreateAssetsOpts,
-	): Promise<UnionXcAssetsMultiAsset> {
+	): Promise<XcAssetsMultiAsset> {
 		return Promise.resolve(
 			createXTokensAssetToRelay({
 				amount,
