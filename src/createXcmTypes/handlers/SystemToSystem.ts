@@ -87,7 +87,7 @@ export class SystemToSystem extends DefaultHandler {
  * @param isForeignAssetsTransfer Whether this transfer is a foreign assets transfer.
  * @param isLiquidTokenTransfer Whether this transfer is a liquid pool assets transfer.
  */
-export const createSystemToSystemMultiAssets = async ({
+const createSystemToSystemMultiAssets = async ({
 	api,
 	amounts,
 	specName,
