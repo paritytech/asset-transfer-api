@@ -1,0 +1,5 @@
+{
+  "project": ["src/**", "examples/**", "e2e-tests/**"],
+  "entry": ["src/index.ts", "examples/**/*.ts"],
+  "ignore": ["src/registry/registry-json-cjs.cts"]
+}
