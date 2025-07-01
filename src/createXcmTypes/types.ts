@@ -162,22 +162,13 @@ export type FungibleAsset<T = XcmMultiLocation> = {
 export type FungibleMultiAsset = FungibleAsset<{ Concrete: XcmMultiLocation }>;
 export type FungibleAssetType = FungibleAsset | FungibleMultiAsset;
 
-export type XcAssetsMultiLocation =
-	| XcAssetsV2MultiLocation
-	| XcAssetsV3MultiLocation
-	| XcAssetsV4MultiLocation
-	| XcAssetsV5MultiLocation;
-
-type XcAssetsMultiLocationMap = {
-	V2: { id: { Concrete: XcmV2MultiLocation } };
-	V3: { id: { Concrete: XcmV3MultiLocation } };
-	V4: { id: XcmV4MultiLocation };
-	V5: { id: XcmV5MultiLocation };
-};
-type XcAssetsV2MultiLocation = VersionedWrapper<XcmVersionKey.V2, XcAssetsMultiLocationMap[XcmVersionKey.V2]>;
-type XcAssetsV3MultiLocation = VersionedWrapper<XcmVersionKey.V3, XcAssetsMultiLocationMap[XcmVersionKey.V3]>;
-type XcAssetsV4MultiLocation = VersionedWrapper<XcmVersionKey.V4, XcAssetsMultiLocationMap[XcmVersionKey.V4]>;
-type XcAssetsV5MultiLocation = VersionedWrapper<XcmVersionKey.V5, XcAssetsMultiLocationMap[XcmVersionKey.V5]>;
+type XcAssetsMultiLocationVariant<V extends XcmVersionKey> = V extends XcmVersionKey.V2 | XcmVersionKey.V3
+	? { id: { Concrete: XcmMultiLocationForVersion<V> } }
+	: { id: XcmMultiLocationForVersion<V> };
+type XcAssetsMultiLocationForVersion<V extends XcmVersionKey> = VersionedWrapper<V, XcAssetsMultiLocationVariant<V>>;
+export type XcAssetsMultiLocation = {
+	[V in XcmVersionKey]: XcAssetsMultiLocationForVersion<V>;
+}[XcmVersionKey];
 
 type XcmDestBeneficiaryMap = {
 	V2: {
