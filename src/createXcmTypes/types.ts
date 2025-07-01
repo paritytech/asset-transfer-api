@@ -80,32 +80,23 @@ type JunctionsForVersion<V extends XcmVersionKey, T> = V extends XcmVersionKey.V
 export type XcmJunctionsForVersion<V extends XcmVersionKey> = JunctionsForVersion<V, XcmJunctionForVersion<V>>;
 export type XcmJunctions = { [V in XcmVersionKey]: XcmJunctionsForVersion<V> }[XcmVersionKey];
 
-type XcmV2Junctions = Junctions<XcmV2Junction>;
-type XcmV3Junctions = Junctions<XcmV3Junction>;
-type XcmV4Junctions = V4PlusJunctions<XcmV4Junction>;
-type XcmV5Junctions = V4PlusJunctions<XcmV5Junction>;
-
-export type OneOfXcmJunctions = RequireOnlyOne<XcmV5Junctions | XcmV4Junctions | XcmV3Junctions | XcmV2Junctions>;
+export type OneOfXcmJunctions = RequireOnlyOne<XcmJunctions>;
 
 type JunctionVariant<T> = RequireOnlyOne<T>;
 type XcmJunctionForVersion<V extends XcmVersionKey> = JunctionVariant<XcmJunctionBase<V>>;
 export type XcmJunction = {
 	[V in XcmVersionKey]: XcmJunctionForVersion<V>;
 }[XcmVersionKey];
-type XcmV2Junction = XcmJunctionForVersion<XcmVersionKey.V2>;
-type XcmV3Junction = XcmJunctionForVersion<XcmVersionKey.V3>;
-type XcmV4Junction = XcmJunctionForVersion<XcmVersionKey.V4>;
-type XcmV5Junction = XcmJunctionForVersion<XcmVersionKey.V5>;
 
 type MultiLocationVariant<J> = {
 	parents: number;
 	interior: RequireOnlyOne<J>;
 };
 
-export type XcmV2MultiLocation = MultiLocationVariant<XcmV2Junctions>;
-export type XcmV3MultiLocation = MultiLocationVariant<XcmV3Junctions>;
-export type XcmV4MultiLocation = MultiLocationVariant<XcmV4Junctions>;
-export type XcmV5MultiLocation = MultiLocationVariant<XcmV5Junctions>;
+export type XcmV2MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V2>>;
+export type XcmV3MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V3>>;
+export type XcmV4MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V4>>;
+export type XcmV5MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V5>>;
 
 type XcmNetwork = string | null;
 
@@ -126,8 +117,6 @@ type XcmJunctionExtras<V extends XcmVersionKey> = V extends XcmVersionKey.V2
 		? { GlobalConsensus: string | AnyJson }
 		: never;
 type XcmJunctionBase<V extends XcmVersionKey> = XcmJunctionFields & XcmJunctionExtras<V>;
-
-export type Junction = XcmV2Junction | XcmV3Junction | XcmV4Junction | XcmV5Junction;
 
 export type XcmMultiLocation = XcmV2MultiLocation | XcmV3MultiLocation | XcmV4MultiLocation | XcmV5MultiLocation;
 

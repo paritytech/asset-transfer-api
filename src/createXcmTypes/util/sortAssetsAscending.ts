@@ -6,7 +6,7 @@ import { BN } from 'bn.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { RequireOnlyOne } from '../../types.js';
 import { validateNumber } from '../../validate/index.js';
-import type { FungibleAssetType, Junction, XcmJunctionsForVersion, XcmVersionKey } from '../types.js';
+import type { FungibleAssetType, XcmJunction, XcmJunctionsForVersion, XcmVersionKey } from '../types.js';
 
 type RequireOnlyOneXcmJunctions = {
 	[V in XcmVersionKey]: RequireOnlyOne<XcmJunctionsForVersion<V>>;
@@ -212,13 +212,13 @@ const getSameJunctionMultiLocationSortOrder = (a: FungibleAssetType, b: Fungible
 };
 
 type MultiLocationJunctions =
-	| [Junction, Junction]
-	| [Junction, Junction, Junction]
-	| [Junction, Junction, Junction, Junction]
-	| [Junction, Junction, Junction, Junction, Junction]
-	| [Junction, Junction, Junction, Junction, Junction, Junction]
-	| [Junction, Junction, Junction, Junction, Junction, Junction, Junction]
-	| [Junction, Junction, Junction, Junction, Junction, Junction, Junction, Junction];
+	| [XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction];
 
 enum MultiLocationJunctionType {
 	Parachain,
