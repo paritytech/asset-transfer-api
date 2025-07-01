@@ -2,7 +2,7 @@ import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import { SanitizedXcAssetsData } from '../../registry/types.js';
 import { sanitizeKeys } from '../../util/sanitizeKeys.js';
-import { XcmMultiLocation, XcmV3Junction } from '../types.js';
+import { XcmJunction, XcmMultiLocation } from '../types.js';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const getParachainNativeAssetLocation = (
@@ -65,14 +65,14 @@ const getNativeAssetLocation = (
 				location = {
 					parents: 0,
 					interior: {
-						X1: location.interior.X2[1] as XcmV3Junction,
+						X1: location.interior.X2[1] as XcmJunction,
 					},
 				};
 			} else if (location.interior.X1) {
 				location = {
 					parents: 0,
 					interior: {
-						X1: location.interior.X1 as XcmV3Junction,
+						X1: location.interior.X1 as XcmJunction,
 					},
 				};
 			}

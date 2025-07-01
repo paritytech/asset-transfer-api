@@ -84,15 +84,13 @@ export type OneOfXcmJunctions = RequireOnlyOne<XcmV5Junctions | XcmV4Junctions |
 
 type JunctionVariant<T> = RequireOnlyOne<T>;
 type XcmJunctionForVersion<V extends XcmVersionKey> = JunctionVariant<XcmJunctionBase<V>>;
-// Union of all Junctions
-// type XcmJunction = {
-// 	[V in XcmVersionKey]: XcmJunctionForVersion<V>;
-// }[XcmVersionKey];
-
-export type XcmV2Junction = XcmJunctionForVersion<XcmVersionKey.V2>;
-export type XcmV3Junction = XcmJunctionForVersion<XcmVersionKey.V3>;
-export type XcmV4Junction = XcmJunctionForVersion<XcmVersionKey.V4>;
-export type XcmV5Junction = XcmJunctionForVersion<XcmVersionKey.V5>;
+export type XcmJunction = {
+	[V in XcmVersionKey]: XcmJunctionForVersion<V>;
+}[XcmVersionKey];
+type XcmV2Junction = XcmJunctionForVersion<XcmVersionKey.V2>;
+type XcmV3Junction = XcmJunctionForVersion<XcmVersionKey.V3>;
+type XcmV4Junction = XcmJunctionForVersion<XcmVersionKey.V4>;
+type XcmV5Junction = XcmJunctionForVersion<XcmVersionKey.V5>;
 
 type MultiLocationVariant<J> = {
 	parents: number;

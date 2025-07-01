@@ -13,10 +13,10 @@ import {
 	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
+	XcmJunction,
 	XcmMultiAssets,
 	XcmMultiLocation,
 	XcmV4DestBeneficiary,
-	XcmV4Junction,
 	XcmV4JunctionDestBeneficiary,
 	XcmV4MultiLocation,
 	XcmVersionedAssetId,
@@ -98,8 +98,7 @@ export const V4: XcmCreator = {
 			result = {
 				parents: result.parents,
 				interior: {
-					// TODO: cleanup - V3, V4, V5 Junction's are all the same
-					X1: [result.interior.X1 as XcmV4Junction],
+					X1: [result.interior.X1 as XcmJunction],
 				},
 			};
 		}
