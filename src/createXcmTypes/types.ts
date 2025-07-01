@@ -74,11 +74,16 @@ type Junctions<T> = {
 interface V4PlusJunctions<T> extends Omit<Junctions<T>, 'X1'> {
 	X1: [T];
 }
+type JunctionsForVersion<V extends XcmVersionKey, T> = V extends XcmVersionKey.V2 | XcmVersionKey.V3
+	? Junctions<T>
+	: V4PlusJunctions<T>;
+export type XcmJunctionsForVersion<V extends XcmVersionKey> = JunctionsForVersion<V, XcmJunctionForVersion<V>>;
+export type XcmJunctions = { [V in XcmVersionKey]: XcmJunctionsForVersion<V> }[XcmVersionKey];
 
-export type XcmV2Junctions = Junctions<XcmV2Junction>;
-export type XcmV3Junctions = Junctions<XcmV3Junction>;
-export type XcmV4Junctions = V4PlusJunctions<XcmV4Junction>;
-export type XcmV5Junctions = V4PlusJunctions<XcmV5Junction>;
+type XcmV2Junctions = Junctions<XcmV2Junction>;
+type XcmV3Junctions = Junctions<XcmV3Junction>;
+type XcmV4Junctions = V4PlusJunctions<XcmV4Junction>;
+type XcmV5Junctions = V4PlusJunctions<XcmV5Junction>;
 
 export type OneOfXcmJunctions = RequireOnlyOne<XcmV5Junctions | XcmV4Junctions | XcmV3Junctions | XcmV2Junctions>;
 
