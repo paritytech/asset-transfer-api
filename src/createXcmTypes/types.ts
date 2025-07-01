@@ -83,11 +83,16 @@ export type XcmV5Junctions = V4PlusJunctions<XcmV5Junction>;
 export type OneOfXcmJunctions = RequireOnlyOne<XcmV5Junctions | XcmV4Junctions | XcmV3Junctions | XcmV2Junctions>;
 
 type JunctionVariant<T> = RequireOnlyOne<T>;
+type XcmJunctionForVersion<V extends XcmVersionKey> = JunctionVariant<XcmJunctionBase<V>>;
+// Union of all Junctions
+// type XcmJunction = {
+// 	[V in XcmVersionKey]: XcmJunctionForVersion<V>;
+// }[XcmVersionKey];
 
-export type XcmV2Junction = JunctionVariant<XcmV2JunctionBase>;
-export type XcmV3Junction = JunctionVariant<XcmV3JunctionBase>;
-export type XcmV4Junction = JunctionVariant<XcmV4JunctionBase>;
-export type XcmV5Junction = JunctionVariant<XcmV5JunctionBase>;
+export type XcmV2Junction = XcmJunctionForVersion<XcmVersionKey.V2>;
+export type XcmV3Junction = XcmJunctionForVersion<XcmVersionKey.V3>;
+export type XcmV4Junction = XcmJunctionForVersion<XcmVersionKey.V4>;
+export type XcmV5Junction = XcmJunctionForVersion<XcmVersionKey.V5>;
 
 type MultiLocationVariant<J> = {
 	parents: number;
@@ -101,56 +106,23 @@ export type XcmV5MultiLocation = MultiLocationVariant<XcmV5Junctions>;
 
 type XcmNetwork = string | null;
 
-type XcmV2JunctionBase = {
-	Parachain: number;
+type XcmJunctionFields = {
 	AccountId32: { network?: XcmNetwork; id: string };
 	AccountIndex64: { network?: XcmNetwork; id: string };
 	AccountKey20: { network?: XcmNetwork; key: string };
-	PalletInstance: number | string;
 	GeneralIndex: string | number;
 	GeneralKey: string;
 	OnlyChild: AnyJson;
-	Plurality: { id: AnyJson; part: AnyJson };
-};
-
-type XcmV3JunctionBase = {
 	Parachain: number;
-	AccountId32: { network?: XcmNetwork; id: string };
-	AccountIndex64: { network?: XcmNetwork; id: string };
-	AccountKey20: { network?: XcmNetwork; key: string };
 	PalletInstance: number;
-	GeneralIndex: string | number;
-	GeneralKey: string;
-	OnlyChild: AnyJson;
 	Plurality: { id: AnyJson; part: AnyJson };
-	GlobalConsensus: string | AnyJson;
 };
-
-type XcmV4JunctionBase = {
-	Parachain: number;
-	AccountId32: { network?: XcmNetwork; id: string };
-	AccountIndex64: { network?: XcmNetwork; id: string };
-	AccountKey20: { network?: XcmNetwork; key: string };
-	PalletInstance: number;
-	GeneralIndex: string | number;
-	GeneralKey: string;
-	OnlyChild: AnyJson;
-	Plurality: { id: AnyJson; part: AnyJson };
-	GlobalConsensus: string | AnyJson;
-};
-
-type XcmV5JunctionBase = {
-	Parachain: number;
-	AccountId32: { network?: XcmNetwork; id: string };
-	AccountIndex64: { network?: XcmNetwork; id: string };
-	AccountKey20: { network?: XcmNetwork; key: string };
-	PalletInstance: number;
-	GeneralIndex: string | number;
-	GeneralKey: string;
-	OnlyChild: AnyJson;
-	Plurality: { id: AnyJson; part: AnyJson };
-	GlobalConsensus: string | AnyJson;
-};
+type XcmJunctionExtras<V extends XcmVersionKey> = V extends XcmVersionKey.V2
+	? {}
+	: V extends Exclude<XcmVersionKey, XcmVersionKey.V2>
+		? { GlobalConsensus: string | AnyJson }
+		: never;
+type XcmJunctionBase<V extends XcmVersionKey> = XcmJunctionFields & XcmJunctionExtras<V>;
 
 export type Junction = XcmV2Junction | XcmV3Junction | XcmV4Junction | XcmV5Junction;
 
