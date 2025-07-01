@@ -14,8 +14,8 @@ import {
 	XcmMultiAssets,
 	XcmMultiLocation,
 	XcmV4JunctionDestBeneficiary,
-	XcmV4MultiLocation,
 	XcmV5DestBeneficiary,
+	XcmV5MultiLocation,
 	XcmVersionedAssetId,
 } from '../types.js';
 import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
@@ -91,7 +91,7 @@ export const V5: XcmCreator = {
 
 	// Same as V4
 	multiLocation(multiLocation: XcmMultiLocation): XcAssetsMultiLocation {
-		return { V5: { id: multiLocation as XcmV4MultiLocation } };
+		return { V5: { id: multiLocation as XcmV5MultiLocation } };
 	},
 
 	// Same as V3
