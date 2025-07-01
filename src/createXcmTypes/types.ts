@@ -249,17 +249,12 @@ export interface CreateWeightLimitOpts {
 	weightLimit?: WeightV2;
 }
 
-type XcmAssetIdMap = {
-	V2: { Concrete: XcmMultiLocation };
-	V3: { Concrete: XcmMultiLocation };
-	V4: XcmMultiLocation;
-	V5: XcmMultiLocation;
-};
-
+type AssetIdForVersion<V extends XcmVersionKey> = V extends XcmVersionKey.V2 | XcmVersionKey.V3
+	? { Concrete: XcmMultiLocation }
+	: XcmMultiLocation;
 type XcmVersionedAssetIdMap = {
-	[V in XcmVersionKey]: VersionedWrapper<V, XcmAssetIdMap[V]>;
+	[V in XcmVersionKey]: VersionedWrapper<V, AssetIdForVersion<V>>;
 };
-
 export type XcmVersionedAssetId = XcmVersionedAssetIdMap[XcmVersionKey];
 
 export interface ICreateXcmTypeConstructor {
