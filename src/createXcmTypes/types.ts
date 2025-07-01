@@ -78,7 +78,7 @@ type JunctionsForVersion<V extends XcmVersionKey, T> = V extends XcmVersionKey.V
 	? Junctions<T>
 	: V4PlusJunctions<T>;
 export type XcmJunctionsForVersion<V extends XcmVersionKey> = JunctionsForVersion<V, XcmJunctionForVersion<V>>;
-export type XcmJunctions = { [V in XcmVersionKey]: XcmJunctionsForVersion<V> }[XcmVersionKey];
+type XcmJunctions = { [V in XcmVersionKey]: XcmJunctionsForVersion<V> }[XcmVersionKey];
 
 export type OneOfXcmJunctions = RequireOnlyOne<XcmJunctions>;
 
