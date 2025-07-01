@@ -39,8 +39,6 @@ export const createAssetLocations = async ({
 		const amount = amounts[i];
 		let assetId = assetIds[i];
 
-		const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, assetIdsContainLocations);
-
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
 
@@ -59,11 +57,15 @@ export const createAssetLocations = async ({
 			multiLocation = xcmCreator.resolveMultiLocation(assetId);
 		} else {
 			const parents = isRelayNative && !isRelayChain ? 1 : 0;
-			const interior: OneOfXcmJunctions = isRelayNative
-				? { Here: '' }
-				: {
-						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-					};
+			let interior: OneOfXcmJunctions;
+			if (isRelayNative) {
+				interior = { Here: '' };
+			} else {
+				const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, assetIdsContainLocations);
+				interior = {
+					X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
+				};
+			}
 
 			multiLocation = {
 				parents,

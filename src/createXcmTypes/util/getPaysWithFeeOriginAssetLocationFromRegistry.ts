@@ -28,7 +28,7 @@ export const getPaysWithFeeOriginAssetLocationFromRegistry = (
 				interior: {
 					X2: [
 						{
-							PalletInstance: '50',
+							PalletInstance: 50,
 						},
 						{
 							GeneralIndex: paysWithFeeOriginAssetId,

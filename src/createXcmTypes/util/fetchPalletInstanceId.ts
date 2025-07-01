@@ -14,7 +14,7 @@ export const fetchPalletInstanceId = (
 	assetId: string,
 	isLiquidToken: boolean,
 	isForeignAsset: boolean,
-): string => {
+): number => {
 	if (isLiquidToken && isForeignAsset) {
 		throw new BaseError(
 			"Can't find the appropriate pallet when both liquid tokens and foreign assets",
@@ -31,9 +31,9 @@ export const fetchPalletInstanceId = (
 					? 'Assets'
 					: '';
 
-	// return early if assets pallet is not found and palletName is not PoolAssets or ForeignAssets
+	// throw error if assets pallet is not found and palletName is not PoolAssets or ForeignAssets
 	if (!api.query.assets && palletName.length === 0) {
-		return palletName;
+		throw new BaseError(`No pallet available, can't find a valid PalletInstance.`, BaseErrorsEnum.PalletNotFound);
 	}
 
 	const pallet = api.registry.metadata.pallets.filter((pallet) => pallet.name.toString() === palletName);
@@ -45,5 +45,5 @@ export const fetchPalletInstanceId = (
 		);
 	}
 
-	return pallet[0].index.toString();
+	return pallet[0].index.toNumber();
 };
