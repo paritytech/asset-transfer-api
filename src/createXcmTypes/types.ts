@@ -99,11 +99,13 @@ export type XcmV3MultiLocation = MultiLocationVariant<XcmV3Junctions>;
 export type XcmV4MultiLocation = MultiLocationVariant<XcmV4Junctions>;
 export type XcmV5MultiLocation = MultiLocationVariant<XcmV5Junctions>;
 
+type XcmNetwork = string | null;
+
 type XcmV2JunctionBase = {
-	Parachain: number | string;
-	AccountId32: { network?: XcmV2Network; id: string };
-	AccountIndex64: { network?: XcmV2Network; id: string };
-	AccountKey20: { network?: XcmV2Network; key: string };
+	Parachain: number;
+	AccountId32: { network?: XcmNetwork; id: string };
+	AccountIndex64: { network?: XcmNetwork; id: string };
+	AccountKey20: { network?: XcmNetwork; key: string };
 	PalletInstance: number | string;
 	GeneralIndex: string | number;
 	GeneralKey: string;
@@ -111,13 +113,11 @@ type XcmV2JunctionBase = {
 	Plurality: { id: AnyJson; part: AnyJson };
 };
 
-type XcmV2Network = string | null;
-
 type XcmV3JunctionBase = {
 	Parachain: number;
-	AccountId32: { network?: XcmV2Network; id: string };
-	AccountIndex64: { network?: XcmV2Network; id: string };
-	AccountKey20: { network?: XcmV2Network; key: string };
+	AccountId32: { network?: XcmNetwork; id: string };
+	AccountIndex64: { network?: XcmNetwork; id: string };
+	AccountKey20: { network?: XcmNetwork; key: string };
 	PalletInstance: number;
 	GeneralIndex: string | number;
 	GeneralKey: string;
@@ -128,9 +128,9 @@ type XcmV3JunctionBase = {
 
 type XcmV4JunctionBase = {
 	Parachain: number;
-	AccountId32: { network?: XcmV2Network; id: string };
-	AccountIndex64: { network?: XcmV2Network; id: string };
-	AccountKey20: { network?: XcmV2Network; key: string };
+	AccountId32: { network?: XcmNetwork; id: string };
+	AccountIndex64: { network?: XcmNetwork; id: string };
+	AccountKey20: { network?: XcmNetwork; key: string };
 	PalletInstance: number;
 	GeneralIndex: string | number;
 	GeneralKey: string;
@@ -141,9 +141,9 @@ type XcmV4JunctionBase = {
 
 type XcmV5JunctionBase = {
 	Parachain: number;
-	AccountId32: { network?: XcmV2Network; id: string };
-	AccountIndex64: { network?: XcmV2Network; id: string };
-	AccountKey20: { network?: XcmV2Network; key: string };
+	AccountId32: { network?: XcmNetwork; id: string };
+	AccountIndex64: { network?: XcmNetwork; id: string };
+	AccountKey20: { network?: XcmNetwork; key: string };
 	PalletInstance: number;
 	GeneralIndex: string | number;
 	GeneralKey: string;
