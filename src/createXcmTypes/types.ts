@@ -92,7 +92,10 @@ type MultiLocationVariant<J> = {
 	parents: number;
 	interior: RequireOnlyOne<J>;
 };
-
+type XcmMultiLocationForVersion<V extends XcmVersionKey> = MultiLocationVariant<XcmJunctionsForVersion<V>>;
+export type XcmMultiLocation = {
+	[V in XcmVersionKey]: XcmMultiLocationForVersion<V>;
+}[XcmVersionKey];
 export type XcmV2MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V2>>;
 export type XcmV3MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V3>>;
 export type XcmV4MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V4>>;
@@ -117,8 +120,6 @@ type XcmJunctionExtras<V extends XcmVersionKey> = V extends XcmVersionKey.V2
 		? { GlobalConsensus: string | AnyJson }
 		: never;
 type XcmJunctionBase<V extends XcmVersionKey> = XcmJunctionFields & XcmJunctionExtras<V>;
-
-export type XcmMultiLocation = XcmV2MultiLocation | XcmV3MultiLocation | XcmV4MultiLocation | XcmV5MultiLocation;
 
 type VersionedXcmType<K extends string, T> = {
 	[P in K]: T;
