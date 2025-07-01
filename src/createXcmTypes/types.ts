@@ -243,10 +243,10 @@ export interface CreateFeeAssetItemOpts {
 	isLiquidTokenTransfer: boolean;
 }
 
-type WeightV2 = { refTime?: string; proofSize?: string };
+type Weight = { refTime?: string; proofSize?: string };
 
 export interface CreateWeightLimitOpts {
-	weightLimit?: WeightV2;
+	weightLimit?: Weight;
 }
 
 type AssetIdForVersion<V extends XcmVersionKey> = V extends XcmVersionKey.V2 | XcmVersionKey.V3
