@@ -137,29 +137,19 @@ export type XcmDestBeneficiary = {
 	};
 };
 
-type XcmDestBeneficiaryMap = {
-	V2: {
-		parents: string | number;
-		interior: { X1: { AccountId32: { id: string } } };
-	};
-	V3: {
-		parents: string | number;
-		interior: { X1: { AccountId32: { id: string } } };
-	};
-	V4: {
-		parents: string | number;
-		interior: { X1: [{ AccountId32: { id: string } }] };
-	};
-	V5: {
-		parents: string | number;
-		interior: { X1: [{ AccountId32: { id: string } }] };
+type X1BeneficiaryInner<V extends XcmVersionKey> = V extends XcmVersionKey.V2 | XcmVersionKey.V3
+	? { AccountId32: { id: string } }
+	: [{ AccountId32: { id: string } }];
+type X1BeneficiaryVariant<V extends XcmVersionKey> = {
+	parents: string | number;
+	interior: {
+		X1: X1BeneficiaryInner<V>;
 	};
 };
-// Used in v{}.ts
-export type XcmV2DestBeneficiary = VersionedXcmType<XcmVersionKey.V2, XcmDestBeneficiaryMap[XcmVersionKey.V2]>;
-export type XcmV3DestBeneficiary = VersionedXcmType<XcmVersionKey.V3, XcmDestBeneficiaryMap[XcmVersionKey.V3]>;
-export type XcmV4DestBeneficiary = VersionedXcmType<XcmVersionKey.V4, XcmDestBeneficiaryMap[XcmVersionKey.V4]>;
-export type XcmV5DestBeneficiary = VersionedXcmType<XcmVersionKey.V5, XcmDestBeneficiaryMap[XcmVersionKey.V5]>;
+type X1BeneficiaryForVersion<V extends XcmVersionKey> = VersionedXcmType<V, X1BeneficiaryVariant<V>>;
+type X1Beneficiary = {
+	[V in XcmVersionKey]: X1BeneficiaryForVersion<V>;
+}[XcmVersionKey];
 
 // only used in common.ts
 export type ParachainX2Interior =
@@ -185,10 +175,7 @@ type XcmV5ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersio
 
 // used in v{}.ts, createBeneficiary, ParaTo{}.ts, transferMultiassets.ts
 export type XcmDestBeneficiaryXcAssets =
-	| XcmV2DestBeneficiary
-	| XcmV3DestBeneficiary
-	| XcmV4DestBeneficiary
-	| XcmV5DestBeneficiary
+	| X1Beneficiary
 	| XcmV2ParachainDestBeneficiary
 	| XcmV3ParachainDestBeneficiary
 	| XcmV4ParachainDestBeneficiary

@@ -17,7 +17,6 @@ import {
 	XcmJunctionDestBeneficiary,
 	XcmMultiAssets,
 	XcmMultiLocation,
-	XcmV4DestBeneficiary,
 	XcmV4MultiLocation,
 	XcmVersionedAssetId,
 } from '../types.js';
@@ -64,12 +63,12 @@ export const V4: XcmCreator = {
 		accountId: string;
 		parents: number;
 	}): XcmDestBeneficiaryXcAssets {
-		const X1 = [{ AccountId32: { id: accountId } }]; // Now in array
+		const X1 = [{ AccountId32: { id: accountId } }] as [{ AccountId32: { id: string } }];
 		const beneficiary = {
 			parents,
 			interior: { X1 },
 		};
-		return { V4: beneficiary } as XcmV4DestBeneficiary;
+		return { V4: beneficiary };
 	},
 
 	fungibleAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {

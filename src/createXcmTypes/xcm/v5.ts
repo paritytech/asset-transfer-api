@@ -14,7 +14,6 @@ import {
 	XcmJunctionDestBeneficiary,
 	XcmMultiAssets,
 	XcmMultiLocation,
-	XcmV5DestBeneficiary,
 	XcmV5MultiLocation,
 	XcmVersionedAssetId,
 } from '../types.js';
@@ -57,12 +56,12 @@ export const V5: XcmCreator = {
 		accountId: string;
 		parents: number;
 	}): XcmDestBeneficiaryXcAssets {
-		const X1 = [{ AccountId32: { id: accountId } }]; // Now in array
+		const X1 = [{ AccountId32: { id: accountId } }] as [{ AccountId32: { id: string } }];
 		const beneficiary = {
 			parents,
 			interior: { X1 },
 		};
-		return { V5: beneficiary } as XcmV5DestBeneficiary;
+		return { V5: beneficiary };
 	},
 
 	// Same as V4

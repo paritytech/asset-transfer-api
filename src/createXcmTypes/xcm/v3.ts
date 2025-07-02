@@ -16,7 +16,6 @@ import {
 	XcmDestBeneficiaryXcAssets,
 	XcmMultiAssets,
 	XcmMultiLocation,
-	XcmV3DestBeneficiary,
 	XcmV3MultiLocation,
 	XcmVersionedAssetId,
 } from '../types.js';
@@ -67,7 +66,7 @@ export const V3: XcmCreator = {
 			parents,
 			interior: { X1 },
 		};
-		return { V3: beneficiary } as XcmV3DestBeneficiary;
+		return { V3: beneficiary };
 	},
 
 	// Same as V2

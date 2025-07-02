@@ -14,7 +14,6 @@ import {
 	XcmDestBeneficiaryXcAssets,
 	XcmMultiAssets,
 	XcmMultiLocation,
-	XcmV2DestBeneficiary,
 	XcmV2MultiLocation,
 	XcmVersionedAssetId,
 } from '../types.js';
@@ -66,7 +65,7 @@ export const V2: XcmCreator = {
 			parents,
 			interior: { X1 },
 		};
-		return { V2: beneficiary } as XcmV2DestBeneficiary;
+		return { V2: beneficiary };
 	},
 
 	fungibleAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
