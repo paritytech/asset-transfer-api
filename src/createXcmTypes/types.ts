@@ -95,19 +95,6 @@ export type XcAssetsMultiLocation = {
 
 // DestBeneficiaries
 
-export type InteriorValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
-
-export type InteriorKey = {
-	[x: string]: InteriorValue;
-};
-
-export type XcmDestBeneficiary = {
-	[x: string]: {
-		parents: number;
-		interior: InteriorKey;
-	};
-};
-
 type XcmJunctionDestBeneficiary = {
 	AccountId32: {
 		network?: string;
@@ -121,6 +108,7 @@ type XcmJunctionDestBeneficiary = {
 	GlobalConsensus: string | AnyJson;
 };
 
+// Only used in v4.ts and v5.ts for interiorDest() -> XcmDestBeneficiary
 export type XcmV4JunctionDestBeneficiary =
 	| {
 			AccountId32: {
@@ -141,6 +129,27 @@ export type XcmV4JunctionDestBeneficiary =
 			GlobalConsensus: string | AnyJson;
 	  };
 
+// Only used in v3.ts - interiorDest() -> XcmDestBeneficiary
+export type InteriorValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
+
+// Only used in v3.ts, v4.ts, v5.ts
+// to define interior when returning
+// {
+// 	parents,
+// 	interior: parseLocationStrToLocation()
+// }
+export type InteriorKey = {
+	[x: string]: InteriorValue;
+};
+
+// Used just about everywhere
+export type XcmDestBeneficiary = {
+	[x: string]: {
+		parents: number;
+		interior: InteriorKey;
+	};
+};
+
 type XcmDestBeneficiaryMap = {
 	V2: {
 		parents: string | number;
@@ -159,15 +168,18 @@ type XcmDestBeneficiaryMap = {
 		interior: { X1: [{ AccountId32: { id: string } }] };
 	};
 };
+// Used in v{}.ts
 export type XcmV2DestBeneficiary = VersionedXcmType<XcmVersionKey.V2, XcmDestBeneficiaryMap[XcmVersionKey.V2]>;
 export type XcmV3DestBeneficiary = VersionedXcmType<XcmVersionKey.V3, XcmDestBeneficiaryMap[XcmVersionKey.V3]>;
 export type XcmV4DestBeneficiary = VersionedXcmType<XcmVersionKey.V4, XcmDestBeneficiaryMap[XcmVersionKey.V4]>;
 export type XcmV5DestBeneficiary = VersionedXcmType<XcmVersionKey.V5, XcmDestBeneficiaryMap[XcmVersionKey.V5]>;
 
+// only used in common.ts
 export type ParachainX2Interior =
 	| [{ Parachain: string }, { AccountId32: { id: string } }]
 	| [{ Parachain: string }, { AccountKey20: { key: string } }];
 
+// only used in common.ts and v{}.ts for xTokensParachainDestBeneficiary() -> XcmDestBeneficiaryXcAssets
 export type ParachainDestBeneficiaryInner = {
 	parents: string | number;
 	interior: {
@@ -184,6 +196,7 @@ type XcmV3ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersio
 type XcmV4ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V4>;
 type XcmV5ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V5>;
 
+// used in v{}.ts, createBeneficiary, ParaTo{}.ts, transferMultiassets.ts
 export type XcmDestBeneficiaryXcAssets =
 	| XcmV2DestBeneficiary
 	| XcmV3DestBeneficiary
