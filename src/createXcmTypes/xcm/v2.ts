@@ -9,9 +9,9 @@ import {
 	FungibleMultiAsset,
 	XcAssetsMultiAsset,
 	XcAssetsMultiLocation,
+	XcmBeneficiary,
 	XcmCreator,
 	XcmDestBeneficiary,
-	XcmDestBeneficiaryXcAssets,
 	XcmMultiAssets,
 	XcmMultiLocation,
 	XcmV2MultiLocation,
@@ -44,7 +44,7 @@ export const V2: XcmCreator = {
 		accountId: string;
 		destChainId: string;
 		parents: number;
-	}): XcmDestBeneficiaryXcAssets {
+	}): XcmBeneficiary {
 		const beneficiary = createParachainDestBeneficiaryInner({
 			accountId,
 			destChainId,
@@ -53,13 +53,7 @@ export const V2: XcmCreator = {
 		return { V2: beneficiary };
 	},
 
-	xTokensDestBeneficiary({
-		accountId,
-		parents = 1,
-	}: {
-		accountId: string;
-		parents: number;
-	}): XcmDestBeneficiaryXcAssets {
+	xTokensDestBeneficiary({ accountId, parents = 1 }: { accountId: string; parents: number }): XcmBeneficiary {
 		const X1 = { AccountId32: { id: accountId } };
 		const beneficiary = {
 			parents,

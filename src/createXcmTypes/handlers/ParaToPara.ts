@@ -10,9 +10,9 @@ import type {
 	FungibleAssetType,
 	FungibleMultiAsset,
 	XcAssetsMultiAsset,
+	XcmBeneficiary,
 	XcmCreator,
 	XcmDestBeneficiary,
-	XcmDestBeneficiaryXcAssets,
 	XcmMultiAssets,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
@@ -84,7 +84,7 @@ export class ParaToPara extends DefaultHandler {
 	 * @param destChainId The parachain Id of the destination.
 	 * @param accountId The accountId of the beneficiary.
 	 */
-	createXTokensBeneficiary(destChainId: string, accountId: string): XcmDestBeneficiaryXcAssets {
+	createXTokensBeneficiary(destChainId: string, accountId: string): XcmBeneficiary {
 		return createXTokensParachainDestBeneficiary(destChainId, accountId, this.xcmCreator);
 	}
 

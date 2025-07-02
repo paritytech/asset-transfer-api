@@ -156,7 +156,7 @@ export type X2BeneficiaryInner =
 	| [{ Parachain: string }, { AccountId32: { id: string } }]
 	| [{ Parachain: string }, { AccountKey20: { key: string } }];
 
-// only used in common.ts and v{}.ts for xTokensParachainDestBeneficiary() -> XcmDestBeneficiaryXcAssets
+// only used in common.ts
 export type X2BeneficiaryVariant = {
 	parents: string | number;
 	interior: {
@@ -169,7 +169,7 @@ export type X2Beneficiary = {
 }[XcmVersionKey];
 
 // used in v{}.ts, createBeneficiary, ParaTo{}.ts, transferMultiassets.ts
-export type XcmDestBeneficiaryXcAssets = X1Beneficiary | X2Beneficiary;
+export type XcmBeneficiary = X1Beneficiary | X2Beneficiary;
 
 // Wild Asset
 interface WildAssetV3 {
@@ -268,7 +268,7 @@ export interface ICreateXcmType {
 	) => Promise<XcmMultiAssets>;
 	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
-	createXTokensBeneficiary?: (destChainId: string, accountId: string) => XcmDestBeneficiaryXcAssets;
+	createXTokensBeneficiary?: (destChainId: string, accountId: string) => XcmBeneficiary;
 	createXTokensAssets?: (
 		amounts: string[],
 		specName: string,
@@ -293,8 +293,8 @@ export interface XcmCreator {
 		accountId: string;
 		destChainId: string;
 		parents: number;
-	}) => XcmDestBeneficiaryXcAssets;
-	xTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiaryXcAssets;
+	}) => XcmBeneficiary;
+	xTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmBeneficiary;
 	fungibleAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
 	resolveMultiLocation: (multiLocation: AnyJson) => XcmMultiLocation;
 	multiAsset: (asset: FungibleAssetType) => XcAssetsMultiAsset;
