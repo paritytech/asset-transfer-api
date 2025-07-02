@@ -1,6 +1,6 @@
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
-import { ParachainDestBeneficiaryInner, ParachainX2Interior } from '../types.js';
+import { X2BeneficiaryInner, X2BeneficiaryVariant } from '../types.js';
 
 export const createParachainDestBeneficiaryInner = ({
 	accountId,
@@ -10,8 +10,8 @@ export const createParachainDestBeneficiaryInner = ({
 	accountId: string;
 	destChainId: string;
 	parents: number;
-}): ParachainDestBeneficiaryInner => {
-	const X2: ParachainX2Interior = isEthereumAddress(accountId)
+}): X2BeneficiaryVariant => {
+	const X2: X2BeneficiaryInner = isEthereumAddress(accountId)
 		? [{ Parachain: destChainId }, { AccountKey20: { key: accountId } }]
 		: [{ Parachain: destChainId }, { AccountId32: { id: accountId } }];
 	return {

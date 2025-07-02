@@ -152,34 +152,24 @@ type X1Beneficiary = {
 }[XcmVersionKey];
 
 // only used in common.ts
-export type ParachainX2Interior =
+export type X2BeneficiaryInner =
 	| [{ Parachain: string }, { AccountId32: { id: string } }]
 	| [{ Parachain: string }, { AccountKey20: { key: string } }];
 
 // only used in common.ts and v{}.ts for xTokensParachainDestBeneficiary() -> XcmDestBeneficiaryXcAssets
-export type ParachainDestBeneficiaryInner = {
+export type X2BeneficiaryVariant = {
 	parents: string | number;
 	interior: {
-		X2: ParachainX2Interior;
+		X2: X2BeneficiaryInner;
 	};
 };
-
-type VersionedParachainDestBeneficiary<K extends string> = {
-	[P in K]: ParachainDestBeneficiaryInner;
-};
-
-type XcmV2ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V2>;
-type XcmV3ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V3>;
-type XcmV4ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V4>;
-type XcmV5ParachainDestBeneficiary = VersionedParachainDestBeneficiary<XcmVersionKey.V5>;
+type X2BeneficiaryForVersion<V extends XcmVersionKey> = VersionedXcmType<V, X2BeneficiaryVariant>;
+export type X2Beneficiary = {
+	[V in XcmVersionKey]: X2BeneficiaryForVersion<V>;
+}[XcmVersionKey];
 
 // used in v{}.ts, createBeneficiary, ParaTo{}.ts, transferMultiassets.ts
-export type XcmDestBeneficiaryXcAssets =
-	| X1Beneficiary
-	| XcmV2ParachainDestBeneficiary
-	| XcmV3ParachainDestBeneficiary
-	| XcmV4ParachainDestBeneficiary
-	| XcmV5ParachainDestBeneficiary;
+export type XcmDestBeneficiaryXcAssets = X1Beneficiary | X2Beneficiary;
 
 // Wild Asset
 interface WildAssetV3 {
