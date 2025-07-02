@@ -123,7 +123,14 @@ export const V4: XcmCreator = {
 	},
 
 	parachainDest({ destId, parents }: { destId: string; parents: number }): XcmDestBeneficiary {
-		const X1 = [{ Parachain: destId }];
+		const chainId = Number(destId);
+		if (isNaN(chainId)) {
+			throw new BaseError(
+				'destChainId expected to be string representation of an integer',
+				BaseErrorsEnum.InvalidInput,
+			);
+		}
+		const X1 = [{ Parachain: chainId }];
 		return {
 			V4: {
 				parents,

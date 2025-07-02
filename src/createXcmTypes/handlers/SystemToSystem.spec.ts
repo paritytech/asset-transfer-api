@@ -18,7 +18,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: '1000',
+							Parachain: 1000,
 						},
 					},
 				},
@@ -34,7 +34,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: '1002',
+							Parachain: 1002,
 						},
 					},
 				},
@@ -51,7 +51,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					interior: {
 						X1: [
 							{
-								Parachain: '1002',
+								Parachain: 1002,
 							},
 						],
 					},
@@ -69,7 +69,7 @@ describe('SystemToSystem XcmVersioned Generation', () => {
 					interior: {
 						X1: [
 							{
-								Parachain: '1002',
+								Parachain: 1002,
 							},
 						],
 					},

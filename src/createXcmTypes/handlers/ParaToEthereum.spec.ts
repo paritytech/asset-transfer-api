@@ -18,7 +18,7 @@ describe('ParaToEthereum', () => {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: '100',
+							Parachain: 100,
 						},
 					},
 				},
@@ -34,7 +34,7 @@ describe('ParaToEthereum', () => {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: '100',
+							Parachain: 100,
 						},
 					},
 				},
@@ -51,7 +51,7 @@ describe('ParaToEthereum', () => {
 					interior: {
 						X1: [
 							{
-								Parachain: '100',
+								Parachain: 100,
 							},
 						],
 					},
@@ -69,7 +69,7 @@ describe('ParaToEthereum', () => {
 					interior: {
 						X1: [
 							{
-								Parachain: '100',
+								Parachain: 100,
 							},
 						],
 					},

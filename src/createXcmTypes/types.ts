@@ -104,7 +104,7 @@ export type XcmJunctionDestBeneficiary =
 			};
 	  }
 	| {
-			Parachain: string;
+			Parachain: number;
 	  }
 	| {
 			AccountKey20: {
@@ -153,8 +153,8 @@ type X1Beneficiary = {
 
 // only used in common.ts
 export type X2BeneficiaryInner =
-	| [{ Parachain: string }, { AccountId32: { id: string } }]
-	| [{ Parachain: string }, { AccountKey20: { key: string } }];
+	| [{ Parachain: number }, { AccountId32: { id: string } }]
+	| [{ Parachain: number }, { AccountKey20: { key: string } }];
 
 // only used in common.ts
 export type X2BeneficiaryVariant = {
