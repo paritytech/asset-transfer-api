@@ -11,9 +11,9 @@ import {
 	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
+	XcmJunctionDestBeneficiary,
 	XcmMultiAssets,
 	XcmMultiLocation,
-	XcmV4JunctionDestBeneficiary,
 	XcmV5DestBeneficiary,
 	XcmV5MultiLocation,
 	XcmVersionedAssetId,
@@ -133,9 +133,9 @@ export const V5: XcmCreator = {
 
 		let interior: InteriorKey | undefined = undefined;
 		if (multiLocation && multiLocation.interior.X1) {
-			interior = { X1: [multiLocation.interior.X1 as XcmV4JunctionDestBeneficiary] };
+			interior = { X1: [multiLocation.interior.X1 as XcmJunctionDestBeneficiary] };
 		} else {
-			interior = { X2: multiLocation.interior.X2 as XcmV4JunctionDestBeneficiary[] };
+			interior = { X2: multiLocation.interior.X2 as XcmJunctionDestBeneficiary[] };
 		}
 
 		if (!interior) {

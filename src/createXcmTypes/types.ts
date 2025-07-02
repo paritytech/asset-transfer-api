@@ -95,21 +95,8 @@ export type XcAssetsMultiLocation = {
 
 // DestBeneficiaries
 
-type XcmJunctionDestBeneficiary = {
-	AccountId32: {
-		network?: string;
-		id: string;
-	};
-	AccountKey20: {
-		network?: string;
-		key: string;
-	};
-	Parachain: string;
-	GlobalConsensus: string | AnyJson;
-};
-
 // Only used in v4.ts and v5.ts for interiorDest() -> XcmDestBeneficiary
-export type XcmV4JunctionDestBeneficiary =
+export type XcmJunctionDestBeneficiary =
 	| {
 			AccountId32: {
 				network?: string;
@@ -130,7 +117,7 @@ export type XcmV4JunctionDestBeneficiary =
 	  };
 
 // Only used in v3.ts - interiorDest() -> XcmDestBeneficiary
-export type InteriorValue = RequireOnlyOne<XcmJunctionDestBeneficiary> | XcmV4JunctionDestBeneficiary[] | null;
+export type InteriorValue = XcmJunctionDestBeneficiary | XcmJunctionDestBeneficiary[] | null;
 
 // Only used in v3.ts, v4.ts, v5.ts
 // to define interior when returning
