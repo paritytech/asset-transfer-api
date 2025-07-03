@@ -207,8 +207,11 @@ export const getAssetId = async ({
 						const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as XcmMultiLocation;
 
 						if ('v1' in v1AssetLocation) {
-							const registryAssetLocation = parseLocationStrToLocation(JSON.stringify(v1AssetLocation.v1));
-							const assetLocation = parseLocationStrToLocation(asset);
+							const registryAssetLocation = parseLocationStrToLocation(
+								JSON.stringify(v1AssetLocation.v1),
+								xcmCreator.xcmVersion,
+							);
+							const assetLocation = parseLocationStrToLocation(asset, xcmCreator.xcmVersion);
 
 							if (JSON.stringify(registryAssetLocation).toLowerCase() === JSON.stringify(assetLocation).toLowerCase()) {
 								assetId = info.xcmV1MultiLocation;

@@ -125,7 +125,7 @@ export type X2BeneficiaryVariant = {
 	};
 };
 type X2BeneficiaryForVersion<V extends XcmVersionKey> = VersionedXcmType<V, X2BeneficiaryVariant>;
-export type X2Beneficiary = {
+type X2Beneficiary = {
 	[V in XcmVersionKey]: X2BeneficiaryForVersion<V>;
 }[XcmVersionKey];
 

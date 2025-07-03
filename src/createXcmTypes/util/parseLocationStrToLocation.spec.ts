@@ -1,3 +1,4 @@
+import { DEFAULT_XCM_VERSION } from '../../consts';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation';
 
 describe('parseLocationStrToLocation', () => {
@@ -16,7 +17,7 @@ describe('parseLocationStrToLocation', () => {
 				],
 			},
 		};
-		const result = parseLocationStrToLocation(locationStr);
+		const result = parseLocationStrToLocation(locationStr, DEFAULT_XCM_VERSION);
 
 		expect(result).toEqual(expected);
 	});
@@ -36,14 +37,14 @@ describe('parseLocationStrToLocation', () => {
 				],
 			},
 		};
-		const result = parseLocationStrToLocation(locationStr);
+		const result = parseLocationStrToLocation(locationStr, DEFAULT_XCM_VERSION);
 
 		expect(result).toEqual(expected);
 	});
 	it('Should correctly error when an unparseable location string is provided', () => {
 		const locationStr = '{"parents":"2","interior":{"X2":[{GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}';
 
-		const err = () => parseLocationStrToLocation(locationStr);
+		const err = () => parseLocationStrToLocation(locationStr, DEFAULT_XCM_VERSION);
 
 		expect(err).toThrow(
 			'Unable to parse {"parents":"2","interior":{"X2":[{GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}} as a valid location',

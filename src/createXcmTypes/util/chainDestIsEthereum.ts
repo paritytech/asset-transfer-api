@@ -1,3 +1,4 @@
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const chainDestIsEthereum = (destLocation: string): boolean => {
@@ -5,7 +6,7 @@ export const chainDestIsEthereum = (destLocation: string): boolean => {
 		return false;
 	}
 
-	const location = parseLocationStrToLocation(destLocation);
+	const location = parseLocationStrToLocation(destLocation, DEFAULT_XCM_VERSION);
 
 	const destIsEthereum = location.interior.X1
 		? JSON.stringify(location.interior.X1).toLowerCase().includes('ethereum')

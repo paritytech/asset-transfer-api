@@ -148,7 +148,7 @@ export const V4: XcmCreator = {
 	},
 
 	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
-		const multiLocation = parseLocationStrToLocation(destId) as XcmV4MultiLocation;
+		const multiLocation = parseLocationStrToLocation(destId, this.xcmVersion) as XcmV4MultiLocation;
 
 		return {
 			V4: {
