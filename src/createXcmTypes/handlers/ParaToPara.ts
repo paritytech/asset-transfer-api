@@ -12,8 +12,8 @@ import type {
 	XcAssetsMultiAsset,
 	XcmBeneficiary,
 	XcmCreator,
-	XcmDestBeneficiary,
 	XcmMultiAssets,
+	XcmVersionedMultiLocation,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createXTokensParachainDestBeneficiary } from '../util/createBeneficiary.js';
@@ -32,7 +32,7 @@ export class ParaToPara extends DefaultHandler {
 	 *
 	 * @param destId The parachain Id of the destination.
 	 */
-	createDest(destId: string): XcmDestBeneficiary {
+	createDest(destId: string): XcmVersionedMultiLocation {
 		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 1,

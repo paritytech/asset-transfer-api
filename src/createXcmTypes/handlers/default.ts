@@ -8,8 +8,8 @@ import {
 	ICreateXcmType,
 	XcAssetsMultiLocation,
 	XcmCreator,
-	XcmDestBeneficiary,
 	XcmMultiAssets,
+	XcmVersionedMultiLocation,
 	XcmWeight,
 } from '../types.js';
 import { createBeneficiary } from '../util/createBeneficiary.js';
@@ -32,7 +32,7 @@ export class DefaultHandler implements ICreateXcmType {
 	 *
 	 * @param accountId The accountId of the beneficiary.
 	 */
-	createBeneficiary(accountId: string): XcmDestBeneficiary {
+	createBeneficiary(accountId: string): XcmVersionedMultiLocation {
 		return createBeneficiary(accountId, this.xcmCreator);
 	}
 
@@ -47,7 +47,7 @@ export class DefaultHandler implements ICreateXcmType {
 
 	// Unique per handler
 
-	createDest(_destId: string): XcmDestBeneficiary {
+	createDest(_destId: string): XcmVersionedMultiLocation {
 		throw new Error('Not Implemented');
 	}
 

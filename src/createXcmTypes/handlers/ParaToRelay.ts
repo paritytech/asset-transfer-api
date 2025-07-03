@@ -5,8 +5,8 @@ import {
 	CreateFeeAssetItemOpts,
 	XcAssetsMultiAsset,
 	XcmBeneficiary,
-	XcmDestBeneficiary,
 	XcmMultiAssets,
+	XcmVersionedMultiLocation,
 } from '../types.js';
 import { createXTokensDestBeneficiary } from '../util/createBeneficiary.js';
 import { createXTokensAssetToRelay } from '../util/createXTokensAssets.js';
@@ -18,7 +18,7 @@ export class ParaToRelay extends DefaultHandler {
 	 *
 	 * @param destId The destId in this case, which is the relay chain.
 	 */
-	createDest(_: string): XcmDestBeneficiary {
+	createDest(_: string): XcmVersionedMultiLocation {
 		return this.xcmCreator.hereDest({ parents: 1 });
 	}
 

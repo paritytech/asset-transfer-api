@@ -11,11 +11,11 @@ import {
 	XcAssetsMultiLocation,
 	XcmBeneficiary,
 	XcmCreator,
-	XcmDestBeneficiary,
 	XcmMultiAssets,
 	XcmMultiLocation,
 	XcmV2MultiLocation,
 	XcmVersionedAssetId,
+	XcmVersionedMultiLocation,
 } from '../types.js';
 import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
 import { createParachainDestBeneficiaryInner } from './common.js';
@@ -23,7 +23,7 @@ import { createParachainDestBeneficiaryInner } from './common.js';
 export const V2: XcmCreator = {
 	xcmVersion: 2,
 
-	beneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
+	beneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmVersionedMultiLocation {
 		const X1 = isEthereumAddress(accountId)
 			? { AccountKey20: { network: 'Any', key: accountId } }
 			: { AccountId32: { network: 'Any', id: accountId } };
@@ -118,7 +118,7 @@ export const V2: XcmCreator = {
 		return { V2: { Concrete: this.resolveMultiLocation(multiLocation) } };
 	},
 
-	parachainDest({ destId, parents }: { destId: string; parents: number }): XcmDestBeneficiary {
+	parachainDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
 		const chainId = Number(destId);
 		if (isNaN(chainId)) {
 			throw new BaseError(
@@ -136,7 +136,7 @@ export const V2: XcmCreator = {
 	},
 
 	// Same across all versions
-	hereDest({ parents }: { parents: number }): XcmDestBeneficiary {
+	hereDest({ parents }: { parents: number }): XcmVersionedMultiLocation {
 		return {
 			V2: {
 				parents,
@@ -145,7 +145,7 @@ export const V2: XcmCreator = {
 		};
 	},
 
-	interiorDest(_opts: { destId: string; parents: number }): XcmDestBeneficiary {
+	interiorDest(_opts: { destId: string; parents: number }): XcmVersionedMultiLocation {
 		throw new BaseError('XcmVersion not supported.', BaseErrorsEnum.InvalidXcmVersion);
 	},
 

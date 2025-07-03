@@ -1,6 +1,6 @@
-import { XcmBeneficiary, XcmCreator, XcmDestBeneficiary } from '../types.js';
+import { XcmBeneficiary, XcmCreator, XcmVersionedMultiLocation } from '../types.js';
 
-export const createBeneficiary = (accountId: string, xcmCreator: XcmCreator): XcmDestBeneficiary => {
+export const createBeneficiary = (accountId: string, xcmCreator: XcmCreator): XcmVersionedMultiLocation => {
 	const parents = 0; // always 0
 	return xcmCreator.beneficiary({ accountId, parents });
 };

@@ -5,17 +5,18 @@ import { RemoteReserve } from '../../types.js';
 import {
 	FungibleAsset,
 	FungibleAssetType,
-	InteriorKey,
 	XcAssetsMultiAsset,
 	XcAssetsMultiLocation,
 	XcmBeneficiary,
 	XcmCreator,
-	XcmDestBeneficiary,
-	XcmJunctionDestBeneficiary,
+	XcmJunction,
 	XcmMultiAssets,
 	XcmMultiLocation,
+	XcmMultiLocationForVersion,
 	XcmV5MultiLocation,
 	XcmVersionedAssetId,
+	XcmVersionedMultiLocation,
+	XcmVersionKey,
 } from '../types.js';
 import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
 import { createParachainDestBeneficiaryInner } from './common.js';
@@ -25,8 +26,8 @@ export const V5: XcmCreator = {
 	xcmVersion: 5,
 
 	// Same as V4
-	beneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
-		const v4 = V4.beneficiary({ accountId, parents });
+	beneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmVersionedMultiLocation {
+		const v4 = V4.beneficiary({ accountId, parents }) as { V4: XcmMultiLocationForVersion<XcmVersionKey.V4> };
 		return { V5: v4.V4 };
 	},
 
@@ -100,7 +101,7 @@ export const V5: XcmCreator = {
 	},
 
 	// Same as V4
-	parachainDest({ destId, parents }: { destId: string; parents: number }): XcmDestBeneficiary {
+	parachainDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
 		const chainId = Number(destId);
 		if (isNaN(chainId)) {
 			throw new BaseError(
@@ -108,7 +109,7 @@ export const V5: XcmCreator = {
 				BaseErrorsEnum.InvalidInput,
 			);
 		}
-		const X1 = [{ Parachain: chainId }];
+		const X1 = [{ Parachain: chainId }] as [XcmJunction];
 		return {
 			V5: {
 				parents,
@@ -118,7 +119,7 @@ export const V5: XcmCreator = {
 	},
 
 	// Same across all versions
-	hereDest({ parents }: { parents: number }): XcmDestBeneficiary {
+	hereDest({ parents }: { parents: number }): XcmVersionedMultiLocation {
 		return {
 			V5: {
 				parents,
@@ -128,24 +129,17 @@ export const V5: XcmCreator = {
 	},
 
 	// Same as V4
-	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmDestBeneficiary {
-		const multiLocation = parseLocationStrToLocation(destId);
+	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
+		const multiLocation = parseLocationStrToLocation(destId) as XcmV5MultiLocation;
 
-		let interior: InteriorKey | undefined = undefined;
-		if (multiLocation && multiLocation.interior.X1) {
-			interior = { X1: [multiLocation.interior.X1 as XcmJunctionDestBeneficiary] };
-		} else {
-			interior = { X2: multiLocation.interior.X2 as XcmJunctionDestBeneficiary[] };
-		}
-
-		if (!interior) {
+		if (!multiLocation.interior) {
 			throw new BaseError('Unable to create XCM Destination location', BaseErrorsEnum.InternalError);
 		}
 
 		return {
 			V5: {
 				parents,
-				interior,
+				interior: multiLocation.interior,
 			},
 		};
 	},

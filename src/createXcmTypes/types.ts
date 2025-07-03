@@ -39,7 +39,7 @@ type XcmJunctionBase<V extends XcmVersionKey> = XcmJunctionFields & XcmJunctionE
 
 // Junctions - XcmJunction
 type JunctionVariant<T> = RequireOnlyOne<T>;
-type XcmJunctionForVersion<V extends XcmVersionKey> = JunctionVariant<XcmJunctionBase<V>>;
+export type XcmJunctionForVersion<V extends XcmVersionKey> = JunctionVariant<XcmJunctionBase<V>>;
 export type XcmJunction = {
 	[V in XcmVersionKey]: XcmJunctionForVersion<V>;
 }[XcmVersionKey];
@@ -75,7 +75,7 @@ type MultiLocationVariant<J> = {
 	parents: number;
 	interior: RequireOnlyOne<J>;
 };
-type XcmMultiLocationForVersion<V extends XcmVersionKey> = MultiLocationVariant<XcmJunctionsForVersion<V>>;
+export type XcmMultiLocationForVersion<V extends XcmVersionKey> = MultiLocationVariant<XcmJunctionsForVersion<V>>;
 export type XcmMultiLocation = {
 	[V in XcmVersionKey]: XcmMultiLocationForVersion<V>;
 }[XcmVersionKey];
@@ -83,6 +83,9 @@ export type XcmV2MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<Xcm
 export type XcmV3MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V3>>;
 export type XcmV4MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V4>>;
 export type XcmV5MultiLocation = MultiLocationVariant<XcmJunctionsForVersion<XcmVersionKey.V5>>;
+export type XcmVersionedMultiLocation = {
+	[V in XcmVersionKey]: VersionedXcmType<V, XcmMultiLocationForVersion<V>>;
+}[XcmVersionKey];
 
 // XcAssetsMultiLocation
 type XcAssetsMultiLocationVariant<V extends XcmVersionKey> = V extends XcmVersionKey.V2 | XcmVersionKey.V3
@@ -94,48 +97,6 @@ export type XcAssetsMultiLocation = {
 }[XcmVersionKey];
 
 // DestBeneficiaries
-
-// Only used in v4.ts and v5.ts for interiorDest() -> XcmDestBeneficiary
-export type XcmJunctionDestBeneficiary =
-	| {
-			AccountId32: {
-				network?: string;
-				id: string;
-			};
-	  }
-	| {
-			Parachain: number;
-	  }
-	| {
-			AccountKey20: {
-				network?: string;
-				key: string;
-			};
-	  }
-	| {
-			GlobalConsensus: string | AnyJson;
-	  };
-
-// Only used in v3.ts - interiorDest() -> XcmDestBeneficiary
-export type InteriorValue = XcmJunctionDestBeneficiary | XcmJunctionDestBeneficiary[] | null;
-
-// Only used in v3.ts, v4.ts, v5.ts
-// to define interior when returning
-// {
-// 	parents,
-// 	interior: parseLocationStrToLocation()
-// }
-export type InteriorKey = {
-	[x: string]: InteriorValue;
-};
-
-// Used just about everywhere
-export type XcmDestBeneficiary = {
-	[x: string]: {
-		parents: number;
-		interior: InteriorKey;
-	};
-};
 
 type X1BeneficiaryInner<V extends XcmVersionKey> = V extends XcmVersionKey.V2 | XcmVersionKey.V3
 	? { AccountId32: { id: string } }
@@ -258,8 +219,8 @@ export interface ICreateXcmTypeConstructor {
 export interface ICreateXcmType {
 	xcmCreator: XcmCreator;
 
-	createBeneficiary: (accountId: string) => XcmDestBeneficiary;
-	createDest: (destId: string) => XcmDestBeneficiary;
+	createBeneficiary: (accountId: string) => XcmVersionedMultiLocation;
+	createDest: (destId: string) => XcmVersionedMultiLocation;
 	createAssets: (
 		amounts: string[],
 		specName: string,
@@ -288,7 +249,7 @@ export interface ICreateXcmType {
 // XcmCreator - per version
 export interface XcmCreator {
 	xcmVersion: number;
-	beneficiary: (opts: { accountId: string; parents: number }) => XcmDestBeneficiary;
+	beneficiary: (opts: { accountId: string; parents: number }) => XcmVersionedMultiLocation;
 	xTokensParachainDestBeneficiary: (opts: {
 		accountId: string;
 		destChainId: string;
@@ -302,9 +263,9 @@ export interface XcmCreator {
 	multiLocation: (multiLocation: XcmMultiLocation) => XcAssetsMultiLocation;
 	remoteReserve: (multiLocation: XcmMultiLocation) => RemoteReserve;
 	versionedAssetId: (multiLocation: XcmMultiLocation) => XcmVersionedAssetId;
-	parachainDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
-	hereDest: (opts: { parents: number }) => XcmDestBeneficiary;
-	interiorDest: (opts: { destId: string; parents: number }) => XcmDestBeneficiary;
+	parachainDest: (opts: { destId: string; parents: number }) => XcmVersionedMultiLocation;
+	hereDest: (opts: { parents: number }) => XcmVersionedMultiLocation;
+	interiorDest: (opts: { destId: string; parents: number }) => XcmVersionedMultiLocation;
 	hereAsset: (opts: { amount: string; parents: number }) => XcmMultiAssets;
 	xcmMessage: (msg: AnyJson) => AnyJson;
 }
