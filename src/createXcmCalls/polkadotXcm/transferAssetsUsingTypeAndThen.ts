@@ -5,11 +5,9 @@ import { getTypeCreator } from '../../createXcmTypes/index.js';
 import {
 	FungibleAsset,
 	FungibleMultiAsset,
-	UnionXcmMultiLocation,
 	WildAsset,
-	XcmV2Junction,
-	XcmV3Junction,
-	XcmV4Junction,
+	XcmJunction,
+	XcmMultiLocation,
 	XcmVersionedAssetId,
 } from '../../createXcmTypes/types.js';
 import { assetIdIsLocation } from '../../createXcmTypes/util/assetIdIsLocation.js';
@@ -83,7 +81,7 @@ export const transferAssetsUsingTypeAndThen = async (
 			if (!assetIdLocationStr.toLowerCase().includes('ethereum')) {
 				continue;
 			}
-			let assetLocation = JSON.parse(assetIdLocationStr) as UnionXcmMultiLocation;
+			let assetLocation = JSON.parse(assetIdLocationStr) as XcmMultiLocation;
 
 			if ('v1' in assetLocation) {
 				assetLocation = parseLocationStrToLocation(JSON.stringify(assetLocation.v1));
@@ -99,7 +97,7 @@ export const transferAssetsUsingTypeAndThen = async (
 										Concrete: {
 											parents: assetLocation.parents,
 											interior: assetLocation.interior,
-										} as UnionXcmMultiLocation,
+										} as XcmMultiLocation,
 									},
 									fun: 'Fungible',
 								}
@@ -107,14 +105,10 @@ export const transferAssetsUsingTypeAndThen = async (
 									id: {
 										parents: assetLocation.parents,
 										interior: assetLocation.interior,
-									} as UnionXcmMultiLocation,
+									} as XcmMultiLocation,
 									fun: 'Fungible',
 								};
-					const erc20KeyX2 = assetLocation.interior?.x2 as
-						| [XcmV4Junction, XcmV4Junction]
-						| [XcmV3Junction, XcmV3Junction]
-						| [XcmV2Junction, XcmV2Junction]
-						| undefined;
+					const erc20KeyX2 = assetLocation.interior?.x2 as [XcmJunction, XcmJunction] | undefined;
 					if (erc20KeyX2 && 'accountKey20' in erc20KeyX2[1]) {
 						erc20Key = (erc20KeyX2[1].accountKey20 as { network?: string; key: string }).key;
 					}
@@ -142,7 +136,7 @@ export const transferAssetsUsingTypeAndThen = async (
 										},
 									},
 								},
-							} as UnionXcmMultiLocation,
+							} as XcmMultiLocation,
 						},
 						fun: {
 							Fungible: '1',
@@ -160,7 +154,7 @@ export const transferAssetsUsingTypeAndThen = async (
 									},
 								],
 							},
-						} as UnionXcmMultiLocation,
+						} as XcmMultiLocation,
 						fun: {
 							Fungible: '1',
 						},

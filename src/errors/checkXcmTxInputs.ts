@@ -9,7 +9,7 @@ import {
 	SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION,
 } from '../consts.js';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet.js';
-import { UnionXcmMultiLocation } from '../createXcmTypes/types.js';
+import { XcmMultiLocation } from '../createXcmTypes/types.js';
 import { assetIdIsLocation } from '../createXcmTypes/util/assetIdIsLocation.js';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry.js';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists.js';
@@ -113,7 +113,7 @@ export const checkParaPrimaryAssetAmountsLength = (amounts: string[]) => {
  *
  * @param assetIds
  */
-export const checkMultiLocationIdLength = (assetIds: string[]) => {
+const checkMultiLocationIdLength = (assetIds: string[]) => {
 	if (assetIds.length === 0) {
 		throw new BaseError('multilocation `assetIds` cannot be empty', BaseErrorsEnum.InvalidInput);
 	}
@@ -124,7 +124,7 @@ export const checkMultiLocationIdLength = (assetIds: string[]) => {
  *
  * @param amounts
  */
-export const checkMultiLocationAmountsLength = (amounts: string[]) => {
+const checkMultiLocationAmountsLength = (amounts: string[]) => {
 	if (amounts.length === 0) {
 		throw new BaseError('multilocation `amounts` cannot be empty', BaseErrorsEnum.InvalidInput);
 	}
@@ -184,7 +184,7 @@ const checkIfAssetIdIsBlankSpace = (assetId: string) => {
  * @param relayChainAsset string
  * @returns boolean
  */
-export const containsNativeRelayAsset = (assetIds: string[], relayChainAsset: string): boolean => {
+const containsNativeRelayAsset = (assetIds: string[], relayChainAsset: string): boolean => {
 	// We assume when the assetId's input is empty that the native token is to be transferred.
 	if (assetIds.length === 0) {
 		return true;
@@ -650,7 +650,7 @@ export const checkParaAssets = async (
 				if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
 					return;
 				} else if (assetIdIsLocation(assetId)) {
-					const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as UnionXcmMultiLocation;
+					const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as XcmMultiLocation;
 
 					if ('v1' in v1AssetLocation) {
 						const registryAssetLocation = parseLocationStrToLocation(JSON.stringify(v1AssetLocation.v1));
@@ -703,7 +703,7 @@ const checkSystemToParaAssetId = async (
 	);
 };
 
-export const checkIsValidSystemChainAssetId = async (
+const checkIsValidSystemChainAssetId = async (
 	api: ApiPromise,
 	assetId: string,
 	specName: string,

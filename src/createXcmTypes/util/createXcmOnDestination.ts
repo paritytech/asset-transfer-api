@@ -1,6 +1,6 @@
 import type { AnyJson } from '@polkadot/types/types';
 
-import { UnionXcmMultiLocation, XcmCreator } from '../types.js';
+import { XcmCreator, XcmMultiLocation } from '../types.js';
 
 export const createXcmOnDestination = ({
 	assets,
@@ -9,7 +9,7 @@ export const createXcmOnDestination = ({
 	xcmCreator,
 }: {
 	assets: string[];
-	beneficiary: UnionXcmMultiLocation;
+	beneficiary: XcmMultiLocation;
 	customXcmOnDest?: string;
 	xcmCreator: XcmCreator;
 }): AnyJson => {

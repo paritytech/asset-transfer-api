@@ -1,4 +1,4 @@
-// import { UnionXcmMultiLocation } from "../types";
+// import { XcmMultiLocation } from "../types";
 import { createXcmOnDestBeneficiary } from './createXcmOnDestBeneficiary';
 
 describe('createXcmOnDestBeneficiary hello', () => {

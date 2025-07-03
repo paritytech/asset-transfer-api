@@ -1,6 +1,6 @@
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { AssetTransferType } from '../../types.js';
-import { UnionXcmMultiLocation, XcmCreator } from '../types.js';
+import { XcmCreator, XcmMultiLocation } from '../types.js';
 
 export const resolveAssetTransferType = (
 	assetTransferType: string | undefined,
@@ -15,7 +15,7 @@ export const resolveAssetTransferType = (
 	}
 
 	let transferType: AssetTransferType;
-	let remoteTransferLocation: UnionXcmMultiLocation;
+	let remoteTransferLocation: XcmMultiLocation;
 	if (remoteTransferLocationStr && assetTransferType === 'RemoteReserve') {
 		remoteTransferLocation = xcmCreator.resolveMultiLocation(remoteTransferLocationStr);
 		transferType = xcmCreator.remoteReserve(remoteTransferLocation);

@@ -6,7 +6,11 @@ import { BN } from 'bn.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import type { RequireOnlyOne } from '../../types.js';
 import { validateNumber } from '../../validate/index.js';
-import type { FungibleAssetType, UnionJunction, XcmV2Junctions, XcmV3Junctions, XcmV4Junctions } from '../types.js';
+import type { FungibleAssetType, XcmJunction, XcmJunctionsForVersion, XcmVersionKey } from '../types.js';
+
+type RequireOnlyOneXcmJunctions = {
+	[V in XcmVersionKey]: RequireOnlyOne<XcmJunctionsForVersion<V>>;
+}[XcmVersionKey];
 
 /**
  * This sorts a list of multiassets in ascending order based on their id.
@@ -65,52 +69,32 @@ export const sortAssetsAscending = (assets: FungibleAssetType[]) => {
 			parentSortOrder = 1;
 		}
 
-		let aInterior:
-			| RequireOnlyOne<XcmV2Junctions>
-			| RequireOnlyOne<XcmV3Junctions>
-			| RequireOnlyOne<XcmV4Junctions>
-			| undefined = undefined;
-		let bInterior:
-			| RequireOnlyOne<XcmV2Junctions>
-			| RequireOnlyOne<XcmV3Junctions>
-			| RequireOnlyOne<XcmV4Junctions>
-			| undefined = undefined;
+		let aInterior: RequireOnlyOneXcmJunctions | undefined = undefined;
+		let bInterior: RequireOnlyOneXcmJunctions | undefined = undefined;
 
 		if ('Concrete' in a.id && 'Concrete' in b.id) {
 			aInterior =
 				'Interior' in a.id.Concrete
-					? (a.id.Concrete['Interior'] as
-							| RequireOnlyOne<XcmV2Junctions>
-							| RequireOnlyOne<XcmV3Junctions>
-							| RequireOnlyOne<XcmV4Junctions>)
+					? (a.id.Concrete['Interior'] as RequireOnlyOneXcmJunctions)
 					: 'interior' in a.id.Concrete
 						? a.id.Concrete.interior
 						: undefined;
 			bInterior =
 				'Interior' in b.id.Concrete
-					? (b.id.Concrete['Interior'] as
-							| RequireOnlyOne<XcmV2Junctions>
-							| RequireOnlyOne<XcmV3Junctions>
-							| RequireOnlyOne<XcmV4Junctions>)
+					? (b.id.Concrete['Interior'] as RequireOnlyOneXcmJunctions)
 					: 'interior' in b.id.Concrete
 						? b.id.Concrete.interior
 						: undefined;
 		} else {
 			aInterior =
 				'Interior' in a.id
-					? (a.id['Interior'] as
-							| RequireOnlyOne<XcmV2Junctions>
-							| RequireOnlyOne<XcmV3Junctions>
-							| RequireOnlyOne<XcmV4Junctions>)
+					? (a.id['Interior'] as RequireOnlyOneXcmJunctions)
 					: 'interior' in a.id
 						? a.id.interior
 						: undefined;
 			bInterior =
 				'Interior' in b.id
-					? (b.id['Interior'] as
-							| RequireOnlyOne<XcmV2Junctions>
-							| RequireOnlyOne<XcmV3Junctions>
-							| RequireOnlyOne<XcmV4Junctions>)
+					? (b.id['Interior'] as RequireOnlyOneXcmJunctions)
 					: 'interior' in b.id
 						? b.id.interior
 						: undefined;
@@ -143,27 +127,13 @@ export const sortAssetsAscending = (assets: FungibleAssetType[]) => {
 const getSameJunctionMultiLocationSortOrder = (a: FungibleAssetType, b: FungibleAssetType): number => {
 	let sortOrder = 0;
 
-	let aInterior:
-		| RequireOnlyOne<XcmV2Junctions>
-		| RequireOnlyOne<XcmV3Junctions>
-		| RequireOnlyOne<XcmV4Junctions>
-		| undefined = undefined;
-	let bInterior:
-		| RequireOnlyOne<XcmV2Junctions>
-		| RequireOnlyOne<XcmV3Junctions>
-		| RequireOnlyOne<XcmV4Junctions>
-		| undefined = undefined;
+	let aInterior: RequireOnlyOneXcmJunctions | undefined = undefined;
+	let bInterior: RequireOnlyOneXcmJunctions | undefined = undefined;
 
 	if ('Concrete' in a.id && 'Concrete' in b.id) {
 		if ('Interior' in a.id.Concrete && 'Interior' in b.id.Concrete) {
-			aInterior = a.id.Concrete['Interior'] as
-				| RequireOnlyOne<XcmV2Junctions>
-				| RequireOnlyOne<XcmV3Junctions>
-				| RequireOnlyOne<XcmV4Junctions>;
-			bInterior = b.id.Concrete['Interior'] as
-				| RequireOnlyOne<XcmV2Junctions>
-				| RequireOnlyOne<XcmV3Junctions>
-				| RequireOnlyOne<XcmV4Junctions>;
+			aInterior = a.id.Concrete['Interior'] as RequireOnlyOneXcmJunctions;
+			bInterior = b.id.Concrete['Interior'] as RequireOnlyOneXcmJunctions;
 		} else {
 			aInterior = a.id.Concrete.interior;
 			bInterior = b.id.Concrete.interior;
@@ -172,14 +142,8 @@ const getSameJunctionMultiLocationSortOrder = (a: FungibleAssetType, b: Fungible
 		aInterior = a.id.interior;
 		bInterior = b.id.interior;
 	} else if ('Interior' in a.id && 'Interior' in b.id) {
-		aInterior = a.id['Interior'] as
-			| RequireOnlyOne<XcmV2Junctions>
-			| RequireOnlyOne<XcmV3Junctions>
-			| RequireOnlyOne<XcmV4Junctions>;
-		bInterior = b.id['Interior'] as
-			| RequireOnlyOne<XcmV2Junctions>
-			| RequireOnlyOne<XcmV3Junctions>
-			| RequireOnlyOne<XcmV4Junctions>;
+		aInterior = a.id['Interior'] as RequireOnlyOneXcmJunctions;
+		bInterior = b.id['Interior'] as RequireOnlyOneXcmJunctions;
 	}
 
 	// Should never hit this, this exists to make the typescript compiler happy.
@@ -192,8 +156,19 @@ const getSameJunctionMultiLocationSortOrder = (a: FungibleAssetType, b: Fungible
 
 	switch (Object.keys(aInterior)[0]) {
 		case 'X1':
-			const aX1Type = Object.keys(aInterior.X1!)[0] as keyof typeof MultiLocationJunctionType;
-			const bX1Type = Object.keys(bInterior.X1!)[0] as keyof typeof MultiLocationJunctionType;
+			const getInteriorType = (interior: RequireOnlyOneXcmJunctions | undefined) => {
+				const x1 = interior?.X1;
+				if (!x1) {
+					throw new Error('Unexpected undefined X1');
+				}
+				const firstJunction = Array.isArray(x1) ? x1[0] : x1;
+				const interiorType = Object.keys(firstJunction)[0] as keyof typeof MultiLocationJunctionType;
+				return interiorType;
+			};
+
+			const aX1Type = getInteriorType(aInterior);
+			const bX1Type = getInteriorType(bInterior);
+
 			if (aX1Type === bX1Type && aInterior.X1 !== bInterior.X1) {
 				const aHex = stringToHex(JSON.stringify(aInterior.X1));
 				const bHex = stringToHex(JSON.stringify(bInterior.X1));
@@ -237,22 +212,13 @@ const getSameJunctionMultiLocationSortOrder = (a: FungibleAssetType, b: Fungible
 };
 
 type MultiLocationJunctions =
-	| [UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
-	| [UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction, UnionJunction]
-	| [
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-			UnionJunction,
-	  ];
+	| [XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction]
+	| [XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction, XcmJunction];
 
 enum MultiLocationJunctionType {
 	Parachain,

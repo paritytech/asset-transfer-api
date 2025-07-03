@@ -2,13 +2,7 @@ import { ApiPromise } from '@polkadot/api';
 
 import { Registry } from '../../registry/index.js';
 import { validateNumber } from '../../validate/index.js';
-import {
-	FungibleAssetType,
-	OneOfXcmJunctions,
-	UnionXcmMultiAssets,
-	UnionXcmMultiLocation,
-	XcmCreator,
-} from '../types.js';
+import { FungibleAssetType, OneOfXcmJunctions, XcmCreator, XcmMultiAssets, XcmMultiLocation } from '../types.js';
 import { dedupeAssets } from './dedupeAssets.js';
 import { fetchPalletInstanceId } from './fetchPalletInstanceId.js';
 import { getAssetId } from './getAssetId.js';
@@ -35,17 +29,15 @@ export const createAssetLocations = async ({
 	assetIdsContainLocations: boolean;
 	isLiquidTokenTransfer: boolean;
 	xcmCreator: XcmCreator;
-}): Promise<UnionXcmMultiAssets> => {
+}): Promise<XcmMultiAssets> => {
 	let multiAssets: FungibleAssetType[] = [];
 
 	const isRelayChain = originChainId === '0' ? true : false;
 
 	for (let i = 0; i < assetIds.length; i++) {
-		let multiLocation: UnionXcmMultiLocation;
+		let multiLocation: XcmMultiLocation;
 		const amount = amounts[i];
 		let assetId = assetIds[i];
-
-		const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, assetIdsContainLocations);
 
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
@@ -65,11 +57,15 @@ export const createAssetLocations = async ({
 			multiLocation = xcmCreator.resolveMultiLocation(assetId);
 		} else {
 			const parents = isRelayNative && !isRelayChain ? 1 : 0;
-			const interior: OneOfXcmJunctions = isRelayNative
-				? { Here: '' }
-				: {
-						X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
-					};
+			let interior: OneOfXcmJunctions;
+			if (isRelayNative) {
+				interior = { Here: '' };
+			} else {
+				const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, assetIdsContainLocations);
+				interior = {
+					X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
+				};
+			}
 
 			multiLocation = {
 				parents,

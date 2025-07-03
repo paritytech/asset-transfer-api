@@ -1,4 +1,4 @@
-import { UnionXcmMultiLocation } from '../../createXcmTypes/types';
+import { XcmMultiLocation } from '../../createXcmTypes/types';
 import { mockSystemApi } from '../../testHelpers/mockSystemApi';
 import { transferAll } from './transferAll';
 
@@ -16,7 +16,7 @@ describe('foreignAssets::transferAll', () => {
 					},
 				],
 			},
-		} as UnionXcmMultiLocation;
+		} as XcmMultiLocation;
 
 		const res = transferAll(
 			mockSystemApi,

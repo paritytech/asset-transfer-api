@@ -14,7 +14,7 @@ describe('getPaysWithFeeOriginAssetLocationFromRegistry', () => {
 			interior: {
 				X2: [
 					{
-						PalletInstance: '50',
+						PalletInstance: 50,
 					},
 					{
 						GeneralIndex: '1984',
@@ -72,7 +72,7 @@ describe('getPaysWithFeeOriginAssetLocationFromRegistry', () => {
 			interior: {
 				X2: [
 					{
-						PalletInstance: '50',
+						PalletInstance: 50,
 					},
 					{
 						GeneralIndex: '1984',

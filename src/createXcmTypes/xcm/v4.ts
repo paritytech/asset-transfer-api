@@ -8,16 +8,15 @@ import {
 	FungibleAsset,
 	FungibleAssetType,
 	InteriorKey,
-	UnionXcAssetsMultiAsset,
-	UnionXcAssetsMultiAssets,
-	UnionXcAssetsMultiLocation,
-	UnionXcmMultiAssets,
-	UnionXcmMultiLocation,
+	XcAssetsMultiAsset,
+	XcAssetsMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
+	XcmJunction,
+	XcmMultiAssets,
+	XcmMultiLocation,
 	XcmV4DestBeneficiary,
-	XcmV4Junction,
 	XcmV4JunctionDestBeneficiary,
 	XcmV4MultiLocation,
 	XcmVersionedAssetId,
@@ -83,14 +82,14 @@ export const V4: XcmCreator = {
 		};
 	},
 
-	resolveMultiLocation(multiLocation: AnyJson): UnionXcmMultiLocation {
+	resolveMultiLocation(multiLocation: AnyJson): XcmMultiLocation {
 		const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
 
 		let result = parseLocationStrToLocation(multiLocationStr, this.xcmVersion);
 
 		// handle case where result is an xcmV1Multilocation from the registry
 		if (typeof result === 'object' && 'v1' in result) {
-			result = result.v1 as UnionXcmMultiLocation;
+			result = result.v1 as XcmMultiLocation;
 		}
 
 		const isX1V4Location = multiLocationStr.includes('"X1":[');
@@ -99,8 +98,7 @@ export const V4: XcmCreator = {
 			result = {
 				parents: result.parents,
 				interior: {
-					// TODO: cleanup - V3, V4, V5 Junction's are all the same
-					X1: [result.interior.X1 as XcmV4Junction],
+					X1: [result.interior.X1 as XcmJunction],
 				},
 			};
 		}
@@ -108,26 +106,26 @@ export const V4: XcmCreator = {
 		return sanitizeKeys(result);
 	},
 
-	multiAsset(asset: FungibleAssetType): UnionXcAssetsMultiAsset {
+	multiAsset(asset: FungibleAssetType): XcAssetsMultiAsset {
 		return { V4: asset as FungibleAsset };
 	},
 
-	multiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
+	multiAssets(assets: FungibleAssetType[]): XcmMultiAssets {
 		return { V4: assets as FungibleAsset[] };
 	},
 
-	multiLocation(multiLocation: UnionXcmMultiLocation): UnionXcAssetsMultiLocation {
+	multiLocation(multiLocation: XcmMultiLocation): XcAssetsMultiLocation {
 		return { V4: { id: multiLocation as XcmV4MultiLocation } };
 	},
 
 	// Same as V3
-	remoteReserve(multiLocation: UnionXcmMultiLocation): RemoteReserve {
+	remoteReserve(multiLocation: XcmMultiLocation): RemoteReserve {
 		return {
 			RemoteReserve: { V4: multiLocation },
 		};
 	},
 
-	versionedAssetId(multiLocation: UnionXcmMultiLocation): XcmVersionedAssetId {
+	versionedAssetId(multiLocation: XcmMultiLocation): XcmVersionedAssetId {
 		return { V4: this.resolveMultiLocation(multiLocation) };
 	},
 
@@ -173,7 +171,7 @@ export const V4: XcmCreator = {
 		};
 	},
 
-	hereAsset({ amount, parents }: { amount: string; parents: number }): UnionXcmMultiAssets {
+	hereAsset({ amount, parents }: { amount: string; parents: number }): XcmMultiAssets {
 		const multiAssets: FungibleAssetType[] = [];
 		const multiAsset: FungibleAssetType = {
 			fun: {

@@ -9,9 +9,9 @@ import type {
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
 	FungibleMultiAsset,
-	UnionXcmMultiAssets,
 	XcmCreator,
 	XcmDestBeneficiary,
+	XcmMultiAssets,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
@@ -47,7 +47,7 @@ export class ParaToEthereum extends DefaultHandler {
 		specName: string,
 		assets: string[],
 		opts: CreateAssetsOpts,
-	): Promise<UnionXcmMultiAssets> {
+	): Promise<XcmMultiAssets> {
 		return createAssets({
 			amounts,
 			specName,

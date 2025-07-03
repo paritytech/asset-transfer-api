@@ -7,14 +7,13 @@ import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAssetType,
 	FungibleMultiAsset,
-	UnionXcAssetsMultiAsset,
-	UnionXcAssetsMultiAssets,
-	UnionXcAssetsMultiLocation,
-	UnionXcmMultiAssets,
-	UnionXcmMultiLocation,
+	XcAssetsMultiAsset,
+	XcAssetsMultiLocation,
 	XcmCreator,
 	XcmDestBeneficiary,
 	XcmDestBeneficiaryXcAssets,
+	XcmMultiAssets,
+	XcmMultiLocation,
 	XcmV2DestBeneficiary,
 	XcmV2MultiLocation,
 	XcmVersionedAssetId,
@@ -82,7 +81,7 @@ export const V2: XcmCreator = {
 		};
 	},
 
-	resolveMultiLocation(multiLocation: AnyJson): UnionXcmMultiLocation {
+	resolveMultiLocation(multiLocation: AnyJson): XcmMultiLocation {
 		const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
 
 		// Ensure we check this first since the main difference between v2, and later versions is the `globalConsensus` junction
@@ -100,29 +99,29 @@ export const V2: XcmCreator = {
 
 		// handle case where result is an xcmV1Multilocation from the registry
 		if (typeof result === 'object' && 'v1' in result) {
-			result = result.v1 as UnionXcmMultiLocation;
+			result = result.v1 as XcmMultiLocation;
 		}
 
 		return sanitizeKeys(result);
 	},
 
-	multiAsset(asset: FungibleAssetType): UnionXcAssetsMultiAsset {
+	multiAsset(asset: FungibleAssetType): XcAssetsMultiAsset {
 		return { V2: asset as FungibleMultiAsset };
 	},
 
-	multiAssets(assets: FungibleAssetType[]): UnionXcAssetsMultiAssets {
+	multiAssets(assets: FungibleAssetType[]): XcmMultiAssets {
 		return { V2: assets as FungibleMultiAsset[] };
 	},
 
-	multiLocation(multiLocation: UnionXcmMultiLocation): UnionXcAssetsMultiLocation {
+	multiLocation(multiLocation: XcmMultiLocation): XcAssetsMultiLocation {
 		return { V2: { id: { Concrete: multiLocation as XcmV2MultiLocation } } };
 	},
 
-	remoteReserve(_multiLocation: UnionXcmMultiLocation): RemoteReserve {
+	remoteReserve(_multiLocation: XcmMultiLocation): RemoteReserve {
 		throw new BaseError('XcmVersion must be greater than 2 for RemoteReserve.', BaseErrorsEnum.InvalidXcmVersion);
 	},
 
-	versionedAssetId(multiLocation: UnionXcmMultiLocation): XcmVersionedAssetId {
+	versionedAssetId(multiLocation: XcmMultiLocation): XcmVersionedAssetId {
 		return { V2: { Concrete: this.resolveMultiLocation(multiLocation) } };
 	},
 
@@ -150,7 +149,7 @@ export const V2: XcmCreator = {
 		throw new BaseError('XcmVersion not supported.', BaseErrorsEnum.InvalidXcmVersion);
 	},
 
-	hereAsset({ amount, parents }: { amount: string; parents: number }): UnionXcmMultiAssets {
+	hereAsset({ amount, parents }: { amount: string; parents: number }): XcmMultiAssets {
 		const multiAssets: FungibleAssetType[] = [];
 		const multiAsset: FungibleAssetType = {
 			fun: {

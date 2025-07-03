@@ -2,17 +2,17 @@ import { AssetTransferApi } from '../../AssetTransferApi.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { AssetsInfo } from '../../registry/types.js';
 import { validateNumber } from '../../validate/index.js';
-import { UnionXcmMultiLocation } from '../types.js';
+import { XcmMultiLocation } from '../types.js';
 
 export const getPaysWithFeeOriginAssetLocationFromRegistry = (
 	ataAPI: AssetTransferApi,
 	paysWithFeeOriginAssetId: string,
-): UnionXcmMultiLocation | undefined => {
+): XcmMultiLocation | undefined => {
 	if (paysWithFeeOriginAssetId.length === 0) {
 		return undefined;
 	}
 
-	let location: UnionXcmMultiLocation | undefined = undefined;
+	let location: XcmMultiLocation | undefined = undefined;
 
 	const { registry, specName } = ataAPI;
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
@@ -28,14 +28,14 @@ export const getPaysWithFeeOriginAssetLocationFromRegistry = (
 				interior: {
 					X2: [
 						{
-							PalletInstance: '50',
+							PalletInstance: 50,
 						},
 						{
 							GeneralIndex: paysWithFeeOriginAssetId,
 						},
 					],
 				},
-			} as UnionXcmMultiLocation;
+			} as XcmMultiLocation;
 		}
 	} else {
 		const assetsInfoTokensMatched: AssetsInfo[] = [];
@@ -77,7 +77,7 @@ export const getPaysWithFeeOriginAssetLocationFromRegistry = (
 						},
 					],
 				},
-			} as UnionXcmMultiLocation;
+			} as XcmMultiLocation;
 		}
 	}
 
@@ -106,7 +106,7 @@ export const getPaysWithFeeOriginAssetLocationFromRegistry = (
 
 		for (const [key, data] of Object.entries(foreignAssetsInfo)) {
 			if (key.toLowerCase() === paysWithFeeOriginAssetId.toLowerCase()) {
-				location = JSON.parse(data.multiLocation) as UnionXcmMultiLocation;
+				location = JSON.parse(data.multiLocation) as XcmMultiLocation;
 			}
 		}
 	}
