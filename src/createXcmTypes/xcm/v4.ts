@@ -89,7 +89,7 @@ export const V4: XcmCreator = {
 			result = {
 				parents: result.parents,
 				interior: {
-					X1: [result.interior.X1 as XcmJunction],
+					X1: result.interior.X1 as XcmJunction,
 				},
 			};
 		}
@@ -149,10 +149,6 @@ export const V4: XcmCreator = {
 
 	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
 		const multiLocation = parseLocationStrToLocation(destId) as XcmV4MultiLocation;
-
-		if (!multiLocation.interior) {
-			throw new BaseError('Unable to create XCM Destination location', BaseErrorsEnum.InternalError);
-		}
 
 		return {
 			V4: {
