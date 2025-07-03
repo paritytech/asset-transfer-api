@@ -9,7 +9,6 @@ import type {
 	CreateFeeAssetItemOpts,
 	FungibleAssetType,
 	XcAssetsMultiAsset,
-	XcmBeneficiary,
 	XcmCreator,
 	XcmMultiAssets,
 	XcmVersionedMultiLocation,
@@ -83,7 +82,7 @@ export class ParaToSystem extends DefaultHandler {
 	 * @param destChainId The parachain Id of the destination.
 	 * @param accountId The accountId of the beneficiary.
 	 */
-	createXTokensBeneficiary(destChainId: string, accountId: string): XcmBeneficiary {
+	createXTokensBeneficiary(destChainId: string, accountId: string): XcmVersionedMultiLocation {
 		return createXTokensParachainDestBeneficiary(destChainId, accountId, this.xcmCreator);
 	}
 

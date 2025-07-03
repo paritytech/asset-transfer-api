@@ -1,4 +1,4 @@
-import { XcmBeneficiary, XcmCreator, XcmVersionedMultiLocation } from '../types.js';
+import { XcmCreator, XcmVersionedMultiLocation } from '../types.js';
 
 export const createBeneficiary = (accountId: string, xcmCreator: XcmCreator): XcmVersionedMultiLocation => {
 	const parents = 0; // always 0
@@ -9,7 +9,7 @@ export const createXTokensParachainDestBeneficiary = (
 	destChainId: string,
 	accountId: string,
 	xcmCreator: XcmCreator,
-): XcmBeneficiary => {
+): XcmVersionedMultiLocation => {
 	const parents = 1; // always 1
 	return xcmCreator.xTokensParachainDestBeneficiary({
 		accountId,
@@ -18,7 +18,7 @@ export const createXTokensParachainDestBeneficiary = (
 	});
 };
 
-export const createXTokensDestBeneficiary = (accountId: string, xcmCreator: XcmCreator): XcmBeneficiary => {
+export const createXTokensDestBeneficiary = (accountId: string, xcmCreator: XcmCreator): XcmVersionedMultiLocation => {
 	const parents = 1; // always 1
 	return xcmCreator.xTokensDestBeneficiary({ accountId, parents });
 };

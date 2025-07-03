@@ -4,7 +4,6 @@ import {
 	CreateAssetsOpts,
 	CreateFeeAssetItemOpts,
 	XcAssetsMultiAsset,
-	XcmBeneficiary,
 	XcmMultiAssets,
 	XcmVersionedMultiLocation,
 } from '../types.js';
@@ -49,7 +48,7 @@ export class ParaToRelay extends DefaultHandler {
 		return Promise.resolve(0);
 	}
 
-	createXTokensBeneficiary(_: string, accountId: string): XcmBeneficiary {
+	createXTokensBeneficiary(_: string, accountId: string): XcmVersionedMultiLocation {
 		return createXTokensDestBeneficiary(accountId, this.xcmCreator);
 	}
 

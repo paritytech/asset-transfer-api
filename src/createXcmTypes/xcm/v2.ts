@@ -9,16 +9,17 @@ import {
 	FungibleMultiAsset,
 	XcAssetsMultiAsset,
 	XcAssetsMultiLocation,
-	XcmBeneficiary,
 	XcmCreator,
 	XcmMultiAssets,
 	XcmMultiLocation,
+	XcmMultiLocationForVersion,
 	XcmV2MultiLocation,
 	XcmVersionedAssetId,
 	XcmVersionedMultiLocation,
+	XcmVersionKey,
 } from '../types.js';
 import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
-import { createParachainDestBeneficiaryInner } from './common.js';
+import { createParachainBeneficiary } from './common.js';
 
 export const V2: XcmCreator = {
 	xcmVersion: 2,
@@ -44,16 +45,22 @@ export const V2: XcmCreator = {
 		accountId: string;
 		destChainId: string;
 		parents: number;
-	}): XcmBeneficiary {
-		const beneficiary = createParachainDestBeneficiaryInner({
+	}): XcmVersionedMultiLocation {
+		const beneficiary = createParachainBeneficiary({
 			accountId,
 			destChainId,
 			parents,
-		});
+		}) as XcmMultiLocationForVersion<XcmVersionKey.V2>;
 		return { V2: beneficiary };
 	},
 
-	xTokensDestBeneficiary({ accountId, parents = 1 }: { accountId: string; parents: number }): XcmBeneficiary {
+	xTokensDestBeneficiary({
+		accountId,
+		parents = 1,
+	}: {
+		accountId: string;
+		parents: number;
+	}): XcmVersionedMultiLocation {
 		const X1 = { AccountId32: { id: accountId } };
 		const beneficiary = {
 			parents,

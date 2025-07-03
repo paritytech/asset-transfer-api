@@ -96,42 +96,6 @@ export type XcAssetsMultiLocation = {
 	[V in XcmVersionKey]: XcAssetsMultiLocationForVersion<V>;
 }[XcmVersionKey];
 
-// DestBeneficiaries
-
-type X1BeneficiaryInner<V extends XcmVersionKey> = V extends XcmVersionKey.V2 | XcmVersionKey.V3
-	? { AccountId32: { id: string } }
-	: [{ AccountId32: { id: string } }];
-type X1BeneficiaryVariant<V extends XcmVersionKey> = {
-	parents: string | number;
-	interior: {
-		X1: X1BeneficiaryInner<V>;
-	};
-};
-type X1BeneficiaryForVersion<V extends XcmVersionKey> = VersionedXcmType<V, X1BeneficiaryVariant<V>>;
-type X1Beneficiary = {
-	[V in XcmVersionKey]: X1BeneficiaryForVersion<V>;
-}[XcmVersionKey];
-
-// only used in common.ts
-export type X2BeneficiaryInner =
-	| [{ Parachain: number }, { AccountId32: { id: string } }]
-	| [{ Parachain: number }, { AccountKey20: { key: string } }];
-
-// only used in common.ts
-export type X2BeneficiaryVariant = {
-	parents: string | number;
-	interior: {
-		X2: X2BeneficiaryInner;
-	};
-};
-type X2BeneficiaryForVersion<V extends XcmVersionKey> = VersionedXcmType<V, X2BeneficiaryVariant>;
-type X2Beneficiary = {
-	[V in XcmVersionKey]: X2BeneficiaryForVersion<V>;
-}[XcmVersionKey];
-
-// used in v{}.ts, createBeneficiary, ParaTo{}.ts, transferMultiassets.ts
-export type XcmBeneficiary = X1Beneficiary | X2Beneficiary;
-
 // Wild Asset
 interface WildAssetV3 {
 	id: {
@@ -229,7 +193,7 @@ export interface ICreateXcmType {
 	) => Promise<XcmMultiAssets>;
 	createWeightLimit: (opts: CreateWeightLimitOpts) => XcmWeight;
 	createFeeAssetItem: (api: ApiPromise, opts: CreateFeeAssetItemOpts) => Promise<number>;
-	createXTokensBeneficiary?: (destChainId: string, accountId: string) => XcmBeneficiary;
+	createXTokensBeneficiary?: (destChainId: string, accountId: string) => XcmVersionedMultiLocation;
 	createXTokensAssets?: (
 		amounts: string[],
 		specName: string,
@@ -254,8 +218,8 @@ export interface XcmCreator {
 		accountId: string;
 		destChainId: string;
 		parents: number;
-	}) => XcmBeneficiary;
-	xTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmBeneficiary;
+	}) => XcmVersionedMultiLocation;
+	xTokensDestBeneficiary: (opts: { accountId: string; parents: number }) => XcmVersionedMultiLocation;
 	fungibleAsset: (opts: { amount: string; multiLocation: AnyJson }) => FungibleAssetType;
 	resolveMultiLocation: (multiLocation: AnyJson) => XcmMultiLocation;
 	multiAsset: (asset: FungibleAssetType) => XcAssetsMultiAsset;
