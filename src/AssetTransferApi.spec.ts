@@ -3,6 +3,7 @@ import type { Weight, WeightV2 } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { AssetTransferApi } from './AssetTransferApi';
+import { DEFAULT_XCM_VERSION } from './consts';
 import {
 	limitedReserveTransferAssets,
 	limitedTeleportAssets,
@@ -1815,8 +1816,9 @@ describe('AssetTransferAPI', () => {
 	describe('checkAssetLpTokenPairExists', () => {
 		it('Should correctly return true when an assetConversion lp pool token location pair contains a match to a given paysWithFee asset location', async () => {
 			const paysWithFeeOrigin = `{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"1984"}]}}`;
+			const xcmCreator = getXcmCreator(DEFAULT_XCM_VERSION);
 
-			expect(await systemAssetsApi['checkAssetLpTokenPairExists'](paysWithFeeOrigin)).toEqual([
+			expect(await systemAssetsApi['checkAssetLpTokenPairExists']({ paysWithFeeOrigin, xcmCreator })).toEqual([
 				true,
 				{
 					parents: '0',
@@ -1828,8 +1830,9 @@ describe('AssetTransferAPI', () => {
 		});
 		it('Should correctly return false when an assetConversion lp pool token location pair does not contain a match to a given paysWithFee asset location', async () => {
 			const paysWithFeeOrigin = `{"parents":"0","interior":{"X2":[{"PalletInstance":"50"},{"GeneralIndex":"2000"}]}}`;
+			const xcmCreator = getXcmCreator(DEFAULT_XCM_VERSION);
 
-			expect(await systemAssetsApi['checkAssetLpTokenPairExists'](paysWithFeeOrigin)).toEqual([
+			expect(await systemAssetsApi['checkAssetLpTokenPairExists']({ paysWithFeeOrigin, xcmCreator })).toEqual([
 				false,
 				{
 					parents: '0',

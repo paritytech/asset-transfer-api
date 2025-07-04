@@ -1,5 +1,6 @@
 import { AssetTransferApi } from '../AssetTransferApi';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet';
+import { getXcmCreator } from '../createXcmTypes/xcm';
 import { Registry } from '../registry';
 import { adjustedMockMoonriverParachainApi } from '../testHelpers/adjustedMockMoonriverParachainApi';
 import { adjustedMockSystemApi } from '../testHelpers/adjustedMockSystemApiV1004000';
@@ -32,6 +33,7 @@ import {
 const parachainAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'moonriver', 2, {
 	registryType: 'NPM',
 });
+const xcmCreator = getXcmCreator(2);
 const runTests = async (tests: Test[]) => {
 	for (const test of tests) {
 		const [specName, testInputs, direction, errorMessage] = test;
@@ -39,17 +41,17 @@ const runTests = async (tests: Test[]) => {
 		const currentRegistry = registry.currentRelayRegistry;
 
 		await expect(async () => {
-			await checkAssetIdInput(
-				parachainAssetsApi.api,
-				testInputs,
-				currentRegistry,
+			await checkAssetIdInput({
+				api: parachainAssetsApi.api,
+				assetIds: testInputs,
+				relayChainInfo: currentRegistry,
 				specName,
-				direction,
+				xcmDirection: direction,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 		}).rejects.toThrow(errorMessage);
 	}
 };
@@ -210,17 +212,17 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
-				await checkAssetIdInput(
-					mockSystemApi,
-					testInputs,
-					currentRegistry,
+				await checkAssetIdInput({
+					api: mockSystemApi,
+					assetIds: testInputs,
+					relayChainInfo: currentRegistry,
 					specName,
-					direction,
+					xcmDirection: direction,
 					registry,
-					2,
-					false,
-					false,
-				);
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				});
 			}).rejects.toThrow(errorMessage);
 		}
 	});
@@ -253,17 +255,17 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
-				await checkAssetIdInput(
-					mockSystemApi,
-					testInputs,
-					currentRegistry,
+				await checkAssetIdInput({
+					api: mockSystemApi,
+					assetIds: testInputs,
+					relayChainInfo: currentRegistry,
 					specName,
-					direction,
+					xcmDirection: direction,
 					registry,
-					2,
-					false,
-					false,
-				);
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				});
 			}).rejects.toThrow(errorMessage);
 		}
 	});
@@ -277,17 +279,17 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
-				await checkAssetIdInput(
-					parachainAssetsApi.api,
-					testInputs,
-					currentRegistry,
+				await checkAssetIdInput({
+					api: parachainAssetsApi.api,
+					assetIds: testInputs,
+					relayChainInfo: currentRegistry,
 					specName,
-					direction,
+					xcmDirection: direction,
 					registry,
-					2,
-					false,
-					false,
-				);
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				});
 			}).rejects.toThrow(errorMessage);
 		}
 	});
@@ -320,17 +322,17 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
-				await checkAssetIdInput(
-					mockSystemApi,
-					testInputs,
-					currentRegistry,
+				await checkAssetIdInput({
+					api: mockSystemApi,
+					assetIds: testInputs,
+					relayChainInfo: currentRegistry,
 					specName,
-					direction,
+					xcmDirection: direction,
 					registry,
-					2,
-					false,
-					false,
-				);
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				});
 			}).rejects.toThrow(errorMessage);
 		}
 	});
@@ -350,17 +352,17 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
-				await checkAssetIdInput(
-					mockSystemApi,
-					testInputs,
-					currentRegistry,
+				await checkAssetIdInput({
+					api: mockSystemApi,
+					assetIds: testInputs,
+					relayChainInfo: currentRegistry,
 					specName,
-					direction,
+					xcmDirection: direction,
 					registry,
-					2,
-					false,
-					false,
-				);
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				});
 			}).rejects.toThrow(errorMessage);
 		}
 	});
@@ -379,17 +381,17 @@ describe('checkAssetIds', () => {
 			const registry = new Registry(specName, {});
 			const currentRegistry = registry.currentRelayRegistry;
 			await expect(async () => {
-				await checkAssetIdInput(
-					parachainAssetsApi.api,
-					testInputs,
-					currentRegistry,
+				await checkAssetIdInput({
+					api: parachainAssetsApi.api,
+					assetIds: testInputs,
+					relayChainInfo: currentRegistry,
 					specName,
-					direction,
+					xcmDirection: direction,
 					registry,
-					2,
-					false,
-					false,
-				);
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				});
 			}).rejects.toThrow(errorMessage);
 		}
 	});
@@ -415,17 +417,17 @@ describe('checkAssetIds', () => {
 			const currentRegistry = registry.currentRelayRegistry;
 
 			await expect(async () => {
-				await checkAssetIdInput(
-					parachainAssetsApi.api,
-					testInputs,
-					currentRegistry,
+				await checkAssetIdInput({
+					api: parachainAssetsApi.api,
+					assetIds: testInputs,
+					relayChainInfo: currentRegistry,
 					specName,
-					direction,
+					xcmDirection: direction,
 					registry,
-					2,
-					false,
-					false,
-				);
+					xcmCreator,
+					isForeignAssetsTransfer: false,
+					isLiquidTokenTransfer: false,
+				});
 			}).rejects.toThrow(errorMessage);
 		}
 	});
@@ -434,17 +436,17 @@ describe('checkAssetIds', () => {
 		const currentRegistry = registry.currentRelayRegistry;
 
 		await expect(async () => {
-			await checkAssetIdInput(
-				parachainAssetsApi.api,
-				['0x1234'],
-				currentRegistry,
-				'moonriver',
-				Direction.ParaToSystem,
+			await checkAssetIdInput({
+				api: parachainAssetsApi.api,
+				assetIds: ['0x1234'],
+				relayChainInfo: currentRegistry,
+				specName: 'moonriver',
+				xcmDirection: Direction.ParaToSystem,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 		}).rejects.toThrow('(ParaToSystem) assetId 0x1234, is not a valid erc20 token.');
 	});
 	it('Should error when an invalid token is passed into a liquidTokenTransfer', async () => {
@@ -453,17 +455,17 @@ describe('checkAssetIds', () => {
 		const isLiquidTokenTransfer = true;
 
 		await expect(async () => {
-			await checkAssetIdInput(
-				adjustedMockSystemApi,
-				['TEST'],
-				currentRegistry,
-				'westmint',
-				Direction.SystemToPara,
+			await checkAssetIdInput({
+				api: adjustedMockSystemApi,
+				assetIds: ['TEST'],
+				relayChainInfo: currentRegistry,
+				specName: 'westmint',
+				xcmDirection: Direction.SystemToPara,
 				registry,
-				2,
-				false,
+				xcmCreator,
+				isForeignAssetsTransfer: false,
 				isLiquidTokenTransfer,
-			);
+			});
 		}).rejects.toThrow('Liquid Tokens must be valid Integers');
 	});
 	it('Should error when a token does not exist in the registry or node', async () => {
@@ -472,17 +474,17 @@ describe('checkAssetIds', () => {
 		const isLiquidTokenTransfer = true;
 
 		await expect(async () => {
-			await checkAssetIdInput(
-				adjustedMockSystemApi,
-				['999111'],
-				currentRegistry,
-				'westmint',
-				Direction.SystemToPara,
+			await checkAssetIdInput({
+				api: adjustedMockSystemApi,
+				assetIds: ['999111'],
+				relayChainInfo: currentRegistry,
+				specName: 'westmint',
+				xcmDirection: Direction.SystemToPara,
 				registry,
-				2,
-				false,
+				xcmCreator,
+				isForeignAssetsTransfer: false,
 				isLiquidTokenTransfer,
-			);
+			});
 		}).rejects.toThrow(
 			'No liquid token asset was detected. When setting the option "transferLiquidToken" to true a valid liquid token assetId must be present.',
 		);
@@ -494,17 +496,17 @@ describe('checkAssetIds', () => {
 
 		// eslint-disable-next-line @typescript-eslint/await-thenable
 		await expect(async () => {
-			await checkAssetIdInput(
-				adjustedMockSystemApi,
-				['0'],
-				currentRegistry,
-				'westmint',
-				Direction.SystemToPara,
+			await checkAssetIdInput({
+				api: adjustedMockSystemApi,
+				assetIds: ['0'],
+				relayChainInfo: currentRegistry,
+				specName: 'westmint',
+				xcmDirection: Direction.SystemToPara,
 				registry,
-				2,
-				false,
+				xcmCreator,
+				isForeignAssetsTransfer: false,
 				isLiquidTokenTransfer,
-			);
+			});
 		}).not.toThrow();
 	});
 	it('Should not throw an error for ParaToRelay when its a valid', async () => {
@@ -512,59 +514,59 @@ describe('checkAssetIds', () => {
 		const currentRegistry = registry.currentRelayRegistry;
 		// eslint-disable-next-line @typescript-eslint/await-thenable
 		await expect(async () => {
-			await checkAssetIdInput(
-				adjustedMockMoonriverParachainApi,
-				['KSM'],
-				currentRegistry,
-				'moonriver',
-				Direction.ParaToRelay,
+			await checkAssetIdInput({
+				api: adjustedMockMoonriverParachainApi,
+				assetIds: ['KSM'],
+				relayChainInfo: currentRegistry,
+				specName: 'moonriver',
+				xcmDirection: Direction.ParaToRelay,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 		}).not.toThrow();
 		// eslint-disable-next-line @typescript-eslint/await-thenable
 		await expect(async () => {
-			await checkAssetIdInput(
-				adjustedMockMoonriverParachainApi,
-				['42259045809535163221576417993425387648'],
-				currentRegistry,
-				'moonriver',
-				Direction.ParaToRelay,
+			await checkAssetIdInput({
+				api: adjustedMockMoonriverParachainApi,
+				assetIds: ['42259045809535163221576417993425387648'],
+				relayChainInfo: currentRegistry,
+				specName: 'moonriver',
+				xcmDirection: Direction.ParaToRelay,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 		}).not.toThrow();
 		// eslint-disable-next-line @typescript-eslint/await-thenable
 		await expect(async () => {
-			await checkAssetIdInput(
-				adjustedMockMoonriverParachainApi,
-				[''],
-				currentRegistry,
-				'moonriver',
-				Direction.ParaToRelay,
+			await checkAssetIdInput({
+				api: adjustedMockMoonriverParachainApi,
+				assetIds: [''],
+				relayChainInfo: currentRegistry,
+				specName: 'moonriver',
+				xcmDirection: Direction.ParaToRelay,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 		}).not.toThrow();
 		// eslint-disable-next-line @typescript-eslint/await-thenable
 		await expect(async () => {
-			await checkAssetIdInput(
-				adjustedMockMoonriverParachainApi,
-				[],
-				currentRegistry,
-				'moonriver',
-				Direction.ParaToRelay,
+			await checkAssetIdInput({
+				api: adjustedMockMoonriverParachainApi,
+				assetIds: [],
+				relayChainInfo: currentRegistry,
+				specName: 'moonriver',
+				xcmDirection: Direction.ParaToRelay,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 		}).not.toThrow();
 	});
 	it('Should error when an invalid assetId is inputted for ParaToRelay', async () => {
@@ -572,17 +574,17 @@ describe('checkAssetIds', () => {
 		const currentRegistry = registry.currentRelayRegistry;
 
 		await expect(async () => {
-			await checkAssetIdInput(
-				adjustedMockMoonriverParachainApi,
-				['TEST'],
-				currentRegistry,
-				'crust-collator',
-				Direction.ParaToRelay,
+			await checkAssetIdInput({
+				api: adjustedMockMoonriverParachainApi,
+				assetIds: ['TEST'],
+				relayChainInfo: currentRegistry,
+				specName: 'crust-collator',
+				xcmDirection: Direction.ParaToRelay,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 		}).rejects.toThrow("The current input for assetId's does not meet our specifications for ParaToRelay transfers.");
 	});
 });
@@ -713,7 +715,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 	it('Should correctly error when an integer assetId and multilocation assetId are passed in together', () => {
 		const assetIds = ['1984', '{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}'];
 
-		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
+		const err = () => checkAssetIdsAreOfSameAssetIdType({ assetIds, xcmCreator });
 
 		expect(err).toThrow(
 			`Found both native asset with assetID 1984 and foreign asset with assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Native assets and foreign assets can't be transferred within the same call.`,
@@ -723,7 +725,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 	it('Should correctly error when a symbol assetId and multilocation assetId are passed in together', () => {
 		const assetIds = ['ksm', '{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}'];
 
-		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
+		const err = () => checkAssetIdsAreOfSameAssetIdType({ assetIds, xcmCreator });
 
 		expect(err).toThrow(
 			'Found both symbol ksm and multilocation assetId {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Asset Ids must be symbol and integer or multilocation exclusively.',
@@ -733,7 +735,7 @@ describe('checkAssetIdsAreOfSameAssetIdType', () => {
 	it('Should correctly error when the default relay asset value and multilocation assetId are passed in together', () => {
 		const assetIds = ['', '{"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}'];
 
-		const err = () => checkAssetIdsAreOfSameAssetIdType(assetIds);
+		const err = () => checkAssetIdsAreOfSameAssetIdType({ assetIds, xcmCreator });
 
 		expect(err).toThrow(
 			`Found both default relay native asset and foreign asset with assetId: {"parents": "1", "interior": {"X2": [{"Parachain": "2125"}, {"GeneralIndex": "0"}]}}. Relay native asset and foreign assets can't be transferred within the same call.`,
@@ -937,7 +939,14 @@ describe('checkParaAssets', () => {
 		let didNotError = true;
 
 		try {
-			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets({
+				api: adjustedMockMoonriverParachainApi,
+				assetId,
+				specName,
+				registry,
+				xcmDirection: Direction.ParaToSystem,
+				xcmCreator,
+			});
 		} catch (err) {
 			didNotError = false;
 		}
@@ -951,7 +960,14 @@ describe('checkParaAssets', () => {
 		let didNotError = true;
 
 		try {
-			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets({
+				api: adjustedMockMoonriverParachainApi,
+				assetId,
+				specName,
+				registry,
+				xcmDirection: Direction.ParaToSystem,
+				xcmCreator,
+			});
 		} catch (err) {
 			didNotError = false;
 		}
@@ -964,7 +980,14 @@ describe('checkParaAssets', () => {
 		const registry = new Registry(specName, {});
 
 		await expect(async () => {
-			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets({
+				api: adjustedMockMoonriverParachainApi,
+				assetId,
+				specName,
+				registry,
+				xcmDirection: Direction.ParaToSystem,
+				xcmCreator,
+			});
 		}).rejects.toThrow('(ParaToSystem) symbol assetId xcUSDfake not found for parachain moonriver');
 	});
 	it('Should correctly error when an invalid integer assetId is provided', async () => {
@@ -973,7 +996,14 @@ describe('checkParaAssets', () => {
 		const registry = new Registry(specName, {});
 
 		await expect(async () => {
-			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets({
+				api: adjustedMockMoonriverParachainApi,
+				assetId,
+				specName,
+				registry,
+				xcmDirection: Direction.ParaToSystem,
+				xcmCreator,
+			});
 		}).rejects.toThrow('(ParaToSystem) integer assetId 2096586909097964981698161 not found in moonriver');
 	});
 	it('Should correctly error when a valid assetId is not found in the xcAsset registry', async () => {
@@ -982,7 +1012,14 @@ describe('checkParaAssets', () => {
 		const registry = new Registry(specName, {});
 
 		await expect(async () => {
-			await checkParaAssets(adjustedMockMoonriverParachainApi, assetId, specName, registry, Direction.ParaToSystem);
+			await checkParaAssets({
+				api: adjustedMockMoonriverParachainApi,
+				assetId,
+				specName,
+				registry,
+				xcmDirection: Direction.ParaToSystem,
+				xcmCreator,
+			});
 		}).rejects.toThrow('unable to identify xcAsset with ID 999999999999999999999999999999999999999');
 	});
 
@@ -999,17 +1036,17 @@ describe('checkParaAssets', () => {
 				},
 			};
 
-			await checkAssetIdInput(
-				adjustedMockSystemApi,
-				['1984'],
-				chainInfo,
-				'statemine',
-				Direction.SystemToPara,
+			await checkAssetIdInput({
+				api: adjustedMockSystemApi,
+				assetIds: ['1984'],
+				relayChainInfo: chainInfo,
+				specName: 'statemine',
+				xcmDirection: Direction.SystemToPara,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 
 			expect(registry.cacheLookupAsset('1984')).toEqual('USDt');
 		});
@@ -1025,17 +1062,17 @@ describe('checkParaAssets', () => {
 				},
 			};
 
-			await checkAssetIdInput(
-				adjustedMockMoonriverParachainApi,
-				['xcUSDT'],
-				chainInfo,
-				'moonriver',
-				Direction.ParaToSystem,
+			await checkAssetIdInput({
+				api: adjustedMockMoonriverParachainApi,
+				assetIds: ['xcUSDT'],
+				relayChainInfo: chainInfo,
+				specName: 'moonriver',
+				xcmDirection: Direction.ParaToSystem,
 				registry,
-				2,
-				false,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: false,
+			});
 
 			expect(registry.cacheLookupAsset('xcUSDT')).toEqual('311091173110107856861649819128533077277');
 		});
@@ -1064,17 +1101,17 @@ describe('checkParaAssets', () => {
 				},
 			};
 
-			await checkAssetIdInput(
-				adjustedMockSystemApi,
-				['{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}'],
-				chainInfo,
-				'statemine',
-				Direction.SystemToPara,
+			await checkAssetIdInput({
+				api: adjustedMockSystemApi,
+				assetIds: ['{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}'],
+				relayChainInfo: chainInfo,
+				specName: 'statemine',
+				xcmDirection: Direction.SystemToPara,
 				registry,
-				2,
-				true,
-				false,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: true,
+				isLiquidTokenTransfer: false,
+			});
 
 			expect(registry.cacheLookupForeignAsset('GDZ')).toEqual({
 				multiLocation: '{"parents":"1","interior":{"X2":[{"Parachain":"1103"},{"GeneralIndex":"0"}]}}',
@@ -1107,17 +1144,17 @@ describe('checkParaAssets', () => {
 				},
 			};
 
-			await checkAssetIdInput(
-				adjustedMockSystemApi,
-				['0'],
-				chainInfo,
-				'statemine',
-				Direction.SystemToPara,
+			await checkAssetIdInput({
+				api: adjustedMockSystemApi,
+				assetIds: ['0'],
+				relayChainInfo: chainInfo,
+				specName: 'statemine',
+				xcmDirection: Direction.SystemToPara,
 				registry,
-				2,
-				false,
-				true,
-			);
+				xcmCreator,
+				isForeignAssetsTransfer: false,
+				isLiquidTokenTransfer: true,
+			});
 
 			expect(registry.cacheLookupPoolAsset('0')).toEqual({
 				lpToken: '0',
