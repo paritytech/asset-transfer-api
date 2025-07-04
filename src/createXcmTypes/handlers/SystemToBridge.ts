@@ -8,9 +8,9 @@ import {
 	FungibleAssetType,
 	OneOfXcmJunctions,
 	XcmCreator,
-	XcmDestBeneficiary,
 	XcmMultiAssets,
 	XcmMultiLocation,
+	XcmVersionedMultiLocation,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
@@ -27,7 +27,7 @@ export class SystemToBridge extends DefaultHandler {
 	 *
 	 * @param destId The chainId of the destination.
 	 */
-	createDest(destId: string): XcmDestBeneficiary {
+	createDest(destId: string): XcmVersionedMultiLocation {
 		return this.xcmCreator.interiorDest({
 			destId,
 			parents: 2,

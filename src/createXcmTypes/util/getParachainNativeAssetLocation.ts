@@ -1,3 +1,4 @@
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
 import { SanitizedXcAssetsData } from '../../registry/types.js';
@@ -52,7 +53,7 @@ const getNativeAssetLocation = (
 		if (typeof asset.symbol === 'string' && asset.symbol.toLowerCase() === nativeAssetSymbol.toLowerCase()) {
 			// get the location from v1
 			const v1LocationStr = asset.xcmV1MultiLocation;
-			location = parseLocationStrToLocation(v1LocationStr);
+			location = parseLocationStrToLocation(v1LocationStr, DEFAULT_XCM_VERSION);
 
 			// handle case where result is an xcmV1Multilocation from the registry
 			if (typeof location === 'object' && 'v1' in location) {

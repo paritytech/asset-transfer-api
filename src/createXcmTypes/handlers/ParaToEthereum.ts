@@ -10,8 +10,8 @@ import type {
 	FungibleAssetType,
 	FungibleMultiAsset,
 	XcmCreator,
-	XcmDestBeneficiary,
 	XcmMultiAssets,
+	XcmVersionedMultiLocation,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createFeeAssetItem } from '../util/createFeeAssetItem.js';
@@ -28,7 +28,7 @@ export class ParaToEthereum extends DefaultHandler {
 	 *
 	 * @param destId The parachain Id of the destination.
 	 */
-	createDest(destId: string): XcmDestBeneficiary {
+	createDest(destId: string): XcmVersionedMultiLocation {
 		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 1,

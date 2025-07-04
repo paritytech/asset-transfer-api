@@ -1130,9 +1130,11 @@ export class AssetTransferApi {
 						// convert json into locations
 						const firstLpToken = parseLocationStrToLocation(
 							JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
+							this.safeXcmVersion,
 						);
 						const secondLpToken = parseLocationStrToLocation(
 							JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
+							this.safeXcmVersion,
 						);
 
 						// check locations match paysWithFeeOrigin feeAsset

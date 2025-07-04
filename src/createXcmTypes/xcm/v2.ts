@@ -10,21 +10,21 @@ import {
 	XcAssetsMultiAsset,
 	XcAssetsMultiLocation,
 	XcmCreator,
-	XcmDestBeneficiary,
-	XcmDestBeneficiaryXcAssets,
 	XcmMultiAssets,
 	XcmMultiLocation,
-	XcmV2DestBeneficiary,
+	XcmMultiLocationForVersion,
 	XcmV2MultiLocation,
 	XcmVersionedAssetId,
+	XcmVersionedMultiLocation,
+	XcmVersionKey,
 } from '../types.js';
 import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
-import { createParachainDestBeneficiaryInner } from './common.js';
+import { createParachainBeneficiary } from './common.js';
 
 export const V2: XcmCreator = {
 	xcmVersion: 2,
 
-	beneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmDestBeneficiary {
+	beneficiary({ accountId, parents = 0 }: { accountId: string; parents: number }): XcmVersionedMultiLocation {
 		const X1 = isEthereumAddress(accountId)
 			? { AccountKey20: { network: 'Any', key: accountId } }
 			: { AccountId32: { network: 'Any', id: accountId } };
@@ -45,12 +45,12 @@ export const V2: XcmCreator = {
 		accountId: string;
 		destChainId: string;
 		parents: number;
-	}): XcmDestBeneficiaryXcAssets {
-		const beneficiary = createParachainDestBeneficiaryInner({
+	}): XcmVersionedMultiLocation {
+		const beneficiary = createParachainBeneficiary({
 			accountId,
 			destChainId,
 			parents,
-		});
+		}) as XcmMultiLocationForVersion<XcmVersionKey.V2>;
 		return { V2: beneficiary };
 	},
 
@@ -60,13 +60,13 @@ export const V2: XcmCreator = {
 	}: {
 		accountId: string;
 		parents: number;
-	}): XcmDestBeneficiaryXcAssets {
+	}): XcmVersionedMultiLocation {
 		const X1 = { AccountId32: { id: accountId } };
 		const beneficiary = {
 			parents,
 			interior: { X1 },
 		};
-		return { V2: beneficiary } as XcmV2DestBeneficiary;
+		return { V2: beneficiary };
 	},
 
 	fungibleAsset({ amount, multiLocation }: { amount: string; multiLocation: AnyJson }): FungibleAssetType {
@@ -125,8 +125,15 @@ export const V2: XcmCreator = {
 		return { V2: { Concrete: this.resolveMultiLocation(multiLocation) } };
 	},
 
-	parachainDest({ destId, parents }: { destId: string; parents: number }): XcmDestBeneficiary {
-		const X1 = { Parachain: destId };
+	parachainDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
+		const chainId = Number(destId);
+		if (isNaN(chainId)) {
+			throw new BaseError(
+				'destChainId expected to be string representation of an integer',
+				BaseErrorsEnum.InvalidInput,
+			);
+		}
+		const X1 = { Parachain: chainId };
 		return {
 			V2: {
 				parents,
@@ -136,7 +143,7 @@ export const V2: XcmCreator = {
 	},
 
 	// Same across all versions
-	hereDest({ parents }: { parents: number }): XcmDestBeneficiary {
+	hereDest({ parents }: { parents: number }): XcmVersionedMultiLocation {
 		return {
 			V2: {
 				parents,
@@ -145,7 +152,7 @@ export const V2: XcmCreator = {
 		};
 	},
 
-	interiorDest(_opts: { destId: string; parents: number }): XcmDestBeneficiary {
+	interiorDest(_opts: { destId: string; parents: number }): XcmVersionedMultiLocation {
 		throw new BaseError('XcmVersion not supported.', BaseErrorsEnum.InvalidXcmVersion);
 	},
 

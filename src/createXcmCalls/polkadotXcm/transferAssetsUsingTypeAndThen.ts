@@ -84,7 +84,7 @@ export const transferAssetsUsingTypeAndThen = async (
 			let assetLocation = JSON.parse(assetIdLocationStr) as XcmMultiLocation;
 
 			if ('v1' in assetLocation) {
-				assetLocation = parseLocationStrToLocation(JSON.stringify(assetLocation.v1));
+				assetLocation = parseLocationStrToLocation(JSON.stringify(assetLocation.v1), xcmVersion);
 			}
 
 			// parse registry xc assets erc20 v1 location

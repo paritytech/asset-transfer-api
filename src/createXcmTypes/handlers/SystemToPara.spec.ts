@@ -20,7 +20,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: '100',
+							Parachain: 100,
 						},
 					},
 				},
@@ -36,7 +36,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					parents: 1,
 					interior: {
 						X1: {
-							Parachain: '100',
+							Parachain: 100,
 						},
 					},
 				},
@@ -53,7 +53,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					interior: {
 						X1: [
 							{
-								Parachain: '100',
+								Parachain: 100,
 							},
 						],
 					},
@@ -71,7 +71,7 @@ describe('SystemToPara XcmVersioned Generation', () => {
 					interior: {
 						X1: [
 							{
-								Parachain: '100',
+								Parachain: 100,
 							},
 						],
 					},

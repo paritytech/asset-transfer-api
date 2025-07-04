@@ -9,9 +9,9 @@ import type {
 	FungibleAssetType,
 	OneOfXcmJunctions,
 	XcmCreator,
-	XcmDestBeneficiary,
 	XcmMultiAssets,
 	XcmMultiLocation,
+	XcmVersionedMultiLocation,
 } from '../types.js';
 import { assetIdIsLocation } from '../util/assetIdIsLocation.js';
 import { createAssets } from '../util/createAssets.js';
@@ -30,7 +30,7 @@ export class SystemToPara extends DefaultHandler {
 	 *
 	 * @param destId The parachain Id of the destination.
 	 */
-	createDest(destId: string): XcmDestBeneficiary {
+	createDest(destId: string): XcmVersionedMultiLocation {
 		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 1,

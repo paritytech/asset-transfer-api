@@ -1,3 +1,4 @@
+import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 /**
@@ -6,7 +7,7 @@ import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
  * @returns boolean
  */
 export const chainDestIsBridge = (destLocation: string): boolean => {
-	const location = parseLocationStrToLocation(destLocation);
+	const location = parseLocationStrToLocation(destLocation, DEFAULT_XCM_VERSION);
 	let destIsBridge = false;
 
 	if (location.interior) {

@@ -10,9 +10,8 @@ import type {
 	FungibleAssetType,
 	XcAssetsMultiAsset,
 	XcmCreator,
-	XcmDestBeneficiary,
-	XcmDestBeneficiaryXcAssets,
 	XcmMultiAssets,
+	XcmVersionedMultiLocation,
 } from '../types.js';
 import { createAssets } from '../util/createAssets.js';
 import { createXTokensParachainDestBeneficiary } from '../util/createBeneficiary.js';
@@ -31,7 +30,7 @@ export class ParaToSystem extends DefaultHandler {
 	 *
 	 * @param destId The parachain Id of the destination.
 	 */
-	createDest(destId: string): XcmDestBeneficiary {
+	createDest(destId: string): XcmVersionedMultiLocation {
 		return this.xcmCreator.parachainDest({
 			destId,
 			parents: 1,
@@ -83,7 +82,7 @@ export class ParaToSystem extends DefaultHandler {
 	 * @param destChainId The parachain Id of the destination.
 	 * @param accountId The accountId of the beneficiary.
 	 */
-	createXTokensBeneficiary(destChainId: string, accountId: string): XcmDestBeneficiaryXcAssets {
+	createXTokensBeneficiary(destChainId: string, accountId: string): XcmVersionedMultiLocation {
 		return createXTokensParachainDestBeneficiary(destChainId, accountId, this.xcmCreator);
 	}
 

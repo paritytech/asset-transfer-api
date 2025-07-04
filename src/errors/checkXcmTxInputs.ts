@@ -3,6 +3,7 @@ import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import {
+	DEFAULT_XCM_VERSION,
 	MAX_ASSETS_FOR_TRANSFER,
 	RELAY_CHAIN_IDS,
 	RELAY_CHAINS_NATIVE_ASSET_LOCATION,
@@ -653,8 +654,11 @@ export const checkParaAssets = async (
 					const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as XcmMultiLocation;
 
 					if ('v1' in v1AssetLocation) {
-						const registryAssetLocation = parseLocationStrToLocation(JSON.stringify(v1AssetLocation.v1));
-						const assetLocation = parseLocationStrToLocation(assetId);
+						const registryAssetLocation = parseLocationStrToLocation(
+							JSON.stringify(v1AssetLocation.v1),
+							DEFAULT_XCM_VERSION,
+						);
+						const assetLocation = parseLocationStrToLocation(assetId, DEFAULT_XCM_VERSION);
 
 						if (JSON.stringify(registryAssetLocation).toLowerCase() === JSON.stringify(assetLocation).toLowerCase()) {
 							return;
