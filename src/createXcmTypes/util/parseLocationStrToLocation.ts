@@ -1,11 +1,7 @@
-import { DEFAULT_XCM_VERSION } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { XcmJunction, XcmJunctionForVersion, XcmMultiLocation, XcmVersionKey } from '../types.js';
 
-export const parseLocationStrToLocation = (
-	locationStr: string,
-	xcmVersion: number = DEFAULT_XCM_VERSION,
-): XcmMultiLocation => {
+export const parseLocationStrToLocation = (locationStr: string, xcmVersion: number): XcmMultiLocation => {
 	let location = '';
 	const isX1V4Location = locationStr.includes(`X1":[`) && locationStr.includes(`]`);
 
