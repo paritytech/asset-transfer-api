@@ -203,15 +203,15 @@ export const getAssetId = async ({
 					if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === asset.toLowerCase()) {
 						assetId = info.xcmV1MultiLocation;
 						registry.setAssetInCache(asset, assetId);
-					} else if (assetIdIsLocation(asset)) {
+					} else if (assetIdIsLocation({ assetId: asset, xcmCreator })) {
 						const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as XcmMultiLocation;
 
 						if ('v1' in v1AssetLocation) {
-							const registryAssetLocation = parseLocationStrToLocation(
-								JSON.stringify(v1AssetLocation.v1),
-								xcmCreator.xcmVersion,
-							);
-							const assetLocation = parseLocationStrToLocation(asset, xcmCreator.xcmVersion);
+							const registryAssetLocation = parseLocationStrToLocation({
+								locationStr: JSON.stringify(v1AssetLocation.v1),
+								xcmCreator,
+							});
+							const assetLocation = parseLocationStrToLocation({ locationStr: asset, xcmCreator });
 
 							if (JSON.stringify(registryAssetLocation).toLowerCase() === JSON.stringify(assetLocation).toLowerCase()) {
 								assetId = info.xcmV1MultiLocation;

@@ -17,7 +17,7 @@ describe('parseLocationStrToLocation', () => {
 				],
 			},
 		};
-		const result = parseLocationStrToLocation(locationStr, DEFAULT_XCM_VERSION);
+		const result = parseLocationStrToLocation({ locationStr, xcmCreator });
 
 		expect(result).toEqual(expected);
 	});

@@ -123,7 +123,13 @@ export const createSystemToParaMultiAssets = async ({
 		let assetId: string = assets[i];
 		const amount = amounts[i];
 
-		const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, isForeignAssetsTransfer);
+		const palletId = fetchPalletInstanceId({
+			api,
+			assetId,
+			isLiquidToken: isLiquidTokenTransfer,
+			isForeignAsset: isForeignAssetsTransfer,
+			xcmCreator,
+		});
 
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
@@ -134,7 +140,7 @@ export const createSystemToParaMultiAssets = async ({
 
 		let multiLocation: XcmMultiLocation;
 
-		if (isForeignAssetsTransfer && assetIdIsLocation(assetId)) {
+		if (isForeignAssetsTransfer && assetIdIsLocation({ assetId, xcmCreator })) {
 			multiLocation = xcmCreator.resolveMultiLocation(assetId);
 		} else {
 			const parents = isRelayNative ? 1 : 0;

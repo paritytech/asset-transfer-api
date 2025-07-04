@@ -95,7 +95,7 @@ export const V2: XcmCreator = {
 			);
 		}
 
-		let result = parseLocationStrToLocation(multiLocationStr, this.xcmVersion);
+		let result = parseLocationStrToLocation({ locationStr: multiLocationStr, xcmCreator: this });
 
 		// handle case where result is an xcmV1Multilocation from the registry
 		if (typeof result === 'object' && 'v1' in result) {

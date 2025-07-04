@@ -1,7 +1,14 @@
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
-import { XcmJunction, XcmJunctionForVersion, XcmMultiLocation, XcmVersionKey } from '../types.js';
+import { XcmCreator, XcmJunction, XcmJunctionForVersion, XcmMultiLocation, XcmVersionKey } from '../types.js';
 
-export const parseLocationStrToLocation = (locationStr: string, xcmVersion: number): XcmMultiLocation => {
+export const parseLocationStrToLocation = ({
+	locationStr,
+	xcmCreator,
+}: {
+	locationStr: string;
+	xcmCreator: XcmCreator;
+}): XcmMultiLocation => {
+	const xcmVersion = xcmCreator.xcmVersion;
 	let location = '';
 	const isX1V4Location = locationStr.includes(`X1":[`) && locationStr.includes(`]`);
 

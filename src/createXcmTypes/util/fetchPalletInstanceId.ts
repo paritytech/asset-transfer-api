@@ -1,6 +1,7 @@
 import type { ApiPromise } from '@polkadot/api';
 
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { XcmCreator } from '../types.js';
 import { assetIdIsLocation } from './assetIdIsLocation.js';
 
 /**
@@ -9,12 +10,19 @@ import { assetIdIsLocation } from './assetIdIsLocation.js';
  * @param api ApiPromise.
  * @param isLiquidToken Boolean to determine whether or not to fetch the PoolAssets id.
  */
-export const fetchPalletInstanceId = (
-	api: ApiPromise,
-	assetId: string,
-	isLiquidToken: boolean,
-	isForeignAsset: boolean,
-): number => {
+export const fetchPalletInstanceId = ({
+	api,
+	assetId,
+	isLiquidToken,
+	isForeignAsset,
+	xcmCreator,
+}: {
+	api: ApiPromise;
+	assetId: string;
+	isLiquidToken: boolean;
+	isForeignAsset: boolean;
+	xcmCreator: XcmCreator;
+}): number => {
 	if (isLiquidToken && isForeignAsset) {
 		throw new BaseError(
 			"Can't find the appropriate pallet when both liquid tokens and foreign assets",
@@ -25,7 +33,7 @@ export const fetchPalletInstanceId = (
 	const palletName =
 		isLiquidToken && api.query.poolAssets
 			? 'PoolAssets'
-			: isForeignAsset && api.query.foreignAssets && assetIdIsLocation(assetId)
+			: isForeignAsset && api.query.foreignAssets && assetIdIsLocation({ assetId, xcmCreator })
 				? 'ForeignAssets'
 				: api.query.assets
 					? 'Assets'
