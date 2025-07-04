@@ -212,6 +212,11 @@ export class AssetTransferApi {
 			xcmPalletOverride,
 		} = opts;
 
+		const { api, specName, safeXcmVersion, originChainId, registry } = this;
+		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
+		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
+		const xcmCreator = getXcmCreator(declaredXcmVersion);
+
 		if (!this.registryConfig.registryInitialized) {
 			await this.initializeRegistry();
 		}
@@ -227,7 +232,6 @@ export class AssetTransferApi {
 		 */
 		checkBaseInputTypes(destChainId, destAddr, assetIds, amounts);
 
-		const { api, specName, safeXcmVersion, originChainId, registry } = this;
 		const isLiquidTokenTransfer = transferLiquidToken === true;
 		const chainOriginDestInfo = {
 			isOriginRelayChain: api.query.paras ? true : false,
@@ -236,8 +240,8 @@ export class AssetTransferApi {
 			isDestRelayChain: destChainId === RELAY_CHAIN_IDS[0],
 			isDestSystemParachain: isSystemChain(destChainId),
 			isDestParachain: isParachain(destChainId),
-			isDestBridge: chainDestIsBridge(destChainId),
-			isDestEthereum: chainDestIsEthereum(destChainId),
+			isDestBridge: chainDestIsBridge({ destLocation: destChainId, xcmCreator }),
+			isDestEthereum: chainDestIsEthereum({ destLocation: destChainId, xcmCreator }),
 		};
 
 		/**
@@ -252,9 +256,6 @@ export class AssetTransferApi {
 		const isForeignAssetsTransfer = await this.checkContainsForeignAssets(api, assetIds);
 		const isPrimaryParachainNativeAsset = isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetIds[0]);
 		const xcmPallet = establishXcmPallet(api, xcmDirection, xcmPalletOverride);
-		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
-		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
-		const xcmCreator = getXcmCreator(declaredXcmVersion);
 
 		/**
 		 * Create a local asset transfer
@@ -305,13 +306,14 @@ export class AssetTransferApi {
 			xcmFeeAsset,
 		};
 
-		await checkXcmTxInputs(
-			{ ...baseArgs, xcmPallet },
-			{
+		await checkXcmTxInputs({
+			baseArgs: { ...baseArgs, xcmPallet },
+			opts: {
 				...baseOpts,
 				isPrimaryParachainNativeAsset,
 			},
-		);
+			xcmCreator,
+		});
 
 		const assetType = this.fetchAssetType(xcmDirection, isForeignAssetsTransfer);
 		const assetCallType = this.fetchCallType({
@@ -388,13 +390,14 @@ export class AssetTransferApi {
 		const { api, specName, originChainId, registry, safeXcmVersion } = this;
 		const { format, sendersAddr, transferLiquidToken: isLiquidToken, xcmVersion } = opts;
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
+		const xcmCreator = getXcmCreator(declaredXcmVersion);
 		const isLiquidTokenTransfer = isLiquidToken ? true : false;
 		const assetIdsContainLocations = this.checkContainsAssetLocations(assetIds);
 		const beneficiaryAddress = sanitizeAddress(beneficiary);
 
 		checkXcmVersion(declaredXcmVersion);
 		checkBaseInputOptions(opts, specName);
-		checkClaimAssetsInputs(assetIds, amounts);
+		checkClaimAssetsInputs({ assets: assetIds, amounts, xcmCreator });
 
 		const ext = await claimAssets(
 			api,
@@ -411,7 +414,6 @@ export class AssetTransferApi {
 			},
 		);
 
-		const xcmCreator = getXcmCreator(declaredXcmVersion);
 		return await this.constructFormat({
 			tx: ext,
 			direction: 'local',
@@ -697,7 +699,11 @@ export class AssetTransferApi {
 		const fmt = format ? format : 'payload';
 		const result: TxResult<T> = {
 			origin,
-			dest: this.getDestinationSpecName(dest, this.registry),
+			dest: this.getDestinationSpecName({
+				destId: dest,
+				registry: this.registry,
+				xcmCreator,
+			}),
 			direction,
 			xcmVersion: xcmCreator.xcmVersion,
 			method,
@@ -717,9 +723,13 @@ export class AssetTransferApi {
 			// We can type cast here since the api will ensure if the format is a paylaod that the
 			// sendersAddr must be present.
 			const addr = sendersAddr as string;
-			result.tx = (await this.createPayload(tx, {
-				paysWithFeeOrigin,
-				sendersAddr: addr,
+			result.tx = (await this.createPayload({
+				tx,
+				opts: {
+					paysWithFeeOrigin,
+					sendersAddr: addr,
+				},
+				xcmCreator,
 			})) as ConstructedFormat<T>;
 		}
 
@@ -943,10 +953,15 @@ export class AssetTransferApi {
 	 * @param tx SubmittableExtrinsic<'promise', ISubmittableResult>
 	 * @param paysWithFeeOrigin string
 	 */
-	private createPayload = async (
-		tx: SubmittableExtrinsic<'promise', ISubmittableResult>,
-		opts: { paysWithFeeOrigin?: string; sendersAddr: string },
-	): Promise<GenericExtrinsicPayload> => {
+	private createPayload = async ({
+		tx,
+		opts,
+		xcmCreator,
+	}: {
+		tx: SubmittableExtrinsic<'promise', ISubmittableResult>;
+		opts: { paysWithFeeOrigin?: string; sendersAddr: string };
+		xcmCreator: XcmCreator;
+	}): Promise<GenericExtrinsicPayload> => {
 		const { paysWithFeeOrigin, sendersAddr } = opts;
 		let assetId: AnyJson = {};
 
@@ -955,7 +970,7 @@ export class AssetTransferApi {
 		if (paysWithFeeOrigin && isOriginSystemParachain) {
 			let paysWithFeeOriginAssetLocation: string;
 
-			if (!assetIdIsLocation(paysWithFeeOrigin)) {
+			if (!assetIdIsLocation({ assetId: paysWithFeeOrigin, xcmCreator })) {
 				const paysWithFeeOriginLocation = getPaysWithFeeOriginAssetLocationFromRegistry(this, paysWithFeeOrigin);
 
 				if (!paysWithFeeOriginLocation) {
@@ -969,7 +984,10 @@ export class AssetTransferApi {
 				paysWithFeeOriginAssetLocation = paysWithFeeOrigin;
 			}
 
-			const [isValidLpToken] = await this.checkAssetLpTokenPairExists(paysWithFeeOriginAssetLocation);
+			const [isValidLpToken] = await this.checkAssetLpTokenPairExists({
+				paysWithFeeOrigin: paysWithFeeOriginAssetLocation,
+				xcmCreator,
+			});
 
 			if (!isValidLpToken) {
 				throw new BaseError(
@@ -1032,13 +1050,21 @@ export class AssetTransferApi {
 	 * @param registry Registry
 	 * @returns string
 	 */
-	private getDestinationSpecName(destId: string, registry: Registry): string {
+	private getDestinationSpecName({
+		destId,
+		registry,
+		xcmCreator,
+	}: {
+		destId: string;
+		registry: Registry;
+		xcmCreator: XcmCreator;
+	}): string {
 		if (destId === '0') {
 			return registry.relayChain;
 		}
 
-		if (chainDestIsBridge(destId)) {
-			return getGlobalConsensusSystemName(destId);
+		if (chainDestIsBridge({ destLocation: destId, xcmCreator })) {
+			return getGlobalConsensusSystemName({ destLocation: destId, xcmCreator });
 		}
 
 		const lookup = registry.lookupParachainInfo(destId);
@@ -1106,7 +1132,13 @@ export class AssetTransferApi {
 	 * @param paysWithFeeOrigin XcmMultiLocation
 	 * @returns Promise<boolean>
 	 */
-	private checkAssetLpTokenPairExists = async (paysWithFeeOrigin: string): Promise<[boolean, XcmMultiLocation]> => {
+	private checkAssetLpTokenPairExists = async ({
+		paysWithFeeOrigin,
+		xcmCreator,
+	}: {
+		paysWithFeeOrigin: string;
+		xcmCreator: XcmCreator;
+	}): Promise<[boolean, XcmMultiLocation]> => {
 		let feeAsset: XcmMultiLocation;
 
 		try {
@@ -1128,14 +1160,14 @@ export class AssetTransferApi {
 
 					if (Array.isArray(lpTokenLocations[0])) {
 						// convert json into locations
-						const firstLpToken = parseLocationStrToLocation(
-							JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
-							this.safeXcmVersion,
-						);
-						const secondLpToken = parseLocationStrToLocation(
-							JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
-							this.safeXcmVersion,
-						);
+						const firstLpToken = parseLocationStrToLocation({
+							locationStr: JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
+							xcmCreator,
+						});
+						const secondLpToken = parseLocationStrToLocation({
+							locationStr: JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
+							xcmCreator,
+						});
 
 						// check locations match paysWithFeeOrigin feeAsset
 						if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {
@@ -1390,7 +1422,8 @@ export class AssetTransferApi {
 		baseOpts: CreateXcmCallOpts;
 		paysWithFeeDest?: string;
 	}): Promise<ResolvedCallInfo> {
-		const { api } = baseArgs;
+		const { api, xcmVersion } = baseArgs;
+		const xcmCreator = getXcmCreator(xcmVersion);
 		let txMethod: Methods | undefined = undefined;
 
 		const isXtokensPallet = xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
@@ -1403,7 +1436,7 @@ export class AssetTransferApi {
 			// This ensures paraToRelay always uses `transferMultiAsset`.
 			if (xcmDirection === Direction.ParaToRelay || (!paysWithFeeDest && assetIds.length < 2)) {
 				txMethod = 'transferMultiasset';
-			} else if (paysWithFeeDest && assetIdIsLocation(paysWithFeeDest)) {
+			} else if (paysWithFeeDest && assetIdIsLocation({ assetId: paysWithFeeDest, xcmCreator })) {
 				txMethod = 'transferMultiassetWithFee';
 			} else {
 				txMethod = 'transferMultiassets';

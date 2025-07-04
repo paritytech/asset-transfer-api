@@ -121,7 +121,13 @@ const createSystemToSystemMultiAssets = async ({
 		let assetId: string = assets[i];
 		const amount = amounts[i];
 
-		const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, isForeignAssetsTransfer);
+		const palletId = fetchPalletInstanceId({
+			api,
+			assetId,
+			isLiquidToken: isLiquidTokenTransfer,
+			isForeignAsset: isForeignAssetsTransfer,
+			xcmCreator,
+		});
 
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(registry, assetId);

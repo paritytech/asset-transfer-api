@@ -148,7 +148,7 @@ const createParaToParaMultiAssets = async ({
 
 	if (isPrimaryParachainNativeAsset) {
 		const multiLocation = xcmCreator.resolveMultiLocation(
-			getParachainNativeAssetLocation(registry, assets[0], destChainId),
+			getParachainNativeAssetLocation({ registry, nativeAssetSymbol: assets[0], destChainId, xcmCreator }),
 		);
 
 		const multiAsset = xcmCreator.fungibleAsset({

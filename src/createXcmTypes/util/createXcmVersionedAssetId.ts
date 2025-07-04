@@ -13,10 +13,10 @@ export const createXcmVersionedAssetId = (
 		throw new BaseError('XcmVersion must be greater than 2', BaseErrorsEnum.InvalidXcmVersion);
 	}
 
-	let location = parseLocationStrToLocation(destFeesAssetId, xcmCreator.xcmVersion);
+	let location = parseLocationStrToLocation({ locationStr: destFeesAssetId, xcmCreator });
 
 	if (typeof location === 'object' && 'v1' in location) {
-		location = parseLocationStrToLocation(JSON.stringify(location.v1), xcmCreator.xcmVersion);
+		location = parseLocationStrToLocation({ locationStr: JSON.stringify(location.v1), xcmCreator });
 	}
 
 	return xcmCreator.versionedAssetId(location);

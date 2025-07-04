@@ -1,4 +1,4 @@
-import { DEFAULT_XCM_VERSION } from '../../consts.js';
+import { XcmCreator } from '../types.js';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 /**
@@ -6,8 +6,14 @@ import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
  * @param destLocation
  * @returns boolean
  */
-export const chainDestIsBridge = (destLocation: string): boolean => {
-	const location = parseLocationStrToLocation(destLocation, DEFAULT_XCM_VERSION);
+export const chainDestIsBridge = ({
+	destLocation,
+	xcmCreator,
+}: {
+	destLocation: string;
+	xcmCreator: XcmCreator;
+}): boolean => {
+	const location = parseLocationStrToLocation({ locationStr: destLocation, xcmCreator });
 	let destIsBridge = false;
 
 	if (location.interior) {

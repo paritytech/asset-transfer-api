@@ -135,7 +135,7 @@ export const V5: XcmCreator = {
 
 	// Same as V4
 	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
-		const multiLocation = parseLocationStrToLocation(destId, this.xcmVersion) as XcmV5MultiLocation;
+		const multiLocation = parseLocationStrToLocation({ locationStr: destId, xcmCreator: this }) as XcmV5MultiLocation;
 
 		if (!multiLocation.interior) {
 			throw new BaseError('Unable to create XCM Destination location', BaseErrorsEnum.InternalError);

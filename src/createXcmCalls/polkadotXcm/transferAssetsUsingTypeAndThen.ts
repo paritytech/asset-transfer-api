@@ -84,7 +84,7 @@ export const transferAssetsUsingTypeAndThen = async (
 			let assetLocation = JSON.parse(assetIdLocationStr) as XcmMultiLocation;
 
 			if ('v1' in assetLocation) {
-				assetLocation = parseLocationStrToLocation(JSON.stringify(assetLocation.v1), xcmVersion);
+				assetLocation = parseLocationStrToLocation({ locationStr: JSON.stringify(assetLocation.v1), xcmCreator });
 			}
 
 			// parse registry xc assets erc20 v1 location
@@ -201,7 +201,7 @@ export const transferAssetsUsingTypeAndThen = async (
 	});
 
 	let remoteFeesId: XcmVersionedAssetId;
-	if (paysWithFeeDest && !assetIdIsLocation(paysWithFeeDest)) {
+	if (paysWithFeeDest && !assetIdIsLocation({ assetId: paysWithFeeDest, xcmCreator })) {
 		const remoteFeesAssetLocation = await getAssetId({ api, registry, asset: paysWithFeeDest, specName, xcmCreator });
 		remoteFeesId = createXcmVersionedAssetId(remoteFeesAssetLocation, xcmCreator);
 	} else {

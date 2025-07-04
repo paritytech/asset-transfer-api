@@ -3,14 +3,13 @@ import { isHex } from '@polkadot/util';
 import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import {
-	DEFAULT_XCM_VERSION,
 	MAX_ASSETS_FOR_TRANSFER,
 	RELAY_CHAIN_IDS,
 	RELAY_CHAINS_NATIVE_ASSET_LOCATION,
 	SYSTEM_AND_PARACHAINS_RELAY_ASSET_LOCATION,
 } from '../consts.js';
 import { XcmPalletName } from '../createXcmCalls/util/establishXcmPallet.js';
-import { XcmMultiLocation } from '../createXcmTypes/types.js';
+import { XcmCreator, XcmMultiLocation } from '../createXcmTypes/types.js';
 import { assetIdIsLocation } from '../createXcmTypes/util/assetIdIsLocation.js';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from '../createXcmTypes/util/foreignAssetMultiLocationIsInCacheOrRegistry.js';
 import { foreignAssetsMultiLocationExists } from '../createXcmTypes/util/foreignAssetsMultiLocationExists.js';
@@ -19,7 +18,6 @@ import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachai
 import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset.js';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset.js';
 import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation.js';
-import { getXcmCreator } from '../createXcmTypes/xcm/index.js';
 import { Registry } from '../registry/index.js';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types.js';
 import type { XcmBaseArgsWithPallet } from '../types.js';
@@ -394,20 +392,29 @@ export const checkLiquidTokenValidity = async (
 	);
 };
 
-const checkSystemAssets = async (
-	api: ApiPromise,
-	assetId: string,
-	specName: string,
-	systemParachainInfo: ChainInfoKeys,
-	registry: Registry,
-	xcmDirection: string,
-	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer?: boolean,
-) => {
-	const xcmCreator = getXcmCreator(xcmVersion);
+const checkSystemAssets = async ({
+	api,
+	assetId,
+	specName,
+	systemParachainInfo,
+	registry,
+	xcmDirection,
+	xcmCreator,
+	isForeignAssetsTransfer,
+	isLiquidTokenTransfer,
+}: {
+	api: ApiPromise;
+	assetId: string;
+	specName: string;
+	systemParachainInfo: ChainInfoKeys;
+	registry: Registry;
+	xcmDirection: string;
+	xcmCreator: XcmCreator;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer?: boolean;
+}) => {
 	const currentChainId = registry.lookupChainIdBySpecName(specName);
-	if (isForeignAssetsTransfer && assetIdIsLocation(assetId)) {
+	if (isForeignAssetsTransfer && assetIdIsLocation({ assetId, xcmCreator })) {
 		// check that the asset id is a valid multilocation
 		const multiLocationIsInRegistry = foreignAssetMultiLocationIsInCacheOrRegistry(assetId, registry, xcmCreator);
 
@@ -536,13 +543,21 @@ const checkSystemAssets = async (
 	}
 };
 
-export const checkParaAssets = async (
-	api: ApiPromise,
-	assetId: string,
-	specName: string,
-	registry: Registry,
-	xcmDirection: Direction,
-) => {
+export const checkParaAssets = async ({
+	api,
+	assetId,
+	specName,
+	registry,
+	xcmDirection,
+	xcmCreator,
+}: {
+	api: ApiPromise;
+	assetId: string;
+	specName: string;
+	registry: Registry;
+	xcmDirection: Direction;
+	xcmCreator: XcmCreator;
+}) => {
 	if (isParachainPrimaryNativeAsset(registry, specName, xcmDirection, assetId)) {
 		return;
 	}
@@ -650,15 +665,15 @@ export const checkParaAssets = async (
 			for (const info of paraXcAssets) {
 				if (typeof info.symbol === 'string' && info.symbol.toLowerCase() === assetId.toLowerCase()) {
 					return;
-				} else if (assetIdIsLocation(assetId)) {
+				} else if (assetIdIsLocation({ assetId, xcmCreator })) {
 					const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as XcmMultiLocation;
 
 					if ('v1' in v1AssetLocation) {
-						const registryAssetLocation = parseLocationStrToLocation(
-							JSON.stringify(v1AssetLocation.v1),
-							DEFAULT_XCM_VERSION,
-						);
-						const assetLocation = parseLocationStrToLocation(assetId, DEFAULT_XCM_VERSION);
+						const registryAssetLocation = parseLocationStrToLocation({
+							locationStr: JSON.stringify(v1AssetLocation.v1),
+							xcmCreator,
+						});
+						const assetLocation = parseLocationStrToLocation({ locationStr: assetId, xcmCreator });
 
 						if (JSON.stringify(registryAssetLocation).toLowerCase() === JSON.stringify(assetLocation).toLowerCase()) {
 							return;
@@ -683,56 +698,76 @@ export const checkParaAssets = async (
  * @param assetId
  * @param relayChainInfo
  */
-const checkSystemToParaAssetId = async (
-	api: ApiPromise,
-	assetId: string,
-	specName: string,
-	relayChainInfo: ChainInfo<ChainInfoKeys>,
-	registry: Registry,
-	xcmDirection: Direction,
-	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean,
-) => {
-	await checkIsValidSystemChainAssetId(
+const checkSystemToParaAssetId = async ({
+	api,
+	assetId,
+	specName,
+	relayChainInfo,
+	registry,
+	xcmDirection,
+	xcmCreator,
+	isForeignAssetsTransfer,
+	isLiquidTokenTransfer,
+}: {
+	api: ApiPromise;
+	assetId: string;
+	specName: string;
+	relayChainInfo: ChainInfo<ChainInfoKeys>;
+	registry: Registry;
+	xcmDirection: Direction;
+	xcmCreator: XcmCreator;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
+}) => {
+	await checkIsValidSystemChainAssetId({
 		api,
 		assetId,
 		specName,
 		relayChainInfo,
 		registry,
 		xcmDirection,
-		xcmVersion,
+		xcmCreator,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
-	);
+	});
 };
 
-const checkIsValidSystemChainAssetId = async (
-	api: ApiPromise,
-	assetId: string,
-	specName: string,
-	relayChainInfo: ChainInfo<ChainInfoKeys>,
-	registry: Registry,
-	xcmDirection: Direction,
-	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean,
-) => {
+const checkIsValidSystemChainAssetId = async ({
+	api,
+	assetId,
+	specName,
+	relayChainInfo,
+	registry,
+	xcmDirection,
+	xcmCreator,
+	isForeignAssetsTransfer,
+	isLiquidTokenTransfer,
+}: {
+	api: ApiPromise;
+	assetId: string;
+	specName: string;
+	relayChainInfo: ChainInfo<ChainInfoKeys>;
+	registry: Registry;
+	xcmDirection: Direction;
+	xcmCreator: XcmCreator;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
+}) => {
 	const systemChainId = registry.lookupChainIdBySpecName(specName);
 	const systemParachainInfo = relayChainInfo[systemChainId];
 
 	if (typeof assetId === 'string') {
-		await checkSystemAssets(
+		await checkSystemAssets({
 			api,
 			assetId,
 			specName,
 			systemParachainInfo,
 			registry,
 			xcmDirection,
-			xcmVersion,
+			xcmCreator,
 			isForeignAssetsTransfer,
 			isLiquidTokenTransfer,
-		);
+		});
 	}
 };
 
@@ -742,7 +777,19 @@ const checkIsValidSystemChainAssetId = async (
  * @param specName
  * @param registry
  */
-const checkParaOriginAssetId = async (api: ApiPromise, assetId: string, specName: string, registry: Registry) => {
+const checkParaOriginAssetId = async ({
+	api,
+	assetId,
+	specName,
+	registry,
+	xcmCreator,
+}: {
+	api: ApiPromise;
+	assetId: string;
+	specName: string;
+	registry: Registry;
+	xcmCreator: XcmCreator;
+}) => {
 	if (typeof assetId === 'string') {
 		// An assetId may be a hex value to represent a GeneralKey for erc20 tokens.
 		// These will be represented as Foreign Assets in regard to its MultiLocation
@@ -758,7 +805,7 @@ const checkParaOriginAssetId = async (api: ApiPromise, assetId: string, specName
 			return;
 		}
 
-		await checkParaAssets(api, assetId, specName, registry, Direction.ParaToSystem);
+		await checkParaAssets({ api, assetId, specName, registry, xcmDirection: Direction.ParaToSystem, xcmCreator });
 	}
 };
 
@@ -768,28 +815,38 @@ const checkParaOriginAssetId = async (api: ApiPromise, assetId: string, specName
  * @param assetId
  * @param relayChainInfo
  */
-const checkSystemToSystemAssetId = async (
-	api: ApiPromise,
-	assetId: string,
-	specName: string,
-	relayChainInfo: ChainInfo<ChainInfoKeys>,
-	registry: Registry,
-	xcmDirection: Direction,
-	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean,
-) => {
-	await checkIsValidSystemChainAssetId(
+const checkSystemToSystemAssetId = async ({
+	api,
+	assetId,
+	specName,
+	relayChainInfo,
+	registry,
+	xcmDirection,
+	xcmCreator,
+	isForeignAssetsTransfer,
+	isLiquidTokenTransfer,
+}: {
+	api: ApiPromise;
+	assetId: string;
+	specName: string;
+	relayChainInfo: ChainInfo<ChainInfoKeys>;
+	registry: Registry;
+	xcmDirection: Direction;
+	xcmCreator: XcmCreator;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
+}) => {
+	await checkIsValidSystemChainAssetId({
 		api,
 		assetId,
 		specName,
 		relayChainInfo,
 		registry,
 		xcmDirection,
-		xcmVersion,
+		xcmCreator,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
-	);
+	});
 };
 
 /**
@@ -900,7 +957,14 @@ export const checkAssetIdsHaveNoDuplicates = (assetIds: string[]) => {
  *
  * @param assetIds
  */
-export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
+// TODO
+export const checkAssetIdsAreOfSameAssetIdType = ({
+	assetIds,
+	xcmCreator,
+}: {
+	assetIds: string[];
+	xcmCreator: XcmCreator;
+}) => {
 	if (assetIds.length > 1) {
 		let relayDefaultValueFound = false;
 		let symbolAssetIdFound = '';
@@ -916,7 +980,7 @@ export const checkAssetIdsAreOfSameAssetIdType = (assetIds: string[]) => {
 			const isValidInt = validateNumber(assetId);
 			if (isValidInt) {
 				integerAssetIdFound = assetId;
-			} else if (assetIdIsLocation(assetId)) {
+			} else if (assetIdIsLocation({ assetId, xcmCreator })) {
 				multiLocationAssetIdFound = assetId;
 			} else {
 				symbolAssetIdFound = assetId;
@@ -1053,17 +1117,27 @@ export const checkLiquidTokenTransferDirectionValidity = (xcmDirection: Directio
  * @param xcmDirection
  * @param registry
  */
-export const checkAssetIdInput = async (
-	api: ApiPromise,
-	assetIds: string[],
-	relayChainInfo: ChainInfo<ChainInfoKeys>,
-	specName: string,
-	xcmDirection: Direction,
-	registry: Registry,
-	xcmVersion: number,
-	isForeignAssetsTransfer: boolean,
-	isLiquidTokenTransfer: boolean,
-) => {
+export const checkAssetIdInput = async ({
+	api,
+	assetIds,
+	relayChainInfo,
+	specName,
+	xcmDirection,
+	registry,
+	xcmCreator,
+	isForeignAssetsTransfer,
+	isLiquidTokenTransfer,
+}: {
+	api: ApiPromise;
+	assetIds: string[];
+	relayChainInfo: ChainInfo<ChainInfoKeys>;
+	specName: string;
+	xcmDirection: Direction;
+	registry: Registry;
+	xcmCreator: XcmCreator;
+	isForeignAssetsTransfer: boolean;
+	isLiquidTokenTransfer: boolean;
+}) => {
 	for (let i = 0; i < assetIds.length; i++) {
 		const assetId = assetIds[i];
 
@@ -1082,35 +1156,35 @@ export const checkAssetIdInput = async (
 		}
 
 		if (xcmDirection === Direction.SystemToPara) {
-			await checkSystemToParaAssetId(
+			await checkSystemToParaAssetId({
 				api,
 				assetId,
 				specName,
 				relayChainInfo,
 				registry,
 				xcmDirection,
-				xcmVersion,
+				xcmCreator,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-			);
+			});
 		}
 
 		if (xcmDirection === Direction.SystemToSystem) {
-			await checkSystemToSystemAssetId(
+			await checkSystemToSystemAssetId({
 				api,
 				assetId,
 				specName,
 				relayChainInfo,
 				registry,
 				xcmDirection,
-				xcmVersion,
+				xcmCreator,
 				isForeignAssetsTransfer,
 				isLiquidTokenTransfer,
-			);
+			});
 		}
 
 		if (xcmDirection === Direction.ParaToSystem || xcmDirection === Direction.ParaToPara) {
-			await checkParaOriginAssetId(api, assetId, specName, registry);
+			await checkParaOriginAssetId({ api, assetId, specName, registry, xcmCreator });
 		}
 
 		if (xcmDirection === Direction.ParaToRelay) {
@@ -1129,7 +1203,15 @@ export const checkAssetIdInput = async (
  * @param specName
  * @param registry
  */
-export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: CheckXcmTxInputsOpts) => {
+export const checkXcmTxInputs = async ({
+	baseArgs,
+	opts,
+	xcmCreator,
+}: {
+	baseArgs: XcmBaseArgsWithPallet;
+	opts: CheckXcmTxInputsOpts;
+	xcmCreator: XcmCreator;
+}) => {
 	const { api, direction, assetIds, amounts, destChainId, xcmVersion, specName, registry, xcmPallet, destAddr } =
 		baseArgs;
 	const {
@@ -1188,17 +1270,17 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	/**
 	 * Checks to ensure that assetId's are either valid integer numbers or native asset token symbols
 	 */
-	await checkAssetIdInput(
+	await checkAssetIdInput({
 		api,
 		assetIds,
 		relayChainInfo,
 		specName,
-		direction,
+		xcmDirection: direction,
 		registry,
-		xcmVersion,
+		xcmCreator,
 		isForeignAssetsTransfer,
 		isLiquidTokenTransfer,
-	);
+	});
 
 	if (direction === Direction.RelayToSystem) {
 		checkRelayAssetIdLength(assetIds);
@@ -1213,7 +1295,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 	if (direction === Direction.RelayToBridge) {
 		checkRelayAssetIdLength(assetIds);
 		checkRelayAmountsLength(amounts);
-		getGlobalConsensusSystemName(destChainId);
+		getGlobalConsensusSystemName({ destLocation: destChainId, xcmCreator });
 		checkBridgeTxInputs(
 			paysWithFeeDest,
 			assetTransferType,
@@ -1252,7 +1334,7 @@ export const checkXcmTxInputs = async (baseArgs: XcmBaseArgsWithPallet, opts: Ch
 		checkMultiLocationIdLength(assetIds);
 		checkMultiLocationAmountsLength(amounts);
 		checkAssetIdsAndAmountsMatch(assetIds, amounts);
-		getGlobalConsensusSystemName(destChainId);
+		getGlobalConsensusSystemName({ destLocation: destChainId, xcmCreator });
 		checkBridgeTxInputs(
 			paysWithFeeDest,
 			assetTransferType,
@@ -1301,9 +1383,17 @@ export const checkParaToEthereum = (destAddr: string, sendersAddr?: string, pays
 	}
 };
 
-export const checkClaimAssetsInputs = (assets: string[], amounts: string[]) => {
+export const checkClaimAssetsInputs = ({
+	assets,
+	amounts,
+	xcmCreator,
+}: {
+	assets: string[];
+	amounts: string[];
+	xcmCreator: XcmCreator;
+}) => {
 	checkAssetIdsAndAmountsMatch(assets, amounts);
-	checkAssetIdsAreOfSameAssetIdType(assets);
+	checkAssetIdsAreOfSameAssetIdType({ assetIds: assets, xcmCreator });
 };
 
 export const checkDryRunCallOptionIncludesSendersAddressAndXcmFeeAsset = (
