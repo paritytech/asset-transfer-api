@@ -334,7 +334,6 @@ export class AssetTransferApi {
 			baseArgs,
 			baseOpts,
 			paysWithFeeDest,
-			xcmCreator,
 		});
 
 		return this.constructFormat<T>({
@@ -1414,7 +1413,6 @@ export class AssetTransferApi {
 		baseArgs,
 		baseOpts,
 		paysWithFeeDest,
-		xcmCreator,
 	}: {
 		assetIds: string[];
 		xcmPallet: XcmPalletName;
@@ -1422,10 +1420,10 @@ export class AssetTransferApi {
 		assetCallType: AssetCallType;
 		baseArgs: XcmBaseArgs | XTokensBaseArgs;
 		baseOpts: CreateXcmCallOpts;
-		xcmCreator: XcmCreator;
 		paysWithFeeDest?: string;
 	}): Promise<ResolvedCallInfo> {
-		const { api } = baseArgs;
+		const { api, xcmVersion } = baseArgs;
+		const xcmCreator = getXcmCreator(xcmVersion);
 		let txMethod: Methods | undefined = undefined;
 
 		const isXtokensPallet = xcmPallet === XcmPalletName.xTokens || xcmPallet === XcmPalletName.xtokens;
