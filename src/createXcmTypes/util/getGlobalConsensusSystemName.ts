@@ -1,9 +1,16 @@
-import { DEFAULT_XCM_VERSION, KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES } from '../../consts.js';
+import { KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
+import { XcmCreator } from '../types.js';
 import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
-export const getGlobalConsensusSystemName = (destLocation: string): string => {
-	const location = parseLocationStrToLocation(destLocation, DEFAULT_XCM_VERSION);
+export const getGlobalConsensusSystemName = ({
+	destLocation,
+	xcmCreator,
+}: {
+	destLocation: string;
+	xcmCreator: XcmCreator;
+}): string => {
+	const location = parseLocationStrToLocation({ locationStr: destLocation, xcmCreator });
 
 	for (const systemName of KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES) {
 		if (

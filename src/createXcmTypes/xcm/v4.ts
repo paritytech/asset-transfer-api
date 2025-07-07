@@ -83,7 +83,7 @@ export const V4: XcmCreator = {
 	resolveMultiLocation(multiLocation: AnyJson): XcmMultiLocation {
 		const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
 
-		let result = parseLocationStrToLocation(multiLocationStr, this.xcmVersion);
+		let result = parseLocationStrToLocation({ locationStr: multiLocationStr, xcmCreator: this });
 
 		// handle case where result is an xcmV1Multilocation from the registry
 		if (typeof result === 'object' && 'v1' in result) {
@@ -155,7 +155,7 @@ export const V4: XcmCreator = {
 	},
 
 	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
-		const multiLocation = parseLocationStrToLocation(destId, this.xcmVersion) as XcmV4MultiLocation;
+		const multiLocation = parseLocationStrToLocation({ locationStr: destId, xcmCreator: this }) as XcmV4MultiLocation;
 
 		return {
 			V4: {

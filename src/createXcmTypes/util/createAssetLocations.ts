@@ -61,7 +61,13 @@ export const createAssetLocations = async ({
 			if (isRelayNative) {
 				interior = { Here: '' };
 			} else {
-				const palletId = fetchPalletInstanceId(api, assetId, isLiquidTokenTransfer, assetIdsContainLocations);
+				const palletId = fetchPalletInstanceId({
+					api,
+					assetId,
+					isLiquidToken: isLiquidTokenTransfer,
+					isForeignAsset: assetIdsContainLocations,
+					xcmCreator,
+				});
 				interior = {
 					X2: [{ PalletInstance: palletId }, { GeneralIndex: assetId }],
 				};
