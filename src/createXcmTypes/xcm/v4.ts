@@ -3,7 +3,6 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { RemoteReserve } from '../../types.js';
-import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAsset,
 	FungibleAssetType,
@@ -11,6 +10,7 @@ import {
 	XcAssetsMultiLocation,
 	XcmCreator,
 	XcmJunction,
+	XcmJunctionForVersion,
 	XcmMultiAssets,
 	XcmMultiLocation,
 	XcmMultiLocationForVersion,
@@ -19,8 +19,7 @@ import {
 	XcmVersionedMultiLocation,
 	XcmVersionKey,
 } from '../types.js';
-import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
-import { createParachainBeneficiary } from './common.js';
+import { createParachainBeneficiary, parseMultiLocation } from './common.js';
 
 export const V4: XcmCreator = {
 	xcmVersion: 4,
@@ -81,27 +80,14 @@ export const V4: XcmCreator = {
 	},
 
 	resolveMultiLocation(multiLocation: AnyJson): XcmMultiLocation {
-		const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
+		const result = parseMultiLocation(multiLocation, this.xcmVersion);
 
-		let result = parseLocationStrToLocation({ locationStr: multiLocationStr, xcmCreator: this });
-
-		// handle case where result is an xcmV1Multilocation from the registry
-		if (typeof result === 'object' && 'v1' in result) {
-			result = result.v1 as XcmMultiLocation;
+		// Safety net in case we are trying to resolve input that is <= V4
+		if (result?.interior?.X1 && !Array.isArray(result.interior.X1)) {
+			const x1: XcmJunction = result.interior.X1 as XcmJunctionForVersion<XcmVersionKey.V4>;
+			result.interior.X1 = [x1];
 		}
-
-		const isX1V4Location = multiLocationStr.includes('"X1":[');
-
-		if (typeof result === 'object' && result.interior?.X1 && !isX1V4Location) {
-			result = {
-				parents: result.parents,
-				interior: {
-					X1: result.interior.X1 as XcmJunction,
-				},
-			};
-		}
-
-		return sanitizeKeys(result);
+		return result;
 	},
 
 	multiAsset(asset: FungibleAssetType): XcAssetsMultiAsset {
@@ -155,7 +141,7 @@ export const V4: XcmCreator = {
 	},
 
 	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
-		const multiLocation = parseLocationStrToLocation({ locationStr: destId, xcmCreator: this }) as XcmV4MultiLocation;
+		const multiLocation = this.resolveMultiLocation(destId) as XcmV4MultiLocation;
 
 		return {
 			V4: {

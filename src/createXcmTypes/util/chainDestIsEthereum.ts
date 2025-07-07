@@ -1,5 +1,4 @@
 import { XcmCreator } from '../types.js';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const chainDestIsEthereum = ({
 	destLocation,
@@ -12,7 +11,7 @@ export const chainDestIsEthereum = ({
 		return false;
 	}
 
-	const location = parseLocationStrToLocation({ locationStr: destLocation, xcmCreator });
+	const location = xcmCreator.resolveMultiLocation(destLocation);
 
 	const destIsEthereum = location.interior.X1
 		? JSON.stringify(location.interior.X1).toLowerCase().includes('ethereum')

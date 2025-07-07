@@ -3,7 +3,6 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { RemoteReserve } from '../../types.js';
-import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAssetType,
 	FungibleMultiAsset,
@@ -18,8 +17,7 @@ import {
 	XcmVersionedMultiLocation,
 	XcmVersionKey,
 } from '../types.js';
-import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
-import { createParachainBeneficiary } from './common.js';
+import { createParachainBeneficiary, parseMultiLocation } from './common.js';
 
 export const V2: XcmCreator = {
 	xcmVersion: 2,
@@ -82,27 +80,7 @@ export const V2: XcmCreator = {
 	},
 
 	resolveMultiLocation(multiLocation: AnyJson): XcmMultiLocation {
-		const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
-
-		// Ensure we check this first since the main difference between v2, and later versions is the `globalConsensus` junction
-		const hasGlobalConsensus =
-			multiLocationStr.includes('globalConsensus') || multiLocationStr.includes('GlobalConsensus');
-
-		if (hasGlobalConsensus) {
-			throw new BaseError(
-				'XcmVersion must be greater than 2 for MultiLocations that contain a GlobalConsensus junction.',
-				BaseErrorsEnum.InvalidXcmVersion,
-			);
-		}
-
-		let result = parseLocationStrToLocation({ locationStr: multiLocationStr, xcmCreator: this });
-
-		// handle case where result is an xcmV1Multilocation from the registry
-		if (typeof result === 'object' && 'v1' in result) {
-			result = result.v1 as XcmMultiLocation;
-		}
-
-		return sanitizeKeys(result);
+		return parseMultiLocation(multiLocation, this.xcmVersion);
 	},
 
 	multiAsset(asset: FungibleAssetType): XcAssetsMultiAsset {

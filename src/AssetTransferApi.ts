@@ -56,7 +56,6 @@ import { isParachainPrimaryNativeAsset } from './createXcmTypes/util/isParachain
 import { isRelayNativeAsset } from './createXcmTypes/util/isRelayNativeAsset.js';
 import { isSystemChain } from './createXcmTypes/util/isSystemChain.js';
 import { multiLocationAssetIsParachainsNativeAsset } from './createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset.js';
-import { parseLocationStrToLocation } from './createXcmTypes/util/parseLocationStrToLocation.js';
 import { getXcmCreator } from './createXcmTypes/xcm/index.js';
 import { LocalTxType } from './errors/checkLocalTxInput/types.js';
 import { checkClaimAssetsInputs } from './errors/checkXcmTxInputs.js';
@@ -1160,14 +1159,12 @@ export class AssetTransferApi {
 
 					if (Array.isArray(lpTokenLocations[0])) {
 						// convert json into locations
-						const firstLpToken = parseLocationStrToLocation({
-							locationStr: JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
-							xcmCreator,
-						});
-						const secondLpToken = parseLocationStrToLocation({
-							locationStr: JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
-							xcmCreator,
-						});
+						const firstLpToken = xcmCreator.resolveMultiLocation(
+							JSON.stringify(lpTokenLocations[0][0]).replace(/(\d),/g, '$1'),
+						);
+						const secondLpToken = xcmCreator.resolveMultiLocation(
+							JSON.stringify(lpTokenLocations[0][1]).replace(/(\d),/g, '$1'),
+						);
 
 						// check locations match paysWithFeeOrigin feeAsset
 						if (deepEqual(sanitizeKeys(firstLpToken), feeAsset) || deepEqual(sanitizeKeys(secondLpToken), feeAsset)) {

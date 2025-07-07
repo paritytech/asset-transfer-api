@@ -9,7 +9,6 @@ import { XcmCreator, XcmMultiLocation } from '../types.js';
 import { assetIdIsLocation } from './assetIdIsLocation.js';
 import { foreignAssetMultiLocationIsInCacheOrRegistry } from './foreignAssetMultiLocationIsInCacheOrRegistry.js';
 import { foreignAssetsMultiLocationExists } from './foreignAssetsMultiLocationExists.js';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 /**
  *
@@ -207,11 +206,8 @@ export const getAssetId = async ({
 						const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as XcmMultiLocation;
 
 						if ('v1' in v1AssetLocation) {
-							const registryAssetLocation = parseLocationStrToLocation({
-								locationStr: JSON.stringify(v1AssetLocation.v1),
-								xcmCreator,
-							});
-							const assetLocation = parseLocationStrToLocation({ locationStr: asset, xcmCreator });
+							const registryAssetLocation = xcmCreator.resolveMultiLocation(JSON.stringify(v1AssetLocation.v1));
+							const assetLocation = xcmCreator.resolveMultiLocation(asset);
 
 							if (JSON.stringify(registryAssetLocation).toLowerCase() === JSON.stringify(assetLocation).toLowerCase()) {
 								assetId = info.xcmV1MultiLocation;

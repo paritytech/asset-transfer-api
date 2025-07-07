@@ -3,7 +3,6 @@ import { isEthereumAddress } from '@polkadot/util-crypto';
 
 import { BaseError, BaseErrorsEnum } from '../../errors/BaseError.js';
 import { RemoteReserve } from '../../types.js';
-import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import {
 	FungibleAssetType,
 	FungibleMultiAsset,
@@ -18,8 +17,7 @@ import {
 	XcmVersionedMultiLocation,
 	XcmVersionKey,
 } from '../types.js';
-import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
-import { createParachainBeneficiary } from './common.js';
+import { createParachainBeneficiary, parseMultiLocation } from './common.js';
 
 export const V3: XcmCreator = {
 	xcmVersion: 3,
@@ -82,16 +80,7 @@ export const V3: XcmCreator = {
 	},
 
 	resolveMultiLocation(multiLocation: AnyJson): XcmMultiLocation {
-		const multiLocationStr = typeof multiLocation === 'string' ? multiLocation : JSON.stringify(multiLocation);
-
-		let result = parseLocationStrToLocation({ locationStr: multiLocationStr, xcmCreator: this });
-
-		// handle case where result is an xcmV1Multilocation from the registry
-		if (typeof result === 'object' && 'v1' in result) {
-			result = result.v1 as XcmMultiLocation;
-		}
-
-		return sanitizeKeys(result);
+		return parseMultiLocation(multiLocation, this.xcmVersion);
 	},
 
 	// Same as V2
@@ -149,7 +138,7 @@ export const V3: XcmCreator = {
 	},
 
 	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
-		const multiLocation = parseLocationStrToLocation({ locationStr: destId, xcmCreator: this }) as XcmV3MultiLocation;
+		const multiLocation = this.resolveMultiLocation(destId) as XcmV3MultiLocation;
 		if (!multiLocation.interior) {
 			throw new BaseError('Unable to create XCM Destination location', BaseErrorsEnum.InternalError);
 		}

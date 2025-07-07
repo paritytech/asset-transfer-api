@@ -1,6 +1,5 @@
 import { DEFAULT_XCM_VERSION } from '../../consts';
 import { getXcmCreator } from '../xcm';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation';
 
 describe('parseLocationStrToLocation', () => {
 	const xcmCreator = getXcmCreator(DEFAULT_XCM_VERSION);
@@ -19,7 +18,7 @@ describe('parseLocationStrToLocation', () => {
 				],
 			},
 		};
-		const result = parseLocationStrToLocation({ locationStr, xcmCreator });
+		const result = xcmCreator.resolveMultiLocation(locationStr);
 
 		expect(result).toEqual(expected);
 	});
@@ -39,14 +38,14 @@ describe('parseLocationStrToLocation', () => {
 				],
 			},
 		};
-		const result = parseLocationStrToLocation({ locationStr, xcmCreator });
+		const result = xcmCreator.resolveMultiLocation(locationStr);
 
 		expect(result).toEqual(expected);
 	});
 	it('Should correctly error when an unparseable location string is provided', () => {
 		const locationStr = '{"parents":"2","interior":{"X2":[{GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}}';
 
-		const err = () => parseLocationStrToLocation({ locationStr, xcmCreator });
+		const err = () => xcmCreator.resolveMultiLocation(locationStr);
 
 		expect(err).toThrow(
 			'Unable to parse {"parents":"2","interior":{"X2":[{GlobalConsensus":"Polkadot"},{"Parachain":"1000"}]}} as a valid location',

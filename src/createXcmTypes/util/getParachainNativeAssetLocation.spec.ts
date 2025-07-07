@@ -39,7 +39,7 @@ describe('getParachainNativeAssetLocation', () => {
 			xcmCreator,
 		});
 
-		expect(JSON.stringify(res)).toEqual('{"parents":0,"interior":{"X1":{"Parachain":"2035"}}}');
+		expect(JSON.stringify(res)).toEqual('{"parents":0,"interior":{"X1":[{"Parachain":"2035"}]}}');
 	});
 	it('Correctly returns the native asset location for Hydration', () => {
 		const registry = new Registry('hydradx', {});
