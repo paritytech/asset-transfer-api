@@ -17,7 +17,6 @@ import {
 	XcmVersionedMultiLocation,
 	XcmVersionKey,
 } from '../types.js';
-import { parseLocationStrToLocation } from '../util/parseLocationStrToLocation.js';
 import { createParachainBeneficiary } from './common.js';
 import { V4 } from './v4.js';
 
@@ -135,7 +134,7 @@ export const V5: XcmCreator = {
 
 	// Same as V4
 	interiorDest({ destId, parents }: { destId: string; parents: number }): XcmVersionedMultiLocation {
-		const multiLocation = parseLocationStrToLocation({ locationStr: destId, xcmCreator: this }) as XcmV5MultiLocation;
+		const multiLocation = this.resolveMultiLocation(destId) as XcmV5MultiLocation;
 
 		if (!multiLocation.interior) {
 			throw new BaseError('Unable to create XCM Destination location', BaseErrorsEnum.InternalError);

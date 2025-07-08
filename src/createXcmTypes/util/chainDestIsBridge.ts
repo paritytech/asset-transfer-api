@@ -1,5 +1,4 @@
 import { XcmCreator } from '../types.js';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 /**
  * Determines if the dest chain is a Global Consensus origin based on the value of its dest location
@@ -13,7 +12,7 @@ export const chainDestIsBridge = ({
 	destLocation: string;
 	xcmCreator: XcmCreator;
 }): boolean => {
-	const location = parseLocationStrToLocation({ locationStr: destLocation, xcmCreator });
+	const location = xcmCreator.resolveMultiLocation(destLocation);
 	let destIsBridge = false;
 
 	if (location.interior) {

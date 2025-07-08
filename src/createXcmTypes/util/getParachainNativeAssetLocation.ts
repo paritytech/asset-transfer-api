@@ -3,7 +3,6 @@ import { Registry } from '../../registry/index.js';
 import { SanitizedXcAssetsData } from '../../registry/types.js';
 import { sanitizeKeys } from '../../util/sanitizeKeys.js';
 import { XcmCreator, XcmJunction, XcmMultiLocation } from '../types.js';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const getParachainNativeAssetLocation = ({
 	registry,
@@ -63,7 +62,7 @@ const getNativeAssetLocation = ({
 		if (typeof asset.symbol === 'string' && asset.symbol.toLowerCase() === nativeAssetSymbol.toLowerCase()) {
 			// get the location from v1
 			const v1LocationStr = asset.xcmV1MultiLocation;
-			location = parseLocationStrToLocation({ locationStr: v1LocationStr, xcmCreator });
+			location = xcmCreator.resolveMultiLocation(v1LocationStr);
 
 			// handle case where result is an xcmV1Multilocation from the registry
 			if (typeof location === 'object' && 'v1' in location) {

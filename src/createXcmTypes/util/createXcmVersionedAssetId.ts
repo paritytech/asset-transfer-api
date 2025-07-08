@@ -1,6 +1,5 @@
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { XcmCreator, XcmVersionedAssetId } from '../types.js';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const createXcmVersionedAssetId = (
 	destFeesAssetId: string | undefined,
@@ -13,10 +12,10 @@ export const createXcmVersionedAssetId = (
 		throw new BaseError('XcmVersion must be greater than 2', BaseErrorsEnum.InvalidXcmVersion);
 	}
 
-	let location = parseLocationStrToLocation({ locationStr: destFeesAssetId, xcmCreator });
+	let location = xcmCreator.resolveMultiLocation(destFeesAssetId);
 
 	if (typeof location === 'object' && 'v1' in location) {
-		location = parseLocationStrToLocation({ locationStr: JSON.stringify(location.v1), xcmCreator });
+		location = xcmCreator.resolveMultiLocation(JSON.stringify(location.v1));
 	}
 
 	return xcmCreator.versionedAssetId(location);

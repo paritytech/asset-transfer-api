@@ -17,7 +17,6 @@ import { getGlobalConsensusSystemName } from '../createXcmTypes/util/getGlobalCo
 import { isParachainPrimaryNativeAsset } from '../createXcmTypes/util/isParachainPrimaryNativeAsset.js';
 import { isRelayNativeAsset } from '../createXcmTypes/util/isRelayNativeAsset.js';
 import { multiLocationAssetIsParachainsNativeAsset } from '../createXcmTypes/util/multiLocationAssetIsParachainsNativeAsset.js';
-import { parseLocationStrToLocation } from '../createXcmTypes/util/parseLocationStrToLocation.js';
 import { Registry } from '../registry/index.js';
 import type { ChainInfo, ChainInfoKeys } from '../registry/types.js';
 import type { XcmBaseArgsWithPallet } from '../types.js';
@@ -669,11 +668,8 @@ export const checkParaAssets = async ({
 					const v1AssetLocation = JSON.parse(info.xcmV1MultiLocation) as XcmMultiLocation;
 
 					if ('v1' in v1AssetLocation) {
-						const registryAssetLocation = parseLocationStrToLocation({
-							locationStr: JSON.stringify(v1AssetLocation.v1),
-							xcmCreator,
-						});
-						const assetLocation = parseLocationStrToLocation({ locationStr: assetId, xcmCreator });
+						const registryAssetLocation = xcmCreator.resolveMultiLocation(JSON.stringify(v1AssetLocation.v1));
+						const assetLocation = xcmCreator.resolveMultiLocation(assetId);
 
 						if (JSON.stringify(registryAssetLocation).toLowerCase() === JSON.stringify(assetLocation).toLowerCase()) {
 							return;

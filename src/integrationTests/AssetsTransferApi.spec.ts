@@ -497,7 +497,9 @@ describe('AssetTransferApi Integration Tests', () => {
 							},
 						},
 					);
-				}).rejects.toThrow('Bridge transactions require XCM version 3 or greater');
+				}).rejects.toThrow(
+					'XcmVersion must be greater than 2 for MultiLocations that contain a GlobalConsensus junction.',
+				);
 			});
 		});
 		describe('SystemToPara', () => {
@@ -1687,7 +1689,9 @@ describe('AssetTransferApi Integration Tests', () => {
 							},
 						},
 					);
-				}).rejects.toThrow('Bridge transactions require XCM version 3 or greater');
+				}).rejects.toThrow(
+					'XcmVersion must be greater than 2 for MultiLocations that contain a GlobalConsensus junction.',
+				);
 			});
 		});
 

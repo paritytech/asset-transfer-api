@@ -1,7 +1,6 @@
 import { KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES } from '../../consts.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { XcmCreator } from '../types.js';
-import { parseLocationStrToLocation } from './parseLocationStrToLocation.js';
 
 export const getGlobalConsensusSystemName = ({
 	destLocation,
@@ -10,7 +9,7 @@ export const getGlobalConsensusSystemName = ({
 	destLocation: string;
 	xcmCreator: XcmCreator;
 }): string => {
-	const location = parseLocationStrToLocation({ locationStr: destLocation, xcmCreator });
+	const location = xcmCreator.resolveMultiLocation(destLocation);
 
 	for (const systemName of KNOWN_GLOBAL_CONSENSUS_SYSTEM_NAMES) {
 		if (

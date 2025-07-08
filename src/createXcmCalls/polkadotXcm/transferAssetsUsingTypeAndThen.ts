@@ -15,7 +15,6 @@ import { createXcmOnDestBeneficiary } from '../../createXcmTypes/util/createXcmO
 import { createXcmOnDestination } from '../../createXcmTypes/util/createXcmOnDestination.js';
 import { createXcmVersionedAssetId } from '../../createXcmTypes/util/createXcmVersionedAssetId.js';
 import { getAssetId } from '../../createXcmTypes/util/getAssetId.js';
-import { parseLocationStrToLocation } from '../../createXcmTypes/util/parseLocationStrToLocation.js';
 import { resolveAssetTransferType } from '../../createXcmTypes/util/resolveAssetTransferType.js';
 import { getXcmCreator } from '../../createXcmTypes/xcm/index.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
@@ -84,12 +83,12 @@ export const transferAssetsUsingTypeAndThen = async (
 			let assetLocation = JSON.parse(assetIdLocationStr) as XcmMultiLocation;
 
 			if ('v1' in assetLocation) {
-				assetLocation = parseLocationStrToLocation({ locationStr: JSON.stringify(assetLocation.v1), xcmCreator });
+				assetLocation = xcmCreator.resolveMultiLocation(JSON.stringify(assetLocation.v1));
 			}
 
 			// parse registry xc assets erc20 v1 location
-			if ('x2' in assetLocation.interior && Array.isArray(assetLocation.interior.x2)) {
-				if ('accountKey20' in assetLocation.interior.x2[1]) {
+			if ('X2' in assetLocation.interior && Array.isArray(assetLocation.interior.X2)) {
+				if ('AccountKey20' in assetLocation.interior.X2[1]) {
 					erc20Location =
 						xcmVersion === 3
 							? {
@@ -108,9 +107,9 @@ export const transferAssetsUsingTypeAndThen = async (
 									} as XcmMultiLocation,
 									fun: 'Fungible',
 								};
-					const erc20KeyX2 = assetLocation.interior?.x2 as [XcmJunction, XcmJunction] | undefined;
-					if (erc20KeyX2 && 'accountKey20' in erc20KeyX2[1]) {
-						erc20Key = (erc20KeyX2[1].accountKey20 as { network?: string; key: string }).key;
+					const erc20KeyX2 = assetLocation.interior?.X2 as [XcmJunction, XcmJunction] | undefined;
+					if (erc20KeyX2 && 'AccountKey20' in erc20KeyX2[1]) {
+						erc20Key = (erc20KeyX2[1].AccountKey20 as { network?: string; key: string }).key;
 					}
 				}
 			}
