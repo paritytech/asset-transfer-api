@@ -73,7 +73,7 @@ export const setupParachainsWithRelay = async (
 ): Promise<[NetworkContext, NetworkContext[]]> => {
 	const parachains = await setupParachains(parachainConfigs, id);
 
-	const relayChain = await setupContext(relayChainConfig);
+	const relayChain = await setupContext(modifyConfig(relayChainConfig, id));
 	for (const parachain of parachains) {
 		await connectVertical(relayChain.chain, parachain.chain);
 	}
