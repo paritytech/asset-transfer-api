@@ -7,7 +7,7 @@ import { beforeEach, expect, test } from 'vitest';
 import { AssetTransferApi } from '../src/AssetTransferApi';
 import { configs, setupParachainsWithRelay } from './networks.js';
 
-describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
+describe('Westend Relay <-> Westend Asset Hub', () => {
 	const WESTEND_ASSET_HUB_CHAIN_ID = '1000';
 	const USDC_ASSET_ID = 31337;
 
