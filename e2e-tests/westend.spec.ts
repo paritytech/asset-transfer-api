@@ -7,7 +7,7 @@ import { beforeEach, expect, test } from 'vitest';
 import { AssetTransferApi } from '../src/AssetTransferApi';
 import { configs, setupParachainsWithRelay } from './networks.js';
 
-describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
+describe('Westend Relay <-> Westend Asset Hub', () => {
 	const WESTEND_ASSET_HUB_CHAIN_ID = '1000';
 	const USDC_ASSET_ID = 31337;
 
@@ -111,7 +111,23 @@ describe('checkDestSufficiency on Westend and Westend Asset Hub', () => {
 				{ version: 4 },
 			);
 
-			await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice);
+			// await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice);
+			await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice, (result) => {
+				console.log(`Tx status: ${result.status.toString()}`);
+
+				if (result.status.isInBlock) {
+					console.log(`✅ Included at blockHash: ${result.status.asInBlock.toString()}`);
+				}
+
+				if (result.status.isFinalized) {
+					console.log(`✅ Finalized at blockHash: ${result.status.asFinalized.toString()}`);
+
+					result.events.forEach(({ event: { section, method, data } }) => {
+						console.log(`→ Event: ${section}.${method}`, data.toHuman());
+					});
+				}
+			});
+
 			await westendAssetHub.dev.newBlock();
 		};
 
