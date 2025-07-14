@@ -63,9 +63,9 @@
 	"homepage": "https://github.com/paritytech/asset-transfer-api#readme",
 	"packageManager": "yarn@4.5.0",
 	"devDependencies": {
-		"@acala-network/chopsticks": "^1.1.1",
-		"@acala-network/chopsticks-testing": "^1.0.5",
-		"@acala-network/chopsticks-utils": "^1.1.1",
+		"@acala-network/chopsticks": "^1.2.0",
+		"@acala-network/chopsticks-testing": "^1.2.0",
+		"@acala-network/chopsticks-utils": "^1.2.0",
 		"@polkadot/keyring": "^13.5.2",
 		"@substrate/dev": "^0.9.0",
 		"@types/bn.js": "^5",
