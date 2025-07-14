@@ -111,7 +111,23 @@ describe('Westend Relay <-> Westend Asset Hub', () => {
 				{ version: 4 },
 			);
 
-			await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice);
+			// await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice);
+			await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice, (result) => {
+				console.log(`Tx status: ${result.status.toString()}`);
+
+				if (result.status.isInBlock) {
+					console.log(`✅ Included at blockHash: ${result.status.asInBlock.toString()}`);
+				}
+
+				if (result.status.isFinalized) {
+					console.log(`✅ Finalized at blockHash: ${result.status.asFinalized.toString()}`);
+
+					result.events.forEach(({ event: { section, method, data } }) => {
+						console.log(`→ Event: ${section}.${method}`, data.toHuman());
+					});
+				}
+			});
+
 			await westendAssetHub.dev.newBlock();
 		};
 
