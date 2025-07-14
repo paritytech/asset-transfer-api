@@ -2068,13 +2068,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/rpc-provider@npm:16.3.1":
-  version: 16.3.1
-  resolution: "@polkadot/rpc-provider@npm:16.3.1"
+"@polkadot/rpc-provider@npm:16.4.1":
+  version: 16.4.1
+  resolution: "@polkadot/rpc-provider@npm:16.4.1"
   dependencies:
     "@polkadot/keyring": "npm:^13.5.3"
-    "@polkadot/types": "npm:16.3.1"
-    "@polkadot/types-support": "npm:16.3.1"
+    "@polkadot/types": "npm:16.4.1"
+    "@polkadot/types-support": "npm:16.4.1"
     "@polkadot/util": "npm:^13.5.3"
     "@polkadot/util-crypto": "npm:^13.5.3"
     "@polkadot/x-fetch": "npm:^13.5.3"
@@ -2088,7 +2088,7 @@ __metadata:
   dependenciesMeta:
     "@substrate/connect":
       optional: true
-  checksum: 10/df569df9cdf86282df5800212b98939cae0c455d8d9d86f998f43c9d4daaf6424eebe3705e112ec02c2b6cff88b2448cb0396a3a84ac3beb0c5eaa020aac2014
+  checksum: 10/3fff302422eb57edac028b2459df74b62f56d5146094c17ab8fe8f8fc4952a5ebd17f561e4fb973526ef5ccb4a4851da67856af9fa61eae853fd369882332cb8
   languageName: node
   linkType: hard
 
@@ -2104,14 +2104,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/types-codec@npm:16.3.1":
-  version: 16.3.1
-  resolution: "@polkadot/types-codec@npm:16.3.1"
+"@polkadot/types-codec@npm:16.4.1":
+  version: 16.4.1
+  resolution: "@polkadot/types-codec@npm:16.4.1"
   dependencies:
     "@polkadot/util": "npm:^13.5.3"
     "@polkadot/x-bigint": "npm:^13.5.3"
     tslib: "npm:^2.8.1"
-  checksum: 10/749ea4f03d591815ea3c39b0de8fe55108b722ce0d4ae4448b3d69f81475b9809812160ed6874b22cdc8238d59d7c6db892eab291f3c3be7184e7cf68ca66bdb
+  checksum: 10/bd7bc78638f5c5d499d018d65cda3407ad6d80d3281af744e14e741174183aa2e15625b35f39a27760bcfd1ec5349ecb55b4efed02d7549f2fa7d931ca7271be
   languageName: node
   linkType: hard
 
@@ -2141,26 +2141,26 @@ __metadata:
   linkType: hard
 
 "@polkadot/types-known@npm:^16.2.1, @polkadot/types-known@npm:^16.2.2":
-  version: 16.3.1
-  resolution: "@polkadot/types-known@npm:16.3.1"
+  version: 16.4.1
+  resolution: "@polkadot/types-known@npm:16.4.1"
   dependencies:
     "@polkadot/networks": "npm:^13.5.3"
-    "@polkadot/types": "npm:16.3.1"
-    "@polkadot/types-codec": "npm:16.3.1"
-    "@polkadot/types-create": "npm:16.3.1"
+    "@polkadot/types": "npm:16.4.1"
+    "@polkadot/types-codec": "npm:16.4.1"
+    "@polkadot/types-create": "npm:16.4.1"
     "@polkadot/util": "npm:^13.5.3"
     tslib: "npm:^2.8.1"
-  checksum: 10/4c2e4b60942ea3f5dbfda458ab75f47de888cc3c3a571180e7a00f33e3b1ba0c518ef2f28f3d34e987795a63226cd4eed126165cd3f4a8796dadf375a03eb2c3
+  checksum: 10/8405635582e6f8c8b10c082955ac98daf364b39eb49dfc41df2aa6be713c8ded151189c0a39b3cbcb3feaf901faae975dbceb55ce18b6ea3c9682933e643c967
   languageName: node
   linkType: hard
 
-"@polkadot/types-support@npm:16.3.1":
-  version: 16.3.1
-  resolution: "@polkadot/types-support@npm:16.3.1"
+"@polkadot/types-support@npm:16.4.1":
+  version: 16.4.1
+  resolution: "@polkadot/types-support@npm:16.4.1"
   dependencies:
     "@polkadot/util": "npm:^13.5.3"
     tslib: "npm:^2.8.1"
-  checksum: 10/ed1a36ec6de62bad1f824116b87d473ac0a8f8bce033331b7f23800157416be4252cfd7af6137d8c75269977a19077c57146329acac1dc665034713d97061791
+  checksum: 10/f0465f8175aa63150928d246ede2577d2f6a628467e13b13b9fd8bfd3bcc1d1a6b1641bbd34c6583863b8e7dfd2b44743e69ae8447a8265db3e9faf123ca7c19
   languageName: node
   linkType: hard
 
@@ -2637,12 +2637,12 @@ __metadata:
     "@acala-network/chopsticks": "npm:^1.1.1"
     "@acala-network/chopsticks-testing": "npm:^1.0.5"
     "@acala-network/chopsticks-utils": "npm:^1.1.1"
-    "@polkadot/api": "npm:16.3.1"
-    "@polkadot/api-augment": "npm:16.3.1"
+    "@polkadot/api": "npm:16.4.1"
+    "@polkadot/api-augment": "npm:16.4.1"
     "@polkadot/keyring": "npm:^13.5.2"
     "@polkadot/rpc-provider": "npm:^16.2.2"
-    "@polkadot/types": "npm:16.3.1"
-    "@polkadot/types-codec": "npm:16.3.1"
+    "@polkadot/types": "npm:16.4.1"
+    "@polkadot/types-codec": "npm:16.4.1"
     "@polkadot/types-known": "npm:^16.2.2"
     "@polkadot/util": "npm:^13.4.4"
     "@polkadot/util-crypto": "npm:^13.4.4"
