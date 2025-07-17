@@ -111,7 +111,6 @@ describe('Westend Relay <-> Westend Asset Hub', () => {
 				{ version: 4 },
 			);
 
-			// await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice);
 			await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice, (result) => {
 				console.log(`Tx status: ${result.status.toString()}`);
 
