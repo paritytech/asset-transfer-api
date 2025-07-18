@@ -2,24 +2,67 @@ import { testingPairs } from '@acala-network/chopsticks-testing';
 import { NetworkContext } from '@acala-network/chopsticks-utils';
 import { ApiPromise } from '@polkadot/api';
 import BN from 'bn.js';
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, test } from 'vitest';
 
 import { AssetTransferApi } from '../src/AssetTransferApi';
+import { NetworkHelper } from './helper.js';
 import { configs, setupParachainsWithRelay } from './networks.js';
 
 describe('Westend Relay <-> Westend Asset Hub', () => {
-	const WESTEND_ASSET_HUB_CHAIN_ID = '1000';
-	const USDC_ASSET_ID = 31337;
+	const ASSET_HUB_CHAIN_ID = '1000';
+	const ASSET_IDS = {
+		westend: {
+			USDC: '31337',
+		},
+	};
+
+	let networks: { [key: string]: NetworkHelper };
 
 	let westend: NetworkContext;
 	let westendAssetHub: NetworkContext;
-	let westendAta: AssetTransferApi;
-	let westendAssetHubAta: AssetTransferApi;
 	const safeXcmVersion = 5;
 
 	const { alice, bob } = testingPairs();
 	const aliceInitialNative = new BN(100 * 1e12);
 	const aliceInitialUsdc = new BN(100 * 1e6);
+
+	async function verifyStartingBalances(networks: { [key: string]: NetworkHelper }) {
+		// AssetHub
+		await networks.westendAssetHub.expectAssetBalance(
+			'USDC',
+			alice.address,
+			aliceInitialUsdc,
+			"Alice's initial USDC balance is incorrect on Westend Asset Hub",
+		);
+		await networks.westendAssetHub.expectNativeBalance(
+			alice.address,
+			aliceInitialNative,
+			"Alice's initial native balance is incorrect on Westend Asset Hub",
+		);
+		await networks.westendAssetHub.expectAssetBalance(
+			'USDC',
+			bob.address,
+			0,
+			"Bob's initial USDC balance is incorrect on Westend Asset Hub",
+		);
+		await networks.westendAssetHub.expectNativeBalance(
+			bob.address,
+			0,
+			"Bob's initial native balance is incorrect on Westend Asset Hub",
+		);
+
+		// Relay
+		await networks.westend.expectNativeBalance(
+			alice.address,
+			aliceInitialNative,
+			"Alice's initial native balance is incorrect on Westend Relay",
+		);
+		await networks.westend.expectNativeBalance(
+			bob.address,
+			0,
+			"Bob's initial native balance is incorrect on Westend Relay",
+		);
+	}
 
 	beforeAll(async () => {
 		[westend, [westendAssetHub]] = await setupParachainsWithRelay(
@@ -27,7 +70,11 @@ describe('Westend Relay <-> Westend Asset Hub', () => {
 			[configs.westendAssetHub],
 			__filename,
 		);
-	}, 1000000);
+		networks = {
+			westend: new NetworkHelper(westend),
+			westendAssetHub: new NetworkHelper(westendAssetHub, ASSET_HUB_CHAIN_ID, ASSET_IDS.westend),
+		};
+	}, 60000);
 
 	beforeEach(async () => {
 		await westendAssetHub.dev.setStorage({
@@ -39,8 +86,8 @@ describe('Westend Relay <-> Westend Asset Hub', () => {
 			},
 			Assets: {
 				Account: [
-					[[USDC_ASSET_ID, alice.address], { balance: aliceInitialUsdc.toNumber(), isFrozen: false }],
-					[[USDC_ASSET_ID, bob.address], { balance: 0, isFrozen: false }],
+					[[ASSET_IDS.westend.USDC, alice.address], { balance: aliceInitialUsdc.toNumber(), isFrozen: false }],
+					[[ASSET_IDS.westend.USDC, bob.address], { balance: 0, isFrozen: false }],
 				],
 			},
 		});
@@ -53,40 +100,14 @@ describe('Westend Relay <-> Westend Asset Hub', () => {
 			},
 		});
 
-		westendAta = new AssetTransferApi(westend.api, 'westend', safeXcmVersion);
-		westendAssetHubAta = new AssetTransferApi(westendAssetHub.api, 'asset-hub-westend', safeXcmVersion);
-	}, 1000000);
+		await verifyStartingBalances(networks);
+	}, 60000);
 
 	afterAll(async () => {
 		await westendAssetHub.teardown();
 		await westend.teardown();
-	}, 1000000);
+	}, 60000);
 
-	const expectRelayBalance = async (address: string, amount: BN, msg: string) => {
-		await expectNativeBalance({
-			api: westend.api,
-			address,
-			amount,
-			msg,
-		});
-	};
-	const expectAssetHubBalance = async (address: string, amount: BN, msg: string) => {
-		await expectNativeBalance({
-			api: westendAssetHub.api,
-			address,
-			amount,
-			msg,
-		});
-	};
-	const expectUsdcBalance = async (address: string, amount: BN, msg: string) => {
-		await expectAssetBalance({
-			api: westendAssetHub.api,
-			assetId: USDC_ASSET_ID,
-			address,
-			amount,
-			msg,
-		});
-	};
 	describe('Local AssetHub transfers', () => {
 		/**
 		 * Send WND from alice to `dest` within the Asset Hub
@@ -94,39 +115,19 @@ describe('Westend Relay <-> Westend Asset Hub', () => {
 		 * @param amount
 		 */
 		const sendNative = async (dest: string, amount: BN) => {
-			const assetTransferApi = westendAssetHubAta;
-			const nativeTx = await assetTransferApi.createTransferTransaction(
-				WESTEND_ASSET_HUB_CHAIN_ID,
+			const assetTransferApi = new AssetTransferApi(westendAssetHub.api, 'asset-hub-westend', safeXcmVersion);
+			const txResult = await assetTransferApi.createTransferTransaction(
+				ASSET_HUB_CHAIN_ID,
 				dest,
 				[],
 				[amount.toString()],
 				{
-					format: 'payload',
+					format: 'submittable',
 					sendersAddr: alice.address,
 				},
 			);
-			const nativeExtrinsic = assetTransferApi.api.registry.createType(
-				'Extrinsic',
-				{ method: nativeTx.tx.method },
-				{ version: 4 },
-			);
 
-			// await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice);
-			await westendAssetHub.api.tx(nativeExtrinsic).signAndSend(alice, (result) => {
-				console.log(`Tx status: ${result.status.toString()}`);
-
-				if (result.status.isInBlock) {
-					console.log(`✅ Included at blockHash: ${result.status.asInBlock.toString()}`);
-				}
-
-				if (result.status.isFinalized) {
-					console.log(`✅ Finalized at blockHash: ${result.status.asFinalized.toString()}`);
-
-					result.events.forEach(({ event: { section, method, data } }) => {
-						console.log(`→ Event: ${section}.${method}`, data.toHuman());
-					});
-				}
-			});
+			await networks.westendAssetHub.signAndSend(txResult, alice);
 
 			await westendAssetHub.dev.newBlock();
 		};
@@ -137,42 +138,41 @@ describe('Westend Relay <-> Westend Asset Hub', () => {
 		 * @param amount
 		 */
 		const sendUsdc = async (dest: string, amount: BN) => {
-			const assetTransferApi = westendAssetHubAta;
-			const usdcTx = await assetTransferApi.createTransferTransaction(
-				WESTEND_ASSET_HUB_CHAIN_ID,
+			const assetTransferApi = new AssetTransferApi(westendAssetHub.api, 'asset-hub-westend', safeXcmVersion);
+			const txResult = await assetTransferApi.createTransferTransaction(
+				ASSET_HUB_CHAIN_ID,
 				dest,
-				[USDC_ASSET_ID.toString()],
+				[ASSET_IDS.westend.USDC],
 				[amount.toString()],
 				{
-					format: 'payload',
+					format: 'submittable',
 					sendersAddr: alice.address,
 				},
 			);
-			const usdcExtrinsic = assetTransferApi.api.registry.createType(
-				'Extrinsic',
-				{ method: usdcTx.tx.method },
-				{ version: 4 },
-			);
 
-			await westendAssetHub.api.tx(usdcExtrinsic).signAndSend(alice);
+			await networks.westendAssetHub.signAndSend(txResult, alice);
 			await westendAssetHub.dev.newBlock();
 		};
 
 		test('Transfers of WND and USDC above the existential deposit work', async () => {
-			await expectAssetHubBalance(alice.address, aliceInitialNative, 'alice inital native balance is incorrect');
-			await expectUsdcBalance(alice.address, aliceInitialUsdc, 'alice inital USDC balance is incorrect');
-			await expectAssetHubBalance(bob.address, new BN(0), 'bob inital native balance is incorrect');
-			await expectUsdcBalance(bob.address, new BN(0), 'bob inital USDC balance is incorrect');
-
 			const nativeToSend = new BN(1e9); // Existential deposit
 			const usdcToSend = new BN(1000); // minBalance
 
 			await sendNative(bob.address, nativeToSend);
-			await expectAssetHubBalance(bob.address, nativeToSend, 'bob did not receive expected native amount');
+			await networks.westendAssetHub.expectNativeBalance(
+				bob.address,
+				nativeToSend,
+				'bob did not receive expected native amount',
+			);
 
 			await sendUsdc(bob.address, usdcToSend);
-			await expectUsdcBalance(bob.address, usdcToSend, 'bob did not receive expected USDC amount');
-		}, 200000);
+			await networks.westendAssetHub.expectAssetBalance(
+				'USDC',
+				bob.address,
+				usdcToSend,
+				'bob did not receive expected USDC amount',
+			);
+		}, 60000);
 	});
 
 	describe('XCM transfers between Relay and AssetHub', () => {
@@ -182,29 +182,24 @@ describe('Westend Relay <-> Westend Asset Hub', () => {
 		 * @param amount
 		 */
 		const sendToAssetHub = async (dest: string, amount: BN): Promise<BN> => {
-			const assetTransferApi = westendAta; // From relay chain
+			const assetTransferApi = new AssetTransferApi(westend.api, 'westend', safeXcmVersion);
 			const destApi = westendAssetHub.api;
 			const originNetowrk = westend;
 			const destNetwork = westendAssetHub;
 			const sender = alice;
 
-			const nativeTx = await assetTransferApi.createTransferTransaction(
-				WESTEND_ASSET_HUB_CHAIN_ID,
+			const txResult = await assetTransferApi.createTransferTransaction(
+				ASSET_HUB_CHAIN_ID,
 				dest,
 				[],
 				[amount.toString()],
 				{
-					format: 'payload',
+					format: 'submittable',
 					sendersAddr: sender.address,
 				},
 			);
-			const nativeExtrinsic = assetTransferApi.api.registry.createType(
-				'Extrinsic',
-				{ method: nativeTx.tx.method },
-				{ version: 4 },
-			);
 
-			await originNetowrk.api.tx(nativeExtrinsic).signAndSend(sender);
+			await networks.westend.signAndSend(txResult, alice);
 			await originNetowrk.dev.newBlock();
 			const blockHash = await destNetwork.dev.newBlock();
 
@@ -218,74 +213,20 @@ describe('Westend Relay <-> Westend Asset Hub', () => {
 		};
 
 		test('Relay chain -> Asset Hub works', async () => {
-			await expectAssetHubBalance(alice.address, aliceInitialNative, 'alice inital asset hub balance is incorrect');
-			await expectUsdcBalance(alice.address, aliceInitialUsdc, 'alice inital USDC balance is incorrect');
-			await expectRelayBalance(alice.address, aliceInitialNative, 'alice inital relay balance is incorrect');
-
-			await expectAssetHubBalance(bob.address, new BN(0), 'bob inital asset hub balance is incorrect');
-			await expectUsdcBalance(bob.address, new BN(0), 'bob inital USDC balance is incorrect');
-			await expectRelayBalance(bob.address, new BN(0), 'bob inital relay balance is incorrect');
-
 			// existential deposit on westend is 1e10.
 			// existential deposit on Asset hub is 1e9.
 			// XCMs incur execution fees so result must be greater than ED
 			const amountToSend = new BN(1e10);
 			const executionFee = await sendToAssetHub(bob.address, amountToSend);
 
-			await expectAssetHubBalance(
+			await networks.westendAssetHub.expectNativeBalance(
 				bob.address,
 				amountToSend.sub(executionFee),
 				'bob asset hub balance is incorrect after XCM',
 			);
-		}, 200000);
+		}, 60000);
 	});
 });
-
-async function expectNativeBalance({
-	api,
-	address,
-	amount,
-	msg,
-}: {
-	api: ApiPromise;
-	address: string;
-	amount: number | BN;
-	msg: string;
-}) {
-	const account = await api.query.system.account(address);
-	const balance = new BN(account.data.free);
-	const expected = new BN(amount);
-	const diff = expected.sub(balance);
-
-	expect(
-		balance.eq(expected),
-		`${msg} { value: ${balance.toLocaleString()}; expected: ${expected.toLocaleString()}; diff: ${diff.toLocaleString()} }`,
-	).toBe(true);
-}
-
-async function expectAssetBalance({
-	api,
-	assetId,
-	address,
-	amount,
-	msg,
-}: {
-	api: ApiPromise;
-	assetId: number | BN;
-	address: string;
-	amount: number | BN;
-	msg: string;
-}) {
-	const account = await api.query.assets.account(assetId, address);
-	expect(account.isSome).toBe(true);
-	const balance = new BN(account.unwrap().balance);
-	const expected = new BN(amount);
-	const diff = expected.sub(balance);
-	expect(
-		balance.eq(expected),
-		`${msg} { value: ${balance.toLocaleString()}; expected: ${amount.toLocaleString()}; diff: ${diff.toLocaleString()} }`,
-	).toBe(true);
-}
 
 async function deriveXcmExecutionFee({
 	api,

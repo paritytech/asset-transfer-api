@@ -4,16 +4,30 @@
 import { connectParachains, connectVertical } from '@acala-network/chopsticks';
 import { NetworkContext, setupContext, SetupOption } from '@acala-network/chopsticks-testing';
 
-const runtimeLogLevel = 0;
+// https://docs.rs/log/latest/log/enum.Level.html
+// pub enum Level {
+//     Error = 1,
+//     Warn = 2,
+//     Info = 3,
+//     Debug = 4,
+//     Trace = 5,
+// }
+const runtimeLogLevel = 5;
 
 /**
  * SetupOptions for networks on Chopsticks
  *
- * Iff an indentifier is given during network setup:
+ * Iff an identifier is given during network setup:
  * Ports will be overwritten
  * DB will be edited with the new port appended
  */
 export const configs = {
+	astar: {
+		endpoint: 'wss://astar.public.blastapi.io',
+		db: './chopsticks-db/db.sqlite-astar',
+		port: 8000,
+		runtimeLogLevel,
+	},
 	hydration: {
 		endpoint: 'wss://hydration.dotters.network',
 		db: `./chopsticks-db/db.sqlite-hydration`,
