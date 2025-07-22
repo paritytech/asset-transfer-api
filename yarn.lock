@@ -110,7 +110,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks-utils@npm:1.2.0, @acala-network/chopsticks-utils@npm:^1.2.0":
+"@acala-network/chopsticks-utils@npm:1.2.0":
   version: 1.2.0
   resolution: "@acala-network/chopsticks-utils@npm:1.2.0"
   dependencies:
@@ -125,6 +125,24 @@ __metadata:
     "@polkadot/util": "npm:^13.5.3"
     polkadot-api: "npm:^1.14.1"
   checksum: 10/baf1176928d2fd8851176dd1a348ddc6b7a15a79a1c3c6997bb4d81e14df6922457be3a568686dc3dd05fe7d8ce3822d9a165b2d9a544b35f1aa2d348a2d4c60
+  languageName: node
+  linkType: hard
+
+"@acala-network/chopsticks-utils@npm:^1.2.0":
+  version: 1.2.1
+  resolution: "@acala-network/chopsticks-utils@npm:1.2.1"
+  dependencies:
+    "@acala-network/chopsticks": "npm:1.2.1"
+    "@acala-network/chopsticks-core": "npm:1.2.1"
+    "@polkadot-labs/hdkd": "npm:^0.0.19"
+    "@polkadot-labs/hdkd-helpers": "npm:^0.0.19"
+    "@polkadot/api": "npm:^16.4.1"
+    "@polkadot/api-base": "npm:^16.4.1"
+    "@polkadot/keyring": "npm:^13.5.3"
+    "@polkadot/types": "npm:^16.4.1"
+    "@polkadot/util": "npm:^13.5.3"
+    polkadot-api: "npm:^1.14.1"
+  checksum: 10/cfae99b37d19be0bf1b5df7b0802de2134015734d6607e0a097b790456b31235c84e010f095be28c858ba9029fd56fa3aa6f9ae7da673ea806e07a7a9e43826c
   languageName: node
   linkType: hard
 
@@ -157,7 +175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@acala-network/chopsticks@npm:^1.2.0":
+"@acala-network/chopsticks@npm:1.2.1, @acala-network/chopsticks@npm:^1.2.0":
   version: 1.2.1
   resolution: "@acala-network/chopsticks@npm:1.2.1"
   dependencies:
