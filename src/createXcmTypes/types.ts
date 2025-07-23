@@ -96,19 +96,6 @@ export type XcAssetsMultiLocation = {
 	[V in XcmVersionKey]: XcAssetsMultiLocationForVersion<V>;
 }[XcmVersionKey];
 
-// Wild Asset
-interface WildAssetV3 {
-	id: {
-		Concrete: XcmMultiLocation;
-	};
-	fun: string;
-}
-interface WildAssetV4 {
-	id: XcmMultiLocation;
-	fun: string;
-}
-export type WildAsset = WildAssetV3 | WildAssetV4;
-
 // XcmMultiAssets
 type XcmMultiAssetsVariant<V extends XcmVersionKey> = VersionedXcmType<V, AssetTypeForVersion<V>[]>;
 export type XcmMultiAssets = {
