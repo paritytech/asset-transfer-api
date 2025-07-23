@@ -1,4 +1,5 @@
 import { AssetTransferApi } from '../../AssetTransferApi';
+import { DEFAULT_XCM_VERSION } from '../../consts';
 import { Registry } from '../../registry';
 import { adjustedMockBifrostParachainApi } from '../../testHelpers/adjustedMockBifrostParachainApi';
 import { adjustedMockMoonriverParachainApi } from '../../testHelpers/adjustedMockMoonriverParachainApi';
@@ -7,10 +8,13 @@ import { getXcmCreator } from '../xcm';
 import { getAssetId } from './getAssetId';
 
 describe('getAssetId', () => {
-	const xcmCreator = getXcmCreator(2);
+	const xcmVersion = DEFAULT_XCM_VERSION;
+	const xcmCreator = getXcmCreator(xcmVersion);
 	describe('Statemine', () => {
 		const registry = new Registry('statemine', {});
-		const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', 2, { registryType: 'NPM' });
+		const systemAssetsApi = new AssetTransferApi(adjustedMockSystemApi, 'statemine', xcmVersion, {
+			registryType: 'NPM',
+		});
 		it('Should correctly return the integer assetId when given a valid native system chain token symbol', async () => {
 			const expected = '10';
 
@@ -88,7 +92,7 @@ describe('getAssetId', () => {
 
 	describe('Bifrost', () => {
 		const registry = new Registry('bifrost', {});
-		const bifrostAssetsApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', 2, {
+		const bifrostAssetsApi = new AssetTransferApi(adjustedMockBifrostParachainApi, 'bifrost', xcmVersion, {
 			registryType: 'NPM',
 		});
 
@@ -123,7 +127,7 @@ describe('getAssetId', () => {
 
 	describe('Moonriver', () => {
 		const registry = new Registry('moonriver', {});
-		const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'bifrost', 2, {
+		const moonriverAssetsApi = new AssetTransferApi(adjustedMockMoonriverParachainApi, 'bifrost', xcmVersion, {
 			registryType: 'NPM',
 		});
 
