@@ -1,6 +1,7 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
+import { ASSET_HUB_CHAIN_ID } from '../../consts.js';
 import { getTypeCreator } from '../../createXcmTypes/index.js';
 import {
 	FungibleAsset,
@@ -177,7 +178,7 @@ export const transferAssetsUsingTypeAndThen = async (
 		assetTransferType = {
 			DestinationReserve: 'null',
 		};
-		destChainId = '1000'; // Set AssetHub as first hop after constructing custom XCM
+		destChainId = ASSET_HUB_CHAIN_ID;
 	} else {
 		assetTransferType = resolveAssetTransferType(
 			assetTransferTypeStr,
