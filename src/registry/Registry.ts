@@ -26,7 +26,7 @@ export class Registry {
 	public registry: ChainInfoRegistry<ChainInfoKeys>;
 	public cache: ChainInfoRegistry<ChainInfoKeys>;
 
-	constructor(specName: string, opts: AssetTransferApiOpts<ChainInfoKeys>) {
+	constructor(specName: string, opts: AssetTransferApiOpts<ChainInfoKeys> = {}) {
 		this.opts = opts;
 		this.specName = specName;
 		this.registry = parseRegistry(registry as ChainInfoRegistry<ChainInfoKeys>, opts);
