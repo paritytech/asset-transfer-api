@@ -7,7 +7,6 @@ import { createBeneficiary } from '../../createXcmTypes/util/createBeneficiary.j
 import { getXcmCreator } from '../../createXcmTypes/xcm/index.js';
 import { BaseError, BaseErrorsEnum } from '../../errors/index.js';
 import { Registry } from '../../registry/index.js';
-import { CreateXcmCallOpts } from '../types.js';
 import { establishXcmPallet } from '../util/establishXcmPallet.js';
 
 /**
@@ -19,18 +18,27 @@ import { establishXcmPallet } from '../util/establishXcmPallet.js';
  * @param xcmVersion number
  * @param beneficiaryAddress string
  */
-export const claimAssets = async (
-	api: ApiPromise,
-	registry: Registry,
-	specName: string,
-	assetIds: string[],
-	amounts: string[],
-	beneficiaryAddress: string,
-	xcmVersion: number,
-	originChainId: string,
-	opts: CreateXcmCallOpts,
-): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
-	const { isForeignAssetsTransfer: assetIdsContainLocations, isLiquidTokenTransfer } = opts;
+export const claimAssets = async ({
+	api,
+	registry,
+	specName,
+	assetIds,
+	amounts,
+	beneficiaryAddress,
+	xcmVersion,
+	originChainId,
+	isLiquidTokenTransfer,
+}: {
+	api: ApiPromise;
+	registry: Registry;
+	specName: string;
+	assetIds: string[];
+	amounts: string[];
+	beneficiaryAddress: string;
+	xcmVersion: number;
+	originChainId: string;
+	isLiquidTokenTransfer: boolean;
+}): Promise<SubmittableExtrinsic<'promise', ISubmittableResult>> => {
 	const xcmCreator = getXcmCreator(xcmVersion);
 	const beneficiary = createBeneficiary(beneficiaryAddress, xcmCreator);
 
@@ -41,7 +49,6 @@ export const claimAssets = async (
 		amounts,
 		registry,
 		originChainId,
-		assetIdsContainLocations,
 		isLiquidTokenTransfer,
 		xcmCreator,
 	});
