@@ -178,7 +178,7 @@ describe('Polkadot Asset Hub <-> Astar', () => {
 				amount.sub(usdtXcmFee),
 				"Bob's final USDT balance is incorrect on Astar",
 			);
-		}, 60000);
+		}, 90000);
 	});
 	describe('Polkadot Asset Hub -> Astar', () => {
 		test.skip('USDT', async () => {

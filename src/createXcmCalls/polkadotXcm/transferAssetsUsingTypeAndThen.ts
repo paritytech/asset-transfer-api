@@ -1,15 +1,9 @@
 import type { SubmittableExtrinsic } from '@polkadot/api/submittable/types';
 import type { ISubmittableResult } from '@polkadot/types/types';
 
+import { ASSET_HUB_CHAIN_ID } from '../../consts.js';
 import { getTypeCreator } from '../../createXcmTypes/index.js';
-import {
-	FungibleAsset,
-	FungibleMultiAsset,
-	WildAsset,
-	XcmJunction,
-	XcmMultiLocation,
-	XcmVersionedAssetId,
-} from '../../createXcmTypes/types.js';
+import { FungibleAssetType, XcmJunction, XcmVersionedAssetId } from '../../createXcmTypes/types.js';
 import { assetIdIsLocation } from '../../createXcmTypes/util/assetIdIsLocation.js';
 import { createXcmOnDestBeneficiary } from '../../createXcmTypes/util/createXcmOnDestBeneficiary.js';
 import { createXcmOnDestination } from '../../createXcmTypes/util/createXcmOnDestination.js';
@@ -64,7 +58,7 @@ export const transferAssetsUsingTypeAndThen = async (
 	let feeAssetTransferType: AssetTransferType;
 
 	if (direction === Direction.ParaToEthereum) {
-		let erc20Location: WildAsset | undefined = undefined;
+		let erc20Location: FungibleAssetType | undefined = undefined;
 		let erc20Key: string | undefined = undefined;
 
 		// get erc20 Asset Location from assetIds
@@ -80,7 +74,7 @@ export const transferAssetsUsingTypeAndThen = async (
 			if (!assetIdLocationStr.toLowerCase().includes('ethereum')) {
 				continue;
 			}
-			let assetLocation = JSON.parse(assetIdLocationStr) as XcmMultiLocation;
+			let assetLocation = xcmCreator.resolveMultiLocation(assetIdLocationStr);
 
 			if ('v1' in assetLocation) {
 				assetLocation = xcmCreator.resolveMultiLocation(JSON.stringify(assetLocation.v1));
@@ -89,24 +83,13 @@ export const transferAssetsUsingTypeAndThen = async (
 			// parse registry xc assets erc20 v1 location
 			if ('X2' in assetLocation.interior && Array.isArray(assetLocation.interior.X2)) {
 				if ('AccountKey20' in assetLocation.interior.X2[1]) {
-					erc20Location =
-						xcmVersion === 3
-							? {
-									id: {
-										Concrete: {
-											parents: assetLocation.parents,
-											interior: assetLocation.interior,
-										} as XcmMultiLocation,
-									},
-									fun: 'Fungible',
-								}
-							: {
-									id: {
-										parents: assetLocation.parents,
-										interior: assetLocation.interior,
-									} as XcmMultiLocation,
-									fun: 'Fungible',
-								};
+					erc20Location = xcmCreator.fungibleAsset({
+						multiLocation: {
+							parents: assetLocation.parents,
+							interior: assetLocation.interior,
+						},
+						amount: 'Fungible',
+					});
 					const erc20KeyX2 = assetLocation.interior?.X2 as [XcmJunction, XcmJunction] | undefined;
 					if (erc20KeyX2 && 'AccountKey20' in erc20KeyX2[1]) {
 						erc20Key = (erc20KeyX2[1].AccountKey20 as { network?: string; key: string }).key;
@@ -122,42 +105,19 @@ export const transferAssetsUsingTypeAndThen = async (
 			);
 		}
 
-		const reanchoredERC20AccountLocation: FungibleMultiAsset | FungibleAsset =
-			xcmVersion === 3
-				? {
-						id: {
-							Concrete: {
-								parents: 0,
-								interior: {
-									X1: {
-										AccountKey20: {
-											key: erc20Key,
-										},
-									},
-								},
-							} as XcmMultiLocation,
+		const reanchoredERC20AccountLocation = xcmCreator.fungibleAsset({
+			multiLocation: {
+				parents: 0,
+				interior: {
+					X1: {
+						AccountKey20: {
+							key: erc20Key,
 						},
-						fun: {
-							Fungible: '1',
-						},
-					}
-				: {
-						id: {
-							parents: 0,
-							interior: {
-								X1: [
-									{
-										AccountKey20: {
-											key: erc20Key,
-										},
-									},
-								],
-							},
-						} as XcmMultiLocation,
-						fun: {
-							Fungible: '1',
-						},
-					};
+					},
+				},
+			},
+			amount: '1',
+		});
 
 		if (!sendersAddr || !erc20Location) {
 			throw new BaseError(
@@ -177,7 +137,7 @@ export const transferAssetsUsingTypeAndThen = async (
 		assetTransferType = {
 			DestinationReserve: 'null',
 		};
-		destChainId = '1000'; // Set AssetHub as first hop after constructing custom XCM
+		destChainId = ASSET_HUB_CHAIN_ID;
 	} else {
 		assetTransferType = resolveAssetTransferType(
 			assetTransferTypeStr,
