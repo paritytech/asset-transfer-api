@@ -16,7 +16,6 @@ export const createAssetLocations = async ({
 	amounts,
 	registry,
 	originChainId,
-	assetIdsContainLocations,
 	isLiquidTokenTransfer,
 	xcmCreator,
 }: {
@@ -26,7 +25,6 @@ export const createAssetLocations = async ({
 	amounts: string[];
 	registry: Registry;
 	originChainId: string;
-	assetIdsContainLocations: boolean;
 	isLiquidTokenTransfer: boolean;
 	xcmCreator: XcmCreator;
 }): Promise<XcmMultiAssets> => {
@@ -42,18 +40,20 @@ export const createAssetLocations = async ({
 		const isValidInt = validateNumber(assetId);
 		const isRelayNative = isRelayNativeAsset(registry, assetId);
 
-		if (!assetIdsContainLocations && !isRelayNative && !isValidInt) {
+		const isLocation = assetId.toLowerCase().includes('parents');
+
+		if (!isLocation && !isRelayNative && !isValidInt) {
 			assetId = await getAssetId({
 				api,
 				registry,
 				asset: assetId,
 				specName,
 				xcmCreator,
-				isForeignAssetsTransfer: assetIdsContainLocations,
+				isForeignAssetsTransfer: isLocation,
 			});
 		}
 
-		if (assetIdsContainLocations) {
+		if (isLocation) {
 			multiLocation = xcmCreator.resolveMultiLocation(assetId);
 		} else {
 			const parents = isRelayNative && !isRelayChain ? 1 : 0;
@@ -65,7 +65,7 @@ export const createAssetLocations = async ({
 					api,
 					assetId,
 					isLiquidToken: isLiquidTokenTransfer,
-					isForeignAsset: assetIdsContainLocations,
+					isForeignAsset: isLocation,
 					xcmCreator,
 				});
 				interior = {

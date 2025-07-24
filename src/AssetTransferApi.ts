@@ -391,27 +391,23 @@ export class AssetTransferApi {
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		const xcmCreator = getXcmCreator(declaredXcmVersion);
 		const isLiquidTokenTransfer = isLiquidToken ? true : false;
-		const assetIdsContainLocations = this.checkContainsAssetLocations(assetIds);
 		const beneficiaryAddress = sanitizeAddress(beneficiary);
 
 		checkXcmVersion(declaredXcmVersion);
 		checkBaseInputOptions(opts, specName);
 		checkClaimAssetsInputs({ assets: assetIds, amounts, xcmCreator });
 
-		const ext = await claimAssets(
+		const ext = await claimAssets({
 			api,
 			registry,
 			specName,
 			assetIds,
 			amounts,
 			beneficiaryAddress,
-			declaredXcmVersion,
+			xcmVersion: declaredXcmVersion,
 			originChainId,
-			{
-				isForeignAssetsTransfer: assetIdsContainLocations,
-				isLiquidTokenTransfer,
-			},
-		);
+			isLiquidTokenTransfer,
+		});
 
 		return await this.constructFormat({
 			tx: ext,
@@ -1076,24 +1072,6 @@ export class AssetTransferApi {
 		}
 
 		return lookup[0].specName;
-	}
-
-	/**
-	 * Returns if `assetIds` contains asset location values
-	 *
-	 * @param assetIds string[]
-	 * @returns boolean
-	 */
-	private checkContainsAssetLocations(assetIds: string[]): boolean {
-		if (assetIds.length === 0) {
-			return false;
-		}
-
-		if (!assetIds[0].toLowerCase().includes('parents')) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
