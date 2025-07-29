@@ -170,7 +170,7 @@ export const getAssetId = async ({
 
 				if (assetId.length === 0) {
 					throw new BaseError(
-						`parachain assetId ${asset} is not a valid symbol assetIid in ${specName}`,
+						`parachain assetId ${asset} is not a valid symbol assetId in ${specName}`,
 						BaseErrorsEnum.InvalidAsset,
 					);
 				}
@@ -183,7 +183,7 @@ export const getAssetId = async ({
 					registry.setAssetInCache(asset, assetId);
 				} else {
 					throw new BaseError(
-						`parachain assetId ${asset} is not a valid integer assetIid in ${specName}`,
+						`parachain assetId ${asset} is not a valid integer assetId in ${specName}`,
 						BaseErrorsEnum.InvalidAsset,
 					);
 				}
