@@ -171,7 +171,7 @@ describe('getAssetId', () => {
 					xcmCreator,
 					isForeignAssetsTransfer: true,
 				});
-			}).rejects.toThrow(`parachain assetId TEST is not a valid symbol assetIid in moonriver`);
+			}).rejects.toThrow(`parachain assetId TEST is not a valid symbol assetId in moonriver`);
 		});
 
 		it('Should correctly error when given an invalid integer xcAssetId', async () => {
@@ -184,7 +184,7 @@ describe('getAssetId', () => {
 					xcmCreator,
 					isForeignAssetsTransfer: true,
 				});
-			}).rejects.toThrow(`parachain assetId 25830838603860 is not a valid integer assetIid in moonriver`);
+			}).rejects.toThrow(`parachain assetId 25830838603860 is not a valid integer assetId in moonriver`);
 		});
 	});
 });
