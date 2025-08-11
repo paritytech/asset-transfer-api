@@ -557,6 +557,9 @@ export const adjustedMockSystemApi = {
 				},
 			}),
 		},
+		parachainInfo: {
+			parachainId: () => Promise.resolve('1000'),
+		},
 	},
 	tx: Object.assign(
 		(_extrinsic: Call | Extrinsic | Uint8Array | string) => {

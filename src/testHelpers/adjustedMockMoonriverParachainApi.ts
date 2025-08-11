@@ -567,6 +567,9 @@ export const adjustedMockMoonriverParachainApi = {
 			}),
 			metadata: metadata,
 		},
+		parachainInfo: {
+			parachainId: () => Promise.resolve('2023'),
+		},
 	},
 	tx: Object.assign(
 		(_extrinsic: Call | Extrinsic | Uint8Array | string) => {
