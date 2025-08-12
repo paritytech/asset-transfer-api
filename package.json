@@ -86,8 +86,8 @@
 		"@polkadot/types": "16.4.3",
 		"@polkadot/types-codec": "16.4.3",
 		"@polkadot/types-known": "16.4.3",
-		"@polkadot/util": "16.4.3",
-		"@polkadot/util-crypto": "16.4.3",
+		"@polkadot/util": "13.5.5",
+		"@polkadot/util-crypto": "13.5.5",
 		"@substrate/asset-transfer-api-registry": "^0.3.0",
 		"bn.js": "^5.2.2"
 	},
@@ -98,8 +98,8 @@
 		"@polkadot/api-augment": "16.4.3",
 		"@polkadot/types": "16.4.3",
 		"@polkadot/types-codec": "16.4.3",
-		"@polkadot/util-crypto": "13.5.4",
-		"@polkadot/util": "13.5.4",
-		"@polkadot/keyring": "13.5.4"
+		"@polkadot/util-crypto": "13.5.5",
+		"@polkadot/util": "13.5.5",
+		"@polkadot/keyring": "13.5.5"
 	}
 }
