@@ -211,6 +211,8 @@ export class AssetTransferApi {
 			xcmPalletOverride,
 		} = opts;
 
+		await this.verifyOriginChainId();
+
 		const { api, specName, safeXcmVersion, originChainId, registry } = this;
 		const declaredXcmVersion = xcmVersion === undefined ? safeXcmVersion : xcmVersion;
 		checkXcmVersion(declaredXcmVersion); // Throws an error when the xcmVersion is not supported.
@@ -1596,5 +1598,22 @@ export class AssetTransferApi {
 		}
 
 		return forwardedXcmFees;
+	}
+
+	/**
+	 * Verify that this.originChainId matches the paraId for the supplied api endpoint.
+	 *
+	 * Instead of calling this on demand, we could also have a async factory to create
+	 * ATA instances, which calls this on creation.
+	 */
+	private async verifyOriginChainId() {
+		const parachainId = await this.api.query.parachainInfo?.parachainId();
+		const chainId = parachainId ? parachainId.toString() : '0';
+		if (chainId !== this.originChainId) {
+			throw new BaseError(
+				`originChainId (${this.originChainId}) does not match the API supplied parachain id (${chainId}). Please verify that specName is correctly supplied.`,
+				BaseErrorsEnum.InvalidInput,
+			);
+		}
 	}
 }

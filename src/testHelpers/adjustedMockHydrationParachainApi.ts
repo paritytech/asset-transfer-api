@@ -63,6 +63,9 @@ export const adjustedmockHydrationParachainApi = {
 		polkadotXcm: {
 			safeXcmVersion: getSystemSafeXcmVersion,
 		},
+		parachainInfo: {
+			parachainId: () => Promise.resolve('2034'),
+		},
 	},
 	tx: Object.assign(
 		(_extrinsic: Call | Extrinsic | Uint8Array | string) => {
