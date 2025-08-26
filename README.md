@@ -1,3 +1,9 @@
+⚠️**Deprecated**⚠️: `asset-transfer-api` has been deprecated and is no longer actively maintained.
+
+Please use [✨ParaSpell✨](https://paraspell.github.io/docs/) instead.
+
+Additional information can be found in [this GitHub issue](https://github.com/paritytech/asset-transfer-api/issues/652).
+
 <br /><br />
 
 <div align="center">
