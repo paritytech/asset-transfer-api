@@ -1,5 +1,71 @@
 # Changelog
 
+## [v1.1.0](https://github.com/paritytech/asset-transfer-api/compare/v1.0.0..v1.1.0)
+
+### Chore
+
+- chore(deps-dev): bump tsx from 4.20.3 to 4.20.5 ([#659](https://github.com/paritytech/asset-transfer-api/pull/659))
+- chore(deps): bump the pjs group with 6 updates ([#658](https://github.com/paritytech/asset-transfer-api/pull/658))
+- chore(deps-dev): bump typedoc from 0.28.10 to 0.28.11 ([#657](https://github.com/paritytech/asset-transfer-api/pull/657))
+- chore(deps-dev): bump knip from 5.62.0 to 5.63.0 ([#656](https://github.com/paritytech/asset-transfer-api/pull/656))
+- chore(deps-dev): bump @types/node from 24.2.1 to 24.3.0 ([#655](https://github.com/paritytech/asset-transfer-api/pull/655))
+- chore(deps): bump amannn/action-semantic-pull-request from 5 to 6 ([#654](https://github.com/paritytech/asset-transfer-api/pull/654))
+- chore(deps): bump actions/checkout from 4 to 5 ([#651](https://github.com/paritytech/asset-transfer-api/pull/651))
+- chore(deps-dev): bump @types/node from 24.2.0 to 24.2.1 ([#650](https://github.com/paritytech/asset-transfer-api/pull/650))
+- chore(deps): bump the pjs group with 3 updates ([#649](https://github.com/paritytech/asset-transfer-api/pull/649))
+- chore(deps-dev): bump typedoc from 0.28.9 to 0.28.10 ([#648](https://github.com/paritytech/asset-transfer-api/pull/648))
+- chore(deps): bump the pjs group with 6 updates ([#645](https://github.com/paritytech/asset-transfer-api/pull/645))
+- chore(deps-dev): bump typescript from 5.8.3 to 5.9.2 ([#644](https://github.com/paritytech/asset-transfer-api/pull/644))
+- chore(deps-dev): bump typedoc from 0.28.8 to 0.28.9 ([#643](https://github.com/paritytech/asset-transfer-api/pull/643))
+- chore(deps-dev): bump @types/node from 24.1.0 to 24.2.0 ([#642](https://github.com/paritytech/asset-transfer-api/pull/642))
+- chore(deps-dev): bump @types/node from 24.0.15 to 24.1.0 ([#638](https://github.com/paritytech/asset-transfer-api/pull/638))
+- chore(deps): bump the pjs group with 9 updates ([#637](https://github.com/paritytech/asset-transfer-api/pull/637))
+- chore(deps-dev): bump typedoc from 0.28.7 to 0.28.8 ([#636](https://github.com/paritytech/asset-transfer-api/pull/636))
+- chore(deps-dev): bump @types/node from 24.0.14 to 24.0.15 ([#631](https://github.com/paritytech/asset-transfer-api/pull/631))
+- chore(deps-dev): bump knip from 5.61.3 to 5.62.0 ([#630](https://github.com/paritytech/asset-transfer-api/pull/630))
+- chore(deps-dev): bump @acala-network/chopsticks-testing from 1.2.0 to 1.2.1 ([#629](https://github.com/paritytech/asset-transfer-api/pull/629))
+- chore(deps-dev): bump @acala-network/chopsticks-utils from 1.2.0 to 1.2.1 ([#628](https://github.com/paritytech/asset-transfer-api/pull/628))
+- chore(deps-dev): bump @acala-network/chopsticks from 1.2.0 to 1.2.1 ([#627](https://github.com/paritytech/asset-transfer-api/pull/627))
+- chore(deps): bump the pjs group across 1 directory with 5 updates ([#624](https://github.com/paritytech/asset-transfer-api/pull/624))
+- chore(deps-dev): bump @types/node from 24.0.10 to 24.0.13 ([#622](https://github.com/paritytech/asset-transfer-api/pull/622))
+- chore: yarn dedupe ([#618](https://github.com/paritytech/asset-transfer-api/pull/618))
+- chore(deps-dev): bump knip from 5.61.2 to 5.61.3 ([#615](https://github.com/paritytech/asset-transfer-api/pull/615))
+- chore(deps-dev): bump @types/node from 24.0.4 to 24.0.10 ([#614](https://github.com/paritytech/asset-transfer-api/pull/614))
+- chore(deps): bump the pjs group with 9 updates ([#613](https://github.com/paritytech/asset-transfer-api/pull/613))
+- chore(deps-dev): bump @acala-network/chopsticks-testing from 1.1.0 to 1.1.1 ([#606](https://github.com/paritytech/asset-transfer-api/pull/606))
+- chore(deps-dev): bump typedoc from 0.28.5 to 0.28.7 ([#605](https://github.com/paritytech/asset-transfer-api/pull/605))
+
+### Feat
+
+- feat: Verify originChainId matches the chain id looked up from specName ([#647](https://github.com/paritytech/asset-transfer-api/pull/647))
+- feat: Add runtime validation for XcmMultiLocation ([#641](https://github.com/paritytech/asset-transfer-api/pull/641))
+- feat: Make Registry options optional ([#633](https://github.com/paritytech/asset-transfer-api/pull/633))
+- feat: Add example for getDestinationXcmWeightToFeeAsset ([#617](https://github.com/paritytech/asset-transfer-api/pull/617))
+
+### Fix
+
+- fix: PJS version mismatches ([#646](https://github.com/paritytech/asset-transfer-api/pull/646))
+- fix: Typo in error; "assetIid" -> "assetId" ([#639](https://github.com/paritytech/asset-transfer-api/pull/639))
+- fix: Check assets individually in `claimAssets(...)` ([#635](https://github.com/paritytech/asset-transfer-api/pull/635))
+- fix: Update sanitizeKeys to match polkadot-sdk XCM types ([#600](https://github.com/paritytech/asset-transfer-api/pull/600))
+
+### Refactor
+
+- refactor: transferAssetsUsingTypeAndThenCleanup ([#634](https://github.com/paritytech/asset-transfer-api/pull/634))
+- refactor: Remove parseLocationStrToLocation ([#612](https://github.com/paritytech/asset-transfer-api/pull/612))
+- refactor: parseLocationStrToLocation to require xcmCreator ([#610](https://github.com/paritytech/asset-transfer-api/pull/610))
+- refactor: Remove benficiary types as they are just MultiLocations ([#608](https://github.com/paritytech/asset-transfer-api/pull/608))
+- refactor: Use `knip` to remove dead code and clean up dependencies (refactoring along the way) ([#604](https://github.com/paritytech/asset-transfer-api/pull/604))
+- refactor: Consolidate some duplicated tests and remove a few redundant files ([#603](https://github.com/paritytech/asset-transfer-api/pull/603))
+
+### Test
+
+- test: Consolidate resolveMultiLocation tests ([#640](https://github.com/paritytech/asset-transfer-api/pull/640))
+- test: Improve xcm version handling in getAssetId unit tests ([#632](https://github.com/paritytech/asset-transfer-api/pull/632))
+- test: Asset Hub <-> Astar e2e tests ([#626](https://github.com/paritytech/asset-transfer-api/pull/626))
+- test: Skip flaky integration test. ([#616](https://github.com/paritytech/asset-transfer-api/pull/616))
+
+
 ## [1.0.0](https://github.com/paritytech/asset-transfer-api/compare/v0.7.2..v1.0.0)
 
 ### Breaking Changes
