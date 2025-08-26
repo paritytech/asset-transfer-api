@@ -1,6 +1,6 @@
 {
 	"name": "@substrate/asset-transfer-api",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "The Asset Transfer API is a library designed to streamline asset transfers for Polkadot SDK-based chains, offering methods for both cross-chain and local transactions.",
 	"main": "./dist/commonjs/index.js",
 	"module": "./dist/esm/index.js",
