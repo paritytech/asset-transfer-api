@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.1.1](https://github.com/paritytech/asset-transfer-api/compare/v1.1.0..v1.1.1)
+
+### Docs
+
+- docs: Update README with a deprecation notice ([#653](https://github.com/paritytech/asset-transfer-api/pull/653))
+
+
 ## [v1.1.0](https://github.com/paritytech/asset-transfer-api/compare/v1.0.0..v1.1.0)
 
 ### Chore
